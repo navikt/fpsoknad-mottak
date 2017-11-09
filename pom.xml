@@ -7,7 +7,7 @@
   <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
   <artifactId>hello-apus</artifactId>
   <packaging>jar</packaging>
-  <version>10</version>
+  <version>11-SNAPSHOT</version>
 
   <name>hello-apus</name>
   <description>Hello world</description>
