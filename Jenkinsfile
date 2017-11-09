@@ -12,12 +12,12 @@ node {
 	def appConfig = "nais.yaml"
   	def dockerRepo = "docker.adeo.no:5000"
   	def branch = "master"
-  	def groupId = "nais"
+  	def groupId = "foreldrepenger"
   	def environment = 't1'
   	def zone = 'fss'
   	def namespace = 'default'
 
-    try {
+    //try {
 
         stage("checkout") {
             git url: "ssh://git@stash.devillo.no:7999/${repo}/${application}.git"
@@ -89,11 +89,11 @@ node {
             sh "git push origin master"
         }
 
-        hipchatSend  color: 'GREEN', message: "Jeg deployet akkurat ${application} :${releaseVersion} til Nais", textFormat: true, room: 'PAM - CV Utvikling', v2enabled: true, token: 'ZzxxzGzuY7BgKHk6dy6TJ1XqCQpAa34Zi6Tm4M2R'
+        //hipchatSend  color: 'GREEN', message: "Jeg deployet akkurat ${application} :${releaseVersion} til Nais", textFormat: true, room: 'PAM - CV Utvikling', v2enabled: true, token: 'ZzxxzGzuY7BgKHk6dy6TJ1XqCQpAa34Zi6Tm4M2R'
 
 
-    } catch (e) {
-        hipchatSend color: 'RED', message: "@all ${env.JOB_NAME} failed (nice) \n \n Committer: ${committer} \n Jenkins: http://a34apvl00015.devillo.no:8080/job/pam-arena-T1/ " , textFormat: true, notify: true, room: 'PAM - CV Utvikling', v2enabled: true, token: 'ZzxxzGzuY7BgKHk6dy6TJ1XqCQpAa34Zi6Tm4M2R'
-    }
+    //} catch (e) {
+        //hipchatSend color: 'RED', message: "@all ${env.JOB_NAME} failed (nice) \n \n Committer: ${committer} \n Jenkins: http://a34apvl00015.devillo.no:8080/job/pam-arena-T1/ " , textFormat: true, notify: true, room: 'PAM - CV Utvikling', v2enabled: true, token: 'ZzxxzGzuY7BgKHk6dy6TJ1XqCQpAa34Zi6Tm4M2R'
+    //}
 
 }
