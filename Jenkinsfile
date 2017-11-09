@@ -4,7 +4,7 @@ import deploy
 def deployLib = new deploy()
 
 node {
-    def repo="sbtfp"
+    def repo="apus"
     def application = "hello-apus"
     def committer, committerEmail, changelog,pom, releaseVersion, isSnapshot, nextVersion // metadata
 	def mvnHome = tool "maven-3.3.9"
