@@ -68,7 +68,7 @@ node {
             deployLib.testCmd(releaseVersion)
             deployLib.testCmd(committer)
 
-            def deploy = deployLib.deployNaisApp(${application}, releaseVersion, environment, zone, namespace, callback, committer).key
+            def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
 
             try {
                 timeout(time: 15, unit: 'MINUTES') {
