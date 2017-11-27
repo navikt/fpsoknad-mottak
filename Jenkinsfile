@@ -4,8 +4,8 @@ import deploy
 def deployLib = new deploy()
 
 node {
-    def repo = "apus"
-    def application = "hello-apus"
+    def repo = "navikt"
+    def application = "p2-selvbetjening-mottak"
     def committer, committerEmail, changelog, pom, releaseVersion, isSnapshot, nextVersion // metadata
     def mvnHome = tool "maven-3.3.9"
     def mvn = "${mvnHome}/bin/mvn"
@@ -20,7 +20,7 @@ node {
     //try {
 
     stage("checkout") {
-        git url: "ssh://git@stash.devillo.no:7999/${repo}/${application}.git"
+        git url: "https://github.com/navikt/p2-selvbetjening-mottak/${repo}/${application}.git"
     }
 
     stage("initialize") {
