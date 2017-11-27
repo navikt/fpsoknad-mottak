@@ -66,8 +66,8 @@
   </build>
 
   <scm>
-    <connection>scm:git:ssh://git@stash.devillo.no:7999/sbtfp/hello-apus.git</connection>
-    <developerConnection>scm:git:ssh://git@stash.devillo.no:7999/sbtfp/hello-apus.git
+    <connection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git</connection>
+    <developerConnection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
