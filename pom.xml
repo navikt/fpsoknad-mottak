@@ -5,12 +5,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
-  <artifactId>hello-apus</artifactId>
+  <artifactId>mottak</artifactId>
   <packaging>jar</packaging>
   <version>13</version>
 
-  <name>hello-apus</name>
-  <description>Hello world</description>
+  <name>mottak</name>
+  <description>Mottak for selvbetjening</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
