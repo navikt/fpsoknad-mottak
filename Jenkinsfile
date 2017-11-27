@@ -20,7 +20,7 @@ node {
     //try {
 
     stage("checkout") {
-        git url: "https://github.com/navikt/p2-selvbetjening-mottak/${repo}/${application}.git"
+        git url: "https://github.com/navikt/${repo}/${application}.git"
     }
 
     stage("initialize") {
