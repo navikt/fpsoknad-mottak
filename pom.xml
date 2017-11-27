@@ -7,7 +7,7 @@
   <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
   <artifactId>mottak</artifactId>
   <packaging>jar</packaging>
-  <version>13</version>
+  <version>0.0.1-SNAPSHOT</version>
 
   <name>mottak</name>
   <description>Mottak for selvbetjening</description>
