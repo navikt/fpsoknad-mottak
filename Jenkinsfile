@@ -61,7 +61,7 @@ node {
         if (isSnapshot) {
             sh "${mvn} versions:set -B -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false"
             sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
-            sh "docker build --no-cache --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
+            sh "docker build  --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
             sh "git commit -am \"set version to ${releaseVersion} (from Jenkins pipeline)\""
             sh "git push origin master"
             sh "git tag -a ${application}-${releaseVersion} -m ${application}-${releaseVersion}"
@@ -76,7 +76,7 @@ node {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh "curl -s -F r=m2internal -F hasPom=false -F e=yaml -F g=${groupId} -F a=${application} -F " + "v=${releaseVersion} -F p=yaml -F file=@${appConfig} -u ${env.USERNAME}:${env.PASSWORD} http://maven.adeo.no/nexus/service/local/artifact/maven/content"
             }
-            sh "docker --no-cache push ${dockerRepo}/${application}:${releaseVersion}"
+            sh "docker push ${dockerRepo}/${application}:${releaseVersion}"
         } else {
             println("POM version is not a SNAPSHOT, it is ${pom.version}. Skipping publishing!")
         }
