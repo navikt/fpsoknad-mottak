@@ -24,8 +24,10 @@ node {
     }
 
     stage("initialize") {
-        def stdout = sh(script: 'git fetch -v --dry-run', returnStdout: true).trim()
-        sh 'echo I got ${stdout}'
+        withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+            def stdout = sh(script: 'git fetch -v --dry-run', returnStdout: true).trim()
+             sh 'echo I got ${stdout}'
+        }
         pom = readMavenPom file: 'pom.xml'
         releaseVersion = pom.version.tokenize("-")[0]
         isSnapshot = pom.version.contains("-SNAPSHOT")
