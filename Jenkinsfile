@@ -21,6 +21,10 @@ node {
 
     stage("checkout") {
         
+        
+        def ret = sh ('git fetch -v --dry-run', returnStdout: true)
+        sh 'echo I got ${ret}'
+        sh 'echo "Verifying that no snapshot dependencies is being used."'
         git url: "https://github.com/${repo}/${application}.git"
     }
 
