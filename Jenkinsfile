@@ -21,6 +21,7 @@ node {
     //try {
 
     stage("checkout") {
+        cleanWs()
         withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
                 sh(script: "git clone https://github.com/${repo}/${application}.git .")
             }
