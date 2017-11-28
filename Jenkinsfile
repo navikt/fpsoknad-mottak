@@ -4,6 +4,7 @@ import deploy
 def deployLib = new deploy()
 
 node {
+    def commitHash, commitHashShort, commitUrl, currentVersion
     def repo = "navikt"
     def application = "p2-selvbetjening-mottak"
     def committer, committerEmail, changelog, pom, releaseVersion, isSnapshot, nextVersion // metadata
@@ -20,7 +21,15 @@ node {
     //try {
 
     stage("checkout") {
-        git url: "https://github.com/${repo}/${application}.git"       
+        withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+                sh(script: "git clone https://github.com/${repo}/${application}.git .")
+            }
+        commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+        commitHashShort = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        commitUrl = "https://github.com/${repo}/${application}/commit/${commitHash}"
+
+            /* gets the person who committed last as "Surname, First name" */
+        committer = sh(script: 'git log -1 --pretty=format:"%an"', returnStdout: true).trim()
     }
 
     stage("initialize") {
