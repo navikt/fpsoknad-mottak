@@ -20,11 +20,10 @@ node {
     //try {
 
     stage("checkout") {
-       
+        git url: "https://github.com/${repo}/${application}.git"
         def stdout = sh(script: 'git fetch -v --dry-run', returnStdout: true)
         sh 'echo I got ${stdout}'
         sh 'echo "Verifying that no snapshot dependencies is being used."'
-        git url: "https://github.com/${repo}/${application}.git"
     }
 
     stage("initialize") {
