@@ -20,6 +20,7 @@ node {
     //try {
 
     stage("checkout") {
+        
         git url: "https://github.com/${repo}/${application}.git"
     }
 
