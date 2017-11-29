@@ -110,11 +110,11 @@ node {
     stage("new dev version") {
         nextVersion = releaseVersion + "-SNAPSHOT"
         sh "${mvn} versions:set -B -DnewVersion=${nextVersion} -DgenerateBackupPoms=false"
-        //withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-        //      withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+        withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+             withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
                  sh "git commit -am \"updated to new dev-version ${nextVersion} after release by ${committer}\""
                  sh "git push origin master"
-       // }
+       }
     }
 
     //hipchatSend  color: 'GREEN', message: "Jeg deployet akkurat ${application} :${releaseVersion} til Nais", textFormat: true, room: 'PAM - CV Utvikling', v2enabled: true, token: 'ZzxxzGzuY7BgKHk6dy6TJ1XqCQpAa34Zi6Tm4M2R'
