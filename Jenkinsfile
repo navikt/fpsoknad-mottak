@@ -64,7 +64,11 @@ node {
             sh "docker build --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
             sh "git commit -am \"set version to ${releaseVersion} (from Jenkins pipeline)\""
             //sh "git push origin master"
-            sh "git push https://${OAUTH_TOKEN}:x-oauth-basic@github.com/navikt/p2-selvbetjening-mottak.git master"
+            withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+                withCredentials([string(credentialsId: 'navikt-ci-oauthtoken', variable: 'OAUTH_TOKEN')]) {
+                   sh "git push https://${OAUTH_TOKEN}:x-oauth-basic@github.com/navikt/p2-selvbetjening-mottak.git master"
+                }
+            }
             // sh "git tag -a ${application}-${releaseVersion} -m ${application}-${releaseVersion}"
             //sh "git push --tags"
         }else{
