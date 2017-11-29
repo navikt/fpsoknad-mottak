@@ -65,7 +65,7 @@ node {
             sh "git commit -am \"set version to ${releaseVersion} (from Jenkins pipeline)\""
             //sh "git push origin master"
             //withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-               withCredentials([string(credentialsId: 'navikt-ci-oauthtoken', variable: 'OAUTH_TOKEN')]) {
+               withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'navikt-ci-oauthtoken')]) {
                    sh "git push https://${navikt-ci-oauthtoken}:x-oauth-basic@github.com/navikt/p2-selvbetjening-mottak.git master"
                }
             //}
