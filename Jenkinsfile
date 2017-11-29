@@ -114,6 +114,7 @@ node {
              withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
                  sh "git commit -am \"updated to new dev-version ${nextVersion} after release by ${committer}\""
                  sh "git push origin master"
+             }
        }
     }
 
