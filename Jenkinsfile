@@ -36,6 +36,7 @@ node {
     stage("initialize") {
         pom = readMavenPom file: 'pom.xml'
         releaseVersion = pom.version.tokenize("-")[0]
+        sh 'echo "VVVVVVVVV  ${releaseVersion}"'
         isSnapshot = pom.version.contains("-SNAPSHOT")
         committer = sh(script: 'git log -1 --pretty=format:"%an (%ae)"', returnStdout: true).trim()
         committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
@@ -63,7 +64,6 @@ node {
             sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
             sh "docker build --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
             sh "git commit -am \"set version to ${releaseVersion} (from Jenkins pipeline)\""
-            //sh "git push origin master"
             withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
               withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
                    sh ("git push https://${token}:x-oauth-basic@github.com/navikt/p2-selvbetjening-mottak.git master")
