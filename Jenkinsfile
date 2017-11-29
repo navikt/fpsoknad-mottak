@@ -66,7 +66,7 @@ node {
             //sh "git push origin master"
             //withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
               withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'ci-token')]) {
-                   sh "git push https://${ci-token}:x-oauth-basic@github.com/navikt/p2-selvbetjening-mottak.git master"
+                   sh ("git push https://${ci-token}:x-oauth-basic@github.com/navikt/p2-selvbetjening-mottak.git master")
                }
             //}
             // sh "git tag -a ${application}-${releaseVersion} -m ${application}-${releaseVersion}"
