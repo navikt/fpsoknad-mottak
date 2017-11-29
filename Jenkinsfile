@@ -108,7 +108,7 @@ node {
     // Add test of preprod instance here
 
     stage("new dev version") {
-        nextVersion = (pom.version.tokenize(".")[2].toInteger() + 1) + "-SNAPSHOT"
+        nextVersion = (releaseVersion.tokenize(".")[2].toInteger() + 1) + "-SNAPSHOT"
         sh "${mvn} versions:set -B -DnewVersion=${nextVersion} -DgenerateBackupPoms=false"
         withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
              withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
