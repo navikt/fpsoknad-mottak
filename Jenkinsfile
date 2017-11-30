@@ -36,30 +36,30 @@ node {
     stage("initialize") {
         pom = readMavenPom file: 'pom.xml'
         releaseVersion = pom.version.tokenize("-")[0]
-        sh 'echo "VVVVVVVVV  ${releaseVersion}"'
-        isSnapshot = pom.version.contains("-SNAPSHOT")
+        //isSnapshot = pom.version.contains("-SNAPSHOT")
         committer = sh(script: 'git log -1 --pretty=format:"%an (%ae)"', returnStdout: true).trim()
         committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
     }
 
     stage("verify maven versions") {
-        sh 'echo "Verifying that no snapshot dependencies is being used."'
-        sh 'grep module pom.xml | cut -d">" -f2 | cut -d"<" -f1 > snapshots.txt'
-        sh 'while read line;do if [ "$line" != "" ];then if [ `grep SNAPSHOT $line/pom.xml | wc -l` -gt 1 ];then echo "SNAPSHOT-dependencies found. See file $line/pom.xml.";exit 1;fi;fi;done < snapshots.txt'
+       sh "${mvn} -Pvalidation validate"
+       // sh 'echo "Verifying that no snapshot dependencies is being used."'
+       // sh 'grep module pom.xml | cut -d">" -f2 | cut -d"<" -f1 > snapshots.txt'
+       // sh 'while read line;do if [ "$line" != "" ];then if [ `grep SNAPSHOT $line/pom.xml | wc -l` -gt 1 ];then echo "SNAPSHOT-dependencies found. See file $line/pom.xml.";exit 1;fi;fi;done < snapshots.txt'
     }
 
     stage("test backend") {
-        if (isSnapshot) {
+        //if (isSnapshot) {
             sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
-        } else {
-            println("POM version is not a SNAPSHOT, it is ${pom.version}. Skipping build and testing of backend")
-        }
+        //} else {
+        //    println("POM version is not a SNAPSHOT, it is ${pom.version}. Skipping build and testing of backend")
+        // }
 
     }
 
     stage("release version") {
-        if (isSnapshot) {
+       // if (isSnapshot) {
             sh "${mvn} versions:set -B -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false"
             sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
             sh "docker build --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
@@ -71,20 +71,20 @@ node {
                    sh ("git push https://${token}:x-oauth-basic@github.com/navikt/p2-selvbetjening-mottak.git --tags")
                }
             }
-        }else{
-            println("POM version is not a SNAPSHOT, it is ${pom.version}. Skipping releasing")
-        }
+       // }else{
+       //     println("POM version is not a SNAPSHOT, it is ${pom.version}. Skipping releasing")
+       // }
     }
     stage("publish artifact") {
-        if (isSnapshot) {
+      //  if (isSnapshot) {
             sh "${mvn} clean deploy -DskipTests -B -e"
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh "curl -s -F r=m2internal -F hasPom=false -F e=yaml -F g=${groupId} -F a=${application} -F " + "v=${releaseVersion} -F p=yaml -F file=@${appConfig} -u ${env.USERNAME}:${env.PASSWORD} http://maven.adeo.no/nexus/service/local/artifact/maven/content"
             }
             sh "docker push ${dockerRepo}/${application}:${releaseVersion}"
-        } else {
-            println("POM version is not a SNAPSHOT, it is ${pom.version}. Skipping publishing!")
-        }
+       // } else {
+       //     println("POM version is not a SNAPSHOT, it is ${pom.version}. Skipping publishing!")
+       // }
     }
 
 
