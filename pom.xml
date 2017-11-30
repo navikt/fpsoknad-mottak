@@ -111,8 +111,12 @@
             <configuration>
               <rules>
                 <requireSnapshotVersion>
+                <failWhenParentIsRelease>false</failWhenParentIsRelease>
                   <message>No Releases Allowed!</message>
                 </requireSnapshotVersion>
+                <requireReleaseDeps>
+                  <message>No Snapshot dependencies Allowed!</message>
+                </requireReleaseDeps>
 	       </rules>
               <fail>true</fail>
             </configuration>
