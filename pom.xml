@@ -1,152 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-	
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.0.M6</version>
-  </parent>  
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
-  <artifactId>p2-selvbetjening-mottak</artifactId>
-  <packaging>jar</packaging>
-  <version>0.0.18-SNAPSHOT</version>
-  <name>mottak</name>
-  <description>Mottak for selvbetjening</description>
-   <profiles>
-       <profile>
-	  <id>default</id>
-	       <activation>
-	     <activeByDefault>true</activeByDefault>
-	       </activation>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.8</java.version>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.M6</version>
+		<relativePath />
+	</parent>
+
+	<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+	<artifactId>p2-selvbetjening-mottak</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.18-SNAPSHOT</version>
+	<name>mottak</name>
+	<description>Mottak for selvbetjening</description>
+	<scm>
+		<connection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git</connection>
+		<developerConnection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git
+			</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+				<repository>
+					<id>spring-snapshots</id>
+					<name>Spring Snapshots</name>
+					<url>https://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-milestones</id>
+					<name>Spring Milestones</name>
+					<url>https://repo.spring.io/milestone</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
 	
-<scm>
-    <connection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git</connection>
-    <developerConnection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git
-    </developerConnection>
-    <tag>HEAD</tag>
-</scm>
-  <distributionManagement>
-    <repository>
-      <id>m2internal</id>
-      <name>NAV Maven2 Internal Repository</name>
-      <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
-    </repository>
-    <snapshotRepository>
-      <id>m2snapshot</id>
-      <name>NAV Maven2 Snapshot Repository</name>
-      <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
-      <uniqueVersion>false</uniqueVersion>
-    </snapshotRepository>
-  </distributionManagement>
-  
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-registry-prometheus</artifactId>       
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+				<java.version>1.8</java.version>
+				<maven.compiler.source>1.8</maven.compiler.source>
+				<maven.compiler.target>1.8</maven.compiler.target>
+			</properties>
+			
+			<pluginRepositories>
+				<pluginRepository>
+					<id>spring-snapshots</id>
+					<name>Spring Snapshots</name>
+					<url>https://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>spring-milestones</id>
+					<name>Spring Milestones</name>
+					<url>https://repo.spring.io/milestone</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>net.logstash.logback</groupId>
-      <artifactId>logstash-logback-encoder</artifactId>
-      <version>4.10</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-  </dependencies>
-  <build>
-     <plugins>
-        <plugin>
-	   <groupId>org.springframework.boot</groupId>
-	   <artifactId>spring-boot-maven-plugin</artifactId>
-	</plugin>
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-no-snapshots</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireSnapshotVersion>
-                <failWhenParentIsRelease>false</failWhenParentIsRelease>
-                  <message>No Releases Allowed!</message>
-                </requireSnapshotVersion>
-                <requireReleaseDeps>
-                  <message>No Snapshot dependencies Allowed!</message>
-                </requireReleaseDeps>
-	       </rules>
-              <fail>true</fail>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-	   </build>
-	   </profile>
-	   </profiles>
+
+			<distributionManagement>
+				<repository>
+					<id>m2internal</id>
+					<name>NAV Maven2 Internal Repository</name>
+					<url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+				</repository>
+				<snapshotRepository>
+					<id>m2snapshot</id>
+					<name>NAV Maven2 Snapshot Repository</name>
+					<url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+					<uniqueVersion>false</uniqueVersion>
+				</snapshotRepository>
+			</distributionManagement>
+
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-actuator</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>io.micrometer</groupId>
+					<artifactId>micrometer-registry-prometheus</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</dependency>
+
+				<dependency>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>net.logstash.logback</groupId>
+					<artifactId>logstash-logback-encoder</artifactId>
+					<version>4.10</version>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>validation</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>enforce-is-snapshot-with-no-snap-deps</id>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<rules>
+										<requireSnapshotVersion>
+											<failWhenParentIsRelease>false</failWhenParentIsRelease>
+											<message>No Releases Allowed!</message>
+										</requireSnapshotVersion>
+										<requireReleaseDeps>
+											<message>No Snapshot dependencies Allowed!</message>
+										</requireReleaseDeps>
+									</rules>
+									<fail>true</fail>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
