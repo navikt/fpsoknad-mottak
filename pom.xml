@@ -113,6 +113,7 @@
                 <requireSnapshotVersion>
                   <message>No Releases Allowed!</message>
                 </requireSnapshotVersion>
+	       </rules>
               <fail>true</fail>
             </configuration>
           </execution>
