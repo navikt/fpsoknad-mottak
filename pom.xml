@@ -3,21 +3,24 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
-  <artifactId>p2-selvbetjening-mottak</artifactId>
-  <packaging>jar</packaging>
-  <version>0.0.18-SNAPSHOT</version>
-
-  <name>mottak</name>
-  <description>Mottak for selvbetjening</description>
-
+	
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.0.0.M6</version>
   </parent>  
 
+  <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+  <artifactId>p2-selvbetjening-mottak</artifactId>
+  <packaging>jar</packaging>
+  <version>0.0.18-SNAPSHOT</version>
+  <name>mottak</name>
+  <description>Mottak for selvbetjening</description>
+   <profiles>
+       <profile>
+	  <id>default</id>
+	     <activeByDefault>true</activeByDefault>
+    </activation>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -62,6 +65,26 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+	
+<scm>
+    <connection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git</connection>
+    <developerConnection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git
+    </developerConnection>
+    <tag>HEAD</tag>
+</scm>
+  <distributionManagement>
+    <repository>
+      <id>m2internal</id>
+      <name>NAV Maven2 Internal Repository</name>
+      <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+    </repository>
+    <snapshotRepository>
+      <id>m2snapshot</id>
+      <name>NAV Maven2 Snapshot Repository</name>
+      <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
   
   <dependencies>
     <dependency>
@@ -91,14 +114,12 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
-
-  
   <build>
-	<plugins>
-		<plugin>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-maven-plugin</artifactId>
-		</plugin>
+     <plugins>
+        <plugin>
+	   <groupId>org.springframework.boot</groupId>
+	   <artifactId>spring-boot-maven-plugin</artifactId>
+	</plugin>
        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -123,29 +144,8 @@
           </execution>
         </executions>
       </plugin>
-
-	</plugins>
-  </build>
-
-  <scm>
-    <connection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git</connection>
-    <developerConnection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git
-    </developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>m2internal</id>
-      <name>NAV Maven2 Internal Repository</name>
-      <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
-    </repository>
-    <snapshotRepository>
-      <id>m2snapshot</id>
-      <name>NAV Maven2 Snapshot Repository</name>
-      <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
-      <uniqueVersion>false</uniqueVersion>
-    </snapshotRepository>
-  </distributionManagement>
-
+    </plugins>
+	   </build>
+	   </profile>
+	   </profiles>
 </project>
