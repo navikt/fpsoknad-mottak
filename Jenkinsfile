@@ -31,7 +31,7 @@ node {
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
         slackSend([
             color: 'good',
-            message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed"
+            message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed  (${changelog})"
         ])
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
     }
@@ -77,13 +77,13 @@ node {
         deployLib.testCmd(committer)
 
         def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
-        try {
-            timeout(time: 15, unit: 'MINUTES') {
-                input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
-            }
-        } catch (Exception e) {
-            throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", e)
-        }
+       // try {
+        //    timeout(time: 15, unit: 'MINUTES') {
+       //         input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
+       //     }
+       // } catch (Exception e) {
+       //     throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", e)
+       // }
     }
 
     // Add test of preprod instance here
