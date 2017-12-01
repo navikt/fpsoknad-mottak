@@ -29,6 +29,10 @@ node {
         committer = sh(script: 'git log -1 --pretty=format:"%an"', returnStdout: true).trim()
         committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
+        slackSend([
+            color: 'good',
+            message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed"
+        ])
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
     }
 
