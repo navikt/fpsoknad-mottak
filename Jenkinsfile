@@ -22,17 +22,13 @@ node {
         cleanWs()
         withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
                 sh(script: "git clone https://github.com/${repo}/${application}.git .")
-            }
+        }
         commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
         commitHashShort = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         commitUrl = "https://github.com/${repo}/${application}/commit/${commitHash}"
         committer = sh(script: 'git log -1 --pretty=format:"%an"', returnStdout: true).trim()
         committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
-        slackSend([
-            color: 'good',
-            message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed  (${changelog})"
-        ])
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
     }
 
@@ -46,7 +42,19 @@ node {
     }
 
     stage("Build, test and install artifact") {
-       sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
+       try {
+          sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
+          slackSend([
+               color: 'good',
+               message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed  (${changelog})"
+           ])
+       }
+       catch (Exception e) {
+           slackSend([
+               color: 'danger',
+               message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} failed (${changelog})"
+           ])
+        } 
     }
 
     stage("Release") {
@@ -77,13 +85,7 @@ node {
         deployLib.testCmd(committer)
 
         def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
-       // try {
-        //    timeout(time: 15, unit: 'MINUTES') {
        //         input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
-       //     }
-       // } catch (Exception e) {
-       //     throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", e)
-       // }
     }
 
     // Add test of preprod instance here
