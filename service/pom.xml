@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
 		<artifactId>p2-selvbetjening-mottak-parent</artifactId>
-		<version>0.0.36-SNAPSHOT</version>
+		<version>0.0.36</version>
 	</parent>
 
 	<artifactId>p2-selvbetjening-mottak</artifactId>
