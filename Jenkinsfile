@@ -54,9 +54,12 @@ node {
                color: 'danger',
                message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} failed (${changelog})"
            ])
-        } 
-    }
-
+        }  
+        finally {
+            archive "target/**/*"
+            junit 'target/surefire-reports/*.xml'
+        }
+  }
     stage("Release") {
             sh "${mvn} versions:set -B -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false"
             sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
