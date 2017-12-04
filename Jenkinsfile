@@ -56,7 +56,6 @@ node {
            ])
         }  
         finally {
-            archive "**/target/**/*"
             junit '**/target/surefire-reports/*.xml'
         }
   }
