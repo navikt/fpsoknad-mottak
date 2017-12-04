@@ -104,6 +104,8 @@
 			</build>
 		</profile>
 	</profiles>
+	<dependencies>
+	</dependencies>
 	<modules>
 		<module>service</module>
 	</modules>
