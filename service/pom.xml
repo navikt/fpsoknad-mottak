@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
 		<artifactId>p2-selvbetjening-mottak-parent</artifactId>
-		<version>0.0.29-SNAPSHOT</version>
+		<version>0.0.35-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>p2-selvbetjening-mottak</artifactId>
@@ -29,6 +29,11 @@
 				<maven.compiler.target>1.8</maven.compiler.target>
 			</properties>
 			<dependencies>
+			 <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+			</dependency>
 				<dependency>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-actuator</artifactId>
@@ -63,37 +68,6 @@
 						<artifactId>spring-boot-maven-plugin</artifactId>
 					</plugin>
 
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>validation</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-enforcer-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>enforce-is-snapshot-with-no-snap-deps</id>
-								<goals>
-									<goal>enforce</goal>
-								</goals>
-								<configuration>
-									<rules>
-										<requireSnapshotVersion>
-											<failWhenParentIsRelease>false</failWhenParentIsRelease>
-											<message>No Releases Allowed!</message>
-										</requireSnapshotVersion>
-										<requireReleaseDeps>
-											<message>No Snapshot dependencies Allowed!</message>
-										</requireReleaseDeps>
-									</rules>
-									<fail>true</fail>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>

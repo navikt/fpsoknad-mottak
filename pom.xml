@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
 	<artifactId>p2-selvbetjening-mottak-parent</artifactId>
-	<version>0.0.29-SNAPSHOT</version>
+	<version>0.0.35-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -69,7 +69,42 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
-
+	<profiles>
+		<profile>
+			<id>validation</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>enforce-is-snapshot-with-no-snap-deps</id>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<rules>
+										<requireSnapshotVersion>
+											<failWhenParentIsRelease>false</failWhenParentIsRelease>
+											<message>No Releases Allowed!</message>
+										</requireSnapshotVersion>
+										<requireReleaseDeps>
+										<failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
+											<message>No Snapshot dependencies Allowed!</message>
+										</requireReleaseDeps>
+									</rules>
+									<fail>true</fail>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<dependencies>
+	</dependencies>
 	<modules>
 		<module>service</module>
 		<module>aktor-client</module>
