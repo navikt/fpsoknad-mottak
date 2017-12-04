@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+		<artifactId>p2-selvbetjening-mottak-parent</artifactId>
+		<version>0.0.29-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>p2-selvbetjening-mottak</artifactId>
+	<packaging>jar</packaging>
+	<name>service</name>
+	<description>Mottak for selvbetjening</description>
+
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+				<java.version>1.8</java.version>
+				<maven.compiler.source>1.8</maven.compiler.source>
+				<maven.compiler.target>1.8</maven.compiler.target>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-actuator</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>io.micrometer</groupId>
+					<artifactId>micrometer-registry-prometheus</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</dependency>
+
+				<dependency>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>net.logstash.logback</groupId>
+					<artifactId>logstash-logback-encoder</artifactId>
+					<version>4.10</version>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>validation</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-enforcer-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>enforce-is-snapshot-with-no-snap-deps</id>
+								<goals>
+									<goal>enforce</goal>
+								</goals>
+								<configuration>
+									<rules>
+										<requireSnapshotVersion>
+											<failWhenParentIsRelease>false</failWhenParentIsRelease>
+											<message>No Releases Allowed!</message>
+										</requireSnapshotVersion>
+										<requireReleaseDeps>
+											<message>No Snapshot dependencies Allowed!</message>
+										</requireReleaseDeps>
+									</rules>
+									<fail>true</fail>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
