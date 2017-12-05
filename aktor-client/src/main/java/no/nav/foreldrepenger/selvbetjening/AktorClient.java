@@ -12,6 +12,7 @@ public class AktorClient  implements AktorOperations {
    
    private final WebServiceTemplate template;
    
+   
    public AktorClient(@Value("${integration.aktoridservice}") String uri) {
       this(templateFrom(uri));
    }
