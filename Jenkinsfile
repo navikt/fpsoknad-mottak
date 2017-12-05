@@ -37,9 +37,9 @@ node {
         releaseVersion = pom.version.tokenize("-")[0]
     }
 
-    stage("Valildate version and dependencies") {
-       sh "${mvn} -Pvalidation validate"
-    }
+   // stage("Valildate version and dependencies") {
+   //    sh "${mvn} -Pvalidation validate"
+    //}
 
     stage("Build, test and install artifact") {
        try {
