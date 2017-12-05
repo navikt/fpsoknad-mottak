@@ -1,120 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
-	<artifactId>p2-selvbetjening-mottak-parent</artifactId>
-	<version>0.0.39-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.0.M6</version>
-		<relativePath/>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+   <artifactId>p2-selvbetjening-mottak-parent</artifactId>
+   <version>0.0.39-SNAPSHOT</version>
+   <packaging>pom</packaging>
+   <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>2.0.0.M6</version>
+      <relativePath />
+   </parent>
 
-      <properties>
-			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-			<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-			<java.version>1.8</java.version>
-			<maven.compiler.source>1.8</maven.compiler.source>
-			<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-		
-	<scm>
-		<connection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git</connection>
-		<developerConnection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      <java.version>1.8</java.version>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <maven.jaxb-plugin.version>0.13.3</maven.jaxb-plugin.version>
+   </properties>
+
+   <scm>
+      <connection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git</connection>
+      <developerConnection>scm:git:https://github.com/navikt/p2-selvbetjening-mottak.git
 		</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
+      <tag>HEAD</tag>
+   </scm>
 
-	<repositories>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+   <repositories>
+      <repository>
+         <id>spring-snapshots</id>
+         <name>Spring Snapshots</name>
+         <url>https://repo.spring.io/snapshot</url>
+         <snapshots>
+            <enabled>true</enabled>
+         </snapshots>
+      </repository>
+      <repository>
+         <id>spring-milestones</id>
+         <name>Spring Milestones</name>
+         <url>https://repo.spring.io/milestone</url>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+   </repositories>
+   <pluginRepositories>
+      <pluginRepository>
+         <id>spring-snapshots</id>
+         <name>Spring Snapshots</name>
+         <url>https://repo.spring.io/snapshot</url>
+         <snapshots>
+            <enabled>true</enabled>
+         </snapshots>
+      </pluginRepository>
+      <pluginRepository>
+         <id>spring-milestones</id>
+         <name>Spring Milestones</name>
+         <url>https://repo.spring.io/milestone</url>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </pluginRepository>
+   </pluginRepositories>
 
-	<distributionManagement>
-		<repository>
-			<id>m2internal</id>
-			<name>NAV Maven2 Internal Repository</name>
-			<url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
-		</repository>
-		<snapshotRepository>
-			<id>m2snapshot</id>
-			<name>NAV Maven2 Snapshot Repository</name>
-			<url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
-	<profiles>
-		<profile>
-			<id>validation</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-enforcer-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>enforce-is-snapshot-with-no-snap-deps</id>
-								<goals>
-									<goal>enforce</goal>
-								</goals>
-								<configuration>
-									<rules>
-										<requireSnapshotVersion>
-											<failWhenParentIsRelease>false</failWhenParentIsRelease>
-											<message>No Releases Allowed!</message>
-										</requireSnapshotVersion>
-										<requireReleaseDeps>
-										<failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
-											<message>No Snapshot dependencies Allowed!</message>
-										</requireReleaseDeps>
-									</rules>
-									<fail>true</fail>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-	<dependencies>
-	</dependencies>
-	<modules>
-		<module>service</module>
-		<module>aktor-client</module>
-	</modules>
+   <distributionManagement>
+      <repository>
+         <id>m2internal</id>
+         <name>NAV Maven2 Internal Repository</name>
+         <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+      </repository>
+      <snapshotRepository>
+         <id>m2snapshot</id>
+         <name>NAV Maven2 Snapshot Repository</name>
+         <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
+   <profiles>
+      <profile>
+         <id>default</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <build>
+            <pluginManagement>
+               <plugins>
+                  <plugin>
+                     <groupId>org.jvnet.jaxb2.maven2</groupId>
+                     <artifactId>maven-jaxb2-plugin</artifactId>
+                     <version>${maven.jaxb-plugin.version}</version>
+                     <executions>
+                        <execution>
+                           <goals>
+                              <goal>generate</goal>
+                           </goals>
+                        </execution>
+                     </executions>
+                  </plugin>
+               </plugins>
+            </pluginManagement>
+         </build>
+      </profile>
+      <profile>
+         <id>validation</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-enforcer-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>enforce-is-snapshot-with-no-snap-deps</id>
+                        <goals>
+                           <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                           <rules>
+                              <requireSnapshotVersion>
+                                 <failWhenParentIsRelease>false</failWhenParentIsRelease>
+                                 <message>No Releases allowed!</message>
+                              </requireSnapshotVersion>
+                              <requireReleaseDeps>
+                                 <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
+                                 <message>No Snapshot dependencies
+                                    allowed!</message>
+                              </requireReleaseDeps>
+                           </rules>
+                           <fail>true</fail>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+   <dependencies>
+      <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter-api</artifactId>
+         <scope>test</scope>
+      </dependency>
+        <dependency>
+               <groupId>junit</groupId>
+               <artifactId>junit</artifactId>
+               <scope>test</scope>
+            </dependency>
+   </dependencies>
+   <modules>
+      <module>service</module>
+      <module>aktor-client</module>
+   </modules>
 </project>
