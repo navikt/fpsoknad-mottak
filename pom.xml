@@ -127,6 +127,9 @@
                                  <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
                                  <message>No Snapshot dependencies
                                     allowed!</message>
+                                    <excludes>
+                                       <exclude>no.nav.foreldrepenger.selvbetjening:*</exclude>
+                                   </excludes>
                               </requireReleaseDeps>
                            </rules>
                            <fail>true</fail>

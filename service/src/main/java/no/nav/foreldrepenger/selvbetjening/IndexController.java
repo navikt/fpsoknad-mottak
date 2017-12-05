@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexController {
 
-  @RequestMapping(method = {RequestMethod.GET}, value = "/rest/internal/isAlive")
+  @RequestMapping(method = {RequestMethod.GET}, value = "/")
   public ResponseEntity<String> isAlive() {
-    return new ResponseEntity<String>("OK", HttpStatus.OK);
+    return new ResponseEntity<String>("Howdy!", HttpStatus.OK);
   }
 
 }
