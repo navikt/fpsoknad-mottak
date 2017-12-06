@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.client.support.interceptor.ClientInterceptor;
+import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 
 import no.nav.tjeneste.virksomhet.aktoer.v2.HentAktoerIdForIdentResponse;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
@@ -33,6 +35,11 @@ public class AktorClient  implements AktorOperations {
    public String aktorIdForFnr(String fnr) {
         HentAktoerIdForIdentRequest request = new HentAktoerIdForIdentRequest();
         request.setIdent(fnr);
+        ClientInterceptor[] interceptors = new ClientInterceptor[1];
+        Wss4jSecurityInterceptor interceptor = new Wss4jSecurityInterceptor();
+        //interceptor.setSecurement
+        //interceptors[0] = interceptor;
+        template.setInterceptors(interceptors);
         HentAktoerIdForIdentResponse response = (HentAktoerIdForIdentResponse) template.marshalSendAndReceive(request);
         return response.getHentAktoerIdForIdentResponse().getAktoerId();
     }
