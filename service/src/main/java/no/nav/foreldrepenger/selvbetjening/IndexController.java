@@ -13,7 +13,7 @@ public class IndexController {
 
    @RequestMapping(method = {RequestMethod.GET}, value = "/")
    public ResponseEntity<String> isAlive() {
-      String envNames = System.getenv().keySet().stream().collect(joining());
+      String envNames = System.getenv().keySet().stream().collect(joining("<br>"));
       return new ResponseEntity<String>("Env vars: " + envNames, HttpStatus.OK);
    }
 
