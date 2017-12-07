@@ -1,7 +1,12 @@
 package no.nav.foreldrepenger.selvbetjening;
 
+import java.util.Optional;
+
+import no.nav.foreldrepenger.selvbetjening.aktorklient.domain.AktorId;
+import no.nav.foreldrepenger.selvbetjening.aktorklient.domain.Fodselsnummer;
+
 public interface AktorOperations {
 
-   String aktorIdForFnr(String fnr);
+   Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr);
 
 }

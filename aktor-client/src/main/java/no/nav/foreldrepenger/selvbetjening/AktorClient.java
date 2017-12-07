@@ -1,51 +1,30 @@
 package no.nav.foreldrepenger.selvbetjening;
 
-import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.client.support.interceptor.ClientInterceptor;
-import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
+import org.springframework.stereotype.Component;
 
-import no.nav.tjeneste.virksomhet.aktoer.v2.HentAktoerIdForIdentResponse;
-import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
+import no.nav.foreldrepenger.selvbetjening.aktorklient.domain.AktorId;
+import no.nav.foreldrepenger.selvbetjening.aktorklient.domain.Fodselsnummer;;
 
+@Component
 public class AktorClient  implements AktorOperations {
    
-   private final WebServiceTemplate template;
+   private final String uri;
    
-   
-   public AktorClient(@Value("${integration.aktoridservice}") String uri) {
-      this(templateFrom(uri));
-   }
-
-    private AktorClient(WebServiceTemplate template) {
-      this.template = Objects.requireNonNull(template);
-   }
-
-  
-   private static WebServiceTemplate templateFrom(String uri) {
-      WebServiceTemplate template = new WebServiceTemplate();
-      template.setDefaultUri(uri);
-      return template;
+   public AktorClient(@Value("${AKTOER_V2_ENDPOINTURL:http://www.vg.no}") String uri) {
+     this.uri = uri;
    }
 
    
    @Override
-   public String aktorIdForFnr(String fnr) {
-        HentAktoerIdForIdentRequest request = new HentAktoerIdForIdentRequest();
-        request.setIdent(fnr);
-        ClientInterceptor[] interceptors = new ClientInterceptor[1];
-        Wss4jSecurityInterceptor interceptor = new Wss4jSecurityInterceptor();
-        //interceptor.setSecurement
-        //interceptors[0] = interceptor;
-        template.setInterceptors(interceptors);
-        HentAktoerIdForIdentResponse response = (HentAktoerIdForIdentResponse) template.marshalSendAndReceive(request);
-        return response.getHentAktoerIdForIdentResponse().getAktoerId();
+   public Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr) {
+        throw new UnsupportedOperationException();
     }
    
    @Override
    public String toString() {
-      return getClass().getSimpleName() + " [template=" + template + "]";
+      return getClass().getSimpleName() + " [uri=" + uri + "]";
    }
 }
