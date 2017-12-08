@@ -27,6 +27,6 @@ fasitResources:
     - alias: Aktoer_V2
       resourceType: webserviceendpoint
     - alias : securityTokenService
-      resourceType: baseurl
+      resourceType: baseurl 
   exposed:
 
