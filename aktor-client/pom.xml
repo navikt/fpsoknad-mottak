@@ -17,20 +17,49 @@
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
       </dependency>
+      <dependency>
+         <groupId>no.nav.arbeid</groupId>
+         <artifactId>pam-cxfclient</artifactId>
+         <version>3</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-core</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>no.nav.modig</groupId>
+         <artifactId>modig-testcertificates</artifactId>
+         <version>1.2.4</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
 
    <build>
       <plugins>
          <plugin>
-            <groupId>org.jvnet.jaxb2.maven2</groupId>
-            <artifactId>maven-jaxb2-plugin</artifactId>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>jaxws-maven-plugin</artifactId>
+            <version>1.12</version>
+            <executions>
+               <execution>
+                  <id>wsimport-from-jdk</id>
+                  <goals>
+                     <goal>wsimport</goal>
+                  </goals>
+               </execution>
+            </executions>
             <configuration>
-               <schemaLanguage>WSDL</schemaLanguage>
-               <schemaDirectory>src/main/resources/wsdl</schemaDirectory>
-               <schemaIncludes>
-                  <include>*.xsd</include>
-                  <include>*.wsdl</include>
-               </schemaIncludes>
+               <wsdlDirectory>src/main/resources/wsdl</wsdlDirectory>
+               <wsdlFiles>
+                  <wsdlFile>Binding.wsdl</wsdlFile>
+               </wsdlFiles>
+               <keep>true</keep>
+               <sourceDestDir>target/generatedclasses</sourceDestDir>
             </configuration>
          </plugin>
       </plugins>
