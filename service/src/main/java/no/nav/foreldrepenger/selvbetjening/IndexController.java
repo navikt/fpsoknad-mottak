@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class IndexController {
-   
-   @Inject
-   private final AktorOperations aktorOperations;
 
    @Inject
-   public  IndexController(AktorOperations client) {
-      this.aktorOperations = client;
+   private final AktorIdKlient aktorClient;
+
+   @Inject
+   public  IndexController(AktorIdKlient aktorClient) {
+      this.aktorClient = aktorClient;
    }
 
    @RequestMapping(method = {RequestMethod.GET}, value = "/")
@@ -26,11 +26,12 @@ public class IndexController {
       return new ResponseEntity<String>("Env vars: " + System.getenv().keySet().stream().collect(joining("<br>")), HttpStatus.OK);
 
    }
-   
- 
+
+
    @Override
    public String toString() {
-      return getClass().getSimpleName()  + " [AktorOperations=" + aktorOperations + "]";
+      return getClass().getSimpleName()  +
+         " [AktorIdKlient=" + aktorClient + "]";
    }
-   
+
 }

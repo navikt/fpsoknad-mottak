@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
-<project
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
@@ -10,34 +9,45 @@
       <version>0.0.50-SNAPSHOT</version>
    </parent>
 
-   <artifactId>aktor-client</artifactId>
+   <artifactId>inntekt-client</artifactId>
 
    <dependencies>
-      <dependency>
-         <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
-         <artifactId>foreldrepenger-selvbetjening-auth</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>javax.inject</groupId>
-         <artifactId>javax.inject</artifactId>
-         <version>1</version>
-      </dependency>
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-context</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot</artifactId>
+         <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+         <artifactId>foreldrepenger-selvbetjening-auth</artifactId>
+         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-test</artifactId>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter-api</artifactId>
+         <version>5.0.0-M6</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter-engine</artifactId>
+         <version>5.0.0-M6</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.junit.platform</groupId>
+         <artifactId>junit-platform-engine</artifactId>
+         <version>1.0.0-M6</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.junit.platform</groupId>
+         <artifactId>junit-platform-launcher</artifactId>
+         <version>1.0.0-M6</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
+
    <build>
       <plugins>
          <plugin>
@@ -55,10 +65,10 @@
             <configuration>
                <wsdlDirectory>src/main/resources/wsdl</wsdlDirectory>
                <wsdlFiles>
-                  <wsdlFile>Binding.wsdl</wsdlFile>
+                  <wsdlFile>inntekt_v3.wsdl</wsdlFile>
                </wsdlFiles>
                <keep>true</keep>
-               <sourceDestDir>target/generatedclasses</sourceDestDir>
+               <sourceDestDir>target/generated-sources</sourceDestDir>
             </configuration>
          </plugin>
       </plugins>

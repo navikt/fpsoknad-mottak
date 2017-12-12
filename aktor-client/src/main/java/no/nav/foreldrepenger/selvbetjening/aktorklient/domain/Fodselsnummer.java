@@ -2,14 +2,19 @@ package no.nav.foreldrepenger.selvbetjening.aktorklient.domain;
 
 public class Fodselsnummer {
 
-   private final String fnr;
+   private final String digits;
 
-   public Fodselsnummer(String fnr) {
-      this.fnr = fnr;
+   public Fodselsnummer(String digits) {
+      this.digits = digits;
    }
 
-   public String getValue() {
-      return fnr;
+   public String digits() {
+      return digits;
+   }
+
+   @Override
+   public String toString() {
+      return "Fodselsnummer [digits=" + digits + "]";
    }
 
 }
