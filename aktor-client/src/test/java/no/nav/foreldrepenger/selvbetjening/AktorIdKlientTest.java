@@ -2,25 +2,37 @@ package no.nav.foreldrepenger.selvbetjening;
 
 import java.util.Optional;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import javax.inject.Inject;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import no.nav.foreldrepenger.selvbetjening.aktorklient.domain.AktorId;
 import no.nav.foreldrepenger.selvbetjening.aktorklient.domain.Fodselsnummer;
 import no.nav.modig.testcertificates.TestCertificates;
 
-public class AktorIdKlientTest {
+	
+	
+	@RunWith(SpringRunner.class)
+	@SpringBootTest
+	public class AktorIdKlientTest {
 
-    @Test
-    @Ignore
-    public void useSts() throws Exception {
-       System.setProperty("no.nav.modig.security.sts.url", "https://xxxx.test.local/");
-       System.setProperty("no.nav.modig.security.systemuser.username", "");
-       System.setProperty("no.nav.modig.security.systemuser.password", "");
-       TestCertificates.setupKeyAndTrustStore();
-       AktorIdKlient theInstance = new AktorIdKlient();
-       Optional<String> aktorId =
-         theInstance.hentAktoerId(new Fodselsnummer("12345678910"));
-       System.out.println(aktorId);
-    }
 
-}
+	    
+
+	        @Inject
+	        private AktorIdKlient client;
+
+	     //@Test
+	    public void useSts() throws Exception {
+	          TestCertificates.setupKeyAndTrustStore();
+	       Optional<AktorId> aktorId = client.aktorIdForFnr(new Fodselsnummer("06055301296"));
+	       System.out.println(aktorId);
+	    }
+	    
+	 }
+	    
+
+

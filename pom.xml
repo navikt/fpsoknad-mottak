@@ -112,5 +112,6 @@
    <modules>
       <module>service</module>
       <module>aktor-client</module>
+      <module>foreldrepenger-selvbetjening-auth</module>
    </modules>
 </project>
