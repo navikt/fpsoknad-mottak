@@ -96,38 +96,6 @@
             </plugin>
          </plugins>
       </pluginManagement>
-      <plugins>
-      <!-- 
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>enforce-is-snapshot-with-no-snap-deps</id>
-                  <goals>
-                     <goal>enforce</goal>
-                  </goals>
-                  <configuration>
-                     <rules>
-                        <requireSnapshotVersion>
-                           <failWhenParentIsRelease>false</failWhenParentIsRelease>
-                           <message>No Releases allowed!</message>
-                        </requireSnapshotVersion>
-                        <requireReleaseDeps>
-                           <failWhenParentIsSnapshot>false</failWhenParentIsSnapshot>
-                           <message>No Snapshot dependencies allowed!</message>
-                           <excludes>
-                              <exclude>no.nav.foreldrepenger.selvbetjening:*</exclude>
-                           </excludes>
-                        </requireReleaseDeps>
-                     </rules>
-                     <fail>true</fail>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-          -->
-      </plugins>
    </build>
    <dependencies>
       <dependency>
