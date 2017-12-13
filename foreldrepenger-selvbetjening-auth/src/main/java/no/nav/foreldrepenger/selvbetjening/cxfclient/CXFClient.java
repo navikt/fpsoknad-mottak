@@ -68,6 +68,7 @@ public class CXFClient<T> {
 
   public CXFClient<T> configureStsForSystemUser(STSConfig stsConfig) {
     configureStsForSystemUser = true;
+    this.stsConfig = stsConfig;
     return this;
   }
 
