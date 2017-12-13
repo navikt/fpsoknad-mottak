@@ -28,5 +28,7 @@ fasitResources:
       resourceType: webserviceendpoint
     - alias : securityTokenService
       resourceType: baseurl 
+    - alias: srvengangsstonad
+      resourceType: credential  
   exposed:
 
