@@ -10,10 +10,10 @@
       <version>0.0.51-SNAPSHOT</version>
    </parent>
 
-   <artifactId>p2-selvbetjening-mottak</artifactId>
+   <artifactId>foreldrepenger-selvbetjening-oppslag</artifactId>
    <packaging>jar</packaging>
    <name>service</name>
-   <description>Mottak for selvbetjening</description>
+   <description>Oppslag for selvbetjening</description>
 
    <dependencies>
    <dependency>
