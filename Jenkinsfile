@@ -6,7 +6,7 @@ def deployLib = new deploy()
 node {
     def commitHash, commitHashShort, commitUrl, currentVersion
     def repo = "navikt"
-    def application = "p2-selvbetjening-mottak"
+    def application = "foreldrepenger-selvbetjening-oppslag"
     def committer, committerEmail, changelog, pom, releaseVersion, nextVersion // metadata
     def mvnHome = tool "maven-3.3.9"
     def mvn = "${mvnHome}/bin/mvn"
