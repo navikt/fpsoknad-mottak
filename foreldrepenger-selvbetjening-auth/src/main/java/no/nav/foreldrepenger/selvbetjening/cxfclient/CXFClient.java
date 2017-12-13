@@ -19,7 +19,8 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 
-import no.nav.foreldrepenger.selvbetjening.security.sts.utility.STSConfigurationUtility;
+import no.nav.foreldrepenger.selvbetjening.cxfclient.features.TimeoutFeature;
+import no.nav.foreldrepenger.selvbetjening.cxfclient.interceptors.LoggingFeatureUtenBinaryOgUtenSamlTokenLogging;
 
 /**
  * CXFClient som benytter JaxWsProxyFactoryBean for å lage en proxy for å kunne legge til ulike features.
@@ -28,6 +29,7 @@ public class CXFClient<T> {
 
   public final JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
   private final Class<T> serviceClass;
+  private STSConfig stsConfig;
   private final List<Handler> handlerChain = new ArrayList<>();
   private boolean configureStsForExternalSSO;
   private boolean configureStsForSystemUser;
@@ -49,7 +51,7 @@ public class CXFClient<T> {
     }
   }
 
-  public CXFClient<T> address(String url) {
+  public CXFClient<T> serviceUrl(String url) {
     factoryBean.setAddress(url);
     return this;
   }
@@ -64,7 +66,7 @@ public class CXFClient<T> {
     return this;
   }
 
-  public CXFClient<T> configureStsForSystemUser() {
+  public CXFClient<T> configureStsForSystemUser(STSConfig stsConfig) {
     configureStsForSystemUser = true;
     return this;
   }
@@ -117,10 +119,10 @@ public class CXFClient<T> {
     disableCNCheckIfConfigured(client);
 
     if (configureStsForExternalSSO) {
-      STSConfigurationUtility.configureStsForExternalSSO(client);
+      STSConfigurationUtility.configureStsForExternalSSO(client, factoryBean.getAddress(),stsConfig);
     }
     if (configureStsForSystemUser) {
-      STSConfigurationUtility.configureStsForSystemUser(client);
+      STSConfigurationUtility.configureStsForSystemUser(client, factoryBean.getAddress(),stsConfig);
     }
 
     ((BindingProvider) portType).getBinding().setHandlerChain(handlerChain);

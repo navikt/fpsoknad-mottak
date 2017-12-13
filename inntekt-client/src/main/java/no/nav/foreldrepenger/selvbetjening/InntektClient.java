@@ -2,20 +2,22 @@ package no.nav.foreldrepenger.selvbetjening;
 
 import java.time.LocalDate;
 
-import no.nav.foreldrepenger.selvbetjening.cxfclient.CXFClient;
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Component;
+
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.AktoerId;
 import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeRequest;
 import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeResponse;
 
+@Component
 public class InntektClient {
    private final InntektV3 inntektV3;
 
-   public InntektClient() {
-      inntektV3 = new CXFClient<>(InntektV3.class)
-         .configureStsForSystemUser()
-         .address("https://xxxxx.test.local")
-         .build();
+   @Inject
+   public InntektClient(InntektV3 inntektV3) {
+      this.inntektV3 = inntektV3;
    }
 
    public void hentInntektListe(String aktoerId, LocalDate from, LocalDate to) throws Exception {

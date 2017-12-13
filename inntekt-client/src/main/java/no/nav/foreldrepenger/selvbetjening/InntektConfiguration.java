@@ -7,15 +7,17 @@ import org.springframework.context.annotation.ComponentScan;
 
 import no.nav.foreldrepenger.selvbetjening.cxfclient.CXFClient;
 import no.nav.foreldrepenger.selvbetjening.cxfclient.STSConfig;
-import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
+import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 
 @SpringBootConfiguration
 @ComponentScan(basePackages= {"no.nav.foreldrepenger.selvbetjening"})
-public class AktorIdConfiguration {
+public class InntektConfiguration {
 	
-@Bean
-public AktoerV2 aktorV2 (STSConfig stsConfig,@Value("${AKTOER_V2_ENDPOINTURL}") String serviceUrl) {
-      return new CXFClient<>(AktoerV2.class)
+
+   @Bean
+   //TODO wrong URL
+   public InntektV3 inntektV3 (STSConfig stsConfig,@Value("${AKTOER_V2_ENDPOINTURL}") String serviceUrl) {
+      return new CXFClient<>(InntektV3.class)
          .configureStsForSystemUser(stsConfig)
          .serviceUrl(serviceUrl)
          .build();

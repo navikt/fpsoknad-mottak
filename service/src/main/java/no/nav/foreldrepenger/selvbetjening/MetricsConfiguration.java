@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.selvbetjening;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +12,7 @@ import io.micrometer.core.instrument.binder.logging.LogbackMetrics;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
+import no.nav.foreldrepenger.selvbetjening.cxfclient.STSConfig;
 
 @Configuration
 public class MetricsConfiguration {
@@ -55,5 +57,12 @@ public class MetricsConfiguration {
   public FileDescriptorMetrics fileDescriptorMetrics() {
     return new FileDescriptorMetrics();
   }
+  
+  @Bean
+	public STSConfig stsConfig(@Value("${SECURITYTOKENSERVICE_URL}") String stsUrl,
+	                           @Value("${FPSELVBETJENING_USERNAME}") String systemUserName,
+	                           @Value("${FPSELVBETJENING_PASSWORD}") String systemUserPassword) {
+		return new STSConfig(stsUrl,systemUserName,systemUserPassword);
+	}
 
 }

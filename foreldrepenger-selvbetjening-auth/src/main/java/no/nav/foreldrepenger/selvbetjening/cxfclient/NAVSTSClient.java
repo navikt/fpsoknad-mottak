@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.selvbetjening.security.sts.client;
+package no.nav.foreldrepenger.selvbetjening.cxfclient;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.ws.security.SecurityConstants;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 
-import no.nav.foreldrepenger.selvbetjening.security.openam.util.SecurityContextUtil;
+import no.nav.foreldrepenger.selvbetjening.openam.util.SecurityContextUtil;
 
 public class NAVSTSClient extends STSClient {
     private static final Logger logger = LoggerFactory.getLogger(

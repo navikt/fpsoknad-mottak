@@ -1,9 +1,9 @@
-package no.nav.foreldrepenger.selvbetjening.security.openam.util;
+package no.nav.foreldrepenger.selvbetjening.openam.util;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import no.nav.foreldrepenger.selvbetjening.security.openam.domain.NavPrincipal;
+import no.nav.foreldrepenger.selvbetjening.openam.domain.NavPrincipal;
 
 public class SecurityContextUtil {
     public static Authentication getAuthentication() {

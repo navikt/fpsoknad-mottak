@@ -13,15 +13,15 @@
    <artifactId>aktor-client</artifactId>
 
    <dependencies>
+    <dependency>
+         <groupId>javax.inject</groupId>
+         <artifactId>javax.inject</artifactId>
+         <version>1</version>
+      </dependency>
       <dependency>
          <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
          <artifactId>foreldrepenger-selvbetjening-auth</artifactId>
          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>javax.inject</groupId>
-         <artifactId>javax.inject</artifactId>
-         <version>1</version>
       </dependency>
       <dependency>
          <groupId>org.springframework</groupId>

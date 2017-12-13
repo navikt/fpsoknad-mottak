@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.selvbetjening.cxfclient;
+package no.nav.foreldrepenger.selvbetjening.cxfclient.interceptors;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.feature.AbstractFeature;

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.selvbetjening.security.openam.json;
+package no.nav.foreldrepenger.selvbetjening.openam.json;
 
 import static org.springframework.util.StringUtils.hasText;
 
@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import no.nav.foreldrepenger.selvbetjening.security.openam.domain.NavPrincipal;
-import no.nav.foreldrepenger.selvbetjening.security.openam.exception.EmptyAttributeException;
+import no.nav.foreldrepenger.selvbetjening.openam.domain.NavPrincipal;
+import no.nav.foreldrepenger.selvbetjening.openam.exception.EmptyAttributeException;
 
 public class NavPrincipalDeserializer extends JsonDeserializer<NavPrincipal> {
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.selvbetjening.security.openam.domain;
+package no.nav.foreldrepenger.selvbetjening.openam.domain;
 
 
 import java.util.Collection;
@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.User;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import no.nav.foreldrepenger.selvbetjening.security.openam.json.NavPrincipalDeserializer;
+import no.nav.foreldrepenger.selvbetjening.openam.json.NavPrincipalDeserializer;
 
 @JsonDeserialize(using = NavPrincipalDeserializer.class)
 public class NavPrincipal extends User {

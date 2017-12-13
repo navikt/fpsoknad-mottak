@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.selvbetjening.cxfclient;
+package no.nav.foreldrepenger.selvbetjening.cxfclient.features;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
@@ -12,8 +12,8 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
  */
 public class TimeoutFeature extends AbstractFeature {
 
-  static final int DEFAULT_RECEIVE_TIMEOUT = 10000;
-  static final int DEFAULT_CONNECTION_TIMEOUT = 10000;
+  public static final int DEFAULT_RECEIVE_TIMEOUT = 10000;
+  public static final int DEFAULT_CONNECTION_TIMEOUT = 10000;
 
   private int receiveTimeout = DEFAULT_RECEIVE_TIMEOUT;
   private int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
@@ -21,7 +21,7 @@ public class TimeoutFeature extends AbstractFeature {
   public TimeoutFeature() {
   }
 
-  TimeoutFeature(int receiveTimeout, int connectionTimeout) {
+  public TimeoutFeature(int receiveTimeout, int connectionTimeout) {
     this.receiveTimeout = receiveTimeout;
     this.connectionTimeout = connectionTimeout;
   }

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.selvbetjening.security.openam.exception;
+package no.nav.foreldrepenger.selvbetjening.openam.exception;
 
 
 public class MissingCookieException extends Exception {

@@ -1,12 +1,12 @@
-package no.nav.foreldrepenger.selvbetjening.security.openam.util;
+package no.nav.foreldrepenger.selvbetjening.openam.util;
 
 import static org.springframework.util.StringUtils.hasText;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import no.nav.foreldrepenger.selvbetjening.security.openam.exception.CookieNotPresentException;
-import no.nav.foreldrepenger.selvbetjening.security.openam.exception.MissingCookieException;
+import no.nav.foreldrepenger.selvbetjening.openam.exception.CookieNotPresentException;
+import no.nav.foreldrepenger.selvbetjening.openam.exception.MissingCookieException;
 
 public class EssoCookieUtil {
 
