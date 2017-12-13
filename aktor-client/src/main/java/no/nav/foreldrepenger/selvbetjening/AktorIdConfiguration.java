@@ -15,8 +15,8 @@ public class AktorIdConfiguration {
    @Bean
    public AktoerV2 aktorV2 (@Value("${AKTOER_V2_ENDPOINTURL}") String aktorUrl,
                             @Value("${SECURITYTOKENSERVICE_URL}") String stsUrl,
-                            @Value("${SRVENGANGSSTONAD_USERNAME}") String systemUserName,
-                            @Value("${SRVENGANGSSTONAD_PASSWORD}") String systemUserPassword) {
+                            @Value("${FPSELVBETJENING_USERNAME}") String systemUserName,
+                            @Value("${FPSELVBETJENING_PASSWORD}") String systemUserPassword) {
 
       System.setProperty("no.nav.modig.security.sts.url", stsUrl);
       System.setProperty("no.nav.modig.security.systemuser.username", systemUserName);
