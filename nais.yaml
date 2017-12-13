@@ -1,5 +1,5 @@
 name: p2-selvbetjening-mottak
-image: docker.adeo.no:5000/p2-selvbetjening-mottak
+image: docker.adeo.no:5000/foreldrepenger-selvbetjening-oppslag
 replicas:
     min: 1
     max: 1
