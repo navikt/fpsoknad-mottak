@@ -1,4 +1,4 @@
-name: p2-selvbetjening-mottak
+name: foreldrepenger-selvbetjening-oppslag
 image: docker.adeo.no:5000/foreldrepenger-selvbetjening-oppslag
 replicas:
     min: 1
