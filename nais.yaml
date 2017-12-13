@@ -26,8 +26,10 @@ fasitResources:
   used:
     - alias: Aktoer_V2
       resourceType: webserviceendpoint
+    - alias: Inntekt_V3
+      resourceType: webserviceendpoint
     - alias : securityTokenService
-      resourceType: baseurl 
+      resourceType: baseurl
     - alias : fpselvbetjening
       resourceType: credential
   exposed:
