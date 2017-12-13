@@ -98,7 +98,7 @@ node {
         withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
              withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
                  sh "git commit -am \"updated to new dev-version ${nextVersion} after release by ${committer}\""
-                 sh ("git push https://${token}:x-oauth-basic@github.com/navikt/foreldrepenger-selvbetjening-oppstart.git master")
+                 sh ("git push https://${token}:x-oauth-basic@github.com/navikt/foreldrepenger-selvbetjening-oppslag.git master")
              }
        }
       notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
