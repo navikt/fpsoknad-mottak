@@ -20,7 +20,7 @@ resources:
       cpu: 1500m
       memory: 3072Mi
     requests:
-      cpu: 1000m
+      cpu: 250m
       memory: 1536Mi
 fasitResources:
   used:
