@@ -12,7 +12,7 @@
 
    <artifactId>foreldrepenger-selvbetjening-oppslag</artifactId>
    <packaging>jar</packaging>
-   <name>service</name>
+   <name>foreldrepenger-selvbetjening-service</name>
    <description>Oppslag for selvbetjening</description>
 
    <dependencies>
@@ -35,7 +35,7 @@
 		</dependency>
       <dependency>
          <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
-         <artifactId>aktor-client</artifactId>
+         <artifactId>foreldrepenger-selvbetjening-aktor-client</artifactId>
          <version>${project.version}</version>
       </dependency>
       <dependency>

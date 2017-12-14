@@ -9,7 +9,7 @@
       <version>0.0.71-SNAPSHOT</version>
    </parent>
 
-   <artifactId>inntekt-client</artifactId>
+   <artifactId>foreldrepenger-selvbetjening-inntekt-client</artifactId>
 
    <dependencies>
       <dependency>

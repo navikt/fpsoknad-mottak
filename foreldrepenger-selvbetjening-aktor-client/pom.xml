@@ -10,7 +10,7 @@
       <version>0.0.71-SNAPSHOT</version>
    </parent>
 
-   <artifactId>aktor-client</artifactId>
+   <artifactId>foreldrepenger-selvbetjening-aktor-client</artifactId>
 
    <dependencies>
     <dependency>
