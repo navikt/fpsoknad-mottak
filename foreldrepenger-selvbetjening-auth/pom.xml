@@ -3,7 +3,7 @@
    <parent>
       <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
       <artifactId>foreldrepenger-selvbetjening-oppstart-parent</artifactId>
-      <version>0.0.71</version>
+      <version>0.0.72-SNAPSHOT</version>
    </parent>
    <artifactId>foreldrepenger-selvbetjening-auth</artifactId>
    <dependencies>
