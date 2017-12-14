@@ -111,7 +111,7 @@
       </dependency>
    </dependencies>
    <modules>
-      <module>service</module>
+      <module>foreldrepenger-selvbetjening-service</module>
       <module>aktor-client</module>
       <module>foreldrepenger-selvbetjening-auth</module>
       <module>inntekt-client</module>

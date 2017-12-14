@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.selvbetjening.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import static springfox.documentation.builders.PathSelectors.regex;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
