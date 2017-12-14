@@ -58,11 +58,4 @@ public class MetricsConfiguration {
     return new FileDescriptorMetrics();
   }
 
-  @Bean
-	public STSConfig stsConfig(@Value("${SECURITYTOKENSERVICE_URL:\"https://sts-t1.test.local/SecurityTokenServiceProvider/}") String stsUrl,
-	                           @Value("${FPSELVBETJENING_USERNAME}") String systemUserName,
-	                           @Value("${FPSELVBETJENING_PASSWORD}") String systemUserPassword) {
-		return new STSConfig(stsUrl,systemUserName,systemUserPassword);
-	}
-
 }
