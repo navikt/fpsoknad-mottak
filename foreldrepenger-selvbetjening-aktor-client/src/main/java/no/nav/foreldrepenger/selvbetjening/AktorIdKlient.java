@@ -33,13 +33,12 @@ public class AktorIdKlient {
 
    public Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr)  {
       try {
+    	  LOG.debug("Looking up {}",fnr);
          return Optional.ofNullable(aktoerV2.hentAktoerIdForIdent(request(fnr.digits())))
             .map(r -> r.getAktoerId())
             .map(AktorId::new);
-      } catch (SOAPFaultException e) {
+      } catch (Exception e) {
          LOG.warn("Henting av aktørid har feilet", e);
-         return Optional.empty();
-      } catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
          return Optional.empty();
       }
    }
