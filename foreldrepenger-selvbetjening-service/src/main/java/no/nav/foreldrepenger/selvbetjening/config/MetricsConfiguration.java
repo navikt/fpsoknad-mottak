@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.selvbetjening.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,7 +11,6 @@ import io.micrometer.core.instrument.binder.logging.LogbackMetrics;
 import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
-import no.nav.foreldrepenger.selvbetjening.cxfclient.STSConfig;
 
 @Configuration
 public class MetricsConfiguration {

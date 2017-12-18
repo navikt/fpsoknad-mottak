@@ -8,8 +8,11 @@ import org.apache.cxf.ws.security.tokenstore.TokenStoreFactory;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 
-class NAVSTSClient extends STSClient {
+import no.nav.foreldrepenger.selvbetjening.openam.util.SecurityContextUtil;
+
+public class NAVSTSClient extends STSClient {
     private static final Logger logger = LoggerFactory.getLogger(
         NAVSTSClient.class);
     private static TokenStore tokenStore;
@@ -28,9 +31,10 @@ class NAVSTSClient extends STSClient {
             String appliesTo, String action, String requestType, String binaryExchange
             ) throws Exception {
         
-        String key = "systemSAML";
+        String key = chooseCachekey();
         ensureTokenStoreExists();
         SecurityToken token;
+        if(key != null) {
 	        token = tokenStore.getToken(key);
 	        if (token == null) {
 	            logger.debug("Missing token for {}, fetching it from STS", key);
@@ -39,7 +43,11 @@ class NAVSTSClient extends STSClient {
 	        } else {
 	            logger.debug("Retrived token for {} from tokenStore", key);
 	        }
-        
+        } else {
+        	// skip use of cache since we don't have a key to use
+        	logger.debug("No cackekey for this request, skip use of cache");
+            token = super.requestSecurityToken(appliesTo, action, requestType, binaryExchange);
+        }
         return token;
     }
 
@@ -55,4 +63,20 @@ class NAVSTSClient extends STSClient {
             tokenStore = TokenStoreFactory.newInstance().newTokenStore(SecurityConstants.TOKEN_STORE_CACHE_INSTANCE, message);
         }
     }
+
+  private String chooseCachekey() {
+
+    Authentication authentication = SecurityContextUtil.getAuthentication();
+
+    // choose cachekey based on external user or system user
+    String key;
+    if (authentication != null && SecurityContextUtil.getNavPrincipal() != null) {
+      key = SecurityContextUtil.getNavPrincipal().getToken() + SecurityContextUtil.getNavPrincipal()
+          .getSecurityLevel();
+    } else {
+      key = "systemSAML";
+    }
+    logger.debug("Chosen cachekey for this request is {}", key);
+    return key;
+  }
 }

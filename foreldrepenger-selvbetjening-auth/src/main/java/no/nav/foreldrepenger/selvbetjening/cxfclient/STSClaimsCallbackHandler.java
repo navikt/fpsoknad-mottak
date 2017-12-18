@@ -21,8 +21,7 @@ import no.nav.foreldrepenger.selvbetjening.openam.util.SecurityContextUtil;
 
 public class STSClaimsCallbackHandler implements CallbackHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        STSClaimsCallbackHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(STSClaimsCallbackHandler.class);
 
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {

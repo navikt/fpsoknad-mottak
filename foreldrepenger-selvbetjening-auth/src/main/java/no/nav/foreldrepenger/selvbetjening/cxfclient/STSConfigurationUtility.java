@@ -27,7 +27,7 @@ import org.apache.neethi.Policy;
  * A collection of configuration methods to configure an CXF WS-client
  * to use STS to retrieve SAML tokens for end user and system user.
  */
- class STSConfigurationUtility {
+ public class STSConfigurationUtility {
   
 
     /**

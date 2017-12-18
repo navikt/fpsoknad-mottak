@@ -5,8 +5,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import no.nav.foreldrepenger.selvbetjening.cxfclient.CXFClient;
-import no.nav.foreldrepenger.selvbetjening.cxfclient.STSConfig;
+import no.nav.arbeid.cxfclient.CXFClient;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 
 @SpringBootConfiguration
@@ -15,11 +14,10 @@ public class InntektConfiguration {
 
 
    @Bean
-   public InntektV3 inntektV3 (STSConfig stsConfig,
-                               @Value("${INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
+   public InntektV3 inntektV3 ( @Value("${INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
       return new CXFClient<>(InntektV3.class)
-         .configureStsForSystemUser(stsConfig)
-         .serviceUrl(serviceUrl)
+         .configureStsForSystemUser()
+         .address(serviceUrl)
          .build();
    }
 }

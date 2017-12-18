@@ -1,10 +1,9 @@
-package no.nav.foreldrepenger.selvbetjening.config;
+package no.nav.foreldrepenger.selvbetjening.cxfclient;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.foreldrepenger.selvbetjening.cxfclient.STSConfig;
 
 @Configuration
 public class SecurityConfiguration {
