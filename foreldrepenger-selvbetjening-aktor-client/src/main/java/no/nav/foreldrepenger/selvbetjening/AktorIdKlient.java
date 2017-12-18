@@ -33,7 +33,7 @@ public class AktorIdKlient {
 
    public Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr)  {
       try {
-    	  LOG.debug("Looking up {}",fnr);
+    	  LOG.info("Looking up {}",fnr);
          return Optional.ofNullable(aktoerV2.hentAktoerIdForIdent(request(fnr.digits())))
             .map(r -> r.getAktoerId())
             .map(AktorId::new);
