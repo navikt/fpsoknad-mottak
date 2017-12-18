@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.selvbetjening.config;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,10 +19,19 @@ public class SwaggerConfiguration {
 	    @Bean
 	    public Docket productApi() {
 	        return new Docket(DocumentationType.SWAGGER_2)
-	        		.select()                                  
+	        		.protocols(hashSet("http", "https"))
+	        		.select()    
 	                .apis(RequestHandlerSelectors.any())              
 	                .paths(PathSelectors.any())
 	                .build();
 	    }
+
+		private static  Set<String> hashSet(String... schemes) {
+			Set<String> supportedSchemes = new HashSet<>();
+			for (String scheme : schemes) {
+				supportedSchemes.add(scheme);
+			}
+			return supportedSchemes;
+		}
 	
 }
