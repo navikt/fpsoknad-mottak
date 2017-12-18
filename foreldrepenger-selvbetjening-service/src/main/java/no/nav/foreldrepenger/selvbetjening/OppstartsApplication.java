@@ -7,12 +7,13 @@ import no.nav.modig.testcertificates.TestCertificates;
 
 @SpringBootApplication
 public class  OppstartsApplication {
+	
 
   public static void main(String[] args) {
 	  TestCertificates.setupKeyAndTrustStore();
-	  System.setProperty("no.nav.modig.security.sts.url",System.getProperty("SECURITYTOKENSERVICE_URL")); 	 
-      System.setProperty("no.nav.modig.security.systemuser.username",System.getProperty("FPSELVBETJENING_USERNAME")); 	 
-      System.setProperty("no.nav.modig.security.systemuser.password",System.getProperty("FPSELVBETJENING_PASSWORD")); 	 
+	  System.setProperty("no.nav.modig.security.sts.url",System.getenv("SECURITYTOKENSERVICE_URL")); 	 
+      System.setProperty("no.nav.modig.security.systemuser.username",System.getenv("FPSELVBETJENING_USERNAME")); 	 
+      System.setProperty("no.nav.modig.security.systemuser.password",System.getenv("FPSELVBETJENING_PASSWORD")); 	 
       SpringApplication.run(OppstartsApplication.class, args);
   }
 }
