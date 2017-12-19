@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.selvbetjening.controllers;
 
-import static java.util.stream.Collectors.joining;
-
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -19,7 +17,7 @@ import no.nav.foreldrepenger.selvbetjening.AktorIdKlient;
 @RequestMapping("/startup")
 public class StartupController {
 
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(StartupController.class);
    private final AktorIdKlient aktorClient;
 

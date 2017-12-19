@@ -1,23 +1,30 @@
 package no.nav.foreldrepenger.selvbetjening;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.selvbetjening.inntekt.domain.Income;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
-import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.AktoerId;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Ainntektsfilter;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Formaal;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.PersonIdent;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Uttrekksperiode;
 import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeRequest;
 import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeResponse;
 
 @Component
 public class InntektClient {
+   private static final Logger log = LoggerFactory.getLogger(InntektClient.class);
+
    private final InntektV3 inntektV3;
 
    @Inject
@@ -25,24 +32,44 @@ public class InntektClient {
       this.inntektV3 = inntektV3;
    }
 
-   public List<Income> incomeForPeriod(String aktoerId, LocalDate from, LocalDate to) throws Exception {
+   public List<Income> incomeForPeriod(String aktoerId, LocalDate from, LocalDate to) {
       HentInntektListeRequest req = request(aktoerId, from, to);
-      HentInntektListeResponse res = inntektV3.hentInntektListe(req);
-      return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
-         .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
-         .map(InntektMapper::map)
-         .collect(toList());
+      try {
+         HentInntektListeResponse res = inntektV3.hentInntektListe(req);
+         return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
+            .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
+            .map(InntektMapper::map)
+            .collect(toList());
+      } catch (Exception ex) {
+         log.warn("Error while retrieving income", ex);
+         throw new RuntimeException("Error while retrieving income data: " + ex.getMessage());
+      }
    }
 
    private HentInntektListeRequest request(String aktoerId, LocalDate from, LocalDate to) {
       HentInntektListeRequest req = new HentInntektListeRequest();
-      AktoerId aktoer = new AktoerId();
-      aktoer.setAktoerId(aktoerId);
-      req.setIdent(aktoer);
-      Uttrekksperiode periode = new Uttrekksperiode();
-      periode.setMaanedFom(CalendarConverter.toCalendar(from));
-      periode.setMaanedTom(CalendarConverter.toCalendar(to));
-      req.setUttrekksperiode(periode);
+
+      PersonIdent person = new PersonIdent();
+      person.setPersonIdent(aktoerId);
+      req.setIdent(person);
+
+      Ainntektsfilter ainntektsfilter = new Ainntektsfilter();
+      ainntektsfilter.setValue("ForeldrepengerA-Inntekt");
+      ainntektsfilter.setKodeRef("ForeldrepengerA-Inntekt");
+      ainntektsfilter.setKodeverksRef("http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+      req.setAinntektsfilter(ainntektsfilter);
+
+      Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
+      uttrekksperiode.setMaanedFom(CalendarConverter.toCalendar(from));
+      uttrekksperiode.setMaanedTom(CalendarConverter.toCalendar(to));
+      req.setUttrekksperiode(uttrekksperiode);
+
+      Formaal formaal = new Formaal();
+      formaal.setValue("Foreldrepenger");
+      formaal.setKodeRef("Foreldrepenger");
+      formaal.setKodeverksRef("http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+      req.setFormaal(formaal);
+
       return req;
    }
 }

@@ -14,7 +14,7 @@ public class InntektConfiguration {
 
 
    @Bean
-   public InntektV3 inntektV3 ( @Value("${INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
+   public InntektV3 inntektV3 ( @Value("${VIRKSOMHET_INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
       return new CXFClient<>(InntektV3.class)
          .configureStsForSystemUser()
          .address(serviceUrl)
