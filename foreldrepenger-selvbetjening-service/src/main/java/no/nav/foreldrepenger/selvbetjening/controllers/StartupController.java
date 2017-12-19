@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.selvbetjening.controllers;
 
-import static java.util.stream.Collectors.joining;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -14,13 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.selvbetjening.AktorIdKlient;
+import no.nav.foreldrepenger.selvbetjening.domain.AktorId;
+import no.nav.foreldrepenger.selvbetjening.domain.BrukerInformasjon;
+import no.nav.foreldrepenger.selvbetjening.domain.Fodselsnummer;
 
 @RestController
 @RequestMapping("/startup")
-public class StartupController {
+public class StartupController {	
 
-	
-	private static final Logger LOG = LoggerFactory.getLogger(StartupController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(StartupController.class);
    private final AktorIdKlient aktorClient;
 
    @Inject
@@ -29,16 +32,18 @@ public class StartupController {
    }
 
    @RequestMapping(method = {RequestMethod.GET}, value = "/")
-   public ResponseEntity<String> startup(@RequestParam("fnr") String fnr) {
-	   LOG.info("Looking up {}",fnr);
-      return new ResponseEntity<String>(aktorClient.aktorIdForFnr(fnr), HttpStatus.OK);
+   public ResponseEntity<BrukerInformasjon> startup(@RequestParam("fnr") String fnr) {
+	  LOG.info("Looking up {}",fnr);
+	  Optional<AktorId> aktorId = aktorClient.aktorIdForFnr(new Fodselsnummer(fnr));
+	  if (aktorId.isPresent()) {
+          return new ResponseEntity<BrukerInformasjon>(new BrukerInformasjon(aktorId.get(),new Fodselsnummer(fnr)), HttpStatus.OK);
+      }
+	  return new ResponseEntity<>(HttpStatus.NOT_FOUND);
    }
-
-
+   
    @Override
-   public String toString() {
-      return getClass().getSimpleName()  +
-         " [AktorIdKlient=" + aktorClient + "]";
-   }
+	public String toString() {
+		return getClass().getSimpleName() + " [aktorClient=" + aktorClient + "]";
+	}
 
 }

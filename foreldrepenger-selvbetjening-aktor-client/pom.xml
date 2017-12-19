@@ -35,7 +35,11 @@
       <dependency>
       	<groupId>no.nav.arbeid</groupId>
       	<artifactId>pam-cxfclient</artifactId>
-      	<version>3</version>
+      </dependency>
+      <dependency>
+      	<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+      	<artifactId>foreldrepenger-selvbetjening-domain</artifactId>
+      	<version>${project.version}</version>
       </dependency>
    </dependencies>
    <build>
