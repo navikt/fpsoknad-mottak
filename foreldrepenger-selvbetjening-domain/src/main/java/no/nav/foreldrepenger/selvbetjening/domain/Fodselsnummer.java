@@ -4,20 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class Fodselsnummer {
 
-   private final String value;
+   private final String fnr;
 
    @JsonCreator
-   public Fodselsnummer(String value) {
-      this.value = value;
+   public Fodselsnummer(String fnr) {
+      this.fnr = fnr;
    }
 
-   public String getValue() {
-      return value;
+   public String getFnr() {
+      return fnr;
    }
 
    @Override
    public String toString() {
-      return getClass().getSimpleName() + " [value=" + value + "]";
+      return getClass().getSimpleName() + " [fnr=" + fnr + "]";
    }
 
 }

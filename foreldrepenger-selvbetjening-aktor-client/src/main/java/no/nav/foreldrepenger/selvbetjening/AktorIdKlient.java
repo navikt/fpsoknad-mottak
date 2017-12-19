@@ -28,7 +28,7 @@ public class AktorIdKlient {
    public Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr)  {
       try {
     	  LOG.info("Looking up {}",fnr);
-         return Optional.ofNullable(aktoerV2.hentAktoerIdForIdent(request(fnr.getValue())))
+         return Optional.ofNullable(aktoerV2.hentAktoerIdForIdent(request(fnr.getFnr())))
             .map(r -> r.getAktoerId())
             .map(AktorId::new);
       } catch (Exception e) {

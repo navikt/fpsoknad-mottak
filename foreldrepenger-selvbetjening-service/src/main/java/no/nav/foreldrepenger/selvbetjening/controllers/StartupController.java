@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.selvbetjening.AktorIdKlient;
@@ -31,7 +32,7 @@ public class StartupController {
    }
 
    @RequestMapping(method = {RequestMethod.GET}, value = "/")
-   public ResponseEntity<BrukerInformasjon> startup(Fodselsnummer fnr) {
+   public ResponseEntity<BrukerInformasjon> startup(@RequestParam(value="fnr") Fodselsnummer fnr) {
 	  LOG.info("Looking up {}",fnr);
 	  Optional<AktorId> aktorId = aktorClient.aktorIdForFnr(fnr);
 	  if (aktorId.isPresent()) {
