@@ -41,7 +41,6 @@
        <dependency>
       	<groupId>no.nav.arbeid</groupId>
       	<artifactId>pam-cxfclient</artifactId>
-      	<version>3</version>
       </dependency>
    </dependencies>
 

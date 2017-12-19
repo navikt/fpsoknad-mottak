@@ -1,9 +1,12 @@
 package no.nav.foreldrepenger.selvbetjening.domain;
 
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class Fodselsnummer {
 
+   @Size(min = 11, max = 11)
    private final String fnr;
 
    @JsonCreator

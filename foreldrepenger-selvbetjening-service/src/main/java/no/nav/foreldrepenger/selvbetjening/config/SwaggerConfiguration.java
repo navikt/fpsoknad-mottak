@@ -19,14 +19,14 @@ public class SwaggerConfiguration {
 	    @Bean
 	    public Docket productApi() {
 	        return new Docket(DocumentationType.SWAGGER_2)
-	        		.protocols(hashSet("http", "https"))
+	        		.protocols(protocols("http", "https"))
 	        		.select()    
 	                .apis(RequestHandlerSelectors.any())              
 	                .paths(PathSelectors.any())
 	                .build();
 	    }
 
-		private static  Set<String> hashSet(String... schemes) {
+		private static  Set<String> protocols(String... schemes) {
 			Set<String> supportedSchemes = new HashSet<>();
 			for (String scheme : schemes) {
 				supportedSchemes.add(scheme);
