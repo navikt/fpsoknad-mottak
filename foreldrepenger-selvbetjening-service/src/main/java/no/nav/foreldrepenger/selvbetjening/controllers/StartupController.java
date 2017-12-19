@@ -1,24 +1,34 @@
 package no.nav.foreldrepenger.selvbetjening.controllers;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.selvbetjening.AktorIdKlient;
+import no.nav.foreldrepenger.selvbetjening.domain.AktorId;
+import no.nav.foreldrepenger.selvbetjening.domain.BrukerInformasjon;
+import no.nav.foreldrepenger.selvbetjening.domain.Fodselsnummer;
 
 @RestController
+@Validated
 @RequestMapping("/startup")
 public class StartupController {
 
-
 	private static final Logger LOG = LoggerFactory.getLogger(StartupController.class);
+
    private final AktorIdKlient aktorClient;
 
    @Inject
@@ -26,17 +36,24 @@ public class StartupController {
       this.aktorClient = aktorClient;
    }
 
-   @RequestMapping(method = {RequestMethod.GET}, value = "/")
-   public ResponseEntity<String> startup(@RequestParam("fnr") String fnr) {
-	   LOG.info("Looking up {}",fnr);
-      return new ResponseEntity<String>(aktorClient.aktorIdForFnr(fnr), HttpStatus.OK);
+   @GetMapping(value = "/")
+   public ResponseEntity<BrukerInformasjon> startup(@Valid @RequestParam(value="fnr", required=true) Fodselsnummer fnr) {
+	  Optional<AktorId> aktorId = aktorClient.aktorIdForFnr(fnr);
+	  if (aktorId.isPresent()) {
+          return new ResponseEntity<BrukerInformasjon>(new BrukerInformasjon(aktorId.get(),fnr), HttpStatus.OK);
+      }
+	  return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+   }
+
+   @ExceptionHandler({ConstraintViolationException.class})
+   public ResponseEntity<String> handleValidationException(ConstraintViolationException e) {
+       return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
    }
 
 
    @Override
-   public String toString() {
-      return getClass().getSimpleName()  +
-         " [AktorIdKlient=" + aktorClient + "]";
-   }
+	public String toString() {
+		return getClass().getSimpleName() + " [aktorClient=" + aktorClient + "]";
+	}
 
 }

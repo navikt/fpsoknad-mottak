@@ -1,14 +1,17 @@
-package no.nav.foreldrepenger.selvbetjening.aktorklient.domain;
+package no.nav.foreldrepenger.selvbetjening.domain;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class AktorId {
 
 	private final String value;
 
+	@JsonCreator
 	public AktorId(String value) {
 		this.value = value;
 	}
 
-	public String value() {
+	public String getValue() {
 	   return value;
    }
 
