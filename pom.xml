@@ -147,5 +147,6 @@
 		<module>foreldrepenger-selvbetjening-inntekt-client</module>
 		<module>foreldrepenger-selvbetjening-domain</module>
       <module>foreldrepenger-selvbetjening-fpsak-client</module>
+      <module>foreldrepenger-selvbetjening-infotrygd-client</module>
   </modules>
 </project>
