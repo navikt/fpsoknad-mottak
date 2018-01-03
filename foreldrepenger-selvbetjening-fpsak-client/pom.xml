@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-   <modelVersion>4.0.0</modelVersion>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+    <artifactId>foreldrepenger-selvbetjening-oppstart-parent</artifactId>
+    <version>0.0.83-SNAPSHOT</version>
+  </parent>
 
-   <parent>
-      <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
-      <artifactId>foreldrepenger-selvbetjening-oppstart-parent</artifactId>
-      <version>0.0.83-SNAPSHOT</version>
-   </parent>
+   <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+  <artifactId>foreldrepenger-selvbetjening-fpsak-client</artifactId>
 
-   <artifactId>foreldrepenger-selvbetjening-inntekt-client</artifactId>
+  <name>foreldrepenger-selvbetjening-fpsak-client</name>
 
    <dependencies>
       <dependency>
@@ -38,9 +40,9 @@
          </exclusions>
       </dependency>
 
-       <dependency>
-      	<groupId>no.nav.arbeid</groupId>
-      	<artifactId>pam-cxfclient</artifactId>
+      <dependency>
+         <groupId>no.nav.arbeid</groupId>
+         <artifactId>pam-cxfclient</artifactId>
       </dependency>
    </dependencies>
 
@@ -61,7 +63,7 @@
             <configuration>
                <wsdlDirectory>src/main/resources/wsdl</wsdlDirectory>
                <wsdlFiles>
-                  <wsdlFile>inntekt_v3.wsdl</wsdlFile>
+                  <wsdlFile>Binding.wsdl</wsdlFile>
                </wsdlFiles>
                <keep>true</keep>
                <sourceDestDir>target/generated-sources</sourceDestDir>

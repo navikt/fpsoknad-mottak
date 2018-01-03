@@ -146,5 +146,6 @@
 		<module>foreldrepenger-selvbetjening-aktor-client</module>
 		<module>foreldrepenger-selvbetjening-inntekt-client</module>
 		<module>foreldrepenger-selvbetjening-domain</module>
-	</modules>
+      <module>foreldrepenger-selvbetjening-fpsak-client</module>
+  </modules>
 </project>
