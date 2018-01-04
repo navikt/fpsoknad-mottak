@@ -15,32 +15,30 @@ import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentReques
 
 @Component
 public class AktorIdKlient {
-   private static final Logger LOG = LoggerFactory.getLogger(AktorIdKlient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AktorIdKlient.class);
 
-   private final AktoerV2 aktoerV2;
+	private final AktoerV2 aktoerV2;
 
-   @Inject
-   public AktorIdKlient(AktoerV2 aktoerV2) {
-      this.aktoerV2 = aktoerV2;
-   }
-   
+	@Inject
+	public AktorIdKlient(AktoerV2 aktoerV2) {
+		this.aktoerV2 = aktoerV2;
+	}
 
-   public Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr)  {
-      try {
-    	  LOG.info("Looking up {}",fnr);
-         return Optional.ofNullable(aktoerV2.hentAktoerIdForIdent(request(fnr.getFnr())))
-            .map(r -> r.getAktoerId())
-            .map(AktorId::new);
-      } catch (Exception e) {
-         LOG.warn("Henting av aktørid har feilet", e);
-         return Optional.empty();
-      }
-   }
+	public Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr) {
+		try {
+			LOG.info("Looking up {}", fnr);
+			return Optional.ofNullable(aktoerV2.hentAktoerIdForIdent(request(fnr.getFnr()))).map(r -> r.getAktoerId())
+			        .map(AktorId::new);
+		} catch (Exception e) {
+			LOG.warn("Henting av aktørid har feilet", e);
+			return Optional.empty();
+		}
+	}
 
-   private static HentAktoerIdForIdentRequest request(String indent) {
-      HentAktoerIdForIdentRequest hentAktoerIdForIdentRequest = new HentAktoerIdForIdentRequest();
-      hentAktoerIdForIdentRequest.setIdent(indent);
-      return hentAktoerIdForIdentRequest;
-   }
+	private static HentAktoerIdForIdentRequest request(String indent) {
+		HentAktoerIdForIdentRequest hentAktoerIdForIdentRequest = new HentAktoerIdForIdentRequest();
+		hentAktoerIdForIdentRequest.setIdent(indent);
+		return hentAktoerIdForIdentRequest;
+	}
 
 }

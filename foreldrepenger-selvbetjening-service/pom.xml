@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns="http://maven.apache.org/POM/4.0.0"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
    <parent>
       <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
       <artifactId>foreldrepenger-selvbetjening-oppstart-parent</artifactId>
-      <version>0.0.84</version>
+      <version>0.0.85-SNAPSHOT</version>
    </parent>
+	<artifactId>foreldrepenger-selvbetjening-oppslag</artifactId>
+	<packaging>jar</packaging>
+	<name>foreldrepenger-selvbetjening-service</name>
+	<description>Oppslag for selvbetjening</description>
 
-   <artifactId>foreldrepenger-selvbetjening-oppslag</artifactId>
-   <packaging>jar</packaging>
-   <name>foreldrepenger-selvbetjening-service</name>
-   <description>Oppslag for selvbetjening</description>
-
-   <dependencies>
-     <dependency>
-         <groupId>javax.inject</groupId>
-         <artifactId>javax.inject</artifactId>
-         <version>1</version>
-      </dependency>
-   <dependency>
+	<dependencies>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>2.7.0</version>
@@ -70,36 +68,62 @@
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-web</artifactId>
       </dependency>
-
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>net.logstash.logback</groupId>
-         <artifactId>logstash-logback-encoder</artifactId>
-         <version>4.10</version>
-      </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-      </dependency>
-      <dependency>
-      	<groupId>org.springframework.security</groupId>
-      	<artifactId>spring-security-core</artifactId>
-      </dependency>
-      <dependency>
-      <groupId>no.nav.modig</groupId>
-      <artifactId>modig-testcertificates</artifactId>
-      <version>1.2.4</version>
-      </dependency>
-   </dependencies>
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-         </plugin>
-      </plugins>
-   </build>
+		<dependency>
+			<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+			<artifactId>foreldrepenger-selvbetjening-aktor-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.foreldrepenger.selvbetjening</groupId>
+			<artifactId>foreldrepenger-selvbetjening-person-klient</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.owasp</groupId>
+			<artifactId>dependency-check-maven</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>4.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.modig</groupId>
+			<artifactId>modig-testcertificates</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>
