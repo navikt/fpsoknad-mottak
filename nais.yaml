@@ -28,8 +28,6 @@ fasitResources:
       resourceType: webserviceendpoint
     - alias: virksomhet:Inntekt_v3
       resourceType: webserviceendpoint
-    - alias: virksomhet:foreldrepengesak_v1
-      resourceType: webserviceendpoint
     - alias: virksomhet:infotrygdsak_v1
       resourceType: webserviceendpoint
     - alias: virksomhet:Person_v3

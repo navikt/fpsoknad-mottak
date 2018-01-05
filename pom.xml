@@ -152,7 +152,7 @@
 		<module>foreldrepenger-selvbetjening-aktor-client</module>
 		<module>foreldrepenger-selvbetjening-inntekt-client</module>
 		<module>foreldrepenger-selvbetjening-domain</module>
-		<module>foreldrepenger-selvbetjening-fpsak-client</module>
+		<!-- <module>foreldrepenger-selvbetjening-fpsak-client</module> -->
 		<module>foreldrepenger-selvbetjening-infotrygd-client</module>
 		<module>foreldrepenger-selvbetjening-person-klient</module>
 	</modules>
