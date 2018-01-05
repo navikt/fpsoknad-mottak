@@ -13,27 +13,27 @@ import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.meldinger.FinnSakListeResp
 
 @Component
 public class FpsakClient {
-   private static final Logger log = LoggerFactory.getLogger(FpsakClient.class);
+	private static final Logger log = LoggerFactory.getLogger(FpsakClient.class);
 
-   private final ForeldrepengesakV1 fpsakV1;
+	private final ForeldrepengesakV1 fpsakV1;
 
-   @Inject
-   public FpsakClient(ForeldrepengesakV1 fpsakV1) {
-      this.fpsakV1 = fpsakV1;
-   }
+	@Inject
+	public FpsakClient(ForeldrepengesakV1 fpsakV1) {
+		this.fpsakV1 = fpsakV1;
+	}
 
-   public boolean hasApplications(String aktoerId) {
-      FinnSakListeRequest req = new FinnSakListeRequest();
-      Aktoer aktoer = new Aktoer();
-      aktoer.setAktoerId(aktoerId);
-      req.setSakspart(aktoer);
-      try {
-         FinnSakListeResponse response = fpsakV1.finnSakListe(req);
-         return ! response.getSakListe().isEmpty();
-      } catch (Exception ex) {
-         log.warn("Error while reading from fpsak", ex);
-         throw new RuntimeException("Error while reading from fpsak: " + ex.getMessage());
-      }
-   }
+	public boolean hasApplications(String aktoerId) {
+		FinnSakListeRequest req = new FinnSakListeRequest();
+		Aktoer aktoer = new Aktoer();
+		aktoer.setAktoerId(aktoerId);
+		req.setSakspart(aktoer);
+		try {
+			FinnSakListeResponse response = fpsakV1.finnSakListe(req);
+			return !response.getSakListe().isEmpty();
+		} catch (Exception ex) {
+			log.warn("Error while reading from fpsak", ex);
+			throw new RuntimeException("Error while reading from fpsak: " + ex.getMessage());
+		}
+	}
 
 }

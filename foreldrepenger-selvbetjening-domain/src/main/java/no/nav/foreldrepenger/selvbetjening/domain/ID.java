@@ -2,10 +2,6 @@ package no.nav.foreldrepenger.selvbetjening.domain;
 
 import java.util.Objects;
 
-import javax.validation.Valid;
-
-import org.joda.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,7 +21,6 @@ public class ID {
 	public Fodselsnummer getFnr() {
 		return values.getSecond();
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -54,9 +49,8 @@ public class ID {
 		return true;
 	}
 
-
 	@Override
 	public String toString() {
 		return "ID [values=" + values + ", aktorId=" + getAktorId() + ", fn)=" + getFnr() + "]";
-	}	
+	}
 }

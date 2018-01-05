@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.selvbetjening.domain;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 
@@ -18,10 +17,10 @@ public class SerializationTest {
 
 	private static ObjectMapper mapper;
 
-   @BeforeClass
+	@BeforeClass
 	public static void beforeClass() {
-	  mapper = new ObjectMapper();
-	  mapper.registerModule(new JodaModule());
+		mapper = new ObjectMapper();
+		mapper.registerModule(new JodaModule());
 	}
 
 	@Test
@@ -42,13 +41,11 @@ public class SerializationTest {
 
 	@Test
 	public void testPersonSerialization() throws IOException {
-		Person person = new Person(ids(),name(), birthDate(),adresse());
+		Person person = new Person(ids(), name(), birthDate(), adresse());
 		String serialized = write(person);
 		Person deserialized = mapper.readValue(serialized, Person.class);
 		assertEquals(person, deserialized);
 	}
-
-	
 
 	@Test
 	public void testFnrSerialization() throws IOException {
@@ -73,8 +70,7 @@ public class SerializationTest {
 		ID deserialized = mapper.readValue(serialized, ID.class);
 		assertEquals(ids, deserialized);
 	}
-	
-	
+
 	private ID ids() {
 		return new ID(aktoer(), fnr());
 	}
@@ -82,7 +78,7 @@ public class SerializationTest {
 	private static Name name() {
 		return new Name("Jan-Olav", "Eide");
 	}
-	
+
 	private static LocalDate birthDate() {
 		return DateTime.now().minusMonths(2).toLocalDate();
 	}

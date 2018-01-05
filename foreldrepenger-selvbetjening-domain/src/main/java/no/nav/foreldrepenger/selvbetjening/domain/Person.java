@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"id"})
+@JsonPropertyOrder({ "id" })
 public class Person {
 
 	private final ID id;
@@ -20,8 +20,8 @@ public class Person {
 	private final List<Barn> barn;
 
 	@JsonCreator
-	public Person(@JsonProperty("ids") ID id, @JsonProperty("name") Name name,
-	        @JsonProperty("adresse") Adresse adresse, @JsonProperty("fodselsdato") LocalDate fodselsdato, @JsonProperty("barn") List<Barn> barn) {
+	public Person(@JsonProperty("ids") ID id, @JsonProperty("name") Name name, @JsonProperty("adresse") Adresse adresse,
+	        @JsonProperty("fodselsdato") LocalDate fodselsdato, @JsonProperty("barn") List<Barn> barn) {
 		this.id = id;
 		this.adresse = adresse;
 		this.name = name;
@@ -30,7 +30,7 @@ public class Person {
 	}
 
 	public Person(ID id, Name name, LocalDate fodselsdato, Adresse adresse) {
-		this(id, name, adresse, fodselsdato,Collections.emptyList());
+		this(id, name, adresse, fodselsdato, Collections.emptyList());
 	}
 
 	public ID getId() {
@@ -41,8 +41,6 @@ public class Person {
 		return fodselsdato;
 	}
 
-	
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, adresse, name, fodselsdato, barn);
@@ -50,38 +48,51 @@ public class Person {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Person other = (Person) obj;
 		if (adresse == null) {
-			if (other.adresse != null)
+			if (other.adresse != null) {
 				return false;
-		} else if (!adresse.equals(other.adresse))
+			}
+		} else if (!adresse.equals(other.adresse)) {
 			return false;
+		}
 		if (barn == null) {
-			if (other.barn != null)
+			if (other.barn != null) {
 				return false;
-		} else if (!barn.equals(other.barn))
+			}
+		} else if (!barn.equals(other.barn)) {
 			return false;
+		}
 		if (fodselsdato == null) {
-			if (other.fodselsdato != null)
+			if (other.fodselsdato != null) {
 				return false;
-		} else if (!fodselsdato.equals(other.fodselsdato))
+			}
+		} else if (!fodselsdato.equals(other.fodselsdato)) {
 			return false;
+		}
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
-		} else if (!id.equals(other.id))
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -99,10 +110,8 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [id=" + id + ", fodselsdato=" + fodselsdato + ", adresse=" + adresse + ", name=" + name
-		        + ", barn=" + barn + "]";
+		return getClass().getSimpleName() + " [id=" + id + ", fodselsdato=" + fodselsdato + ", adresse=" + adresse
+		        + ", name=" + name + ", barn=" + barn + "]";
 	}
-
-	
 
 }

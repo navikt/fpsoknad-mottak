@@ -15,13 +15,13 @@ public class Barn {
 	private final LocalDate birthDate;
 
 	@JsonCreator
-	public Barn(@JsonProperty("fnrMor")  Fodselsnummer fnrMor,@JsonProperty("fnr") Fodselsnummer fnr, @JsonProperty("birthDate") LocalDate birthDate) {
+	public Barn(@JsonProperty("fnrMor") Fodselsnummer fnrMor, @JsonProperty("fnr") Fodselsnummer fnr,
+	        @JsonProperty("birthDate") LocalDate birthDate) {
 		this.fnr = fnr;
 		this.birthDate = birthDate;
 		this.fnrMor = fnrMor;
 	}
 
-	
 	public Fodselsnummer getFnrMor() {
 		return fnrMor;
 	}
@@ -34,47 +34,50 @@ public class Barn {
 		return fnr;
 	}
 
-	
-
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " [fnr=" + fnr + ", fnrMor=" + fnrMor + ", birthDate=" + birthDate + "]";
 	}
 
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(fnr, fnrMor,birthDate);
+		return Objects.hash(fnr, fnrMor, birthDate);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Barn other = (Barn) obj;
 		if (birthDate == null) {
-			if (other.birthDate != null)
+			if (other.birthDate != null) {
 				return false;
-		} else if (!birthDate.equals(other.birthDate))
+			}
+		} else if (!birthDate.equals(other.birthDate)) {
 			return false;
+		}
 		if (fnr == null) {
-			if (other.fnr != null)
+			if (other.fnr != null) {
 				return false;
-		} else if (!fnr.equals(other.fnr))
+			}
+		} else if (!fnr.equals(other.fnr)) {
 			return false;
+		}
 		if (fnrMor == null) {
-			if (other.fnrMor != null)
+			if (other.fnrMor != null) {
 				return false;
-		} else if (!fnrMor.equals(other.fnrMor))
+			}
+		} else if (!fnrMor.equals(other.fnrMor)) {
 			return false;
+		}
 		return true;
 	}
 
-
-	
 }

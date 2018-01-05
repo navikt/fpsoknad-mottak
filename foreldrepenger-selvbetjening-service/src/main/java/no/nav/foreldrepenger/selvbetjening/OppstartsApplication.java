@@ -14,7 +14,7 @@ import no.nav.modig.testcertificates.TestCertificates;
 @ComponentScan("no.nav.foreldrepenger")
 public class OppstartsApplication {
 	static {
-		TestCertificates.setupKeyAndTrustStore();
+	
 	}
 
 	public static void main(String[] args) {

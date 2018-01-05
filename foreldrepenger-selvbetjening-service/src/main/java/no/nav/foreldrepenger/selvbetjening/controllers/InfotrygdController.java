@@ -14,20 +14,20 @@ import no.nav.foreldrepenger.selvbetjening.InfotrygdClient;
 @RestController
 class InfotrygdController {
 
-   private final InfotrygdClient infotrygdClient;
+	private final InfotrygdClient infotrygdClient;
 
-   @Inject
-   public InfotrygdController(InfotrygdClient infotrygdClient){
-      this.infotrygdClient = infotrygdClient;
-   }
+	@Inject
+	public InfotrygdController(InfotrygdClient infotrygdClient) {
+		this.infotrygdClient = infotrygdClient;
+	}
 
-   @RequestMapping(method = {RequestMethod.GET}, value = "/infotrygd")
-   public ResponseEntity<?> incomeForAktor(@RequestParam("fnr") String fnr) {
-      try {
-         return ResponseEntity.ok(infotrygdClient.hasCases(fnr));
-      } catch (Exception ex) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-      }
+	@RequestMapping(method = { RequestMethod.GET }, value = "/infotrygd")
+	public ResponseEntity<?> incomeForAktor(@RequestParam("fnr") String fnr) {
+		try {
+			return ResponseEntity.ok(infotrygdClient.hasCases(fnr));
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+		}
 
-   }
+	}
 }

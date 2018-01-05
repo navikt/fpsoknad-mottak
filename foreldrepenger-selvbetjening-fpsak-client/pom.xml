@@ -8,7 +8,6 @@
     <version>0.0.89-SNAPSHOT</version>
   </parent>
 
-   <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
   <artifactId>foreldrepenger-selvbetjening-fpsak-client</artifactId>
 
   <name>foreldrepenger-selvbetjening-fpsak-client</name>
@@ -17,7 +16,6 @@
       <dependency>
          <groupId>javax.inject</groupId>
          <artifactId>javax.inject</artifactId>
-         <version>1</version>
       </dependency>
       <dependency>
          <groupId>org.springframework.boot</groupId>

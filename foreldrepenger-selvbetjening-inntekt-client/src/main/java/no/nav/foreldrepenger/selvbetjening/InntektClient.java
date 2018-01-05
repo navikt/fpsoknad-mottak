@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.selvbetjening;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,53 +22,54 @@ import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeResponse;
 
 @Component
 public class InntektClient {
-   private static final Logger log = LoggerFactory.getLogger(InntektClient.class);
+	private static final Logger log = LoggerFactory.getLogger(InntektClient.class);
 
-   private final InntektV3 inntektV3;
+	private final InntektV3 inntektV3;
 
-   @Inject
-   public InntektClient(InntektV3 inntektV3) {
-      this.inntektV3 = inntektV3;
-   }
+	@Inject
+	public InntektClient(InntektV3 inntektV3) {
+		this.inntektV3 = inntektV3;
+	}
 
-   public List<Income> incomeForPeriod(String aktoerId, LocalDate from, LocalDate to) {
-      HentInntektListeRequest req = request(aktoerId, from, to);
-      try {
-         HentInntektListeResponse res = inntektV3.hentInntektListe(req);
-         return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
-            .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
-            .map(InntektMapper::map)
-            .collect(toList());
-      } catch (Exception ex) {
-         log.warn("Error while retrieving income", ex);
-         throw new RuntimeException("Error while retrieving income data: " + ex.getMessage());
-      }
-   }
+	public List<Income> incomeForPeriod(String aktoerId, LocalDate from, LocalDate to) {
+		HentInntektListeRequest req = request(aktoerId, from, to);
+		try {
+			HentInntektListeResponse res = inntektV3.hentInntektListe(req);
+			return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
+			        .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
+			        .map(InntektMapper::map).collect(toList());
+		} catch (Exception ex) {
+			log.warn("Error while retrieving income", ex);
+			throw new RuntimeException("Error while retrieving income data: " + ex.getMessage());
+		}
+	}
 
-   private HentInntektListeRequest request(String aktoerId, LocalDate from, LocalDate to) {
-      HentInntektListeRequest req = new HentInntektListeRequest();
+	private HentInntektListeRequest request(String aktoerId, LocalDate from, LocalDate to) {
+		HentInntektListeRequest req = new HentInntektListeRequest();
 
-      PersonIdent person = new PersonIdent();
-      person.setPersonIdent(aktoerId);
-      req.setIdent(person);
+		PersonIdent person = new PersonIdent();
+		person.setPersonIdent(aktoerId);
+		req.setIdent(person);
 
-      Ainntektsfilter ainntektsfilter = new Ainntektsfilter();
-      ainntektsfilter.setValue("ForeldrepengerA-Inntekt");
-      ainntektsfilter.setKodeRef("ForeldrepengerA-Inntekt");
-      ainntektsfilter.setKodeverksRef("http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
-      req.setAinntektsfilter(ainntektsfilter);
+		Ainntektsfilter ainntektsfilter = new Ainntektsfilter();
+		ainntektsfilter.setValue("ForeldrepengerA-Inntekt");
+		ainntektsfilter.setKodeRef("ForeldrepengerA-Inntekt");
+		ainntektsfilter.setKodeverksRef(
+		        "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+		req.setAinntektsfilter(ainntektsfilter);
 
-      Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
-      uttrekksperiode.setMaanedFom(CalendarConverter.toCalendar(from));
-      uttrekksperiode.setMaanedTom(CalendarConverter.toCalendar(to));
-      req.setUttrekksperiode(uttrekksperiode);
+		Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
+		uttrekksperiode.setMaanedFom(CalendarConverter.toCalendar(from));
+		uttrekksperiode.setMaanedTom(CalendarConverter.toCalendar(to));
+		req.setUttrekksperiode(uttrekksperiode);
 
-      Formaal formaal = new Formaal();
-      formaal.setValue("Foreldrepenger");
-      formaal.setKodeRef("Foreldrepenger");
-      formaal.setKodeverksRef("http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
-      req.setFormaal(formaal);
+		Formaal formaal = new Formaal();
+		formaal.setValue("Foreldrepenger");
+		formaal.setKodeRef("Foreldrepenger");
+		formaal.setKodeverksRef(
+		        "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+		req.setFormaal(formaal);
 
-      return req;
-   }
+		return req;
+	}
 }

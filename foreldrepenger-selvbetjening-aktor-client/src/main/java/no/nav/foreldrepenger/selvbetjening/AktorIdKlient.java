@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.selvbetjening;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -10,8 +10,11 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.selvbetjening.domain.AktorId;
 import no.nav.foreldrepenger.selvbetjening.domain.Fodselsnummer;
+import no.nav.foreldrepenger.selvbetjening.domain.exceptions.NotFoundException;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
+import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
+import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentResponse;
 
 @Component
 public class AktorIdKlient {
@@ -21,24 +24,28 @@ public class AktorIdKlient {
 
 	@Inject
 	public AktorIdKlient(AktoerV2 aktoerV2) {
-		this.aktoerV2 = aktoerV2;
+		this.aktoerV2 = Objects.requireNonNull(aktoerV2);
 	}
 
-	public Optional<AktorId> aktorIdForFnr(Fodselsnummer fnr) {
+	public AktorId aktorIdForFnr(Fodselsnummer fnr) {
 		try {
-			LOG.info("Looking up {}", fnr);
-			return Optional.ofNullable(aktoerV2.hentAktoerIdForIdent(request(fnr.getFnr()))).map(r -> r.getAktoerId())
-			        .map(AktorId::new);
-		} catch (Exception e) {
+			HentAktoerIdForIdentResponse res = aktoerV2.hentAktoerIdForIdent(request(fnr));
+			return new AktorId(res.getAktoerId());
+		} catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
 			LOG.warn("Henting av aktørid har feilet", e);
-			return Optional.empty();
+			throw new NotFoundException(e.getMessage());
 		}
 	}
 
-	private static HentAktoerIdForIdentRequest request(String indent) {
-		HentAktoerIdForIdentRequest hentAktoerIdForIdentRequest = new HentAktoerIdForIdentRequest();
-		hentAktoerIdForIdentRequest.setIdent(indent);
-		return hentAktoerIdForIdentRequest;
+	private static HentAktoerIdForIdentRequest request(Fodselsnummer fnr) {
+		HentAktoerIdForIdentRequest req = new HentAktoerIdForIdentRequest();
+		req.setIdent(fnr.getFnr());
+		return req;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [aktoerV2=" + aktoerV2 + "]";
 	}
 
 }

@@ -44,7 +44,7 @@ public class RequestUtils {
 		return id;
 	}
 
-	 static boolean isFnr(NorskIdent id) {
+	static boolean isFnr(NorskIdent id) {
 		return id.getType().getValue().equals(FNR);
 	}
 }

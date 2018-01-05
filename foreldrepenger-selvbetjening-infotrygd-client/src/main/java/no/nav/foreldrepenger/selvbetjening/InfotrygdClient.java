@@ -12,25 +12,25 @@ import no.nav.tjeneste.virksomhet.infotrygdsak.v1.meldinger.FinnSakListeResponse
 
 @Component
 public class InfotrygdClient {
-   private static final Logger log = LoggerFactory.getLogger(InfotrygdClient.class);
+	private static final Logger log = LoggerFactory.getLogger(InfotrygdClient.class);
 
-   private final InfotrygdSakV1 infotrygd;
+	private final InfotrygdSakV1 infotrygd;
 
-   @Inject
-   public InfotrygdClient(InfotrygdSakV1 infotrygd) {
-      this.infotrygd = infotrygd;
-   }
+	@Inject
+	public InfotrygdClient(InfotrygdSakV1 infotrygd) {
+		this.infotrygd = infotrygd;
+	}
 
-   public boolean hasCases(String fnr) {
-      FinnSakListeRequest req = new FinnSakListeRequest();
-      req.setPersonident(fnr);
-      try {
-         FinnSakListeResponse res = infotrygd.finnSakListe(req);
-         return ! res.getSakListe().isEmpty();
-      } catch (Exception ex) {
-         log.warn("Error while reading from Infotrygd", ex);
-         throw new RuntimeException("Error while reading from Infotrygd: " + ex.getMessage());
-      }
-   }
+	public boolean hasCases(String fnr) {
+		FinnSakListeRequest req = new FinnSakListeRequest();
+		req.setPersonident(fnr);
+		try {
+			FinnSakListeResponse res = infotrygd.finnSakListe(req);
+			return !res.getSakListe().isEmpty();
+		} catch (Exception ex) {
+			log.warn("Error while reading from Infotrygd", ex);
+			throw new RuntimeException("Error while reading from Infotrygd: " + ex.getMessage());
+		}
+	}
 
 }

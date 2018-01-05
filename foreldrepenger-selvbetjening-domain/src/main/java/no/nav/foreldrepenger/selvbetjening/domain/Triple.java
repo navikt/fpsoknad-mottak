@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.selvbetjening.domain;
 
 import java.util.Objects;
 
-public final class Triple<T1, T2,T3> {
+public final class Triple<T1, T2, T3> {
 
 	private final T1 first;
 	private final T2 second;
@@ -25,7 +25,7 @@ public final class Triple<T1, T2,T3> {
 	public T2 getSecond() {
 		return second;
 	}
-	
+
 	public T3 getThird() {
 		return third;
 	}
@@ -73,7 +73,7 @@ public final class Triple<T1, T2,T3> {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [first=" + first + ", second=" + second +", third=" + third + "]";
+		return getClass().getSimpleName() + " [first=" + first + ", second=" + second + ", third=" + third + "]";
 	}
 
 }
