@@ -41,11 +41,11 @@
          <artifactId>foreldrepenger-selvbetjening-inntekt-client</artifactId>
          <version>${project.version}</version>
       </dependency>
-      <dependency>
+     <!--  <dependency>
          <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
          <artifactId>foreldrepenger-selvbetjening-fpsak-client</artifactId>
          <version>${project.version}</version>
-      </dependency>
+      </dependency> -->
       <dependency>
          <groupId>no.nav.foreldrepenger.selvbetjening</groupId>
          <artifactId>foreldrepenger-selvbetjening-infotrygd-client</artifactId>
