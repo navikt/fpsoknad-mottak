@@ -10,7 +10,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @SpringBootApplication
 @ComponentScan("no.nav.foreldrepenger")
-public class OppstartsApplication {
+public class OppslagApplication {
 
 	public static void main(String[] args) {
 		System.setProperty("no.nav.modig.security.sts.url",
@@ -19,7 +19,7 @@ public class OppstartsApplication {
          System.getenv("FPSELVBETJENING_USERNAME"));
 		System.setProperty("no.nav.modig.security.systemuser.password",
          System.getenv("FPSELVBETJENING_PASSWORD"));
-		SpringApplication.run(OppstartsApplication.class, args);
+		SpringApplication.run(OppslagApplication.class, args);
 	}
 
 	@Bean

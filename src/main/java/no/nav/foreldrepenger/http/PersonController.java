@@ -18,8 +18,8 @@ import no.nav.foreldrepenger.person.*;
 
 @RestController
 @Validated
-@RequestMapping("/startup")
-public class StartupController {
+@RequestMapping("/person")
+public class PersonController {
 
 	@Inject
 	private AktorIdKlient aktorClient;
@@ -27,7 +27,7 @@ public class StartupController {
 	private PersonKlient personClient;
 
 	@GetMapping(value = "/")
-	public ResponseEntity<Person> startup(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
+	public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
       Optional<Person> personOpt =
          personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
 	   return personOpt.map(p -> new ResponseEntity(p, OK))
