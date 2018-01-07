@@ -11,7 +11,8 @@
 *.sublime-workspace
 /venv/
 /api/_static/
-target
+target/
+.target
 .idea/
 *.iml
 *.log
@@ -20,3 +21,16 @@ node_modules/
 repo_test_dir
 **/webapp/static/bundle.js
 war/src/main/client/build
+.springBeans
+*.launch
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders

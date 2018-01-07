@@ -6,7 +6,7 @@ def deployLib = new deploy()
 node {
     def commitHash, commitHashShort, commitUrl, currentVersion
     def repo = "navikt"
-    def application = "foreldrepenger-selvbetjening-oppslag"
+    def application = "fpsoknad-oppslag"
     def committer, committerEmail, changelog, pom, releaseVersion, nextVersion // metadata
     def mvnHome = tool "maven-3.3.9"
     def mvn = "${mvnHome}/bin/mvn"
@@ -66,9 +66,9 @@ node {
             sh "git commit -am \"set version to ${releaseVersion} (from Jenkins pipeline)\""
             withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
               withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-                   sh ("git push https://${token}:x-oauth-basic@github.com/navikt/foreldrepenger-selvbetjening-oppslag.git master")
+                   sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git master")
                    sh ("git tag -a ${application}-${releaseVersion} -m ${application}-${releaseVersion}")
-                   sh ("git push https://${token}:x-oauth-basic@github.com/navikt/foreldrepenger-selvbetjening-oppslag.git --tags")
+                   sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git --tags")
                }
             }
     }
@@ -98,7 +98,7 @@ node {
         withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
              withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
                  sh "git commit -am \"updated to new dev-version ${nextVersion} after release by ${committer}\""
-                 sh ("git push https://${token}:x-oauth-basic@github.com/navikt/foreldrepenger-selvbetjening-oppslag.git master")
+                 sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git master")
              }
        }
       notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
