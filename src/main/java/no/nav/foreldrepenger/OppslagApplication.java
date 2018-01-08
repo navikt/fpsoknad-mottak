@@ -7,6 +7,8 @@ import org.springframework.context.annotation.*;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
+import no.nav.modig.testcertificates.TestCertificates;
+
 
 @SpringBootApplication
 @ComponentScan("no.nav.foreldrepenger")
@@ -16,6 +18,9 @@ public class OppslagApplication {
       setProperty("no.nav.modig.security.sts.url", System.getenv("SECURITYTOKENSERVICE_URL"));
       setProperty("no.nav.modig.security.systemuser.username", System.getenv("FPSELVBETJENING_USERNAME"));
       setProperty("no.nav.modig.security.systemuser.password", System.getenv("FPSELVBETJENING_PASSWORD"));
+
+      TestCertificates.setupKeyAndTrustStore();
+
       SpringApplication.run(OppslagApplication.class, args);
    }
 
