@@ -1,8 +1,9 @@
 package no.nav.foreldrepenger.inntekt;
 
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.*;
-import org.springframework.context.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import no.nav.arbeid.cxfclient.CXFClient;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;

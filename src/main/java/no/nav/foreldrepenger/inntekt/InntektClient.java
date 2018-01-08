@@ -2,19 +2,24 @@ package no.nav.foreldrepenger.inntekt;
 
 import static java.util.stream.Collectors.toList;
 
-import java.time.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.List;
 
-import javax.inject.*;
+import javax.inject.Inject;
 
-import org.slf4j.*;
-import org.springframework.stereotype.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.domain.*;
-import no.nav.foreldrepenger.time.*;
-import no.nav.tjeneste.virksomhet.inntekt.v3.binding.*;
-import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.*;
-import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.*;
+import no.nav.foreldrepenger.domain.Income;
+import no.nav.foreldrepenger.time.CalendarConverter;
+import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Ainntektsfilter;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Formaal;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.PersonIdent;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Uttrekksperiode;
+import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeRequest;
+import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeResponse;
 
 @Component
 public class InntektClient {

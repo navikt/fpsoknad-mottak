@@ -5,17 +5,16 @@ import org.joda.time.DateTime;
 import no.nav.foreldrepenger.domain.Barn;
 import no.nav.foreldrepenger.domain.Fodselsnummer;
 
-public class BarnMorRelasjonSjekkendeBarneVelger implements BarneVelger {
-
+public class BarnMorRelasjonSjekkendeBarnutvelger implements Barnutvelger {
 
 	private final int monthsBack;
 
-	public BarnMorRelasjonSjekkendeBarneVelger(int months) {
+	public BarnMorRelasjonSjekkendeBarnutvelger(int months) {
 		this.monthsBack = months;
 	}
 
 	@Override
-	public boolean isEligible(Fodselsnummer fnrMor, Barn barn) {
+	public boolean erStonadsberettigetBarn(Fodselsnummer fnrMor, Barn barn) {
 		return fnrMor.equals(barn.getFnrMor())
 		        && barn.getBirthDate().isAfter(DateTime.now().minusMonths(monthsBack).toLocalDate());
 	}

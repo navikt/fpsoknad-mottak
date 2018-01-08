@@ -1,16 +1,20 @@
 package no.nav.foreldrepenger.aktor;
 
-import java.util.*;
+import java.util.Objects;
 
-import javax.inject.*;
+import javax.inject.Inject;
 
-import org.slf4j.*;
-import org.springframework.stereotype.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.domain.*;
-import no.nav.foreldrepenger.domain.exceptions.*;
-import no.nav.tjeneste.virksomhet.aktoer.v2.binding.*;
-import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.*;
+import no.nav.foreldrepenger.domain.AktorId;
+import no.nav.foreldrepenger.domain.Fodselsnummer;
+import no.nav.foreldrepenger.domain.exceptions.NotFoundException;
+import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
+import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
+import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentResponse;
 
 @Component
 public class AktorIdKlient {

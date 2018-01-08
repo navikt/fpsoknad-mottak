@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.inntekt;
 
-import no.nav.foreldrepenger.domain.*;
-import no.nav.foreldrepenger.time.*;
-import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.*;
+import no.nav.foreldrepenger.domain.Income;
+import no.nav.foreldrepenger.time.CalendarConverter;
+import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt;
 
 class InntektMapper {
 

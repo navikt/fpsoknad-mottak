@@ -6,7 +6,11 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class CalendarConverter {
+public final class CalendarConverter {
+
+	private CalendarConverter() {
+
+	}
 
 	public static LocalDate toDate(XMLGregorianCalendar cal) {
 		return LocalDate.of(cal.getYear(), cal.getMonth(), cal.getDay());
@@ -22,6 +26,10 @@ public class CalendarConverter {
 		} catch (DatatypeConfigurationException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	public static org.joda.time.LocalDate toJodaLocalTime(XMLGregorianCalendar calendar) {
+		return org.joda.time.LocalDate.fromCalendarFields(calendar.toGregorianCalendar());
 	}
 
 }

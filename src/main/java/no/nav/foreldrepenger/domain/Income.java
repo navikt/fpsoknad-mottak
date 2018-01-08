@@ -28,6 +28,6 @@ public class Income {
 
 	@Override
 	public String toString() {
-		return "Income{" + "amount=" + amount + ", from=" + from + ", to=" + to + '}';
+		return getClass().getSimpleName() + "{" + "amount=" + amount + ", from=" + from + ", to=" + to + '}';
 	}
 }

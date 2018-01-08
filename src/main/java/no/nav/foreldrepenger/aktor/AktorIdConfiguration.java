@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.aktor;
 
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.context.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import no.nav.arbeid.cxfclient.CXFClient;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;

@@ -1,8 +1,11 @@
 package no.nav.foreldrepenger.person;
 
-import no.nav.foreldrepenger.domain.*;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.*;
+import no.nav.foreldrepenger.domain.Fodselsnummer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Aktoer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
+import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 
 public class RequestUtils {
 

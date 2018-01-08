@@ -1,20 +1,29 @@
 package no.nav.foreldrepenger.http;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
-import java.util.Optional;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 
-import javax.inject.*;
-import javax.validation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.http.*;
-import org.springframework.validation.annotation.*;
-import org.springframework.web.bind.annotation.*;
-
-import no.nav.foreldrepenger.aktor.*;
-import no.nav.foreldrepenger.domain.*;
-import no.nav.foreldrepenger.domain.exceptions.*;
-import no.nav.foreldrepenger.person.*;
+import no.nav.foreldrepenger.aktor.AktorIdKlient;
+import no.nav.foreldrepenger.domain.Fodselsnummer;
+import no.nav.foreldrepenger.domain.ID;
+import no.nav.foreldrepenger.domain.Person;
+import no.nav.foreldrepenger.domain.exceptions.ForbiddenException;
+import no.nav.foreldrepenger.domain.exceptions.NotFoundException;
+import no.nav.foreldrepenger.person.PersonKlient;
 
 @RestController
 @Validated
@@ -28,10 +37,8 @@ public class PersonController {
 
 	@GetMapping(value = "/")
 	public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
-      Optional<Person> personOpt =
-         personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
-	   return personOpt.map(p -> new ResponseEntity(p, OK))
-         .orElse(new ResponseEntity(INTERNAL_SERVER_ERROR));
+		Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
+		return new ResponseEntity<Person>(person, OK);
 	}
 
 	@ExceptionHandler({ ConstraintViolationException.class })

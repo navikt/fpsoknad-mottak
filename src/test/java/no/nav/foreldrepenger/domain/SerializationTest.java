@@ -39,7 +39,7 @@ public class SerializationTest {
 
 	@Test
 	public void testPersonSerialization() throws IOException {
-		Person person = new Person(ids(), name(), birthDate(), adresse());
+		Person person = new Person(id(), name(), birthDate(), adresse());
 		String serialized = write(person);
 		Person deserialized = mapper.readValue(serialized, Person.class);
 		assertEquals(person, deserialized);
@@ -63,13 +63,13 @@ public class SerializationTest {
 
 	@Test
 	public void testIDPairSerialization() throws IOException {
-		ID ids = new ID(aktoer(), fnr());
-		String serialized = write(ids);
+		ID id = id();
+		String serialized = write(id);
 		ID deserialized = mapper.readValue(serialized, ID.class);
-		assertEquals(ids, deserialized);
+		assertEquals(id, deserialized);
 	}
 
-	private ID ids() {
+	private ID id() {
 		return new ID(aktoer(), fnr());
 	}
 

@@ -1,54 +1,68 @@
 package no.nav.foreldrepenger.person;
 
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.ADRESSE;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.joda.time.LocalDate;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.domain.*;
-import no.nav.foreldrepenger.domain.exceptions.*;
-import no.nav.tjeneste.virksomhet.person.v3.binding.*;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.*;
+import no.nav.foreldrepenger.domain.Adresse;
+import no.nav.foreldrepenger.domain.Barn;
+import no.nav.foreldrepenger.domain.Fodselsnummer;
+import no.nav.foreldrepenger.domain.ID;
+import no.nav.foreldrepenger.domain.Name;
+import no.nav.foreldrepenger.domain.exceptions.ForbiddenException;
+import no.nav.foreldrepenger.domain.exceptions.NotFoundException;
+import no.nav.foreldrepenger.time.CalendarConverter;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.StrukturertAdresse;
+import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 public class PersonKlient {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PersonKlient.class);
 
-	private final PersonV3 personV3;
-	private final BarneVelger childSelector;
+	private final PersonV3 person;
+	private final Barnutvelger barneVelger;
 
-	public PersonKlient(PersonV3 personV3, BarneVelger childSelector) {
-		this.personV3 = Objects.requireNonNull(personV3);
-		this.childSelector = Objects.requireNonNull(childSelector);
+	public PersonKlient(PersonV3 person, Barnutvelger barneVelger) {
+		this.person = Objects.requireNonNull(person);
+		this.barneVelger = Objects.requireNonNull(barneVelger);
 	}
 
-
-	public Optional<no.nav.foreldrepenger.domain.Person> hentPersonInfo(ID id)  {
+	public no.nav.foreldrepenger.domain.Person hentPersonInfo(ID id) {
 		try {
-			return Optional.ofNullable(
-			   person(id,personV3.hentPerson(RequestUtils.request(id.getFnr(),
-               ADRESSE, FAMILIERELASJONER)).getPerson()));
+			return person(id,
+			        person.hentPerson(RequestUtils.request(id.getFnr(), ADRESSE, FAMILIERELASJONER)).getPerson());
 		} catch (HentPersonPersonIkkeFunnet e) {
 			LOG.warn("Unable to fetch information for user {}", id.getFnr(), e);
 			throw new NotFoundException(e);
-		}
-		catch (HentPersonSikkerhetsbegrensning e) {
+		} catch (HentPersonSikkerhetsbegrensning e) {
 			LOG.warn("Unable to fetch information for user {}", id.getFnr(), e);
 			throw new ForbiddenException(e);
 		}
 	}
 
-	private no.nav.foreldrepenger.domain.Person person(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-		return new no.nav.foreldrepenger.domain.Person(id, name(person.getPersonnavn()), address(person.getBostedsadresse().getStrukturertAdresse()),
-		        birthDate(person), barnFor(person));
+	private no.nav.foreldrepenger.domain.Person person(ID id,
+	        no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+		return new no.nav.foreldrepenger.domain.Person(id, name(person.getPersonnavn()),
+		        address(person.getBostedsadresse().getStrukturertAdresse()), birthDate(person), barnFor(person));
 	}
 
 	private LocalDate birthDate(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-		return LocalDate.fromCalendarFields(person.getFoedselsdato().getFoedselsdato().toGregorianCalendar());
+		return CalendarConverter.toJodaLocalTime(person.getFoedselsdato().getFoedselsdato());
 	}
 
 	private List<Barn> barnFor(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
@@ -57,11 +71,8 @@ public class PersonKlient {
 		switch (idType) {
 		case RequestUtils.FNR:
 			Fodselsnummer fnrMor = new Fodselsnummer(id.getIdent().getIdent());
-			return person.getHarFraRolleI().stream()
-            .filter(this::isBarn)
-            .map(s -> hentBarn(s, fnrMor))
-            .filter(barn -> childSelector.isEligible(fnrMor, barn))
-            .collect(Collectors.toList());
+			return person.getHarFraRolleI().stream().filter(this::isBarn).map(s -> hentBarn(s, fnrMor))
+			        .filter(barn -> barneVelger.erStonadsberettigetBarn(fnrMor, barn)).collect(Collectors.toList());
 		default:
 			throw new IllegalStateException("ID type " + idType + " not yet supported");
 		}
@@ -76,11 +87,12 @@ public class PersonKlient {
 		if (RequestUtils.isFnr(id)) {
 			Fodselsnummer fnrBarn = new Fodselsnummer(id.getIdent());
 			try {
-				HentPersonResponse barn = personV3.hentPerson(RequestUtils.request(fnrBarn, FAMILIERELASJONER));
+				HentPersonResponse barn = person.hentPerson(RequestUtils.request(fnrBarn, FAMILIERELASJONER));
 				return new Barn(fnrMor, new Fodselsnummer(id.getIdent()), birthDate(barn.getPerson()));
 			} catch (HentPersonPersonIkkeFunnet e) {
 				LOG.warn("Barn {} av mor {} ble ikke funnet i TPS", fnrBarn, fnrMor);
-				throw new NotFoundException("Barn " + fnrBarn.getFnr() + " av mor " + fnrMor.getFnr() + "ble ikke funnet");
+				throw new NotFoundException(
+				        "Barn " + fnrBarn.getFnr() + " av mor " + fnrMor.getFnr() + "ble ikke funnet");
 			} catch (HentPersonSikkerhetsbegrensning e) {
 				LOG.warn("Oppslag på barn {} av mor {} ikke tillatt", fnrBarn, fnrMor);
 				throw new ForbiddenException(e);

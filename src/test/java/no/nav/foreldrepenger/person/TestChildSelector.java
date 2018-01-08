@@ -14,7 +14,7 @@ public class TestChildSelector {
 
 	@Test
 	public void testNullFnr() {
-		assertFalse(new FNRSjekkendeBarneVelger(6).isEligible(MOR, null));
+		assertFalse(new FNRSjekkendeBarnutvelger(6).erStonadsberettigetBarn(MOR, null));
 	}
 
 	@Test
@@ -24,8 +24,8 @@ public class TestChildSelector {
 		        new Fodselsnummer(
 		                DateTimeFormat.forPattern("ddMMyy").print(DateTime.now().minusMonths(months)) + "36325"),
 		        DateTime.now().minusMonths(months).toLocalDate());
-		assertTrue(new FNRSjekkendeBarneVelger(months + 1).isEligible(MOR, barn));
-		assertFalse(new FNRSjekkendeBarneVelger(months - 1).isEligible(MOR, barn));
+		assertTrue(new FNRSjekkendeBarnutvelger(months + 1).erStonadsberettigetBarn(MOR, barn));
+		assertFalse(new FNRSjekkendeBarnutvelger(months - 1).erStonadsberettigetBarn(MOR, barn));
 	}
 
 	@Test
@@ -35,11 +35,11 @@ public class TestChildSelector {
 		        new Fodselsnummer(
 		                DateTimeFormat.forPattern("ddMMyy").print(DateTime.now().minusMonths(months)) + "36325"),
 		        DateTime.now().minusMonths(months - 1).toLocalDate());
-		assertTrue(new BarnMorRelasjonSjekkendeBarneVelger(months).isEligible(MOR, barn));
+		assertTrue(new BarnMorRelasjonSjekkendeBarnutvelger(months).erStonadsberettigetBarn(MOR, barn));
 		barn = new Barn(MOR,
 		        new Fodselsnummer(
 		                DateTimeFormat.forPattern("ddMMyy").print(DateTime.now().minusMonths(months)) + "36325"),
 		        DateTime.now().minusMonths(months + 1).toLocalDate());
-		assertFalse(new BarnMorRelasjonSjekkendeBarneVelger(months + 1).isEligible(MOR, barn));
+		assertFalse(new BarnMorRelasjonSjekkendeBarnutvelger(months + 1).erStonadsberettigetBarn(MOR, barn));
 	}
 }

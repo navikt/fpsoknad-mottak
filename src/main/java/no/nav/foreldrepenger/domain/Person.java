@@ -1,8 +1,14 @@
 package no.nav.foreldrepenger.domain;
 
-import java.util.*;
-import org.joda.time.*;
-import com.fasterxml.jackson.annotation.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import org.joda.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({ "id" })
 public class Person {

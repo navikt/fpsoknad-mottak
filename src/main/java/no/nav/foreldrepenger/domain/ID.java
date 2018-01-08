@@ -2,7 +2,8 @@ package no.nav.foreldrepenger.domain;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ID {
 

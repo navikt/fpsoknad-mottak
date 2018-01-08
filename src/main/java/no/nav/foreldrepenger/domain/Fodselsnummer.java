@@ -1,10 +1,11 @@
 package no.nav.foreldrepenger.domain;
 
-import java.util.*;
+import java.util.Objects;
 
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Fodselsnummer {
 
