@@ -9,7 +9,7 @@ import no.nav.arbeid.cxfclient.CXFClient;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
 
 @SpringBootConfiguration
-@ComponentScan(basePackages = { "no.nav.foreldrepenger.selvbetjening" })
+@ComponentScan(basePackages = { "no.nav.foreldrepenger.oppslag" })
 public class InfotrygdConfiguration {
 
 	@Bean

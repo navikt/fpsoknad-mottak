@@ -9,7 +9,7 @@ import no.nav.arbeid.cxfclient.CXFClient;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 
 @SpringBootConfiguration
-@ComponentScan(basePackages = { "no.nav.foreldrepenger.selvbetjening" })
+@ComponentScan(basePackages = { "no.nav.foreldrepenger.oppslag" })
 public class InntektConfiguration {
 
 	@Bean
