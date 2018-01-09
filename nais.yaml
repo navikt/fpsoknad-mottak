@@ -1,0 +1,26 @@
+name: fpsoknad-mottak
+image: docker.adeo.no:5000/fpsoknad-mottak
+replicas:
+    min: 1
+    max: 1
+    cpuThresholdPercentage: 50
+prometheus:
+    enabled: true
+    path: /actuator/prometheus
+port: 8080
+healthcheck:
+    liveness:
+      initialDelay: 60
+      path: actuator/health
+    readiness:
+      initialDelay: 60
+      path:  actuator/health
+resources:
+    limits:
+      cpu: 1500m
+      memory: 3072Mi
+    requests:
+      cpu: 250m
+      memory: 1536Mi
+
+
