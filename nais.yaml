@@ -37,4 +37,7 @@ fasitResources:
     - alias : fpselvbetjening
       resourceType: credential
   exposed:
+    - alias: fpsoknad-oppslag-api
+      resourceType: restservice
+      path: /api
 
