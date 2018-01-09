@@ -11,7 +11,65 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>no.nav.foreldrepenger</groupId>
 	<artifactId>fpsoknad-mottak</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
+	
+	<scm>
+      <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
+      <developerConnection>scm:git:https://github.com/navikt/fpsoknad-mottak.git
+      </developerConnection>
+      <tag>HEAD</tag>
+   </scm>
+
+   <repositories>
+      <repository>
+         <id>spring-snapshots</id>
+         <name>Spring Snapshots</name>
+         <url>https://repo.spring.io/snapshot</url>
+         <snapshots>
+            <enabled>true</enabled>
+         </snapshots>
+      </repository>
+      <repository>
+         <id>spring-milestones</id>
+         <name>Spring Milestones</name>
+         <url>https://repo.spring.io/milestone</url>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+   </repositories>
+   <pluginRepositories>
+      <pluginRepository>
+         <id>spring-snapshots</id>
+         <name>Spring Snapshots</name>
+         <url>https://repo.spring.io/snapshot</url>
+         <snapshots>
+            <enabled>true</enabled>
+         </snapshots>
+      </pluginRepository>
+      <pluginRepository>
+         <id>spring-milestones</id>
+         <name>Spring Milestones</name>
+         <url>https://repo.spring.io/milestone</url>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </pluginRepository>
+   </pluginRepositories>
+
+   <distributionManagement>
+      <repository>
+         <id>m2internal</id>
+         <name>NAV Maven2 Internal Repository</name>
+         <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+      </repository>
+      <snapshotRepository>
+         <id>m2snapshot</id>
+         <name>NAV Maven2 Snapshot Repository</name>
+         <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+   </distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
