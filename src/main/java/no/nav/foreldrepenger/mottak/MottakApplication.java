@@ -12,9 +12,11 @@ import no.nav.modig.testcertificates.TestCertificates;
 public class MottakApplication {
 
 	public static void main(String[] args) {
+		/*
 		setProperty("no.nav.modig.security.sts.url", System.getenv("SECURITYTOKENSERVICE_URL"));
 		setProperty("no.nav.modig.security.systemuser.username", System.getenv("FPSELVBETJENING_USERNAME"));
 		setProperty("no.nav.modig.security.systemuser.password", System.getenv("FPSELVBETJENING_PASSWORD"));
+		*/
 		TestCertificates.setupKeyAndTrustStore();
 		SpringApplication.run(MottakApplication.class, args);
 	}
