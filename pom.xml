@@ -120,5 +120,10 @@
 			<version>1.0.1</version>
 			<scope>test</scope>
 		</dependency>
+		  <dependency>
+         <groupId>no.nav.modig</groupId>
+         <artifactId>modig-testcertificates</artifactId>
+         <version>1.2.4</version>
+      </dependency>
 	</dependencies>
 </project>
