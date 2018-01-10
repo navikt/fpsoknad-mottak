@@ -144,6 +144,19 @@
                      <sourceDestDir>target/generated-sources</sourceDestDir>
                   </configuration>
                </execution>
+               <execution>
+                  <id>WsdlArena</id>
+                  <goals>
+                     <goal>wsimport</goal>
+                  </goals>
+                  <configuration>
+                     <wsdlFiles>
+                        <wsdlFile>Binding.wsdl</wsdlFile>
+                     </wsdlFiles>
+                     <wsdlDirectory>src/main/resources/wsdl/arena/</wsdlDirectory>
+                     <sourceDestDir>target/generated-sources</sourceDestDir>
+                  </configuration>
+               </execution>
             </executions>
          </plugin>
          <plugin>
@@ -202,6 +215,10 @@
       <dependency>
          <groupId>com.fasterxml.jackson.datatype</groupId>
          <artifactId>jackson-datatype-joda</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.fasterxml.jackson.datatype</groupId>
+         <artifactId>jackson-datatype-jsr310</artifactId>
       </dependency>
       <dependency>
          <groupId>joda-time</groupId>
