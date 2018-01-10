@@ -10,7 +10,6 @@ import javax.xml.datatype.*;
 import org.junit.jupiter.api.*;
 
 import no.nav.foreldrepenger.oppslag.domain.*;
-import no.nav.foreldrepenger.oppslag.inntekt.InntektMapper;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.*;
 
 class InntektMapperTest {
