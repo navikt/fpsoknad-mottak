@@ -90,6 +90,7 @@
                <vmArgs>
                   <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                </vmArgs>
+               <encoding>utf-8</encoding>
             </configuration>
             <executions>
                <execution>
