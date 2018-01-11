@@ -17,13 +17,13 @@ import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentReques
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentResponse;
 
 @Component
-public class AktorIdKlient {
-	private static final Logger LOG = LoggerFactory.getLogger(AktorIdKlient.class);
+public class AktorIdClient {
+	private static final Logger LOG = LoggerFactory.getLogger(AktorIdClient.class);
 
 	private final AktoerV2 aktoerV2;
 
 	@Inject
-	public AktorIdKlient(AktoerV2 aktoerV2) {
+	public AktorIdClient(AktoerV2 aktoerV2) {
 		this.aktoerV2 = Objects.requireNonNull(aktoerV2);
 	}
 

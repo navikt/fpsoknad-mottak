@@ -15,7 +15,7 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt
 public class YtelseskontraktMapperTest {
 
    @Test
-   public void allValues() throws Exception {
+   public void mapValues() throws Exception {
       Ytelseskontrakt kontrakt = new Ytelseskontrakt();
       kontrakt.setFomGyldighetsperiode(DatatypeFactory.newInstance().newXMLGregorianCalendar("2017-12-12"));
       kontrakt.setTomGyldighetsperiode(DatatypeFactory.newInstance().newXMLGregorianCalendar("2017-12-13"));

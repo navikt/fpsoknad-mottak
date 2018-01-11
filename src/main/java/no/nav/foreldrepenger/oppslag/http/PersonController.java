@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.oppslag.aktor.AktorIdKlient;
+import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.ID;
 import no.nav.foreldrepenger.oppslag.domain.Person;
@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.oppslag.person.PersonKlient;
 public class PersonController {
 
 	@Inject
-	private AktorIdKlient aktorClient;
+	private AktorIdClient aktorClient;
 	@Inject
 	private PersonKlient personClient;
 
