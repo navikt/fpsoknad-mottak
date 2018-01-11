@@ -12,6 +12,9 @@ public class AktorIdConfiguration {
 
 	@Bean
 	public AktoerV2 aktorV2(@Value("${AKTOER_V2_ENDPOINTURL}") String serviceUrl) {
-		return new CXFClient<>(AktoerV2.class).configureStsForSystemUser().address(serviceUrl).build();
+		return new CXFClient<>(AktoerV2.class)
+         .configureStsForSystemUser()
+         .address(serviceUrl)
+         .build();
 	}
 }
