@@ -12,8 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
-import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
+import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.HentYtelseskontraktListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.YtelseskontraktV3;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt.Periode;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.meldinger.HentYtelseskontraktListeRequest;
@@ -21,7 +22,7 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.meldinger.HentYtelseskontra
 
 @Component
 public class ArenaClient {
-   private static final Logger log = LoggerFactory.getLogger(InntektClient.class);
+   private static final Logger log = LoggerFactory.getLogger(ArenaClient.class);
 
    private YtelseskontraktV3 ytelseskontraktV3;
 
@@ -42,6 +43,9 @@ public class ArenaClient {
          return res.getYtelseskontraktListe().stream()
             .map(YtelseskontraktMapper::map)
             .collect(toList());
+      } catch(HentYtelseskontraktListeSikkerhetsbegrensning ex) {
+         log.warn("Security error from Arena", ex);
+         throw new ForbiddenException(ex);
       } catch (Exception ex) {
          log.warn("Error while retrieving ytelse", ex);
          throw new RuntimeException("Error while retrieving ytelse: " + ex.getMessage());

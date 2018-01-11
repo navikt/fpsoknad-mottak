@@ -8,11 +8,11 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt
 
 public class YtelseskontraktMapper {
 
-   public static Ytelse map(Ytelseskontrakt ytelse) {
-      return new Ytelse(ytelse.getYtelsestype(),
-         ytelse.getStatus(),
-         CalendarConverter.toDate(ytelse.getFomGyldighetsperiode()),
-         Optional.ofNullable(ytelse.getTomGyldighetsperiode())
+   public static Ytelse map(Ytelseskontrakt kontrakt) {
+      return new Ytelse(kontrakt.getYtelsestype(),
+         kontrakt.getStatus(),
+         CalendarConverter.toDate(kontrakt.getFomGyldighetsperiode()),
+         Optional.ofNullable(kontrakt.getTomGyldighetsperiode())
             .map(CalendarConverter::toDate));
    }
 
