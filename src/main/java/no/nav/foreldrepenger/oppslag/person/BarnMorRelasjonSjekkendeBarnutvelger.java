@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.person;
 
-import org.joda.time.DateTime;
+import java.time.LocalDate;
 
 import no.nav.foreldrepenger.oppslag.domain.Barn;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
@@ -16,7 +16,7 @@ public class BarnMorRelasjonSjekkendeBarnutvelger implements Barnutvelger {
 	@Override
 	public boolean erStonadsberettigetBarn(Fodselsnummer fnrMor, Barn barn) {
 		return fnrMor.equals(barn.getFnrMor())
-		        && barn.getBirthDate().isAfter(DateTime.now().minusMonths(monthsBack).toLocalDate());
+		        && barn.getBirthDate().isAfter(LocalDate.now().minusMonths(monthsBack));
 	}
 
 	@Override

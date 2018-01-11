@@ -3,11 +3,11 @@ package no.nav.foreldrepenger.oppslag.person;
 import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.ADRESSE;
 import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ public class PersonKlient {
 	}
 
 	private LocalDate birthDate(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-		return CalendarConverter.toJodaLocalTime(person.getFoedselsdato().getFoedselsdato());
+		return CalendarConverter.toDate(person.getFoedselsdato().getFoedselsdato());
 	}
 
 	private List<Barn> barnFor(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {

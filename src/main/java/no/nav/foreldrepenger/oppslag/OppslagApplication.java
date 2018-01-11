@@ -2,11 +2,7 @@ package no.nav.foreldrepenger.oppslag;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import no.nav.modig.testcertificates.TestCertificates;
 
@@ -29,11 +25,6 @@ public class OppslagApplication {
 			throw new IllegalArgumentException("Key " + key + " har ingen verdi");
 		}
 		System.setProperty(key, value);
-	}
-
-	@Bean
-	public Module jodaModule() {
-		return new JodaModule();
 	}
 
 }

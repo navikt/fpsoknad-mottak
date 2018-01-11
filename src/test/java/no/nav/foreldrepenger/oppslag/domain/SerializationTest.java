@@ -3,20 +3,12 @@ package no.nav.foreldrepenger.oppslag.domain;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
-import org.joda.time.*;
 import org.junit.jupiter.api.*;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.datatype.joda.*;
-
-import no.nav.foreldrepenger.oppslag.domain.Adresse;
-import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.ID;
-import no.nav.foreldrepenger.oppslag.domain.Name;
-import no.nav.foreldrepenger.oppslag.domain.Person;
 
 public class SerializationTest {
 
@@ -25,7 +17,6 @@ public class SerializationTest {
 	@BeforeAll
 	public static void beforeClass() {
 		mapper = new ObjectMapper();
-		mapper.registerModule(new JodaModule());
 	}
 
 	@Test
@@ -85,7 +76,7 @@ public class SerializationTest {
 	}
 
 	private static LocalDate birthDate() {
-		return DateTime.now().minusMonths(2).toLocalDate();
+		return LocalDate.now().minusMonths(2);
 	}
 
 	private static Fodselsnummer fnr() {

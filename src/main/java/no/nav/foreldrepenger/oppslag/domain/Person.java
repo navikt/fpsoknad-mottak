@@ -1,20 +1,27 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.joda.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 @JsonPropertyOrder({ "id" })
 public class Person {
 
 	private final ID id;
+
+   @JsonSerialize(using = LocalDateSerializer.class)
+   @JsonDeserialize(using = LocalDateDeserializer.class)
 	private final LocalDate fodselsdato;
+
 	private final Adresse adresse;
 	private final Name name;
 	private final List<Barn> barn;
