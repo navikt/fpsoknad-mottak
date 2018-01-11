@@ -4,7 +4,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>no.nav.foreldrepenger</groupId>
    <artifactId>fpsoknad-oppslag</artifactId>
-   <version>0.0.106-SNAPSHOT</version>
+   <version>0.0.108-SNAPSHOT</version>
    <packaging>jar</packaging>
    <parent>
       <groupId>org.springframework.boot</groupId>
@@ -90,6 +90,7 @@
                <vmArgs>
                   <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                </vmArgs>
+               <encoding>utf-8</encoding>
             </configuration>
             <executions>
                <execution>
