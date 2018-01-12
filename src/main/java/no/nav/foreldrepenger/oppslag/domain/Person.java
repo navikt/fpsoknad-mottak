@@ -18,8 +18,6 @@ public class Person {
 
 	private final ID id;
 
-   @JsonSerialize(using = LocalDateSerializer.class)
-   @JsonDeserialize(using = LocalDateDeserializer.class)
 	private final Kjonn kjonn;
  	private final LocalDate fodselsdato;
 

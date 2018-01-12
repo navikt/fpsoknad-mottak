@@ -2,7 +2,11 @@ package no.nav.foreldrepenger.oppslag;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import no.nav.modig.testcertificates.TestCertificates;
 
@@ -26,5 +30,11 @@ public class OppslagApplication {
 		}
 		System.setProperty(key, value);
 	}
+
+	@Bean
+	public Module javaTimeModule() {
+		return new JavaTimeModule();
+	}
+
 
 }
