@@ -11,7 +11,7 @@ import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.ForeldrepengesakV1
 public class FpsakConfiguration {
 
 	@Bean
-	public ForeldrepengesakV1 fpsakV1(@Value("${VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL}") String serviceUrl) {
+	public ForeldrepengesakV1 fpsakV1(@Value("${VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL:}") String serviceUrl) {
 		return new CXFClient<>(ForeldrepengesakV1.class)
          .configureStsForSystemUser()
          .address(serviceUrl)
