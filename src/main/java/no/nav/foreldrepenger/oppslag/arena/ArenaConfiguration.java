@@ -13,7 +13,7 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.YtelseskontraktV3;
 public class ArenaConfiguration {
 
 	@Bean
-	public YtelseskontraktV3 YtelseskontraktV3(@Value("${VIRKSOMHET:YTELSESKONTRKT_V3_ENDPOINTURL}") String serviceUrl) {
+	public YtelseskontraktV3 YtelseskontraktV3(@Value("${VIRKSOMHET:YTELSESKONTRAKT_V3_ENDPOINTURL}") String serviceUrl) {
 		return new CXFClient<>(YtelseskontraktV3.class)
          .configureStsForSystemUser()
          .address(serviceUrl)
