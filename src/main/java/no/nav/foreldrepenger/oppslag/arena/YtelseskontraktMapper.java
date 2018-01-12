@@ -13,7 +13,8 @@ public class YtelseskontraktMapper {
          kontrakt.getStatus(),
          CalendarConverter.toDate(kontrakt.getFomGyldighetsperiode()),
          Optional.ofNullable(kontrakt.getTomGyldighetsperiode())
-            .map(CalendarConverter::toDate));
+            .map(CalendarConverter::toDate),
+         "Arena");
    }
 
 }

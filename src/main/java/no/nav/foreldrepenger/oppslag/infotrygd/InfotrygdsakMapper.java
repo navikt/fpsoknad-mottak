@@ -12,7 +12,8 @@ public class InfotrygdsakMapper {
       return new Ytelse(sak.getTema().getTermnavn(),
          sak.getStatus().getTermnavn(),
          CalendarConverter.toDate(sak.getVedtatt()),
-         Optional.empty());
+         Optional.empty(),
+         "Infotrygd");
    }
 
 }

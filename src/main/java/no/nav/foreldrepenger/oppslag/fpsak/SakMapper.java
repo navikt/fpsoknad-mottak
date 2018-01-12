@@ -13,7 +13,8 @@ public class SakMapper {
          sak.getBehandlingstema().getTermnavn(),
          sak.getStatus().getTermnavn(),
          CalendarConverter.toDate(sak.getOpprettet()),
-         Optional.empty()
+         Optional.empty(),
+         "FPSAK"
       );
    }
 

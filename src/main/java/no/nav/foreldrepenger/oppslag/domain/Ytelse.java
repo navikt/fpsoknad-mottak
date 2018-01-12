@@ -10,12 +10,19 @@ public class Ytelse {
    private String status;
    private LocalDate from;
    private Optional<LocalDate> to;
+   private String origin;
 
-   public Ytelse(String type, String status, LocalDate from, Optional<LocalDate> to) {
+   public Ytelse(
+      String type,
+      String status,
+      LocalDate from,
+      Optional<LocalDate> to,
+      String origin) {
       this.type = type;
       this.status = status;
       this.from = from;
       this.to = to;
+      this.origin = origin;
    }
 
    public String getType() {
@@ -34,6 +41,10 @@ public class Ytelse {
       return to;
    }
 
+   public String getOrigin() {
+      return origin;
+   }
+
    @Override
    public String toString() {
       return "Ytelse{" +
@@ -41,6 +52,7 @@ public class Ytelse {
          ", status='" + status + '\'' +
          ", from=" + from +
          ", to=" + to +
+         ", origin='" + origin + '\'' +
          '}';
    }
 
@@ -52,12 +64,12 @@ public class Ytelse {
       return Objects.equals(type, ytelse.type) &&
          Objects.equals(status, ytelse.status) &&
          Objects.equals(from, ytelse.from) &&
-         Objects.equals(to, ytelse.to);
+         Objects.equals(to, ytelse.to) &&
+         Objects.equals(origin, ytelse.origin);
    }
 
    @Override
    public int hashCode() {
-
-      return Objects.hash(type, status, from, to);
+      return Objects.hash(type, status, from, to, origin);
    }
 }

@@ -27,8 +27,11 @@ public class InfotrygdsakMapperTest {
       tema.setTermnavn("temaet");
       sak.setTema(tema);
       LocalDate date = LocalDate.of(2017, 12, 13);
-      Ytelse expected = new Ytelse("temaet", "statusen",
-         date, Optional.empty());
+      Ytelse expected = new Ytelse(
+         "temaet",
+         "statusen",
+         date, Optional.empty(),
+         "Infotrygd");
       Ytelse actual = InfotrygdsakMapper.map(sak);
       assertEquals(expected, actual);
    }

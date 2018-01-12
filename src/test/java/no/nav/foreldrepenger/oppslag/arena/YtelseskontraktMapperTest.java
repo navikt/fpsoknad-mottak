@@ -25,7 +25,8 @@ public class YtelseskontraktMapperTest {
          "typen",
          "statusen",
          LocalDate.of(2017, 12, 12),
-         Optional.of(LocalDate.of(2017, 12, 13)));
+         Optional.of(LocalDate.of(2017, 12, 13)),
+         "Arena");
       Ytelse actual = YtelseskontraktMapper.map(kontrakt);
       assertEquals(expected, actual);
    }

@@ -30,7 +30,8 @@ public class SakMapperTest {
          "termen",
          "statusen",
          LocalDate.of(2017, 12, 13),
-         Optional.empty());
+         Optional.empty(),
+         "FPSAK");
       Ytelse actual = SakMapper.map(sak);
       assertEquals(expected, actual);
    }
