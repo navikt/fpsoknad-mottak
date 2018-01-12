@@ -20,24 +20,30 @@ public class Person {
 
    @JsonSerialize(using = LocalDateSerializer.class)
    @JsonDeserialize(using = LocalDateDeserializer.class)
-	private final LocalDate fodselsdato;
+	private final Kjonn kjonn;
+ 	private final LocalDate fodselsdato;
 
 	private final Adresse adresse;
 	private final Name name;
 	private final List<Barn> barn;
 
 	@JsonCreator
-	public Person(@JsonProperty("ids") ID id, @JsonProperty("name") Name name, @JsonProperty("adresse") Adresse adresse,
+	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn,@JsonProperty("name") Name name, @JsonProperty("adresse") Adresse adresse,
 	        @JsonProperty("fodselsdato") LocalDate fodselsdato, @JsonProperty("barn") List<Barn> barn) {
 		this.id = id;
+		this.kjonn = kjonn;
 		this.adresse = adresse;
 		this.name = name;
 		this.fodselsdato = fodselsdato;
 		this.barn = barn;
 	}
 
-	public Person(ID id, Name name, LocalDate fodselsdato, Adresse adresse) {
-		this(id, name, adresse, fodselsdato, Collections.emptyList());
+	public Kjonn getKjonn() {
+		return kjonn;
+	}
+
+	public Person(ID id, Kjonn kjonn,Name name, LocalDate fodselsdato, Adresse adresse) {
+		this(id, kjonn,name, adresse, fodselsdato, Collections.emptyList());
 	}
 
 	public ID getId() {
@@ -50,7 +56,7 @@ public class Person {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, adresse, name, fodselsdato, barn);
+		return Objects.hash(id, kjonn,adresse, name, fodselsdato, barn);
 	}
 
 	@Override
@@ -91,6 +97,10 @@ public class Person {
 				return false;
 			}
 		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		
+		if (!kjonn.equals(other.kjonn)) {
 			return false;
 		}
 		if (name == null) {

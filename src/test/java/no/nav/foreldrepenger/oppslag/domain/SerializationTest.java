@@ -18,6 +18,12 @@ public class SerializationTest {
 	public static void beforeClass() {
 		mapper = new ObjectMapper();
 	}
+	
+	@Test
+	public void testKjonnSerialization() throws IOException {
+		Kjonn deserialized = mapper.readValue(write(Kjonn.K), Kjonn.class);
+		assertEquals(Kjonn.K, deserialized);
+	}
 
 	@Test
 	public void testNameSerialization() throws IOException {
@@ -37,7 +43,7 @@ public class SerializationTest {
 
 	@Test
 	public void testPersonSerialization() throws IOException {
-		Person person = new Person(id(), name(), birthDate(), adresse());
+		Person person = new Person(id(), Kjonn.M,name(), birthDate(), adresse());
 		String serialized = write(person);
 		Person deserialized = mapper.readValue(serialized, Person.class);
 		assertEquals(person, deserialized);
