@@ -15,9 +15,9 @@ import no.nav.modig.testcertificates.TestCertificates;
 public class OppslagApplication {
 
 	public static void main(String[] args) {
-		setProperty("no.nav.modig.security.sts.url", System.getProperty("SECURITYTOKENSERVICE_URL"));
-		setProperty("no.nav.modig.security.systemuser.username", System.getProperty("FPSELVBETJENING_USERNAME"));
-		setProperty("no.nav.modig.security.systemuser.password", System.getProperty("FPSELVBETJENING_PASSWORD"));
+		setProperty("no.nav.modig.security.sts.url", System.getEnv("SECURITYTOKENSERVICE_URL"));
+		setProperty("no.nav.modig.security.systemuser.username", System.getEnv("FPSELVBETJENING_USERNAME"));
+		setProperty("no.nav.modig.security.systemuser.password", System.getEnv("FPSELVBETJENING_PASSWORD"));
 
 		TestCertificates.setupKeyAndTrustStore();
 
