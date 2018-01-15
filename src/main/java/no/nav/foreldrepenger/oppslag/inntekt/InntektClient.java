@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.oppslag.domain.AktorId;
+import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.Income;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
@@ -32,8 +34,8 @@ public class InntektClient {
 		this.inntektV3 = inntektV3;
 	}
 
-	public List<Income> incomeForPeriod(String aktoerId, LocalDate from, LocalDate to) {
-		HentInntektListeRequest req = request(aktoerId, from, to);
+	public List<Income> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+		HentInntektListeRequest req = request(fnr, from, to);
 		try {
 			HentInntektListeResponse res = inntektV3.hentInntektListe(req);
 			return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
@@ -45,11 +47,11 @@ public class InntektClient {
 		}
 	}
 
-	private HentInntektListeRequest request(String aktoerId, LocalDate from, LocalDate to) {
+	private HentInntektListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
 		HentInntektListeRequest req = new HentInntektListeRequest();
 
 		PersonIdent person = new PersonIdent();
-		person.setPersonIdent(aktoerId);
+		person.setPersonIdent(fnr.getFnr());
 		req.setIdent(person);
 
 		Ainntektsfilter ainntektsfilter = new Ainntektsfilter();

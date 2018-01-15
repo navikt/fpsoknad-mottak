@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
 
 @RestController
@@ -24,7 +25,7 @@ class InntektController {
 	}
 
 	@RequestMapping(method = { RequestMethod.GET }, value = "/income")
-	public ResponseEntity<?> incomeForAktor(@RequestParam("fnr") String fnr) {
+	public ResponseEntity<?> incomeForAktor(@RequestParam("fnr") Fodselsnummer fnr) {
 		LocalDate tenMonthsAgo = LocalDate.now().minusMonths(10);
 		try {
 			return ResponseEntity.ok(inntektClient.incomeForPeriod(fnr, tenMonthsAgo, LocalDate.now()));

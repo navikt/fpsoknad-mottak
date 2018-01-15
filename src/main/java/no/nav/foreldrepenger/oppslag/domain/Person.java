@@ -36,7 +36,7 @@ public class Person {
 	public Kjonn getKjonn() {
 		return kjonn;
 	}
-
+	
 	public Person(ID id, Kjonn kjonn, Navn name, LocalDate fodselsdato, Adresse adresse) {
 		this(id, kjonn, name, adresse, fodselsdato, Collections.emptyList());
 	}
