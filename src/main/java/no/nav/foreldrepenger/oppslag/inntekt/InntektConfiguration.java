@@ -5,7 +5,8 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import no.nav.arbeid.cxfclient.CXFClient;
+import no.nav.foreldrepenger.oppslag.ws.CallIdHeader;
+import no.nav.foreldrepenger.oppslag.ws.WsClient;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 
 @SpringBootConfiguration
@@ -14,6 +15,7 @@ public class InntektConfiguration {
 
 	@Bean
 	public InntektV3 inntektV3(@Value("${VIRKSOMHET_INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
-		return new CXFClient<>(InntektV3.class).configureStsForSystemUser().address(serviceUrl).build();
+		return new WsClient<InntektV3>()
+         .createPort(serviceUrl, InntektV3.class, new CallIdHeader());
 	}
 }

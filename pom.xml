@@ -20,6 +20,7 @@
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
       <maven.jaxb-plugin.version>0.13.3</maven.jaxb-plugin.version>
+      <cxf.version>3.2.0</cxf.version>
    </properties>
 
    <scm>
@@ -199,11 +200,6 @@
          <version>1</version>
       </dependency>
       <dependency>
-         <groupId>no.nav.arbeid</groupId>
-         <artifactId>pam-cxfclient</artifactId>
-         <version>3</version>
-      </dependency>
-      <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-test</artifactId>
          <scope>test</scope>
@@ -256,6 +252,26 @@
       <dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.cxf</groupId>
+         <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+         <version>${cxf.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.cxf</groupId>
+         <artifactId>cxf-rt-features-logging</artifactId>
+         <version>${cxf.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.cxf</groupId>
+         <artifactId>cxf-rt-ws-security</artifactId>
+         <version>${cxf.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.cxf</groupId>
+         <artifactId>cxf-rt-ws-policy</artifactId>
+         <version>${cxf.version}</version>
       </dependency>
       <dependency>
          <groupId>ch.qos.logback</groupId>
