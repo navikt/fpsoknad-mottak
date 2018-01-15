@@ -27,7 +27,7 @@ public class CommonControllerErrorHandlers {
 	}
 
 	@ExceptionHandler({ ForbiddenException.class })
-	public ResponseEntity<String> handleNotPermittedException(NotFoundException e) {
+	public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
 		return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
 	}
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,11 +29,7 @@ class FpsakController {
 
 	@RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
 	public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("fnr") String fnr) {
-		try {
-			Fodselsnummer f = new Fodselsnummer(fnr);
-			return ResponseEntity.ok(fpsakClient.casesFor(aktorClient.aktorIdForFnr(f)));
-		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+      Fodselsnummer f = new Fodselsnummer(fnr);
+      return ResponseEntity.ok(fpsakClient.casesFor(aktorClient.aktorIdForFnr(f)));
 	}
 }

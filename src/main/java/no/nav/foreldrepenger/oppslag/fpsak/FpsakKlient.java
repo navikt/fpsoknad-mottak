@@ -43,7 +43,7 @@ public class FpsakKlient {
 			throw new ForbiddenException(ex);
 		} catch (Exception ex) {
 			log.warn("Error while reading from Fpsak", ex);
-			throw new RuntimeException("Error while reading from Infotrygd", ex);
+			throw new RuntimeException("Error while reading from Fpsak", ex);
 		}
 	}
 
