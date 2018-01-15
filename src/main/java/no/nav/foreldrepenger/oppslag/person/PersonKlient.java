@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.oppslag.domain.Barn;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.ID;
 import no.nav.foreldrepenger.oppslag.domain.Kjonn;
-import no.nav.foreldrepenger.oppslag.domain.Name;
+import no.nav.foreldrepenger.oppslag.domain.Navn;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
@@ -116,8 +116,8 @@ public class PersonKlient {
 		throw new IllegalStateException("Address av type " + adresse.getClass().getSimpleName() + " ikke støttet");
 	}
 
-	private static Name name(Personnavn navn) {
-		return new Name(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
+	private static Navn name(Personnavn navn) {
+		return new Navn(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
 	}
 
 }

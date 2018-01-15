@@ -18,11 +18,11 @@ public class Person {
 	private final LocalDate fodselsdato;
 
 	private final Adresse adresse;
-	private final Name navn;
+	private final Navn navn;
 	private final List<Barn> barn;
 
 	@JsonCreator
-	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn, @JsonProperty("navn") Name navn,
+	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn, @JsonProperty("navn") Navn navn,
 	        @JsonProperty("adresse") Adresse adresse, @JsonProperty("fodselsdato") LocalDate fodselsdato,
 	        @JsonProperty("barn") List<Barn> barn) {
 		this.id = id;
@@ -37,7 +37,7 @@ public class Person {
 		return kjonn;
 	}
 
-	public Person(ID id, Kjonn kjonn, Name name, LocalDate fodselsdato, Adresse adresse) {
+	public Person(ID id, Kjonn kjonn, Navn name, LocalDate fodselsdato, Adresse adresse) {
 		this(id, kjonn, name, adresse, fodselsdato, Collections.emptyList());
 	}
 
@@ -116,7 +116,7 @@ public class Person {
 		return adresse;
 	}
 
-	public Name getNavn() {
+	public Navn getNavn() {
 		return navn;
 	}
 

@@ -5,21 +5,21 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Name {
+public class Navn {
 
 	private String fornavn;
 	private String mellomnavn;
 	private String etternavn;
 
 	@JsonCreator
-	public Name(@JsonProperty("fornavn") String fornavn, @JsonProperty("mellomnavn") String mellomnavn,
+	public Navn(@JsonProperty("fornavn") String fornavn, @JsonProperty("mellomnavn") String mellomnavn,
 	        @JsonProperty("etternavn") String etternavn) {
 		this.fornavn = fornavn;
 		this.mellomnavn = mellomnavn;
 		this.etternavn = etternavn;
 	}
 
-	public Name(String fornavn, String etternavn) {
+	public Navn(String fornavn, String etternavn) {
 		this(fornavn, null, etternavn);
 	}
 
@@ -39,7 +39,7 @@ public class Name {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Name other = (Name) obj;
+		Navn other = (Navn) obj;
 		if (etternavn == null) {
 			if (other.etternavn != null) {
 				return false;

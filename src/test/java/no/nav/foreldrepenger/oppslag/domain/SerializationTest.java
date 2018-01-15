@@ -32,9 +32,9 @@ public class SerializationTest {
 
 	@Test
 	public void testNameSerialization() throws IOException {
-		Name name = name();
+		Navn name = name();
 		String serialized = write(name);
-		Name deserialized = mapper.readValue(serialized, Name.class);
+		Navn deserialized = mapper.readValue(serialized, Navn.class);
 		assertEquals(name, deserialized);
 	}
 
@@ -82,8 +82,8 @@ public class SerializationTest {
 		return new ID(aktoer(), fnr());
 	}
 
-	private static Name name() {
-		return new Name("Jan-Olav", "Eide");
+	private static Navn name() {
+		return new Navn("Jan-Olav", "Eide");
 	}
 
 	private static LocalDate birthDate() {
