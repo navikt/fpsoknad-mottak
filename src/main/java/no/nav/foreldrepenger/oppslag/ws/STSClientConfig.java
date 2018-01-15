@@ -19,9 +19,9 @@ import org.apache.cxf.ws.security.trust.STSClient;
 import org.apache.neethi.Policy;
 
 public class STSClientConfig {
-	public static final String STS_URL_KEY = "securityTokenService.url";
-	public static final String SERVICEUSER_USERNAME="serviceuser.username";
-	public static final String SERVICEUSER_PASSWORD="serviceuser.password";
+	public static final String STS_URL_KEY = "SECURITYTOKENSERVICE_URL";
+	public static final String SERVICEUSER_USERNAME="FPSELVBETJENING_USERNAME";
+	public static final String SERVICEUSER_PASSWORD="FPSELVBETJENING_PASSWORD";
 
 	//Only use no transportbinding on localhost, should use the requestSamlPolicy.xml with transport binding https
 	//when in production.
@@ -34,6 +34,7 @@ public class STSClientConfig {
         configureStsRequestSamlToken(client, true);
         return port;
     }
+
 
 	public static <T> T configureRequestSamlTokenOnBehalfOfOidc(T port) {
 		Client client = ClientProxy.getClient(port);
@@ -104,9 +105,14 @@ public class STSClientConfig {
     }
 
     private static String requireProperty(String key) {
+        String property = System.getenv(key);
+        return property != null ? property : systemProperty(key);
+    }
+    
+    private static String systemProperty(String key) {
         String property = System.getProperty(key);
         if (property == null) {
-            throw new RuntimeException("Required property " + key + " not available.");
+            throw new IllegalStateException("Required property " + key + " not available.");
         }
         return property;
     }
