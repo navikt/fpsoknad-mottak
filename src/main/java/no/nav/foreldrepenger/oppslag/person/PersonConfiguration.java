@@ -18,8 +18,7 @@ public class PersonConfiguration {
 
 	@Bean
 	public PersonV3 personV3(@Value("${VIRKSOMHET_PERSON_V3_ENDPOINTURL}") String serviceUrl) {
-      return new WsClient<PersonV3>()
-         .createPort(serviceUrl, PersonV3.class);
+		return new WsClient<PersonV3>().createPort(serviceUrl, PersonV3.class);
 	}
 
 	@Bean

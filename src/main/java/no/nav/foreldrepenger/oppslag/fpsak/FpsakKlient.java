@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.fpsak;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,27 +32,23 @@ public class FpsakKlient {
 	}
 
 	public List<Ytelse> casesFor(AktorId aktor) {
-      FinnSakListeRequest req = new FinnSakListeRequest();
-      Aktoer a = new Aktoer();
-      a.setAktoerId(aktor.getValue());
-      req.setSakspart(a);
+		FinnSakListeRequest req = new FinnSakListeRequest();
+		Aktoer a = new Aktoer();
+		a.setAktoerId(aktor.getValue());
+		req.setSakspart(a);
 		try {
-         FinnSakListeResponse res = fpsakV1.finnSakListe(req);
-         return res.getSakListe().stream()
-            .map(SakMapper::map)
-            .collect(toList());
+			FinnSakListeResponse res = fpsakV1.finnSakListe(req);
+			return res.getSakListe().stream().map(SakMapper::map).collect(toList());
 		} catch (FinnSakListeSikkerhetsbegrensning ex) {
 			throw new ForbiddenException(ex);
 		} catch (Exception ex) {
-         log.warn("Error while reading from Fpsak", ex);
-         throw new RuntimeException("Error while reading from Infotrygd", ex);
-      }
+			log.warn("Error while reading from Fpsak", ex);
+			throw new RuntimeException("Error while reading from Infotrygd", ex);
+		}
 	}
 
-   @Override
-   public String toString() {
-      return "FpsakKlient{" +
-         "fpsakV1=" + fpsakV1 +
-         '}';
-   }
+	@Override
+	public String toString() {
+		return "FpsakKlient{" + "fpsakV1=" + fpsakV1 + '}';
+	}
 }

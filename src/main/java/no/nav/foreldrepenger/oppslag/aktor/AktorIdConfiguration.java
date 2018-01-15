@@ -12,7 +12,6 @@ public class AktorIdConfiguration {
 
 	@Bean
 	public AktoerV2 aktorV2(@Value("${AKTOER_V2_ENDPOINTURL}") String serviceUrl) {
-		return new WsClient<AktoerV2>()
-         .createPort(serviceUrl, AktoerV2.class);
+		return new WsClient<AktoerV2>().createPort(serviceUrl, AktoerV2.class);
 	}
 }

@@ -15,7 +15,6 @@ public class InntektConfiguration {
 
 	@Bean
 	public InntektV3 inntektV3(@Value("${VIRKSOMHET_INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
-		return new WsClient<InntektV3>()
-         .createPort(serviceUrl, InntektV3.class, new CallIdHeader());
+		return new WsClient<InntektV3>().createPort(serviceUrl, InntektV3.class, new CallIdHeader());
 	}
 }

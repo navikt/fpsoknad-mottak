@@ -14,8 +14,7 @@ public class InfotrygdConfiguration {
 
 	@Bean
 	public InfotrygdSakV1 infotrygdSakV1(@Value("${VIRKSOMHET:INFOTRYGDSAK_V1_ENDPOINTURL}") String serviceUrl) {
-		return new WsClient<InfotrygdSakV1>()
-         .createPort(serviceUrl, InfotrygdSakV1.class);
+		return new WsClient<InfotrygdSakV1>().createPort(serviceUrl, InfotrygdSakV1.class);
 	}
 
 }

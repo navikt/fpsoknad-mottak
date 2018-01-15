@@ -22,33 +22,31 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.meldinger.HentYtelseskontra
 
 @Component
 public class ArenaClient {
-   private static final Logger log = LoggerFactory.getLogger(ArenaClient.class);
+	private static final Logger log = LoggerFactory.getLogger(ArenaClient.class);
 
-   private YtelseskontraktV3 ytelseskontraktV3;
+	private YtelseskontraktV3 ytelseskontraktV3;
 
-   @Inject
-   public ArenaClient(YtelseskontraktV3 ytelseskontraktV3) {
-      this.ytelseskontraktV3 = ytelseskontraktV3;
-   }
+	@Inject
+	public ArenaClient(YtelseskontraktV3 ytelseskontraktV3) {
+		this.ytelseskontraktV3 = ytelseskontraktV3;
+	}
 
-   public List<Ytelse> ytelser(String fnr, LocalDate from, LocalDate to) {
-      HentYtelseskontraktListeRequest req = new HentYtelseskontraktListeRequest();
-      Periode periode = new Periode();
-      periode.setFom(CalendarConverter.toCalendar(from));
-      periode.setTom(CalendarConverter.toCalendar(to));
-      req.setPeriode(periode);
-      req.setPersonidentifikator(fnr);
-      try {
-         HentYtelseskontraktListeResponse res = ytelseskontraktV3.hentYtelseskontraktListe(req);
-         return res.getYtelseskontraktListe().stream()
-            .map(YtelseskontraktMapper::map)
-            .collect(toList());
-      } catch(HentYtelseskontraktListeSikkerhetsbegrensning ex) {
-         log.warn("Security error from Arena", ex);
-         throw new ForbiddenException(ex);
-      } catch (Exception ex) {
-         log.warn("Error while retrieving ytelse", ex);
-         throw new RuntimeException("Error while retrieving ytelse: " + ex.getMessage());
-      }
-   }
+	public List<Ytelse> ytelser(String fnr, LocalDate from, LocalDate to) {
+		HentYtelseskontraktListeRequest req = new HentYtelseskontraktListeRequest();
+		Periode periode = new Periode();
+		periode.setFom(CalendarConverter.toCalendar(from));
+		periode.setTom(CalendarConverter.toCalendar(to));
+		req.setPeriode(periode);
+		req.setPersonidentifikator(fnr);
+		try {
+			HentYtelseskontraktListeResponse res = ytelseskontraktV3.hentYtelseskontraktListe(req);
+			return res.getYtelseskontraktListe().stream().map(YtelseskontraktMapper::map).collect(toList());
+		} catch (HentYtelseskontraktListeSikkerhetsbegrensning ex) {
+			log.warn("Security error from Arena", ex);
+			throw new ForbiddenException(ex);
+		} catch (Exception ex) {
+			log.warn("Error while retrieving ytelse", ex);
+			throw new RuntimeException("Error while retrieving ytelse: " + ex.getMessage());
+		}
+	}
 }

@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.infotrygd;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,25 +35,23 @@ public class InfotrygdClient {
 
 	public List<Ytelse> casesFor(String fnr, LocalDate from, LocalDate to) {
 		FinnSakListeRequest req = new FinnSakListeRequest();
-      Periode periode = new Periode();
-      periode.setFom(CalendarConverter.toCalendar(from));
-      periode.setTom(CalendarConverter.toCalendar(to));
-      req.setPeriode(periode);
+		Periode periode = new Periode();
+		periode.setFom(CalendarConverter.toCalendar(from));
+		periode.setTom(CalendarConverter.toCalendar(to));
+		req.setPeriode(periode);
 		req.setPersonident(fnr);
 		try {
 			FinnSakListeResponse res = infotrygd.finnSakListe(req);
-			return res.getSakListe().stream()
-            .map(InfotrygdsakMapper::map)
-            .collect(toList());
+			return res.getSakListe().stream().map(InfotrygdsakMapper::map).collect(toList());
 		} catch (FinnSakListePersonIkkeFunnet ex) {
 			throw new NotFoundException(ex);
 		} catch (FinnSakListeSikkerhetsbegrensning ex) {
-         log.warn("Security error from Infotrygd", ex);
-         throw new ForbiddenException(ex);
-      } catch (Exception ex) {
-         log.warn("Error while reading from Infotrygd", ex);
-         throw new RuntimeException("Error while reading from Infotrygd", ex);
-      }
+			log.warn("Security error from Infotrygd", ex);
+			throw new ForbiddenException(ex);
+		} catch (Exception ex) {
+			log.warn("Error while reading from Infotrygd", ex);
+			throw new RuntimeException("Error while reading from Infotrygd", ex);
+		}
 	}
 
 }

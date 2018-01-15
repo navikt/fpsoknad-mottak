@@ -25,7 +25,6 @@ import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensn
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Kjoennstyper;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
@@ -59,7 +58,8 @@ public class PersonKlient {
 
 	private no.nav.foreldrepenger.oppslag.domain.Person person(ID id,
 	        no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-		return new no.nav.foreldrepenger.oppslag.domain.Person(id, Kjonn.valueOf(person.getKjoenn().getKjoenn().getValue()),name(person.getPersonnavn()),
+		return new no.nav.foreldrepenger.oppslag.domain.Person(id,
+		        Kjonn.valueOf(person.getKjoenn().getKjoenn().getValue()), name(person.getPersonnavn()),
 		        address(person.getBostedsadresse().getStrukturertAdresse()), birthDate(person), barnFor(person));
 	}
 

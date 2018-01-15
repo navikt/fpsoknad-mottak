@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.oppslag.config;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +14,7 @@ public class JacksonModuleConfiguration {
 	public Module javaTimeModule() {
 		return new JavaTimeModule();
 	}
-	
+
 	@Bean
 	public Module jdk8Module() {
 		return new Jdk8Module();

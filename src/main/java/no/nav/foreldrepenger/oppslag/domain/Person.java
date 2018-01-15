@@ -8,10 +8,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 @JsonPropertyOrder({ "id" })
 public class Person {
@@ -19,15 +15,16 @@ public class Person {
 	private final ID id;
 
 	private final Kjonn kjonn;
- 	private final LocalDate fodselsdato;
+	private final LocalDate fodselsdato;
 
 	private final Adresse adresse;
 	private final Name name;
 	private final List<Barn> barn;
 
 	@JsonCreator
-	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn,@JsonProperty("name") Name name, @JsonProperty("adresse") Adresse adresse,
-	        @JsonProperty("fodselsdato") LocalDate fodselsdato, @JsonProperty("barn") List<Barn> barn) {
+	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn, @JsonProperty("name") Name name,
+	        @JsonProperty("adresse") Adresse adresse, @JsonProperty("fodselsdato") LocalDate fodselsdato,
+	        @JsonProperty("barn") List<Barn> barn) {
 		this.id = id;
 		this.kjonn = kjonn;
 		this.adresse = adresse;
@@ -40,8 +37,8 @@ public class Person {
 		return kjonn;
 	}
 
-	public Person(ID id, Kjonn kjonn,Name name, LocalDate fodselsdato, Adresse adresse) {
-		this(id, kjonn,name, adresse, fodselsdato, Collections.emptyList());
+	public Person(ID id, Kjonn kjonn, Name name, LocalDate fodselsdato, Adresse adresse) {
+		this(id, kjonn, name, adresse, fodselsdato, Collections.emptyList());
 	}
 
 	public ID getId() {
@@ -54,7 +51,7 @@ public class Person {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, kjonn,adresse, name, fodselsdato, barn);
+		return Objects.hash(id, kjonn, adresse, name, fodselsdato, barn);
 	}
 
 	@Override
@@ -97,7 +94,7 @@ public class Person {
 		} else if (!id.equals(other.id)) {
 			return false;
 		}
-		
+
 		if (!kjonn.equals(other.kjonn)) {
 			return false;
 		}

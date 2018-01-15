@@ -18,8 +18,8 @@ public class FNRSjekkendeBarnutvelger implements Barnutvelger {
 
 	@Override
 	public boolean erStonadsberettigetBarn(Fodselsnummer fnrMor, Barn barn) {
-		return (barn != null) && (barn.getFnr().getFnr().length() == 11) &&
-         LocalDate.parse(barn.getFnr().getFnr().substring(0, 6), FMT).isAfter(LocalDate.now().minusMonths(monthsBack));
+		return (barn != null) && (barn.getFnr().getFnr().length() == 11) && LocalDate
+		        .parse(barn.getFnr().getFnr().substring(0, 6), FMT).isAfter(LocalDate.now().minusMonths(monthsBack));
 	}
 
 	@Override

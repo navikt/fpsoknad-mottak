@@ -8,12 +8,9 @@ import no.nav.tjeneste.virksomhet.infotrygdsak.v1.informasjon.InfotrygdSak;
 
 public class InfotrygdsakMapper {
 
-   public static Ytelse map(InfotrygdSak sak) {
-      return new Ytelse(sak.getTema().getTermnavn(),
-         sak.getStatus().getTermnavn(),
-         CalendarConverter.toDate(sak.getVedtatt()),
-         Optional.empty(),
-         "Infotrygd");
-   }
+	public static Ytelse map(InfotrygdSak sak) {
+		return new Ytelse(sak.getTema().getTermnavn(), sak.getStatus().getTermnavn(),
+		        CalendarConverter.toDate(sak.getVedtatt()), Optional.empty(), "Infotrygd");
+	}
 
 }

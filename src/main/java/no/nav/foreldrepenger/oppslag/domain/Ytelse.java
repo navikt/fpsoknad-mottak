@@ -15,7 +15,7 @@ public class Ytelse {
 
 	private String type;
 	private String status;
-	@JsonDeserialize(using = LocalDateDeserializer.class)  
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonSerialize(using = LocalDateSerializer.class)
 	private LocalDate from;
 	private Optional<LocalDate> to;
