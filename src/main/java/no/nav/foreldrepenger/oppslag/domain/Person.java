@@ -8,16 +8,19 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 @JsonPropertyOrder({ "id" })
 public class Person {
 
+	@JsonUnwrapped
 	private final ID id;
 
 	private final Kjonn kjonn;
 	private final LocalDate fodselsdato;
 
 	private final Adresse adresse;
+	@JsonUnwrapped
 	private final Navn navn;
 	private final List<Barn> barn;
 

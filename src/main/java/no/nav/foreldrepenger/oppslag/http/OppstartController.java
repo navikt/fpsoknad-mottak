@@ -39,7 +39,7 @@ public class OppstartController {
 	InntektClient inntektClient;
 
 	@GetMapping(value = "/")
-	public ResponseEntity<SøkerInformasjon> person(
+	public ResponseEntity<SøkerInformasjon> oppstart(
 	        @Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
 		AktorId aktorid = aktorClient.aktorIdForFnr(fnr);
 		Person person = personClient.hentPersonInfo(new ID(aktorid, fnr));
