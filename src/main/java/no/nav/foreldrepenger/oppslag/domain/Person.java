@@ -13,14 +13,14 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 @JsonPropertyOrder({ "id" })
 public class Person {
 
-	@JsonUnwrapped
+	//@JsonUnwrapped
 	private final ID id;
 
 	private final Kjonn kjonn;
 	private final LocalDate fodselsdato;
 
 	private final Adresse adresse;
-	@JsonUnwrapped
+	//@JsonUnwrapped
 	private final Navn navn;
 	private final List<Barn> barn;
 
