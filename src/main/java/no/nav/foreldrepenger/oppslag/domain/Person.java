@@ -18,17 +18,17 @@ public class Person {
 	private final LocalDate fodselsdato;
 
 	private final Adresse adresse;
-	private final Name name;
+	private final Name navn;
 	private final List<Barn> barn;
 
 	@JsonCreator
-	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn, @JsonProperty("name") Name name,
+	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn, @JsonProperty("navn") Name navn,
 	        @JsonProperty("adresse") Adresse adresse, @JsonProperty("fodselsdato") LocalDate fodselsdato,
 	        @JsonProperty("barn") List<Barn> barn) {
 		this.id = id;
 		this.kjonn = kjonn;
 		this.adresse = adresse;
-		this.name = name;
+		this.navn = navn;
 		this.fodselsdato = fodselsdato;
 		this.barn = barn;
 	}
@@ -51,7 +51,7 @@ public class Person {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, kjonn, adresse, name, fodselsdato, barn);
+		return Objects.hash(id, kjonn, adresse, navn, fodselsdato, barn);
 	}
 
 	@Override
@@ -98,11 +98,11 @@ public class Person {
 		if (!kjonn.equals(other.kjonn)) {
 			return false;
 		}
-		if (name == null) {
-			if (other.name != null) {
+		if (navn == null) {
+			if (other.navn != null) {
 				return false;
 			}
-		} else if (!name.equals(other.name)) {
+		} else if (!navn.equals(other.navn)) {
 			return false;
 		}
 		return true;
@@ -116,14 +116,14 @@ public class Person {
 		return adresse;
 	}
 
-	public Name getName() {
-		return name;
+	public Name getNavn() {
+		return navn;
 	}
 
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " [id=" + id + ", fodselsdato=" + fodselsdato + ", adresse=" + adresse
-		        + ", name=" + name + ", barn=" + barn + "]";
+		        + ", navn=" + navn + ", barn=" + barn + "]";
 	}
 
 }
