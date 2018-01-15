@@ -109,8 +109,7 @@ public class SerializationTest {
 
 	private String write(Object obj) throws JsonProcessingException {
 		String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-		System.out.println(serialized);
 		return serialized;
-		
+
 	}
 }
