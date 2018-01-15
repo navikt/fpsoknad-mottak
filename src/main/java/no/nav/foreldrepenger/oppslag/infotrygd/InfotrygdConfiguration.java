@@ -5,7 +5,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import no.nav.arbeid.cxfclient.CXFClient;
+import no.nav.foreldrepenger.oppslag.ws.WsClient;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
 
 @SpringBootConfiguration
@@ -14,10 +14,8 @@ public class InfotrygdConfiguration {
 
 	@Bean
 	public InfotrygdSakV1 infotrygdSakV1(@Value("${VIRKSOMHET:INFOTRYGDSAK_V1_ENDPOINTURL}") String serviceUrl) {
-		return new CXFClient<>(InfotrygdSakV1.class)
-         .configureStsForSystemUser()
-         .address(serviceUrl)
-         .build();
+		return new WsClient<InfotrygdSakV1>()
+         .createPort(serviceUrl, InfotrygdSakV1.class);
 	}
 
 }
