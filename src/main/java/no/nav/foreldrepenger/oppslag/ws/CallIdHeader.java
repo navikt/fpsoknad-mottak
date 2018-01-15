@@ -10,8 +10,12 @@ import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CallIdHeader extends AbstractPhaseInterceptor<Message> {
+
+   private static final Logger logger = LoggerFactory.getLogger(CallIdHeader.class);
 
    public CallIdHeader() {
       super(Phase.PRE_STREAM);
@@ -25,7 +29,7 @@ public class CallIdHeader extends AbstractPhaseInterceptor<Message> {
             randomValue(), new JAXBDataBinding(String.class));
          ((SoapMessage) message).getHeaders().add(header);
       } catch (JAXBException ex) {
-         ex.printStackTrace();
+         logger.warn("Error while setting CallId header", ex);
       }
    }
 
