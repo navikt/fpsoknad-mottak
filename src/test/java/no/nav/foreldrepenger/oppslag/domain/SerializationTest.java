@@ -9,6 +9,7 @@ import org.junit.jupiter.api.*;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class SerializationTest {
@@ -19,6 +20,8 @@ public class SerializationTest {
 	public static void beforeClass() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
+		mapper.registerModule(new Jdk8Module());
+		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 	}
 	
 	@Test
