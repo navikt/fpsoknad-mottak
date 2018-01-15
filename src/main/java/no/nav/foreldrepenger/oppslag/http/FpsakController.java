@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.domain.AktorId;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.fpsak.FpsakKlient;
 
@@ -28,8 +28,8 @@ class FpsakController {
 	}
 
 	@RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
-	public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("fnr") String fnr) {
-      Fodselsnummer f = new Fodselsnummer(fnr);
-      return ResponseEntity.ok(fpsakClient.casesFor(aktorClient.aktorIdForFnr(f)));
+	public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("aktor") String aktorId) {
+      AktorId aktor = new AktorId(aktorId);
+      return ResponseEntity.ok(fpsakClient.casesFor(aktor));
 	}
 }
