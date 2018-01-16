@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.oppslag.orchestrate;
 
 import static java.util.stream.Collectors.toList;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -12,12 +11,12 @@ import javax.inject.Inject;
 
 import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
 import no.nav.foreldrepenger.oppslag.arena.ArenaSupplier;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.foreldrepenger.oppslag.domain.ID;
 import no.nav.foreldrepenger.oppslag.domain.Income;
 import no.nav.foreldrepenger.oppslag.domain.LookupResult;
 import no.nav.foreldrepenger.oppslag.domain.LookupStatus;
 import no.nav.foreldrepenger.oppslag.domain.Pair;
-import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.foreldrepenger.oppslag.fpsak.FpsakKlient;
 import no.nav.foreldrepenger.oppslag.fpsak.FpsakSupplier;
 import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
@@ -45,8 +44,6 @@ public class CoordinatedLookup {
    }
 
    public Pair<List<LookupResult<Income>>, List<LookupResult<Benefit>>> gimmeAllYouGot(ID person) {
-      LocalDate now = LocalDate.now();
-      LocalDate aYearAgo = now.minusMonths(12);
 
       CompletableFuture<LookupResult<Income>> inntektskomponenten =
          CompletableFuture.supplyAsync(new InntektSupplier(inntektClient, person.getFnr(), 12))
