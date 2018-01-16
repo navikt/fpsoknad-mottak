@@ -70,7 +70,7 @@ public class STSClientConfig {
 	 * TokenType as a child to SecondaryParameters. Standard CXF client put both elements in SecondaryParameters. By
 	 * overriding the useSecondaryParameters method you can exactly specify the request in the
 	 * RequestSecurityTokenTemplate in the policy.
-	 * 
+	 *
 	 * @param bus
 	 * @return */
 	protected static STSClient createCustomSTSClient(Bus bus) {

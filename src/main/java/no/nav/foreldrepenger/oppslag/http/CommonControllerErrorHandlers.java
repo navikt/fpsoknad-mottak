@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
+import no.nav.foreldrepenger.oppslag.domain.exceptions.IncompleteRequestException;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
 
 @ControllerAdvice
@@ -18,6 +19,11 @@ public class CommonControllerErrorHandlers {
 
 	@ExceptionHandler({ ConstraintViolationException.class })
 	public ResponseEntity<String> handleValidationException(ConstraintViolationException e) {
+		return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+	}
+	
+	@ExceptionHandler({ IncompleteRequestException.class })
+	public ResponseEntity<String> handleIncompleteRequestException(IncompleteRequestException e) {
 		return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
 	}
 

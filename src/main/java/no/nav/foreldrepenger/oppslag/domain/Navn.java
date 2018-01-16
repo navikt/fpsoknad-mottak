@@ -2,25 +2,16 @@ package no.nav.foreldrepenger.oppslag.domain;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Navn {
 
-	private String fornavn;
-	private String mellomnavn;
-	private String etternavn;
+	private final String fornavn;
+	private final String mellomnavn;
+	private final String etternavn;
 
-	@JsonCreator
-	public Navn(@JsonProperty("fornavn") String fornavn, @JsonProperty("mellomnavn") String mellomnavn,
-	        @JsonProperty("etternavn") String etternavn) {
+	public Navn(String fornavn, String mellomnavn, String etternavn) {
 		this.fornavn = fornavn;
 		this.mellomnavn = mellomnavn;
 		this.etternavn = etternavn;
-	}
-
-	public Navn(String fornavn, String etternavn) {
-		this(fornavn, null, etternavn);
 	}
 
 	@Override
@@ -68,24 +59,12 @@ public class Navn {
 		return fornavn;
 	}
 
-	public void setFornavn(String fornavn) {
-		this.fornavn = fornavn;
-	}
-
 	public String getMellomnavn() {
 		return mellomnavn;
 	}
 
-	public void setMellomnavn(String mellomnavn) {
-		this.mellomnavn = mellomnavn;
-	}
-
 	public String getEtternavn() {
 		return etternavn;
-	}
-
-	public void setEtternavn(String etternavn) {
-		this.etternavn = etternavn;
 	}
 
 	@Override

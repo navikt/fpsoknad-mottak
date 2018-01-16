@@ -3,9 +3,6 @@ package no.nav.foreldrepenger.oppslag.domain;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Barn {
 
 	private final Fodselsnummer fnr;
@@ -13,9 +10,7 @@ public class Barn {
 
 	private final LocalDate birthDate;
 
-	@JsonCreator
-	public Barn(@JsonProperty("fnrMor") Fodselsnummer fnrMor, @JsonProperty("fnr") Fodselsnummer fnr,
-	        @JsonProperty("birthDate") LocalDate birthDate) {
+	public Barn(Fodselsnummer fnrMor, Fodselsnummer fnr, LocalDate birthDate) {
 		this.fnr = fnr;
 		this.birthDate = birthDate;
 		this.fnrMor = fnrMor;

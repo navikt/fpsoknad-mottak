@@ -2,14 +2,12 @@ package no.nav.foreldrepenger.oppslag.domain;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class AktorId {
 
 	private final String value;
 
-	@JsonCreator
 	public AktorId(String value) {
 		this.value = value;
 	}

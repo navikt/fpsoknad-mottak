@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Fodselsnummer {
@@ -12,7 +11,6 @@ public class Fodselsnummer {
 	@Size(min = 11, max = 11)
 	private final String fnr;
 
-	@JsonCreator
 	public Fodselsnummer(String fnr) {
 		this.fnr = fnr;
 	}

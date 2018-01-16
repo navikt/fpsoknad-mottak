@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.oppslag.inntekt;
 
 import static java.util.stream.Collectors.toList;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,10 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.oppslag.domain.AktorId;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.Income;
+import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
+import no.nav.foreldrepenger.oppslag.domain.exceptions.IncompleteRequestException;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter;
+import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeUgyldigInput;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Ainntektsfilter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Formaal;
@@ -41,9 +46,12 @@ public class InntektClient {
 			return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
 			        .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
 			        .map(InntektMapper::map).collect(toList());
-		} catch (Exception ex) {
-			log.warn("Error while retrieving income", ex);
-			throw new RuntimeException("Error while retrieving income data: " + ex.getMessage());
+		} catch (HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter | HentInntektListeSikkerhetsbegrensning e) {
+			log.warn("Error while retrieving income", e);
+			throw new ForbiddenException(e);
+		} catch (HentInntektListeUgyldigInput e) {
+			log.warn("Error while retrieving income", e);
+			throw new IncompleteRequestException(e);
 		}
 	}
 

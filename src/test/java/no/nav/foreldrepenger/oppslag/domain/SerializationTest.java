@@ -4,13 +4,20 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.Collections;
+import java.util.Optional;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 public class SerializationTest {
 
@@ -22,68 +29,65 @@ public class SerializationTest {
 		mapper.registerModule(new JavaTimeModule());
 		mapper.registerModule(new Jdk8Module());
 		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
 	}
-	
+
+	@Test
+	public void testYtelseSerialization() throws IOException {
+		test(benefit());
+	}
+
 	@Test
 	public void testKjonnSerialization() throws IOException {
-		Kjonn deserialized = mapper.readValue(write(Kjonn.K), Kjonn.class);
-		assertEquals(Kjonn.K, deserialized);
+		test(Kjonn.K);
 	}
 
 	@Test
 	public void testNameSerialization() throws IOException {
-		Navn name = name();
-		String serialized = write(name);
-		Navn deserialized = mapper.readValue(serialized, Navn.class);
-		assertEquals(name, deserialized);
+		test(name());
 	}
 
 	@Test
 	public void testAdresseSerialization() throws IOException {
-		Adresse adresse = adresse();
-		String serialized = write(adresse);
-		Adresse deserialized = mapper.readValue(serialized, Adresse.class);
-		assertEquals(adresse, deserialized);
+		test(adresse());
 	}
 
 	@Test
 	public void testPersonSerialization() throws IOException {
-		Person person = new Person(id(), Kjonn.M,name(), birthDate(), adresse());
-		String serialized = write(person);
-		Person deserialized = mapper.readValue(serialized, Person.class);
-		assertEquals(person, deserialized);
+		test(person());
 	}
 
 	@Test
 	public void testFnrSerialization() throws IOException {
-		Fodselsnummer fnr = fnr();
-		String serialized = write(fnr);
-		Fodselsnummer deserialized = mapper.readValue(serialized, Fodselsnummer.class);
-		assertEquals(fnr, deserialized);
+		test(fnr());
 	}
 
 	@Test
 	public void testAktorIdSerialization() throws IOException {
-		AktorId aktorid = aktoer();
-		String serialized = write(aktorid);
-		AktorId deserialized = mapper.readValue(serialized, AktorId.class);
-		assertEquals(aktorid, deserialized);
+		test(aktoer());
 	}
 
 	@Test
 	public void testIDPairSerialization() throws IOException {
-		ID id = id();
-		String serialized = write(id);
-		ID deserialized = mapper.readValue(serialized, ID.class);
-		assertEquals(id, deserialized);
+		test(id());
 	}
 
-	private ID id() {
+	private void test(Object object) throws IOException {
+		String serialized = write(object);
+		Object deserialized = mapper.readValue(serialized, object.getClass());
+		assertEquals(object, deserialized);
+	}
+
+	private static ID id() {
 		return new ID(aktoer(), fnr());
 	}
 
 	private static Navn name() {
-		return new Navn("Jan-Olav", "Eide");
+		return new Navn("Jan-Olav", "Kjørås", "Eide");
+	}
+
+	private static Person person() {
+		return new Person(id(), Kjonn.M, name(), adresse(), birthDate(), Collections.emptyList());
 	}
 
 	private static LocalDate birthDate() {
@@ -100,6 +104,11 @@ public class SerializationTest {
 
 	private static Adresse adresse() {
 		return new Adresse("NOR", "0360", "Fagerborggata", "6", "A");
+	}
+
+	private static Benefit benefit() {
+		return new Benefit("hello", "world", LocalDate.now().minus(Period.ofYears(2)),
+		        Optional.of(LocalDate.now().minus(Period.ofYears(1))));
 	}
 
 	private String write(Object obj) throws JsonProcessingException {
