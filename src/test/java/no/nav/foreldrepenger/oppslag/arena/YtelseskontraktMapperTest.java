@@ -9,7 +9,7 @@ import javax.xml.datatype.DatatypeFactory;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt.Ytelseskontrakt;
 
 public class YtelseskontraktMapperTest {
@@ -21,13 +21,12 @@ public class YtelseskontraktMapperTest {
       kontrakt.setTomGyldighetsperiode(DatatypeFactory.newInstance().newXMLGregorianCalendar("2017-12-13"));
       kontrakt.setYtelsestype("typen");
       kontrakt.setStatus("statusen");
-      Ytelse expected = new Ytelse(
+      Benefit expected = new Benefit(
          "typen",
          "statusen",
          LocalDate.of(2017, 12, 12),
-         Optional.of(LocalDate.of(2017, 12, 13)),
-         "Arena");
-      Ytelse actual = YtelseskontraktMapper.map(kontrakt);
+         Optional.of(LocalDate.of(2017, 12, 13)));
+      Benefit actual = YtelseskontraktMapper.map(kontrakt);
       assertEquals(expected, actual);
    }
 

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.FinnSakListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.ForeldrepengesakV1;
@@ -31,7 +31,7 @@ public class FpsakKlient {
 		this.fpsakV1 = Objects.requireNonNull(fpsakV1);
 	}
 
-	public List<Ytelse> casesFor(AktorId aktor) {
+	public List<Benefit> casesFor(AktorId aktor) {
 		FinnSakListeRequest req = new FinnSakListeRequest();
 		Aktoer a = new Aktoer();
 		a.setAktoerId(aktor.getValue());

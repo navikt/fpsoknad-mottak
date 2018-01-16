@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 
 @RestController
 class ArenaController {
@@ -25,7 +25,7 @@ class ArenaController {
 	}
 
 	@RequestMapping(method = { RequestMethod.GET }, value = "/arena")
-	public ResponseEntity<List<Ytelse>> incomeForAktor(@RequestParam("fnr") String fnr) {
+	public ResponseEntity<List<Benefit>> incomeForAktor(@RequestParam("fnr") String fnr) {
 		LocalDate now = LocalDate.now();
 		LocalDate oneYearAgo = LocalDate.now().minusMonths(12);
       return ResponseEntity.ok(arenaClient.ytelser(fnr, oneYearAgo, now));

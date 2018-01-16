@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
-public class Ytelse {
+public class Benefit {
 
 	private String type;
 	private String status;
@@ -19,21 +19,18 @@ public class Ytelse {
 	@JsonSerialize(using = LocalDateSerializer.class)
 	private LocalDate from;
 	private Optional<LocalDate> to;
-	private String origin;
 
-	public Ytelse(String type, String status, LocalDate from, String origin) {
-		this(origin, origin, from, null, origin);
+	public Benefit(String type, String status, LocalDate from) {
+		this(type, status, from, Optional.empty());
 	}
 
 	@JsonCreator
-	public Ytelse(@JsonProperty("type") String type, @JsonProperty("status") String status,
-	        @JsonProperty("from") LocalDate from, @JsonProperty("to") Optional<LocalDate> to,
-	        @JsonProperty("origin") String origin) {
+	public Benefit(@JsonProperty("type") String type, @JsonProperty("status") String status,
+                  @JsonProperty("from") LocalDate from, @JsonProperty("to") Optional<LocalDate> to) {
 		this.type = type;
 		this.status = status;
 		this.from = from;
 		this.to = to;
-		this.origin = origin;
 	}
 
 	public String getType() {
@@ -52,14 +49,9 @@ public class Ytelse {
 		return to;
 	}
 
-	public String getOrigin() {
-		return origin;
-	}
-
 	@Override
 	public String toString() {
-		return "Ytelse{" + "type='" + type + '\'' + ", status='" + status + '\'' + ", from=" + from + ", to=" + to
-		        + ", origin='" + origin + '\'' + '}';
+		return "Ytelse{" + "type='" + type + '\'' + ", status='" + status + '\'' + ", from=" + from + '}';
 	}
 
 	@Override
@@ -70,14 +62,13 @@ public class Ytelse {
 		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
-		Ytelse ytelse = (Ytelse) o;
-		return Objects.equals(type, ytelse.type) && Objects.equals(status, ytelse.status)
-		        && Objects.equals(from, ytelse.from) && Objects.equals(to, ytelse.to)
-		        && Objects.equals(origin, ytelse.origin);
+		Benefit benefit = (Benefit) o;
+		return Objects.equals(type, benefit.type) && Objects.equals(status, benefit.status)
+		        && Objects.equals(from, benefit.from) && Objects.equals(to, benefit.to);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(type, status, from, to, origin);
+		return Objects.hash(type, status, from, to);
 	}
 }

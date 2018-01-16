@@ -9,7 +9,7 @@ import javax.xml.datatype.DatatypeFactory;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.informasjon.InfotrygdSak;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.informasjon.Status;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.informasjon.Tema;
@@ -27,12 +27,11 @@ public class InfotrygdsakMapperTest {
       tema.setTermnavn("temaet");
       sak.setTema(tema);
       LocalDate date = LocalDate.of(2017, 12, 13);
-      Ytelse expected = new Ytelse(
+      Benefit expected = new Benefit(
          "temaet",
          "statusen",
-         date, Optional.empty(),
-         "Infotrygd");
-      Ytelse actual = InfotrygdsakMapper.map(sak);
+         date, Optional.empty());
+      Benefit actual = InfotrygdsakMapper.map(sak);
       assertEquals(expected, actual);
    }
 

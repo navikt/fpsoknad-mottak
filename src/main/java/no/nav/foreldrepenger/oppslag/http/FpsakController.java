@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
 import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.foreldrepenger.oppslag.fpsak.FpsakKlient;
 
 @RestController
@@ -28,7 +28,7 @@ class FpsakController {
 	}
 
 	@RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
-	public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("aktor") String aktorId) {
+	public ResponseEntity<List<Benefit>> casesFor(@RequestParam("aktor") String aktorId) {
       AktorId aktor = new AktorId(aktorId);
       return ResponseEntity.ok(fpsakClient.casesFor(aktor));
 	}

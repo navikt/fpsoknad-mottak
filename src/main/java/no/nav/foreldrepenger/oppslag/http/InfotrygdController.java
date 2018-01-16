@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
 
 @RestController
@@ -25,7 +25,7 @@ class InfotrygdController {
 	}
 
 	@RequestMapping(method = { RequestMethod.GET }, value = "/infotrygd")
-	public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("fnr") String fnr) {
+	public ResponseEntity<List<Benefit>> casesFor(@RequestParam("fnr") String fnr) {
 		LocalDate now = LocalDate.now();
 		LocalDate oneYearAgo = LocalDate.now().minusMonths(12);
       return ResponseEntity.ok(infotrygdClient.casesFor(fnr, oneYearAgo, now));

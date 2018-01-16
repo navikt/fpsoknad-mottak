@@ -9,7 +9,7 @@ import javax.xml.datatype.DatatypeFactory;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.domain.Benefit;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.informasjon.Behandlingstema;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.informasjon.Sak;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.informasjon.Saksstatus;
@@ -26,13 +26,12 @@ public class SakMapperTest {
       status.setTermnavn("statusen");
       sak.setStatus(status);
       sak.setOpprettet(DatatypeFactory.newInstance().newXMLGregorianCalendar("2017-12-13"));
-      Ytelse expected = new Ytelse(
+      Benefit expected = new Benefit(
          "termen",
          "statusen",
          LocalDate.of(2017, 12, 13),
-         Optional.empty(),
-         "FPSAK");
-      Ytelse actual = SakMapper.map(sak);
+         Optional.empty());
+      Benefit actual = SakMapper.map(sak);
       assertEquals(expected, actual);
    }
 
