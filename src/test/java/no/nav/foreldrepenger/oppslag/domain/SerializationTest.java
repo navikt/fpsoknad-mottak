@@ -8,11 +8,13 @@ import java.time.Period;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
@@ -27,9 +29,9 @@ public class SerializationTest {
 		mapper.registerModule(new JavaTimeModule());
 		mapper.registerModule(new Jdk8Module());
 		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-	    mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
+		mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
 	}
-	
+
 	@Test
 	public void testYtelseSerialization() throws IOException {
 		test(ytelse());
@@ -69,11 +71,11 @@ public class SerializationTest {
 	public void testIDPairSerialization() throws IOException {
 		test(id());
 	}
-	
-	private  void test(Object object) throws IOException{
+
+	private void test(Object object) throws IOException {
 		String serialized = write(object);
 		Object deserialized = mapper.readValue(serialized, object.getClass());
-		assertEquals(object, deserialized);	
+		assertEquals(object, deserialized);
 	}
 
 	private static ID id() {
@@ -81,11 +83,11 @@ public class SerializationTest {
 	}
 
 	private static Navn name() {
-		return new Navn("Jan-Olav","Kjørås", "Eide");
+		return new Navn("Jan-Olav", "Kjørås", "Eide");
 	}
-	
+
 	private static Person person() {
-		return new Person(id(), Kjonn.M,name(), adresse(), birthDate(), Collections.emptyList());
+		return new Person(id(), Kjonn.M, name(), adresse(), birthDate(), Collections.emptyList());
 	}
 
 	private static LocalDate birthDate() {
@@ -103,9 +105,10 @@ public class SerializationTest {
 	private static Adresse adresse() {
 		return new Adresse("NOR", "0360", "Fagerborggata", "6", "A");
 	}
-	
+
 	private static Ytelse ytelse() {
-		return new Ytelse("hello", "world", LocalDate.now().minus(Period.ofYears(2)), Optional.of(LocalDate.now().minus(Period.ofYears(1))) ,"Infotrygd");
+		return new Ytelse("hello", "world", LocalDate.now().minus(Period.ofYears(2)),
+		        Optional.of(LocalDate.now().minus(Period.ofYears(1))), "Infotrygd");
 	}
 
 	private String write(Object obj) throws JsonProcessingException {
