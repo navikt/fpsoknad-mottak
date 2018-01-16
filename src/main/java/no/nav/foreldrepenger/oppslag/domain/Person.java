@@ -1,33 +1,25 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-@JsonPropertyOrder({ "id" })
+@JsonPropertyOrder({ "id", "fodselsdaato", "navn", "kjonn", "adresse" })
 public class Person {
 
-	//@JsonUnwrapped
+	@JsonUnwrapped
 	private final ID id;
-
 	private final Kjonn kjonn;
 	private final LocalDate fodselsdato;
-
 	private final Adresse adresse;
-	//@JsonUnwrapped
+	@JsonUnwrapped
 	private final Navn navn;
 	private final List<Barn> barn;
 
-	@JsonCreator
-	public Person(@JsonProperty("ids") ID id, @JsonProperty("kjonn") Kjonn kjonn, @JsonProperty("navn") Navn navn,
-	        @JsonProperty("adresse") Adresse adresse, @JsonProperty("fodselsdato") LocalDate fodselsdato,
-	        @JsonProperty("barn") List<Barn> barn) {
+	public Person(ID id, Kjonn kjonn, Navn navn, Adresse adresse, LocalDate fodselsdato, List<Barn> barn) {
 		this.id = id;
 		this.kjonn = kjonn;
 		this.adresse = adresse;
@@ -38,10 +30,6 @@ public class Person {
 
 	public Kjonn getKjonn() {
 		return kjonn;
-	}
-	
-	public Person(ID id, Kjonn kjonn, Navn name, LocalDate fodselsdato, Adresse adresse) {
-		this(id, kjonn, name, adresse, fodselsdato, Collections.emptyList());
 	}
 
 	public ID getId() {

@@ -2,15 +2,11 @@ package no.nav.foreldrepenger.oppslag.domain;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ID {
 
 	private final Pair<AktorId, Fodselsnummer> values;
 
-	@JsonCreator
-	public ID(@JsonProperty("aktorId") AktorId aktorId, @JsonProperty("fnr") Fodselsnummer fnr) {
+	public ID(AktorId aktorId, Fodselsnummer fnr) {
 		values = Pair.of(aktorId, fnr);
 	}
 

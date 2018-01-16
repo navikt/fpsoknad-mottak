@@ -2,9 +2,6 @@ package no.nav.foreldrepenger.oppslag.domain;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Adresse {
 
 	private final String landkode;
@@ -13,10 +10,7 @@ public class Adresse {
 	private final String bolignummer;
 	private final String husbokstav;
 
-	@JsonCreator
-	public Adresse(@JsonProperty("landkode") String landkode, @JsonProperty("poststed") String poststed,
-	        @JsonProperty("gatenavn") String gatenavn, @JsonProperty("bolignummer") String bolignummer,
-	        @JsonProperty("husbokstav") String husbokstav) {
+	public Adresse(String landkode, String poststed, String gatenavn, String bolignummer, String husbokstav) {
 		this.landkode = landkode;
 		this.poststed = poststed;
 		this.gatenavn = gatenavn;
