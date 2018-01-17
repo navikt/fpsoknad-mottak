@@ -5,19 +5,28 @@ import java.util.List;
 public class SøkerInformasjon {
 
 	private final Person person;
-	private final List<Income> inntekt;
+	private final List<LookupResult<Income>> income;
+   private final List<LookupResult<Benefit>> benefits;
 
-	public SøkerInformasjon(Person person, List<Income> inntekt) {
+	public SøkerInformasjon(
+	      Person person,
+         List<LookupResult<Income>> income,
+         List<LookupResult<Benefit>> benefits) {
 		this.person = person;
-		this.inntekt = inntekt;
+		this.income = income;
+		this.benefits = benefits;
 	}
 
 	public Person getPerson() {
 		return person;
 	}
 
-	public List<Income> getInntekt() {
-		return inntekt;
+	public List<LookupResult<Income>> getIncome() {
+		return income;
 	}
+
+   public List<LookupResult<Benefit>> getBenefits() {
+      return benefits;
+   }
 
 }

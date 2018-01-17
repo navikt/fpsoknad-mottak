@@ -29,6 +29,7 @@ public class InntektSupplier implements Supplier<LookupResult<Income>> {
       LocalDate now = LocalDate.now();
       LocalDate earlier = now.minusMonths(nrOfMonths);
       List<Income> incomeData = inntektClient.incomeForPeriod(fnr, earlier, now);
+      System.out.println("incomeData: " + incomeData);
       return new LookupResult<>("Inntektskomponenten", LookupStatus.SUCCESS, incomeData);
    }
 }

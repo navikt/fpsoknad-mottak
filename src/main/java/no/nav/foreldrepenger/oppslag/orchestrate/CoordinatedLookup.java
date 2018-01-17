@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.springframework.stereotype.Component;
+
 import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
 import no.nav.foreldrepenger.oppslag.arena.ArenaSupplier;
 import no.nav.foreldrepenger.oppslag.domain.Benefit;
@@ -24,6 +26,7 @@ import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdSupplier;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektSupplier;
 
+@Component
 public class CoordinatedLookup {
 
    private InntektClient inntektClient;

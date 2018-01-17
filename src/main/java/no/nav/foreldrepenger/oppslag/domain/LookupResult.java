@@ -1,8 +1,13 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class LookupResult<T> {
 
@@ -30,6 +35,7 @@ public class LookupResult<T> {
       return status;
    }
 
+   @JsonInclude(ALWAYS)
    public List<T> getData() {
       return data;
    }
