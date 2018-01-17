@@ -1,13 +1,8 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
-<<<<<<< HEAD
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS;
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
-import java.util.ArrayList;
-=======
 import java.util.Collections;
->>>>>>> cleanup
 import java.util.List;
 import java.util.Objects;
 
@@ -39,16 +34,14 @@ public class LookupResult<T> {
 		return status;
 	}
 
-   @JsonInclude(ALWAYS)
-   public List<T> getData() {
-      return data;
-   }
-
+	@JsonInclude(ALWAYS)
+	public List<T> getData() {
+		return data;
+	}
 
 	public String getRemark() {
 		return remark;
 	}
-
 
 	@Override
 	public boolean equals(Object o) {
@@ -70,6 +63,7 @@ public class LookupResult<T> {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [system=" + system + ", status=" + status + ", remark=" + remark + ", data=" + data + "]";
+		return getClass().getSimpleName() + " [system=" + system + ", status=" + status + ", remark=" + remark
+		        + ", data=" + data + "]";
 	}
 }
