@@ -52,7 +52,7 @@ public class Adresse {
 			return false;
 		}
 		Adresse that = (Adresse) o;
-		return Objects.equals(landkode, that.landkode) && (poststed == that.poststed)
+		return Objects.equals(landkode, that.landkode) && Objects.equals(poststed,that.poststed)
 		        && Objects.equals(gatenavn, that.gatenavn) && Objects.equals(bolignummer, that.bolignummer)
 		        && Objects.equals(husbokstav, that.husbokstav);
 	}
