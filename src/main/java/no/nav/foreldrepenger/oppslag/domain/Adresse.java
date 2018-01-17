@@ -44,53 +44,17 @@ public class Adresse {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (obj == null) {
+		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Adresse other = (Adresse) obj;
-		if (bolignummer == null) {
-			if (other.bolignummer != null) {
-				return false;
-			}
-		} else if (!bolignummer.equals(other.bolignummer)) {
-			return false;
-		}
-		if (gatenavn == null) {
-			if (other.gatenavn != null) {
-				return false;
-			}
-		} else if (!gatenavn.equals(other.gatenavn)) {
-			return false;
-		}
-		if (husbokstav == null) {
-			if (other.husbokstav != null) {
-				return false;
-			}
-		} else if (!husbokstav.equals(other.husbokstav)) {
-			return false;
-		}
-		if (landkode == null) {
-			if (other.landkode != null) {
-				return false;
-			}
-		} else if (!landkode.equals(other.landkode)) {
-			return false;
-		}
-		if (poststed == null) {
-			if (other.poststed != null) {
-				return false;
-			}
-		} else if (!poststed.equals(other.poststed)) {
-			return false;
-		}
-		return true;
+		Adresse that = (Adresse) o;
+		return Objects.equals(landkode, that.landkode) && (poststed == that.poststed)
+		        && Objects.equals(gatenavn, that.gatenavn) && Objects.equals(bolignummer, that.bolignummer)
+		        && Objects.equals(husbokstav, that.husbokstav);
 	}
 
 	@Override

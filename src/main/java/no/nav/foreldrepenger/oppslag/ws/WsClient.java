@@ -10,7 +10,7 @@ import org.apache.cxf.phase.PhaseInterceptor;
 
 public class WsClient<T> {
 
-	public T createPort(String serviceUrl, Class portType, PhaseInterceptor<? extends Message>... interceptors) {
+	public T createPort(String serviceUrl, Class<?> portType, PhaseInterceptor<? extends Message>... interceptors) {
 		JaxWsProxyFactoryBean jaxWsProxyFactoryBean = new JaxWsProxyFactoryBean();
 		jaxWsProxyFactoryBean.setServiceClass(portType);
 		jaxWsProxyFactoryBean.setAddress(serviceUrl);

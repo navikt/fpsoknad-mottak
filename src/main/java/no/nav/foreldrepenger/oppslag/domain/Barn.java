@@ -11,9 +11,9 @@ public class Barn {
 	private final LocalDate birthDate;
 
 	public Barn(Fodselsnummer fnrMor, Fodselsnummer fnr, LocalDate birthDate) {
-		this.fnr = fnr;
-		this.birthDate = birthDate;
-		this.fnrMor = fnrMor;
+		this.fnr = Objects.requireNonNull(fnr);
+		this.birthDate = Objects.requireNonNull(birthDate);
+		this.fnrMor = Objects.requireNonNull(fnrMor);
 	}
 
 	public Fodselsnummer getFnrMor() {
@@ -29,49 +29,26 @@ public class Barn {
 	}
 
 	@Override
-	public String toString() {
-		return getClass().getSimpleName() + " [fnr=" + fnr + ", fnrMor=" + fnrMor + ", birthDate=" + birthDate + "]";
-	}
-
-	@Override
 	public int hashCode() {
 		return Objects.hash(fnr, fnrMor, birthDate);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (obj == null) {
+		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Barn other = (Barn) obj;
-		if (birthDate == null) {
-			if (other.birthDate != null) {
-				return false;
-			}
-		} else if (!birthDate.equals(other.birthDate)) {
-			return false;
-		}
-		if (fnr == null) {
-			if (other.fnr != null) {
-				return false;
-			}
-		} else if (!fnr.equals(other.fnr)) {
-			return false;
-		}
-		if (fnrMor == null) {
-			if (other.fnrMor != null) {
-				return false;
-			}
-		} else if (!fnrMor.equals(other.fnrMor)) {
-			return false;
-		}
-		return true;
+		Barn that = (Barn) o;
+		return Objects.equals(fnr, that.fnr) && Objects.equals(fnrMor, that.fnrMor)
+		        && Objects.equals(birthDate, that.birthDate);
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [fnr=" + fnr + ", fnrMor=" + fnrMor + ", birthDate=" + birthDate + "]";
 	}
 
 }

@@ -9,10 +9,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Benefit {
 
-	private String type;
-	private String status;
-	private LocalDate from;
-	private Optional<LocalDate> to;
+	private final String type;
+	private final String status;
+	private final LocalDate from;
+	private final Optional<LocalDate> to;
 
 	public Benefit(String type, String status, LocalDate from) {
 		this(type, status, from, Optional.empty());
@@ -20,8 +20,7 @@ public class Benefit {
 
 	@JsonCreator
 	public Benefit(@JsonProperty("type") String type, @JsonProperty("status") String status,
-                  @JsonProperty("from") LocalDate from, @JsonProperty("to") Optional<LocalDate> to) {
-
+	        @JsonProperty("from") LocalDate from, @JsonProperty("to") Optional<LocalDate> to) {
 		this.type = type;
 		this.status = status;
 		this.from = from;
@@ -44,17 +43,7 @@ public class Benefit {
 		return to;
 	}
 
-   @Override
-   public String toString() {
-      return "Benefit{" +
-         "type='" + type + '\'' +
-         ", status='" + status + '\'' +
-         ", from=" + from +
-         ", to=" + to +
-         '}';
-   }
-
-   @Override
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -70,5 +59,11 @@ public class Benefit {
 	@Override
 	public int hashCode() {
 		return Objects.hash(type, status, from, to);
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [type=" + type + ", status=" + status + ", from=" + from + ", to=" + to
+		        + "]";
 	}
 }

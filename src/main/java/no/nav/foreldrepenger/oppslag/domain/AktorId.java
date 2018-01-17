@@ -9,7 +9,7 @@ public class AktorId {
 	private final String value;
 
 	public AktorId(String value) {
-		this.value = value;
+		this.value = Objects.requireNonNull(value);
 	}
 
 	@Override
@@ -18,25 +18,15 @@ public class AktorId {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (obj == null) {
+		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AktorId other = (AktorId) obj;
-		if (value == null) {
-			if (other.value != null) {
-				return false;
-			}
-		} else if (!value.equals(other.value)) {
-			return false;
-		}
-		return true;
+		AktorId that = (AktorId) o;
+		return Objects.equals(value, that.value);
 	}
 
 	@JsonValue
@@ -46,7 +36,7 @@ public class AktorId {
 
 	@Override
 	public String toString() {
-		return "AktorId [value=" + value + "]";
+		return getClass().getSimpleName() + " [value=" + value + "]";
 	}
 
 }

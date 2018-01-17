@@ -17,7 +17,7 @@ import org.apache.cxf.ws.policy.attachment.reference.RemoteReferenceResolver;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.apache.neethi.Policy;
 
-public class STSClientConfig {
+ class STSClientConfig {
 	public static final String STS_URL_KEY = "SECURITYTOKENSERVICE_URL";
 	public static final String SERVICEUSER_USERNAME = "FPSELVBETJENING_USERNAME";
 	public static final String SERVICEUSER_PASSWORD = "FPSELVBETJENING_PASSWORD";

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.oppslag.domain.Benefit;
+import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.HentYtelseskontraktListeSikkerhetsbegrensning;
@@ -31,13 +32,13 @@ public class ArenaClient {
 		this.ytelseskontraktV3 = ytelseskontraktV3;
 	}
 
-	public List<Benefit> ytelser(String fnr, LocalDate from, LocalDate to) {
+	public List<Benefit> ytelser(Fodselsnummer fnr, LocalDate from, LocalDate to) {
 		HentYtelseskontraktListeRequest req = new HentYtelseskontraktListeRequest();
 		Periode periode = new Periode();
 		periode.setFom(CalendarConverter.toCalendar(from));
 		periode.setTom(CalendarConverter.toCalendar(to));
 		req.setPeriode(periode);
-		req.setPersonidentifikator(fnr);
+		req.setPersonidentifikator(fnr.getFnr());
 		try {
 			HentYtelseskontraktListeResponse res = ytelseskontraktV3.hentYtelseskontraktListe(req);
 			return res.getYtelseskontraktListe().stream().map(YtelseskontraktMapper::map).collect(toList());

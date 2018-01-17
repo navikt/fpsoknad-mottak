@@ -12,7 +12,12 @@ public class Fodselsnummer {
 	private final String fnr;
 
 	public Fodselsnummer(String fnr) {
-		this.fnr = fnr;
+		this.fnr = Objects.requireNonNull(fnr);
+	}
+
+	@JsonValue
+	public String getFnr() {
+		return fnr;
 	}
 
 	@Override
@@ -21,30 +26,15 @@ public class Fodselsnummer {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (obj == null) {
+		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Fodselsnummer other = (Fodselsnummer) obj;
-		if (fnr == null) {
-			if (other.fnr != null) {
-				return false;
-			}
-		} else if (!fnr.equals(other.fnr)) {
-			return false;
-		}
-		return true;
-	}
-
-	@JsonValue
-	public String getFnr() {
-		return fnr;
+		Fodselsnummer that = (Fodselsnummer) o;
+		return Objects.equals(fnr, that.fnr);
 	}
 
 	@Override
