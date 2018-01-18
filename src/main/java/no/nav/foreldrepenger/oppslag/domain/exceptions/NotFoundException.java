@@ -2,16 +2,12 @@ package no.nav.foreldrepenger.oppslag.domain.exceptions;
 
 public class NotFoundException extends RuntimeException {
 
-	public NotFoundException() {
-		this(null, null);
-	}
-
 	public NotFoundException(String msg) {
 		this(msg, null);
 	}
 
 	public NotFoundException(Throwable cause) {
-		this(null, cause);
+		this(cause.getMessage(), cause);
 	}
 
 	public NotFoundException(String msg, Throwable cause) {

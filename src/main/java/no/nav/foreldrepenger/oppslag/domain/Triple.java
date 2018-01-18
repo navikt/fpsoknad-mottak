@@ -4,8 +4,7 @@ import java.util.Objects;
 
 public final class Triple<T1, T2, T3> {
 
-	private final T1 first;
-	private final T2 second;
+	private final Pair<T1, T2> firstTwo;
 	private final T3 third;
 
 	public static <T1, T2, T3> Triple<T1, T2, T3> of(T1 first, T2 second, T3 third) {
@@ -13,17 +12,16 @@ public final class Triple<T1, T2, T3> {
 	}
 
 	private Triple(T1 first, T2 second, T3 third) {
-		this.first = first;
-		this.second = second;
+		this.firstTwo = Pair.of(first, second);
 		this.third = third;
 	}
 
 	public T1 getFirst() {
-		return first;
+		return firstTwo.getFirst();
 	}
 
 	public T2 getSecond() {
-		return second;
+		return firstTwo.getSecond();
 	}
 
 	public T3 getThird() {
@@ -32,7 +30,7 @@ public final class Triple<T1, T2, T3> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(first, second, third);
+		return Objects.hash(firstTwo, third);
 	}
 
 	@Override
@@ -46,34 +44,14 @@ public final class Triple<T1, T2, T3> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Triple other = (Triple) obj;
-		if (first == null) {
-			if (other.first != null) {
-				return false;
-			}
-		} else if (!first.equals(other.first)) {
-			return false;
-		}
-		if (second == null) {
-			if (other.second != null) {
-				return false;
-			}
-		} else if (!second.equals(other.second)) {
-			return false;
-		}
-		if (third == null) {
-			if (other.third != null) {
-				return false;
-			}
-		} else if (!third.equals(other.third)) {
-			return false;
-		}
-		return true;
+		Triple<?, ?, ?> other = (Triple<?, ?, ?>) obj;
+		return Objects.equals(this.firstTwo, other.firstTwo) && Objects.equals(this.third, other.third);
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [first=" + first + ", second=" + second + ", third=" + third + "]";
+		return getClass().getSimpleName() + " [first=" + firstTwo.getFirst() + ", second=" + firstTwo.getSecond()
+		        + ", third=" + third + "]";
 	}
 
 }

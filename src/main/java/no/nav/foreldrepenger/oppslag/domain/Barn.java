@@ -5,32 +5,30 @@ import java.util.Objects;
 
 public class Barn {
 
-	private final Fodselsnummer fnr;
-	private final Fodselsnummer fnrMor;
+	private final Pair<Fodselsnummer, Fodselsnummer> fnrs;
 
 	private final LocalDate birthDate;
 
 	public Barn(Fodselsnummer fnrMor, Fodselsnummer fnr, LocalDate birthDate) {
-		this.fnr = Objects.requireNonNull(fnr);
+		this.fnrs = Pair.of(fnr, fnrMor);
 		this.birthDate = Objects.requireNonNull(birthDate);
-		this.fnrMor = Objects.requireNonNull(fnrMor);
+	}
+
+	public Fodselsnummer getFnr() {
+		return fnrs.getFirst();
 	}
 
 	public Fodselsnummer getFnrMor() {
-		return fnrMor;
+		return fnrs.getSecond();
 	}
 
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public Fodselsnummer getFnr() {
-		return fnr;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(fnr, fnrMor, birthDate);
+		return Objects.hash(fnrs, birthDate);
 	}
 
 	@Override
@@ -42,13 +40,13 @@ public class Barn {
 			return false;
 		}
 		Barn that = (Barn) o;
-		return Objects.equals(fnr, that.fnr) && Objects.equals(fnrMor, that.fnrMor)
-		        && Objects.equals(birthDate, that.birthDate);
+		return Objects.equals(fnrs, that.fnrs) && Objects.equals(birthDate, that.birthDate);
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [fnr=" + fnr + ", fnrMor=" + fnrMor + ", birthDate=" + birthDate + "]";
+		return getClass().getSimpleName() + " [fnr=" + fnrs.getFirst() + ", fnrMor=" + fnrs.getSecond() + ", birthDate="
+		        + birthDate + "]";
 	}
 
 }

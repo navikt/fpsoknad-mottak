@@ -31,28 +31,8 @@ public class Navn {
 			return false;
 		}
 		Navn other = (Navn) obj;
-		if (etternavn == null) {
-			if (other.etternavn != null) {
-				return false;
-			}
-		} else if (!etternavn.equals(other.etternavn)) {
-			return false;
-		}
-		if (fornavn == null) {
-			if (other.fornavn != null) {
-				return false;
-			}
-		} else if (!fornavn.equals(other.fornavn)) {
-			return false;
-		}
-		if (mellomnavn == null) {
-			if (other.mellomnavn != null) {
-				return false;
-			}
-		} else if (!mellomnavn.equals(other.mellomnavn)) {
-			return false;
-		}
-		return true;
+		return Objects.equals(this.fornavn, other.fornavn) && Objects.equals(this.mellomnavn, other.mellomnavn)
+		        && Objects.equals(this.etternavn, other.etternavn);
 	}
 
 	public String getFornavn() {

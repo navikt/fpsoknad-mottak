@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.Income;
+import no.nav.foreldrepenger.oppslag.domain.Inntekt;
 import no.nav.foreldrepenger.oppslag.domain.LookupResult;
 import no.nav.foreldrepenger.oppslag.domain.LookupStatus;
 
-public class InntektSupplier implements Supplier<LookupResult<Income>> {
+public class InntektSupplier implements Supplier<LookupResult<Inntekt>> {
 
 	private final InntektClient inntektClient;
 	private final Fodselsnummer fnr;
@@ -22,10 +22,10 @@ public class InntektSupplier implements Supplier<LookupResult<Income>> {
 	}
 
 	@Override
-	public LookupResult<Income> get() {
+	public LookupResult<Inntekt> get() {
 		LocalDate now = LocalDate.now();
 		LocalDate earlier = now.minusMonths(nrOfMonths);
-		List<Income> incomeData = inntektClient.incomeForPeriod(fnr, earlier, now);
+		List<Inntekt> incomeData = inntektClient.incomeForPeriod(fnr, earlier, now);
 		return new LookupResult<>("Inntektskomponenten", LookupStatus.SUCCESS, incomeData);
 	}
 }

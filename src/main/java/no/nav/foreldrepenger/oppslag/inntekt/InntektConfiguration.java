@@ -13,6 +13,7 @@ import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 @ComponentScan(basePackages = { "no.nav.foreldrepenger.oppslag" })
 public class InntektConfiguration {
 
+	@SuppressWarnings("unchecked")
 	@Bean
 	public InntektV3 inntektV3(@Value("${VIRKSOMHET_INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
 		return new WsClient<InntektV3>().createPort(serviceUrl, InntektV3.class, new CallIdHeader());

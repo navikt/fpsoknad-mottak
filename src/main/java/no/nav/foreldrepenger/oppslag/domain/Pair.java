@@ -40,22 +40,8 @@ public final class Pair<T1, T2> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Pair other = (Pair) obj;
-		if (first == null) {
-			if (other.first != null) {
-				return false;
-			}
-		} else if (!first.equals(other.first)) {
-			return false;
-		}
-		if (second == null) {
-			if (other.second != null) {
-				return false;
-			}
-		} else if (!second.equals(other.second)) {
-			return false;
-		}
-		return true;
+		Pair<?, ?> other = (Pair<?, ?>) obj;
+		return Objects.equals(this.first, other.first) && Objects.equals(this.second, other.second);
 	}
 
 	@Override

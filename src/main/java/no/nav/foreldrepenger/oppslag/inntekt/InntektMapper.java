@@ -1,14 +1,17 @@
 package no.nav.foreldrepenger.oppslag.inntekt;
 
-import no.nav.foreldrepenger.oppslag.domain.Income;
+import no.nav.foreldrepenger.oppslag.domain.Inntekt;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
-import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt;
 
-class InntektMapper {
+final class InntektMapper {
+	
+	private InntektMapper() {
+		
+	}
 
-	public static Income map(Inntekt inntekt) {
-		return new Income(CalendarConverter.toDate(inntekt.getOpptjeningsperiode().getStartDato()),
-		        CalendarConverter.toDate(inntekt.getOpptjeningsperiode().getSluttDato()),
+	public static Inntekt map(no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt inntekt) {
+		return new Inntekt(CalendarConverter.toLocalDate(inntekt.getOpptjeningsperiode().getStartDato()),
+		        CalendarConverter.toLocalDate(inntekt.getOpptjeningsperiode().getSluttDato()),
 		        inntekt.getBeloep().doubleValue());
 	}
 

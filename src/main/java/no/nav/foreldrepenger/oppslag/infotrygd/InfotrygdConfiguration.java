@@ -12,8 +12,9 @@ import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
 @ComponentScan(basePackages = { "no.nav.foreldrepenger.oppslag" })
 public class InfotrygdConfiguration {
 
+	@SuppressWarnings("unchecked")
 	@Bean
-	public InfotrygdSakV1 infotrygdSakV1(@Value("${VIRKSOMHET:INFOTRYGDSAK_V1_ENDPOINTURL}") String serviceUrl) {
+	public InfotrygdSakV1 infotrygdSakV1(@Value("${VIRKSOMHET_INFOTRYGDSAK_V1_ENDPOINTURL}") String serviceUrl) {
 		return new WsClient<InfotrygdSakV1>().createPort(serviceUrl, InfotrygdSakV1.class);
 	}
 
