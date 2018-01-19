@@ -77,8 +77,8 @@ node {
             sh "${mvn} clean deploy -DskipTests -B -e"
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${pathInRepo}/${application}/${releaseVersion}/nais.yaml"
+                sh "docker push -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo}/${application}:${releaseVersion}"
             }
-            sh "docker push -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo}/${application}:${releaseVersion}"
     }
 
 
