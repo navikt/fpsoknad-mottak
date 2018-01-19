@@ -76,7 +76,7 @@ node {
             pathInRepo = "no/nav/foreldrepenger"
             sh "${mvn} clean deploy -DskipTests -B -e"
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                sh "curl -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/nexus/content/repositories/maven-releases/${pathInRepo}/${releaseVersion}/${appConfig}"
+                sh "curl --fail -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} 'https://repo.adeo.no/maven-releases/${pathInRepo}/${releaseVersion}/"
             }
             sh "docker push ${dockerRepo}/${application}:${releaseVersion}"
     }
