@@ -1,5 +1,5 @@
 name: fpsoknad-oppslag
-image: docker.adeo.no:5000/fpsoknad-oppslag
+image: repo.adeo.no:5443/fpsoknad-oppslag
 replicas:
     min: 1
     max: 1

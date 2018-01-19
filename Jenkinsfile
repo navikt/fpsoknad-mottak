@@ -11,7 +11,7 @@ node {
     def mvnHome = tool "maven-3.3.9"
     def mvn = "${mvnHome}/bin/mvn"
     def appConfig = "nais.yaml"
-    def dockerRepo = "docker.adeo.no:5000"
+    def dockerRepo = "repo.adeo.no:5443"
     def branch = "master"
     def groupId = "nais"
     def environment = 't1'
@@ -78,7 +78,7 @@ node {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${pathInRepo}/${application}/${releaseVersion}/nais.yaml"
             }
-            sh "docker push ${dockerRepo}/${application}:${releaseVersion}"
+            sh "docker push -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo}/${application}:${releaseVersion}"
     }
 
 
