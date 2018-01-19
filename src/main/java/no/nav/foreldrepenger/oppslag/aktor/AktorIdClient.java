@@ -14,7 +14,6 @@ import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
-import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentResponse;
 
 @Component
 public class AktorIdClient {
@@ -29,8 +28,7 @@ public class AktorIdClient {
 
 	public AktorId aktorIdForFnr(Fodselsnummer fnr) {
 		try {
-			HentAktoerIdForIdentResponse res = aktoerV2.hentAktoerIdForIdent(request(fnr));
-			return new AktorId(res.getAktoerId());
+			return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
 		} catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
 			LOG.warn("Henting av aktørid har feilet", e);
 			throw new NotFoundException(e.getMessage());

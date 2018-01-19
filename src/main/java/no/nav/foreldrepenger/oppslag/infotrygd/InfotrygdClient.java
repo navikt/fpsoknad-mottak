@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.oppslag.domain.Benefit;
+import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
@@ -34,11 +34,11 @@ public class InfotrygdClient {
 		this.infotrygd = infotrygd;
 	}
 
-	public List<Benefit> casesFor(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+	public List<Ytelse> casesFor(Fodselsnummer fnr, LocalDate from, LocalDate to) {
 		FinnSakListeRequest req = new FinnSakListeRequest();
 		Periode periode = new Periode();
-		periode.setFom(CalendarConverter.toCalendar(from));
-		periode.setTom(CalendarConverter.toCalendar(to));
+		periode.setFom(CalendarConverter.toXMLGregorianCalendar(from));
+		periode.setTom(CalendarConverter.toXMLGregorianCalendar(to));
 		req.setPeriode(periode);
 		req.setPersonident(fnr.getFnr());
 		try {

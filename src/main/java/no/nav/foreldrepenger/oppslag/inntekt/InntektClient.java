@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.oppslag.inntekt;
 
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.Income;
+import no.nav.foreldrepenger.oppslag.domain.Inntekt;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.IncompleteRequestException;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
@@ -39,7 +38,7 @@ public class InntektClient {
 		this.inntektV3 = inntektV3;
 	}
 
-	public List<Income> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+	public List<Inntekt> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
 		HentInntektListeRequest req = request(fnr, from, to);
 		try {
 			HentInntektListeResponse res = inntektV3.hentInntektListe(req);
@@ -70,8 +69,8 @@ public class InntektClient {
 		req.setAinntektsfilter(ainntektsfilter);
 
 		Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
-		uttrekksperiode.setMaanedFom(CalendarConverter.toCalendar(from));
-		uttrekksperiode.setMaanedTom(CalendarConverter.toCalendar(to));
+		uttrekksperiode.setMaanedFom(CalendarConverter.toXMLGregorianCalendar(from));
+		uttrekksperiode.setMaanedTom(CalendarConverter.toXMLGregorianCalendar(to));
 		req.setUttrekksperiode(uttrekksperiode);
 
 		Formaal formaal = new Formaal();

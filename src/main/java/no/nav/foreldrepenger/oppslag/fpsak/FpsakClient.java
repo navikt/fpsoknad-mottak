@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Benefit;
+import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.FinnSakListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.ForeldrepengesakV1;
@@ -21,17 +21,17 @@ import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.meldinger.FinnSakListeRequ
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.meldinger.FinnSakListeResponse;
 
 @Component
-public class FpsakKlient {
-	private static final Logger log = LoggerFactory.getLogger(FpsakKlient.class);
+public class FpsakClient {
+	private static final Logger log = LoggerFactory.getLogger(FpsakClient.class);
 
 	private final ForeldrepengesakV1 fpsakV1;
 
 	@Inject
-	public FpsakKlient(ForeldrepengesakV1 fpsakV1) {
+	public FpsakClient(ForeldrepengesakV1 fpsakV1) {
 		this.fpsakV1 = Objects.requireNonNull(fpsakV1);
 	}
 
-	public List<Benefit> casesFor(AktorId aktor) {
+	public List<Ytelse> casesFor(AktorId aktor) {
 		FinnSakListeRequest req = new FinnSakListeRequest();
 		Aktoer a = new Aktoer();
 		a.setAktoerId(aktor.getValue());

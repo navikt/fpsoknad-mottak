@@ -16,13 +16,14 @@ public class PersonConfiguration {
 		return new BarnMorRelasjonSjekkendeBarnutvelger(months);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Bean
 	public PersonV3 personV3(@Value("${VIRKSOMHET_PERSON_V3_ENDPOINTURL}") String serviceUrl) {
 		return new WsClient<PersonV3>().createPort(serviceUrl, PersonV3.class);
 	}
 
 	@Bean
-	public PersonKlient prsonKlient(Barnutvelger barneVelger, PersonV3 person) {
-		return new PersonKlient(person, barneVelger);
+	public PersonClient prsonKlient(Barnutvelger barneVelger, PersonV3 person) {
+		return new PersonClient(person, barneVelger);
 	}
 }

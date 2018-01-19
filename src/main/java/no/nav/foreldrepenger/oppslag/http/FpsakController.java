@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Benefit;
-import no.nav.foreldrepenger.oppslag.fpsak.FpsakKlient;
+import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
 
 @RestController
 class FpsakController {
 
-	private final FpsakKlient fpsakClient;
+	private final FpsakClient fpsakClient;
 
 	@Inject
-	public FpsakController(FpsakKlient fpsakClient) {
+	public FpsakController(FpsakClient fpsakClient) {
 		this.fpsakClient = fpsakClient;
 	}
 
 	@RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
-	public ResponseEntity<List<Benefit>> casesFor(@RequestParam("aktor") AktorId aktor) {
+	public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("aktor") AktorId aktor) {
 		return ResponseEntity.ok(fpsakClient.casesFor(aktor));
 	}
 }

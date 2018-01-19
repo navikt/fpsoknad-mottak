@@ -7,12 +7,16 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 public final class CalendarConverter {
+	
+	private CalendarConverter() {
+		
+	}
 
-	public static LocalDate toDate(XMLGregorianCalendar cal) {
+	public static LocalDate toLocalDate(XMLGregorianCalendar cal) {
 		return LocalDate.of(cal.getYear(), cal.getMonth(), cal.getDay());
 	}
 
-	public static XMLGregorianCalendar toCalendar(LocalDate date) {
+	public static XMLGregorianCalendar toXMLGregorianCalendar(LocalDate date) {
 		try {
 			XMLGregorianCalendar xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar();
 			xgc.setYear(date.getYear());

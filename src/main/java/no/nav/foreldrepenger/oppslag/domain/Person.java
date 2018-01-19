@@ -56,47 +56,11 @@ public class Person {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Person other = (Person) obj;
-		if (adresse == null) {
-			if (other.adresse != null) {
-				return false;
-			}
-		} else if (!adresse.equals(other.adresse)) {
-			return false;
-		}
-		if (barn == null) {
-			if (other.barn != null) {
-				return false;
-			}
-		} else if (!barn.equals(other.barn)) {
-			return false;
-		}
-		if (fodselsdato == null) {
-			if (other.fodselsdato != null) {
-				return false;
-			}
-		} else if (!fodselsdato.equals(other.fodselsdato)) {
-			return false;
-		}
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
 
-		if (!kjonn.equals(other.kjonn)) {
-			return false;
-		}
-		if (navn == null) {
-			if (other.navn != null) {
-				return false;
-			}
-		} else if (!navn.equals(other.navn)) {
-			return false;
-		}
-		return true;
+		Person other = (Person) obj;
+		return Objects.equals(this.adresse, other.adresse) && Objects.equals(this.barn, other.barn)
+		        && Objects.equals(this.fodselsdato, other.fodselsdato) && Objects.equals(this.id, other.id)
+		        && Objects.equals(this.kjonn, other.kjonn) && Objects.equals(this.navn, other.navn);
 	}
 
 	public List<Barn> getBarn() {

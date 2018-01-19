@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import no.nav.foreldrepenger.oppslag.domain.Benefit;
+import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 
 public class SerializationTest {
 
@@ -31,14 +31,14 @@ public class SerializationTest {
 
 	@Test
 	public void testBenefit() throws Exception {
-		Benefit benefit = benefit();
+		Ytelse benefit = benefit();
 		String serialized = write(benefit);
-		Benefit deserialized = mapper.readValue(serialized, Benefit.class);
+		Ytelse deserialized = mapper.readValue(serialized, Ytelse.class);
 		assertEquals(benefit, deserialized);
 	}
 
-	private Benefit benefit() {
-		return new Benefit("hello", "world", LocalDate.now().minus(Period.ofYears(2)), Optional.of(LocalDate.now().minus(Period.ofYears(1))));
+	private Ytelse benefit() {
+		return new Ytelse("hello", "world", LocalDate.now().minus(Period.ofYears(2)), Optional.of(LocalDate.now().minus(Period.ofYears(1))));
 	}
 
 	private String write(Object obj) throws JsonProcessingException {

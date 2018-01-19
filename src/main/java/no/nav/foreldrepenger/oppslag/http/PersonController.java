@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.ID;
 import no.nav.foreldrepenger.oppslag.domain.Person;
-import no.nav.foreldrepenger.oppslag.person.PersonKlient;
+import no.nav.foreldrepenger.oppslag.person.PersonClient;
 
 @RestController
 @Validated
@@ -26,7 +26,7 @@ public class PersonController {
 	@Inject
 	private AktorIdClient aktorClient;
 	@Inject
-	private PersonKlient personClient;
+	private PersonClient personClient;
 
 	@GetMapping(value = "/")
 	public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {

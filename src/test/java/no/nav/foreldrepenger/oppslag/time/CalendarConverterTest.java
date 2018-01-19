@@ -16,7 +16,7 @@ public class CalendarConverterTest {
 	public void toCalendar() throws Exception {
 		LocalDate date = LocalDate.of(2017, 12, 13);
 		XMLGregorianCalendar expected = DatatypeFactory.newInstance().newXMLGregorianCalendar("2017-12-13");
-		XMLGregorianCalendar actual = CalendarConverter.toCalendar(date);
+		XMLGregorianCalendar actual = CalendarConverter.toXMLGregorianCalendar(date);
 		assertEquals(actual, expected);
 	}
 
@@ -24,7 +24,7 @@ public class CalendarConverterTest {
 	public void toDate() throws Exception {
 		XMLGregorianCalendar xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar("2017-12-13");
 		LocalDate expected = LocalDate.of(2017, 12, 13);
-		LocalDate actual = CalendarConverter.toDate(xgc);
+		LocalDate actual = CalendarConverter.toLocalDate(xgc);
 		assertEquals(actual, expected);
 	}
 

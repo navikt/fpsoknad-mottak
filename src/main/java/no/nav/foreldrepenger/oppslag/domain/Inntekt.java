@@ -2,13 +2,13 @@ package no.nav.foreldrepenger.oppslag.domain;
 
 import java.time.LocalDate;
 
-public class Income {
+public class Inntekt {
 
 	private double amount;
 	private LocalDate from;
 	private LocalDate to;
 
-	public Income(LocalDate from, LocalDate to, double amount) {
+	public Inntekt(LocalDate from, LocalDate to, double amount) {
 		this.amount = amount;
 		this.from = from;
 		this.to = to;

@@ -7,19 +7,19 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Benefit {
+public class Ytelse {
 
 	private final String type;
 	private final String status;
 	private final LocalDate from;
 	private final Optional<LocalDate> to;
 
-	public Benefit(String type, String status, LocalDate from) {
+	public Ytelse(String type, String status, LocalDate from) {
 		this(type, status, from, Optional.empty());
 	}
 
 	@JsonCreator
-	public Benefit(@JsonProperty("type") String type, @JsonProperty("status") String status,
+	public Ytelse(@JsonProperty("type") String type, @JsonProperty("status") String status,
 	        @JsonProperty("from") LocalDate from, @JsonProperty("to") Optional<LocalDate> to) {
 		this.type = type;
 		this.status = status;
@@ -51,9 +51,9 @@ public class Benefit {
 		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
-		Benefit benefit = (Benefit) o;
-		return Objects.equals(type, benefit.type) && Objects.equals(status, benefit.status)
-		        && Objects.equals(from, benefit.from) && Objects.equals(to, benefit.to);
+		Ytelse ytelse = (Ytelse) o;
+		return Objects.equals(type, ytelse.type) && Objects.equals(status, ytelse.status)
+		        && Objects.equals(from, ytelse.from) && Objects.equals(to, ytelse.to);
 	}
 
 	@Override

@@ -106,8 +106,8 @@ public class SerializationTest {
 		return new Adresse("NOR", "0360", "Fagerborggata", "6", "A");
 	}
 
-	private static Benefit benefit() {
-		return new Benefit("hello", "world", LocalDate.now().minus(Period.ofYears(2)),
+	private static Ytelse benefit() {
+		return new Ytelse("hello", "world", LocalDate.now().minus(Period.ofYears(2)),
 		        Optional.of(LocalDate.now().minus(Period.ofYears(1))));
 	}
 

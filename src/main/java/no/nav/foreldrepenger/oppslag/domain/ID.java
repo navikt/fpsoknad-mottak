@@ -35,18 +35,12 @@ public class ID {
 			return false;
 		}
 		ID other = (ID) obj;
-		if (values == null) {
-			if (other.values != null) {
-				return false;
-			}
-		} else if (!values.equals(other.values)) {
-			return false;
-		}
-		return true;
+		return Objects.equals(values, other.values);
 	}
 
 	@Override
 	public String toString() {
-		return "ID [values=" + values + ", aktorId=" + getAktorId() + ", fn)=" + getFnr() + "]";
+		return getClass().getSimpleName() + " [values=" + values + ", aktorId=" + getAktorId() + ", fn)=" + getFnr()
+		        + "]";
 	}
 }
