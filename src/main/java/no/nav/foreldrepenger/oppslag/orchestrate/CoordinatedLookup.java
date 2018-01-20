@@ -2,10 +2,10 @@ package no.nav.foreldrepenger.oppslag.orchestrate;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -43,50 +43,46 @@ public class CoordinatedLookup {
 		this.infotrygdClient = infotrygdClient;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Pair<List<LookupResult<Inntekt>>, List<LookupResult<Ytelse>>> gimmeAllYouGot(ID person) {
 
 		CompletableFuture<LookupResult<Inntekt>> inntektskomponenten = CompletableFuture
 		        .supplyAsync(new InntektSupplier(inntektClient, person.getFnr(), 12))
-		        .handle((l, t) -> l != null ? l
-		                : new LookupResult<>("Inntektskomponenten", LookupStatus.FAILURE,
-		                        Collections.<Inntekt>emptyList(), t.getMessage()));
+		        .handle((l, t) -> l != null ? l : error("Inntektskomponenten", t.getMessage()));
 
 		CompletableFuture<LookupResult<Ytelse>> arena = CompletableFuture
 		        .supplyAsync(new ArenaSupplier(arenaClient, person.getFnr(), 60))
-		        .handle((l, t) -> l != null ? l
-		                : new LookupResult<>("Arena", LookupStatus.FAILURE, Collections.<Ytelse>emptyList(),
-		                        t.getMessage()));
+		        .handle((l, t) -> l != null ? l : error("Arena", t.getMessage()));
 
 		CompletableFuture<LookupResult<Ytelse>> fpsak = CompletableFuture
 		        .supplyAsync(new FpsakSupplier(fpsakClient, person.getAktorId()))
-		        .handle((l, t) -> l != null ? l
-		                : new LookupResult<>("Fpsak", LookupStatus.FAILURE, Collections.<Ytelse>emptyList(),
-		                        t.getMessage()));
+		        .handle((l, t) -> l != null ? l : error("Fpsak", t.getMessage()));
 
 		CompletableFuture<LookupResult<Ytelse>> infotrygd = CompletableFuture
 		        .supplyAsync(new InfotrygdSupplier(infotrygdClient, person.getFnr(), 60))
-		        .handle((l, t) -> l != null ? l
-		                : new LookupResult<>("Infotrygd", LookupStatus.FAILURE, Collections.<Ytelse>emptyList(),
-		                        t.getMessage()));
+		        .handle((l, t) -> l != null ? l : error("Infotrygd", t.getMessage()));
 
 		return Pair.of(inntektFra(inntektskomponenten), ytelserFra(arena, fpsak, infotrygd));
 	}
 
-	private List<LookupResult<Inntekt>> inntektFra(CompletableFuture<LookupResult<Inntekt>> inntektskomponenten) {
-		return Stream.of(inntektskomponenten).map(CompletableFuture::join)
-		        .collect(toList());
+	@SafeVarargs
+	private final List<LookupResult<Inntekt>> inntektFra(CompletableFuture<LookupResult<Inntekt>>... systemer) {
+		return Arrays.stream(systemer).map(CompletableFuture::join).collect(toList());
 	}
 
-	private List<LookupResult<Ytelse>> ytelserFra(CompletableFuture<LookupResult<Ytelse>> arena,
-	        CompletableFuture<LookupResult<Ytelse>> fpsak, CompletableFuture<LookupResult<Ytelse>> infotrygd) {
-		return Stream.of(arena, fpsak, infotrygd).map(CompletableFuture::join)
-		        .collect(toList());
+   @SafeVarargs
+   private final List<LookupResult<Ytelse>> ytelserFra(CompletableFuture<LookupResult<Ytelse>>... systemer) {
+		return Arrays.stream(systemer).map(CompletableFuture::join).collect(toList());
 	}
+
+	private LookupResult error(String system, String errMsg) {
+	   return new LookupResult<>(system, LookupStatus.FAILURE, Collections.<Ytelse>emptyList(), errMsg);
+   }
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [inntektClient=" + inntektClient + ", arenaClient=" + arenaClient + ", fpsakClient="
-		        + fpsakClient + ", infotrygdClient=" + infotrygdClient + "]";
+		return getClass().getSimpleName() + " [inntektClient=" + inntektClient + ", arenaClient=" +
+         arenaClient + ", fpsakClient=" + fpsakClient + ", infotrygdClient=" + infotrygdClient + "]";
 	}
 
 }
