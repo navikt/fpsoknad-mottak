@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.oppslag.orchestrate;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.oppslag.Register.INNTEKTSMELDING;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,14 +12,16 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.oppslag.Register;
 import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
 import no.nav.foreldrepenger.oppslag.arena.ArenaSupplier;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.domain.ID;
 import no.nav.foreldrepenger.oppslag.domain.Inntekt;
 import no.nav.foreldrepenger.oppslag.domain.LookupResult;
 import no.nav.foreldrepenger.oppslag.domain.LookupStatus;
 import no.nav.foreldrepenger.oppslag.domain.Pair;
+import no.nav.foreldrepenger.oppslag.domain.TidsAvgrensetBrukerInfo;
+import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
 import no.nav.foreldrepenger.oppslag.fpsak.FpsakSupplier;
 import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
@@ -29,60 +32,57 @@ import no.nav.foreldrepenger.oppslag.inntekt.InntektSupplier;
 @Component
 public class CoordinatedLookup {
 
-	private final InntektClient inntektClient;
-	private final ArenaClient arenaClient;
-	private final FpsakClient fpsakClient;
-	private final InfotrygdClient infotrygdClient;
+    private final InntektClient inntekt;
+    private final ArenaClient arena;
+    private final FpsakClient fpsak;
+    private final InfotrygdClient infotrygd;
 
-	@Inject
-	public CoordinatedLookup(InntektClient inntektClient, ArenaClient arenaClient, FpsakClient fpsakClient,
-	        InfotrygdClient infotrygdClient) {
-		this.inntektClient = inntektClient;
-		this.arenaClient = arenaClient;
-		this.fpsakClient = fpsakClient;
-		this.infotrygdClient = infotrygdClient;
-	}
+    @Inject
+    public CoordinatedLookup(InntektClient inntekt, ArenaClient arena, FpsakClient fpsak, InfotrygdClient infotrygd) {
+        this.inntekt = inntekt;
+        this.arena = arena;
+        this.fpsak = fpsak;
+        this.infotrygd = infotrygd;
+    }
 
-	@SuppressWarnings("unchecked")
-	public Pair<List<LookupResult<Inntekt>>, List<LookupResult<Ytelse>>> gimmeAllYouGot(ID person) {
+    public Pair<List<LookupResult<Inntekt>>, List<LookupResult<Ytelse>>> gimmeAllYouGot(
+            ID person) {
 
-		CompletableFuture<LookupResult<Inntekt>> inntektskomponenten = CompletableFuture
-		        .supplyAsync(new InntektSupplier(inntektClient, person.getFnr(), 12))
-		        .handle((l, t) -> l != null ? l : error("Inntektskomponenten", t.getMessage()));
+        CompletableFuture<LookupResult<Inntekt>> inntektskomponenten = CompletableFuture
+                .supplyAsync(new InntektSupplier(inntekt, person.getFnr(), 12))
+                .handle((l, t) -> l != null ? l : error(INNTEKTSMELDING, t.getMessage()));
+        CompletableFuture<LookupResult<Ytelse>> arenaYtelser = CompletableFuture
+                .supplyAsync(new ArenaSupplier(arena, person.getFnr(), 60))
+                .handle((l, t) -> l != null ? l
+                        : error(Register.ARENA,
+                                t.getMessage()));
 
-		CompletableFuture<LookupResult<Ytelse>> arena = CompletableFuture
-		        .supplyAsync(new ArenaSupplier(arenaClient, person.getFnr(), 60))
-		        .handle((l, t) -> l != null ? l : error("Arena", t.getMessage()));
+        CompletableFuture<LookupResult<Ytelse>> infotrygdYtelser = CompletableFuture
+                .supplyAsync(new InfotrygdSupplier(infotrygd, person.getFnr(), 60))
+                .handle((l, t) -> l != null ? l : error(Register.FPSAK, t.getMessage()));
 
-		CompletableFuture<LookupResult<Ytelse>> fpsak = CompletableFuture
-		        .supplyAsync(new FpsakSupplier(fpsakClient, person.getAktorId()))
-		        .handle((l, t) -> l != null ? l : error("Fpsak", t.getMessage()));
+        CompletableFuture<LookupResult<Ytelse>> fpsakYtelser = CompletableFuture
+                .supplyAsync(new FpsakSupplier(fpsak, person.getAktorId()))
+                .handle((l, t) -> l != null ? l : error(Register.FPSAK, t.getMessage()));
 
-		CompletableFuture<LookupResult<Ytelse>> infotrygd = CompletableFuture
-		        .supplyAsync(new InfotrygdSupplier(infotrygdClient, person.getFnr(), 60))
-		        .handle((l, t) -> l != null ? l : error("Infotrygd", t.getMessage()));
+        return Pair.of(resultaterFra(inntektskomponenten),
+                resultaterFra(/* arenaYtelser, */fpsakYtelser, infotrygdYtelser));
+    }
 
-		return Pair.of(inntektFra(inntektskomponenten), ytelserFra(arena, fpsak, infotrygd));
-	}
+    @SafeVarargs
+    private final <T extends TidsAvgrensetBrukerInfo> List<LookupResult<T>> resultaterFra(
+            CompletableFuture<LookupResult<T>>... systemer) {
+        return Arrays.stream(systemer).map(CompletableFuture::join).collect(toList());
+    }
 
-	@SafeVarargs
-	private final List<LookupResult<Inntekt>> inntektFra(CompletableFuture<LookupResult<Inntekt>>... systemer) {
-		return Arrays.stream(systemer).map(CompletableFuture::join).collect(toList());
-	}
+    private static <T extends TidsAvgrensetBrukerInfo> LookupResult<T> error(Register system, String errMsg) {
+        return new LookupResult<T>(system.getDisplayValue(), LookupStatus.FAILURE, Collections.emptyList(), errMsg);
+    }
 
-   @SafeVarargs
-   private final List<LookupResult<Ytelse>> ytelserFra(CompletableFuture<LookupResult<Ytelse>>... systemer) {
-		return Arrays.stream(systemer).map(CompletableFuture::join).collect(toList());
-	}
-
-	private LookupResult error(String system, String errMsg) {
-	   return new LookupResult<>(system, LookupStatus.FAILURE, Collections.<Ytelse>emptyList(), errMsg);
-   }
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + " [inntektClient=" + inntektClient + ", arenaClient=" +
-         arenaClient + ", fpsakClient=" + fpsakClient + ", infotrygdClient=" + infotrygdClient + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [inntekt=" + inntekt + ", arena=" + arena + ", fpsak=" + fpsak
+                + ", infotrygd=" + infotrygd + "]";
+    }
 
 }

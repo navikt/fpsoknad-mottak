@@ -15,33 +15,35 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import no.nav.foreldrepenger.oppslag.Register;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 
 public class SerializationTest {
 
-	private static ObjectMapper mapper;
+    private static ObjectMapper mapper;
 
-	@BeforeAll
-	public static void beforeClass() {
-		mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		mapper.registerModule(new Jdk8Module());
-		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-	}
+    @BeforeAll
+    public static void beforeClass() {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.registerModule(new Jdk8Module());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
 
-	@Test
-	public void testBenefit() throws Exception {
-		Ytelse benefit = benefit();
-		String serialized = write(benefit);
-		Ytelse deserialized = mapper.readValue(serialized, Ytelse.class);
-		assertEquals(benefit, deserialized);
-	}
+    @Test
+    public void testBenefit() throws Exception {
+        Ytelse ytelse = ytelse();
+        String serialized = write(ytelse);
+        Ytelse deserialized = mapper.readValue(serialized, Ytelse.class);
+        assertEquals(ytelse, deserialized);
+    }
 
-	private Ytelse benefit() {
-		return new Ytelse("hello", "world", LocalDate.now().minus(Period.ofYears(2)), Optional.of(LocalDate.now().minus(Period.ofYears(1))));
-	}
+    private Ytelse ytelse() {
+        return new Ytelse(Register.ARENA, "world", LocalDate.now().minus(Period.ofYears(2)),
+                Optional.of(LocalDate.now().minus(Period.ofYears(1))));
+    }
 
-	private String write(Object obj) throws JsonProcessingException {
-		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-	}
+    private String write(Object obj) throws JsonProcessingException {
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+    }
 }

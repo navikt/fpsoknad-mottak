@@ -1,33 +1,24 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
-public class Inntekt {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private double amount;
-	private LocalDate from;
-	private LocalDate to;
+public class Inntekt extends TidsAvgrensetBrukerInfo {
 
-	public Inntekt(LocalDate from, LocalDate to, double amount) {
-		this.amount = amount;
-		this.from = from;
-		this.to = to;
-	}
+    private double amount;
 
-	public double amount() {
-		return amount;
-	}
+    @JsonCreator
+    public Inntekt(@JsonProperty("type") String register,
+            @JsonProperty("from") LocalDate from, @JsonProperty("to") Optional<LocalDate> to,
+            @JsonProperty("amount") double amount) {
+        super(register, "OK", from, to);
+        this.amount = amount;
+    }
 
-	public LocalDate from() {
-		return from;
-	}
-
-	public LocalDate to() {
-		return to;
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "{" + "amount=" + amount + ", from=" + from + ", to=" + to + '}';
-	}
+    public double amount() {
+        return amount;
+    }
 }
