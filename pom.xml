@@ -21,6 +21,8 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.jaxb-plugin.version>0.13.3</maven.jaxb-plugin.version>
 		<cxf.version>3.2.0</cxf.version>
+      <springfox.swagger.version>2.7.0</springfox.swagger.version>
+      <junit.platform.version>1.0.1</junit.platform.version>
 	</properties>
 
 	<scm>
@@ -248,12 +250,12 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.7.0</version>
+			<version>${springfox.swagger.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>2.7.0</version>
+			<version>${springfox.swagger.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -328,13 +330,13 @@
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-launcher</artifactId>
-			<version>1.0.1</version>
+			<version>${junit.platform.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
-			<version>1.0.1</version>
+			<version>${junit.platform.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
