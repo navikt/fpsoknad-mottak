@@ -1,27 +1,60 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.foreldrepenger.oppslag.Register;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Ytelse extends TidsAvgrensetBrukerInfo {
+   private String type;
+   private String status;
 
-    public Ytelse(Register register, String status, LocalDate from) {
-        this(register, status, from, Optional.empty());
-    }
+   public Ytelse(String type, String status, LocalDate from) {
+      this(type, status, from, Optional.empty());
+   }
 
-    public Ytelse(Register register, String status, LocalDate from, Optional<LocalDate> to) {
-        this(register.getDisplayValue(), status, from, to);
-    }
+   @JsonCreator
+   public Ytelse(
+      @JsonProperty("type") String type,
+      @JsonProperty("status ")String status,
+      @JsonProperty("from") LocalDate from,
+      @JsonProperty("to" )Optional<LocalDate> to) {
+      super(from, to);
+      this.type = type;
+      this.status = status;
+   }
 
-    @JsonCreator
-    public Ytelse(@JsonProperty("type") String register, @JsonProperty("status") String status,
-            @JsonProperty("from") LocalDate from, @JsonProperty("to") Optional<LocalDate> to) {
-        super(register, status, from, to);
-    }
+   public String getType() {
+      return type;
+   }
 
+   public String getStatus() {
+      return status;
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      if (!super.equals(o)) return false;
+      Ytelse ytelse = (Ytelse) o;
+      return Objects.equals(type, ytelse.type) &&
+         Objects.equals(status, ytelse.status);
+   }
+
+   @Override
+   public int hashCode() {
+
+      return Objects.hash(super.hashCode(), type, status);
+   }
+
+   @Override
+   public String toString() {
+      return super.toString() + "Ytelse{" +
+         "type='" + type + '\'' +
+         ", status='" + status + '\'' +
+         '}';
+   }
 }

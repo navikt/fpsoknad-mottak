@@ -34,8 +34,13 @@ public class SerializationTest {
 
 	@Test
 	public void testYtelseSerialization() throws IOException {
-		test(benefit());
+		test(ytelse());
 	}
+
+   @Test
+   public void testArbeidsforholdSerialization() throws IOException {
+      test(arbeidsforhold());
+   }
 
 	@Test
 	public void testKjonnSerialization() throws IOException {
@@ -75,7 +80,7 @@ public class SerializationTest {
 	private void test(Object object) throws IOException {
 		String serialized = write(object);
 		Object deserialized = mapper.readValue(serialized, object.getClass());
-		assertEquals(object, deserialized);
+      assertEquals(object, deserialized);
 	}
 
 	private static ID id() {
@@ -106,10 +111,16 @@ public class SerializationTest {
 		return new Adresse("NOR", "0360", "Fagerborggata", "6", "A");
 	}
 
-	private static Ytelse benefit() {
-		return new Ytelse("hello", "world", LocalDate.now().minus(Period.ofYears(2)),
+	private static Ytelse ytelse() {
+		return new Ytelse("typen", "statusen", LocalDate.now().minus(Period.ofYears(2)),
 		        Optional.of(LocalDate.now().minus(Period.ofYears(1))));
 	}
+
+   private static Arbeidsforhold arbeidsforhold() {
+	   LocalDate now = LocalDate.now();
+	   return new Arbeidsforhold(new AktorId("123"), "statusen",
+         now.minusMonths(3), Optional.of(now));
+   }
 
 	private String write(Object obj) throws JsonProcessingException {
 		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);

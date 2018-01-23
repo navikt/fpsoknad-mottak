@@ -1,9 +1,8 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
-import no.nav.foreldrepenger.oppslag.*;
-
-import java.time.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
 
@@ -14,7 +13,7 @@ public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
    }
 
    public Arbeidsforhold(AktorId arbeidsgiver, String status, LocalDate from, Optional<LocalDate> to) {
-      super(Register.AAREG, status, from, to);
+      super(from, to);
       this.arbeidsgiver = arbeidsgiver;
 
    }

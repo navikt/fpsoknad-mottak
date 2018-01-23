@@ -1,22 +1,19 @@
 package no.nav.foreldrepenger.oppslag.infotrygd;
 
-import static org.junit.Assert.assertEquals;
-
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import no.nav.foreldrepenger.oppslag.Register;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
 
 public class SerializationTest {
 
@@ -39,7 +36,7 @@ public class SerializationTest {
     }
 
     private Ytelse ytelse() {
-        return new Ytelse(Register.ARENA, "world", LocalDate.now().minus(Period.ofYears(2)),
+        return new Ytelse("typen", "statusen", LocalDate.now().minus(Period.ofYears(2)),
                 Optional.of(LocalDate.now().minus(Period.ofYears(1))));
     }
 

@@ -1,19 +1,16 @@
 package no.nav.foreldrepenger.oppslag.infotrygd;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
-import javax.xml.datatype.DatatypeFactory;
-
-import org.junit.jupiter.api.Test;
-
-import no.nav.foreldrepenger.oppslag.Register;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.informasjon.InfotrygdSak;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.informasjon.Status;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.informasjon.Tema;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.datatype.DatatypeFactory;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InfotrygdsakMapperTest {
 
@@ -25,13 +22,10 @@ public class InfotrygdsakMapperTest {
         status.setTermnavn("statusen");
         sak.setStatus(status);
         Tema tema = new Tema();
-        tema.setTermnavn(Register.ARENA.getDisplayValue());
+        tema.setTermnavn("typen");
         sak.setTema(tema);
         LocalDate date = LocalDate.of(2017, 12, 13);
-        Ytelse expected = new Ytelse(
-                Register.ARENA,
-                "statusen",
-                date, Optional.empty());
+        Ytelse expected = new Ytelse("typen","statusen", date, Optional.empty());
         Ytelse actual = InfotrygdsakMapper.map(sak);
         assertEquals(expected, actual);
     }

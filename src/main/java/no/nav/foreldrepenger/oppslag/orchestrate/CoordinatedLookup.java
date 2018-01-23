@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.oppslag.orchestrate;
 
-import no.nav.foreldrepenger.oppslag.Register;
 import no.nav.foreldrepenger.oppslag.aareg.AaregClient;
 import no.nav.foreldrepenger.oppslag.aareg.AaregSupplier;
 import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.oppslag.Register.INNTEKTSMELDING;
 
 @Component
 public class CoordinatedLookup {
@@ -50,23 +48,23 @@ public class CoordinatedLookup {
 
         CompletableFuture<LookupResult<Inntekt>> inntektskomponenten = CompletableFuture
                 .supplyAsync(new InntektSupplier(inntekt, person.getFnr(), 12))
-                .handle((l, t) -> l != null ? l : error(INNTEKTSMELDING, t.getMessage()));
+                .handle((l, t) -> l != null ? l : error("Inntektskomponenten", t.getMessage()));
 
         CompletableFuture<LookupResult<Ytelse>> arenaYtelser = CompletableFuture
                 .supplyAsync(new ArenaSupplier(arena, person.getFnr(), 60))
-                .handle((l, t) -> l != null ? l : error(Register.ARENA, t.getMessage()));
+                .handle((l, t) -> l != null ? l : error("Arena", t.getMessage()));
 
         CompletableFuture<LookupResult<Ytelse>> infotrygdYtelser = CompletableFuture
                 .supplyAsync(new InfotrygdSupplier(infotrygd, person.getFnr(), 60))
-                .handle((l, t) -> l != null ? l : error(Register.INFOTRYGD, t.getMessage()));
+                .handle((l, t) -> l != null ? l : error("Infotrygd", t.getMessage()));
 
         CompletableFuture<LookupResult<Ytelse>> fpsakYtelser = CompletableFuture
                 .supplyAsync(new FpsakSupplier(fpsak, person.getAktorId()))
-                .handle((l, t) -> l != null ? l : error(Register.FPSAK, t.getMessage()));
+                .handle((l, t) -> l != null ? l : error("FPSAK", t.getMessage()));
 
        CompletableFuture<LookupResult<Arbeidsforhold>> aaregArbeid = CompletableFuture
           .supplyAsync(new AaregSupplier(aareg, person.getFnr(), 60))
-          .handle((l, t) -> l != null ? l : error(Register.AAREG, t.getMessage()));
+          .handle((l, t) -> l != null ? l : error("AAREG", t.getMessage()));
 
         return new AggregatedLookupResults(
            resultaterFra(inntektskomponenten),
@@ -83,8 +81,8 @@ public class CoordinatedLookup {
            .collect(toList());
     }
 
-    private static <T extends TidsAvgrensetBrukerInfo> LookupResult<T> error(Register system, String errMsg) {
-        return new LookupResult<T>(system.getDisplayValue(), LookupStatus.FAILURE, Collections.emptyList(), errMsg);
+    private static <T extends TidsAvgrensetBrukerInfo> LookupResult<T> error(String system, String errMsg) {
+        return new LookupResult<>(system, LookupStatus.FAILURE, Collections.emptyList(), errMsg);
     }
 
    @Override
