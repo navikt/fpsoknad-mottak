@@ -19,6 +19,7 @@ Sett følgende miljøvariabler:
  * VIRKSOMHET_PERSON_V3_ENDPOINTURL
  * VIRKSOMHET_YTELSESKONTRAKT_V3_ENDPOINTURL
  * VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL
+ * VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL
  
 Last ned no.nav.modig:modig-testcertificates (fra intern Nexus) og pakk ut fila truststore.jts et dertil egnet sted på disken din.
  
