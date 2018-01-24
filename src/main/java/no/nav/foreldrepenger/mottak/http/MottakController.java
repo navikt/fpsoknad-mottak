@@ -1,19 +1,22 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.mottak.domain.Soknad;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+
 @RestController
 class MottakController {
 
-	@RequestMapping(method = { RequestMethod.POST }, value = "/mottak")
-	public ResponseEntity<?> motta(@RequestBody Soknad soknad) {
-			return ResponseEntity.status(HttpStatus.OK).body("Takk");
+    @PostMapping(value = "/mottak")
+    public ResponseEntity<Søknad> mottak(@Valid @RequestBody Søknad soknad) {
+        return ResponseEntity.status(HttpStatus.OK).body(soknad);
 
-	}
+    }
+
 }

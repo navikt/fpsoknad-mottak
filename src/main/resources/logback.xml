@@ -15,7 +15,9 @@
 	
 
 	<root level="info">
-		<appender-ref ref="stdout_json" />
+		<appender-ref ref="stdout" />
 	</root>
+	
+	<logger name="springfox.documentation" level="trace" />
 
 </configuration>

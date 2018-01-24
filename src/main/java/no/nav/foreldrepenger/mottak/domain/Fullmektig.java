@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-public class Soknad {
+public class Fullmektig {
 
 }
