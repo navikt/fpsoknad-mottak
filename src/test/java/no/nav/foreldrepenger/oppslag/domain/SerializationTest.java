@@ -118,8 +118,8 @@ public class SerializationTest {
 
    private static Arbeidsforhold arbeidsforhold() {
 	   LocalDate now = LocalDate.now();
-	   return new Arbeidsforhold(new AktorId("123"), "statusen",
-         now.minusMonths(3), Optional.of(now));
+	   return new Arbeidsforhold("arbgiver", "typen", "yrket",
+         now.minusMonths(2), Optional.of(now));
    }
 
 	private String write(Object obj) throws JsonProcessingException {

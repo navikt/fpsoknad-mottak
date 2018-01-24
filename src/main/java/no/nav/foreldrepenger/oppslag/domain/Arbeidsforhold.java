@@ -6,21 +6,32 @@ import java.util.Optional;
 
 public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
 
-   private AktorId arbeidsgiver;
+   private String arbeidsgiverId;
+   private String arbeidsgiverIdType;
+   private String yrke;
 
-   public AktorId getArbeidsgiver() {
-      return arbeidsgiver;
-   }
-
-   public Arbeidsforhold(AktorId arbeidsgiver, String status, LocalDate from, Optional<LocalDate> to) {
+   public Arbeidsforhold (
+         String arbeidsgiverId,
+         String arbeidsgiverIdType,
+         String yrke,
+         LocalDate from,
+         Optional<LocalDate> to) {
       super(from, to);
-      this.arbeidsgiver = arbeidsgiver;
-
+      this.arbeidsgiverId = arbeidsgiverId;
+      this.arbeidsgiverIdType = arbeidsgiverIdType;
+      this.yrke = yrke;
    }
 
-   @Override
-   public String toString() {
-      return super.toString() + ", " + "arbeidsgiver=" + arbeidsgiver;
+   public String getArbeidsgiverId() {
+      return arbeidsgiverId;
+   }
+
+   public String getArbeidsgiverIdType() {
+      return arbeidsgiverIdType;
+   }
+
+   public String getYrke() {
+      return yrke;
    }
 
    @Override
@@ -29,11 +40,23 @@ public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
       if (o == null || getClass() != o.getClass()) return false;
       if (!super.equals(o)) return false;
       Arbeidsforhold that = (Arbeidsforhold) o;
-      return Objects.equals(arbeidsgiver, that.arbeidsgiver);
+      return Objects.equals(arbeidsgiverId, that.arbeidsgiverId) &&
+         Objects.equals(arbeidsgiverIdType, that.arbeidsgiverIdType) &&
+         Objects.equals(yrke, that.yrke);
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(super.hashCode(), arbeidsgiver);
+
+      return Objects.hash(super.hashCode(), arbeidsgiverId, arbeidsgiverIdType, yrke);
+   }
+
+   @Override
+   public String toString() {
+      return "Arbeidsforhold{" +
+         "arbeidsgiverId='" + arbeidsgiverId + '\'' +
+         ", arbeidsgiverIdType='" + arbeidsgiverIdType + '\'' +
+         ", yrke='" + yrke + '\'' +
+         '}';
    }
 }

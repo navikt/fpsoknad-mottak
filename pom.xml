@@ -23,6 +23,7 @@
 		<cxf.version>3.2.0</cxf.version>
       <springfox.swagger.version>2.7.0</springfox.swagger.version>
       <junit.platform.version>1.0.1</junit.platform.version>
+      <junit.jupiter.version>5.1.0-M1</junit.jupiter.version>
 	</properties>
 
 	<scm>
@@ -333,11 +334,19 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
+         <version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
+      <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter-params</artifactId>
+         <version>${junit.jupiter.version}</version>
+         <scope>test</scope>
+      </dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
+         <version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
