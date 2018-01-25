@@ -64,19 +64,26 @@ public class ArbeidsforholdMapperTest {
    }
 
    static Stream<Arguments> valueProvider() {
-      Organisasjon org = new Organisasjon();
-      org.setOrgnummer("12345");
-      HistoriskArbeidsgiverMedArbeidsgivernummer h = new HistoriskArbeidsgiverMedArbeidsgivernummer();
-      h.setArbeidsgivernummer("12346");
-      h.setNavn("arbeidsgiveren");
+      Organisasjon orgUtenNavn = new Organisasjon();
+      orgUtenNavn.setOrgnummer("12345");
+      Organisasjon orgMedNavn = new Organisasjon();
+      orgMedNavn.setNavn("el orgo");
+
+      HistoriskArbeidsgiverMedArbeidsgivernummer histUtenNavn = new HistoriskArbeidsgiverMedArbeidsgivernummer();
+      histUtenNavn.setArbeidsgivernummer("12346");
+      HistoriskArbeidsgiverMedArbeidsgivernummer histMedNavn = new HistoriskArbeidsgiverMedArbeidsgivernummer();
+      histMedNavn.setNavn("gamle saker");
+
       Person person = new Person();
       NorskIdent norskIdent = new NorskIdent();
       norskIdent.setIdent("12347");
       person.setIdent(norskIdent);
 
       return Stream.of(
-         Arguments.of("12345", "orgnr", org),
-         Arguments.of("arbeidsgiveren", "navn", h),
+         Arguments.of("12345", "orgnr", orgUtenNavn),
+         Arguments.of("el orgo", "navn", orgMedNavn),
+         Arguments.of("gamle saker", "navn", histMedNavn),
+         Arguments.of("12346", "arbeidsgivernr", histUtenNavn),
          Arguments.of("12347", "fnr", person)
       );
    }
