@@ -47,6 +47,7 @@ public class AaregClient {
       } catch (FinnArbeidsforholdPrArbeidstakerUgyldigInput ex) {
          throw new IncompleteRequestException(ex);
       } catch (Exception ex) {
+         ex.printStackTrace();
          throw new RuntimeException(ex);
       }
    }
