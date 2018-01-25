@@ -1,13 +1,17 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.beans.ConstructorProperties;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Omsorgsovertakelse extends RelasjonTilBarn {
 
     private final LocalDate omsorgsovertakelsesdato;
@@ -19,8 +23,10 @@ public class Omsorgsovertakelse extends RelasjonTilBarn {
         this(1, omsorgsovertakelsesdato, årsak);
     }
 
-    @ConstructorProperties({ "antallBarn", "omsorgsovertakelsesdato", "årsak" })
-    public Omsorgsovertakelse(int antallBarn, LocalDate omsorgsovertakelsesdato, OmsorgsOvertakelsesÅrsak årsak) {
+    @JsonCreator
+    public Omsorgsovertakelse(@JsonProperty("antallBarn") int antallBarn,
+            @JsonProperty("omsorgsovertakelsesdato") LocalDate omsorgsovertakelsesdato,
+            @JsonProperty("årsak") OmsorgsOvertakelsesÅrsak årsak) {
         super(antallBarn);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.årsak = årsak;

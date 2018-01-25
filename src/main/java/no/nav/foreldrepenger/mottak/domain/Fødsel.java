@@ -1,13 +1,17 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.beans.ConstructorProperties;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Fødsel extends RelasjonTilBarn {
 
     private final LocalDate fødselsdato;
@@ -16,8 +20,8 @@ public class Fødsel extends RelasjonTilBarn {
         this(1, fødselsdato);
     }
 
-    @ConstructorProperties({ "antallBarn", "fødselsdato" })
-    public Fødsel(int antallBarn, LocalDate fødselsdato) {
+    @JsonCreator
+    public Fødsel(@JsonProperty("antallBarn") int antallBarn, @JsonProperty("fødselsdato") LocalDate fødselsdato) {
         super(antallBarn);
         this.fødselsdato = fødselsdato;
     }

@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.beans.ConstructorProperties;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Data;
@@ -10,10 +10,10 @@ import lombok.Data;
 public class Utenlandsopphold {
 
     private final CountryCode land;
-    private final Varighet varighet;
+    private final Periode varighet;
 
-    @ConstructorProperties({ "land", "varighet" })
-    public Utenlandsopphold(CountryCode land, Varighet varighet) {
+    @JsonCreator
+    public Utenlandsopphold(@JsonProperty("land") CountryCode land, @JsonProperty("varighet") Periode varighet) {
         this.land = land;
         this.varighet = varighet;
     }

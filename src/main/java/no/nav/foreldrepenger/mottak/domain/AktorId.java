@@ -1,41 +1,23 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.util.Objects;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import lombok.Data;
+
+@Data
 public class AktorId {
+    @JsonValue
     private final String value;
 
-    public AktorId(String value) {
-        this.value = Objects.requireNonNull(value);
+    @JsonCreator
+    public AktorId(@JsonProperty("value") String value) {
+        this.value = value;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if ((o == null) || (getClass() != o.getClass())) {
-            return false;
-        }
-        AktorId that = (AktorId) o;
-        return Objects.equals(value, that.value);
-    }
-
-    @JsonValue
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [value=" + value + "]";
+    public static AktorId valueOf(String value) {
+        return new AktorId(value);
     }
 
 }

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.beans.ConstructorProperties;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
@@ -14,8 +15,9 @@ public class Søker {
         this(aktorId, brukerRolle, null);
     }
 
-    @ConstructorProperties({ "aktorId", "søknadsRolle", "fullmektig" })
-    public Søker(AktorId aktorId, BrukerRolle søknadsRolle, Fullmektig fullmektig) {
+    @JsonCreator
+    public Søker(@JsonProperty("aktorId") AktorId aktorId, @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle,
+            @JsonProperty("fullmektig") Fullmektig fullmektig) {
         this.aktorid = aktorId;
         this.søknadsRolle = søknadsRolle;
         this.fullmektig = fullmektig;

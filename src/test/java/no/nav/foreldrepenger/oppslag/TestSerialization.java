@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.oppslag;
 
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -32,12 +31,12 @@ import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.OppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.Periode;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TerminInfo;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.Varighet;
 
 public class TestSerialization {
 
@@ -50,6 +49,7 @@ public class TestSerialization {
         configureMapper(mapper);
         xmlMapper = new XmlMapper();
         configureMapper(xmlMapper);
+        // xmlMapper.set
     }
 
     private static void configureMapper(ObjectMapper mapper) {
@@ -57,16 +57,13 @@ public class TestSerialization {
         mapper.registerModule(new Jdk8Module());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.setSerializationInclusion(Include.NON_EMPTY);
         mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
     }
 
     @Test
     public void testSøknad() {
-        test(engangssøknad(), true, xmlMapper);
-    }
-
-    private Søknad engangssøknad() {
-        return new Søknad(nå(), søker(), engangstønad());
+        test(engangssøknad(), true);
     }
 
     @Test
@@ -134,6 +131,13 @@ public class TestSerialization {
         test(varighet());
     }
 
+    private static Søknad engangssøknad() {
+        Søknad s = new Søknad(nå(), søker(), engangstønad());
+        s.setBegrunnelseForSenSøknad("Glemte hele greia");
+        s.setTilleggsopplysninger("Intet å tilføye");
+        return s;
+    }
+
     private static Engangsstønad engangstønad() {
         Engangsstønad stønad = new Engangsstønad(medlemsskap(), fødsel());
         stønad.setAnnenForelder(norskForelder());
@@ -153,7 +157,7 @@ public class TestSerialization {
     }
 
     private static Medlemsskap medlemsskap() {
-        return new Medlemsskap(norgesInfo(), singletonList(utenlandsopphold()), singletonList(varighet()));
+        return new Medlemsskap(norgesInfo());
     }
 
     private static Omsorgsovertakelse omsorgsovertakelse() {
@@ -173,7 +177,7 @@ public class TestSerialization {
     }
 
     private static OppholdsInformasjon norgesInfo() {
-        return new OppholdsInformasjon(true, true, true);
+        return new OppholdsInformasjon(true, true);
     }
 
     private static Søker søker() {
@@ -184,8 +188,8 @@ public class TestSerialization {
         return new TerminInfo(nå(), nesteMåned());
     }
 
-    private static Varighet varighet() {
-        return new Varighet(nå(), nesteMåned());
+    private static Periode varighet() {
+        return new Periode(nå(), nesteMåned());
     }
 
     private static LocalDate nesteMåned() {
@@ -217,6 +221,9 @@ public class TestSerialization {
         try {
             String serialized = write(object, print, mapper);
             Object deserialized = mapper.readValue(serialized, object.getClass());
+            if (print) {
+                System.out.println(deserialized);
+            }
             assertEquals(object, deserialized);
         } catch (IOException e) {
             e.printStackTrace();

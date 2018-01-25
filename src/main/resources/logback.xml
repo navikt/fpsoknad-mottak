@@ -18,6 +18,6 @@
 		<appender-ref ref="stdout" />
 	</root>
 	
-	<logger name="springfox.documentation" level="trace" />
+	
 
 </configuration>

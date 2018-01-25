@@ -11,6 +11,6 @@ import lombok.Data;
         @Type(value = Engangsstønad.class, name = "engangsstønad"),
 })
 @Data
-public abstract class Ytelse {
+public class Ytelse {
 
 }
