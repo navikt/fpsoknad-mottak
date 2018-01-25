@@ -63,7 +63,7 @@ public class CoordinatedLookup {
                 .handle((l, t) -> l != null ? l : error("FPSAK", t.getMessage()));
 
        CompletableFuture<LookupResult<Arbeidsforhold>> aaregArbeid = CompletableFuture
-          .supplyAsync(new AaregSupplier(aareg, person.getFnr(), 60))
+          .supplyAsync(new AaregSupplier(aareg, person.getFnr()))
           .handle((l, t) -> l != null ? l : error("AAREG", t.getMessage()));
 
         return new AggregatedLookupResults(
