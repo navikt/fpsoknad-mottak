@@ -75,7 +75,7 @@ node {
     stage("Publish artifact") {
             sh "${mvn} clean deploy -DskipTests -B -e"
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'oldNexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                sh "curl -s -F r=m2internal -F hasPom=false -F e=yaml -F g=${groupId} -F a=${application} -F " + "v=${releaseVersion} -F p=yaml -F file=@${appConfig} -u ${env.USERNAME}:${env.PASSWORD} http://maven.adeo.no/nexus/service/local/artifact/maven/content"
+                sh "curl --fail -v -F r=m2internal -F hasPom=false -F e=yaml -F g=${groupId} -F a=${application} -F " + "v=${releaseVersion} -F p=yaml -F file=@${appConfig} -u ${env.USERNAME}:${env.PASSWORD} http://maven.adeo.no/nexus/service/local/artifact/maven/content"
             }
             sh "docker push ${dockerRepo}/${application}:${releaseVersion}"
     }
