@@ -9,6 +9,8 @@ import java.time.Period;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -37,6 +39,8 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TerminInfo;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 
 public class TestSerialization {
 
@@ -62,8 +66,13 @@ public class TestSerialization {
     }
 
     @Test
+    public void testVedlegg() throws IOException {
+        test(vedlegg(), true);
+    }
+
+    @Test
     public void testSøknad() {
-        test(engangssøknad(), true);
+        test(engangssøknad());
     }
 
     @Test
@@ -165,6 +174,10 @@ public class TestSerialization {
         overtakelse.setBeskrivelse("beskrivelse");
         overtakelse.setFødselsdato(forrigeMåned());
         return overtakelse;
+    }
+
+    private static Vedlegg vedlegg() throws IOException {
+        return new ValgfrittVedlegg("vedlegg", new ClassPathResource("test.txt"));
     }
 
     private static Adopsjon adopsjon() {
