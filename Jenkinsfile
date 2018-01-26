@@ -12,7 +12,7 @@ node {
     def mvn = "${mvnHome}/bin/mvn"
     def appConfig = "nais.yaml"
     def dockerRepo = "repo.adeo.no:5443"
-    #def dockerRepo = "docker.adeo.no:5000"
+    //def dockerRepo = "docker.adeo.no:5000"
     def branch = "master"
     def groupId = "nais"
     def environment = 't1'
