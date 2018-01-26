@@ -11,8 +11,8 @@ node {
     def mvnHome = tool "maven-3.3.9"
     def mvn = "${mvnHome}/bin/mvn"
     def appConfig = "nais.yaml"
-    def dockerRepo = "repo.adeo.no:5443"
-    //def dockerRepo = "docker.adeo.no:5000"
+    //def dockerRepo = "repo.adeo.no:5443"
+    def dockerRepo = "docker.adeo.no:5000"
     def branch = "master"
     def groupId = "nais"
     def environment = 't1'
@@ -77,8 +77,8 @@ node {
             sh "${mvn} clean deploy -DskipTests -B -e"
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 pathInRepo = "no/nav/foreldrepenger"
-                sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${pathInRepo}/${application}/${releaseVersion}/nais.yaml"
-              //  sh "curl --fail -v -F r=m2internal -F hasPom=false -F e=yaml -F g=${groupId} -F a=${application} -F " + "v=${releaseVersion} -F p=yaml -F file=@${appConfig} -u ${env.USERNAME}:${env.PASSWORD} http://maven.adeo.no/nexus/service/local/artifact/maven/content"
+                //sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${pathInRepo}/${application}/${releaseVersion}/nais.yaml"
+               sh "curl --fail -v -F r=m2internal -F hasPom=false -F e=yaml -F g=${groupId} -F a=${application} -F " + "v=${releaseVersion} -F p=yaml -F file=@${appConfig} -u ${env.USERNAME}:${env.PASSWORD} http://maven.adeo.no/nexus/service/local/artifact/maven/content"
             }
             sh "docker push ${dockerRepo}/${application}:${releaseVersion}"
     }
