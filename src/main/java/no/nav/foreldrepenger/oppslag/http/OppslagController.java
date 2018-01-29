@@ -21,28 +21,34 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/oppslag")
 public class OppslagController {
 
-    @Inject
-    private PersonClient personClient;
-    @Inject
-    private AktorIdClient aktorClient;
-    @Inject
-    private CoordinatedLookup lookup;
+   @Inject
+   private PersonClient personClient;
+   @Inject
+   private AktorIdClient aktorClient;
+   @Inject
+   private CoordinatedLookup personInfo;
 
-    @GetMapping(value = "/")
-    public ResponseEntity<SøkerInformasjon> oppslag(
-            @Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
-        AktorId aktorid = aktorClient.aktorIdForFnr(fnr);
-        Person person = personClient.hentPersonInfo(new ID(aktorid, fnr));
-       AggregatedLookupResults results = lookup.gimmeAllYouGot(new ID(aktorid, fnr));
-       return new ResponseEntity<>(
-          new SøkerInformasjon(person, results.getInntekt(), results.getYtelser(), results.getArbeidsforhold()), OK);
-    }
+   @GetMapping(value = "/")
+   public ResponseEntity<SøkerInformasjon> oppslag(
+      @Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
+      AktorId aktorid = aktorClient.aktorIdForFnr(fnr);
+      Person person = personClient.hentPersonInfo(new ID(aktorid, fnr));
+      AggregatedLookupResults results = personInfo.gimmeAllYouGot(new ID(aktorid, fnr));
+      return new ResponseEntity<>(
+         new SøkerInformasjon(
+               person,
+               results.getInntekt(),
+               results.getYtelser(),
+               results.getArbeidsforhold(),
+               results.getMedlPerioder()),
+         OK);
+   }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [personClient=" + personClient + ", aktorClient=" + aktorClient
-                + ", lookup=" + lookup
-                + "]";
-    }
+   @Override
+   public String toString() {
+      return getClass().getSimpleName() + " [personClient=" + personClient + ", aktorClient=" + aktorClient
+         + ", personInfo=" + personInfo
+         + "]";
+   }
 
 }

@@ -11,6 +11,9 @@ import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
 import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdSupplier;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektSupplier;
+import no.nav.foreldrepenger.oppslag.medl.MedlClient;
+import no.nav.foreldrepenger.oppslag.medl.MedlSupplier;
+
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -29,6 +32,7 @@ public class CoordinatedLookup {
     private final FpsakClient fpsak;
     private final InfotrygdClient infotrygd;
     private final AaregClient aareg;
+    private final MedlClient medl;
 
     @Inject
     public CoordinatedLookup(
@@ -36,12 +40,14 @@ public class CoordinatedLookup {
          ArenaClient arena,
          FpsakClient fpsak,
          InfotrygdClient infotrygd,
-         AaregClient aareg) {
+         AaregClient aareg,
+         MedlClient medl) {
        this.inntekt = inntekt;
        this.arena = arena;
        this.fpsak = fpsak;
        this.infotrygd = infotrygd;
        this.aareg = aareg;
+       this.medl = medl;
     }
 
     public AggregatedLookupResults gimmeAllYouGot(ID person) {
@@ -66,10 +72,15 @@ public class CoordinatedLookup {
           .supplyAsync(new AaregSupplier(aareg, person.getFnr()))
           .handle((l, t) -> l != null ? l : error("AAREG", t.getMessage()));
 
+       CompletableFuture<LookupResult<MedlPeriode>> medlPerioder = CompletableFuture
+          .supplyAsync(new MedlSupplier(medl, person.getFnr()))
+          .handle((l, t) -> l != null ? l : error("MEDL", t.getMessage()));
+
         return new AggregatedLookupResults(
            resultaterFra(inntektskomponenten),
            resultaterFra(arenaYtelser, infotrygdYtelser, fpsakYtelser),
-           resultaterFra(aaregArbeid)
+           resultaterFra(aaregArbeid),
+           resultaterFra(medlPerioder)
         );
     }
 
@@ -93,6 +104,7 @@ public class CoordinatedLookup {
          ", fpsak=" + fpsak +
          ", infotrygd=" + infotrygd +
          ", aareg=" + aareg +
+         ", medl=" + medl +
          '}';
    }
 }

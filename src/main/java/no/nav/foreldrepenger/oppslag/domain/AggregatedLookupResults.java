@@ -7,14 +7,17 @@ public class AggregatedLookupResults {
    private List<LookupResult<Inntekt>> inntekt;
    private List<LookupResult<Ytelse>> ytelser;
    private List<LookupResult<Arbeidsforhold>> arbeidsforhold;
+   private List<LookupResult<MedlPeriode>> medlPerioder;
 
    public AggregatedLookupResults(
          List<LookupResult<Inntekt>> inntekt,
          List<LookupResult<Ytelse>> ytelser,
-         List<LookupResult<Arbeidsforhold>> arbeidsforhold) {
+         List<LookupResult<Arbeidsforhold>> arbeidsforhold,
+         List<LookupResult<MedlPeriode>> medlPerioder) {
       this.inntekt = inntekt;
       this.ytelser = ytelser;
       this.arbeidsforhold = arbeidsforhold;
+      this.medlPerioder = medlPerioder;
    }
 
    public List<LookupResult<Inntekt>> getInntekt() {
@@ -29,12 +32,17 @@ public class AggregatedLookupResults {
       return arbeidsforhold;
    }
 
+   public List<LookupResult<MedlPeriode>> getMedlPerioder() {
+      return medlPerioder;
+   }
+
    @Override
    public String toString() {
       return "AggregatedLookupResults{" +
          "inntekt=" + inntekt +
          ", ytelser=" + ytelser +
          ", arbeidsforhold=" + arbeidsforhold +
+         ", medlPerioder=" + medlPerioder +
          '}';
    }
 }

@@ -188,6 +188,19 @@
                      <sourceDestDir>target/generated-sources</sourceDestDir>
                   </configuration>
                </execution>
+               <execution>
+                  <id>WsdlMedl</id>
+                  <goals>
+                     <goal>wsimport</goal>
+                  </goals>
+                  <configuration>
+                     <wsdlFiles>
+                        <wsdlFile>MedlemskapV2.wsdl</wsdlFile>
+                     </wsdlFiles>
+                     <wsdlDirectory>src/main/resources/wsdl/medl/virksomhet/medlemskap/v2</wsdlDirectory>
+                     <sourceDestDir>target/generated-sources</sourceDestDir>
+                  </configuration>
+               </execution>
 				</executions>
 			</plugin>
 			<plugin>
