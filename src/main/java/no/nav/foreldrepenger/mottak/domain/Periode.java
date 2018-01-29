@@ -1,26 +1,20 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.time.LocalDate;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import javax.validation.Valid;
+import javax.validation.Constraint;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+@Constraint(validatedBy = PeriodeValidator.class)
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Periode {
 
-import lombok.Data;
+    Class<?>[] groups() default {};
 
-@Data
-@Period
-@Valid
-public class Periode {
+    Class<?>[] payload() default {};
 
-    private final LocalDate fom;
-    private final LocalDate tom;
-
-    @JsonCreator
-    public Periode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom) {
-        this.fom = fom;
-        this.tom = tom;
-    }
-
+    String message() default "Perioden er ikke gyldig";
 }

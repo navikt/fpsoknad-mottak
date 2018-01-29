@@ -10,7 +10,6 @@ import java.time.Period;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -27,16 +26,16 @@ import no.nav.foreldrepenger.mottak.domain.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.OppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.Periode;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.TerminInfo;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
@@ -67,12 +66,12 @@ public class TestSerialization {
 
     @Test
     public void testVedlegg() throws IOException {
-        test(vedlegg(), true);
+        test(vedlegg());
     }
 
     @Test
     public void testSøknad() {
-        test(engangssøknad());
+        test(engangssøknad(), true);
     }
 
     @Test
@@ -127,7 +126,7 @@ public class TestSerialization {
 
     @Test
     public void testTermin() {
-        test(termin());
+        test(fremtidigFødsel());
     }
 
     @Test
@@ -148,7 +147,7 @@ public class TestSerialization {
     }
 
     private static Engangsstønad engangstønad() {
-        Engangsstønad stønad = new Engangsstønad(medlemsskap(), fødsel());
+        Engangsstønad stønad = new Engangsstønad(medlemsskap(), fremtidigFødsel());
         stønad.setAnnenForelder(norskForelder());
         return stønad;
     }
@@ -181,12 +180,12 @@ public class TestSerialization {
     }
 
     private static Adopsjon adopsjon() {
-        Adopsjon adopsjon = new Adopsjon(nå(), false);
-        return adopsjon;
+        return new Adopsjon(nå(), false);
     }
 
     private static Fødsel fødsel() {
-        return new Fødsel(forrigeMåned());
+        Fødsel fødsel = new Fødsel(forrigeMåned());
+        return fødsel;
     }
 
     private static OppholdsInformasjon norgesInfo() {
@@ -197,20 +196,24 @@ public class TestSerialization {
         return new Søker(aktoer(), BrukerRolle.MOR);
     }
 
-    private static TerminInfo termin() {
-        return new TerminInfo(nå(), nesteMåned());
+    private static FremtidigFødsel fremtidigFødsel() {
+        return new FremtidigFødsel(nå(), nesteMåned());
     }
 
-    private static Periode varighet() {
-        return new Periode(nå(), nesteMåned());
+    private static LukketPeriode varighet() {
+        return new LukketPeriode(nå(), nesteMåned());
     }
 
     private static LocalDate nesteMåned() {
-        return nå().plus(Period.ofWeeks(4));
+        return nå().plus(enMåned());
     }
 
     private static LocalDate forrigeMåned() {
-        return nå().minus(Period.ofWeeks(4));
+        return nå().minus(enMåned());
+    }
+
+    private static Period enMåned() {
+        return Period.ofMonths(1);
     }
 
     private static LocalDate nå() {

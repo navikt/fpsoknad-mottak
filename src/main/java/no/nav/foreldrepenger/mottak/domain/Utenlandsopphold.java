@@ -10,12 +10,11 @@ import lombok.Data;
 public class Utenlandsopphold {
 
     private final CountryCode land;
-    private final Periode varighet;
+    private final LukketPeriode varighet;
 
     @JsonCreator
-    public Utenlandsopphold(@JsonProperty("land") CountryCode land, @JsonProperty("varighet") Periode varighet) {
+    public Utenlandsopphold(@JsonProperty("land") CountryCode land, @JsonProperty("varighet") LukketPeriode varighet) {
         this.land = land;
         this.varighet = varighet;
     }
-
 }

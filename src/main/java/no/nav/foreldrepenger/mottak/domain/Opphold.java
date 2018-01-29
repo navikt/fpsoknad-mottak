@@ -10,7 +10,11 @@ import javax.validation.Constraint;
 @Constraint(validatedBy = PeriodeValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Period {
+public @interface Opphold {
 
-    String message() default "Perioden er ikke gyldig";
+    Class<?>[] groups() default {};
+
+    Class<?>[] payload() default {};
+
+    String message() default "Periodene overlapper";
 }

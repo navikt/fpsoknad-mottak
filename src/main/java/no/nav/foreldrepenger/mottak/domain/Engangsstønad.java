@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,8 +14,11 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Engangsstønad extends Ytelse {
 
+    @Valid
     private final Medlemsskap medlemsskap;
+    @Valid
     private AnnenForelder annenForelder;
+    @Valid
     private final RelasjonTilBarn relasjonTilBarn;
 
     @JsonCreator

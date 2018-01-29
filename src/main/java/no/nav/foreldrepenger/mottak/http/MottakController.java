@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 
 @RestController
 class MottakController {
@@ -16,5 +17,10 @@ class MottakController {
     @PostMapping(value = "/mottak", produces = { "application/json", "application/xml" })
     public ResponseEntity<Søknad> mottak(@Valid @RequestBody Søknad soknad) {
         return ResponseEntity.status(HttpStatus.OK).body(soknad);
+    }
+
+    @PostMapping(value = "/mottak/validate", produces = { "application/json", "application/xml" })
+    public ResponseEntity<FremtidigFødsel> test(@Valid @RequestBody FremtidigFødsel TerminInfo) {
+        return ResponseEntity.status(HttpStatus.OK).body(TerminInfo);
     }
 }

@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.Past;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,6 +19,7 @@ public class Adopsjon extends RelasjonTilBarn {
     private final LocalDate omsorgsovertakelsesdato;
     private final boolean ektefellesBarn;
     private LocalDate ankomstDato;
+    @Past
     private LocalDate fødselsdato;
 
     public Adopsjon(LocalDate omsorgsovertakelsesdato, boolean ektefellesBarn) {
