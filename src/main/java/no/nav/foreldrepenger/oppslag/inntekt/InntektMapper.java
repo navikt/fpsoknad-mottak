@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.oppslag.inntekt;
 
+import java.util.Optional;
+
 import no.nav.foreldrepenger.oppslag.domain.Inntekt;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
-
-import java.util.Optional;
 
 final class InntektMapper {
 

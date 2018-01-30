@@ -10,17 +10,17 @@ import no.nav.foreldrepenger.oppslag.domain.MedlPeriode;
 
 public class MedlSupplier implements Supplier<LookupResult<MedlPeriode>> {
 
-	private final MedlClient medlClient;
-	private final Fodselsnummer fnr;
+    private final MedlClient medlClient;
+    private final Fodselsnummer fnr;
 
-	public MedlSupplier(MedlClient medlClient, Fodselsnummer fnr) {
-		this.medlClient = medlClient;
-		this.fnr = fnr;
-	}
+    public MedlSupplier(MedlClient medlClient, Fodselsnummer fnr) {
+        this.medlClient = medlClient;
+        this.fnr = fnr;
+    }
 
-	@Override
-	public LookupResult<MedlPeriode> get() {
-		List<MedlPeriode> medlData = medlClient.medlInfo(fnr);
-		return new LookupResult<>("Medl", LookupStatus.SUCCESS, medlData);
-	}
+    @Override
+    public LookupResult<MedlPeriode> get() {
+        List<MedlPeriode> medlData = medlClient.medlInfo(fnr);
+        return new LookupResult<>("Medl", LookupStatus.SUCCESS, medlData);
+    }
 }

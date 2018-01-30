@@ -23,20 +23,20 @@ import no.nav.foreldrepenger.oppslag.person.PersonClient;
 @RequestMapping("/person")
 public class PersonController {
 
-	@Inject
-	private AktorIdClient aktorClient;
-	@Inject
-	private PersonClient personClient;
+    @Inject
+    private AktorIdClient aktorClient;
+    @Inject
+    private PersonClient personClient;
 
-	@GetMapping(value = "/")
-	public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
-		Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
-		return new ResponseEntity<>(person, OK);
-	}
+    @GetMapping(value = "/")
+    public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
+        Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
+        return new ResponseEntity<>(person, OK);
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + " [aktorClient=" + aktorClient + ", personClient=" + personClient + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [aktorClient=" + aktorClient + ", personClient=" + personClient + "]";
+    }
 
 }

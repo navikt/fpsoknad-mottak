@@ -7,25 +7,25 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 public final class CalendarConverter {
-	
-	private CalendarConverter() {
-		
-	}
 
-	public static LocalDate toLocalDate(XMLGregorianCalendar cal) {
-		return LocalDate.of(cal.getYear(), cal.getMonth(), cal.getDay());
-	}
+    private CalendarConverter() {
 
-	public static XMLGregorianCalendar toXMLGregorianCalendar(LocalDate date) {
-		try {
-			XMLGregorianCalendar xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-			xgc.setYear(date.getYear());
-			xgc.setMonth(date.getMonthValue());
-			xgc.setDay(date.getDayOfMonth());
-			return xgc;
-		} catch (DatatypeConfigurationException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    }
+
+    public static LocalDate toLocalDate(XMLGregorianCalendar cal) {
+        return LocalDate.of(cal.getYear(), cal.getMonth(), cal.getDay());
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar(LocalDate date) {
+        try {
+            XMLGregorianCalendar xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            xgc.setYear(date.getYear());
+            xgc.setMonth(date.getMonthValue());
+            xgc.setDay(date.getDayOfMonth());
+            return xgc;
+        } catch (DatatypeConfigurationException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
 }

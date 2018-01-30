@@ -5,6 +5,6 @@ import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 
 public interface Barnutvelger {
 
-	boolean erStonadsberettigetBarn(Fodselsnummer fnrMor, Barn barn);
+    boolean erStonadsberettigetBarn(Fodselsnummer fnrMor, Barn barn);
 
 }

@@ -15,25 +15,25 @@ import org.slf4j.LoggerFactory;
 
 public class CallIdHeader extends AbstractPhaseInterceptor<Message> {
 
-	private static final Logger logger = LoggerFactory.getLogger(CallIdHeader.class);
+    private static final Logger logger = LoggerFactory.getLogger(CallIdHeader.class);
 
-	public CallIdHeader() {
-		super(Phase.PRE_STREAM);
-	}
+    public CallIdHeader() {
+        super(Phase.PRE_STREAM);
+    }
 
-	@Override
-	public void handleMessage(Message message) throws Fault {
-		try {
-			QName qName = new QName("uri:no.nav.applikasjonsrammeverk", "callId");
-			SoapHeader header = new SoapHeader(qName, randomValue(), new JAXBDataBinding(String.class));
-			((SoapMessage) message).getHeaders().add(header);
-		} catch (JAXBException ex) {
-			logger.warn("Error while setting CallId header", ex);
-		}
-	}
+    @Override
+    public void handleMessage(Message message) throws Fault {
+        try {
+            QName qName = new QName("uri:no.nav.applikasjonsrammeverk", "callId");
+            SoapHeader header = new SoapHeader(qName, randomValue(), new JAXBDataBinding(String.class));
+            ((SoapMessage) message).getHeaders().add(header);
+        } catch (JAXBException ex) {
+            logger.warn("Error while setting CallId header", ex);
+        }
+    }
 
-	private String randomValue() {
-		return "fpoppslag-" + (int) (Math.random() * 10000);
-	}
+    private String randomValue() {
+        return "fpoppslag-" + (int) (Math.random() * 10000);
+    }
 
 }
