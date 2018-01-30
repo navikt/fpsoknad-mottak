@@ -6,15 +6,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class OppholdsInformasjon {
+public class FramtidigOppholdsInformasjon {
 
-    private final boolean fødselINorge;
+    private final boolean fødseINorge;
     private final boolean norgeNeste12;
 
+    public FramtidigOppholdsInformasjon() {
+        this(true, true);
+    }
+
     @JsonCreator
-    public OppholdsInformasjon(@JsonProperty("fødselINorge") boolean fødselINorge,
+    public FramtidigOppholdsInformasjon(@JsonProperty("fødseINorge") boolean fødseINorge,
             @JsonProperty("norgeNeste12") boolean norgeNeste12) {
-        this.fødselINorge = fødselINorge;
+        this.fødseINorge = fødseINorge;
         this.norgeNeste12 = norgeNeste12;
     }
 

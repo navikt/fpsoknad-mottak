@@ -24,8 +24,10 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
@@ -33,9 +35,9 @@ import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.OppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
@@ -70,13 +72,23 @@ public class TestSerialization {
     }
 
     @Test
-    public void testSøknad() {
-        test(engangssøknad(), true);
+    public void testSøknadNorge() {
+        test(engangssøknad(false));
     }
 
     @Test
-    public void testEngangsstønad() {
-        test(engangstønad());
+    public void testSøknadUtland() {
+        test(engangssøknad(true), true);
+    }
+
+    @Test
+    public void testEngangsstønadNorge() {
+        test(engangstønad(false));
+    }
+
+    @Test
+    public void testEngangsstønadUtland() {
+        test(engangstønad(true));
     }
 
     @Test
@@ -95,6 +107,11 @@ public class TestSerialization {
     }
 
     @Test
+    public void testMedlemsskapUtland() {
+        test(medlemsskap(true));
+    }
+
+    @Test
     public void testAdopsjon() {
         test(adopsjon());
     }
@@ -105,8 +122,8 @@ public class TestSerialization {
     }
 
     @Test
-    public void testNorgesInfo() {
-        test(norgesInfo());
+    public void testFremtidigOpphold() {
+        test(framtidigOppholdINorge());
     }
 
     @Test
@@ -139,15 +156,15 @@ public class TestSerialization {
         test(varighet());
     }
 
-    private static Søknad engangssøknad() {
-        Søknad s = new Søknad(nå(), søker(), engangstønad());
+    private static Søknad engangssøknad(boolean utland) {
+        Søknad s = new Søknad(nå(), søker(), engangstønad(utland));
         s.setBegrunnelseForSenSøknad("Glemte hele greia");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
     }
 
-    private static Engangsstønad engangstønad() {
-        Engangsstønad stønad = new Engangsstønad(medlemsskap(), fremtidigFødsel());
+    private static Engangsstønad engangstønad(boolean utland) {
+        Engangsstønad stønad = new Engangsstønad(medlemsskap(utland), fremtidigFødsel());
         stønad.setAnnenForelder(norskForelder());
         return stønad;
     }
@@ -165,7 +182,23 @@ public class TestSerialization {
     }
 
     private static Medlemsskap medlemsskap() {
-        return new Medlemsskap(norgesInfo());
+        return medlemsskap(false);
+    }
+
+    private static Medlemsskap medlemsskap(boolean utland) {
+        if (utland) {
+            return new Medlemsskap(tidligereOppHoldIUtlandetHeleåret(), framtidigOppholdINorge());
+        }
+        return new Medlemsskap(tidligereOppHoldINorge(), framtidigOppholdINorge());
+    }
+
+    private static TidligereOppholdsInformasjon tidligereOppHoldIUtlandetHeleåret() {
+        return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET,
+                new Utenlandsopphold(CountryCode.SE));
+    }
+
+    private static TidligereOppholdsInformasjon tidligereOppHoldINorge() {
+        return new TidligereOppholdsInformasjon();
     }
 
     private static Omsorgsovertakelse omsorgsovertakelse() {
@@ -188,8 +221,8 @@ public class TestSerialization {
         return fødsel;
     }
 
-    private static OppholdsInformasjon norgesInfo() {
-        return new OppholdsInformasjon(true, true);
+    private static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
+        return new FramtidigOppholdsInformasjon();
     }
 
     private static Søker søker() {
@@ -218,6 +251,10 @@ public class TestSerialization {
 
     private static LocalDate nå() {
         return LocalDate.now();
+    }
+
+    private static LocalDate ettÅrSiden() {
+        return LocalDate.now().minus(Period.ofYears(1));
     }
 
     private static AktorId aktoer() {

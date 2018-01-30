@@ -2,7 +2,9 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,8 +18,10 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class FremtidigFødsel extends RelasjonTilBarn {
     @NotNull
+    @Future
     private final LocalDate terminDato;
     @NotNull
+    @Past
     private final LocalDate utstedtDato;
 
     public FremtidigFødsel(LocalDate terminDato, LocalDate utstedtDato) {
