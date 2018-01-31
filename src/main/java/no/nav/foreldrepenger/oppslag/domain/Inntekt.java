@@ -7,20 +7,27 @@ import java.util.Optional;
 public class Inntekt extends TidsAvgrensetBrukerInfo {
 
     private double amount;
+    private String employer;
 
-    public Inntekt(double amount, LocalDate from, Optional<LocalDate> to) {
+    public Inntekt(LocalDate from, Optional<LocalDate> to, double amount, String employer) {
         super(from, to);
         this.amount = amount;
+        this.employer = employer;
     }
 
-    public double amount() {
-        return amount;
-    }
+   public double getAmount() {
+      return amount;
+   }
+
+   public String getEmployer() {
+      return employer;
+   }
 
    @Override
    public String toString() {
       return "Inntekt{" +
          "amount=" + amount +
+         ", employer='" + employer + '\'' +
          '}';
    }
 
@@ -30,12 +37,12 @@ public class Inntekt extends TidsAvgrensetBrukerInfo {
       if (o == null || getClass() != o.getClass()) return false;
       if (!super.equals(o)) return false;
       Inntekt inntekt = (Inntekt) o;
-      return Double.compare(inntekt.amount, amount) == 0;
+      return Double.compare(inntekt.amount, amount) == 0 &&
+         Objects.equals(employer, inntekt.employer);
    }
 
    @Override
    public int hashCode() {
-
-      return Objects.hash(super.hashCode(), amount);
+      return Objects.hash(super.hashCode(), amount, employer);
    }
 }
