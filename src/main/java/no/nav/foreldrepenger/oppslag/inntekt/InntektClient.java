@@ -29,57 +29,57 @@ import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeResponse;
 
 @Component
 public class InntektClient {
-	private static final Logger log = LoggerFactory.getLogger(InntektClient.class);
+    private static final Logger log = LoggerFactory.getLogger(InntektClient.class);
 
-	private final InntektV3 inntektV3;
+    private final InntektV3 inntektV3;
 
-	@Inject
-	public InntektClient(InntektV3 inntektV3) {
-		this.inntektV3 = inntektV3;
-	}
+    @Inject
+    public InntektClient(InntektV3 inntektV3) {
+        this.inntektV3 = inntektV3;
+    }
 
-	public List<Inntekt> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
-		HentInntektListeRequest req = request(fnr, from, to);
-		try {
-			HentInntektListeResponse res = inntektV3.hentInntektListe(req);
-			return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
-			        .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
-			        .map(InntektMapper::map).collect(toList());
-		} catch (HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter | HentInntektListeSikkerhetsbegrensning e) {
-			log.warn("Error while retrieving income", e);
-			throw new ForbiddenException(e);
-		} catch (HentInntektListeUgyldigInput e) {
-			log.warn("Error while retrieving income", e);
-			throw new IncompleteRequestException(e);
-		}
-	}
+    public List<Inntekt> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+        HentInntektListeRequest req = request(fnr, from, to);
+        try {
+            HentInntektListeResponse res = inntektV3.hentInntektListe(req);
+            return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
+                    .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
+                    .map(InntektMapper::map).collect(toList());
+        } catch (HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter | HentInntektListeSikkerhetsbegrensning e) {
+            log.warn("Error while retrieving income", e);
+            throw new ForbiddenException(e);
+        } catch (HentInntektListeUgyldigInput e) {
+            log.warn("Error while retrieving income", e);
+            throw new IncompleteRequestException(e);
+        }
+    }
 
-	private HentInntektListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
-		HentInntektListeRequest req = new HentInntektListeRequest();
+    private HentInntektListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+        HentInntektListeRequest req = new HentInntektListeRequest();
 
-		PersonIdent person = new PersonIdent();
-		person.setPersonIdent(fnr.getFnr());
-		req.setIdent(person);
+        PersonIdent person = new PersonIdent();
+        person.setPersonIdent(fnr.getFnr());
+        req.setIdent(person);
 
-		Ainntektsfilter ainntektsfilter = new Ainntektsfilter();
-		ainntektsfilter.setValue("ForeldrepengerA-Inntekt");
-		ainntektsfilter.setKodeRef("ForeldrepengerA-Inntekt");
-		ainntektsfilter.setKodeverksRef(
-		        "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
-		req.setAinntektsfilter(ainntektsfilter);
+        Ainntektsfilter ainntektsfilter = new Ainntektsfilter();
+        ainntektsfilter.setValue("ForeldrepengerA-Inntekt");
+        ainntektsfilter.setKodeRef("ForeldrepengerA-Inntekt");
+        ainntektsfilter.setKodeverksRef(
+                "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+        req.setAinntektsfilter(ainntektsfilter);
 
-		Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
-		uttrekksperiode.setMaanedFom(CalendarConverter.toXMLGregorianCalendar(from));
-		uttrekksperiode.setMaanedTom(CalendarConverter.toXMLGregorianCalendar(to));
-		req.setUttrekksperiode(uttrekksperiode);
+        Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
+        uttrekksperiode.setMaanedFom(CalendarConverter.toXMLGregorianCalendar(from));
+        uttrekksperiode.setMaanedTom(CalendarConverter.toXMLGregorianCalendar(to));
+        req.setUttrekksperiode(uttrekksperiode);
 
-		Formaal formaal = new Formaal();
-		formaal.setValue("Foreldrepenger");
-		formaal.setKodeRef("Foreldrepenger");
-		formaal.setKodeverksRef(
-		        "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
-		req.setFormaal(formaal);
+        Formaal formaal = new Formaal();
+        formaal.setValue("Foreldrepenger");
+        formaal.setKodeRef("Foreldrepenger");
+        formaal.setKodeverksRef(
+                "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+        req.setFormaal(formaal);
 
-		return req;
-	}
+        return req;
+    }
 }

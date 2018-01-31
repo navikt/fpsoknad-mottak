@@ -12,18 +12,18 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 @Configuration
 public class JacksonModuleConfiguration {
 
-	@Bean
-	public Module javaTimeModule() {
-		return new JavaTimeModule();
-	}
+    @Bean
+    public Module javaTimeModule() {
+        return new JavaTimeModule();
+    }
 
-	@Bean
-	public Module jdk8Module() {
-		return new Jdk8Module();
-	}
+    @Bean
+    public Module jdk8Module() {
+        return new Jdk8Module();
+    }
 
-	@Bean
-	public Module parameterNamesModule() {
-		return new ParameterNamesModule(JsonCreator.Mode.PROPERTIES);
-	}
+    @Bean
+    public Module parameterNamesModule() {
+        return new ParameterNamesModule(JsonCreator.Mode.PROPERTIES);
+    }
 }

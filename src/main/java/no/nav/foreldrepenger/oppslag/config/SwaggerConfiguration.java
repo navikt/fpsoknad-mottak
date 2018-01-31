@@ -16,18 +16,18 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfiguration {
 
-	@Bean
-	public Docket productApi() {
-		return new Docket(DocumentationType.SWAGGER_2).protocols(protocols("http", "https")).select()
-		        .apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
-	}
+    @Bean
+    public Docket productApi() {
+        return new Docket(DocumentationType.SWAGGER_2).protocols(protocols("http", "https")).select()
+                .apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
+    }
 
-	private static Set<String> protocols(String... schemes) {
-		Set<String> supportedSchemes = new HashSet<>();
-		for (String scheme : schemes) {
-			supportedSchemes.add(scheme);
-		}
-		return supportedSchemes;
-	}
+    private static Set<String> protocols(String... schemes) {
+        Set<String> supportedSchemes = new HashSet<>();
+        for (String scheme : schemes) {
+            supportedSchemes.add(scheme);
+        }
+        return supportedSchemes;
+    }
 
 }

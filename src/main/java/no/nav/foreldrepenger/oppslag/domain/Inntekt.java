@@ -45,4 +45,5 @@ public class Inntekt extends TidsAvgrensetBrukerInfo {
    public int hashCode() {
       return Objects.hash(super.hashCode(), amount, employer);
    }
+
 }

@@ -5,48 +5,48 @@ import java.util.Objects;
 
 public class Barn {
 
-	private final Pair<Fodselsnummer, Fodselsnummer> fnrs;
+    private final Pair<Fodselsnummer, Fodselsnummer> fnrs;
 
-	private final LocalDate birthDate;
+    private final LocalDate birthDate;
 
-	public Barn(Fodselsnummer fnrMor, Fodselsnummer fnr, LocalDate birthDate) {
-		this.fnrs = Pair.of(fnr, fnrMor);
-		this.birthDate = Objects.requireNonNull(birthDate);
-	}
+    public Barn(Fodselsnummer fnrMor, Fodselsnummer fnr, LocalDate birthDate) {
+        this.fnrs = Pair.of(fnr, fnrMor);
+        this.birthDate = Objects.requireNonNull(birthDate);
+    }
 
-	public Fodselsnummer getFnr() {
-		return fnrs.getFirst();
-	}
+    public Fodselsnummer getFnr() {
+        return fnrs.getFirst();
+    }
 
-	public Fodselsnummer getFnrMor() {
-		return fnrs.getSecond();
-	}
+    public Fodselsnummer getFnrMor() {
+        return fnrs.getSecond();
+    }
 
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(fnrs, birthDate);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(fnrs, birthDate);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if ((o == null) || (getClass() != o.getClass())) {
-			return false;
-		}
-		Barn that = (Barn) o;
-		return Objects.equals(fnrs, that.fnrs) && Objects.equals(birthDate, that.birthDate);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if ((o == null) || (getClass() != o.getClass())) {
+            return false;
+        }
+        Barn that = (Barn) o;
+        return Objects.equals(fnrs, that.fnrs) && Objects.equals(birthDate, that.birthDate);
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + " [fnr=" + fnrs.getFirst() + ", fnrMor=" + fnrs.getSecond() + ", birthDate="
-		        + birthDate + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [fnr=" + fnrs.getFirst() + ", fnrMor=" + fnrs.getSecond() + ", birthDate="
+                + birthDate + "]";
+    }
 
 }

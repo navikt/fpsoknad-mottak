@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.oppslag.inntekt;
 
+import java.util.Optional;
+
 import no.nav.foreldrepenger.oppslag.domain.Inntekt;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Aktoer;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.AktoerId;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Organisasjon;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.PersonIdent;
-
-import java.util.Optional;
 
 final class InntektMapper {
 

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>no.nav.foreldrepenger</groupId>
-   <artifactId>fpsoknad-oppslag</artifactId>
-   <version>0.0.149</version>
-   <packaging>jar</packaging>
-   <parent>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-parent</artifactId>
-      <version>2.0.0.M7</version>
-      <relativePath />
-   </parent>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>no.nav.foreldrepenger</groupId>
+	<artifactId>fpsoknad-oppslag</artifactId>
+	<version>0.0.149</version>
+	<packaging>jar</packaging>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.M7</version>
+		<relativePath />
+	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,9 +21,9 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.jaxb-plugin.version>0.13.3</maven.jaxb-plugin.version>
 		<cxf.version>3.2.0</cxf.version>
-      <springfox.swagger.version>2.7.0</springfox.swagger.version>
-      <junit.platform.version>1.0.1</junit.platform.version>
-      <junit.jupiter.version>5.1.0-M1</junit.jupiter.version>
+		<springfox.swagger.version>2.7.0</springfox.swagger.version>
+		<junit.platform.version>1.0.1</junit.platform.version>
+		<junit.jupiter.version>5.1.0-M1</junit.jupiter.version>
 	</properties>
 
 	<scm>
@@ -175,32 +175,32 @@
 							<sourceDestDir>target/generated-sources</sourceDestDir>
 						</configuration>
 					</execution>
-               <execution>
-                  <id>WsdlAareg</id>
-                  <goals>
-                     <goal>wsimport</goal>
-                  </goals>
-                  <configuration>
-                     <wsdlFiles>
-                        <wsdlFile>Binding.wsdl</wsdlFile>
-                     </wsdlFiles>
-                     <wsdlDirectory>src/main/resources/wsdl/aareg/</wsdlDirectory>
-                     <sourceDestDir>target/generated-sources</sourceDestDir>
-                  </configuration>
-               </execution>
-               <execution>
-                  <id>WsdlMedl</id>
-                  <goals>
-                     <goal>wsimport</goal>
-                  </goals>
-                  <configuration>
-                     <wsdlFiles>
-                        <wsdlFile>MedlemskapV2.wsdl</wsdlFile>
-                     </wsdlFiles>
-                     <wsdlDirectory>src/main/resources/wsdl/medl/virksomhet/medlemskap/v2</wsdlDirectory>
-                     <sourceDestDir>target/generated-sources</sourceDestDir>
-                  </configuration>
-               </execution>
+					<execution>
+						<id>WsdlAareg</id>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+						<configuration>
+							<wsdlFiles>
+								<wsdlFile>Binding.wsdl</wsdlFile>
+							</wsdlFiles>
+							<wsdlDirectory>src/main/resources/wsdl/aareg/</wsdlDirectory>
+							<sourceDestDir>target/generated-sources</sourceDestDir>
+						</configuration>
+					</execution>
+					<execution>
+						<id>WsdlMedl</id>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+						<configuration>
+							<wsdlFiles>
+								<wsdlFile>MedlemskapV2.wsdl</wsdlFile>
+							</wsdlFiles>
+							<wsdlDirectory>src/main/resources/wsdl/medl/virksomhet/medlemskap/v2</wsdlDirectory>
+							<sourceDestDir>target/generated-sources</sourceDestDir>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -223,6 +223,11 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.neovisionaries</groupId>
+			<artifactId>nv-i18n</artifactId>
+			<version>1.22</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
@@ -280,17 +285,17 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-tomcat</artifactId>
-            </exclusion>
-         </exclusions>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-jetty</artifactId>
-      </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jetty</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
@@ -332,19 +337,19 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-         <version>${junit.jupiter.version}</version>
+			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
-      <dependency>
-         <groupId>org.junit.jupiter</groupId>
-         <artifactId>junit-jupiter-params</artifactId>
-         <version>${junit.jupiter.version}</version>
-         <scope>test</scope>
-      </dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-         <version>${junit.jupiter.version}</version>
+			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -361,31 +366,31 @@
 		</dependency>
 	</dependencies>
 
-   <profiles>
-      <profile>
-         <id>owasp</id>
-         <build>
-            <pluginManagement>
-               <plugins>
-                  <plugin>
-                     <groupId>org.owasp</groupId>
-                     <artifactId>dependency-check-maven</artifactId>
-                     <version>3.1.0</version>
-                     <configuration>
-                        <failBuildOnCVSS>8</failBuildOnCVSS>
-                     </configuration>
-                     <executions>
-                        <execution>
-                           <goals>
-                              <goal>check</goal>
-                           </goals>
-                        </execution>
-                     </executions>
-                  </plugin>
-               </plugins>
-            </pluginManagement>
-         </build>
-      </profile>
-   </profiles>
+	<profiles>
+		<profile>
+			<id>owasp</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.owasp</groupId>
+							<artifactId>dependency-check-maven</artifactId>
+							<version>3.1.0</version>
+							<configuration>
+								<failBuildOnCVSS>8</failBuildOnCVSS>
+							</configuration>
+							<executions>
+								<execution>
+									<goals>
+										<goal>check</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

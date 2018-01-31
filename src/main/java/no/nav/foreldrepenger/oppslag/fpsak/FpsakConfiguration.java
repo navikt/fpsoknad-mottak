@@ -10,9 +10,9 @@ import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.ForeldrepengesakV1
 @Configuration
 public class FpsakConfiguration {
 
-	@SuppressWarnings("unchecked")
-	@Bean
-	public ForeldrepengesakV1 fpsakV1(@Value("${VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL:}") String serviceUrl) {
-		return new WsClient<ForeldrepengesakV1>().createPort(serviceUrl, ForeldrepengesakV1.class);
-	}
+    @SuppressWarnings("unchecked")
+    @Bean
+    public ForeldrepengesakV1 fpsakV1(@Value("${VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL:}") String serviceUrl) {
+        return new WsClient<ForeldrepengesakV1>().createPort(serviceUrl, ForeldrepengesakV1.class);
+    }
 }

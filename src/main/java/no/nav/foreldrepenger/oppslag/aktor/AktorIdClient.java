@@ -17,33 +17,33 @@ import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentReques
 
 @Component
 public class AktorIdClient {
-	private static final Logger LOG = LoggerFactory.getLogger(AktorIdClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AktorIdClient.class);
 
-	private final AktoerV2 aktoerV2;
+    private final AktoerV2 aktoerV2;
 
-	@Inject
-	public AktorIdClient(AktoerV2 aktoerV2) {
-		this.aktoerV2 = Objects.requireNonNull(aktoerV2);
-	}
+    @Inject
+    public AktorIdClient(AktoerV2 aktoerV2) {
+        this.aktoerV2 = Objects.requireNonNull(aktoerV2);
+    }
 
-	public AktorId aktorIdForFnr(Fodselsnummer fnr) {
-		try {
-			return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
-		} catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
-			LOG.warn("Henting av aktørid har feilet", e);
-			throw new NotFoundException(e.getMessage());
-		}
-	}
+    public AktorId aktorIdForFnr(Fodselsnummer fnr) {
+        try {
+            return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
+        } catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
+            LOG.warn("Henting av aktørid har feilet", e);
+            throw new NotFoundException(e.getMessage());
+        }
+    }
 
-	private static HentAktoerIdForIdentRequest request(Fodselsnummer fnr) {
-		HentAktoerIdForIdentRequest req = new HentAktoerIdForIdentRequest();
-		req.setIdent(fnr.getFnr());
-		return req;
-	}
+    private static HentAktoerIdForIdentRequest request(Fodselsnummer fnr) {
+        HentAktoerIdForIdentRequest req = new HentAktoerIdForIdentRequest();
+        req.setIdent(fnr.getFnr());
+        return req;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + " [aktoerV2=" + aktoerV2 + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [aktoerV2=" + aktoerV2 + "]";
+    }
 
 }

@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.oppslag.aareg;
 
+import java.util.function.Supplier;
+
 import no.nav.foreldrepenger.oppslag.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.LookupResult;
 import no.nav.foreldrepenger.oppslag.domain.LookupStatus;
-
-import java.util.function.Supplier;
 
 public class AaregSupplier implements Supplier<LookupResult<Arbeidsforhold>> {
 
@@ -20,6 +20,6 @@ public class AaregSupplier implements Supplier<LookupResult<Arbeidsforhold>> {
     @Override
     public LookupResult<Arbeidsforhold> get() {
         return new LookupResult<Arbeidsforhold>(
-            "Aareg", LookupStatus.SUCCESS, aaregClient.arbeidsforhold(fnr));
+                "Aareg", LookupStatus.SUCCESS, aaregClient.arbeidsforhold(fnr));
     }
 }

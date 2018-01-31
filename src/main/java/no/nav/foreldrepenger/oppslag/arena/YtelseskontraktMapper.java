@@ -8,14 +8,14 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt
 
 class YtelseskontraktMapper {
 
-	private YtelseskontraktMapper() {
+    private YtelseskontraktMapper() {
 
-	}
+    }
 
-	static Ytelse map(Ytelseskontrakt kontrakt) {
-		return new Ytelse(kontrakt.getYtelsestype(), kontrakt.getStatus(),
-		        CalendarConverter.toLocalDate(kontrakt.getFomGyldighetsperiode()),
-		        Optional.ofNullable(kontrakt.getTomGyldighetsperiode()).map(CalendarConverter::toLocalDate));
-	}
+    static Ytelse map(Ytelseskontrakt kontrakt) {
+        return new Ytelse(kontrakt.getYtelsestype(), kontrakt.getStatus(),
+                CalendarConverter.toLocalDate(kontrakt.getFomGyldighetsperiode()),
+                Optional.ofNullable(kontrakt.getTomGyldighetsperiode()).map(CalendarConverter::toLocalDate));
+    }
 
 }

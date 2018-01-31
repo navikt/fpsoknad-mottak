@@ -16,16 +16,16 @@ import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
 @RestController
 class InntektController {
 
-	private final InntektClient inntektClient;
+    private final InntektClient inntektClient;
 
-	@Inject
-	public InntektController(InntektClient inntektClient) {
-		this.inntektClient = inntektClient;
-	}
+    @Inject
+    public InntektController(InntektClient inntektClient) {
+        this.inntektClient = inntektClient;
+    }
 
-	@RequestMapping(method = { RequestMethod.GET }, value = "/income")
-	public ResponseEntity<?> incomeForAktor(@RequestParam("fnr") Fodselsnummer fnr) {
-		LocalDate tenMonthsAgo = LocalDate.now().minusMonths(10);
-      return ResponseEntity.ok(inntektClient.incomeForPeriod(fnr, tenMonthsAgo, LocalDate.now()));
-	}
+    @RequestMapping(method = { RequestMethod.GET }, value = "/income")
+    public ResponseEntity<?> incomeForAktor(@RequestParam("fnr") Fodselsnummer fnr) {
+        LocalDate tenMonthsAgo = LocalDate.now().minusMonths(10);
+        return ResponseEntity.ok(inntektClient.incomeForPeriod(fnr, tenMonthsAgo, LocalDate.now()));
+    }
 }

@@ -17,24 +17,24 @@ import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
 @ControllerAdvice
 public class CommonControllerErrorHandlers {
 
-	@ExceptionHandler({ ConstraintViolationException.class })
-	public ResponseEntity<String> handleValidationException(ConstraintViolationException e) {
-		return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
-	}
-	
-	@ExceptionHandler({ IncompleteRequestException.class })
-	public ResponseEntity<String> handleIncompleteRequestException(IncompleteRequestException e) {
-		return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
-	}
+    @ExceptionHandler({ ConstraintViolationException.class })
+    public ResponseEntity<String> handleValidationException(ConstraintViolationException e) {
+        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+    }
 
-	@ExceptionHandler({ NotFoundException.class })
-	public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
-		return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
-	}
+    @ExceptionHandler({ IncompleteRequestException.class })
+    public ResponseEntity<String> handleIncompleteRequestException(IncompleteRequestException e) {
+        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+    }
 
-	@ExceptionHandler({ ForbiddenException.class })
-	public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
-		return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
-	}
+    @ExceptionHandler({ NotFoundException.class })
+    public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
+    }
+
+    @ExceptionHandler({ ForbiddenException.class })
+    public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
+        return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
+    }
 
 }

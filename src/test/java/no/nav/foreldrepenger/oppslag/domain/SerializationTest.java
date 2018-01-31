@@ -18,111 +18,112 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.neovisionaries.i18n.CountryCode;
 
 public class SerializationTest {
 
-	private static ObjectMapper mapper;
+    private static ObjectMapper mapper;
 
-	@BeforeAll
-	public static void beforeClass() {
-		mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		mapper.registerModule(new Jdk8Module());
-		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
-	}
+    @BeforeAll
+    public static void beforeClass() {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.registerModule(new Jdk8Module());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
+    }
 
-	@Test
-	public void testYtelseSerialization() throws IOException {
-		test(ytelse());
-	}
+    @Test
+    public void testYtelseSerialization() throws IOException {
+        test(ytelse());
+    }
 
-   @Test
-   public void testArbeidsforholdSerialization() throws IOException {
-      test(arbeidsforhold());
-   }
+    @Test
+    public void testArbeidsforholdSerialization() throws IOException {
+        test(arbeidsforhold());
+    }
 
-	@Test
-	public void testKjonnSerialization() throws IOException {
-		test(Kjonn.K);
-	}
+    @Test
+    public void testKjonnSerialization() throws IOException {
+        test(Kjonn.K);
+    }
 
-	@Test
-	public void testNameSerialization() throws IOException {
-		test(name());
-	}
+    @Test
+    public void testNameSerialization() throws IOException {
+        test(name());
+    }
 
-	@Test
-	public void testAdresseSerialization() throws IOException {
-		test(adresse());
-	}
+    @Test
+    public void testAdresseSerialization() throws IOException {
+        test(adresse());
+    }
 
-	@Test
-	public void testPersonSerialization() throws IOException {
-		test(person());
-	}
+    @Test
+    public void testPersonSerialization() throws IOException {
+        test(person());
+    }
 
-	@Test
-	public void testFnrSerialization() throws IOException {
-		test(fnr());
-	}
+    @Test
+    public void testFnrSerialization() throws IOException {
+        test(fnr());
+    }
 
-	@Test
-	public void testAktorIdSerialization() throws IOException {
-		test(aktoer());
-	}
+    @Test
+    public void testAktorIdSerialization() throws IOException {
+        test(aktoer());
+    }
 
-	@Test
-	public void testIDPairSerialization() throws IOException {
-		test(id());
-	}
+    @Test
+    public void testIDPairSerialization() throws IOException {
+        test(id());
+    }
 
-	private void test(Object object) throws IOException {
-		String serialized = write(object);
-		Object deserialized = mapper.readValue(serialized, object.getClass());
-      assertEquals(object, deserialized);
-	}
+    private void test(Object object) throws IOException {
+        String serialized = write(object);
+        Object deserialized = mapper.readValue(serialized, object.getClass());
+        assertEquals(object, deserialized);
+    }
 
-	private static ID id() {
-		return new ID(aktoer(), fnr());
-	}
+    private static ID id() {
+        return new ID(aktoer(), fnr());
+    }
 
-	private static Navn name() {
-		return new Navn("Jan-Olav", "Kjørås", "Eide");
-	}
+    private static Navn name() {
+        return new Navn("Jan-Olav", "Kjørås", "Eide");
+    }
 
-	private static Person person() {
-		return new Person(id(), Kjonn.M, name(), adresse(), birthDate(), Collections.emptyList());
-	}
+    private static Person person() {
+        return new Person(id(), CountryCode.NO, Kjonn.M, name(), adresse(), birthDate(), Collections.emptyList());
+    }
 
-	private static LocalDate birthDate() {
-		return LocalDate.now().minusMonths(2);
-	}
+    private static LocalDate birthDate() {
+        return LocalDate.now().minusMonths(2);
+    }
 
-	private static Fodselsnummer fnr() {
-		return new Fodselsnummer("03016536325");
-	}
+    private static Fodselsnummer fnr() {
+        return new Fodselsnummer("03016536325");
+    }
 
-	private static AktorId aktoer() {
-		return new AktorId("11111111111111111");
-	}
+    private static AktorId aktoer() {
+        return new AktorId("11111111111111111");
+    }
 
-	private static Adresse adresse() {
-		return new Adresse("NOR", "0360", "Fagerborggata", "6", "A");
-	}
+    private static Adresse adresse() {
+        return new Adresse(CountryCode.NO, "0360", "Fagerborggata", "6", "A");
+    }
 
-	private static Ytelse ytelse() {
-		return new Ytelse("typen", "statusen", LocalDate.now().minus(Period.ofYears(2)),
-		        Optional.of(LocalDate.now().minus(Period.ofYears(1))));
-	}
+    private static Ytelse ytelse() {
+        return new Ytelse("typen", "statusen", LocalDate.now().minus(Period.ofYears(2)),
+                Optional.of(LocalDate.now().minus(Period.ofYears(1))));
+    }
 
-   private static Arbeidsforhold arbeidsforhold() {
-	   LocalDate now = LocalDate.now();
-	   return new Arbeidsforhold("arbgiver", "typen", "yrket",
-         now.minusMonths(2), Optional.of(now));
-   }
+    private static Arbeidsforhold arbeidsforhold() {
+        LocalDate now = LocalDate.now();
+        return new Arbeidsforhold("arbgiver", "typen", "yrket",
+                now.minusMonths(2), Optional.of(now));
+    }
 
-	private String write(Object obj) throws JsonProcessingException {
-		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-	}
+    private String write(Object obj) throws JsonProcessingException {
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+    }
 }

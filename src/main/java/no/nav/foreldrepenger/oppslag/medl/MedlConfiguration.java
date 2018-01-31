@@ -12,9 +12,9 @@ import no.nav.tjeneste.virksomhet.medlemskap.v2.MedlemskapV2;
 @ComponentScan(basePackages = { "no.nav.foreldrepenger.oppslag" })
 public class MedlConfiguration {
 
-	@SuppressWarnings("unchecked")
-	@Bean
-	public MedlemskapV2 medlemskapV2(@Value("${VIRKSOMHET_MEDLEMSKAP_V2_ENDPOINTURL}") String serviceUrl) {
-		return new WsClient<MedlemskapV2>().createPort(serviceUrl, MedlemskapV2.class);
-	}
+    @SuppressWarnings("unchecked")
+    @Bean
+    public MedlemskapV2 medlemskapV2(@Value("${VIRKSOMHET_MEDLEMSKAP_V2_ENDPOINTURL}") String serviceUrl) {
+        return new WsClient<MedlemskapV2>().createPort(serviceUrl, MedlemskapV2.class);
+    }
 }

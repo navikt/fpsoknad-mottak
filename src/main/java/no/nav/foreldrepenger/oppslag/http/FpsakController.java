@@ -17,15 +17,15 @@ import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
 @RestController
 class FpsakController {
 
-	private final FpsakClient fpsakClient;
+    private final FpsakClient fpsakClient;
 
-	@Inject
-	public FpsakController(FpsakClient fpsakClient) {
-		this.fpsakClient = fpsakClient;
-	}
+    @Inject
+    public FpsakController(FpsakClient fpsakClient) {
+        this.fpsakClient = fpsakClient;
+    }
 
-	@RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
-	public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("aktor") AktorId aktor) {
-		return ResponseEntity.ok(fpsakClient.casesFor(aktor));
-	}
+    @RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
+    public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("aktor") AktorId aktor) {
+        return ResponseEntity.ok(fpsakClient.casesFor(aktor));
+    }
 }
