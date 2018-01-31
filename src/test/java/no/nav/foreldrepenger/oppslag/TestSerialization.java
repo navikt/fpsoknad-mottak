@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class TestSerialization {
 
     @Test
     public void testSøknadNorge() {
-        test(engangssøknad(false));
+        test(engangssøknad(false), true);
     }
 
     @Test
@@ -83,7 +84,7 @@ public class TestSerialization {
 
     @Test
     public void testEngangsstønadNorge() {
-        test(engangstønad(false));
+        test(engangstønad(false), true);
     }
 
     @Test
@@ -103,7 +104,7 @@ public class TestSerialization {
 
     @Test
     public void testMedlemsskap() {
-        test(medlemsskap());
+        test(medlemsskap(), true);
     }
 
     @Test
@@ -194,11 +195,11 @@ public class TestSerialization {
 
     private static TidligereOppholdsInformasjon tidligereOppHoldIUtlandetHeleåret() {
         return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET,
-                new Utenlandsopphold(CountryCode.SE));
+                Collections.singletonList(new Utenlandsopphold(CountryCode.SE)));
     }
 
     private static TidligereOppholdsInformasjon tidligereOppHoldINorge() {
-        return new TidligereOppholdsInformasjon();
+        return new TidligereOppholdsInformasjon(true, ArbeidsInformasjon.ARBEIDET_I_NORGE, Collections.emptyList());
     }
 
     private static Omsorgsovertakelse omsorgsovertakelse() {
@@ -222,7 +223,7 @@ public class TestSerialization {
     }
 
     private static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
-        return new FramtidigOppholdsInformasjon();
+        return new FramtidigOppholdsInformasjon(true, true);
     }
 
     private static Søker søker() {

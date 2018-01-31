@@ -25,20 +25,20 @@ public class Søknad {
     @Valid
     private final Søker søker;
     @Valid
-    private final Engangsstønad ytelse;
+    private final Ytelse ytelse;
     private String begrunnelseForSenSøknad;
     private String tilleggsopplysninger;
     private final List<Vedlegg> påkrevdeVedlegg;
     private final List<Vedlegg> frivilligeVedlegg;
 
     public Søknad(@JsonProperty("motattdato") LocalDate motattdato, @JsonProperty("søker") Søker søker,
-            @JsonProperty("ytelse") Engangsstønad ytelse) {
+            @JsonProperty("ytelse") Ytelse ytelse) {
         this(motattdato, søker, ytelse, Collections.emptyList(), Collections.emptyList());
     }
 
     @JsonCreator
     public Søknad(@JsonProperty("motattdato") LocalDate motattdato, @JsonProperty("søker") Søker søker,
-            @JsonProperty("ytelse") Engangsstønad ytelse,
+            @JsonProperty("ytelse") Ytelse ytelse,
             @JsonProperty("påkrevdeVedlegg") List<Vedlegg> påkrevdeVedlegg,
             @JsonProperty("frivilligeVedlegg") List<Vedlegg> frivilligeVedlegg) {
         this.motattdato = motattdato;

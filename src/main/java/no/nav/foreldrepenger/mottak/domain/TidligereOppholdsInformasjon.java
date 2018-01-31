@@ -18,15 +18,6 @@ public class TidligereOppholdsInformasjon {
     @Valid
     private final List<Utenlandsopphold> utenlandsOpphold;
 
-    public TidligereOppholdsInformasjon() {
-        this(true, ArbeidsInformasjon.ARBEIDET_I_NORGE, Collections.emptyList());
-    }
-
-    public TidligereOppholdsInformasjon(boolean boddINorge, ArbeidsInformasjon arbeidsInfo,
-            Utenlandsopphold utenlandsOpphold) {
-        this(boddINorge, arbeidsInfo, Collections.singletonList(utenlandsOpphold));
-    }
-
     @JsonCreator
     public TidligereOppholdsInformasjon(@JsonProperty("boddINorge") boolean boddINorge,
             @JsonProperty("arbeidsInfo") ArbeidsInformasjon arbeidsInfo,

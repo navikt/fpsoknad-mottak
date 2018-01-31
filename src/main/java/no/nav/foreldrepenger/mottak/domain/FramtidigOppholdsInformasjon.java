@@ -11,15 +11,10 @@ public class FramtidigOppholdsInformasjon {
     private final boolean fødseINorge;
     private final boolean norgeNeste12;
 
-    public FramtidigOppholdsInformasjon() {
-        this(true, true);
-    }
-
     @JsonCreator
     public FramtidigOppholdsInformasjon(@JsonProperty("fødseINorge") boolean fødseINorge,
             @JsonProperty("norgeNeste12") boolean norgeNeste12) {
         this.fødseINorge = fødseINorge;
         this.norgeNeste12 = norgeNeste12;
     }
-
 }
