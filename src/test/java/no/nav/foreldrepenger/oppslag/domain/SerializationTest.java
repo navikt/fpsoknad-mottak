@@ -78,6 +78,11 @@ public class SerializationTest {
         test(id());
     }
 
+   @Test
+   public void testInntektSerialization() throws IOException {
+      test(inntekt());
+   }
+
     private void test(Object object) throws IOException {
         String serialized = write(object);
         Object deserialized = mapper.readValue(serialized, object.getClass());
@@ -116,6 +121,10 @@ public class SerializationTest {
         return new Ytelse("typen", "statusen", LocalDate.now().minus(Period.ofYears(2)),
                 Optional.of(LocalDate.now().minus(Period.ofYears(1))));
     }
+
+   private static Inntekt inntekt() {
+      return new Inntekt(LocalDate.now(), Optional.of(LocalDate.now().minusMonths(2)), 1234.5, "acme industries");
+   }
 
     private static Arbeidsforhold arbeidsforhold() {
         LocalDate now = LocalDate.now();
