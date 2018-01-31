@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import org.springframework.util.Base64Utils;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -19,6 +21,6 @@ public abstract class Vedlegg {
 
     public Vedlegg(String description, byte[] vedlegg) {
         this.description = description;
-        this.vedlegg = vedlegg;
+        this.vedlegg = Base64Utils.encode(vedlegg);
     }
 }

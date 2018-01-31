@@ -69,7 +69,7 @@ public class TestSerialization {
 
     @Test
     public void testVedlegg() throws IOException {
-        test(vedlegg());
+        test(vedlegg(), true);
     }
 
     @Test
