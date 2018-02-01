@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,6 +21,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.oppslag.person.PoststedFinner;
+import no.nav.foreldrepenger.oppslag.person.StatiskPoststedFinner;
+
 public class SerializationTest {
 
     private static ObjectMapper mapper;
@@ -31,6 +35,17 @@ public class SerializationTest {
         mapper.registerModule(new Jdk8Module());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
+    }
+
+    @Test
+    public void testPostnr() throws IOException {
+        PoststedFinner finner = new StatiskPoststedFinner();
+        System.out.println(finner.poststed("1353"));
+        System.out.println(finner.poststed("1332"));
+
+        assertTrue(finner.poststed("1353").equalsIgnoreCase("Bærums Verk"));
+        assertTrue(finner.poststed("1332").equalsIgnoreCase("Østerås"));
+
     }
 
     @Test
@@ -114,7 +129,7 @@ public class SerializationTest {
     }
 
     private static Adresse adresse() {
-        return new Adresse(CountryCode.NO, "0360", "Fagerborggata", "6", "A");
+        return new Adresse(CountryCode.NO, "0360", "Oslo", "Fagerborggata", "6", "A");
     }
 
     private static Ytelse ytelse() {

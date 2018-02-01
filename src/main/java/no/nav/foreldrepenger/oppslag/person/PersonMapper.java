@@ -21,6 +21,8 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 final class PersonMapper {
 
+    private static final PoststedFinner POSTSTEDFINNER = new StatiskPoststedFinner();
+
     private PersonMapper() {
 
     }
@@ -38,6 +40,7 @@ final class PersonMapper {
             if (ga.getTilleggsadresseType().equalsIgnoreCase(RequestUtils.OFFISIELL_ADRESSE)) {
 
                 return new Adresse(countryCode(ga.getLandkode().getValue()), ga.getPoststed().getValue(),
+                        POSTSTEDFINNER.poststed(ga.getPoststed().getValue()),
                         ga.getGatenavn(),
                         ga.getHusnummer().toString(), ga.getHusbokstav());
             }
