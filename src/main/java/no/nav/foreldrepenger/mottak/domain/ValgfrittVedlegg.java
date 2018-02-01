@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -17,13 +17,22 @@ import lombok.ToString;
 @Data
 public class ValgfrittVedlegg extends Vedlegg {
 
-    public ValgfrittVedlegg(String description, Resource vedlegg) throws IOException {
-        this(description, IOUtils.toByteArray(vedlegg.getInputStream()));
+    public ValgfrittVedlegg(Resource vedlegg) throws IOException {
+        super(vedlegg);
+    }
+
+    public ValgfrittVedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {
+        super(metadata, vedlegg);
+    }
+
+    public ValgfrittVedlegg(VedleggMetaData metadata, InputStream inputStream) throws IOException {
+        super(metadata, inputStream);
     }
 
     @JsonCreator
-    public ValgfrittVedlegg(@JsonProperty("description") String description,
-            @JsonProperty("vedlegg") byte[] vedlegg) {
-        super(description, vedlegg);
+    public ValgfrittVedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg)
+            throws IOException {
+        super(metadata, vedlegg);
     }
+
 }

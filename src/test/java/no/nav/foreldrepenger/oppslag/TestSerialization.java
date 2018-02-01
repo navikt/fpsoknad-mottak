@@ -67,9 +67,9 @@ public class TestSerialization {
         mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
     }
 
-    // @Test
+    @Test
     public void testVedlegg() throws IOException {
-        test(vedlegg(), true);
+        test(vedlegg("vedlegg.pdf"), true);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class TestSerialization {
 
     private static Søknad engangssøknad(boolean utland) {
         Søknad s = new Søknad(nå(), søker(), engangstønad(utland));
-        s.setBegrunnelseForSenSøknad("Glemte hele greia");
+        s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
     }
@@ -209,8 +209,8 @@ public class TestSerialization {
         return overtakelse;
     }
 
-    private static Vedlegg vedlegg() throws IOException {
-        return new ValgfrittVedlegg("vedlegg", new ClassPathResource("test.txt"));
+    private static Vedlegg vedlegg(String name) throws IOException {
+        return new ValgfrittVedlegg(new ClassPathResource(name));
     }
 
     private static Adopsjon adopsjon() {
