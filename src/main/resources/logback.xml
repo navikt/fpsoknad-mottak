@@ -18,6 +18,7 @@
 		<appender-ref ref="stdout_json" />
 	</root>
 	
-	<logger name="org.hibernate.validator" level="NONE" />
+	<logger name="org.hibernate.validator" level="trace" />
+	<logger name="org.springframework" level="trace" />
 
 </configuration>

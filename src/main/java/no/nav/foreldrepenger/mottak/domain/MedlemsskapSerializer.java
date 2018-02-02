@@ -30,5 +30,4 @@ public class MedlemsskapSerializer extends StdSerializer<Medlemsskap> {
         jgen.writeBooleanField("iNorgeNeste12", value.getFremtidigOppholdsInfo().isNorgeNeste12());
         jgen.writeEndObject();
     }
-
 }

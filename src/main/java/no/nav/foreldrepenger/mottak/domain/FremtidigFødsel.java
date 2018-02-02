@@ -17,11 +17,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FremtidigFødsel extends RelasjonTilBarn {
-    @NotNull
-    @Future
+    @NotNull(message = "ytelse.relasjontilbarn.framtidigfødsel.termindato.notnull")
+    @Future(message = "Tytelse.relasjontilbarn.framtidigfødsel.termindato.fortid")
     private final LocalDate terminDato;
-    @NotNull
-    @Past
+    @NotNull(message = "ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.notnull")
+    @Past(message = "ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.framtid")
     private final LocalDate utstedtDato;
 
     public FremtidigFødsel(LocalDate terminDato, LocalDate utstedtDato) {

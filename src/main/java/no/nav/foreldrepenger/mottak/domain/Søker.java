@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -7,7 +9,9 @@ import lombok.Data;
 
 @Data
 public class Søker {
+    @NotNull
     private final AktorId aktorid;
+    @NotNull
     private final BrukerRolle søknadsRolle;
     private final Fullmektig fullmektig;
 

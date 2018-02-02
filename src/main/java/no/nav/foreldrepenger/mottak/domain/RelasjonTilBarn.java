@@ -20,7 +20,7 @@ import lombok.Data;
 })
 public abstract class RelasjonTilBarn {
 
-    @Positive
+    @Positive(message = "{ytelse.relasjontilbarn.antall}")
     private final int antallBarn;
 
     public RelasjonTilBarn(int antallBarn) {

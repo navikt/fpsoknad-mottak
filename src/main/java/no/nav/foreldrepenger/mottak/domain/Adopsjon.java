@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -16,10 +17,11 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Adopsjon extends RelasjonTilBarn {
 
+    @NotNull(message = "ytelser.relasjontilbarn.adopsjon.omsorggsovertakelsesdato.notnull")
     private final LocalDate omsorgsovertakelsesdato;
     private final boolean ektefellesBarn;
     private LocalDate ankomstDato;
-    @Past
+    @Past(message = "ytelser.relasjontilbarn.adopsjon.fødselssdato.framtid")
     private LocalDate fødselsdato;
 
     public Adopsjon(LocalDate omsorgsovertakelsesdato, boolean ektefellesBarn) {
