@@ -65,8 +65,8 @@ node {
          }
       }
    }
-   /*
-   stage("Publish artifact") {
+
+   stage("Publish artifacts") {
       pathInRepo = "no/nav/foreldrepenger"
       sh "${mvn} clean deploy -DskipTests -B -e"
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
@@ -74,7 +74,7 @@ node {
          sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
       }
    }
-
+   /*
    stage("Deploy to t") {
       callback = "${env.BUILD_URL}input/Deploy/"
       testCmd(releaseVersion)
