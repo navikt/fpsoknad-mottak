@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.stream.Collectors.joining;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,24 +13,23 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class CommonControllerErrorHandlers extends ResponseEntityExceptionHandler {
+public class MottakCustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return handleExceptionInternal(ex, responseBody(ex),
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(e, responseBody(e), new HttpHeaders(), UNPROCESSABLE_ENTITY, request);
     }
 
-    private String responseBody(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors()
+    private String responseBody(MethodArgumentNotValidException e) {
+        return e.getBindingResult().getFieldErrors()
                 .stream()
                 .map(this::errorMessage)
                 .collect(joining("\n"));
     }
 
     private String errorMessage(FieldError error) {
-        return error.getDefaultMessage() + "(" + error.getField() + ")";
+        return error.getDefaultMessage() + " (" + error.getField() + ")";
     }
 
 }
