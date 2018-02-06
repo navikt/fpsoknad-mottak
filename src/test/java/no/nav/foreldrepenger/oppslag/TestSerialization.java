@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collections;
 
+import javax.xml.bind.JAXBException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -27,6 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
@@ -73,13 +76,16 @@ public class TestSerialization {
     }
 
     @Test
-    public void testSøknadNorge() {
+    public void testSøknadNorge() throws JAXBException {
         test(engangssøknad(false), true);
+        System.out.println(new DokmotEngangsstønadXMLGenerator().toXML(engangssøknad(false)));
     }
 
     @Test
     public void testSøknadUtland() {
         test(engangssøknad(true), true);
+        System.out.println(new DokmotEngangsstønadXMLGenerator().toXML(engangssøknad(true)));
+
     }
 
     @Test

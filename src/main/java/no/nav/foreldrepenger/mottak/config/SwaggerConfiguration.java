@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.config;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
@@ -19,11 +20,15 @@ public class SwaggerConfiguration {
 
     @Bean
     public Docket productApi() {
-        return new Docket(DocumentationType.SWAGGER_2).protocols(protocols("http", "https")).select()
-                .apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .protocols(protocols("http", "https"))
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
     }
 
     private static Set<String> protocols(String... schemes) {
-        return Stream.of(schemes).collect(Collectors.toSet());
+        return Stream.of(schemes).collect(toSet());
     }
 }

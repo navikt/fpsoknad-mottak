@@ -17,21 +17,19 @@ public class CommonControllerErrorHandlers extends ResponseEntityExceptionHandle
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String bodyOfResponse = responseBody(ex);
-        return handleExceptionInternal(ex, bodyOfResponse,
+        return handleExceptionInternal(ex, responseBody(ex),
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     private String responseBody(MethodArgumentNotValidException ex) {
-        String bodyOfResponse = ex.getBindingResult().getFieldErrors()
+        return ex.getBindingResult().getFieldErrors()
                 .stream()
-                .map(this::msg)
-                .collect(Collectors.joining(","));
-        return bodyOfResponse;
+                .map(this::errorMessage)
+                .collect(Collectors.joining("\n"));
     }
 
-    private String msg(FieldError s) {
-        return s.getDefaultMessage();
+    private String errorMessage(FieldError error) {
+        return error.getDefaultMessage();
     }
 
 }

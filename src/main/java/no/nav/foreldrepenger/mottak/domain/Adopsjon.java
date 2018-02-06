@@ -17,11 +17,11 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Adopsjon extends RelasjonTilBarn {
 
-    @NotNull(message = "ytelser.relasjontilbarn.adopsjon.omsorggsovertakelsesdato.notnull")
+    @NotNull(message = "{ytelse.relasjontilbarn.adopsjon.omsorggsovertakelsesdato.notnull}")
     private final LocalDate omsorgsovertakelsesdato;
     private final boolean ektefellesBarn;
     private LocalDate ankomstDato;
-    @Past(message = "ytelser.relasjontilbarn.adopsjon.fødselssdato.framtid")
+    @Past(message = "{ytelse.relasjontilbarn.adopsjon.fødselssdato.framtid}")
     private LocalDate fødselsdato;
 
     public Adopsjon(LocalDate omsorgsovertakelsesdato, boolean ektefellesBarn) {

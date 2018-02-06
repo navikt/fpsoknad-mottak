@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class AktorId {
     @JsonValue
-    @NotNull(message = "ytelser.aktørid.notnull")
+    @NotNull(message = "{ytelse.aktørid.notnull}")
     private final String value;
 
     @JsonCreator

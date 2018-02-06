@@ -15,10 +15,9 @@
 	
 
 	<root level="info">
-		<appender-ref ref="stdout_json" />
+		<appender-ref ref="stdout_sjon" />
 	</root>
 	
-	<logger name="org.hibernate.validator" level="trace" />
-	<logger name="org.springframework" level="trace" />
+	<logger name="springfox.documentation.spring" level="info" />
 
 </configuration>

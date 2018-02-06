@@ -9,9 +9,9 @@ import lombok.Data;
 
 @Data
 public class Søker {
-    @NotNull
+    @NotNull(message = "{ytelse.aktørid.notnull}")
     private final AktorId aktorid;
-    @NotNull
+    @NotNull(message = "{ytelse.søknadsrolle.notnull}")
     private final BrukerRolle søknadsRolle;
     private final Fullmektig fullmektig;
 
