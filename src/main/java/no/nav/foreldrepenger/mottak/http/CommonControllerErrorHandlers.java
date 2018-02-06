@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.joining;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,11 +25,11 @@ public class CommonControllerErrorHandlers extends ResponseEntityExceptionHandle
         return ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(this::errorMessage)
-                .collect(Collectors.joining("\n"));
+                .collect(joining("\n"));
     }
 
     private String errorMessage(FieldError error) {
-        return error.getDefaultMessage();
+        return error.getDefaultMessage() + "(" + error.getField() + ")";
     }
 
 }
