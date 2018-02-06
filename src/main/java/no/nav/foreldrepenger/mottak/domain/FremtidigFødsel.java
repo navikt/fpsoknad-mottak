@@ -21,7 +21,7 @@ public class FremtidigFødsel extends RelasjonTilBarn {
     @Future(message = "{ytelse.relasjontilbarn.framtidigfødsel.termindato.fortid}")
     private final LocalDate terminDato;
     @NotNull(message = "{ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.notnull}")
-    @Past(message = "{ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.framtid}")
+    @Past(message = "{ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.fortid}")
     private final LocalDate utstedtDato;
 
     public FremtidigFødsel(LocalDate terminDato, LocalDate utstedtDato) {
