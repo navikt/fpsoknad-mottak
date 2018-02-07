@@ -151,10 +151,10 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
     private static OpplysningerOmBarn barnFra(Søknad søknad, Engangsstønad engangsstønad) {
         RelasjonTilBarn relasjon = engangsstønad.getRelasjonTilBarn();
         if (relasjon instanceof FremtidigFødsel) {
-            return fremtidigFødsel(FremtidigFødsel.class.cast(engangsstønad));
+            return fremtidigFødsel(FremtidigFødsel.class.cast(relasjon));
         }
         if (relasjon instanceof Fødsel) {
-            return fødsel(Fødsel.class.cast(engangsstønad));
+            return fødsel(Fødsel.class.cast(relasjon));
         }
         throw new IllegalArgumentException(
                 "Relasjon " + engangsstønad.getClass().getSimpleName() + " fireløpig ikke støttet");
