@@ -185,4 +185,16 @@ def getEnvironmentId(environment) {
    }
 }
 
+def getZone(zone) {
+   zoneMap = [
+      'fss': '23451',
+      'sbs': '23452'
+   ]
+   if (zone.isInteger()) {
+      return zone //Assume its already correct
+   } else {
+      return zoneMap[zone]
+   }
+}
+
 
