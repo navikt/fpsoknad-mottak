@@ -164,3 +164,25 @@ def testCmd(arg){
    return "shiny " + arg
 }
 
+def getEnvironmentId(environment) {
+   envMap = [
+      'u1': '16657',
+      't1': '16557',
+      't5': '16561',
+      't6': '16562',
+      't7': '16563',
+      't11': '16567',
+      'q0': '16824',
+      'q1': '16825',
+      'q2': '16652',
+      'q6': '16648',
+      'p' : '17658'
+   ]
+   if (environment.isInteger()) {
+      return environment //Assume its already correct
+   } else {
+      return envMap[environment]
+   }
+}
+
+
