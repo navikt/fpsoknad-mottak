@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Fødsel extends RelasjonTilBarn {
 
-    @Past
+    @Past(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}")
     private final LocalDate fødselsdato;
 
     public Fødsel(LocalDate fødselsdato) {
