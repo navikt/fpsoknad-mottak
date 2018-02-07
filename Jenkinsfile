@@ -88,15 +88,15 @@ node {
          sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
       }
    }
-   /*
-   stage("Deploy to t") {
+
+   stage("Deploy to preprod") {
       callback = "${env.BUILD_URL}input/Deploy/"
       testCmd(releaseVersion)
       testCmd(committer)
-      def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
+      def deploy = deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
       echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
    }
-   */
+
 }
 
 def notifyGithub(owner, repo, context, sha, state, description) {
@@ -120,7 +120,7 @@ def notifyGithub(owner, repo, context, sha, state, description) {
       }
    }
 }
-/*
+
 def deployNaisApp(app, version, environment, zone, namespace, callback, reporter) {
    parsedEnvironment = getEnvironmentId(environment)
    parsedZone = getZone(zone)
@@ -163,4 +163,4 @@ def testCmd(arg){
    println ("Echo " + arg)
    return "shiny " + arg
 }
-*/
+
