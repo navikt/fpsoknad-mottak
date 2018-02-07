@@ -6,6 +6,6 @@ public interface XMLGenerator {
 
     String toXML(Søknad søknad);
 
-    SoeknadsskjemaEngangsstoenad toModel(Søknad søknad);
+    SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad);
 
 }
