@@ -24,3 +24,7 @@ target/*
 .settings/*
 .project
 .classpath
+
+# IDEA
+.idea/
+*.iml
