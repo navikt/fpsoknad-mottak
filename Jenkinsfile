@@ -66,6 +66,20 @@ node {
       }
    }
 
+   stage("Update project version") {
+      def versions = releaseVersion.tokenize(".");
+      nextVersion = versions[0] +  "." + versions[1] +  "." + (versions[2].toInteger() + 1) + "-SNAPSHOT"
+      sh "${mvn} versions:set -B -DnewVersion=${nextVersion} -DgenerateBackupPoms=false"
+      withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+            sh "git commit -am \"updated to new dev-version ${nextVersion} after release by ${committer}\""
+            sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git master")
+         }
+      }
+      notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
+
+   }
+
    stage("Publish artifacts") {
       pathInRepo = "no/nav/foreldrepenger"
       sh "${mvn} clean deploy -DskipTests -B -e"
@@ -83,19 +97,6 @@ node {
       echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
    }
    */
-   stage("Update project version") {
-      def versions = releaseVersion.tokenize(".");
-      nextVersion = versions[0] +  "." + versions[1] +  "." + (versions[2].toInteger() + 1) + "-SNAPSHOT"
-      sh "${mvn} versions:set -B -DnewVersion=${nextVersion} -DgenerateBackupPoms=false"
-      withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-            sh "git commit -am \"updated to new dev-version ${nextVersion} after release by ${committer}\""
-            sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git master")
-         }
-      }
-      notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
-
-   }
 }
 
 def notifyGithub(owner, repo, context, sha, state, description) {
