@@ -10,14 +10,15 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class AktorId extends Bruker {
+public class Fodselsnummer extends Bruker {
 
     @JsonCreator
-    public AktorId(@JsonProperty("value") String value) {
+    public Fodselsnummer(@JsonProperty("value") String value) {
         super(value);
     }
 
-    public static AktorId valueOf(String value) {
-        return new AktorId(value);
+    public static Fodselsnummer valueOf(String value) {
+        return new Fodselsnummer(value);
     }
+
 }

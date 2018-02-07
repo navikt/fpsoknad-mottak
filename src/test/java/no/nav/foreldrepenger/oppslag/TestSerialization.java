@@ -28,9 +28,11 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.Bruker;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
@@ -39,6 +41,7 @@ import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
@@ -49,6 +52,7 @@ import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 
 public class TestSerialization {
 
+    private static final DokmotEngangsstønadXMLGenerator DOKMOT_ENGANGSSTØNAD_XML_GENERATOR = new DokmotEngangsstønadXMLGenerator();
     private static ObjectMapper mapper;
     private static XmlMapper xmlMapper;
 
@@ -77,20 +81,23 @@ public class TestSerialization {
 
     @Test
     public void testSøknadNorge() throws JAXBException {
-        test(engangssøknad(false), true);
-        System.out.println(new DokmotEngangsstønadXMLGenerator().toXML(engangssøknad(false)));
+        Søknad engangssøknad = engangssøknad(false);
+        test(engangssøknad, true);
+        System.out.println(DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad));
     }
 
     @Test
     public void testSøknadUtland() {
-        test(engangssøknad(true), true);
-        System.out.println(new DokmotEngangsstønadXMLGenerator().toXML(engangssøknad(true)));
+        Søknad engangssøknad = engangssøknad(true, fødsel());
+        test(engangssøknad, true);
+        System.out.println(DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad));
 
     }
 
     @Test
     public void testEngangsstønadNorge() {
-        test(engangstønad(false), true);
+        Engangsstønad engangstønad = engangstønad(false);
+        test(engangstønad, true);
     }
 
     @Test
@@ -119,18 +126,33 @@ public class TestSerialization {
     }
 
     @Test
+    public void testFnr() throws JsonProcessingException {
+        test(new Fodselsnummer("03016536325"), true);
+    }
+
+    @Test
+    public void testAktør() throws JsonProcessingException {
+        test(new AktorId("111111111"), true);
+    }
+
+    @Test
     public void testAdopsjon() {
         test(adopsjon());
     }
 
     @Test
     public void testFødsel() {
-        test(fødsel());
+        test(fødsel(), true);
     }
 
     @Test
-    public void testFremtidigOpphold() {
+    public void testFremtidigOppholdNorge() {
         test(framtidigOppholdINorge());
+    }
+
+    @Test
+    public void testFremtidigOppholdUtland() {
+        test(framtidigOppHoldIUtlandetHeleåret(), true);
     }
 
     @Test
@@ -155,7 +177,7 @@ public class TestSerialization {
 
     @Test
     public void testUtenlandsopphold() {
-        test(utenlandsopphold());
+        test(utenlandsopphold(), true);
     }
 
     @Test
@@ -164,16 +186,24 @@ public class TestSerialization {
     }
 
     private static Søknad engangssøknad(boolean utland) {
-        Søknad s = new Søknad(nå(), søker(), engangstønad(utland));
+        return engangssøknad(utland, fremtidigFødsel());
+    }
+
+    private static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon) {
+        Søknad s = new Søknad(nå(), søker(), engangstønad(utland, relasjon));
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
     }
 
     private static Engangsstønad engangstønad(boolean utland) {
-        Engangsstønad stønad = new Engangsstønad(medlemsskap(utland), fremtidigFødsel());
+        Engangsstønad stønad = engangstønad(utland, fremtidigFødsel());
         stønad.setAnnenForelder(norskForelder());
         return stønad;
+    }
+
+    private static Engangsstønad engangstønad(boolean utland, RelasjonTilBarn relasjon) {
+        return new Engangsstønad(medlemsskap(utland), relasjon);
     }
 
     private static Utenlandsopphold utenlandsopphold() {
@@ -181,7 +211,7 @@ public class TestSerialization {
     }
 
     private static NorskForelder norskForelder() {
-        return new NorskForelder(true, aktoer());
+        return new NorskForelder(true, fnr());
     }
 
     private static UtenlandskForelder utenlandskForelder() {
@@ -194,7 +224,7 @@ public class TestSerialization {
 
     private static Medlemsskap medlemsskap(boolean utland) {
         if (utland) {
-            return new Medlemsskap(tidligereOppHoldIUtlandetHeleåret(), framtidigOppholdINorge());
+            return new Medlemsskap(tidligereOppHoldIUtlandetHeleåret(), framtidigOppHoldIUtlandetHeleåret());
         }
         return new Medlemsskap(tidligereOppHoldINorge(), framtidigOppholdINorge());
     }
@@ -228,12 +258,20 @@ public class TestSerialization {
         return fødsel;
     }
 
+    private static FramtidigOppholdsInformasjon framtidigOppHoldIUtlandetHeleåret() {
+        return new FramtidigOppholdsInformasjon(false, Collections.singletonList(new Utenlandsopphold(CountryCode.SE)));
+    }
+
     private static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
-        return new FramtidigOppholdsInformasjon(true, true);
+        return new FramtidigOppholdsInformasjon(true, Collections.emptyList());
     }
 
     private static Søker søker() {
-        return new Søker(aktoer(), BrukerRolle.MOR);
+        return søker(false);
+    }
+
+    private static Søker søker(boolean isAktør) {
+        return new Søker(isAktør ? aktoer() : fnr(), BrukerRolle.MOR);
     }
 
     private static FremtidigFødsel fremtidigFødsel() {
@@ -264,8 +302,12 @@ public class TestSerialization {
         return LocalDate.now().minus(Period.ofYears(1));
     }
 
-    private static AktorId aktoer() {
+    private static Bruker aktoer() {
         return new AktorId("11111111111111111");
+    }
+
+    private static Bruker fnr() {
+        return new Fodselsnummer("03016536325");
     }
 
     private static void test(Object object) {

@@ -32,7 +32,7 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     public Medlemsskap deserialize(JsonParser p, DeserializationContext ctx)
             throws IOException, JsonProcessingException {
         JsonNode rootNode = p.getCodec().readTree(p);
-        return new Medlemsskap(tidligereOpphold(rootNode, p.getCodec()), fremtidigOpphold(rootNode));
+        return new Medlemsskap(tidligereOpphold(rootNode, p.getCodec()), fremtidigOpphold(rootNode, p.getCodec()));
     }
 
     private TidligereOppholdsInformasjon tidligereOpphold(JsonNode rootNode, ObjectCodec codec) {
@@ -42,9 +42,10 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
                 utenlandsOpphold(utland, codec));
     }
 
-    private static FramtidigOppholdsInformasjon fremtidigOpphold(JsonNode rootNode) {
+    private static FramtidigOppholdsInformasjon fremtidigOpphold(JsonNode rootNode, ObjectCodec codec) {
+        ArrayNode utland = (ArrayNode) rootNode.get("fremtidigUtenlandsopphold");
         return new FramtidigOppholdsInformasjon(booleanValue(rootNode, "fødselINorge"),
-                booleanValue(rootNode, "iNorgeNeste12"));
+                utenlandsOpphold(utland, codec));
     }
 
     private static String textValue(JsonNode rootNode, String fieldName) {

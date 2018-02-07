@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
+
 import java.io.StringWriter;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -11,12 +13,10 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.AktoerId;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Landkoder;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmFar;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmMor;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Periode;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Soknadsvalg;
@@ -47,8 +47,8 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
 
     @Override
     public SoeknadsskjemaEngangsstoenad toModel(Søknad søknad) {
-        SoeknadsskjemaEngangsstoenad dokmotModel = new SoeknadsskjemaEngangsstoenad();
-        dokmotModel.setBruker(aktør(søknad.getSøker()));
+        SoeknadsskjemaEngangsstoenad dokmotModel = new SoeknadsskjemaEngangsstoenad()
+                .withBruker(brukerFra(søknad.getSøker().getBruker()));
         Engangsstønad engangsstønad = (Engangsstønad) (søknad.getYtelse());
         RelasjonTilBarn relasjonTilBarn = engangsstønad.getRelasjonTilBarn();
         Soknadsvalg soknadsvalg = new Soknadsvalg();
@@ -57,10 +57,19 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
         if (engangsstønad.getAnnenForelder() != null) {
             dokmotModel.setOpplysningerOmFar(farFra(engangsstønad.getAnnenForelder()));
         }
-        dokmotModel.setOpplysningerOmMor(morFra(søknad));
         dokmotModel.setSoknadsvalg(soknadsvalg);
         dokmotModel.setTilknytningNorge((tilknytningFra(engangsstønad.getMedlemsskap())));
         return dokmotModel;
+    }
+
+    private static Aktoer brukerFra(Bruker bruker) {
+        if (bruker instanceof Fodselsnummer) {
+            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(bruker.getValue());
+        }
+        if (bruker instanceof AktorId) {
+            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.AktoerId(bruker.getValue());
+        }
+        throw new IllegalArgumentException("This will never happen");
     }
 
     private static JAXBContext context() {
@@ -91,88 +100,78 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
         }
     }
 
-    private TilknytningNorge tilknytningFra(Medlemsskap medlemsskap) {
-        TilknytningNorge tilknytning = new TilknytningNorge();
-        tilknytning.setOppholdNorgeNaa(true);
-        tilknytning.setTidligereOppholdNorge((medlemsskap.getTidligereOppholdsInfo().isBoddINorge()));
-        tilknytning.setTidligereOppholdUtenlands(tidligereOppholdUtenlands(medlemsskap.getTidligereOppholdsInfo()));
-        if (!medlemsskap.getFremtidigOppholdsInfo().isNorgeNeste12()) {
-            tilknytning.setFremtidigOppholdNorge(false);
-            tilknytning.setFremtidigOppholdUtenlands(FremtidigOppholdUtenlands(medlemsskap.getFremtidigOppholdsInfo()));
-        } else {
-            tilknytning.setFremtidigOppholdNorge(true);
-        }
-        return tilknytning;
+    private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap) {
+        return new TilknytningNorge()
+                .withOppholdNorgeNaa(true)
+                .withTidligereOppholdNorge(medlemsskap.getTidligereOppholdsInfo().isBoddINorge())
+                .withTidligereOppholdUtenlands(tidligereOppholdUtenlands(medlemsskap.getTidligereOppholdsInfo()))
+                .withFremtidigOppholdNorge(medlemsskap.getFremtidigOppholdsInfo().isNorgeNeste12())
+                .withFremtidigOppholdUtenlands(framtidigOppholdUtenlands(medlemsskap.getFremtidigOppholdsInfo()));
     }
 
-    private FremtidigOppholdUtenlands FremtidigOppholdUtenlands(FramtidigOppholdsInformasjon fremtidigOppholdsInfo) {
-        FremtidigOppholdUtenlands framtidigUtenlands = new FremtidigOppholdUtenlands();
-        Utenlandsopphold uo = new Utenlandsopphold();
-        framtidigUtenlands.getUtenlandsoppholds().add(uo);
-        return framtidigUtenlands;
+    private static TidligereOppholdUtenlands tidligereOppholdUtenlands(TidligereOppholdsInformasjon tidligere) {
+        return new TidligereOppholdUtenlands()
+                .withUtenlandsoppholds(tidligere.getUtenlandsOpphold()
+                        .stream()
+                        .map(DokmotEngangsstønadXMLGenerator::utenlandsopphold)
+                        .collect(toList()));
     }
 
-    private TidligereOppholdUtenlands tidligereOppholdUtenlands(TidligereOppholdsInformasjon tidligere) {
-        TidligereOppholdUtenlands utenlands = new TidligereOppholdUtenlands();
-        utenlands.getUtenlandsoppholds()
-                .addAll(tidligere.getUtenlandsOpphold().stream().map(this::land).collect(Collectors.toList()));
-        return utenlands;
+    private static FremtidigOppholdUtenlands framtidigOppholdUtenlands(FramtidigOppholdsInformasjon framtid) {
+        return new FremtidigOppholdUtenlands()
+                .withUtenlandsoppholds(framtid.getUtenlandsOpphold()
+                        .stream()
+                        .map(DokmotEngangsstønadXMLGenerator::utenlandsopphold)
+                        .collect(toList()));
     }
 
-    private Utenlandsopphold land(no.nav.foreldrepenger.mottak.domain.Utenlandsopphold opphold) {
-        Utenlandsopphold uo = new Utenlandsopphold();
-        Landkoder land = new Landkoder();
-        land.setValue(opphold.getLand().getAlpha2());
-        uo.setLand(land);
-        Periode periode = new Periode();
-        periode.setFom(opphold.getVarighet().getFom());
-        periode.setTom(opphold.getVarighet().getTom());
-        uo.setPeriode(periode);
-        return uo;
-
+    private static Utenlandsopphold utenlandsopphold(no.nav.foreldrepenger.mottak.domain.Utenlandsopphold opphold) {
+        return new Utenlandsopphold()
+                .withLand(new Landkoder()
+                        .withValue(opphold.getLand().getAlpha2()))
+                .withPeriode(new Periode()
+                        .withFom(opphold.getVarighet().getFom())
+                        .withTom(opphold.getVarighet().getTom()));
     }
 
-    private OpplysningerOmMor morFra(Søknad søknad) {
-        OpplysningerOmMor mor = new OpplysningerOmMor();
-        mor.setPersonidentifikator(søker(søknad.getSøker()));
-        return mor;
-    }
+    private static OpplysningerOmBarn barnFra(Søknad søknad, RelasjonTilBarn relasjonTilBarn, Soknadsvalg soknadsvalg) {
 
-    private Aktoer aktør(Søker søker) {
-        return new AktoerId(søker(søker));
-    }
-
-    private static String søker(Søker søker) {
-        return søker.getAktorid().getValue();
-    }
-
-    private OpplysningerOmBarn barnFra(Søknad søknad, RelasjonTilBarn relasjonTilBarn, Soknadsvalg soknadsvalg) {
-        OpplysningerOmBarn barn = new OpplysningerOmBarn();
-        barn.setAntallBarn(relasjonTilBarn.getAntallBarn());
-        barn.setBegrunnelse(søknad.getBegrunnelseForSenSøknad());
         if (relasjonTilBarn instanceof FremtidigFødsel) {
-            FremtidigFødsel ff = FremtidigFødsel.class.cast(relasjonTilBarn);
-            barn.setTermindato(ff.getTerminDato());
-            barn.setTerminbekreftelsedato(ff.getUtstedtDato());
-            soknadsvalg.setFoedselEllerAdopsjon(FoedselEllerAdopsjon.FOEDSEL);
+            soknadsvalg.setFoedselEllerAdopsjon(FOEDSEL);
+            return fremtidigFødsel(FremtidigFødsel.class.cast(relasjonTilBarn), soknadsvalg);
         }
         if (relasjonTilBarn instanceof Fødsel) {
-            Fødsel f = Fødsel.class.cast(relasjonTilBarn);
-            soknadsvalg.setFoedselEllerAdopsjon(FoedselEllerAdopsjon.FOEDSEL);
+            soknadsvalg.setFoedselEllerAdopsjon(FOEDSEL);
+            return fødsel(Fødsel.class.cast(relasjonTilBarn), soknadsvalg);
         }
-        return barn;
+        throw new IllegalArgumentException(
+                "Relasjon " + relasjonTilBarn.getClass().getSimpleName() + " fireløpig ikke støttet");
     }
 
-    private Stoenadstype rolleFra(Søknad søknad) {
+    private static OpplysningerOmBarn fødsel(Fødsel fødsel, Soknadsvalg soknadsvalg) {
+        return barn(fødsel).withFoedselsdatoes(fødsel.getFødselsdato());
+    }
+
+    private static OpplysningerOmBarn barn(RelasjonTilBarn relasjonTilBarn) {
+        return new OpplysningerOmBarn().withAntallBarn(relasjonTilBarn.getAntallBarn());
+    }
+
+    private static OpplysningerOmBarn fremtidigFødsel(FremtidigFødsel fremtidigFødsel, Soknadsvalg soknadsvalg) {
+        return barn(fremtidigFødsel)
+                .withTermindato(fremtidigFødsel.getTerminDato())
+                .withTerminbekreftelsedato(fremtidigFødsel.getUtstedtDato());
+    }
+
+    private static Stoenadstype rolleFra(Søknad søknad) {
         switch (søknad.getSøker().getSøknadsRolle()) {
         case MOR:
             return Stoenadstype.ENGANGSSTOENADMOR;
         default:
-            throw new IllegalArgumentException("Far ikke støttet foreløpig");
+            throw new IllegalArgumentException(søknad.getSøker().getSøknadsRolle() + " foreløpig ikke støttet");
         }
     }
 
-    private OpplysningerOmFar farFra(AnnenForelder annenForelder) {
+    private static OpplysningerOmFar farFra(AnnenForelder annenForelder) {
         OpplysningerOmFar far = new OpplysningerOmFar();
         if (annenForelder instanceof UkjentForelder) {
             KanIkkeOppgiFar kanikke = new KanIkkeOppgiFar();
@@ -181,12 +180,20 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
         }
         if (annenForelder instanceof NorskForelder) {
             NorskForelder nf = NorskForelder.class.cast(annenForelder);
-            far.setPersonidentifikator(nf.getAktørId().getValue());
+            far.setPersonidentifikator(nf.getBruker().getValue());
         }
         if (annenForelder instanceof UtenlandskForelder) {
             UtenlandskForelder uf = UtenlandskForelder.class.cast(annenForelder);
         }
         return far;
+    }
+
+    private static AktoerId aktør(Søker søker) {
+        return new AktoerId(søker(søker));
+    }
+
+    private static String søker(Søker søker) {
+        return søker.getBruker().getValue();
     }
 
 }
