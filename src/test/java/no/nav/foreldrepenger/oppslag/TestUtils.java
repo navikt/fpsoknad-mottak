@@ -14,6 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.Bruker;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
@@ -32,8 +33,17 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.XMLGenerator;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 
-public class TestUtils {
+class TestUtils {
+
+    private static final XMLGenerator GEN = new DokmotEngangsstønadXMLGenerator();
+
+    static SoeknadsskjemaEngangsstoenad dokmotModel(Søknad s) {
+        return GEN.toDokmotModel(s);
+    }
+
     static Søknad engangssøknad(boolean utland) throws IOException {
         return engangssøknad(utland, fremtidigFødsel());
     }
@@ -89,7 +99,7 @@ public class TestUtils {
 
     static Omsorgsovertakelse omsorgsovertakelse() {
         Omsorgsovertakelse overtakelse = new Omsorgsovertakelse(nå(), OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE);
-        overtakelse.setBeskrivelse("beskrivelse");
+        overtakelse.setBeskrivelse("dette er en beskrivelse");
         overtakelse.setFødselsdato(forrigeMåned());
         return overtakelse;
     }
