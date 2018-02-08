@@ -15,6 +15,6 @@ public class Medlemsskap {
     @Valid
     private final TidligereOppholdsInformasjon tidligereOppholdsInfo;
     @Valid
-    private final FramtidigOppholdsInformasjon fremtidigOppholdsInfo;
+    private final FramtidigOppholdsInformasjon framtidigOppholdsInfo;
 
 }

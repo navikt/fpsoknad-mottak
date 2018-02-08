@@ -27,10 +27,6 @@ public abstract class Vedlegg {
     private final VedleggMetaData metadata;
     private final byte[] vedlegg;
 
-    public Vedlegg(Resource vedlegg) throws IOException {
-        this(metadataFra(vedlegg), validate(vedlegg));
-    }
-
     public Vedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {
         this(metadata, vedlegg.getInputStream());
     }
@@ -43,21 +39,14 @@ public abstract class Vedlegg {
     public Vedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg)
             throws IOException {
         this.metadata = metadata;
-        this.vedlegg = vedlegg;// Base64IfRequired(vedlegg);
+        this.vedlegg = vedlegg;
     }
-
-    /* private static byte[] BASE64IfRequired(byte[] vedlegg) { return Base64.isBase64(vedlegg) ? vedlegg :
-     * Base64.encodeBase64(vedlegg); } */
 
     private static Resource validate(Resource vedlegg) {
         if (!vedlegg.exists()) {
             throw new IllegalArgumentException("Vedlegg " + vedlegg.getDescription() + " ikke funnet");
         }
         return vedlegg;
-    }
-
-    private static VedleggMetaData metadataFra(Resource vedlegg) {
-        return new VedleggMetaData(fileNameFra(vedlegg), typeFra(fileNameFra(vedlegg)));
     }
 
     private static String fileNameFra(Resource vedlegg) {

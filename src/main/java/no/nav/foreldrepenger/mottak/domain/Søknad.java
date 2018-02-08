@@ -28,19 +28,22 @@ public class Søknad {
     private final Ytelse ytelse;
     private String begrunnelseForSenSøknad;
     private String tilleggsopplysninger;
-    private final List<Vedlegg> påkrevdeVedlegg;
-    private final List<Vedlegg> frivilligeVedlegg;
+    private final List<PåkrevdVedlegg> påkrevdeVedlegg;
+    private final List<ValgfrittVedlegg> frivilligeVedlegg;
 
-    public Søknad(@JsonProperty("motattdato") LocalDate motattdato, @JsonProperty("søker") Søker søker,
-            @JsonProperty("ytelse") Ytelse ytelse) {
+    public Søknad(LocalDate motattdato, Søker søker, Ytelse ytelse) {
         this(motattdato, søker, ytelse, Collections.emptyList(), Collections.emptyList());
+    }
+
+    public Søknad(LocalDate motattdato, Søker søker, Ytelse ytelse, PåkrevdVedlegg vedlegg) {
+        this(motattdato, søker, ytelse, Collections.singletonList(vedlegg), Collections.emptyList());
     }
 
     @JsonCreator
     public Søknad(@JsonProperty("motattdato") LocalDate motattdato, @JsonProperty("søker") Søker søker,
             @JsonProperty("ytelse") Ytelse ytelse,
-            @JsonProperty("påkrevdeVedlegg") List<Vedlegg> påkrevdeVedlegg,
-            @JsonProperty("frivilligeVedlegg") List<Vedlegg> frivilligeVedlegg) {
+            @JsonProperty("påkrevdeVedlegg") List<PåkrevdVedlegg> påkrevdeVedlegg,
+            @JsonProperty("frivilligeVedlegg") List<ValgfrittVedlegg> frivilligeVedlegg) {
         this.motattdato = motattdato;
         this.søker = søker;
         this.ytelse = ytelse;

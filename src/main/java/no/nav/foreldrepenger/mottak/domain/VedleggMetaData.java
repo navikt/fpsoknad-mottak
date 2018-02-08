@@ -10,11 +10,18 @@ public class VedleggMetaData {
 
     private final String beskrivelse;
     private final VedleggType type;
+    private final Skjemanummer skjemanummer;
+
+    public VedleggMetaData(Skjemanummer skjemanummer) {
+        this(skjemanummer.dokumentTypeId(), VedleggType.PDF, skjemanummer);
+    }
 
     @JsonCreator
-    public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("type") VedleggType type) {
+    public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("type") VedleggType type,
+            @JsonProperty("skjemanummer") Skjemanummer skjemanummer) {
         this.beskrivelse = beskrivelse;
         this.type = type;
+        this.skjemanummer = skjemanummer;
     }
 
 }

@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselElle
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,7 +15,9 @@ import javax.xml.bind.Marshaller;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.AktoerId;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Landkoder;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
@@ -27,6 +30,8 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge.FremtidigOppholdUtenlands;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge.TidligereOppholdUtenlands;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Utenlandsopphold;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 
 @Service
 public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
@@ -49,6 +54,8 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
 
     @Override
     public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad) {
+
+        // Mor er det samme som bruker i dette use-caset
         Engangsstønad engangsstønad = Engangsstønad.class.cast(søknad.getYtelse());
         return new SoeknadsskjemaEngangsstoenad()
                 .withBruker(brukerFra(søknad.getSøker().getBruker()))
@@ -56,10 +63,33 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
                 .withSoknadsvalg(søknadsvalgFra(søknad, engangsstønad))
                 .withTilknytningNorge((tilknytningFra(engangsstønad.getMedlemsskap())))
                 .withOpplysningerOmFar(farFra(engangsstønad.getAnnenForelder()))
-                .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
+                .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg()));
+    }
 
-        // TODO vedlegg
+    private VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg) {
+        return new VedleggListe()
+                .withVedleggs(påkrevdeVedlegg
+                        .stream()
+                        .map(DokmotEngangsstønadXMLGenerator::vedleggFra)
+                        .collect(toList()));
+    }
 
+    private static Vedlegg vedleggFra(PåkrevdVedlegg vedlegg) {
+        return new Vedlegg()
+                .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().dokumentTypeId())
+                .withInnsendingsvalg(Innsendingsvalg.LASTET_OPP)
+                .withErPaakrevdISoeknadsdialog(true);
+    }
+
+    private static Aktoer brukerFra(Bruker bruker) {
+        if (bruker instanceof Fodselsnummer) {
+            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(bruker.getValue());
+        }
+        if (bruker instanceof AktorId) {
+            return new AktoerId(bruker.getValue());
+        }
+        throw new IllegalArgumentException("Dette vil aldri skje");
     }
 
     private static Soknadsvalg søknadsvalgFra(Søknad søknad, Engangsstønad engangsstønad) {
@@ -74,16 +104,6 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
             return FOEDSEL;
         }
         throw new IllegalArgumentException(relasjonTilBarn.getClass().getSimpleName() + " er foreløpig ikke støttet");
-    }
-
-    private static Aktoer brukerFra(Bruker bruker) {
-        if (bruker instanceof Fodselsnummer) {
-            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(bruker.getValue());
-        }
-        if (bruker instanceof AktorId) {
-            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.AktoerId(bruker.getValue());
-        }
-        throw new IllegalArgumentException("This will never happen");
     }
 
     private static JAXBContext context() {
@@ -119,15 +139,15 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
                 .withOppholdNorgeNaa(true) // What else ?
                 .withTidligereOppholdNorge(medlemsskap.getTidligereOppholdsInfo().isBoddINorge())
                 .withTidligereOppholdUtenlands(tidligereOppholdUtenlandsFra(medlemsskap.getTidligereOppholdsInfo()))
-                .withFremtidigOppholdNorge(medlemsskap.getFremtidigOppholdsInfo().isNorgeNeste12())
-                .withFremtidigOppholdUtenlands(framtidigOppholdUtenlandsFra(medlemsskap.getFremtidigOppholdsInfo()));
+                .withFremtidigOppholdNorge(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
+                .withFremtidigOppholdUtenlands(framtidigOppholdUtenlandsFra(medlemsskap.getFramtidigOppholdsInfo()));
     }
 
     private static TidligereOppholdUtenlands tidligereOppholdUtenlandsFra(TidligereOppholdsInformasjon tidligere) {
         return new TidligereOppholdUtenlands()
                 .withUtenlandsoppholds(tidligere.getUtenlandsOpphold()
                         .stream()
-                        .map(DokmotEngangsstønadXMLGenerator::utenlandsopphold)
+                        .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
     }
 
@@ -135,14 +155,14 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
         return new FremtidigOppholdUtenlands()
                 .withUtenlandsoppholds(framtid.getUtenlandsOpphold()
                         .stream()
-                        .map(DokmotEngangsstønadXMLGenerator::utenlandsopphold)
+                        .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
     }
 
-    private static Utenlandsopphold utenlandsopphold(no.nav.foreldrepenger.mottak.domain.Utenlandsopphold opphold) {
+    private static Utenlandsopphold utenlandsoppholdFra(no.nav.foreldrepenger.mottak.domain.Utenlandsopphold opphold) {
         return new Utenlandsopphold()
                 .withLand(new Landkoder()
-                        .withValue(opphold.getLand().getAlpha3()))
+                        .withValue(opphold.getLand().getAlpha2()))
                 .withPeriode(new Periode()
                         .withFom(opphold.getVarighet().getFom())
                         .withTom(opphold.getVarighet().getTom()));
@@ -151,29 +171,30 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
     private static OpplysningerOmBarn barnFra(Søknad søknad, Engangsstønad engangsstønad) {
         RelasjonTilBarn relasjon = engangsstønad.getRelasjonTilBarn();
         if (relasjon instanceof FremtidigFødsel) {
-            return fremtidigFødsel(FremtidigFødsel.class.cast(relasjon));
+            return framtidigFødselFra(FremtidigFødsel.class.cast(relasjon), søknad.getBegrunnelseForSenSøknad());
         }
         if (relasjon instanceof Fødsel) {
-            return fødsel(Fødsel.class.cast(relasjon));
+            return fødselFra(Fødsel.class.cast(relasjon), søknad.getBegrunnelseForSenSøknad());
         }
         throw new IllegalArgumentException(
-                "Relasjon " + engangsstønad.getClass().getSimpleName() + " fireløpig ikke støttet");
+                "Relasjon " + relasjon.getClass().getSimpleName() + " foreløpig ikke støttet");
     }
 
-    private static OpplysningerOmBarn fødsel(Fødsel fødsel) {
-        return barn(fødsel)
+    private static OpplysningerOmBarn fødselFra(Fødsel fødsel, String begrunnelse) {
+        return barnFra(fødsel, begrunnelse)
                 .withFoedselsdatoes(fødsel.getFødselsdato());
     }
 
-    private static OpplysningerOmBarn barn(RelasjonTilBarn relasjonTilBarn) {
+    private static OpplysningerOmBarn barnFra(RelasjonTilBarn relasjon, String begrunnelse) {
         return new OpplysningerOmBarn()
-                .withAntallBarn(relasjonTilBarn.getAntallBarn());
+                .withBegrunnelse(begrunnelse)
+                .withAntallBarn(relasjon.getAntallBarn());
     }
 
-    private static OpplysningerOmBarn fremtidigFødsel(FremtidigFødsel fremtidigFødsel) {
-        return barn(fremtidigFødsel)
-                .withTermindato(fremtidigFødsel.getTerminDato())
-                .withTerminbekreftelsedato(fremtidigFødsel.getUtstedtDato());
+    private static OpplysningerOmBarn framtidigFødselFra(FremtidigFødsel framtidigFødsel, String begrunnelse) {
+        return barnFra(framtidigFødsel, begrunnelse)
+                .withTermindato(framtidigFødsel.getTerminDato())
+                .withTerminbekreftelsedato(framtidigFødsel.getUtstedtDato());
     }
 
     private static Stoenadstype rolleFra(BrukerRolle rolle) {
@@ -204,13 +225,9 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
             return new OpplysningerOmFar()
                     .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
                             .withUtenlandskfnrLand(new Landkoder()
-                                    .withKode(UtenlandskForelder.class.cast(annenForelder).getLand().getAlpha3())));
+                                    .withKode(UtenlandskForelder.class.cast(annenForelder).getLand().getAlpha2())));
         }
-        throw new IllegalArgumentException("This should never happen");
-    }
-
-    private static String søker(Søker søker) {
-        return søker.getBruker().getValue();
+        throw new IllegalArgumentException("Dette skal aldri skje");
     }
 
 }

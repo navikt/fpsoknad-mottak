@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collections;
 
-import javax.xml.bind.JAXBException;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -41,14 +39,14 @@ import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.domain.Skjemanummer;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 
 public class TestSerialization {
 
@@ -76,18 +74,18 @@ public class TestSerialization {
 
     @Test
     public void testVedlegg() throws IOException {
-        test(vedlegg("vedlegg.pdf"), true);
+        test(påkrevdVedlegg("vedlegg.pdf"), true);
     }
 
     @Test
-    public void testSøknadNorge() throws JAXBException {
+    public void testSøknadNorge() throws Exception {
         Søknad engangssøknad = engangssøknad(false);
         test(engangssøknad, true);
         System.out.println(DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad));
     }
 
     @Test
-    public void testSøknadUtland() {
+    public void testSøknadUtland() throws Exception {
         Søknad engangssøknad = engangssøknad(true, fødsel());
         test(engangssøknad, true);
         System.out.println(DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad));
@@ -185,12 +183,12 @@ public class TestSerialization {
         test(varighet());
     }
 
-    private static Søknad engangssøknad(boolean utland) {
+    private static Søknad engangssøknad(boolean utland) throws IOException {
         return engangssøknad(utland, fremtidigFødsel());
     }
 
-    private static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon) {
-        Søknad s = new Søknad(nå(), søker(), engangstønad(utland, relasjon));
+    private static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon) throws IOException {
+        Søknad s = new Søknad(nå(), søker(), engangstønad(utland, relasjon), påkrevdVedlegg());
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
@@ -245,8 +243,12 @@ public class TestSerialization {
         return overtakelse;
     }
 
-    private static Vedlegg vedlegg(String name) throws IOException {
-        return new ValgfrittVedlegg(new ClassPathResource(name));
+    private static PåkrevdVedlegg påkrevdVedlegg() throws IOException {
+        return påkrevdVedlegg("vedlegg.pdf");
+    }
+
+    private static PåkrevdVedlegg påkrevdVedlegg(String name) throws IOException {
+        return new PåkrevdVedlegg(Skjemanummer.N6, new ClassPathResource(name));
     }
 
     private static Adopsjon adopsjon() {
