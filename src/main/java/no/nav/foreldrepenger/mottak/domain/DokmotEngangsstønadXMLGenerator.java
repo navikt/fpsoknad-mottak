@@ -69,7 +69,7 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
 
     private VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg) {
         return new VedleggListe()
-                .withVedleggs(påkrevdeVedlegg
+                .withVedlegg(påkrevdeVedlegg
                         .stream()
                         .map(DokmotEngangsstønadXMLGenerator::vedleggFra)
                         .collect(toList()));
@@ -84,10 +84,10 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
 
     private static Aktoer brukerFra(Bruker bruker) {
         if (bruker instanceof Fodselsnummer) {
-            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(bruker.getValue());
+            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(bruker.getId());
         }
         if (bruker instanceof AktorId) {
-            return new AktoerId(bruker.getValue());
+            return new AktoerId(bruker.getId());
         }
         throw new IllegalArgumentException("Dette vil aldri skje");
     }
@@ -145,7 +145,7 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
 
     private static TidligereOppholdUtenlands tidligereOppholdUtenlandsFra(TidligereOppholdsInformasjon tidligere) {
         return new TidligereOppholdUtenlands()
-                .withUtenlandsoppholds(tidligere.getUtenlandsOpphold()
+                .withUtenlandsopphold(tidligere.getUtenlandsOpphold()
                         .stream()
                         .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
@@ -153,7 +153,7 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
 
     private static FremtidigOppholdUtenlands framtidigOppholdUtenlandsFra(FramtidigOppholdsInformasjon framtid) {
         return new FremtidigOppholdUtenlands()
-                .withUtenlandsoppholds(framtid.getUtenlandsOpphold()
+                .withUtenlandsopphold(framtid.getUtenlandsOpphold()
                         .stream()
                         .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
@@ -182,7 +182,7 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
 
     private static OpplysningerOmBarn fødselFra(Fødsel fødsel, String begrunnelse) {
         return barnFra(fødsel, begrunnelse)
-                .withFoedselsdatoes(fødsel.getFødselsdato());
+                .withFoedselsdato(fødsel.getFødselsdato());
     }
 
     private static OpplysningerOmBarn barnFra(RelasjonTilBarn relasjon, String begrunnelse) {
@@ -218,7 +218,7 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
         if (annenForelder instanceof NorskForelder) {
             // Todo Navn ?
             return new OpplysningerOmFar()
-                    .withPersonidentifikator(NorskForelder.class.cast(annenForelder).getBruker().getValue());
+                    .withPersonidentifikator(NorskForelder.class.cast(annenForelder).getBruker().getId());
         }
         if (annenForelder instanceof UtenlandskForelder) {
             // TODO navn og eller utenlandsk FNR?

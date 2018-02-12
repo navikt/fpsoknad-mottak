@@ -12,13 +12,16 @@ import lombok.Data;
         @Type(value = AktorId.class, name = "aktør"),
         @Type(value = Fodselsnummer.class, name = "fnr")
 })
-// @JsonSerialize(using = BrukerSerializer.class)
-// @JsonDeserialize(using = BrukerDeserializer.class)
 public abstract class Bruker {
-    private final String value;
+    private final String id;
+    private final Navn navn;
 
-    public Bruker(String value) {
-        this.value = value;
+    public Bruker(String id) {
+        this(id, null);
     }
 
+    public Bruker(String id, Navn navn) {
+        this.id = id;
+        this.navn = navn;
+    }
 }

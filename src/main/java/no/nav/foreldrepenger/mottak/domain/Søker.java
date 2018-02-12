@@ -13,17 +13,10 @@ public class Søker {
     private final Bruker bruker;
     @NotNull(message = "{ytelse.søknadsrolle.notnull}")
     private final BrukerRolle søknadsRolle;
-    private final Fullmektig fullmektig;
-
-    public Søker(Bruker bruker, BrukerRolle brukerRolle) {
-        this(bruker, brukerRolle, null);
-    }
 
     @JsonCreator
-    public Søker(@JsonProperty("bruker") Bruker bruker, @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle,
-            @JsonProperty("fullmektig") Fullmektig fullmektig) {
+    public Søker(@JsonProperty("bruker") Bruker bruker, @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle) {
         this.bruker = bruker;
         this.søknadsRolle = søknadsRolle;
-        this.fullmektig = fullmektig;
     }
 }
