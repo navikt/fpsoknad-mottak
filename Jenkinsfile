@@ -1,3 +1,7 @@
+@Library('deploy')
+import deploy
+
+def deployLib = new deploy()
 
 node {
    def commitHash, commitHashShort, commitUrl, currentVersion
@@ -90,9 +94,7 @@ node {
 
    stage("Deploy to preprod") {
       callback = "${env.BUILD_URL}input/Deploy/"
-      testCmd(releaseVersion)
-      testCmd(committer)
-      def deploy = deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
+      def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
       echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
    }
 
@@ -117,82 +119,6 @@ def notifyGithub(owner, repo, context, sha, state, description) {
                     'https://api.github.com/repos/${owner}/${repo}/statuses/${sha}'
             """
       }
-   }
-}
-
-def deployNaisApp(app, version, environment, zone, namespace, callback, reporter) {
-   parsedEnvironment = getEnvironmentId(environment)
-   parsedZone = getZone(zone)
-
-   println("Init deploy with the following input")
-   println("Application: \t ${app}")
-   println("Version: \t ${version}")
-   println("Environment: \t ${environment} (translated to: ${parsedEnvironment})")
-   println("Zone: \t ${zone} (translated to: ${parsedZone})")
-   println("Namespace: \t ${namespace}")
-   println("On behalf of: \t ${reporter}")
-   println("Will callback on ${callback}")
-
-   withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jiraServiceUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-      def postBody = [
-         fields: [
-            project          : [key: 'DEPLOY'],
-            issuetype        : [id: '14302'],
-            customfield_14811: [id: parsedEnvironment, value: parsedEnvironment],
-            customfield_14812: "${app}:${version}",
-            customfield_19413: namespace,
-            customfield_19610: [id: parsedZone, value: parsedZone],
-            customfield_17410: callback,
-            customfield_19015: [id: "22707", value: "Yes"],
-            summary          : "Automatisk deploy på vegne av ${reporter}"
-         ]
-      ]
-
-      def postBodyString = groovy.json.JsonOutput.toJson(postBody)
-      def base64encoded = "${env.USERNAME}:${env.PASSWORD}".bytes.encodeBase64().toString()
-
-
-      def response = httpRequest url: 'https://jira.adeo.no/rest/api/2/issue/', customHeaders: [[name: "Authorization", value: "Basic ${base64encoded}"]], consoleLogResponseBody: true, contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: postBodyString
-      def slurper = new groovy.json.JsonSlurper()
-      return slurper.parseText(response.content);
-   }
-}
-
-def testCmd(arg){
-   println ("Echo " + arg)
-   return "shiny " + arg
-}
-
-def getEnvironmentId(environment) {
-   envMap = [
-      'u1': '16657',
-      't1': '16557',
-      't5': '16561',
-      't6': '16562',
-      't7': '16563',
-      't11': '16567',
-      'q0': '16824',
-      'q1': '16825',
-      'q2': '16652',
-      'q6': '16648',
-      'p' : '17658'
-   ]
-   if (environment.isInteger()) {
-      return environment //Assume its already correct
-   } else {
-      return envMap[environment]
-   }
-}
-
-def getZone(zone) {
-   zoneMap = [
-      'fss': '23451',
-      'sbs': '23452'
-   ]
-   if (zone.isInteger()) {
-      return zone //Assume its already correct
-   } else {
-      return zoneMap[zone]
    }
 }
 
