@@ -4,7 +4,7 @@ import deploy
 def deployLib = new deploy()
 
 node {
-   def commitHash, commitHashShort, commitUrl, currentVersion
+   def commitHash, commitHashShort, commitUrl
    def repo = "navikt"
    def application = "fpsoknad-oppslag"
    def committer, committerEmail, changelog, pom, releaseVersion, nextVersion // metadata
@@ -12,7 +12,6 @@ node {
    def mvn = "${mvnHome}/bin/mvn"
    def appConfig = "nais.yaml"
    def dockerRepo = "repo.adeo.no:5443"
-   def branch = "master"
    def groupId = "nais"
    def environment = 't1'
    def zone = 'fss'
@@ -93,9 +92,11 @@ node {
    }
 
    stage("Deploy to preprod") {
-      callback = "${env.BUILD_URL}input/Deploy/"
-      def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
-      echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
+      withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088', 'NO_PROXY=localhost,127.0.0.1,*.local,*.adeo.no,*.nav.no,*.aetat.no,*.devillo.no,.*oera.no']) {
+         callback = "${env.BUILD_URL}input/Deploy/"
+         def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
+         echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
+      }
    }
 
 }
