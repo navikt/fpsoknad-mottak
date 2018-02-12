@@ -96,7 +96,7 @@ node {
                'NO_PROXY=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no',
                'no_proxy=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no'
               ]) {
-         System.getProperties().put("java.net.useSystemProxies", "true")
+         System.setProperty("java.net.useSystemProxies", "true")
          callback = "${env.BUILD_URL}input/Deploy/"
          def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
          echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
