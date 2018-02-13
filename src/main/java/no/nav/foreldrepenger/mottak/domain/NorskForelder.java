@@ -13,12 +13,12 @@ import lombok.ToString;
 
 public final class NorskForelder extends KjentForelder {
 
-    private final AktorId aktørId;
+    private final Fodselsnummer fnr;
 
     @JsonCreator
-    public NorskForelder(@JsonProperty("lever") boolean lever, @JsonProperty("aktorId") AktorId aktorId) {
+    public NorskForelder(@JsonProperty("lever") boolean lever, @JsonProperty("fnr") Fodselsnummer fnr) {
         super(lever);
-        this.aktørId = aktorId;
+        this.fnr = fnr;
     }
 
 }

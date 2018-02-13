@@ -43,7 +43,7 @@ public class SøknadsinfoExtractorTest {
       Landkoder land = new Landkoder();
       land.setValue("Utlandet");
       opphold.setLand(land);
-      oppholdUtenlands.withUtenlandsoppholds(opphold);
+      oppholdUtenlands.withUtenlandsopphold(opphold);
       tilknytning.setTidligereOppholdUtenlands(oppholdUtenlands);
       soknad.setTilknytningNorge(tilknytning);
       String actual = SøknadsinfoExtractor.tidligereUtenlandsopphold(soknad);
@@ -107,7 +107,7 @@ public class SøknadsinfoExtractorTest {
    public void vedleggSet() {
       SoeknadsskjemaEngangsstoenad soknad = new SoeknadsskjemaEngangsstoenad();
       VedleggListe vedleggListe = new VedleggListe();
-      vedleggListe.withVedleggs(new Vedlegg());
+      vedleggListe.withVedlegg(new Vedlegg());
       soknad.setVedleggListe(vedleggListe);
       long actual = SøknadsinfoExtractor.vedleggCount(soknad);
       assertEquals(1, actual);

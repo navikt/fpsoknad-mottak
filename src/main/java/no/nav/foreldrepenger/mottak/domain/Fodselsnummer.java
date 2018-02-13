@@ -6,16 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class AktorId {
+public class Fodselsnummer {
 
     private final String id;
 
     @JsonCreator
-    public AktorId(@JsonProperty("id") String id) {
+    public Fodselsnummer(@JsonProperty("id") String id) {
         this.id = id;
     }
 
-    public static AktorId valueOf(String id) {
-        return new AktorId(id);
+    public static Fodselsnummer valueOf(String id) {
+        return new Fodselsnummer(id);
     }
+
 }

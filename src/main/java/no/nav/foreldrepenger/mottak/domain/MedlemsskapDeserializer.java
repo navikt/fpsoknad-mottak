@@ -1,10 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -29,43 +30,31 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     }
 
     @Override
-    public Medlemsskap deserialize(JsonParser p, DeserializationContext ctx)
+    public Medlemsskap deserialize(JsonParser parser, DeserializationContext ctx)
             throws IOException, JsonProcessingException {
-        JsonNode rootNode = p.getCodec().readTree(p);
-        return new Medlemsskap(tidligereOpphold(rootNode, p.getCodec()), fremtidigOpphold(rootNode));
+        JsonNode rootNode = parser.getCodec().readTree(parser);
+        return new Medlemsskap(tidligereOpphold(rootNode, parser), framtidigOpphold(rootNode, parser));
     }
 
-    private TidligereOppholdsInformasjon tidligereOpphold(JsonNode rootNode, ObjectCodec codec) {
-        ArrayNode utland = (ArrayNode) rootNode.get("utenlandsopphold");
-        return new TidligereOppholdsInformasjon(booleanValue(rootNode, "iNorgeSiste12"),
-                ArbeidsInformasjon.valueOf(textValue(rootNode, "arbeidSiste12")),
-                utenlandsOpphold(utland, codec));
+    private TidligereOppholdsInformasjon tidligereOpphold(JsonNode rootNode, JsonParser parser) {
+        return new TidligereOppholdsInformasjon(iNorgeSiste12(rootNode), arbeidsInfo(rootNode),
+                utenlandsOpphold(rootNode, parser, "utenlandsopphold"));
     }
 
-    private static FramtidigOppholdsInformasjon fremtidigOpphold(JsonNode rootNode) {
+    private static FramtidigOppholdsInformasjon framtidigOpphold(JsonNode rootNode, JsonParser parser) {
         return new FramtidigOppholdsInformasjon(booleanValue(rootNode, "fødselINorge"),
-                booleanValue(rootNode, "iNorgeNeste12"));
+                utenlandsOpphold(rootNode, parser, "framtidigUtenlandsopphold"));
     }
 
-    private static String textValue(JsonNode rootNode, String fieldName) {
-        return ((TextNode) rootNode.get(fieldName)).textValue();
+    private static List<Utenlandsopphold> utenlandsOpphold(JsonNode rootNode, JsonParser parser, String nodeName) {
+        return utenlandsOpphold(iterator(arrayNode(rootNode, nodeName)), parser);
     }
 
-    private static boolean booleanValue(JsonNode rootNode, String fieldName) {
-        return ((BooleanNode) rootNode.get(fieldName)).booleanValue();
-    }
-
-    private static List<Utenlandsopphold> utenlandsOpphold(ArrayNode utland, ObjectCodec codec) {
-        Iterator<JsonNode> iterator = iterator(utland);
+    private static List<Utenlandsopphold> utenlandsOpphold(Iterator<JsonNode> iterator, JsonParser parser) {
         return StreamSupport
                 .stream(((Iterable<JsonNode>) () -> iterator).spliterator(), false)
-                .map(s -> utenlandopphold(s, iterator, codec))
-                .collect(Collectors.toList());
-
-    }
-
-    private static Iterator<JsonNode> iterator(ArrayNode utland) {
-        return utland != null ? utland.iterator() : Collections.emptyIterator();
+                .map(s -> utenlandopphold(s, iterator, parser.getCodec()))
+                .collect(toList());
     }
 
     private static Utenlandsopphold utenlandopphold(JsonNode node, Iterator<JsonNode> utland, ObjectCodec codec) {
@@ -78,4 +67,27 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
         }
     }
 
+    private ArbeidsInformasjon arbeidsInfo(JsonNode rootNode) {
+        return ArbeidsInformasjon.valueOf(textValue(rootNode, "arbeidSiste12"));
+    }
+
+    private boolean iNorgeSiste12(JsonNode rootNode) {
+        return booleanValue(rootNode, "iNorgeSiste12");
+    }
+
+    private static ArrayNode arrayNode(JsonNode rootNode, String nodeName) {
+        return ArrayNode.class.cast(rootNode.get(nodeName));
+    }
+
+    private static String textValue(JsonNode rootNode, String fieldName) {
+        return TextNode.class.cast(rootNode.get(fieldName)).textValue();
+    }
+
+    private static boolean booleanValue(JsonNode rootNode, String fieldName) {
+        return BooleanNode.class.cast(rootNode.get(fieldName)).booleanValue();
+    }
+
+    private static Iterator<JsonNode> iterator(ArrayNode utland) {
+        return utland != null ? utland.iterator() : Collections.emptyIterator();
+    }
 }

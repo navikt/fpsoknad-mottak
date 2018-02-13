@@ -1,64 +1,53 @@
 package no.nav.foreldrepenger.oppslag;
 
+import static no.nav.foreldrepenger.oppslag.TestUtils.adopsjon;
+import static no.nav.foreldrepenger.oppslag.TestUtils.aktoer;
+import static no.nav.foreldrepenger.oppslag.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.oppslag.TestUtils.engangstønad;
+import static no.nav.foreldrepenger.oppslag.TestUtils.framtidigOppHoldIUtlandetHeleåret;
+import static no.nav.foreldrepenger.oppslag.TestUtils.framtidigOppholdINorge;
+import static no.nav.foreldrepenger.oppslag.TestUtils.fremtidigFødsel;
+import static no.nav.foreldrepenger.oppslag.TestUtils.fødsel;
+import static no.nav.foreldrepenger.oppslag.TestUtils.medlemsskap;
+import static no.nav.foreldrepenger.oppslag.TestUtils.norskForelder;
+import static no.nav.foreldrepenger.oppslag.TestUtils.omsorgsovertakelse;
+import static no.nav.foreldrepenger.oppslag.TestUtils.påkrevdVedlegg;
+import static no.nav.foreldrepenger.oppslag.TestUtils.søker;
+import static no.nav.foreldrepenger.oppslag.TestUtils.utenlandskForelder;
+import static no.nav.foreldrepenger.oppslag.TestUtils.utenlandsopphold;
+import static no.nav.foreldrepenger.oppslag.TestUtils.varighet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Collections;
-
-import javax.xml.bind.JAXBException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.Adopsjon;
+import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 
 public class TestSerialization {
 
+    private static final DokmotEngangsstønadXMLGenerator DOKMOT_ENGANGSSTØNAD_XML_GENERATOR = new DokmotEngangsstønadXMLGenerator();
     private static ObjectMapper mapper;
-    private static XmlMapper xmlMapper;
 
     @BeforeClass
     public static void beforeClass() {
         mapper = new ObjectMapper();
         configureMapper(mapper);
-        xmlMapper = new XmlMapper();
-        configureMapper(xmlMapper);
-        // xmlMapper.set
     }
 
     private static void configureMapper(ObjectMapper mapper) {
@@ -72,25 +61,28 @@ public class TestSerialization {
 
     @Test
     public void testVedlegg() throws IOException {
-        test(vedlegg("vedlegg.pdf"), true);
+        test(påkrevdVedlegg("vedlegg.pdf"), true);
     }
 
     @Test
-    public void testSøknadNorge() throws JAXBException {
-        test(engangssøknad(false), true);
-        System.out.println(new DokmotEngangsstønadXMLGenerator().toXML(engangssøknad(false)));
+    public void testSøknadNorge() throws Exception {
+        Søknad engangssøknad = engangssøknad(false);
+        test(engangssøknad, true);
+        System.out.println(DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad));
     }
 
     @Test
-    public void testSøknadUtland() {
-        test(engangssøknad(true), true);
-        System.out.println(new DokmotEngangsstønadXMLGenerator().toXML(engangssøknad(true)));
+    public void testSøknadUtland() throws Exception {
+        Søknad engangssøknad = engangssøknad(true, fødsel());
+        test(engangssøknad, true);
+        System.out.println(DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad));
 
     }
 
     @Test
     public void testEngangsstønadNorge() {
-        test(engangstønad(false), true);
+        Engangsstønad engangstønad = engangstønad(false);
+        test(engangstønad, true);
     }
 
     @Test
@@ -119,18 +111,33 @@ public class TestSerialization {
     }
 
     @Test
+    public void testFnr() throws JsonProcessingException {
+        test(new Fodselsnummer("03016536325"), true);
+    }
+
+    @Test
+    public void testAktør() throws JsonProcessingException {
+        test(new AktorId("111111111"), true);
+    }
+
+    @Test
     public void testAdopsjon() {
         test(adopsjon());
     }
 
     @Test
     public void testFødsel() {
-        test(fødsel());
+        test(fødsel(), true);
     }
 
     @Test
-    public void testFremtidigOpphold() {
+    public void testFremtidigOppholdNorge() {
         test(framtidigOppholdINorge());
+    }
+
+    @Test
+    public void testFremtidigOppholdUtland() {
+        test(framtidigOppHoldIUtlandetHeleåret(), true);
     }
 
     @Test
@@ -155,7 +162,7 @@ public class TestSerialization {
 
     @Test
     public void testUtenlandsopphold() {
-        test(utenlandsopphold());
+        test(utenlandsopphold(), true);
     }
 
     @Test
@@ -163,118 +170,13 @@ public class TestSerialization {
         test(varighet());
     }
 
-    private static Søknad engangssøknad(boolean utland) {
-        Søknad s = new Søknad(nå(), søker(), engangstønad(utland));
-        s.setBegrunnelseForSenSøknad("Glemte hele ungen");
-        s.setTilleggsopplysninger("Intet å tilføye");
-        return s;
-    }
-
-    private static Engangsstønad engangstønad(boolean utland) {
-        Engangsstønad stønad = new Engangsstønad(medlemsskap(utland), fremtidigFødsel());
-        stønad.setAnnenForelder(norskForelder());
-        return stønad;
-    }
-
-    private static Utenlandsopphold utenlandsopphold() {
-        return new Utenlandsopphold(CountryCode.SE, varighet());
-    }
-
-    private static NorskForelder norskForelder() {
-        return new NorskForelder(true, aktoer());
-    }
-
-    private static UtenlandskForelder utenlandskForelder() {
-        return new UtenlandskForelder(true, CountryCode.SE);
-    }
-
-    private static Medlemsskap medlemsskap() {
-        return medlemsskap(false);
-    }
-
-    private static Medlemsskap medlemsskap(boolean utland) {
-        if (utland) {
-            return new Medlemsskap(tidligereOppHoldIUtlandetHeleåret(), framtidigOppholdINorge());
-        }
-        return new Medlemsskap(tidligereOppHoldINorge(), framtidigOppholdINorge());
-    }
-
-    private static TidligereOppholdsInformasjon tidligereOppHoldIUtlandetHeleåret() {
-        return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET,
-                Collections.singletonList(new Utenlandsopphold(CountryCode.SE)));
-    }
-
-    private static TidligereOppholdsInformasjon tidligereOppHoldINorge() {
-        return new TidligereOppholdsInformasjon(true, ArbeidsInformasjon.ARBEIDET_I_NORGE, Collections.emptyList());
-    }
-
-    private static Omsorgsovertakelse omsorgsovertakelse() {
-        Omsorgsovertakelse overtakelse = new Omsorgsovertakelse(nå(), OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE);
-        overtakelse.setBeskrivelse("beskrivelse");
-        overtakelse.setFødselsdato(forrigeMåned());
-        return overtakelse;
-    }
-
-    private static Vedlegg vedlegg(String name) throws IOException {
-        return new ValgfrittVedlegg(new ClassPathResource(name));
-    }
-
-    private static Adopsjon adopsjon() {
-        return new Adopsjon(nå(), false);
-    }
-
-    private static Fødsel fødsel() {
-        Fødsel fødsel = new Fødsel(forrigeMåned());
-        return fødsel;
-    }
-
-    private static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
-        return new FramtidigOppholdsInformasjon(true, true);
-    }
-
-    private static Søker søker() {
-        return new Søker(aktoer(), BrukerRolle.MOR);
-    }
-
-    private static FremtidigFødsel fremtidigFødsel() {
-        return new FremtidigFødsel(nå(), nesteMåned());
-    }
-
-    private static LukketPeriode varighet() {
-        return new LukketPeriode(nå(), nesteMåned());
-    }
-
-    private static LocalDate nesteMåned() {
-        return nå().plus(enMåned());
-    }
-
-    private static LocalDate forrigeMåned() {
-        return nå().minus(enMåned());
-    }
-
-    private static Period enMåned() {
-        return Period.ofMonths(1);
-    }
-
-    private static LocalDate nå() {
-        return LocalDate.now();
-    }
-
-    private static LocalDate ettÅrSiden() {
-        return LocalDate.now().minus(Period.ofYears(1));
-    }
-
-    private static AktorId aktoer() {
-        return new AktorId("11111111111111111");
-    }
-
-    private static void test(Object object) {
-        test(object, false);
-
-    }
-
     private static void test(Object object, boolean print) {
         test(object, print, mapper);
+    }
+
+    static void test(Object object) {
+        test(object, false);
+
     }
 
     private static void test(Object object, boolean print, ObjectMapper mapper) {
@@ -291,7 +193,7 @@ public class TestSerialization {
         }
     }
 
-    private static String write(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
+    static String write(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         if (print) {
             System.out.println(serialized);
@@ -299,4 +201,5 @@ public class TestSerialization {
         }
         return serialized;
     }
+
 }

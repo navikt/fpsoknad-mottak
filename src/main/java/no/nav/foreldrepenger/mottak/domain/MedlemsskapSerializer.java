@@ -26,8 +26,11 @@ public class MedlemsskapSerializer extends StdSerializer<Medlemsskap> {
             jgen.writeObjectField("utenlandsopphold", value.getTidligereOppholdsInfo().getUtenlandsOpphold());
         }
 
-        jgen.writeBooleanField("fødselINorge", value.getFremtidigOppholdsInfo().isFødseINorge());
-        jgen.writeBooleanField("iNorgeNeste12", value.getFremtidigOppholdsInfo().isNorgeNeste12());
+        jgen.writeBooleanField("fødselINorge", value.getFramtidigOppholdsInfo().isFødseINorge());
+        jgen.writeBooleanField("iNorgeNeste12", value.getFramtidigOppholdsInfo().isNorgeNeste12());
+        if (!value.getFramtidigOppholdsInfo().getUtenlandsOpphold().isEmpty()) {
+            jgen.writeObjectField("framtidigUtenlandsopphold", value.getFramtidigOppholdsInfo().getUtenlandsOpphold());
+        }
         jgen.writeEndObject();
     }
 }

@@ -33,7 +33,7 @@ public class SøknadsinfoExtractor {
 
       return Optional.ofNullable(soknad.getTilknytningNorge())
          .map(TilknytningNorge::getTidligereOppholdUtenlands)
-         .map(t -> t.getUtenlandsoppholds())
+         .map(t -> t.getUtenlandsopphold())
          .map(SøknadsinfoExtractor::formatOppholdList)
          .orElse("Norge");
    }
@@ -61,7 +61,7 @@ public class SøknadsinfoExtractor {
 
    public static long vedleggCount(SoeknadsskjemaEngangsstoenad soknad) {
       return Optional.ofNullable(soknad.getVedleggListe())
-         .map(v -> v.getVedleggs().stream())
+         .map(v -> v.getVedlegg().stream())
          .map(Stream::count)
          .orElse(0L);
    }

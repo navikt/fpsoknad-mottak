@@ -9,21 +9,18 @@ import lombok.Data;
 
 @Data
 public class Søker {
-    @NotNull(message = "{ytelse.aktørid.notnull}")
-    private final AktorId aktorid;
+    @NotNull(message = "{ytelse.bruker.notnull}")
+    private final Fodselsnummer fnr;
+    @NotNull(message = "{ytelse.bruker.notnull}")
+    private final AktorId aktør;
     @NotNull(message = "{ytelse.søknadsrolle.notnull}")
     private final BrukerRolle søknadsRolle;
-    private final Fullmektig fullmektig;
-
-    public Søker(AktorId aktorId, BrukerRolle brukerRolle) {
-        this(aktorId, brukerRolle, null);
-    }
 
     @JsonCreator
-    public Søker(@JsonProperty("aktorId") AktorId aktorId, @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle,
-            @JsonProperty("fullmektig") Fullmektig fullmektig) {
-        this.aktorid = aktorId;
+    public Søker(@JsonProperty("fnr") Fodselsnummer fnr, @JsonProperty("aktør") AktorId aktør,
+            @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle) {
+        this.fnr = fnr;
+        this.aktør = aktør;
         this.søknadsRolle = søknadsRolle;
-        this.fullmektig = fullmektig;
     }
 }
