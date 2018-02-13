@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.oppslag;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Collections;
 
@@ -9,12 +10,11 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.Bruker;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
@@ -33,12 +33,12 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.XMLGenerator;
+import no.nav.foreldrepenger.mottak.domain.XMLSøknadGenerator;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 
 class TestUtils {
 
-    private static final XMLGenerator GEN = new DokmotEngangsstønadXMLGenerator();
+    private static final XMLSøknadGenerator GEN = new DokmotEngangsstønadXMLGenerator();
 
     static SoeknadsskjemaEngangsstoenad dokmotModel(Søknad s) {
         return GEN.toDokmotModel(s);
@@ -49,7 +49,7 @@ class TestUtils {
     }
 
     static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon) throws IOException {
-        Søknad s = new Søknad(nå(), søker(), engangstønad(utland, relasjon), påkrevdVedlegg());
+        Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(utland, relasjon), påkrevdVedlegg());
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
@@ -130,11 +130,7 @@ class TestUtils {
     }
 
     static Søker søker() {
-        return søker(false);
-    }
-
-    static Søker søker(boolean isAktør) {
-        return new Søker(isAktør ? aktoer() : fnr(), BrukerRolle.MOR);
+        return new Søker(fnr(), aktoer(), BrukerRolle.MOR);
     }
 
     static FremtidigFødsel fremtidigFødsel() {
@@ -165,11 +161,11 @@ class TestUtils {
         return LocalDate.now().minus(Period.ofYears(1));
     }
 
-    static Bruker aktoer() {
+    static AktorId aktoer() {
         return new AktorId("11111111111111111");
     }
 
-    static Bruker fnr() {
+    static Fodselsnummer fnr() {
         return new Fodselsnummer("03016536325");
     }
 }

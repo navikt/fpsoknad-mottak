@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,16 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-/*
-<xsd:sequence>
-<xsd:element minOccurs="0" name="soeknadsvariant" type="felles:Soeknadsvarianter"/>
-</xsd:sequence>
-*/
-
 @Data
 public class Søknad {
     @NotNull
-    private final LocalDate motattdato;
+    private final LocalDateTime motattdato;
     @Valid
     private final Søker søker;
     @Valid
@@ -31,16 +25,16 @@ public class Søknad {
     private final List<PåkrevdVedlegg> påkrevdeVedlegg;
     private final List<ValgfrittVedlegg> frivilligeVedlegg;
 
-    public Søknad(LocalDate motattdato, Søker søker, Ytelse ytelse) {
+    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse) {
         this(motattdato, søker, ytelse, Collections.emptyList(), Collections.emptyList());
     }
 
-    public Søknad(LocalDate motattdato, Søker søker, Ytelse ytelse, PåkrevdVedlegg vedlegg) {
+    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse, PåkrevdVedlegg vedlegg) {
         this(motattdato, søker, ytelse, Collections.singletonList(vedlegg), Collections.emptyList());
     }
 
     @JsonCreator
-    public Søknad(@JsonProperty("motattdato") LocalDate motattdato, @JsonProperty("søker") Søker søker,
+    public Søknad(@JsonProperty("motattdato") LocalDateTime motattdato, @JsonProperty("søker") Søker søker,
             @JsonProperty("ytelse") Ytelse ytelse,
             @JsonProperty("påkrevdeVedlegg") List<PåkrevdVedlegg> påkrevdeVedlegg,
             @JsonProperty("frivilligeVedlegg") List<ValgfrittVedlegg> frivilligeVedlegg) {

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.dokmot;
 
 import static java.util.stream.Collectors.toList;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
@@ -14,8 +14,22 @@ import javax.xml.bind.Marshaller;
 
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
+import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.PåkrevdVedlegg;
+import no.nav.foreldrepenger.mottak.domain.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.AktoerId;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
@@ -34,7 +48,7 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 
 @Service
-public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
+public class DokmotEngangsstønadXMLGenerator extends DokmotXMLSøknadGenerator {
 
     private final Marshaller marshaller;
 
@@ -58,7 +72,7 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
         // Mor er det samme som bruker i dette use-caset
         Engangsstønad engangsstønad = Engangsstønad.class.cast(søknad.getYtelse());
         return new SoeknadsskjemaEngangsstoenad()
-                .withBruker(brukerFra(søknad.getSøker().getBruker()))
+                .withBruker(brukerFra(søknad.getSøker().getFnr()))
                 .withOpplysningerOmBarn(barnFra(søknad, engangsstønad))
                 .withSoknadsvalg(søknadsvalgFra(søknad, engangsstønad))
                 .withTilknytningNorge((tilknytningFra(engangsstønad.getMedlemsskap())))
@@ -82,14 +96,8 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
                 .withErPaakrevdISoeknadsdialog(true);
     }
 
-    private static Aktoer brukerFra(Bruker bruker) {
-        if (bruker instanceof Fodselsnummer) {
-            return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(bruker.getId());
-        }
-        if (bruker instanceof AktorId) {
-            return new AktoerId(bruker.getId());
-        }
-        throw new IllegalArgumentException("Dette vil aldri skje");
+    private static Aktoer brukerFra(Fodselsnummer søker) {
+        return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(søker.getId());
     }
 
     private static Soknadsvalg søknadsvalgFra(Søknad søknad, Engangsstønad engangsstønad) {
@@ -218,7 +226,7 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLGenerator {
         if (annenForelder instanceof NorskForelder) {
             // Todo Navn ?
             return new OpplysningerOmFar()
-                    .withPersonidentifikator(NorskForelder.class.cast(annenForelder).getBruker().getId());
+                    .withPersonidentifikator(NorskForelder.class.cast(annenForelder).getFnr().getId());
         }
         if (annenForelder instanceof UtenlandskForelder) {
             // TODO navn og eller utenlandsk FNR?

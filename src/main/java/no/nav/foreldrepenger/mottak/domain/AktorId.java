@@ -4,20 +4,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Data
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class AktorId extends Bruker {
+public class AktorId {
+
+    private final String id;
 
     @JsonCreator
-    public AktorId(@JsonProperty("value") String value) {
-        super(value);
+    public AktorId(@JsonProperty("id") String id) {
+        this.id = id;
     }
 
-    public static AktorId valueOf(String value) {
-        return new AktorId(value);
+    public static AktorId valueOf(String id) {
+        return new AktorId(id);
     }
 }

@@ -10,13 +10,17 @@ import lombok.Data;
 @Data
 public class Søker {
     @NotNull(message = "{ytelse.bruker.notnull}")
-    private final Bruker bruker;
+    private final Fodselsnummer fnr;
+    @NotNull(message = "{ytelse.bruker.notnull}")
+    private final AktorId aktør;
     @NotNull(message = "{ytelse.søknadsrolle.notnull}")
     private final BrukerRolle søknadsRolle;
 
     @JsonCreator
-    public Søker(@JsonProperty("bruker") Bruker bruker, @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle) {
-        this.bruker = bruker;
+    public Søker(@JsonProperty("fnr") Fodselsnummer fnr, @JsonProperty("aktør") AktorId aktør,
+            @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle) {
+        this.fnr = fnr;
+        this.aktør = aktør;
         this.søknadsRolle = søknadsRolle;
     }
 }
