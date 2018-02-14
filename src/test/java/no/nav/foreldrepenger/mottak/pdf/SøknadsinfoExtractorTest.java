@@ -41,23 +41,22 @@ public class SøknadsinfoExtractorTest {
 
     @Test
     public void harTidligereUtenlandsopphold() {
-        SoeknadsskjemaEngangsstoenad soknad = new SoeknadsskjemaEngangsstoenad();
-        TilknytningNorge tilknytning = new TilknytningNorge();
-        TilknytningNorge.TidligereOppholdUtenlands oppholdUtenlands = new TilknytningNorge.TidligereOppholdUtenlands();
-        Utenlandsopphold opphold = new Utenlandsopphold();
-        Periode periode = new Periode();
-        LocalDate now = LocalDate.now();
-        periode.setFom(now.minusMonths(2));
-        periode.setTom(now);
-        opphold.setPeriode(periode);
-        Landkoder land = new Landkoder();
-        land.setValue("Utlandet");
-        opphold.setLand(land);
-        oppholdUtenlands.withUtenlandsopphold(opphold);
-        tilknytning.setTidligereOppholdUtenlands(oppholdUtenlands);
-        soknad.setTilknytningNorge(tilknytning);
-        String actual = SøknadsinfoExtractor.tidligereUtenlandsopphold(soknad);
-        // assertEquals("Utlandet: 13.12.2017 - 13.02.2018", actual);
+       SoeknadsskjemaEngangsstoenad soknad = new SoeknadsskjemaEngangsstoenad();
+       TilknytningNorge tilknytning = new TilknytningNorge();
+       TilknytningNorge.TidligereOppholdUtenlands oppholdUtenlands = new TilknytningNorge.TidligereOppholdUtenlands();
+       Utenlandsopphold opphold = new Utenlandsopphold();
+       Periode periode = new Periode();
+       periode.setFom(LocalDate.of(2018,2, 1));
+       periode.setTom(LocalDate.of(2018,2, 14));
+       opphold.setPeriode(periode);
+       Landkoder land = new Landkoder();
+       land.setValue("Utlandet");
+       opphold.setLand(land);
+       oppholdUtenlands.withUtenlandsopphold(opphold);
+       tilknytning.setTidligereOppholdUtenlands(oppholdUtenlands);
+       soknad.setTilknytningNorge(tilknytning);
+       String actual = SøknadsinfoExtractor.tidligereUtenlandsopphold(soknad);
+       assertEquals("Utlandet: 01.02.2018 - 14.02.2018", actual);
     }
 
     @Test
