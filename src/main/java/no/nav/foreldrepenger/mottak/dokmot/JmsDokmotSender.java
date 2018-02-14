@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.dokmot;
 import javax.inject.Inject;
 import javax.jms.TextMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ public class JmsDokmotSender implements SøknadSender {
 
     private final JmsTemplate dokmotTemplate;
     private final XMLEnvelopeGenerator generator;
+
+    private static final Logger LOG = LoggerFactory.getLogger(JmsDokmotSender.class);
 
     @Inject
     public JmsDokmotSender(JmsTemplate template, XMLEnvelopeGenerator generator) {
@@ -36,6 +40,16 @@ public class JmsDokmotSender implements SøknadSender {
             msg.setStringProperty("callId", callId);
             return msg;
         };
+    }
+
+    public boolean ping() {
+        try {
+            dokmotTemplate.getConnectionFactory().createConnection().close();
+            return true;
+        } catch (Exception e) {
+            LOG.warn("Could not ping", e);
+            return false;
+        }
     }
 
     @Override

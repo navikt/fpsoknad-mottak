@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapDeserializer;
+import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapSerializer;
 
 @Data
 @JsonSerialize(using = MedlemsskapSerializer.class)

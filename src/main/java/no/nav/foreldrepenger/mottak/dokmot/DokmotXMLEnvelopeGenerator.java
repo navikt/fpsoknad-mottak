@@ -11,6 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.springframework.stereotype.Service;
+
 import no.nav.foreldrepenger.mottak.dokmot.DokmotData.Filtype;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotData.Variant;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -26,13 +28,23 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Person;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Tema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 
+@Service
 public class DokmotXMLEnvelopeGenerator implements XMLEnvelopeGenerator {
+
+    @Override
+    public XMLSøknadGenerator getGenerator() {
+        return generator;
+    }
 
     private final Marshaller marshaller;
     private final XMLSøknadGenerator generator;
 
     public DokmotXMLEnvelopeGenerator() {
-        this(marshaller(), new DokmotEngangsstønadXMLGenerator());
+        this(new DokmotEngangsstønadXMLGenerator());
+    }
+
+    private DokmotXMLEnvelopeGenerator(XMLSøknadGenerator generator) {
+        this(marshaller(), generator);
     }
 
     private DokmotXMLEnvelopeGenerator(Marshaller marshaller, XMLSøknadGenerator generator) {
@@ -117,5 +129,4 @@ public class DokmotXMLEnvelopeGenerator implements XMLEnvelopeGenerator {
             throw new IllegalArgumentException(e);
         }
     }
-
 }

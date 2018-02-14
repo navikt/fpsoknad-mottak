@@ -22,6 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
@@ -130,11 +131,15 @@ class TestUtils {
     }
 
     static Søker søker() {
-        return new Søker(fnr(), aktoer(), BrukerRolle.MOR);
+        return new Søker(fnr(), aktoer(), BrukerRolle.MOR, navn());
+    }
+
+    private static Navn navn() {
+        return new Navn("Mor", "Godhjerta", "Morsen");
     }
 
     static FremtidigFødsel fremtidigFødsel() {
-        return new FremtidigFødsel(nå(), nesteMåned());
+        return new FremtidigFødsel(nesteMåned(), forrigeMåned());
     }
 
     static LukketPeriode varighet() {
@@ -150,7 +155,11 @@ class TestUtils {
     }
 
     static Period enMåned() {
-        return Period.ofMonths(1);
+        return måned(1);
+    }
+
+    static Period måned(int n) {
+        return Period.ofMonths(n);
     }
 
     static LocalDate nå() {

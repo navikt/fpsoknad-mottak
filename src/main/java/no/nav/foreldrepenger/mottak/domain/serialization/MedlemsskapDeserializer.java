@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.domain.serialization;
 
 import static java.util.stream.Collectors.toList;
 
@@ -19,14 +19,20 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
+import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
+
 public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
 
     public MedlemsskapDeserializer() {
         this(null);
     }
 
-    public MedlemsskapDeserializer(Class<Medlemsskap> t) {
-        super(t);
+    public MedlemsskapDeserializer(Class<Medlemsskap> medlemsskap) {
+        super(medlemsskap);
     }
 
     @Override
