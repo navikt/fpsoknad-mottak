@@ -31,7 +31,7 @@ public class MottakApplication {
 
     public static void main(String[] args) {
         BeanFactory context = SpringApplication.run(MottakApplication.class, args);
-        // System.out.println("ping is " + context.getBean(JmsDokmotSender.class).ping());
+        // System.out.println("ping is " + context.getBean(JmsDokmotSender.class).ping());x'
         // context.getBean(JmsTemplate.class).send("QA.T1_DOKMOT.MOTTA_FORSENDELSE_DITT_NAV", textMessage("hello
         // world"));
         // ("QA.T1_DOKMOT.MOTTA_FORSENDELSE_DITT_NAV", "hei");
