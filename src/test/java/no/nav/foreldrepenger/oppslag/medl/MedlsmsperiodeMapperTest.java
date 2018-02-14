@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.oppslag.domain.MedlPeriode;
@@ -18,6 +19,7 @@ import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.kodeverk.StatuskodeM
 class MedlsmsperiodeMapperTest {
 
    @Test
+   @Tag("fast")
    public void mapValues() {
       LocalDate now = LocalDate.now();
       LocalDate earlier = now.minusMonths(2);

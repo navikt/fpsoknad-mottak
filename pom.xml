@@ -24,6 +24,7 @@
 		<springfox.swagger.version>2.7.0</springfox.swagger.version>
 		<junit.platform.version>1.0.1</junit.platform.version>
 		<junit.jupiter.version>5.1.0-M1</junit.jupiter.version>
+      <tests>fast</tests>
 	</properties>
 
 	<scm>
@@ -211,6 +212,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.19.1</version>
+            <configuration>
+               <properties>
+                  <includeTags>${tests}</includeTags>
+               </properties>
+            </configuration>
 				<dependencies>
 					<dependency>
 						<groupId>org.junit.platform</groupId>
@@ -396,6 +402,12 @@
 				</pluginManagement>
 			</build>
 		</profile>
+      <profile>
+         <id>alltests</id>
+         <properties>
+            <tests>fast,slow</tests>
+         </properties>
+      </profile>
 	</profiles>
 
 </project>

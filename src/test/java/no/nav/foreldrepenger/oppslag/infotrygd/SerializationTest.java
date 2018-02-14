@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class SerializationTest {
     private static ObjectMapper mapper;
 
     @BeforeAll
+    @Tag("fast")
     public static void beforeClass() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,6 +25,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.person.PoststedFinner;
 import no.nav.foreldrepenger.oppslag.person.StatiskPoststedFinner;
 
+@Tag("fast")
 public class SerializationTest {
 
     private static ObjectMapper mapper;

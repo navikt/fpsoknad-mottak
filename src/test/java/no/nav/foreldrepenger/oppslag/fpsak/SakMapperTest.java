@@ -4,6 +4,7 @@ import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.informasjon.Behandlingstema;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.informasjon.Sak;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.informasjon.Saksstatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SakMapperTest {
 
     @Test
+    @Tag("fast")
     public void mapValues() throws Exception {
         Sak sak = new Sak();
         Behandlingstema tema = new Behandlingstema();

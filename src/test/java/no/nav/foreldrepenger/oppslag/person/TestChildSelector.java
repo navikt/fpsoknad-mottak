@@ -1,14 +1,17 @@
 package no.nav.foreldrepenger.oppslag.person;
 
-import static org.junit.Assert.*;
+import no.nav.foreldrepenger.oppslag.domain.Barn;
+import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import org.junit.jupiter.api.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import no.nav.foreldrepenger.oppslag.domain.*;
-
+@Tag("fast")
 public class TestChildSelector {
 
 	private static final Fodselsnummer MOR = new Fodselsnummer("28016432662");

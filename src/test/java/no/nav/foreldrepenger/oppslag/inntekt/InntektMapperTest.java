@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import javax.xml.datatype.DatatypeFactory;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,6 +24,7 @@ class InntektMapperTest {
 
    @ParameterizedTest
    @MethodSource("valueProvider")
+   @Tag("fast")
    public void allValuesSet(
          String virksomhetId,
          no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt inntekt) {

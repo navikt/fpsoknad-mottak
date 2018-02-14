@@ -1,15 +1,15 @@
 package no.nav.foreldrepenger.oppslag.time;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.time.*;
-
-import javax.xml.datatype.*;
-
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Tag("fast")
 public class CalendarConverterTest {
 
 	@Test

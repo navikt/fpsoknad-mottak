@@ -5,6 +5,8 @@ Slår opp info fra diverse interne registre for å assistere selvbetjent søknad
 ### For å bygge:
 Standard Maven-opplegg, `mvn compile|test|package|install` osv. Det bygges en kjørbar "fatjar"
 
+Som default kjøres kun enhetstester. For å inkludere de saktegående testene, bruk `-Palltests`
+
 ### For å kjøre lokalt:
 
 Start no.nav.foreldrepenger.oppslag.OppslagApplication
