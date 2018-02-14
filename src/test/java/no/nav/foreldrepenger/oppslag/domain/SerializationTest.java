@@ -40,9 +40,6 @@ public class SerializationTest {
     @Test
     public void testPostnr() throws IOException {
         PoststedFinner finner = new StatiskPoststedFinner();
-        System.out.println(finner.poststed("1353"));
-        System.out.println(finner.poststed("1332"));
-
         assertTrue(finner.poststed("1353").equalsIgnoreCase("Bærums Verk"));
         assertTrue(finner.poststed("1332").equalsIgnoreCase("Østerås"));
 
