@@ -10,7 +10,6 @@ import javax.jms.JMSException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 import org.springframework.jms.core.JmsTemplate;
@@ -19,7 +18,7 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
-@Configuration
+//@Configuration
 public class DokmotConfig {
 
     private static final int UTF_8_WITH_PUA = 1208;
