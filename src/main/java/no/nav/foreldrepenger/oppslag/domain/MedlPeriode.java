@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.oppslag.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,19 +14,20 @@ public class MedlPeriode extends TidsAvgrensetBrukerInfo {
     private String grunnlagstype;
     private String land;
 
-    public MedlPeriode(
-            LocalDate from,
-            Optional<LocalDate> to,
-            String status,
-            String type,
-            String grunnlagstype,
-            String land) {
-        super(from, to);
-        this.status = status;
-        this.type = type;
-        this.grunnlagstype = grunnlagstype;
-        this.land = land;
-    }
+   @JsonCreator
+   public MedlPeriode(
+         @JsonProperty("from") LocalDate from,
+         @JsonProperty("to") Optional<LocalDate> to,
+         @JsonProperty("status") String status,
+         @JsonProperty("type") String type,
+         @JsonProperty("grunnlagstype") String grunnlagstype,
+         @JsonProperty("land") String land) {
+      super(from, to);
+      this.status = status;
+      this.type = type;
+      this.grunnlagstype = grunnlagstype;
+      this.land = land;
+   }
 
     public String getStatus() {
         return status;
