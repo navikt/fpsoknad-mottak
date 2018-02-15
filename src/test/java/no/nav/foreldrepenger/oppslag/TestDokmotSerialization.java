@@ -2,13 +2,13 @@ package no.nav.foreldrepenger.oppslag;
 
 import org.junit.Test;
 
-import no.nav.foreldrepenger.mottak.dokmot.DokmotXMLEnvelopeGenerator;
+import no.nav.foreldrepenger.mottak.dokmot.DokmotXMLKonvoluttGenerator;
 
 public class TestDokmotSerialization {
 
     @Test
     public void testEnvelope() throws Exception {
-        String xml = new DokmotXMLEnvelopeGenerator().toXML(TestUtils.engangssøknad(false));
+        String xml = new DokmotXMLKonvoluttGenerator().toXML(TestUtils.engangssøknad(false));
         System.out.println(xml);
     }
 

@@ -27,6 +27,10 @@ public class JmsDokmotSender implements SøknadSender {
         this.generator = generator;
     }
 
+    public XMLEnvelopeGenerator getKonvoluttGenerator() {
+        return generator;
+    }
+
     @Override
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
         String xml = generator.toXML(søknad);

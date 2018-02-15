@@ -29,25 +29,25 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Tema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 
 @Service
-public class DokmotXMLEnvelopeGenerator implements XMLEnvelopeGenerator {
+public class DokmotXMLKonvoluttGenerator implements XMLEnvelopeGenerator {
 
     @Override
-    public XMLSøknadGenerator getGenerator() {
+    public XMLSøknadGenerator getSøknadGenerator() {
         return generator;
     }
 
     private final Marshaller marshaller;
     private final XMLSøknadGenerator generator;
 
-    public DokmotXMLEnvelopeGenerator() {
+    public DokmotXMLKonvoluttGenerator() {
         this(new DokmotEngangsstønadXMLGenerator());
     }
 
-    private DokmotXMLEnvelopeGenerator(XMLSøknadGenerator generator) {
+    private DokmotXMLKonvoluttGenerator(XMLSøknadGenerator generator) {
         this(marshaller(), generator);
     }
 
-    private DokmotXMLEnvelopeGenerator(Marshaller marshaller, XMLSøknadGenerator generator) {
+    private DokmotXMLKonvoluttGenerator(Marshaller marshaller, XMLSøknadGenerator generator) {
         this.marshaller = marshaller;
         this.generator = generator;
     }

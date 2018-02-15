@@ -10,36 +10,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.dokmot.JmsDokmotSender;
-import no.nav.foreldrepenger.mottak.dokmot.XMLEnvelopeGenerator;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
 @RestController
 class MottakController {
 
-    private final XMLEnvelopeGenerator dokmotXmlGenerator;
-
     private final JmsDokmotSender sender;
 
     @Inject
-    public MottakController(XMLEnvelopeGenerator xmlGenerator, JmsDokmotSender sender) {
-        this.dokmotXmlGenerator = xmlGenerator;
+    public MottakController(JmsDokmotSender sender) {
         this.sender = sender;
     }
 
-    @PostMapping(value = "/mottak", produces = { "application/xml" })
+    @PostMapping(value = "/mottak/dokmot/søknad", produces = { "application/xml" })
     public ResponseEntity<String> mottak(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.status(HttpStatus.OK).body(dokmotXmlGenerator.getGenerator().toXML(søknad));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(sender.getKonvoluttGenerator().getSøknadGenerator().toXML(søknad));
     }
 
-    @PostMapping(value = "/mottak/dokmot", produces = { "application/xml" })
-    public ResponseEntity<String> mottakDokmot(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.status(HttpStatus.OK).body(dokmotXmlGenerator.toXML(søknad));
+    @PostMapping(value = "/mottak/dokmot/konvolutt", produces = { "application/xml" })
+    public ResponseEntity<String> mottakDokmotPing(@Valid @RequestBody Søknad søknad) {
+        return ResponseEntity.status(HttpStatus.OK).body(sender.getKonvoluttGenerator().toXML(søknad));
     }
 
-    @PostMapping(value = "/mottak/ping", produces = { "application/xml" })
-    public ResponseEntity<String> ping() {
-        sender.ping();
-        return ResponseEntity.status(HttpStatus.OK).body("PONG");
+    @PostMapping(value = "/mottak/dokmot/send", produces = { "application/json" })
+    public ResponseEntity<String> mottakDokmotSend(@Valid @RequestBody Søknad søknad) {
+        sender.sendSøknad(søknad);
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [sender=" + sender + "]";
+    }
 }

@@ -7,6 +7,6 @@ public interface XMLEnvelopeGenerator {
 
     String toXML(Søknad søknad);
 
-    XMLSøknadGenerator getGenerator();
+    XMLSøknadGenerator getSøknadGenerator();
 
 }
