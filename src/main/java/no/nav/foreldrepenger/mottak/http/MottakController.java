@@ -27,4 +27,9 @@ class MottakController {
         return ResponseEntity.status(HttpStatus.OK).body(/* dokmotXmlGenerator.toXML(søknad) */"OK");
     }
 
+    @PostMapping(value = "/mottak", produces = { "application/xml" })
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.status(HttpStatus.OK).body("PONG");
+    }
+
 }
