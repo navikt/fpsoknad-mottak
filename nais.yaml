@@ -28,5 +28,7 @@ fasitResources:
       resourceType: queuemanager
     - alias: dokmot_channel
       resourceType: channel
+    - alias: brisdokmot
+      resourcetype: credential   
 
 
