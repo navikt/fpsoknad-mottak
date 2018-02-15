@@ -17,7 +17,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +49,6 @@ public class ArenaEndpointTest {
    public void makeHttpRequestAndDeserializeResult() {
       Ytelse[] ytelser = restTemplate.getForObject("/arena/?fnr=1234567890", Ytelse[].class);
       assertEquals(1, ytelser.length);
-      System.out.println(Arrays.toString(ytelser));
    }
 
 }
