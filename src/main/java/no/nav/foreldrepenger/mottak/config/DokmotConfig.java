@@ -18,7 +18,7 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
-//@Configuration
+@Configuration
 public class DokmotConfig {
 
     private static final int UTF_8_WITH_PUA = 1208;
