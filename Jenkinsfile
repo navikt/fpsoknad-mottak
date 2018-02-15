@@ -86,8 +86,8 @@ node {
 
     stage("Deploy to t") {
         callback = "${env.BUILD_URL}input/Deploy/"
-        deployLib.testCmd(releaseVersion)
-        deployLib.testCmd(committer)
+       // deployLib.testCmd(releaseVersion)
+       //  deployLib.testCmd(committer)
         def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
         echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
     }
