@@ -29,7 +29,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Tema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 
 @Service
-public class DokmotXMLKonvoluttGenerator implements XMLEnvelopeGenerator {
+public class DokmotXMLKonvoluttGenerator implements DokmotXMLEnvelopeGenerator {
 
     @Override
     public XMLSøknadGenerator getSøknadGenerator() {

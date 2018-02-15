@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.config;
+package no.nav.foreldrepenger.mottak.dokmot;
 
 import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
 import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
@@ -31,8 +31,10 @@ public class DokmotConfig {
     }
 
     @Bean
-    public JmsTemplate dokmotTemplate(ConnectionFactory cf) {
+    public JmsTemplate dokmotTemplate(ConnectionFactory cf,
+            @Value("${DOKMOT_MOTTA_FORSENDELSE_DITT_NAV_QUEUENAME}") String queueName) {
         JmsTemplate jmsTemplate = new JmsTemplate(cf);
+        jmsTemplate.setDefaultDestinationName(queueName);
         jmsTemplate.setDestinationResolver(new DynamicDestinationResolver());
         return jmsTemplate;
     }

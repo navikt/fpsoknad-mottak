@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.mottak.dokmot.JmsDokmotSender;
+import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
 @RestController
 class MottakController {
 
-    private final JmsDokmotSender sender;
+    private final DokmotJMSSender sender;
 
     @Inject
-    public MottakController(JmsDokmotSender sender) {
+    public MottakController(DokmotJMSSender sender) {
         this.sender = sender;
     }
 
