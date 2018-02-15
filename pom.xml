@@ -224,10 +224,6 @@
          <scope>test</scope>
       </dependency>
       <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-activemq</artifactId>
-      </dependency>
-      <dependency>
          <groupId>com.itextpdf</groupId>
          <artifactId>itextpdf</artifactId>
          <version>5.5.13</version>
