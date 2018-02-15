@@ -62,7 +62,6 @@ public class DokmotConfig {
             @Value("${BRISDOKMOT_USERNAME}") String username, @Value("${BRISDOKMOT_PASSWORD}") String password) {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(username);
-        cf.setPassword(password);
         cf.setTargetConnectionFactory(delegate);
         return cf;
     }
