@@ -11,7 +11,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>no.nav.foreldrepenger</groupId>
    <artifactId>fpsoknad-mottak</artifactId>
-   <version>0.0.52-SNAPSHOT</version>
+   <version>0.0.52</version>
    <properties>
       <springfox.version>2.7.0</springfox.version>
       <xsd.location>${project.build.directory}/classes</xsd.location>
