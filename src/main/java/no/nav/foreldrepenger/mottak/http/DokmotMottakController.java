@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 
 @RestController
-class MottakController {
+class DokmotMottakController {
 
     private final DokmotJMSSender sender;
+    @Inject
+    PdfGenerator generator;
 
     @Inject
-    public MottakController(DokmotJMSSender sender) {
+    public DokmotMottakController(DokmotJMSSender sender) {
         this.sender = sender;
     }
 
@@ -36,6 +39,12 @@ class MottakController {
     @PostMapping(value = "/mottak/dokmot/send", produces = { "application/json" })
     public ResponseEntity<String> mottakDokmotSend(@Valid @RequestBody Søknad søknad) {
         sender.sendSøknad(søknad);
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
+    }
+
+    @PostMapping(value = "/mottak/dokmot/pdf", produces = { "application/json" })
+    public ResponseEntity<String> pdf(@Valid @RequestBody Søknad søknad) {
+        generator.generate(søknad);
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
 

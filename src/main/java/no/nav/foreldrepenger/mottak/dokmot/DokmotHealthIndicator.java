@@ -10,14 +10,14 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DokmotQueueHealthIndicator implements HealthIndicator {
+public class DokmotHealthIndicator implements HealthIndicator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DokmotQueueHealthIndicator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DokmotHealthIndicator.class);
 
     private final JmsTemplate dokmotTemplate;
 
     @Inject
-    public DokmotQueueHealthIndicator(JmsTemplate dokmotTemplate) {
+    public DokmotHealthIndicator(JmsTemplate dokmotTemplate) {
         this.dokmotTemplate = dokmotTemplate;
     }
 
@@ -30,6 +30,11 @@ public class DokmotQueueHealthIndicator implements HealthIndicator {
             LOG.warn("Could not verify health of queue", e);
             return Health.down().build();
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotTemplate + "]";
     }
 
 }

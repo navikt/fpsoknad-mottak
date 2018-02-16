@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -17,6 +18,7 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotData.Filtype;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotData.Variant;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.XMLSøknadGenerator;
+import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
@@ -38,18 +40,18 @@ public class DokmotXMLKonvoluttGenerator implements DokmotXMLEnvelopeGenerator {
 
     private final Marshaller marshaller;
     private final XMLSøknadGenerator generator;
+    private final PdfGenerator pdfGenerator;
 
-    public DokmotXMLKonvoluttGenerator() {
-        this(new DokmotEngangsstønadXMLGenerator());
+    @Inject
+    public DokmotXMLKonvoluttGenerator(XMLSøknadGenerator generator, PdfGenerator pdfFenerator) {
+        this(marshaller(), generator, pdfFenerator);
     }
 
-    private DokmotXMLKonvoluttGenerator(XMLSøknadGenerator generator) {
-        this(marshaller(), generator);
-    }
-
-    private DokmotXMLKonvoluttGenerator(Marshaller marshaller, XMLSøknadGenerator generator) {
+    private DokmotXMLKonvoluttGenerator(Marshaller marshaller, XMLSøknadGenerator generator,
+            PdfGenerator pdfGenerator) {
         this.marshaller = marshaller;
         this.generator = generator;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @Override
@@ -58,6 +60,7 @@ public class DokmotXMLKonvoluttGenerator implements DokmotXMLEnvelopeGenerator {
     }
 
     private Dokumentforsendelse dokumentForsendelse(Søknad søknad, DokmotData data) {
+        byte[] kvittering = pdfGenerator.generate(søknad);
         return new Dokumentforsendelse()
                 .withHoveddokument(hoveddokument(søknad))
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()

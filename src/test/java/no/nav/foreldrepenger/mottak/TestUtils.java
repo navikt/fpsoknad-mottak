@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag;
+package no.nav.foreldrepenger.mottak;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.XMLSøknadGenerator;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 
-class TestUtils {
+public class TestUtils {
 
     private static final XMLSøknadGenerator GEN = new DokmotEngangsstønadXMLGenerator();
 
@@ -45,7 +45,7 @@ class TestUtils {
         return GEN.toDokmotModel(s);
     }
 
-    static Søknad engangssøknad(boolean utland) throws IOException {
+    public static Søknad engangssøknad(boolean utland) throws IOException {
         return engangssøknad(utland, fremtidigFødsel());
     }
 

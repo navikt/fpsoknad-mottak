@@ -1,96 +1,182 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import static java.util.stream.Collectors.joining;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
-import static no.nav.foreldrepenger.mottak.pdf.SøknadsinfoExtractor.*;
+import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.DottedLineSeparator;
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
+
+@Service
 public class PdfGenerator {
 
-   private static final Font headingFont = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
-   private static final Font contentFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
+    private final MessageSource landkoder;
+    private final MessageSource kvitteringsTekster;
 
-   private enum LINE_TYPE {HEADING, NORMAL}
+    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
-   public byte[] generate(SoeknadsskjemaEngangsstoenad soknad) throws Exception {
+    private static final Font HEADING = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
+    private static final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
 
-      Document document = new Document();
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      PdfWriter.getInstance(document, baos);
+    private static final Locale BOKMÅL = CountryCode.NO.toLocale();
 
-      document.open();
+    @Inject
+    public PdfGenerator(@Qualifier("landkoder") MessageSource landkoder,
+            @Qualifier("kvitteringstekster") MessageSource kvitteringsTekster) {
+        this.landkoder = landkoder;
+        this.kvitteringsTekster = kvitteringsTekster;
+    }
 
-      Path path = Paths.get(ClassLoader.getSystemResource("pdf/nav-logo.png").toURI());
-      Image logo = Image.getInstance(path.toAbsolutePath().toString());
-      logo.setAlignment(Image.ALIGN_CENTER);
-      document.add(logo);
+    public byte[] generate(Søknad søknad) {
 
-      document.add(centeredParagraph("Søknad om engangsstønad", LINE_TYPE.HEADING));
-      document.add(centeredParagraph(userId(soknad), LINE_TYPE.NORMAL));
-      document.add(separator());
+        try {
+            Engangsstønad stønad = Engangsstønad.class.cast(søknad.getYtelse());
+            Medlemsskap medlemsskap = stønad.getMedlemsskap();
+            Document document = new Document();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, baos);
+            document.open();
 
-      document.add(blankLine());
+            Path path = Paths.get(ClassLoader.getSystemResource("pdf/nav-logo.png").toURI());
+            Image logo = Image.getInstance(path.toAbsolutePath().toString());
+            logo.setAlignment(Image.ALIGN_CENTER);
+            document.add(logo);
 
-      document.add(paragraph("Informasjon om barnet", LINE_TYPE.HEADING));
-      document.add(paragraph("Søknaden gjelder " + childCount(soknad) + " barn", LINE_TYPE.NORMAL));
-      document.add(paragraph("Med termindato den " + termindato(soknad), LINE_TYPE.NORMAL));
-      if (vedleggCount(soknad) != 0) {
-         document.add(paragraph("Det er vedlagt en terminbekreftelse som er datert den " +
-            terminbekreftelsesDato(soknad), LINE_TYPE.NORMAL));
-      }
+            document.add(centeredParagraph(getMessage("søknad", kvitteringsTekster), HEADING));
+            document.add(centeredParagraph(søknad.getSøker().getFnr().getId(), NORMAL));
+            document.add(separator());
 
-      document.add(blankLine());
+            document.add(blankLine());
 
-      document.add(paragraph("Tilknytning til Norge", LINE_TYPE.HEADING));
-      document.add(paragraph("De siste 12 månedene har jeg bodd i:", LINE_TYPE.NORMAL));
-      document.add(paragraph(tidligereUtenlandsopphold(soknad), LINE_TYPE.NORMAL));
-      document.add(paragraph("De neste 12 månedene skal jeg bo i " +
-         countryName(soknad.getTilknytningNorge().isFremtidigOppholdNorge()), LINE_TYPE.NORMAL));
-      document.add(paragraph("Og kommer på fødselstidpunket til å være i " +
-         countryName(soknad.getTilknytningNorge().isOppholdNorgeNaa()), LINE_TYPE.NORMAL));
+            document.add(paragraph(getMessage("ombarn", kvitteringsTekster), HEADING));
+            document.add(paragraph(
+                    getMessage("gjelder", kvitteringsTekster, stønad.getRelasjonTilBarn().getAntallBarn()),
+                    NORMAL));
+            if (erFremtidigFødsel(stønad)) {
+                FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
+                document.add(
+                        paragraph(getMessage("termindato", kvitteringsTekster, dato(ff.getTerminDato())), NORMAL));
+                if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
+                    document.add(paragraph(
+                            getMessage("termindatotekst", kvitteringsTekster, dato(ff.getUtstedtDato())), NORMAL));
+                }
+            }
 
-      document.add(blankLine());
+            document.add(blankLine());
+            document.add(paragraph(getMessage("tilknytning", kvitteringsTekster), HEADING));
+            document.add(paragraph(getMessage("siste12", kvitteringsTekster), NORMAL));
+            document.add(
+                    paragraph(formatOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()), NORMAL));
+            document.add(paragraph(getMessage("neste12", kvitteringsTekster,
+                    formatOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold())), NORMAL));
+            if (erFremtidigFødsel(stønad)) {
+                document.add(paragraph(getMessage("føde", kvitteringsTekster,
+                        countryName(medlemsskap.getFramtidigOppholdsInfo().isFødseINorge())), NORMAL));
+            }
 
-      document.add(paragraph("Tilleggsopplysninger", LINE_TYPE.HEADING));
-      document.add(paragraph(Optional.ofNullable(soknad.getTilleggsopplysninger()).orElse("Ingen"), LINE_TYPE.NORMAL));
+            document.add(blankLine());
 
-      document.close();
-      byte[] pdfBytes = baos.toByteArray();
+            document.add(paragraph(getMessage("tillegg", kvitteringsTekster), HEADING));
+            document.add(
+                    paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
 
-      return pdfBytes;
-   }
+            document.close();
+            /* OutputStream out = new FileOutputStream("out1.pdf"); out.write(baos.toByteArray()); out.close(); */
+            return baos.toByteArray();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
-   private Paragraph paragraph(String txt, LINE_TYPE lineType) {
-      return new Paragraph(new Chunk(txt, lineType == LINE_TYPE.HEADING ? headingFont : contentFont));
-   }
+    private boolean erFremtidigFødsel(Engangsstønad stønad) {
+        return stønad.getRelasjonTilBarn() instanceof FremtidigFødsel;
+    }
 
-   private Paragraph centeredParagraph(String txt, LINE_TYPE lineType) {
-      Paragraph p = paragraph(txt, lineType);
-      p.setAlignment(Element.ALIGN_CENTER);
-      return p;
-   }
+    private String dato(LocalDate dato) {
+        return dato.format(DATE_FMT);
+    }
 
-   private Element separator() {
-      Paragraph p = new Paragraph();
-      DottedLineSeparator dottedline = new DottedLineSeparator();
-      dottedline.setGap(2f);
-      dottedline.setOffset(2);
-      p.add(dottedline);
-      p.add(blankLine());
-      return p;
-   }
+    private static String countryName(Boolean b) {
+        return b ? "Norge" : "utlandet";
+    }
 
-   private Element blankLine() {
-      Paragraph p = new Paragraph();
-      p.add(Chunk.NEWLINE);
-      return p;
-   }
+    private Paragraph paragraph(String txt, Font font) {
+        return new Paragraph(new Chunk(txt, font));
+    }
+
+    private Paragraph centeredParagraph(String txt, Font font) {
+        Paragraph p = paragraph(txt, font);
+        p.setAlignment(Element.ALIGN_CENTER);
+        return p;
+    }
+
+    private Element separator() {
+        Paragraph p = new Paragraph();
+        DottedLineSeparator dottedline = new DottedLineSeparator();
+        dottedline.setGap(2f);
+        dottedline.setOffset(2);
+        p.add(dottedline);
+        p.add(blankLine());
+        return p;
+    }
+
+    private Element blankLine() {
+        Paragraph p = new Paragraph();
+        p.add(Chunk.NEWLINE);
+        return p;
+    }
+
+    private String formatOpphold(List<Utenlandsopphold> opphold) {
+        if (opphold.isEmpty()) {
+            return getMessage(CountryCode.NO.getAlpha2(), landkoder);
+        }
+        return opphold.stream()
+                .map(this::formatOpphold)
+                .collect(joining("\n"));
+    }
+
+    private String formatOpphold(Utenlandsopphold opphold) {
+
+        return getMessage(opphold.getLand().getAlpha2(), opphold.getLand().getName(), landkoder)
+                + ": "
+                + opphold.getVarighet().getFom().format(DATE_FMT) + " - "
+                +
+                opphold.getVarighet().getTom().format(DATE_FMT);
+    }
+
+    private String getMessage(String key, MessageSource messages, Object... values) {
+        return getMessage(key, null, messages, values);
+    }
+
+    private String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
+        return messages.getMessage(key, values, defaultValue, BOKMÅL);
+    }
 
 }

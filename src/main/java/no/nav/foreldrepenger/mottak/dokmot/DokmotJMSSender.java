@@ -6,7 +6,6 @@ import javax.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -34,26 +33,12 @@ public class DokmotJMSSender implements SøknadSender {
     @Override
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
         String xml = generator.toXML(søknad);
-        dokmotTemplate.send(textMessage(xml, "42")); // TODO
-        return SøknadSendingsResultat.OK;
-    }
-
-    private static MessageCreator textMessage(final String xml, final String callId) {
-        return session -> {
+        dokmotTemplate.send(session -> {
             TextMessage msg = session.createTextMessage(xml);
-            msg.setStringProperty("callId", callId);
+            msg.setStringProperty("callId", "42");
             return msg;
-        };
-    }
-
-    public boolean ping() {
-        try {
-            dokmotTemplate.getConnectionFactory().createConnection().close();
-            return true;
-        } catch (Exception e) {
-            LOG.warn("Could not ping", e);
-            return false;
-        }
+        });
+        return SøknadSendingsResultat.OK;
     }
 
     @Override

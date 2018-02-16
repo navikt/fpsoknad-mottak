@@ -18,4 +18,5 @@
 		<appender-ref ref="stdout_json" />
 	</root>
 
+<!--  <logger name="org.springframework.context.support" level="trace" /> -->
 </configuration>

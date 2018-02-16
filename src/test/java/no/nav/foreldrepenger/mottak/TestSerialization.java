@@ -1,21 +1,21 @@
-package no.nav.foreldrepenger.oppslag;
+package no.nav.foreldrepenger.mottak;
 
-import static no.nav.foreldrepenger.oppslag.TestUtils.adopsjon;
-import static no.nav.foreldrepenger.oppslag.TestUtils.aktoer;
-import static no.nav.foreldrepenger.oppslag.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.oppslag.TestUtils.engangstønad;
-import static no.nav.foreldrepenger.oppslag.TestUtils.framtidigOppHoldIUtlandetHeleåret;
-import static no.nav.foreldrepenger.oppslag.TestUtils.framtidigOppholdINorge;
-import static no.nav.foreldrepenger.oppslag.TestUtils.fremtidigFødsel;
-import static no.nav.foreldrepenger.oppslag.TestUtils.fødsel;
-import static no.nav.foreldrepenger.oppslag.TestUtils.medlemsskap;
-import static no.nav.foreldrepenger.oppslag.TestUtils.norskForelder;
-import static no.nav.foreldrepenger.oppslag.TestUtils.omsorgsovertakelse;
-import static no.nav.foreldrepenger.oppslag.TestUtils.påkrevdVedlegg;
-import static no.nav.foreldrepenger.oppslag.TestUtils.søker;
-import static no.nav.foreldrepenger.oppslag.TestUtils.utenlandskForelder;
-import static no.nav.foreldrepenger.oppslag.TestUtils.utenlandsopphold;
-import static no.nav.foreldrepenger.oppslag.TestUtils.varighet;
+import static no.nav.foreldrepenger.mottak.TestUtils.adopsjon;
+import static no.nav.foreldrepenger.mottak.TestUtils.aktoer;
+import static no.nav.foreldrepenger.mottak.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.TestUtils.engangstønad;
+import static no.nav.foreldrepenger.mottak.TestUtils.framtidigOppHoldIUtlandetHeleåret;
+import static no.nav.foreldrepenger.mottak.TestUtils.framtidigOppholdINorge;
+import static no.nav.foreldrepenger.mottak.TestUtils.fremtidigFødsel;
+import static no.nav.foreldrepenger.mottak.TestUtils.fødsel;
+import static no.nav.foreldrepenger.mottak.TestUtils.medlemsskap;
+import static no.nav.foreldrepenger.mottak.TestUtils.norskForelder;
+import static no.nav.foreldrepenger.mottak.TestUtils.omsorgsovertakelse;
+import static no.nav.foreldrepenger.mottak.TestUtils.påkrevdVedlegg;
+import static no.nav.foreldrepenger.mottak.TestUtils.søker;
+import static no.nav.foreldrepenger.mottak.TestUtils.utenlandskForelder;
+import static no.nav.foreldrepenger.mottak.TestUtils.utenlandsopphold;
+import static no.nav.foreldrepenger.mottak.TestUtils.varighet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
