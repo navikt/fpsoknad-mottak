@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
 import com.ibm.mq.jms.MQQueueConnectionFactory;
@@ -23,12 +22,6 @@ import com.ibm.mq.jms.MQQueueConnectionFactory;
 public class DokmotConfig {
 
     private static final int UTF_8_WITH_PUA = 1208;
-
-    private static MessageCreator textMessage(final String msg) {
-        return session -> {
-            return session.createTextMessage(msg);
-        };
-    }
 
     @Bean
     public JmsTemplate dokmotTemplate(ConnectionFactory cf,
@@ -42,10 +35,8 @@ public class DokmotConfig {
     @Bean
     public MQQueueConnectionFactory connectionFactory(@Value("${MQGATEWAY01_HOSTNAME}") String host,
             @Value("${MQGATEWAY01_PORT}") int port, @Value("${MQGATEWAY01_NAME}") String queueManager,
-            @Value("${DOKMOT_CHANNEL_NAME}") String channel)
-            throws JMSException {
+            @Value("${DOKMOT_CHANNEL_NAME}") String channel) throws JMSException {
 
-        // dokmot_MOTTA_FORSENDELSE_DITT_NAV
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
         cf.setHostName(host);
         cf.setTransportType(WMQ_CM_CLIENT);
@@ -61,11 +52,10 @@ public class DokmotConfig {
     @Bean
     @Primary
     ConnectionFactory userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory delegate,
-            @Value("${BRISDOKMOT_USERNAME}") String username, @Value("${BRISDOKMOT_PASSWORD}") String password) {
+            @Value("${BRISDOKMOT_USERNAME}") String username) {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(username);
         cf.setTargetConnectionFactory(delegate);
         return cf;
     }
-
 }

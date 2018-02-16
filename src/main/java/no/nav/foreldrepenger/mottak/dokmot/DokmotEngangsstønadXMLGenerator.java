@@ -66,7 +66,6 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLSøknadGenerator 
         return toXML(toDokmotModel(søknad));
     }
 
-    @Override
     public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad) {
 
         // Mor er det samme som bruker i dette use-caset

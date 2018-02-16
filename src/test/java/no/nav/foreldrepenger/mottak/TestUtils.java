@@ -34,12 +34,11 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.XMLSøknadGenerator;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 
 public class TestUtils {
 
-    private static final XMLSøknadGenerator GEN = new DokmotEngangsstønadXMLGenerator();
+    private static final DokmotEngangsstønadXMLGenerator GEN = new DokmotEngangsstønadXMLGenerator();
 
     static SoeknadsskjemaEngangsstoenad dokmotModel(Søknad s) {
         return GEN.toDokmotModel(s);

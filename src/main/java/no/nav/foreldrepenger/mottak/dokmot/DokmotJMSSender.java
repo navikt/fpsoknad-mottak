@@ -11,22 +11,23 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
+import no.nav.foreldrepenger.mottak.domain.XMLKonvoluttGenerator;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
 
     private final JmsTemplate dokmotTemplate;
-    private final DokmotXMLEnvelopeGenerator generator;
+    private final XMLKonvoluttGenerator generator;
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotJMSSender.class);
 
     @Inject
-    public DokmotJMSSender(JmsTemplate template, DokmotXMLEnvelopeGenerator generator) {
+    public DokmotJMSSender(JmsTemplate template, XMLKonvoluttGenerator generator) {
         this.dokmotTemplate = template;
         this.generator = generator;
     }
 
-    public DokmotXMLEnvelopeGenerator getKonvoluttGenerator() {
+    public XMLKonvoluttGenerator getKonvoluttGenerator() {
         return generator;
     }
 

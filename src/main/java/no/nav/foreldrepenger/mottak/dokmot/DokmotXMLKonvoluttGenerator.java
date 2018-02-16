@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotData.Filtype;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotData.Variant;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.XMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.domain.XMLSøknadGenerator;
 import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
@@ -31,7 +32,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Tema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 
 @Service
-public class DokmotXMLKonvoluttGenerator implements DokmotXMLEnvelopeGenerator {
+public class DokmotXMLKonvoluttGenerator implements XMLKonvoluttGenerator {
 
     @Override
     public XMLSøknadGenerator getSøknadGenerator() {
