@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,7 @@ import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
 
 @RestController
+@Validated
 class InfotrygdController {
 
     private final InfotrygdClient infotrygdClient;
@@ -26,7 +29,7 @@ class InfotrygdController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/infotrygd")
-    public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("fnr") Fodselsnummer fnr) {
+    public ResponseEntity<List<Ytelse>> casesFor(@Valid @RequestParam("fnr") Fodselsnummer fnr) {
         LocalDate now = LocalDate.now();
         LocalDate oneYearAgo = LocalDate.now().minusMonths(12);
         return ResponseEntity.ok(infotrygdClient.casesFor(fnr, oneYearAgo, now));

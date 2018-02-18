@@ -46,7 +46,7 @@ public class MedlEndpointTest {
 
    @Test
    public void makeHttpRequestAndDeserializeResult() {
-      MedlPeriode[] medlPerioder = restTemplate.getForObject("/medl/?fnr=1234567890", MedlPeriode[].class);
+      MedlPeriode[] medlPerioder = restTemplate.getForObject("/medl/?fnr=12345678910", MedlPeriode[].class);
       assertEquals(1, medlPerioder.length);
    }
 

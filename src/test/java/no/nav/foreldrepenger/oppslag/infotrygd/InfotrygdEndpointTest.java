@@ -42,7 +42,7 @@ public class InfotrygdEndpointTest {
 
    @Test
    public void makeHttpRequestAndDeserializeResult() {
-      Ytelse[] ytelser = restTemplate.getForObject("/infotrygd/?fnr=1234567890", Ytelse[].class);
+      Ytelse[] ytelser = restTemplate.getForObject("/infotrygd/?fnr=12345678910", Ytelse[].class);
       assertEquals(1, ytelser.length);
    }
 

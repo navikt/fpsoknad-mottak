@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,7 @@ import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 
 @RestController
+@Validated
 class ArenaController {
 
     private final ArenaClient arenaClient;
@@ -26,7 +29,7 @@ class ArenaController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/arena")
-    public ResponseEntity<List<Ytelse>> incomeForAktor(@RequestParam("fnr") Fodselsnummer fnr) {
+    public ResponseEntity<List<Ytelse>> incomeForAktor(@Valid @RequestParam("fnr") Fodselsnummer fnr) {
         LocalDate now = LocalDate.now();
         LocalDate oneYearAgo = LocalDate.now().minusMonths(12);
         return ResponseEntity.ok(arenaClient.ytelser(fnr, oneYearAgo, now));

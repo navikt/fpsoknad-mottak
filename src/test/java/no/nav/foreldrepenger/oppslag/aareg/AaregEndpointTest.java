@@ -37,7 +37,7 @@ public class AaregEndpointTest {
 
    @Test
    public void makeHttpRequestAndDeserializeResult() {
-      Arbeidsforhold[] arbeidsforhold = restTemplate.getForObject("/aareg/?fnr=1234567890", Arbeidsforhold[].class);
+      Arbeidsforhold[] arbeidsforhold = restTemplate.getForObject("/aareg/?fnr=12345678910", Arbeidsforhold[].class);
       assertEquals(1, arbeidsforhold.length);
    }
 }

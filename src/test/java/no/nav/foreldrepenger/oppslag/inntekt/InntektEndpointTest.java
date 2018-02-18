@@ -56,7 +56,7 @@ public class InntektEndpointTest {
 
    @Test
    public void makeHttpRequestAndDeserializeResult() {
-      Inntekt[] inntekter = restTemplate.getForObject("/income/?fnr=1234567890", Inntekt[].class);
+      Inntekt[] inntekter = restTemplate.getForObject("/income/?fnr=12345678910", Inntekt[].class);
       assertEquals(1, inntekter.length);
    }
 
