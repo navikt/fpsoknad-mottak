@@ -33,7 +33,7 @@ public class InputValidationTest {
       assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
    }
 
-   static Stream<Arguments> valueProvider() throws Exception {
+   static Stream<Arguments> valueProvider() {
       return Stream.of(
          Arguments.of("/aareg"),
          Arguments.of("/arena"),
