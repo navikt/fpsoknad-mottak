@@ -35,8 +35,7 @@ public class OppslagController {
     private CoordinatedLookup personInfo;
 
     @GetMapping(value = "/")
-    public ResponseEntity<SøkerInformasjon> oppslag(
-            @Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
+    public ResponseEntity<SøkerInformasjon> oppslag(@Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
         AktorId aktorid = aktorClient.aktorIdForFnr(fnr);
         Person person = personClient.hentPersonInfo(new ID(aktorid, fnr));
         AggregatedLookupResults results = personInfo.gimmeAllYouGot(new ID(aktorid, fnr));
