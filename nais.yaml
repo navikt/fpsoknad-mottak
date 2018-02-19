@@ -32,4 +32,7 @@ fasitResources:
       resourceType: credential
     - alias : dokmot_motta_forsendelse_ditt_nav
       resourceType: queue
-
+  exposed:
+    - alias: fpsoknad-mottak-api
+      resourceType: restservice
+      path: /api
