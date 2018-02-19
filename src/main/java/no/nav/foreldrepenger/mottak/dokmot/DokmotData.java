@@ -38,7 +38,6 @@ public class DokmotData {
     }
 
     public abstract static class DokumentInfo {
-        public String uuid;
         public String skjemanummer;
         public Filtype filtype;
         public String filstorrelse;
@@ -53,9 +52,8 @@ public class DokmotData {
             variant = Variant.ARKIV;
         }
 
-        public HovedskjemaData(String uuid, String skjemanummer, String filstorrelse) {
+        public HovedskjemaData(String skjemanummer, String filstorrelse) {
             this();
-            this.uuid = uuid;
             this.skjemanummer = skjemanummer;
             this.filstorrelse = filstorrelse;
         }
@@ -68,8 +66,7 @@ public class DokmotData {
         public VedleggData() {
         }
 
-        public VedleggData(String uuid, String skjemanummer, Filtype filtype, String filstorrelse) {
-            this.uuid = uuid;
+        public VedleggData(String skjemanummer, Filtype filtype, String filstorrelse) {
             this.skjemanummer = skjemanummer;
             this.filtype = filtype;
             this.filstorrelse = filstorrelse;
@@ -83,10 +80,9 @@ public class DokmotData {
     public static class AlternativRepresentasjon extends DokumentInfo {
         public String filnavn;
 
-        public AlternativRepresentasjon(String filnavn, String uuid, Filtype type) {
+        public AlternativRepresentasjon(String filnavn, Filtype type) {
             this.filnavn = filnavn;
             this.filtype = type;
-            this.uuid = uuid;
             this.variant = Variant.ORIGINAL;
         }
 

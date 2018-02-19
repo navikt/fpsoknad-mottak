@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.dokmot;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 
 import java.io.StringWriter;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,7 +62,6 @@ public class DokmotXMLKonvoluttGenerator implements XMLKonvoluttGenerator {
     }
 
     private Dokumentforsendelse dokumentForsendelse(Søknad søknad, DokmotData data) {
-        byte[] kvittering = pdfGenerator.generate(søknad);
         return new Dokumentforsendelse()
                 .withHoveddokument(hoveddokument(søknad))
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
@@ -69,7 +69,7 @@ public class DokmotXMLKonvoluttGenerator implements XMLKonvoluttGenerator {
                         .withTema(new Tema().withValue("FOR"))
                         .withMottakskanal(new Mottakskanaler().withValue("NAV_NO"))
                         .withBehandlingstema(new Behandlingstema().withValue("ab0050"))
-                        .withForsendelseInnsendt(søknad.getMotattdato())
+                        .withForsendelseInnsendt(LocalDateTime.now())
                         .withForsendelseMottatt(søknad.getMotattdato())
                         .withAvsender(new Person(søknad.getSøker().getFnr().getId()))
                         .withBruker(new Person(søknad.getSøker().getFnr().getId())));
@@ -89,7 +89,7 @@ public class DokmotXMLKonvoluttGenerator implements XMLKonvoluttGenerator {
 
     private Hoveddokument hoveddokument(Søknad søknad) {
         Dokumentinnhold hovedskjemaInnhold = new Dokumentinnhold()
-                // .withDokument("MY PDF")
+                .withDokument(pdfGenerator.generate(søknad))
                 .withVariantformat(new Variantformater().withValue(Variant.ARKIV.name()));
         Stream<Dokumentinnhold> alternativeRepresentasjonerInnhold = Collections.singletonList(new Dokumentinnhold()
                 .withDokument(generator.toXML(søknad).getBytes())
