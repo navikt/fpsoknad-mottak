@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.LocalDateTimeAdapter;
 
 @XmlRootElement
@@ -90,14 +91,6 @@ public class DokmotData {
         public AlternativRepresentasjon() {
         }
 
-    }
-
-    public enum Filtype {
-        PDF, PDFA, XML
-    }
-
-    public enum Variant {
-        ARKIV, ORIGINAL
     }
 
 }

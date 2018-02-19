@@ -38,6 +38,13 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEnga
 
 public class TestUtils {
 
+    public static boolean hasPdfSignature(byte[] bytes) {
+        return bytes[0] == 0x25 &&
+                bytes[1] == 0x50 &&
+                bytes[2] == 0x44 &&
+                bytes[3] == 0x46;
+    }
+
     private static final DokmotEngangsstønadXMLGenerator GEN = new DokmotEngangsstønadXMLGenerator();
 
     static SoeknadsskjemaEngangsstoenad dokmotModel(Søknad s) {

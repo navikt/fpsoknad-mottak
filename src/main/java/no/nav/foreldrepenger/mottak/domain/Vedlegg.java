@@ -57,14 +57,14 @@ public abstract class Vedlegg {
         return fileName;
     }
 
-    private static VedleggType typeFra(String fileName) {
+    private static Filtype typeFra(String fileName) {
         String extension = Splitter.on(".").splitToList(fileName).get(1).toUpperCase();
         try {
-            return VedleggType.valueOf(extension);
+            return Filtype.valueOf(extension);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(
                     "Fil " + fileName + " med extension " + extension + " ikke støttet, gyldig typer er "
-                            + Arrays.toString(VedleggType.values()));
+                            + Arrays.toString(Filtype.values()));
         }
     }
 

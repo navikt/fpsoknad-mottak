@@ -17,9 +17,17 @@ import static no.nav.foreldrepenger.mottak.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.utenlandsopphold;
 import static no.nav.foreldrepenger.mottak.TestUtils.varighet;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,20 +42,38 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
+import no.nav.foreldrepenger.mottak.dokmot.DokmotXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.XMLKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
+import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 
 public class TestSerialization {
 
-    private static final DokmotEngangsstønadXMLGenerator DOKMOT_ENGANGSSTØNAD_XML_GENERATOR = new DokmotEngangsstønadXMLGenerator();
+    private static DokmotEngangsstønadXMLGenerator DOKMOT_ENGANGSSTØNAD_XML_GENERATOR;
+    private static XMLKonvoluttGenerator DOKMOT_ENGANGSSTØNAD_KONVOLUTT_XML_GENERATOR;
+
     private static ObjectMapper mapper;
+    private static Unmarshaller søknadUnmarshaller, forsendelsesMarshaller;
 
     @BeforeClass
-    public static void beforeClass() {
+    public static void beforeClass() throws Exception {
         mapper = new ObjectMapper();
         configureMapper(mapper);
+        søknadUnmarshaller = unmarshaller(SoeknadsskjemaEngangsstoenad.class);
+        forsendelsesMarshaller = unmarshaller(Dokumentforsendelse.class);
+        DOKMOT_ENGANGSSTØNAD_XML_GENERATOR = new DokmotEngangsstønadXMLGenerator();
+        DOKMOT_ENGANGSSTØNAD_KONVOLUTT_XML_GENERATOR = new DokmotXMLKonvoluttGenerator(
+                DOKMOT_ENGANGSSTØNAD_XML_GENERATOR, new PdfGenerator());
+    }
+
+    private static Unmarshaller unmarshaller(Class<?> clazz) throws Exception {
+        return JAXBContext.newInstance(clazz).createUnmarshaller();
     }
 
     private static void configureMapper(ObjectMapper mapper) {
@@ -67,8 +93,55 @@ public class TestSerialization {
     @Test
     public void testSøknadNorge() throws Exception {
         Søknad engangssøknad = engangssøknad(false);
-        test(engangssøknad, true);
-        System.out.println(DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad));
+        test(engangssøknad, false);
+
+    }
+
+    @Test
+    public void testSøknadUtlandXML() throws Exception {
+        Søknad engangssøknad = engangssøknad(true);
+        SoeknadsskjemaEngangsstoenad dokmotModel = DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toDokmotModel(engangssøknad);
+        String xml = DOKMOT_ENGANGSSTØNAD_XML_GENERATOR.toXML(engangssøknad);
+        SoeknadsskjemaEngangsstoenad deserialized = (SoeknadsskjemaEngangsstoenad) søknadUnmarshaller
+                .unmarshal(new StringReader(xml));
+        assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), deserialized.getSoknadsvalg().getStoenadstype());
+        assertEquals(dokmotModel.getSoknadsvalg().getFoedselEllerAdopsjon(),
+                deserialized.getSoknadsvalg().getFoedselEllerAdopsjon());
+        assertEquals(dokmotModel.getTilknytningNorge().isOppholdNorgeNaa(),
+                deserialized.getTilknytningNorge().isOppholdNorgeNaa());
+        assertEquals(dokmotModel.getTilknytningNorge().isTidligereOppholdNorge(),
+                deserialized.getTilknytningNorge().isTidligereOppholdNorge());
+        assertEquals(deserialized.getTilknytningNorge().getFremtidigOppholdUtenlands().getUtenlandsopphold().size(), 1);
+        assertEquals(deserialized.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsopphold().size(), 1);
+        assertEquals(deserialized.getOpplysningerOmBarn().getAntallBarn(), 1);
+    }
+
+    @Test
+    public void testKonvoluttXML() throws Exception {
+        Søknad engangssøknad = engangssøknad(true);
+        Dokumentforsendelse model = DOKMOT_ENGANGSSTØNAD_KONVOLUTT_XML_GENERATOR.toDokmotModel(engangssøknad);
+        String konvolutt = DOKMOT_ENGANGSSTØNAD_KONVOLUTT_XML_GENERATOR.toXML(engangssøknad);
+        System.out.println(konvolutt);
+        Dokumentforsendelse deserialized = (Dokumentforsendelse) forsendelsesMarshaller
+                .unmarshal(new StringReader(konvolutt));
+        Dokumentinnhold pdf = deserialized.getHoveddokument().getDokumentinnholdListe().get(0);
+        assertTrue(TestUtils.hasPdfSignature(pdf.getDokument()));
+        Dokumentinnhold søknadsXML = deserialized.getHoveddokument().getDokumentinnholdListe().get(1);
+        SoeknadsskjemaEngangsstoenad deserializedSøknad = (SoeknadsskjemaEngangsstoenad) søknadUnmarshaller
+                .unmarshal(new StringReader(new String(søknadsXML.getDokument())));
+        // assertEquals(model.get deserializedSøknad.getSoknadsvalg().getFoedselEllerAdopsjon());
+
+    }
+
+    private static void writeBytesToFileNio(byte[] bFile, String fileDest) {
+
+        try {
+            Path path = Paths.get(fileDest);
+            Files.write(path, bFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test

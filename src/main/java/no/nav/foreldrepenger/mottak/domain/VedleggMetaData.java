@@ -9,15 +9,15 @@ import lombok.Data;
 public class VedleggMetaData {
 
     private final String beskrivelse;
-    private final VedleggType type;
+    private final Filtype type;
     private final Skjemanummer skjemanummer;
 
     public VedleggMetaData(Skjemanummer skjemanummer) {
-        this(skjemanummer.dokumentTypeId(), VedleggType.PDF, skjemanummer);
+        this(skjemanummer.dokumentTypeId(), Filtype.PDF, skjemanummer);
     }
 
     @JsonCreator
-    public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("type") VedleggType type,
+    public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("type") Filtype type,
             @JsonProperty("skjemanummer") Skjemanummer skjemanummer) {
         this.beskrivelse = beskrivelse;
         this.type = type;

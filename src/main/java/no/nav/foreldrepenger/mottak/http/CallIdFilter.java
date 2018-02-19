@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.servlet.FilterChain;
@@ -12,34 +10,34 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
+
+import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 
 @Component
 public class CallIdFilter extends GenericFilterBean {
 
+    private final CallIdGenerator generator;
+
     @Inject
-    @Value("${callid.key:X-Nav-CallId}")
-    private String callIdkey;
+    public CallIdFilter(CallIdGenerator generator) {
+        this.generator = generator;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        String key = getOrCreateCallId(request);
         try {
-            MDC.put(callIdkey, callIdFrom(request));
-
             chain.doFilter(request, response);
         } finally {
-            MDC.remove(callIdkey);
+            MDC.remove(key);
         }
     }
 
-    private String callIdFrom(ServletRequest req) {
-        return Optional.ofNullable(HttpServletRequest.class.cast(req).getHeader(callIdkey)).orElse(callId());
-    }
-
-    private static String callId() {
-        return UUID.randomUUID().toString();
+    private String getOrCreateCallId(ServletRequest req) {
+        String callId = HttpServletRequest.class.cast(req).getHeader(generator.getDefaultKey());
+        return callId == null ? generator.generateCallId().getFirst() : generator.generateCallId(callId);
     }
 }
