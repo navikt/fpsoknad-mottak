@@ -17,8 +17,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import no.nav.foreldrepenger.mottak.config.AppConfig;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
@@ -35,8 +37,6 @@ public class TestDokmotSerialization {
     DokmotEngangsstønadXMLGenerator søknadXMLGenerator;
     @Autowired
     DokmotEngangsstønadXMLKonvoluttGenerator søknadXMLKonvoluttGenerator;
-    @Autowired
-    PdfGenerator pdfGenerator;
 
     @Test
     public void testSøknadUtlandXML() throws Exception {
@@ -46,7 +46,7 @@ public class TestDokmotSerialization {
     @Test
     public void testKonvoluttXML() throws Exception {
         Søknad engangssøknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.valgfrittVedlegg());
-        Dokumentforsendelse model = søknadXMLKonvoluttGenerator.toDokmotModel(engangssøknad);
+        Engangsstønad engangs = (Engangsstønad) engangssøknad.getYtelse();
         String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad);
         System.out.println(konvolutt);
         Dokumentforsendelse unmarshalled = unmarshal(konvolutt, FORSENDELSECTX, Dokumentforsendelse.class);
@@ -56,7 +56,8 @@ public class TestDokmotSerialization {
         SoeknadsskjemaEngangsstoenad deserializedSøknadModel = unmarshal(søknadsXML.getDokument(), SØKNADCTX,
                 SoeknadsskjemaEngangsstoenad.class);
         System.out.println(søknadXMLGenerator.toXML(deserializedSøknadModel));
-        // assertEquals(model.get deserializedSøknad.getSoknadsvalg().getFoedselEllerAdopsjon());
+        assertEquals(deserializedSøknadModel.getOpplysningerOmBarn().getAntallBarn(), 1);
+        assertEquals(deserializedSøknadModel.getSoknadsvalg().getFoedselEllerAdopsjon(), FoedselEllerAdopsjon.FOEDSEL);
 
     }
 

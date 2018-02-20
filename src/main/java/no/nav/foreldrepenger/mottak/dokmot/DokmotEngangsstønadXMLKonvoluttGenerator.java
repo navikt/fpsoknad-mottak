@@ -8,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,8 +42,8 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     @Inject
     public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator,
             PdfGenerator pdfGenerator) {
-        this.søknadGenerator = generator;
-        this.pdfGenerator = pdfGenerator;
+        this.søknadGenerator = Objects.requireNonNull(generator);
+        this.pdfGenerator = Objects.requireNonNull(pdfGenerator);
     }
 
     public DokmotEngangsstønadXMLGenerator getSøknadGenerator() {
@@ -63,7 +64,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private Dokumentforsendelse dokumentForsendelse(Søknad søknad) {
         return new Dokumentforsendelse()
-                .withHoveddokument(hoveddokument(søknad))
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
                         .withKanalreferanseId("TODO")
                         .withTema(new Tema().withValue("FOR"))
@@ -73,6 +73,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                         .withForsendelseMottatt(søknad.getMotattdato())
                         .withAvsender(new Person(søknad.getSøker().getFnr().getId()))
                         .withBruker(new Person(søknad.getSøker().getFnr().getId())))
+                .withHoveddokument(hoveddokument(søknad))
                 .withVedleggListe(dokmotVedleggListe(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
     }
 
