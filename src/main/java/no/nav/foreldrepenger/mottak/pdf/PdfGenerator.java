@@ -38,7 +38,7 @@ import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 public class PdfGenerator {
 
     private final MessageSource landkoder;
-    private final MessageSource kvitteringsTekster;
+    private final MessageSource kvitteringstekster;
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
@@ -49,9 +49,9 @@ public class PdfGenerator {
 
     @Inject
     public PdfGenerator(@Qualifier("landkoder") MessageSource landkoder,
-            @Qualifier("kvitteringstekster") MessageSource kvitteringsTekster) {
+            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster) {
         this.landkoder = landkoder;
-        this.kvitteringsTekster = kvitteringsTekster;
+        this.kvitteringstekster = kvitteringstekster;
     }
 
     public byte[] generate(Søknad søknad) {
@@ -69,41 +69,41 @@ public class PdfGenerator {
             logo.setAlignment(Image.ALIGN_CENTER);
             document.add(logo);
 
-            document.add(centeredParagraph(getMessage("søknad", kvitteringsTekster), HEADING));
+            document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
             document.add(centeredParagraph(søknad.getSøker().getFnr().getId(), NORMAL));
             document.add(separator());
 
             document.add(blankLine());
 
-            document.add(paragraph(getMessage("ombarn", kvitteringsTekster), HEADING));
+            document.add(paragraph(getMessage("ombarn", kvitteringstekster), HEADING));
             document.add(paragraph(
-                    getMessage("gjelder", kvitteringsTekster, stønad.getRelasjonTilBarn().getAntallBarn()),
+                    getMessage("gjelder", kvitteringstekster, stønad.getRelasjonTilBarn().getAntallBarn()),
                     NORMAL));
             if (erFremtidigFødsel(stønad)) {
                 FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
                 document.add(
-                        paragraph(getMessage("termindato", kvitteringsTekster, dato(ff.getTerminDato())), NORMAL));
+                        paragraph(getMessage("termindato", kvitteringstekster, dato(ff.getTerminDato())), NORMAL));
                 if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
                     document.add(paragraph(
-                            getMessage("termindatotekst", kvitteringsTekster, dato(ff.getUtstedtDato())), NORMAL));
+                            getMessage("termindatotekst", kvitteringstekster, dato(ff.getUtstedtDato())), NORMAL));
                 }
             }
 
             document.add(blankLine());
-            document.add(paragraph(getMessage("tilknytning", kvitteringsTekster), HEADING));
-            document.add(paragraph(getMessage("siste12", kvitteringsTekster), NORMAL));
+            document.add(paragraph(getMessage("tilknytning", kvitteringstekster), HEADING));
+            document.add(paragraph(getMessage("siste12", kvitteringstekster), NORMAL));
             document.add(
                     paragraph(formatOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()), NORMAL));
-            document.add(paragraph(getMessage("neste12", kvitteringsTekster,
+            document.add(paragraph(getMessage("neste12", kvitteringstekster,
                     formatOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold())), NORMAL));
             if (erFremtidigFødsel(stønad)) {
-                document.add(paragraph(getMessage("føde", kvitteringsTekster,
+                document.add(paragraph(getMessage("føde", kvitteringstekster,
                         countryName(medlemsskap.getFramtidigOppholdsInfo().isFødseINorge())), NORMAL));
             }
 
             document.add(blankLine());
 
-            document.add(paragraph(getMessage("tillegg", kvitteringsTekster), HEADING));
+            document.add(paragraph(getMessage("tillegg", kvitteringstekster), HEADING));
             document.add(
                     paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
 
