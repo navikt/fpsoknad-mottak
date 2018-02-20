@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
-import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
+import static no.nav.foreldrepenger.mottak.dokmot.Variant.ARKIV;
+import static no.nav.foreldrepenger.mottak.dokmot.Variant.ORIGINAL;
+import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
+import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
 
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -11,16 +13,13 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.XMLKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.domain.XMLSøknadGenerator;
 import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
+import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
@@ -33,37 +32,33 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Tema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 
 @Service
-public class DokmotXMLKonvoluttGenerator implements XMLKonvoluttGenerator {
+public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
-    @Override
-    public XMLSøknadGenerator getSøknadGenerator() {
-        return søknadGenerator;
-    }
-
-    private final Marshaller marshaller;
-    private final XMLSøknadGenerator søknadGenerator;
+    private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
+    private final DokmotEngangsstønadXMLGenerator søknadGenerator;
     private final PdfGenerator pdfGenerator;
 
     @Inject
-    public DokmotXMLKonvoluttGenerator(XMLSøknadGenerator generator, PdfGenerator pdfFenerator) {
-        this(marshaller(), generator, pdfFenerator);
-    }
-
-    private DokmotXMLKonvoluttGenerator(Marshaller marshaller, XMLSøknadGenerator generator,
+    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator,
             PdfGenerator pdfGenerator) {
-        this.marshaller = marshaller;
         this.søknadGenerator = generator;
         this.pdfGenerator = pdfGenerator;
     }
 
-    @Override
+    public DokmotEngangsstønadXMLGenerator getSøknadGenerator() {
+        return søknadGenerator;
+    }
+
     public String toXML(Søknad søknad) {
         return toXML(toDokmotModel(søknad));
     }
 
-    @Override
     public Dokumentforsendelse toDokmotModel(Søknad søknad) {
         return dokumentForsendelse(søknad);
+    }
+
+    public String toXML(Dokumentforsendelse model) {
+        return Jaxb.marshall(CONTEXT, model);
     }
 
     private Dokumentforsendelse dokumentForsendelse(Søknad søknad) {
@@ -81,24 +76,15 @@ public class DokmotXMLKonvoluttGenerator implements XMLKonvoluttGenerator {
                 .withVedleggListe(dokmotVedleggListe(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
     }
 
-    private String toXML(Dokumentforsendelse model) {
-        try {
-            StringWriter sw = new StringWriter();
-            marshaller.marshal(model, sw);
-            return sw.toString();
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
     private Hoveddokument hoveddokument(Søknad søknad) {
         Dokumentinnhold hovedskjemaInnhold = new Dokumentinnhold()
                 .withDokument(pdfGenerator.generate(søknad))
-                .withVariantformat(new Variantformater().withValue(Variant.ARKIV.name()));
+                .withArkivfiltype(new Arkivfiltyper().withValue(PDFA.name()))
+                .withVariantformat(new Variantformater().withValue(ARKIV.name()));
         Stream<Dokumentinnhold> alternativeRepresentasjonerInnhold = Collections.singletonList(new Dokumentinnhold()
                 .withDokument(søknadGenerator.toXML(søknad).getBytes())
-                .withVariantformat(new Variantformater().withValue(Variant.ORIGINAL.name()))
-                .withArkivfiltype(new Arkivfiltyper().withValue(Filtype.XML.name()))).stream();
+                .withVariantformat(new Variantformater().withValue(ORIGINAL.name()))
+                .withArkivfiltype(new Arkivfiltyper().withValue(XML.name()))).stream();
 
         String skjemanummer = "NAV 14-05.07"; // Engangsstønad fødsel
 
@@ -127,29 +113,11 @@ public class DokmotXMLKonvoluttGenerator implements XMLKonvoluttGenerator {
                         .withDokument(vedlegg.getVedlegg()));
     }
 
-    private static JAXBContext context() {
-        try {
-            return JAXBContext.newInstance(Dokumentforsendelse.class);
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    private static Marshaller marshaller() {
-        try {
-            Marshaller marshaller = context().createMarshaller();
-            marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
-            return marshaller;
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public enum Filtype {
+    enum Filtype {
         PDF, PDFA, XML
     }
 
-    public enum Variant {
+    enum Variant {
         ARKIV, ORIGINAL
     }
 

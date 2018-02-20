@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 
 import com.itextpdf.text.Chunk;
@@ -47,22 +46,6 @@ public class PdfGenerator {
     private static final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
 
     private static final Locale BOKMÅL = CountryCode.NO.toLocale();
-
-    public PdfGenerator() {
-        this(landkoder(), kvitteringer());
-    }
-
-    private static MessageSource landkoder() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("landkoder");
-        return messageSource;
-    }
-
-    private static MessageSource kvitteringer() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("kvitteringstekster");
-        return messageSource;
-    }
 
     @Inject
     public PdfGenerator(@Qualifier("landkoder") MessageSource landkoder,

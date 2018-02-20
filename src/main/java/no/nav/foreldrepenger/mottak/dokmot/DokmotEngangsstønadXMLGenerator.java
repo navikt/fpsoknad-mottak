@@ -1,16 +1,13 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
 import static java.util.stream.Collectors.toList;
-import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
 
-import java.io.StringWriter;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.springframework.stereotype.Service;
 
@@ -29,6 +26,8 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
@@ -48,22 +47,16 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 
 @Service
-public class DokmotEngangsstønadXMLGenerator extends DokmotXMLSøknadGenerator {
+public class DokmotEngangsstønadXMLGenerator {
 
-    private final Marshaller marshaller;
+    private static final JAXBContext CONTEXT = Jaxb.context(SoeknadsskjemaEngangsstoenad.class);
 
-    public DokmotEngangsstønadXMLGenerator() {
-        this(marshaller());
-
-    }
-
-    public DokmotEngangsstønadXMLGenerator(Marshaller marshaller) {
-        this.marshaller = marshaller;
-    }
-
-    @Override
     public String toXML(Søknad søknad) {
         return toXML(toDokmotModel(søknad));
+    }
+
+    public String toXML(SoeknadsskjemaEngangsstoenad model) {
+        return Jaxb.marshall(CONTEXT, model);
     }
 
     public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad) {
@@ -77,22 +70,21 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLSøknadGenerator 
                 .withTilknytningNorge((tilknytningFra(engangsstønad.getMedlemsskap())))
                 .withOpplysningerOmFar(farFra(engangsstønad.getAnnenForelder()))
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
-                .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg()));
+                .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
     }
 
-    private VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg) {
+    private VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg, List<ValgfrittVedlegg> valgfrieVedlegg) {
         return new VedleggListe()
-                .withVedlegg(påkrevdeVedlegg
-                        .stream()
+                .withVedlegg(Stream.concat(påkrevdeVedlegg.stream(), valgfrieVedlegg.stream())
                         .map(DokmotEngangsstønadXMLGenerator::vedleggFra)
                         .collect(toList()));
     }
 
-    private static Vedlegg vedleggFra(PåkrevdVedlegg vedlegg) {
+    private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.Vedlegg vedlegg) {
         return new Vedlegg()
                 .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().dokumentTypeId())
                 .withInnsendingsvalg(Innsendingsvalg.LASTET_OPP)
-                .withErPaakrevdISoeknadsdialog(true);
+                .withErPaakrevdISoeknadsdialog(vedlegg instanceof PåkrevdVedlegg);
     }
 
     private static Aktoer brukerFra(Fodselsnummer søker) {
@@ -111,34 +103,6 @@ public class DokmotEngangsstønadXMLGenerator extends DokmotXMLSøknadGenerator 
             return FOEDSEL;
         }
         throw new IllegalArgumentException(relasjonTilBarn.getClass().getSimpleName() + " er foreløpig ikke støttet");
-    }
-
-    private static JAXBContext context() {
-        try {
-            return JAXBContext.newInstance(SoeknadsskjemaEngangsstoenad.class);
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    private static Marshaller marshaller() {
-        try {
-            Marshaller marshaller = context().createMarshaller();
-            marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
-            return marshaller;
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    private String toXML(SoeknadsskjemaEngangsstoenad model) {
-        try {
-            StringWriter sw = new StringWriter();
-            marshaller.marshal(model, sw);
-            return sw.toString();
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
     private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap) {

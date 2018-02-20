@@ -1,31 +1,27 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
+import static no.nav.foreldrepenger.mottak.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.TestUtils.hasPdfSignature;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringBootTest
-//@ContextConfiguration(classes = { MottakApplication.class, DokmotConfig.class, SwaggerConfiguration.class })
-// These are dummy values
-//@TestPropertySource(properties = { "MQGATEWAY01_HOSTNAME = host", "MQGATEWAY01_PORT: 1412", "MQGATEWAY01_NAME = name",
-//        "BRISDOKMOT_USERNAME = username", "BRISDOKMOT_PASSWORD = pw", "DOKMOT_CHANNEL_NAME = channel",
-//        "DOKMOT_MOTTA_FORSENDELSE_DITT_NAV_QUEUENAME = queue" })
+import no.nav.foreldrepenger.mottak.config.AppConfig;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { AppConfig.class, PdfGenerator.class })
 
 public class PdfGeneratorTest {
 
     @Autowired
-    ApplicationContext ctx;
+    PdfGenerator gen;
 
     @Test
-    public void smokeTest() throws Exception {
-
-        // TODO Get the generator without starting the whole thing
-        // byte[] pdf = ctx.getBean(PdfGenerator.class).generate(TestUtils.engangssøknad(true));
-        assertTrue(true);
-        // assertTrue(hasPdfSignature(pdf));
+    public void signature() throws Exception {
+        assertTrue(hasPdfSignature(gen.generate(engangssøknad(true))));
     }
-
 }

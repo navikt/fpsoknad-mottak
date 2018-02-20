@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -25,12 +27,12 @@ public class Søknad {
     private final List<PåkrevdVedlegg> påkrevdeVedlegg;
     private final List<ValgfrittVedlegg> frivilligeVedlegg;
 
-    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse) {
-        this(motattdato, søker, ytelse, Collections.emptyList(), Collections.emptyList());
+    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse, Vedlegg... vedlegg) {
+        this(motattdato, søker, ytelse, Arrays.asList(vedlegg));
     }
 
-    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse, PåkrevdVedlegg vedlegg) {
-        this(motattdato, søker, ytelse, Collections.singletonList(vedlegg), Collections.emptyList());
+    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse, List<Vedlegg> vedlegg) {
+        this(motattdato, søker, ytelse, påkrevde(vedlegg), valgfrie(vedlegg));
     }
 
     @JsonCreator
@@ -43,6 +45,19 @@ public class Søknad {
         this.ytelse = ytelse;
         this.påkrevdeVedlegg = påkrevdeVedlegg == null ? Collections.emptyList() : påkrevdeVedlegg;
         this.frivilligeVedlegg = frivilligeVedlegg == null ? Collections.emptyList() : frivilligeVedlegg;
+    }
 
+    private static List<PåkrevdVedlegg> påkrevde(List<Vedlegg> vedlegg) {
+        return vedlegg.stream()
+                .filter(s -> s instanceof PåkrevdVedlegg)
+                .map(s -> PåkrevdVedlegg.class.cast(s))
+                .collect(Collectors.toList());
+    }
+
+    private static List<ValgfrittVedlegg> valgfrie(List<Vedlegg> vedlegg) {
+        return vedlegg.stream()
+                .filter(s -> s instanceof ValgfrittVedlegg)
+                .map(s -> ValgfrittVedlegg.class.cast(s))
+                .collect(Collectors.toList());
     }
 }

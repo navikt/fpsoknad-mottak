@@ -10,7 +10,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.domain.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
@@ -34,7 +33,8 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 
 public class TestUtils {
 
@@ -45,18 +45,12 @@ public class TestUtils {
                 bytes[3] == 0x46;
     }
 
-    private static final DokmotEngangsstønadXMLGenerator GEN = new DokmotEngangsstønadXMLGenerator();
-
-    static SoeknadsskjemaEngangsstoenad dokmotModel(Søknad s) {
-        return GEN.toDokmotModel(s);
-    }
-
     public static Søknad engangssøknad(boolean utland) throws IOException {
         return engangssøknad(utland, fremtidigFødsel());
     }
 
-    static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon) throws IOException {
-        Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(utland, relasjon), påkrevdVedlegg());
+    static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon, Vedlegg... vedlegg) throws IOException {
+        Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(utland, relasjon), vedlegg);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
@@ -115,8 +109,16 @@ public class TestUtils {
         return påkrevdVedlegg("vedlegg.pdf");
     }
 
+    static ValgfrittVedlegg valgfrittVedlegg() throws IOException {
+        return valgfrittVedlegg("vedlegg.pdf");
+    }
+
     static PåkrevdVedlegg påkrevdVedlegg(String name) throws IOException {
         return new PåkrevdVedlegg(Skjemanummer.N6, new ClassPathResource(name));
+    }
+
+    static ValgfrittVedlegg valgfrittVedlegg(String name) throws IOException {
+        return new ValgfrittVedlegg(Skjemanummer.N6, new ClassPathResource(name));
     }
 
     static Adopsjon adopsjon() {

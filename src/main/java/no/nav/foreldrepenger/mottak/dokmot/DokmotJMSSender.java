@@ -13,25 +13,25 @@ import no.nav.foreldrepenger.mottak.domain.Pair;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
-import no.nav.foreldrepenger.mottak.domain.XMLKonvoluttGenerator;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
 
     private final JmsTemplate dokmotTemplate;
-    private final XMLKonvoluttGenerator generator;
+    private final DokmotEngangsstønadXMLKonvoluttGenerator generator;
     private final CallIdGenerator callIdGenerator;
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotJMSSender.class);
 
     @Inject
-    public DokmotJMSSender(JmsTemplate template, XMLKonvoluttGenerator generator, CallIdGenerator callIdGenerator) {
+    public DokmotJMSSender(JmsTemplate template, DokmotEngangsstønadXMLKonvoluttGenerator generator,
+            CallIdGenerator callIdGenerator) {
         this.dokmotTemplate = template;
         this.generator = generator;
         this.callIdGenerator = callIdGenerator;
     }
 
-    public XMLKonvoluttGenerator getKonvoluttGenerator() {
+    public DokmotEngangsstønadXMLKonvoluttGenerator getKonvoluttGenerator() {
         return generator;
     }
 
