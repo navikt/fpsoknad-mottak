@@ -29,15 +29,13 @@ node {
       committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
       changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
       notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
+
+      releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
    }
 
-   stage("Initialize") {
-      pom = readMavenPom file: 'pom.xml'
-      releaseVersion = pom.version.tokenize("-")[0]
-   }
-
-   stage("Build, test and install artifact") {
+   stage("Build & publish") {
       try {
+         sh "${mvn} versions:set -B -DnewVersion=${releaseVersion}"
          sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
          slackSend([
             color: 'good',
@@ -53,42 +51,16 @@ node {
       finally {
          junit '**/target/surefire-reports/*.xml'
       }
-   }
 
-   stage("Release") {
-      sh "${mvn} versions:set -B -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false"
-      sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
       sh "docker build --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
-      sh "git commit -am \"set version to ${releaseVersion} (from Jenkins pipeline)\""
-      withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-            sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git master")
-            sh ("git tag -a ${application}-${releaseVersion} -m ${application}-${releaseVersion}")
-            sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git --tags")
-         }
-      }
-   }
-
-   stage("Update project version") {
-      def versions = releaseVersion.tokenize(".");
-      nextVersion = versions[0] +  "." + versions[1] +  "." + (versions[2].toInteger() + 1) + "-SNAPSHOT"
-      sh "${mvn} versions:set -B -DnewVersion=${nextVersion} -DgenerateBackupPoms=false"
-      withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-            sh "git commit -am \"updated to new dev-version ${nextVersion} after release by ${committer}\""
-            sh ("git push https://${token}:x-oauth-basic@github.com/navikt/fpsoknad-oppslag.git master")
-         }
-      }
-      notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
-
-   }
-
-   stage("Publish artifacts") {
-      sh "${mvn} clean deploy -DskipTests -B -e"
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
          sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${groupId}/${application}/${releaseVersion}/nais.yaml"
          sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
       }
+
+      sh "${mvn} versions:revert"
+
+      notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
    }
 
    stage("Deploy to preprod") {
@@ -111,6 +83,15 @@ node {
       }
    }
 
+   stage("Tag") {
+      // TODO: Tag only releases that go to production
+      withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+            sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
+            sh ("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
+         }
+      }
+   }
 }
 
 def notifyGithub(owner, repo, context, sha, state, description) {
