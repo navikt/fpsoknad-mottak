@@ -38,15 +38,15 @@ import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 @Service
 public class PdfGenerator {
 
-    private final MessageSource landkoder;
-    private final MessageSource kvitteringstekster;
-
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
     private static final Font HEADING = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
     private static final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
 
     private static final Locale BOKMÅL = CountryCode.NO.toLocale();
+
+    private final MessageSource landkoder;
+    private final MessageSource kvitteringstekster;
 
     @Inject
     public PdfGenerator(@Qualifier("landkoder") MessageSource landkoder,

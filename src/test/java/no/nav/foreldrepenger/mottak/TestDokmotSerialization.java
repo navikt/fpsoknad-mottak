@@ -63,8 +63,9 @@ public class TestDokmotSerialization {
 
     private void test(Søknad engangssøknad) {
         SoeknadsskjemaEngangsstoenad model = søknadXMLGenerator.toDokmotModel(engangssøknad);
-        String xml = søknadXMLGenerator.toXML(engangssøknad);
-        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(xml, SØKNADCTX, SoeknadsskjemaEngangsstoenad.class);
+        Engangsstønad engangs = (Engangsstønad) engangssøknad.getYtelse();
+
+        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.toXML(engangssøknad), SØKNADCTX, SoeknadsskjemaEngangsstoenad.class);
         assertEquals(model.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
         assertEquals(model.getSoknadsvalg().getFoedselEllerAdopsjon(),
                 unmarshalled.getSoknadsvalg().getFoedselEllerAdopsjon());
@@ -72,8 +73,11 @@ public class TestDokmotSerialization {
                 unmarshalled.getTilknytningNorge().isOppholdNorgeNaa());
         assertEquals(model.getTilknytningNorge().isTidligereOppholdNorge(),
                 unmarshalled.getTilknytningNorge().isTidligereOppholdNorge());
-        assertEquals(unmarshalled.getTilknytningNorge().getFremtidigOppholdUtenlands().getUtenlandsopphold().size(), 1);
-        assertEquals(unmarshalled.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsopphold().size(), 1);
-        assertEquals(unmarshalled.getOpplysningerOmBarn().getAntallBarn(), 1);
+        assertEquals(unmarshalled.getTilknytningNorge().getFremtidigOppholdUtenlands().getUtenlandsopphold().size(),
+                engangs.getMedlemsskap().getFramtidigOppholdsInfo().getUtenlandsOpphold().size());
+        assertEquals(unmarshalled.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsopphold().size(),
+                engangs.getMedlemsskap().getTidligereOppholdsInfo().getUtenlandsOpphold().size());
+        assertEquals(unmarshalled.getOpplysningerOmBarn().getAntallBarn(),
+                engangs.getRelasjonTilBarn().getAntallBarn());
     }
 }
