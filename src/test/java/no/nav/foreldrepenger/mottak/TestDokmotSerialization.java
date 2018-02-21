@@ -19,7 +19,9 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
@@ -40,7 +42,6 @@ public class TestDokmotSerialization {
 
     @Test
     public void testSøknadUtlandXML() throws Exception {
-        test(engangssøknad(true));
     }
 
     @Test
@@ -58,26 +59,41 @@ public class TestDokmotSerialization {
         System.out.println(søknadXMLGenerator.toXML(deserializedSøknadModel));
         assertEquals(deserializedSøknadModel.getOpplysningerOmBarn().getAntallBarn(), 1);
         assertEquals(deserializedSøknadModel.getSoknadsvalg().getFoedselEllerAdopsjon(), FoedselEllerAdopsjon.FOEDSEL);
-
     }
 
-    private void test(Søknad engangssøknad) {
-        SoeknadsskjemaEngangsstoenad model = søknadXMLGenerator.toDokmotModel(engangssøknad);
-        Engangsstønad engangs = (Engangsstønad) engangssøknad.getYtelse();
+    @Test
+    public void testDokmotModelTransformation() throws Exception {
+        ValgfrittVedlegg valgfrittVedlegg = TestUtils.valgfrittVedlegg();
+        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), valgfrittVedlegg);
+        SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad);
+        assertEquals(søknad.getBegrunnelseForSenSøknad(), dokmotModel.getOpplysningerOmBarn().getBegrunnelse());
+        assertEquals(søknad.getSøker().getFnr().getId(),
+                Bruker.class.cast(dokmotModel.getBruker()).getPersonidentifikator());
+        assertEquals(dokmotModel.getVedleggListe().getVedlegg().size(), 1);
+        Engangsstønad ytelse = (Engangsstønad) søknad.getYtelse();
+        assertEquals(ytelse.getRelasjonTilBarn().getAntallBarn(), dokmotModel.getOpplysningerOmBarn());
+    }
 
-        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.toXML(engangssøknad), SØKNADCTX, SoeknadsskjemaEngangsstoenad.class);
-        assertEquals(model.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
-        assertEquals(model.getSoknadsvalg().getFoedselEllerAdopsjon(),
+    @Test
+    public void testDokmotMarshalling() throws Exception {
+        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.valgfrittVedlegg());
+        SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad);
+        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.toXML(søknad), SØKNADCTX,
+                SoeknadsskjemaEngangsstoenad.class);
+        assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
+        assertEquals(dokmotModel.getSoknadsvalg().getFoedselEllerAdopsjon(),
                 unmarshalled.getSoknadsvalg().getFoedselEllerAdopsjon());
-        assertEquals(model.getTilknytningNorge().isOppholdNorgeNaa(),
+        assertEquals(dokmotModel.getTilknytningNorge().isOppholdNorgeNaa(),
                 unmarshalled.getTilknytningNorge().isOppholdNorgeNaa());
-        assertEquals(model.getTilknytningNorge().isTidligereOppholdNorge(),
+        assertEquals(dokmotModel.getTilknytningNorge().isTidligereOppholdNorge(),
                 unmarshalled.getTilknytningNorge().isTidligereOppholdNorge());
+
+        Engangsstønad ytelse = (Engangsstønad) søknad.getYtelse();
         assertEquals(unmarshalled.getTilknytningNorge().getFremtidigOppholdUtenlands().getUtenlandsopphold().size(),
-                engangs.getMedlemsskap().getFramtidigOppholdsInfo().getUtenlandsOpphold().size());
+                ytelse.getMedlemsskap().getFramtidigOppholdsInfo().getUtenlandsOpphold().size());
         assertEquals(unmarshalled.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsopphold().size(),
-                engangs.getMedlemsskap().getTidligereOppholdsInfo().getUtenlandsOpphold().size());
+                ytelse.getMedlemsskap().getTidligereOppholdsInfo().getUtenlandsOpphold().size());
         assertEquals(unmarshalled.getOpplysningerOmBarn().getAntallBarn(),
-                engangs.getRelasjonTilBarn().getAntallBarn());
+                ytelse.getRelasjonTilBarn().getAntallBarn());
     }
 }
