@@ -36,19 +36,21 @@ node {
    stage("Build & publish") {
       try {
          sh "${mvn} versions:set -B -DnewVersion=${releaseVersion}"
+         sh "mkdir -p /tmp/${application}"
          sh "${mvn} -Palltests clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
          slackSend([
             color: 'good',
             message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed  (${changelog})"
          ])
-      }
-      catch (Exception e) {
+      } catch (Exception ex) {
          slackSend([
             color: 'danger',
             message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} failed (${changelog})"
          ])
-      }
-      finally {
+         echo '[FAILURE] Failed to build: ${ex}'
+         currentBuild.result = 'FAILURE'
+         return
+      } finally {
          junit '**/target/surefire-reports/*.xml'
       }
 
