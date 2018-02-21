@@ -3,10 +3,6 @@ package no.nav.foreldrepenger.mottak.pdf;
 import static java.util.stream.Collectors.joining;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -18,7 +14,9 @@ import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -66,9 +64,9 @@ public class PdfGenerator {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, baos);
             document.open();
-
-            Path path = Paths.get(ClassLoader.getSystemResource("pdf/nav-logo.png").toURI());
-            Image logo = Image.getInstance(path.toAbsolutePath().toString());
+            // Path path = Paths.get(ClassLoader.getSystemResource("pdf/nav-logo.png").toURI());
+            Image logo = Image.getInstance(
+                    StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
             logo.setAlignment(Image.ALIGN_CENTER);
             document.add(logo);
 
@@ -111,9 +109,9 @@ public class PdfGenerator {
                     paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
 
             document.close();
-            OutputStream out = new FileOutputStream("terminbekreftelse.pdf");
-            out.write(baos.toByteArray());
-            out.close();
+            // OutputStream out = new FileOutputStream("xyz.pdf");
+            // out.write(baos.toByteArray());
+            // out.close();
             return baos.toByteArray();
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
