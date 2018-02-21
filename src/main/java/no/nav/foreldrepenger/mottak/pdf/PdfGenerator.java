@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -50,8 +51,8 @@ public class PdfGenerator {
     @Inject
     public PdfGenerator(@Qualifier("landkoder") MessageSource landkoder,
             @Qualifier("kvitteringstekster") MessageSource kvitteringstekster) {
-        this.landkoder = landkoder;
-        this.kvitteringstekster = kvitteringstekster;
+        this.landkoder = Objects.requireNonNull(landkoder);
+        this.kvitteringstekster = Objects.requireNonNull(kvitteringstekster);
     }
 
     public byte[] generate(Søknad søknad) {
