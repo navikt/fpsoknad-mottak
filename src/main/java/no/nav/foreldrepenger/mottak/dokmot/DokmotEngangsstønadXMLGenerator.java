@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstyp
 import java.util.List;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
@@ -50,6 +52,16 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 public class DokmotEngangsstønadXMLGenerator {
 
     private static final JAXBContext CONTEXT = Jaxb.context(SoeknadsskjemaEngangsstoenad.class);
+    private final PdfGenerator pdfGenerator;
+
+    @Inject
+    public DokmotEngangsstønadXMLGenerator(PdfGenerator pdfGenerator) {
+        this.pdfGenerator = pdfGenerator;
+    }
+
+    public byte[] toPdf(Søknad søknad) {
+        return pdfGenerator.generate(søknad);
+    }
 
     public String toXML(Søknad søknad) {
         return toXML(toDokmotModel(søknad));
@@ -199,6 +211,11 @@ public class DokmotEngangsstønadXMLGenerator {
                                     .withKode(UtenlandskForelder.class.cast(annenForelder).getLand().getAlpha2())));
         }
         throw new IllegalArgumentException("Dette skal aldri skje");
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [pdfGenerator=" + pdfGenerator + "]";
     }
 
 }

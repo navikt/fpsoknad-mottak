@@ -5,6 +5,7 @@ import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
@@ -31,20 +32,22 @@ public class DokmotJMSSender implements SøknadSender {
         this.callIdGenerator = callIdGenerator;
     }
 
-    public DokmotEngangsstønadXMLKonvoluttGenerator getKonvoluttGenerator() {
-        return generator;
-    }
-
     @Override
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
         String xml = generator.toXML(søknad);
-        dokmotTemplate.send(session -> {
-            Pair<String, String> callId = callIdGenerator.generateCallId();
-            TextMessage msg = session.createTextMessage(xml);
-            msg.setStringProperty("callId", callId.getSecond());
-            return msg;
-        });
-        return SøknadSendingsResultat.OK;
+        try {
+            dokmotTemplate.send(session -> {
+                Pair<String, String> callId = callIdGenerator.generateCallId();
+                LOG.info("Sending message to DOKMOT {}", xml);
+                TextMessage msg = session.createTextMessage(xml);
+                msg.setStringProperty("callId", callId.getSecond());
+                return msg;
+            });
+            return SøknadSendingsResultat.OK;
+        } catch (JmsException e) {
+            LOG.warn("Unable to send to DOKMOT", e);
+            throw (e);
+        }
     }
 
     @Override

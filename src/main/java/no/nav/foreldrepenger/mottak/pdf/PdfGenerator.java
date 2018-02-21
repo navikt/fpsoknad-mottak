@@ -64,7 +64,6 @@ public class PdfGenerator {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, baos);
             document.open();
-            // Path path = Paths.get(ClassLoader.getSystemResource("pdf/nav-logo.png").toURI());
             Image logo = Image.getInstance(
                     StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
             logo.setAlignment(Image.ALIGN_CENTER);

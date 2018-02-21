@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Vedlegg;
-import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;
@@ -37,17 +36,10 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
-    private final PdfGenerator pdfGenerator;
 
     @Inject
-    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator,
-            PdfGenerator pdfGenerator) {
+    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
         this.søknadGenerator = Objects.requireNonNull(generator);
-        this.pdfGenerator = Objects.requireNonNull(pdfGenerator);
-    }
-
-    public DokmotEngangsstønadXMLGenerator getSøknadGenerator() {
-        return søknadGenerator;
     }
 
     public String toXML(Søknad søknad) {
@@ -79,7 +71,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private Hoveddokument hoveddokument(Søknad søknad) {
         Dokumentinnhold hovedskjemaInnhold = new Dokumentinnhold()
-                .withDokument(pdfGenerator.generate(søknad))
+                .withDokument(søknadGenerator.toPdf(søknad))
                 .withArkivfiltype(new Arkivfiltyper().withValue(PDFA.name()))
                 .withVariantformat(new Variantformater().withValue(ARKIV.name()));
         Stream<Dokumentinnhold> alternativeRepresentasjonerInnhold = Collections.singletonList(new Dokumentinnhold()
@@ -116,6 +108,11 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     enum Variant {
         ARKIV, ORIGINAL
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [søknadGenerator=" + søknadGenerator + "]";
     }
 
 }
