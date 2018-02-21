@@ -99,23 +99,19 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private List<no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg> dokmotVedleggListe(
             List<? extends Vedlegg> påkrevdeVedlegg, List<? extends Vedlegg> frivilligeVedlegg) {
         return Stream.concat(påkrevdeVedlegg.stream(), frivilligeVedlegg.stream())
-                .map(v -> dokmotVedleggFraHenvendelseData(v))
+                .map(this::dokmotVedlegg)
                 .collect(Collectors.toList());
     }
 
-    private no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg dokmotVedleggFraHenvendelseData(Vedlegg vedlegg) {
+    private no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg dokmotVedlegg(Vedlegg vedlegg) {
 
         return new no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg()
                 .withBrukeroppgittTittel(vedlegg.getMetadata().getBeskrivelse())
                 .withDokumenttypeId(vedlegg.getMetadata().getSkjemanummer().dokumentTypeId())
                 .withDokumentinnholdListe(new Dokumentinnhold()
-                        .withVariantformat(new Variantformater().withValue(Variant.ARKIV.name()))
+                        .withVariantformat(new Variantformater().withValue(ARKIV.name()))
                         .withArkivfiltype(new Arkivfiltyper().withValue(vedlegg.getMetadata().getType().name()))
                         .withDokument(vedlegg.getVedlegg()));
-    }
-
-    enum Filtype {
-        PDF, PDFA, XML
     }
 
     enum Variant {

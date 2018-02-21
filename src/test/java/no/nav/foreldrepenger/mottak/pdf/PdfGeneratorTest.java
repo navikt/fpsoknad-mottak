@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import no.nav.foreldrepenger.mottak.TestUtils;
 import no.nav.foreldrepenger.mottak.config.AppConfig;
 
 @RunWith(SpringRunner.class)
@@ -20,7 +21,6 @@ public class PdfGeneratorTest {
 
     @Test
     public void signature() throws Exception {
-        assertTrue(true);
-        // assertTrue(hasPdfSignature(gen.generate(engangssøknad(true))));
+        assertTrue(TestUtils.hasPdfSignature(gen.generate(TestUtils.engangssøknad(true))));
     }
 }
