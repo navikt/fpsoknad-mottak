@@ -8,6 +8,8 @@ import java.util.Collections;
 
 import org.springframework.core.io.ClassPathResource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Adopsjon;
@@ -106,11 +108,11 @@ public class TestUtils {
     }
 
     static PåkrevdVedlegg påkrevdVedlegg() throws IOException {
-        return påkrevdVedlegg("vedlegg.pdf");
+        return påkrevdVedlegg("terminbekreftelse.pdf");
     }
 
     static ValgfrittVedlegg valgfrittVedlegg() throws IOException {
-        return valgfrittVedlegg("vedlegg.pdf");
+        return valgfrittVedlegg("terminbekreftelse.pdf");
     }
 
     static PåkrevdVedlegg påkrevdVedlegg(String name) throws IOException {
@@ -136,6 +138,15 @@ public class TestUtils {
 
     static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
         return new FramtidigOppholdsInformasjon(true, Collections.emptyList());
+    }
+
+    static String write(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        if (print) {
+            System.out.println(serialized);
+            return serialized;
+        }
+        return serialized;
     }
 
     static Søker søker() {

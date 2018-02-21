@@ -44,7 +44,7 @@ public class TestSerialization {
 
     @Test
     public void testVedlegg() throws IOException {
-        test(påkrevdVedlegg("vedlegg.pdf"), true);
+        test(påkrevdVedlegg("terminbekreftelse.pdf"), true);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class TestSerialization {
 
     private static void test(Object object, boolean print, ObjectMapper mapper) {
         try {
-            String serialized = write(object, print, mapper);
+            String serialized = TestUtils.write(object, print, mapper);
             Object deserialized = mapper.readValue(serialized, object.getClass());
             if (print) {
                 System.out.println(deserialized);
@@ -165,15 +165,6 @@ public class TestSerialization {
             e.printStackTrace();
             fail(object.getClass().getSimpleName() + " failed");
         }
-    }
-
-    static String write(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
-        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        if (print) {
-            System.out.println(serialized);
-            return serialized;
-        }
-        return serialized;
     }
 
 }

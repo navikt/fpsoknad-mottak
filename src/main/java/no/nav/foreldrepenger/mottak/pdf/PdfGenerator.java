@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.pdf;
 import static java.util.stream.Collectors.joining;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -109,7 +111,9 @@ public class PdfGenerator {
                     paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
 
             document.close();
-            /* OutputStream out = new FileOutputStream("out1.pdf"); out.write(baos.toByteArray()); out.close(); */
+            OutputStream out = new FileOutputStream("terminbekreftelse.pdf");
+            out.write(baos.toByteArray());
+            out.close();
             return baos.toByteArray();
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
