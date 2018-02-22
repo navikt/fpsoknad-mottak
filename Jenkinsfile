@@ -34,7 +34,7 @@ node {
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
     }
 
-    stage(""Build & publish") {
+    stage("Build & publish") {
        try {
          sh "${mvn} versions:set -B -DnewVersion=${releaseVersion}"
          sh "mkdir -p /tmp/${application}"
