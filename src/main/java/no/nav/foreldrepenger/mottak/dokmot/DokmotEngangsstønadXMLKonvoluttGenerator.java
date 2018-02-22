@@ -5,12 +5,11 @@ import static no.nav.foreldrepenger.mottak.dokmot.Variant.ORIGINAL;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +37,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
-    private static final Random r = new SecureRandom();
 
     @Inject
     public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
@@ -60,9 +58,9 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad) {
         return new Dokumentforsendelse()
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
-                        .withKanalreferanseId(String.valueOf(r.nextLong())) // TODO
+                        .withKanalreferanseId(referanseId())
                         .withTema(new Tema().withValue("FOR"))
-                        .withMottakskanal(new Mottakskanaler().withValue("NAV_NO"))
+                        .withMottakskanal(new Mottakskanaler().withValue("FP_SBT"))
                         .withBehandlingstema(new Behandlingstema().withValue("ab0050"))
                         .withForsendelseInnsendt(LocalDateTime.now())
                         .withForsendelseMottatt(søknad.getMotattdato())
@@ -107,6 +105,10 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))
                         .withArkivfiltype(new Arkivfiltyper().withValue(vedlegg.getMetadata().getType().name()))
                         .withDokument(vedlegg.getVedlegg()));
+    }
+
+    private static String referanseId() {
+        return UUID.randomUUID().toString();
     }
 
     enum Variant {

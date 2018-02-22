@@ -52,7 +52,7 @@ public class DokmotMottakController {
         return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toDokmotModel(søknad));
     }
 
-    @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/send", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> send(@Valid @RequestBody Søknad søknad) {
         sender.sendSøknad(søknad);
         return ResponseEntity.status(HttpStatus.OK).body("OK");
