@@ -17,6 +17,7 @@ node {
     def groupId = "nais"
     def environment = 't1'
     def zone = 'fss'
+    def jalla = "${env.testenv}"
     def namespace = 'default'
 
     stage("Checkout") {
@@ -84,7 +85,7 @@ node {
     }
 
 
-    stage("Deploy to t") {
+    stage("Deploy to ${jalla}") {
         callback = "${env.BUILD_URL}input/Deploy/"
        // deployLib.testCmd(releaseVersion)
        //  deployLib.testCmd(committer)
