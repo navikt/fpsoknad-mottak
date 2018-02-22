@@ -14,6 +14,7 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 
 @RestController
 class DokmotMottakController {
@@ -37,6 +38,11 @@ class DokmotMottakController {
     @PostMapping(value = "/mottak/dokmot/konvolutt", produces = { "application/xml" })
     public ResponseEntity<String> mottakDokmotPing(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(konvoluttGenerator.toXML(søknad));
+    }
+
+    @PostMapping(value = "/mottak/dokmot/model", produces = { "application/json" })
+    public ResponseEntity<SoeknadsskjemaEngangsstoenad> mottakDokmotModel(@Valid @RequestBody Søknad søknad) {
+        return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toDokmotModel(søknad));
     }
 
     @PostMapping(value = "/mottak/dokmot/send", produces = { "application/json" })

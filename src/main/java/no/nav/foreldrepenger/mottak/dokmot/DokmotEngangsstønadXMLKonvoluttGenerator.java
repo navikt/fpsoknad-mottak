@@ -5,10 +5,12 @@ import static no.nav.foreldrepenger.mottak.dokmot.Variant.ORIGINAL;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +38,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
+    private static final Random r = new SecureRandom();
 
     @Inject
     public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
@@ -43,21 +46,21 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     }
 
     public String toXML(Søknad søknad) {
-        return toXML(toDokmotModel(søknad));
+        return xmlFra(dokmotModelFra(søknad));
     }
 
-    public Dokumentforsendelse toDokmotModel(Søknad søknad) {
-        return dokumentForsendelse(søknad);
+    public Dokumentforsendelse dokmotModelFra(Søknad søknad) {
+        return dokumentForsendelseFra(søknad);
     }
 
-    public String toXML(Dokumentforsendelse model) {
+    public String xmlFra(Dokumentforsendelse model) {
         return Jaxb.marshall(CONTEXT, model);
     }
 
-    private Dokumentforsendelse dokumentForsendelse(Søknad søknad) {
+    private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad) {
         return new Dokumentforsendelse()
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
-                        .withKanalreferanseId("TODO")
+                        .withKanalreferanseId(String.valueOf(r.nextLong())) // TODO
                         .withTema(new Tema().withValue("FOR"))
                         .withMottakskanal(new Mottakskanaler().withValue("NAV_NO"))
                         .withBehandlingstema(new Behandlingstema().withValue("ab0050"))

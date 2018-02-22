@@ -18,5 +18,9 @@
 		<appender-ref ref="stdout_json" />
 	</root>
 
- <logger name="org.springframework" level="info" />
+<!--  
+ <logger name="org.springframework.jms" level="trace" />
+  <logger name="com.ibm" level="trace" />
+  -->
+ 
 </configuration>
