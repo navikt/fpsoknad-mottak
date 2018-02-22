@@ -15,7 +15,7 @@ node {
     def dockerRepo = "docker.adeo.no:5000"
     def branch = "master"
     def groupId = "nais"
-    def environment = ${env.testenv}
+    def environment = 't'
     def zone = 'fss'
     def namespace = 'default'
 
@@ -88,7 +88,8 @@ node {
         callback = "${env.BUILD_URL}input/Deploy/"
        // deployLib.testCmd(releaseVersion)
        //  deployLib.testCmd(committer)
-        def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
+       
+        def deploy = deployLib.deployNaisApp(application, releaseVersion, ${env.testenv}, zone, namespace, callback, committer).key
         echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
        try {
             timeout(time: 15, unit: 'MINUTES') {
