@@ -15,7 +15,7 @@ node {
     def dockerRepo = "docker.adeo.no:5000"
     def branch = "master"
     def groupId = "nais"
-    def environment = ${testenv}
+    def environment = ${env.testenv}
     def zone = 'fss'
     def namespace = 'default'
 
