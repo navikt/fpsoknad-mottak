@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.pdf;
 import static java.util.stream.Collectors.joining;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -18,6 +20,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -32,6 +35,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 
@@ -64,13 +68,16 @@ public class PdfGenerator {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, baos);
             document.open();
-            Image logo = Image.getInstance(
-                    StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
+            Image logo = logo();
             logo.setAlignment(Image.ALIGN_CENTER);
             document.add(logo);
 
             document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
             document.add(centeredParagraph(søknad.getSøker().getFnr().getId(), NORMAL));
+            String navn = navn(søknad.getSøker().getNavn());
+            if (!navn.isEmpty()) {
+                document.add(centeredParagraph(navn, NORMAL));
+            }
             document.add(separator());
 
             document.add(blankLine());
@@ -108,13 +115,21 @@ public class PdfGenerator {
                     paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
 
             document.close();
-            // OutputStream out = new FileOutputStream("xyz.pdf");
-            // out.write(baos.toByteArray());
-            // out.close();
             return baos.toByteArray();
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private Image logo() throws BadElementException, MalformedURLException, IOException {
+        return Image.getInstance(
+                StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
+    }
+
+    private String navn(Navn søker) {
+        return (Optional.ofNullable(søker.getFornavn()).orElse("") + " "
+                + Optional.ofNullable(søker.getMellomnavn()).orElse("") + " "
+                + Optional.ofNullable(søker.getEtternavn()).orElse("")).trim();
     }
 
     private boolean erFremtidigFødsel(Engangsstønad stønad) {

@@ -10,7 +10,6 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
-import no.nav.foreldrepenger.mottak.domain.Pair;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
@@ -37,10 +36,9 @@ public class DokmotJMSSender implements SøknadSender {
         String xml = generator.toXML(søknad);
         try {
             dokmotTemplate.send(session -> {
-                Pair<String, String> callId = callIdGenerator.generateCallId();
-                LOG.info("Sending message to DOKMOT {}", xml);
+                LOG.trace("Sending message to DOKMOT {}", xml);
                 TextMessage msg = session.createTextMessage(xml);
-                msg.setStringProperty("callId", callId.getSecond());
+                msg.setStringProperty("callId", callIdGenerator.generateCallId().getSecond());
                 return msg;
             });
             return SøknadSendingsResultat.OK;
@@ -52,7 +50,8 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotTemplate + ", generator=" + generator + "]";
+        return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotTemplate + ", generator=" + generator
+                + ", callIdGenerator=" + callIdGenerator + "]";
     }
 
 }

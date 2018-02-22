@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 
@@ -8,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
@@ -17,7 +21,10 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 
 @RestController
-class DokmotMottakController {
+@RequestMapping(DokmotMottakController.DOKMOT)
+public class DokmotMottakController {
+
+    public static final String DOKMOT = "/mottak/dokmot";
 
     private final DokmotJMSSender sender;
     @Autowired
@@ -30,23 +37,23 @@ class DokmotMottakController {
         this.sender = sender;
     }
 
-    @PostMapping(value = "/mottak/dokmot/søknad", produces = { "application/xml" })
-    public ResponseEntity<String> mottak(@Valid @RequestBody Søknad søknad) {
+    @PostMapping(value = "/søknad", produces = APPLICATION_XML_VALUE)
+    public ResponseEntity<String> søknad(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toXML(søknad));
     }
 
-    @PostMapping(value = "/mottak/dokmot/konvolutt", produces = { "application/xml" })
-    public ResponseEntity<String> mottakDokmotPing(@Valid @RequestBody Søknad søknad) {
+    @PostMapping(value = "/konvolutt", produces = APPLICATION_XML_VALUE)
+    public ResponseEntity<String> konvolutt(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(konvoluttGenerator.toXML(søknad));
     }
 
-    @PostMapping(value = "/mottak/dokmot/model", produces = { "application/json" })
-    public ResponseEntity<SoeknadsskjemaEngangsstoenad> mottakDokmotModel(@Valid @RequestBody Søknad søknad) {
+    @PostMapping(value = "/model", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<SoeknadsskjemaEngangsstoenad> model(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toDokmotModel(søknad));
     }
 
-    @PostMapping(value = "/mottak/dokmot/send", produces = { "application/json" })
-    public ResponseEntity<String> mottakDokmotSend(@Valid @RequestBody Søknad søknad) {
+    @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> send(@Valid @RequestBody Søknad søknad) {
         sender.sendSøknad(søknad);
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
