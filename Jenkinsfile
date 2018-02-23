@@ -26,14 +26,13 @@ node {
         }
         commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
         commitHashShort = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-        currentBuild.displayName = "${releaseVersion}"
         commitUrl = "https://github.com/${repo}/${application}/commit/${commitHash}"
         committer = sh(script: 'git log -1 --pretty=format:"%an"', returnStdout: true).trim()
         committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
         releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
-       
+        currentBuild.displayName = "${releaseVersion}"
     }
 
     stage("Build & publish") {
