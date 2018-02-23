@@ -43,12 +43,13 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     }
 
     private TidligereOppholdsInformasjon tidligereOpphold(JsonNode rootNode, JsonParser parser) {
-        return new TidligereOppholdsInformasjon(iNorgeSiste12(rootNode), arbeidsInfo(rootNode),
+        return new TidligereOppholdsInformasjon(norgeSiste12(rootNode), arbeidsInfo(rootNode),
                 utenlandsOpphold(rootNode, parser, "utenlandsopphold"));
     }
 
     private static FramtidigOppholdsInformasjon framtidigOpphold(JsonNode rootNode, JsonParser parser) {
-        return new FramtidigOppholdsInformasjon(booleanValue(rootNode, "fødselINorge"),
+        return new FramtidigOppholdsInformasjon(booleanValue(rootNode, "fødselNorge"),
+                booleanValue(rootNode, "norgeNeste12"),
                 utenlandsOpphold(rootNode, parser, "framtidigUtenlandsopphold"));
     }
 
@@ -73,12 +74,12 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
         }
     }
 
-    private ArbeidsInformasjon arbeidsInfo(JsonNode rootNode) {
+    private static ArbeidsInformasjon arbeidsInfo(JsonNode rootNode) {
         return ArbeidsInformasjon.valueOf(textValue(rootNode, "arbeidSiste12"));
     }
 
-    private boolean iNorgeSiste12(JsonNode rootNode) {
-        return booleanValue(rootNode, "iNorgeSiste12");
+    private static boolean norgeSiste12(JsonNode rootNode) {
+        return booleanValue(rootNode, "norgeSiste12");
     }
 
     private static ArrayNode arrayNode(JsonNode rootNode, String nodeName) {

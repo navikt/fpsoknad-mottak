@@ -4,7 +4,7 @@ import deploy
 def deployLib = new deploy()
 
 node {
-    def commitHash, commitHashShort, commitUrl, currentVersion
+    def commitHash, commitHashShort, commitUrl
     def repo = "navikt"
     def application = "fpsoknad-mottak"
     def committer, committerEmail, changelog, releaseVersion, nextVersion // metadata

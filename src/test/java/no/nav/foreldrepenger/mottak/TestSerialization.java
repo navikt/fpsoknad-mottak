@@ -61,7 +61,7 @@ public class TestSerialization {
 
     @Test
     public void testEngangsstønadUtland() {
-        test(engangstønad(true));
+        test(engangstønad(true), true);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class TestSerialization {
 
     @Test
     public void testFremtidigOppholdNorge() {
-        test(framtidigOppholdINorge());
+        test(framtidigOppholdINorge(), true);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
 import javax.inject.Inject;
+import javax.jms.JMSException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class DokmotHealthIndicator implements HealthIndicator {
         try {
             dokmotTemplate.getConnectionFactory().createConnection().close();
             return Health.up().build();
-        } catch (Exception e) {
+        } catch (JMSException e) {
             LOG.warn("Could not verify health of queue", e);
             return Health.down().build();
         }

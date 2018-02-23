@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.mottak.config.AppConfig;
+import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
@@ -31,7 +31,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, PdfGenerator.class, DokmotEngangsstønadXMLGenerator.class,
+@ContextConfiguration(classes = { MottakConfiguration.class, PdfGenerator.class, DokmotEngangsstønadXMLGenerator.class,
         DokmotEngangsstønadXMLKonvoluttGenerator.class })
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {

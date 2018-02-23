@@ -105,7 +105,7 @@ public class PdfGenerator {
                     formatOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold())), NORMAL));
             if (erFremtidigFødsel(stønad)) {
                 document.add(paragraph(getMessage("føde", kvitteringstekster,
-                        countryName(medlemsskap.getFramtidigOppholdsInfo().isFødseINorge())), NORMAL));
+                        countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())), NORMAL));
             }
 
             document.add(blankLine());

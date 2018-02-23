@@ -9,10 +9,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.foreldrepenger.mottak.TestUtils;
-import no.nav.foreldrepenger.mottak.config.AppConfig;
+import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, PdfGenerator.class })
+@ContextConfiguration(classes = { MottakConfiguration.class, PdfGenerator.class })
 
 public class PdfGeneratorTest {
 

@@ -133,11 +133,12 @@ public class TestUtils {
     }
 
     static FramtidigOppholdsInformasjon framtidigOppHoldIUtlandetHeleåret() {
-        return new FramtidigOppholdsInformasjon(false, Collections.singletonList(new Utenlandsopphold(CountryCode.SE)));
+        return new FramtidigOppholdsInformasjon(true, false,
+                Collections.singletonList(new Utenlandsopphold(CountryCode.SE)));
     }
 
     static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
-        return new FramtidigOppholdsInformasjon(true, Collections.emptyList());
+        return new FramtidigOppholdsInformasjon(true, true, Collections.emptyList());
     }
 
     static String write(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
