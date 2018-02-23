@@ -5,7 +5,6 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
@@ -40,7 +40,7 @@ public class DokmotMottakController {
     }
 
     @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
-    public ResponseEntity<String> ping(@PathParam("navn") String navn) {
+    public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
