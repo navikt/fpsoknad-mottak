@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,11 @@ public class DokmotMottakController {
     @Inject
     public DokmotMottakController(DokmotJMSSender sender) {
         this.sender = sender;
+    }
+
+    @PostMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
+    public ResponseEntity<String> ping(@PathParam("navn") String navn) {
+        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
     @PostMapping(value = "/søknad", produces = APPLICATION_XML_VALUE)
