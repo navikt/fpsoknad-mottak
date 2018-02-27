@@ -17,7 +17,7 @@ import lombok.Data;
 @Data
 public class Søknad {
     @NotNull
-    private final LocalDateTime motattdato;
+    private final LocalDateTime mottattdato;
     @Valid
     private final Søker søker;
     @Valid
@@ -27,20 +27,20 @@ public class Søknad {
     private final List<PåkrevdVedlegg> påkrevdeVedlegg;
     private final List<ValgfrittVedlegg> frivilligeVedlegg;
 
-    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse, Vedlegg... vedlegg) {
-        this(motattdato, søker, ytelse, Arrays.asList(vedlegg));
+    public Søknad(LocalDateTime mottattdato, Søker søker, Ytelse ytelse, Vedlegg... vedlegg) {
+        this(mottattdato, søker, ytelse, Arrays.asList(vedlegg));
     }
 
-    public Søknad(LocalDateTime motattdato, Søker søker, Ytelse ytelse, List<Vedlegg> vedlegg) {
-        this(motattdato, søker, ytelse, påkrevde(vedlegg), valgfrie(vedlegg));
+    public Søknad(LocalDateTime mottattdato, Søker søker, Ytelse ytelse, List<Vedlegg> vedlegg) {
+        this(mottattdato, søker, ytelse, påkrevde(vedlegg), valgfrie(vedlegg));
     }
 
     @JsonCreator
-    public Søknad(@JsonProperty("motattdato") LocalDateTime motattdato, @JsonProperty("søker") Søker søker,
-            @JsonProperty("ytelse") Ytelse ytelse,
-            @JsonProperty("påkrevdeVedlegg") List<PåkrevdVedlegg> påkrevdeVedlegg,
-            @JsonProperty("frivilligeVedlegg") List<ValgfrittVedlegg> frivilligeVedlegg) {
-        this.motattdato = motattdato;
+    public Søknad(@JsonProperty("mottattdato") LocalDateTime mottattdato, @JsonProperty("søker") Søker søker,
+                  @JsonProperty("ytelse") Ytelse ytelse,
+                  @JsonProperty("påkrevdeVedlegg") List<PåkrevdVedlegg> påkrevdeVedlegg,
+                  @JsonProperty("frivilligeVedlegg") List<ValgfrittVedlegg> frivilligeVedlegg) {
+        this.mottattdato = mottattdato;
         this.søker = søker;
         this.ytelse = ytelse;
         this.påkrevdeVedlegg = påkrevdeVedlegg == null ? Collections.emptyList() : påkrevdeVedlegg;

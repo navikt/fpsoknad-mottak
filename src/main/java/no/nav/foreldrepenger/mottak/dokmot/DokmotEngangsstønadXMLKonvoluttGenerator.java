@@ -63,7 +63,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                         .withMottakskanal(new Mottakskanaler().withValue("FP_SBT"))
                         .withBehandlingstema(new Behandlingstema().withValue("ab0050"))
                         .withForsendelseInnsendt(LocalDateTime.now())
-                        .withForsendelseMottatt(søknad.getMotattdato())
+                        .withForsendelseMottatt(søknad.getMottattdato())
                         .withAvsender(new Person(søknad.getSøker().getFnr().getId()))
                         .withBruker(new Person(søknad.getSøker().getFnr().getId())))
                 .withHoveddokument(hoveddokument(søknad))
