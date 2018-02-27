@@ -49,8 +49,8 @@ public class TestSerialization {
 
     @Test
     public void testSøknadNorge() throws Exception {
-        Søknad engangssøknad = engangssøknad(false, fremtidigFødsel(), påkrevdVedlegg());
-        test(engangssøknad, false);
+        Søknad engangssøknad = engangssøknad(false, fremtidigFødsel()/* , påkrevdVedlegg() */);
+        test(engangssøknad, true);
     }
 
     @Test
@@ -122,6 +122,11 @@ public class TestSerialization {
     @Test
     public void testSøker() {
         test(søker());
+    }
+
+    @Test
+    public void testSøkerUtenMellomNavn() {
+        test(søker(TestUtils.navnUtenMellomnavn()));
     }
 
     @Test

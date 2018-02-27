@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,6 +39,10 @@ public class SøkerDeserializer extends StdDeserializer<Søker> {
     }
 
     private static String textValue(JsonNode rootNode, String fieldName) {
-        return TextNode.class.cast(rootNode.get(fieldName)).textValue();
+        return Optional.ofNullable(rootNode.get(fieldName))
+                .filter(s -> s instanceof TextNode)
+                .map(s -> TextNode.class.cast(s))
+                .map(s -> s.textValue())
+                .orElse(null);
     }
 }

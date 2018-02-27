@@ -151,7 +151,11 @@ public class TestUtils {
     }
 
     static Søker søker() {
-        return new Søker(fnr(), aktoer(), BrukerRolle.MOR, navn());
+        return søker(navn());
+    }
+
+    static Søker søker(Navn navn) {
+        return new Søker(fnr(), aktoer(), BrukerRolle.MOR, navn);
     }
 
     private static Navn navn() {
@@ -196,5 +200,9 @@ public class TestUtils {
 
     static Fodselsnummer fnr() {
         return new Fodselsnummer("03016536325");
+    }
+
+    static Navn navnUtenMellomnavn() {
+        return new Navn("Mor", null, "Monsen");
     }
 }
