@@ -1,10 +1,12 @@
 package no.nav.foreldrepenger.oppslag.http;
 
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,11 @@ public class OppslagController {
     private AktorIdClient aktorClient;
     @Inject
     private CoordinatedLookup personInfo;
+
+    @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
+    public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
+        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
+    }
 
     @GetMapping(value = "/")
     public ResponseEntity<SøkerInformasjon> oppslag(@Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
