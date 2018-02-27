@@ -9,35 +9,27 @@ import java.time.Period;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import javax.inject.Inject;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.oppslag.person.PoststedFinner;
 import no.nav.foreldrepenger.oppslag.person.StatiskPoststedFinner;
 
-@Tag("fast")
+//@Tag("fast")
+@RunWith(SpringJUnit4ClassRunner.class)
+@AutoConfigureJsonTesters
 public class SerializationTest {
 
-    private static ObjectMapper mapper;
-
-    @BeforeAll
-    public static void beforeClass() {
-        mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.registerModule(new Jdk8Module());
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
-    }
+    @Inject
+    ObjectMapper mapper;
 
     @Test
     public void testPostnr() throws IOException {
@@ -92,15 +84,15 @@ public class SerializationTest {
         test(id());
     }
 
-   @Test
-   public void testInntektSerialization() throws IOException {
-      test(inntekt());
-   }
+    @Test
+    public void testInntektSerialization() throws IOException {
+        test(inntekt());
+    }
 
-   @Test
-   public void testMedlPeriodeSerialization() throws IOException {
-      test(medlPeriode());
-   }
+    @Test
+    public void testMedlPeriodeSerialization() throws IOException {
+        test(medlPeriode());
+    }
 
     private void test(Object object) throws IOException {
         String serialized = write(object);
@@ -141,14 +133,14 @@ public class SerializationTest {
                 Optional.of(LocalDate.now().minus(Period.ofYears(1))));
     }
 
-   private static Inntekt inntekt() {
-      return new Inntekt(LocalDate.now(), Optional.of(LocalDate.now().minusMonths(2)), 1234.5, "acme industries");
-   }
+    private static Inntekt inntekt() {
+        return new Inntekt(LocalDate.now(), Optional.of(LocalDate.now().minusMonths(2)), 1234.5, "acme industries");
+    }
 
-   private static MedlPeriode medlPeriode() {
-      return new MedlPeriode(LocalDate.now(), Optional.of(LocalDate.now().minusMonths(2)), "statusen", "typen",
-         "grunnlagstypen", "landet");
-   }
+    private static MedlPeriode medlPeriode() {
+        return new MedlPeriode(LocalDate.now(), Optional.of(LocalDate.now().minusMonths(2)), "statusen", "typen",
+                "grunnlagstypen", "landet");
+    }
 
     private static Arbeidsforhold arbeidsforhold() {
         LocalDate now = LocalDate.now();
