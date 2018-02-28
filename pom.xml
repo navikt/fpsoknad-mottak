@@ -13,6 +13,8 @@
    <artifactId>fpsoknad-mottak</artifactId>
    <version>0-SNAPSHOT</version>
    <properties>
+     <timestamp>${maven.build.timestamp}</timestamp>
+      <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
       <springfox.version>2.7.0</springfox.version>
       <xsd.location>${project.build.directory}/classes</xsd.location>
       <jaxb.location>${project.build.directory}/classes/</jaxb.location>
