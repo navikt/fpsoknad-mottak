@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.dokmot.Variant.ARKIV;
 import static no.nav.foreldrepenger.mottak.dokmot.Variant.ORIGINAL;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
@@ -10,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -34,6 +34,8 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 
 @Service
 public class DokmotEngangsstønadXMLKonvoluttGenerator {
+
+    private static final String FORELDREPENGER = "FOR";
 
     private static final String BEHANDLINGSTEMA = "ab0050";
 
@@ -65,7 +67,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
         return new Dokumentforsendelse()
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
                         .withKanalreferanseId(referanseId())
-                        .withTema(new Tema().withValue("FOR"))
+                        .withTema(new Tema().withValue(FORELDREPENGER))
                         .withMottakskanal(new Mottakskanaler().withValue(KANAL))
                         .withBehandlingstema(new Behandlingstema().withValue(BEHANDLINGSTEMA))
                         .withForsendelseInnsendt(LocalDateTime.now())
@@ -90,17 +92,17 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withDokumenttypeId(SkjemanummerTilDokumentTypeKode.dokumentTypeKode(SKJEMANUMMER))
                 .withDokumentinnholdListe(
                         Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
-                                .collect(Collectors.toList()));
+                                .collect(toList()));
     }
 
-    private List<no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg> dokmotVedleggListe(
+    private static List<no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg> dokmotVedleggListe(
             List<? extends Vedlegg> påkrevdeVedlegg, List<? extends Vedlegg> frivilligeVedlegg) {
         return Stream.concat(påkrevdeVedlegg.stream(), frivilligeVedlegg.stream())
-                .map(this::dokmotVedlegg)
-                .collect(Collectors.toList());
+                .map(DokmotEngangsstønadXMLKonvoluttGenerator::dokmotVedlegg)
+                .collect(toList());
     }
 
-    private no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg dokmotVedlegg(Vedlegg vedlegg) {
+    private static no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg dokmotVedlegg(Vedlegg vedlegg) {
 
         return new no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg()
                 .withBrukeroppgittTittel(vedlegg.getMetadata().getBeskrivelse())

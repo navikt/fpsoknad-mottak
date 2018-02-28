@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.http;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import no.nav.foreldrepenger.mottak.domain.Pair;
 
 @Component
 public class UUIDCallIdGenerator implements CallIdGenerator {
@@ -29,6 +31,11 @@ public class UUIDCallIdGenerator implements CallIdGenerator {
         return Pair.of(defaultCallIdkey, getOrCreate(defaultCallIdkey));
     }
 
+    @Override
+    public String getDefaultKey() {
+        return defaultCallIdkey;
+    }
+
     private static String getOrCreate(String key) {
         String callId = Optional.ofNullable(MDC.get(key)).orElse(UUID.randomUUID().toString());
         MDC.put(key, callId);
@@ -40,8 +47,4 @@ public class UUIDCallIdGenerator implements CallIdGenerator {
         return getClass().getSimpleName() + " [defaultCallIdkey=" + defaultCallIdkey + "]";
     }
 
-    @Override
-    public String getDefaultKey() {
-        return defaultCallIdkey;
-    }
 }

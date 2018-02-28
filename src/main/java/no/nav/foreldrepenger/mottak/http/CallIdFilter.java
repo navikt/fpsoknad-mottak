@@ -10,12 +10,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.MDC;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
-
 @Component
+@Order(1)
 public class CallIdFilter extends GenericFilterBean {
 
     private final CallIdGenerator generator;

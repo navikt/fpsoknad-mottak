@@ -1,4 +1,6 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.http;
+
+import no.nav.foreldrepenger.mottak.domain.Pair;
 
 public interface CallIdGenerator {
 

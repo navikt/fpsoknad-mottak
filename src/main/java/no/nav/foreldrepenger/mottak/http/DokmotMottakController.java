@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEnga
 @RequestMapping(DokmotMottakController.DOKMOT)
 public class DokmotMottakController {
 
+    private static final Logger LOG = getLogger(DokmotMottakController.class);
+
     public static final String DOKMOT = "/mottak/dokmot";
 
     private final DokmotJMSSender sender;
@@ -41,6 +45,7 @@ public class DokmotMottakController {
 
     @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
+        LOG.info("I was pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
