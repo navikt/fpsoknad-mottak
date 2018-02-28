@@ -38,7 +38,7 @@ public class DokmotJMSSender implements SøknadSender {
             dokmotTemplate.send(session -> {
                 LOG.trace("Sending message to DOKMOT {}", xml);
                 TextMessage msg = session.createTextMessage(xml);
-                msg.setStringProperty("callId", callIdGenerator.generateCallId().getSecond());
+                msg.setStringProperty("callId", callIdGenerator.getOrCreate());
                 return msg;
             });
             return SøknadSendingsResultat.OK;
