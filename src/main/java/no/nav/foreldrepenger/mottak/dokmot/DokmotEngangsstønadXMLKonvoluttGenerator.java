@@ -35,6 +35,12 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 @Service
 public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
+    private static final String BEHANDLINGSTEMA = "ab0050";
+
+    private static final String KANAL = "NAV_NO";
+
+    private static final String SKJEMANUMMER = "NAV 14-05.07"; // Engangsstønad fødsel
+
     private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
 
@@ -60,8 +66,8 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
                         .withKanalreferanseId(referanseId())
                         .withTema(new Tema().withValue("FOR"))
-                        .withMottakskanal(new Mottakskanaler().withValue("NO_NAV"))
-                        .withBehandlingstema(new Behandlingstema().withValue("ab0050"))
+                        .withMottakskanal(new Mottakskanaler().withValue(KANAL))
+                        .withBehandlingstema(new Behandlingstema().withValue(BEHANDLINGSTEMA))
                         .withForsendelseInnsendt(LocalDateTime.now())
                         .withForsendelseMottatt(søknad.getMottattdato())
                         .withAvsender(new Person(søknad.getSøker().getFnr().getId()))
@@ -80,10 +86,8 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withVariantformat(new Variantformater().withValue(ORIGINAL.name()))
                 .withArkivfiltype(new Arkivfiltyper().withValue(XML.name()))).stream();
 
-        String skjemanummer = "NAV 14-05.07"; // Engangsstønad fødsel
-
         return new Hoveddokument()
-                .withDokumenttypeId(SkjemanummerTilDokumentTypeKode.dokumentTypeKode(skjemanummer))
+                .withDokumenttypeId(SkjemanummerTilDokumentTypeKode.dokumentTypeKode(SKJEMANUMMER))
                 .withDokumentinnholdListe(
                         Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
                                 .collect(Collectors.toList()));
