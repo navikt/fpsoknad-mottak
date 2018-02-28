@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.oppslag.http;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +31,8 @@ import no.nav.foreldrepenger.oppslag.person.PersonClient;
 @RequestMapping("/oppslag")
 public class OppslagController {
 
+    private static final Logger LOG = getLogger(OppslagController.class);
+
     @Inject
     private PersonClient personClient;
     @Inject
@@ -38,6 +42,7 @@ public class OppslagController {
 
     @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
+        LOG.info("I was pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
