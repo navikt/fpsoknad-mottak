@@ -4,6 +4,4 @@ public interface CallIdGenerator {
 
     String getOrCreate();
 
-    String getKey();
-
 }

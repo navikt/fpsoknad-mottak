@@ -25,11 +25,6 @@ public class UUIDCallIdGenerator implements CallIdGenerator {
     }
 
     @Override
-    public String getKey() {
-        return key;
-    }
-
-    @Override
     public String toString() {
         return getClass().getSimpleName() + " [key=" + key + "]";
     }
