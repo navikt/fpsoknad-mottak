@@ -21,7 +21,7 @@ node {
       cleanWs()
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'NAV IKT GitHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
          withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-            sh(script: "git clone https://${USERNAME}:${PASSWORD}:x-oauth-basic@github.com/${repo}/${application}.git .")
+            sh(script: "git clone https://${PASSWORD}:x-oauth-basic@github.com/${repo}/${application}.git .")
          }
       }
 
@@ -93,7 +93,7 @@ node {
       withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'NAV IKT GitHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
             sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
-            sh ("git push https://${USERNAME}:${PASSWORD}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
+            sh ("git push https://${PASSWORD}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
          }
       }
    }
