@@ -1,5 +1,5 @@
 name: fpsoknad-mottak
-image: repo.adeo.no:5000/fpsoknad-mottak
+image: repo.adeo.no:5443/fpsoknad-mottak
 replicas:
     min: 1
     max: 1
