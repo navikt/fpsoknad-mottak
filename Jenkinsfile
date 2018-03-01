@@ -33,8 +33,10 @@ node {
         committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
-        releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
-        //currentBuild.displayName = "${releaseVersion}"
+        echo "1" 
+       releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
+       echo "2"
+        currentBuild.displayName = "${releaseVersion}"
     }
 
     stage("Build & publish") {
