@@ -88,9 +88,9 @@ node {
    stage("Tag") {
       // TODO: Tag only releases that go to production
       withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'NAV IKT GitHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
             sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
-            sh ("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
+            sh ("git push https://${USERNAME}:${PASSWORD}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
          }
       }
    }
@@ -106,9 +106,9 @@ def notifyGithub(owner, repo, context, sha, state, description) {
    def postBodyString = groovy.json.JsonOutput.toJson(postBody)
 
    withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-      withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+      withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'NAV IKT GitHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
          sh """
-                curl -H 'Authorization: token ${token}' \
+                curl -H 'Authorization: token ${PASSWORD}' \
                     -H 'Content-Type: application/json' \
                     -X POST \
                     -d '${postBodyString}' \
