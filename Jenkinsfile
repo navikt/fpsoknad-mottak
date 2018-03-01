@@ -19,7 +19,7 @@ node {
     def namespace = 'default'
 
     stage("Checkout") {
-        cleanWs()
+    //    cleanWs()
         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
            withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
             sh(script: "git clone https://${token}:x-oauth-basic@github.com/${repo}/${application}.git .")
