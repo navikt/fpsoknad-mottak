@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,69 +33,76 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 public class PersonClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersonClient.class);
+   private static final Logger LOG = LoggerFactory.getLogger(PersonClient.class);
 
-    private final PersonV3 person;
-    private final Barnutvelger barneVelger;
+   private final PersonV3 person;
+   private final Barnutvelger barneVelger;
 
-    public PersonClient(PersonV3 person, Barnutvelger barneVelger) {
-        this.person = Objects.requireNonNull(person);
-        this.barneVelger = Objects.requireNonNull(barneVelger);
-    }
+   private final Counter errorCounter = Metrics.counter("errors.lookup.person");
 
-    public Person hentPersonInfo(ID id) {
+   public PersonClient(PersonV3 person, Barnutvelger barneVelger) {
+      this.person = Objects.requireNonNull(person);
+      this.barneVelger = Objects.requireNonNull(barneVelger);
+   }
 
-        HentPersonRequest request = request(id.getFnr(), ADRESSE, FAMILIERELASJONER);
-        return PersonMapper.map(id, hentPerson(id.getFnr(), request).getPerson(),
-                barnFor(hentPerson(id.getFnr(), request).getPerson()));
+   public Person hentPersonInfo(ID id) {
 
-    }
+      try {
+         HentPersonRequest request = request(id.getFnr(), ADRESSE, FAMILIERELASJONER);
+         return PersonMapper.map(id, hentPerson(id.getFnr(), request).getPerson(),
+            barnFor(hentPerson(id.getFnr(), request).getPerson()));
+      } catch (Exception ex) {
+         errorCounter.increment();
+         throw new RuntimeException(ex);
+      }
 
-    private List<Barn> barnFor(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-        PersonIdent id = PersonIdent.class.cast(person.getAktoer());
-        String idType = id.getIdent().getType().getValue();
-        switch (idType) {
-        case FNR:
+   }
+
+   private List<Barn> barnFor(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+      PersonIdent id = PersonIdent.class.cast(person.getAktoer());
+      String idType = id.getIdent().getType().getValue();
+      switch (idType) {
+         case FNR:
             Fodselsnummer fnrMor = new Fodselsnummer(id.getIdent().getIdent());
             return person.getHarFraRolleI().stream().filter(this::isBarn).map(s -> hentBarn(s, fnrMor))
-                    .filter(barn -> barneVelger.erStonadsberettigetBarn(fnrMor, barn)).collect(Collectors.toList());
-        default:
+               .filter(barn -> barneVelger.erStonadsberettigetBarn(fnrMor, barn)).collect(Collectors.toList());
+         default:
             throw new IllegalStateException("ID type " + idType + " ikke støttet");
-        }
-    }
+      }
+   }
 
-    private boolean isBarn(Familierelasjon rel) {
-        return rel.getTilRolle().getValue().equals(BARN);
-    }
+   private boolean isBarn(Familierelasjon rel) {
+      return rel.getTilRolle().getValue().equals(BARN);
+   }
 
-    private Barn hentBarn(Familierelasjon rel, Fodselsnummer fnrMor) {
-        NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
-        if (RequestUtils.isFnr(id)) {
-            Fodselsnummer fnrBarn = new Fodselsnummer(id.getIdent());
-            return PersonMapper.map(id, fnrMor, hentPerson(fnrBarn, FAMILIERELASJONER));
-        }
-        throw new IllegalStateException("ID type " + id.getType().getValue() + " ikke støttet");
-    }
+   private Barn hentBarn(Familierelasjon rel, Fodselsnummer fnrMor) {
+      NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
+      if (RequestUtils.isFnr(id)) {
+         Fodselsnummer fnrBarn = new Fodselsnummer(id.getIdent());
+         return PersonMapper.map(id, fnrMor, hentPerson(fnrBarn, FAMILIERELASJONER));
+      }
+      throw new IllegalStateException("ID type " + id.getType().getValue() + " ikke støttet");
+   }
 
-    private HentPersonResponse hentPerson(Fodselsnummer fnr, Informasjonsbehov... behov) {
-        return hentPerson(fnr, request(fnr, behov));
-    }
+   private HentPersonResponse hentPerson(Fodselsnummer fnr, Informasjonsbehov... behov) {
+      return hentPerson(fnr, request(fnr, behov));
+   }
 
-    private HentPersonResponse hentPerson(Fodselsnummer fnr, HentPersonRequest request) {
-        try {
-            return person.hentPerson(request);
-        } catch (HentPersonPersonIkkeFunnet e) {
-            LOG.warn("Kunne ikke slå opp person " + "{}", fnr.getFnr(), e);
-            throw new NotFoundException(e);
-        } catch (HentPersonSikkerhetsbegrensning e) {
-            LOG.warn("Sikkerhetsbegrensning ved oppslag av {}", fnr.getFnr(), e);
-            throw new ForbiddenException(e);
-        }
-    }
+   private HentPersonResponse hentPerson(Fodselsnummer fnr, HentPersonRequest request) {
+      try {
+         return person.hentPerson(request);
+      } catch (HentPersonPersonIkkeFunnet e) {
+         LOG.warn("Kunne ikke slå opp person " + "{}", fnr.getFnr(), e);
+         throw new NotFoundException(e);
+      } catch (HentPersonSikkerhetsbegrensning e) {
+         LOG.warn("Sikkerhetsbegrensning ved oppslag av {}", fnr.getFnr(), e);
+         throw new ForbiddenException(e);
+      }
+   }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [person=" + person + ", barneVelger=" + barneVelger + "]";
-    }
+   @Override
+   public String toString() {
+      return getClass().getSimpleName() + " [person=" + person + ", barneVelger=" + barneVelger + "]";
+   }
 
 }

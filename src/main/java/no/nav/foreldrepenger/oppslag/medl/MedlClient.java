@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,30 +25,35 @@ import no.nav.tjeneste.virksomhet.medlemskap.v2.meldinger.HentPeriodeListeReques
 
 @Component
 public class MedlClient {
-    private static final Logger log = LoggerFactory.getLogger(MedlClient.class);
+   private static final Logger log = LoggerFactory.getLogger(MedlClient.class);
 
-    private final MedlemskapV2 medlemskapV2;
+   private final MedlemskapV2 medlemskapV2;
 
-    @Inject
-    public MedlClient(MedlemskapV2 medlemskapV2) {
-        this.medlemskapV2 = medlemskapV2;
-    }
+   private final Counter errorCounter = Metrics.counter("errors.lookup.medl");
 
-    public List<MedlPeriode> medlInfo(Fodselsnummer fnr) {
-        HentPeriodeListeRequest req = new HentPeriodeListeRequest();
-        Personidentifikator ident = new Foedselsnummer();
-        ident.setValue(fnr.getFnr());
-        req.setIdent(ident);
-        try {
-            return medlemskapV2.hentPeriodeListe(req).getPeriodeListe().stream()
-                    .map(MedlemsperiodeMapper::map)
-                    .collect(toList());
-        } catch (PersonIkkeFunnet ex) {
-            throw new NotFoundException(ex);
-        } catch (Sikkerhetsbegrensning ex) {
-            log.warn("Sikkerhetsfeil fra MEDL", ex);
-            throw new ForbiddenException(ex);
-        }
-    }
+   @Inject
+   public MedlClient(MedlemskapV2 medlemskapV2) {
+      this.medlemskapV2 = medlemskapV2;
+   }
+
+   public List<MedlPeriode> medlInfo(Fodselsnummer fnr) {
+      HentPeriodeListeRequest req = new HentPeriodeListeRequest();
+      Personidentifikator ident = new Foedselsnummer();
+      ident.setValue(fnr.getFnr());
+      req.setIdent(ident);
+      try {
+         return medlemskapV2.hentPeriodeListe(req).getPeriodeListe().stream()
+            .map(MedlemsperiodeMapper::map)
+            .collect(toList());
+      } catch (PersonIkkeFunnet ex) {
+         throw new NotFoundException(ex);
+      } catch (Sikkerhetsbegrensning ex) {
+         log.warn("Sikkerhetsfeil fra MEDL", ex);
+         throw new ForbiddenException(ex);
+      } catch (Exception ex) {
+         errorCounter.increment();
+         throw new RuntimeException(ex);
+      }
+   }
 
 }

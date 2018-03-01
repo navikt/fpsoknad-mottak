@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,37 +24,43 @@ import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.meldinger.HentYtelseskontra
 
 @Component
 public class ArenaClient {
-    private static final Logger LOG = LoggerFactory.getLogger(ArenaClient.class);
+   private static final Logger LOG = LoggerFactory.getLogger(ArenaClient.class);
 
-    private YtelseskontraktV3 ytelser;
+   private YtelseskontraktV3 ytelser;
 
-    @Inject
-    public ArenaClient(YtelseskontraktV3 ytelser) {
-        this.ytelser = ytelser;
-    }
+   private final Counter errorCounter = Metrics.counter("errors.lookup.arena");
 
-    public List<Ytelse> ytelser(Fodselsnummer fnr, LocalDate from, LocalDate to) {
-        try {
-            return ytelser.hentYtelseskontraktListe(request(fnr, from, to)).getYtelseskontraktListe().stream()
-                    .map(YtelseskontraktMapper::map).collect(toList());
-        } catch (HentYtelseskontraktListeSikkerhetsbegrensning ex) {
-            LOG.warn("Sikkehetsfeil fra Arena", ex);
-            throw new ForbiddenException(ex);
-        }
-    }
+   @Inject
+   public ArenaClient(YtelseskontraktV3 ytelser) {
+      this.ytelser = ytelser;
+   }
 
-    private HentYtelseskontraktListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
-        HentYtelseskontraktListeRequest req = new HentYtelseskontraktListeRequest();
-        Periode periode = new Periode();
-        periode.setFom(CalendarConverter.toXMLGregorianCalendar(from));
-        periode.setTom(CalendarConverter.toXMLGregorianCalendar(to));
-        req.setPeriode(periode);
-        req.setPersonidentifikator(fnr.getFnr());
-        return req;
-    }
+   public List<Ytelse> ytelser(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+      try {
+         return ytelser.hentYtelseskontraktListe(request(fnr, from, to)).getYtelseskontraktListe().stream()
+            .map(YtelseskontraktMapper::map)
+            .collect(toList());
+      } catch (HentYtelseskontraktListeSikkerhetsbegrensning ex) {
+         LOG.warn("Sikkehetsfeil fra Arena", ex);
+         throw new ForbiddenException(ex);
+      } catch (Exception ex) {
+         errorCounter.increment();
+         throw ex;
+      }
+   }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [ytelser=" + ytelser + "]";
-    }
+   private HentYtelseskontraktListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+      HentYtelseskontraktListeRequest req = new HentYtelseskontraktListeRequest();
+      Periode periode = new Periode();
+      periode.setFom(CalendarConverter.toXMLGregorianCalendar(from));
+      periode.setTom(CalendarConverter.toXMLGregorianCalendar(to));
+      req.setPeriode(periode);
+      req.setPersonidentifikator(fnr.getFnr());
+      return req;
+   }
+
+   @Override
+   public String toString() {
+      return getClass().getSimpleName() + " [ytelser=" + ytelser + "]";
+   }
 }
