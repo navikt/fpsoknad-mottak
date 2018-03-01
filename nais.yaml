@@ -1,5 +1,5 @@
 name: fpsoknad-mottak
-image: docker.adeo.no:5000/fpsoknad-mottak
+image: repo.adeo.no:5000/fpsoknad-mottak
 replicas:
     min: 1
     max: 1
