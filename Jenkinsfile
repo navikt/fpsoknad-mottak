@@ -7,7 +7,7 @@ node {
    def commitHash, commitHashShort, commitUrl
    def repo = "navikt"
    def application = "fpsoknad-oppslag"
-   def committer, committerEmail, changelog, pom, releaseVersion, nextVersion // metadata
+   def committer, committerEmail, changelog, releaseVersion
    def mvnHome = tool "maven-3.3.9"
    def mvn = "${mvnHome}/bin/mvn"
    def appConfig = "nais.yaml"
