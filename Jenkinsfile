@@ -11,8 +11,7 @@ node {
     def mvnHome = tool "maven-3.3.9"
     def mvn = "${mvnHome}/bin/mvn"
     def appConfig = "nais.yaml"
-    //def dockerRepo = "repo.adeo.no:5443"
-    def dockerRepo = "docker.adeo.no:5000"
+    def dockerRepo = "repo.adeo.no:5443"
     def branch = "master"
     def groupId = "nais"
     def environment = 't1'
@@ -21,9 +20,12 @@ node {
 
     stage("Checkout") {
         cleanWs()
-        withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-                sh(script: "git clone https://github.com/${repo}/${application}.git .")
-        }
+        withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+           withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+            sh(script: "git clone https://${token}:x-oauth-basic@github.com/${repo}/${application}.git .")
+           }
+         }
+       
         commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
         commitHashShort = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         commitUrl = "https://github.com/${repo}/${application}/commit/${commitHash}"
@@ -56,38 +58,41 @@ node {
             junit '**/target/surefire-reports/*.xml'
         }
         sh "docker build --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            sh "curl --fail -v -F r=m2internal -F hasPom=false -F e=yaml -F g=${groupId} -F a=${application} -F " + "v=${releaseVersion} -F p=yaml -F file=@${appConfig} -u ${env.USERNAME}:${env.PASSWORD} http://maven.adeo.no/nexus/service/local/artifact/maven/content"
-            sh "docker push ${dockerRepo}/${application}:${releaseVersion}"
-        }
+           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+              sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${groupId}/${application}/${releaseVersion}/nais.yaml"
+              sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
+           }
         sh "${mvn} versions:revert"
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
   }
 
     stage("Deploy to preprod") {
-        callback = "${env.BUILD_URL}input/Deploy/"
-        environment = "${env.testenv}"
-        def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
-       try {
+      withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088',
+               'NO_PROXY=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no',
+               'no_proxy=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no'
+              ]) {
+         System.setProperty("java.net.useSystemProxies", "true")
+         System.setProperty("http.nonProxyHosts", "*.adeo.no")
+         callback = "${env.BUILD_URL}input/Deploy/"
+         def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
+         echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
+         try {
             timeout(time: 15, unit: 'MINUTES') {
-                input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
+               input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
             }
-        } catch (Exception e) {
-           slackSend([
-               color: 'danger',
-               message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) could not be deployed to pre-prod"
-           ])
-            throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", e)
-        }   
+         } catch (Exception ex) {
+            throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", ex)
+         }
+      }
     }
 
     stage("Tag") {
         withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-             withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-                 sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
-                 sh ("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
-             }
-       }
+         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+            sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
+            sh ("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
+         }
+      }
       notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
     }
 }
@@ -102,14 +107,9 @@ def notifyGithub(owner, repo, context, sha, state, description) {
     def postBodyString = groovy.json.JsonOutput.toJson(postBody)
 
     withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-        withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-            sh """
-                curl -H 'Authorization: token ${token}' \
-                    -H 'Content-Type: application/json' \
-                    -X POST \
-                    -d '${postBodyString}' \
-                    'https://api.github.com/repos/${owner}/${repo}/statuses/${sha}'
-            """
-        }
-    }
+         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+            sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
+            sh ("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
+         }
+      }
 }
