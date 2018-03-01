@@ -34,7 +34,7 @@ node {
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
         releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
-        currentBuild.displayName = "${releaseVersion}"
+        //currentBuild.displayName = "${releaseVersion}"
     }
 
     stage("Build & publish") {
