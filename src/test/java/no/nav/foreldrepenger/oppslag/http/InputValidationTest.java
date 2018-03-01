@@ -39,7 +39,6 @@ public class InputValidationTest {
         return Stream.of(
                 Arguments.of("/aareg"),
                 Arguments.of("/arena"),
-                Arguments.of("/fpsak"),
                 Arguments.of("/infotrygd"),
                 Arguments.of("/income"),
                 Arguments.of("/medl"),
