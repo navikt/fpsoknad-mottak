@@ -101,18 +101,23 @@ node {
 }
 
 def notifyGithub(owner, repo, context, sha, state, description) {
-    def postBody = [
-            state: "${state}",
-            context: "${context}",
-            description: "${description}",
-            target_url: "${env.BUILD_URL}"
-    ]
-    def postBodyString = groovy.json.JsonOutput.toJson(postBody)
+   def postBody = [
+      state: "${state}",
+      context: "${context}",
+      description: "${description}",
+      target_url: "${env.BUILD_URL}"
+   ]
+   def postBodyString = groovy.json.JsonOutput.toJson(postBody)
 
-    withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
-         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-            sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
-            sh ("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
-         }
+   withEnv(['HTTPS_PROXY=http://webproxy-utvikler.nav.no:8088']) {
+      withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+         sh """
+                curl -H 'Authorization: token ${token}' \
+                    -H 'Content-Type: application/json' \
+                    -X POST \
+                    -d '${postBodyString}' \
+                    'https://api.github.com/repos/${owner}/${repo}/statuses/${sha}'
+            """
       }
+   }
 }
