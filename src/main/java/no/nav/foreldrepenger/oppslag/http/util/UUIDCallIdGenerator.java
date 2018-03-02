@@ -26,10 +26,6 @@ public class UUIDCallIdGenerator implements CallIdGenerator {
 
     @Override
     public String create() {
-        return doCreate();
-    }
-
-    private String doCreate() {
         return UUID.randomUUID().toString();
     }
 
