@@ -24,6 +24,8 @@ resources:
       memory: 1536Mi
 fasitResources:
   used:
+    - alias : fpsoknadmottak_spring_active_profiles
+      resourceType: properties
     - alias: mqGateway01
       resourceType: queuemanager
     - alias: dokmot_channel
