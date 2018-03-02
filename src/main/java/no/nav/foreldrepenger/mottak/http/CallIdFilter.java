@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -24,13 +23,10 @@ public class CallIdFilter extends GenericFilterBean {
 
     private static final Logger LOG = getLogger(CallIdFilter.class);
 
-    private final String key;
-
     private final CallIdGenerator generator;
 
     @Inject
-    public CallIdFilter(@Value("${callid.key:X-Nav-CallId}") String key, CallIdGenerator generator) {
-        this.key = key;
+    public CallIdFilter(CallIdGenerator generator) {
         this.generator = generator;
     }
 
@@ -42,19 +38,13 @@ public class CallIdFilter extends GenericFilterBean {
     }
 
     private void getOrCreateCallId(ServletRequest req) {
-        String callId = HttpServletRequest.class.cast(req).getHeader(key);
+        String callId = HttpServletRequest.class.cast(req).getHeader(generator.getKey());
         if (callId != null) {
-            LOG.info("CallId is already set to {} in request, now setting in MDC under key {}", callId, key);
-            MDC.put(key, callId);
+            LOG.trace("Callid is already set in request {}", callId);
+            MDC.put(generator.getKey(), callId);
         } else {
-            MDC.put(key, generator.getOrCreate());
-            LOG.info("Callid was not set in request, now set in MDC to {}", MDC.get(key));
+            MDC.put(generator.getKey(), generator.create());
+            LOG.trace("Callid was not set in request, now set in MDC to {}", MDC.get(generator.getKey()));
         }
-        LOG.info("MDC values now {}", MDC.getCopyOfContextMap());
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [key=" + key + ", generator=" + generator + "]";
     }
 }

@@ -49,7 +49,7 @@ public class TestSerialization {
 
     @Test
     public void testSøknadNorge() throws Exception {
-        Søknad engangssøknad = engangssøknad(false, fremtidigFødsel()/* , påkrevdVedlegg() */);
+        Søknad engangssøknad = engangssøknad(false, fremtidigFødsel() /* , påkrevdVedlegg() */);
         test(engangssøknad, true);
     }
 

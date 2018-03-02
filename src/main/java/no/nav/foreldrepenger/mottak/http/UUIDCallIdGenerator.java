@@ -21,7 +21,21 @@ public class UUIDCallIdGenerator implements CallIdGenerator {
 
     @Override
     public String getOrCreate() {
-        return Optional.ofNullable(MDC.get(key)).orElse(UUID.randomUUID().toString());
+        return Optional.ofNullable(MDC.get(key)).orElse(create());
+    }
+
+    @Override
+    public String create() {
+        return doCreate();
+    }
+
+    private String doCreate() {
+        return UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String getKey() {
+        return key;
     }
 
     @Override
