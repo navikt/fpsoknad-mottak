@@ -25,7 +25,7 @@ resources:
 fasitResources:
   used:
     - alias : fpsoknadmottak_spring_active_profiles
-      resourceType: properties
+      resourceType: applicationproperties
     - alias: mqGateway01
       resourceType: queuemanager
     - alias: dokmot_channel
