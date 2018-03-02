@@ -66,6 +66,7 @@ public class DokmotMottakController {
 
     @PostMapping(value = "/send", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> send(@Valid @RequestBody Søknad søknad) {
+        LOG.info("Sender søknad til DOKMOT {}", søknad);
         sender.sendSøknad(søknad);
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }

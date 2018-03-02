@@ -29,7 +29,7 @@ public class DokmotHealthIndicator implements HealthIndicator {
             return Health.up().build();
         } catch (JMSException e) {
             LOG.warn("Could not verify health of queue", e);
-            return Health.down().build();
+            return Health.down().withException(e).build();
         }
     }
 
