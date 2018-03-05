@@ -25,7 +25,7 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Inject
     public DokmotJMSSender(JmsTemplate template, DokmotEngangsstønadXMLKonvoluttGenerator generator,
-            CallIdGenerator callIdGenerator) {
+                           CallIdGenerator callIdGenerator) {
         this.dokmotTemplate = template;
         this.generator = generator;
         this.callIdGenerator = callIdGenerator;
@@ -36,7 +36,7 @@ public class DokmotJMSSender implements SøknadSender {
         String xml = generator.toXML(søknad);
         try {
             dokmotTemplate.send(session -> {
-                LOG.trace("Sending message to DOKMOT {}", xml);
+                LOG.trace("Sending message to DOKMOT: {}", xml);
                 TextMessage msg = session.createTextMessage(xml);
                 msg.setStringProperty("callId", callIdGenerator.getOrCreate());
                 return msg;
@@ -51,7 +51,7 @@ public class DokmotJMSSender implements SøknadSender {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotTemplate + ", generator=" + generator
-                + ", callIdGenerator=" + callIdGenerator + "]";
+            + ", callIdGenerator=" + callIdGenerator + "]";
     }
 
 }
