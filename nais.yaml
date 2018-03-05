@@ -24,8 +24,6 @@ resources:
       memory: 1536Mi
 fasitResources:
   used:
-    - alias: virksomhet:foreldrepengesak_v1
-      resourceType: webserviceendpoint
     - alias: Aktoer_V2
       resourceType: webserviceendpoint
     - alias: virksomhet:Inntekt_v3
