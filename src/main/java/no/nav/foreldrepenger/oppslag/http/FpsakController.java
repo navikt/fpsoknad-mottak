@@ -3,8 +3,10 @@ package no.nav.foreldrepenger.oppslag.http;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,7 @@ import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
 
 @RestController
+@Validated
 class FpsakController {
 
     private final FpsakClient fpsakClient;
@@ -25,7 +28,7 @@ class FpsakController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
-    public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("aktør") AktorId aktor) {
+    public ResponseEntity<List<Ytelse>> casesFor(@Valid @RequestParam("aktør") AktorId aktor) {
         return ResponseEntity.ok(fpsakClient.casesFor(aktor));
     }
 }

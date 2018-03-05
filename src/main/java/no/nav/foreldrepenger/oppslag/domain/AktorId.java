@@ -4,10 +4,13 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import javax.validation.constraints.NotNull;
+
 public class AktorId {
 
     private final String aktør;
 
+    @NotNull
     public AktorId(String aktør) {
         this.aktør = Objects.requireNonNull(aktør);
     }

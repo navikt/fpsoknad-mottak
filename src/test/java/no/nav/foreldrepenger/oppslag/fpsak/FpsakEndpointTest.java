@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,25 +27,25 @@ import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.meldinger.FinnSakListeResp
 @Tag("slow")
 public class FpsakEndpointTest {
 
-    @MockBean
-    private ForeldrepengesakV1 foreldrepengesakV1;
+   @MockBean
+   private ForeldrepengesakV1 foreldrepengesakV1;
 
-    @BeforeEach
-    public void setup() throws Exception {
-        FinnSakListeResponse response = new FinnSakListeResponse();
-        Sak sak = sak();
-        response.getSakListe().add(sak);
-        when(foreldrepengesakV1.finnSakListe(any(FinnSakListeRequest.class)))
-                .thenReturn(response);
-    }
+   @BeforeEach
+   public void setup() throws Exception {
+      FinnSakListeResponse response = new FinnSakListeResponse();
+      Sak sak = sak();
+      response.getSakListe().add(sak);
+      when(foreldrepengesakV1.finnSakListe(any(FinnSakListeRequest.class)))
+         .thenReturn(response);
+   }
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+   @Autowired
+   private TestRestTemplate restTemplate;
 
-    // @Test
-    public void makeHttpRequestAndDeserializeResult() {
-        Ytelse[] ytelser = restTemplate.getForObject("/fpsak/?aktor=1234567890", Ytelse[].class);
-        assertEquals(1, ytelser.length);
-    }
+   @Test
+   public void makeHttpRequestAndDeserializeResult() {
+      Ytelse[] ytelser = restTemplate.getForObject("/fpsak/?aktør=1234567890", Ytelse[].class);
+      assertEquals(1, ytelser.length);
+   }
 
 }

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,27 +24,35 @@ import no.nav.foreldrepenger.oppslag.OppslagApplicationLocal;
 @Tag("slow")
 public class InputValidationTest {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+   @Autowired
+   private TestRestTemplate restTemplate;
 
-    @ParameterizedTest
-    @MethodSource("valueProvider")
-    @Tag("slow")
-    public void fnrMustBe11Chars(String urlBase) {
-        String url = urlBase + "/?fnr=1234567890";
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
+   @ParameterizedTest
+   @MethodSource("valueProvider")
+   @Tag("slow")
+   public void fnrMustBe11Chars(String urlBase) {
+      String url = urlBase + "/?fnr=1234567890";
+      ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+      assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+   }
 
-    static Stream<Arguments> valueProvider() {
-        return Stream.of(
-                Arguments.of("/aareg"),
-                Arguments.of("/arena"),
-                Arguments.of("/infotrygd"),
-                Arguments.of("/income"),
-                Arguments.of("/medl"),
-                Arguments.of("/person"),
-                Arguments.of("/oppslag"));
-    }
+   @Test
+   @Tag("slow")
+   public void aktørIdCannotBeMissing() {
+      String url = "/fpsak/?missing=aktør";
+      ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+      assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+   }
+
+   static Stream<Arguments> valueProvider() {
+      return Stream.of(
+         Arguments.of("/aareg"),
+         Arguments.of("/arena"),
+         Arguments.of("/infotrygd"),
+         Arguments.of("/income"),
+         Arguments.of("/medl"),
+         Arguments.of("/person"),
+         Arguments.of("/oppslag"));
+   }
 
 }
