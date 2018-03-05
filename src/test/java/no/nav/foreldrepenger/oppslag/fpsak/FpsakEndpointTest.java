@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +41,7 @@ public class FpsakEndpointTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Test
+    // @Test
     public void makeHttpRequestAndDeserializeResult() {
         Ytelse[] ytelser = restTemplate.getForObject("/fpsak/?aktor=1234567890", Ytelse[].class);
         assertEquals(1, ytelser.length);
