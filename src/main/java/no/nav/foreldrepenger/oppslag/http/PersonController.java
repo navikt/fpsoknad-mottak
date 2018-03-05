@@ -30,8 +30,7 @@ public class PersonController {
 
     @GetMapping(value = "/")
     public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
-        Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
-        return new ResponseEntity<>(person, OK);
+        return new ResponseEntity<>(personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr)), OK);
     }
 
     @Override

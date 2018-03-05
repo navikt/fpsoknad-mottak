@@ -26,7 +26,6 @@ class FpsakController {
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
     public ResponseEntity<List<Ytelse>> casesFor(@RequestParam("aktør") AktorId aktor) {
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXX");
         return ResponseEntity.ok(fpsakClient.casesFor(aktor));
     }
 }
