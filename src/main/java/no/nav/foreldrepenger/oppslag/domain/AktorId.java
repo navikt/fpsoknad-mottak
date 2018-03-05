@@ -6,15 +6,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class AktorId {
 
-    private final String value;
+    private final String aktør;
 
-    public AktorId(String value) {
-        this.value = Objects.requireNonNull(value);
+    public AktorId(String aktør) {
+        this.aktør = Objects.requireNonNull(aktør);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(value);
+        return Objects.hashCode(aktør);
     }
 
     @Override
@@ -26,17 +26,17 @@ public class AktorId {
             return false;
         }
         AktorId that = (AktorId) o;
-        return Objects.equals(value, that.value);
+        return Objects.equals(aktør, that.aktør);
     }
 
     @JsonValue
-    public String getValue() {
-        return value;
+    public String getAktør() {
+        return aktør;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [value=" + value + "]";
+        return getClass().getSimpleName() + " [aktør=" + aktør + "]";
     }
 
 }
