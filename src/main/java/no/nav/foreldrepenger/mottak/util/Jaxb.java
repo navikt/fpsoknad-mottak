@@ -59,6 +59,7 @@ public final class Jaxb {
         try {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
             return marshaller;
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);

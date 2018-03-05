@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:soeknadsskjemaEngangsstoenad
+	xmlns:ns2="http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1">
+	<bruker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="ns2:Bruker">
+		<personidentifikator>FNR</personidentifikator>
+	</bruker>
+	<soknadsvalg>
+		<foedselEllerAdopsjon>FOEDSEL</foedselEllerAdopsjon>
+		<stoenadstype>ENGANGSSTOENADMOR</stoenadstype>
+	</soknadsvalg>
+	<tilknytningNorge>
+		<oppholdNorgeNaa>true</oppholdNorgeNaa>
+		<tidligereOppholdNorge>false</tidligereOppholdNorge>
+		<fremtidigOppholdNorge>true</fremtidigOppholdNorge>
+		<tidligereOppholdUtenlands>
+			<utenlandsopphold>
+				<land kode="BEL" />
+				<periode>
+					<fom>2018-02-05</fom>
+					<tom>2018-02-06</tom>
+				</periode>
+			</utenlandsopphold>
+		</tidligereOppholdUtenlands>
+	</tilknytningNorge>
+	<opplysningerOmBarn>
+		<navnPaaTerminbekreftelse />
+		<antallBarn>0</antallBarn>
+	</opplysningerOmBarn>
+	<opplysningerOmFar>
+		<fornavn />
+		<etternavn />
+	</opplysningerOmFar>
+	<vedleggListe />
+</ns2:soeknadsskjemaEngangsstoenad>

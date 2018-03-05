@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -14,6 +15,7 @@ import lombok.Data;
 })
 @Data
 @Valid
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Ytelse {
 
 }
