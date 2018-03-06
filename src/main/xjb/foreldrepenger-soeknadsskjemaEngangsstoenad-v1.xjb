@@ -11,7 +11,7 @@
     <jaxb:bindings schemaLocation="../xsd/foreldrepenger-soeknadsskjemaEngangsstoenad-v1.xsd" node="/xsd:schema">
     <jaxb:bindings node="xs:complexType[@name='SoeknadsskjemaEngangsstoenad']">
 			<annox:annotate>
-				<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="soeknadsskjemaEngangsstoenad" namespace="http://nav.no/foreldrepenger.soeknadsskjema.engangsstoenad.v1"/>
+				<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="soeknadsskjemaEngangsstoenad" namespace="http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"/>
 			</annox:annotate>
 		</jaxb:bindings>
         <jaxb:schemaBindings/>
