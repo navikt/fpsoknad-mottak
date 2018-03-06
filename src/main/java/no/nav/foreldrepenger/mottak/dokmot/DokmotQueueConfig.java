@@ -1,11 +1,11 @@
-package no.nav.foreldrepenger.mottak.config;
+package no.nav.foreldrepenger.mottak.dokmot;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @ConfigurationProperties(prefix = "dokmot")
 @Configuration
-public class DokConfig {
+public class DokmotQueueConfig {
 
     String hostname;
     int port;
