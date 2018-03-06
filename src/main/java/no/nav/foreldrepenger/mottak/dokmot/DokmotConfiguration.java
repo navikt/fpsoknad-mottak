@@ -25,7 +25,7 @@ public class DokmotConfiguration {
 
     @Bean
     public JmsTemplate dokmotTemplate(ConnectionFactory cf,
-            @Value("${DOKMOT_QUEUENAME}") String queueName) {
+            @Value("${DOKMOT.QUEUENAME}") String queueName) {
         JmsTemplate jmsTemplate = new JmsTemplate(cf);
         jmsTemplate.setDefaultDestinationName(queueName);
         jmsTemplate.setDestinationResolver(new DynamicDestinationResolver());
@@ -33,8 +33,8 @@ public class DokmotConfiguration {
     }
 
     @Bean
-    public MQQueueConnectionFactory connectionFactory(@Value("${DOKMOT_HOSTNAME}") String host,
-            @Value("${DOKMOT_PORT}") int port, @Value("${DOKMOT_NAME}") String queueManager,
+    public MQQueueConnectionFactory connectionFactory(@Value("${DOKMOT.HOSTNAME}") String host,
+            @Value("${DOKMOT.PORT}") int port, @Value("${DOKMOT.NAME}") String queueManager,
             @Value("${DOKMOT_CHANNEL_NAME}") String channel) throws JMSException {
 
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
@@ -52,7 +52,7 @@ public class DokmotConfiguration {
     @Bean
     @Primary
     ConnectionFactory userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory delegate,
-            @Value("${DOKMOT_USERNAME}") String username) {
+            @Value("${DOKMOT.USERNAME}") String username) {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(username);
         cf.setTargetConnectionFactory(delegate);

@@ -27,21 +27,21 @@ fasitResources:
     - alias: mqGateway01
       resourceType: queuemanager
       propertyMap: 
-          hostname: DOKMOT_HOSTNAME
-          port: DOKMOT_PORT
-          name: DOKMOT_NAME
+          hostname: DOKMOT.HOSTNAME
+          port: DOKMOT.PORT
+          name: DOKMOT.NAME
     - alias: dokmot_channel
       resourceType: channel
     - alias: brisdokmot
       resourceType: credential
       propertyMap: 
-          username: DOKMOT_USERNAME
+          username: DOKMOT.USERNAME
           password: DOKMOT.PASSWORD
     - alias : dokmot_motta_forsendelse_ditt_nav
       resourceType: queue
       propertyMap: 
-          queueName: DOKMOT_QUEUENAME
-          queueManager: DOKMOT_QUEUEMANAGER
+          queueName: DOKMOT.QUEUENAME
+          queueManager: DOKMOT.QUEUEMANAGER
   exposed:
     - alias: fpsoknad-mottak-api
       resourceType: restservice
