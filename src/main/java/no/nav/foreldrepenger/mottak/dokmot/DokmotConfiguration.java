@@ -25,7 +25,7 @@ public class DokmotConfiguration {
 
     @Bean
     public JmsTemplate dokmotTemplate(ConnectionFactory cf,
-            @Value("${DOKMOT_MOTTA_FORSENDELSE_DITT_NAV_QUEUENAME}") String queueName) {
+            @Value("${DOKMOT_QUEUENAME}") String queueName) {
         JmsTemplate jmsTemplate = new JmsTemplate(cf);
         jmsTemplate.setDefaultDestinationName(queueName);
         jmsTemplate.setDestinationResolver(new DynamicDestinationResolver());
@@ -33,8 +33,8 @@ public class DokmotConfiguration {
     }
 
     @Bean
-    public MQQueueConnectionFactory connectionFactory(@Value("${MQGATEWAY01_HOSTNAME}") String host,
-            @Value("${MQGATEWAY01_PORT}") int port, @Value("${MQGATEWAY01_NAME}") String queueManager,
+    public MQQueueConnectionFactory connectionFactory(@Value("${DOKMOT_HOSTNAME}") String host,
+            @Value("${DOKMOT_PORT}") int port, @Value("${DOKMOT_NAME}") String queueManager,
             @Value("${DOKMOT_CHANNEL_NAME}") String channel) throws JMSException {
 
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
