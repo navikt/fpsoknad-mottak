@@ -52,7 +52,7 @@ public class DokmotConfiguration {
     @Bean
     @Primary
     ConnectionFactory userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory delegate,
-            @Value("${BRISDOKMOT_USERNAME}") String username) {
+            @Value("${DOKMOT_USERNAME}") String username) {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(username);
         cf.setTargetConnectionFactory(delegate);
