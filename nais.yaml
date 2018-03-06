@@ -40,8 +40,8 @@ fasitResources:
     - alias : dokmot_motta_forsendelse_ditt_nav
       resourceType: queue
       propertyMap: 
-          queuename: DOKMOT_QUEUENAME
-          queuemanager: DOKMOT_QUEUEMANAGER
+          queueName: DOKMOT_QUEUENAME
+          queueManager: DOKMOT_QUEUEMANAGER
   exposed:
     - alias: fpsoknad-mottak-api
       resourceType: restservice
