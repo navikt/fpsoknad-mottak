@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
-public enum Variant {
+public enum ArkivVariant {
     ARKIV, ORIGINAL
 }

@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.dokmot.Variant.ARKIV;
-import static no.nav.foreldrepenger.mottak.dokmot.Variant.ORIGINAL;
+import static no.nav.foreldrepenger.mottak.dokmot.ArkivVariant.ARKIV;
+import static no.nav.foreldrepenger.mottak.dokmot.ArkivVariant.ORIGINAL;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
 

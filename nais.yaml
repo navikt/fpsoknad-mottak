@@ -30,6 +30,9 @@ fasitResources:
       resourceType: channel
     - alias: brisdokmot
       resourceType: credential
+         propertyMap:
+            username : DOKMOT_USERNAME
+            password : DOKMOT_PASSWORD
     - alias : dokmot_motta_forsendelse_ditt_nav
       resourceType: queue
   exposed:

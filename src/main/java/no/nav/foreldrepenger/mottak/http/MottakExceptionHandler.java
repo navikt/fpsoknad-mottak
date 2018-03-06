@@ -31,5 +31,4 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     private String errorMessage(FieldError error) {
         return error.getDefaultMessage() + " (" + error.getField() + ")";
     }
-
 }
