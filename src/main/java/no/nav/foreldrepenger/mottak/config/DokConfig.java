@@ -5,17 +5,14 @@ import org.springframework.context.annotation.Configuration;
 
 @ConfigurationProperties(prefix = "dokmot")
 @Configuration
-public class JallaConfig {
+public class DokConfig {
 
     String hostname;
     int port;
     String name;
-
-    @Override
-    public String toString() {
-        return "JallaConfig [hostname=" + hostname + ", port=" + port + ", name=" + name + ", channelname="
-                + channelname + ", username=" + username + ", queuename=" + queuename + "]";
-    }
+    String channelname;
+    String username;
+    String queuename;
 
     public String getHostname() {
         return hostname;
@@ -65,8 +62,11 @@ public class JallaConfig {
         this.queuename = queuename;
     }
 
-    String channelname;
-    String username;
-    String queuename;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [hostname=" + hostname + ", port=" + port + ", name=" + name
+                + ", channelname="
+                + channelname + ", username=" + username + ", queuename=" + queuename + "]";
+    }
 
 }
