@@ -8,7 +8,6 @@ import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -24,26 +23,23 @@ public class DokmotConfiguration {
     private static final int UTF_8_WITH_PUA = 1208;
 
     @Bean
-    public JmsTemplate dokmotTemplate(ConnectionFactory cf,
-            @Value("${DOKMOT_QUEUENAME}") String queueName) {
+    public JmsTemplate dokmotTemplate(DokmotQueueConfig cfg, ConnectionFactory cf) {
         JmsTemplate jmsTemplate = new JmsTemplate(cf);
-        jmsTemplate.setDefaultDestinationName(queueName);
+        jmsTemplate.setDefaultDestinationName(cfg.getQueuename());
         jmsTemplate.setDestinationResolver(new DynamicDestinationResolver());
         return jmsTemplate;
     }
 
     @Bean
-    public MQQueueConnectionFactory connectionFactory(@Value("${DOKMOT_HOSTNAME}") String host,
-            @Value("${DOKMOT_PORT}") int port, @Value("${DOKMOT_NAME}") String queueManager,
-            @Value("${DOKMOT_CHANNEL_NAME}") String channel) throws JMSException {
+    public MQQueueConnectionFactory connectionFactory(DokmotQueueConfig cfg) throws JMSException {
 
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
-        cf.setHostName(host);
+        cf.setHostName(cfg.getHostname());
         cf.setTransportType(WMQ_CM_CLIENT);
         cf.setCCSID(UTF_8_WITH_PUA);
-        cf.setPort(port);
-        cf.setChannel(channel);
-        cf.setQueueManager(queueManager);
+        cf.setPort(cfg.getPort());
+        cf.setChannel(cfg.getChannelname());
+        cf.setQueueManager(cfg.getName());
         cf.setIntProperty(JMS_IBM_ENCODING, MQENC_NATIVE);
         cf.setIntProperty(JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
         return cf;
@@ -51,11 +47,16 @@ public class DokmotConfiguration {
 
     @Bean
     @Primary
-    ConnectionFactory userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory delegate,
-            @Value("${DOKMOT_USERNAME}") String username) {
+    ConnectionFactory userCredentialsConnectionFactoryAdapter(DokmotQueueConfig cfg,
+            MQQueueConnectionFactory delegate) {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
-        cf.setUsername(username);
+        cf.setUsername(cfg.getUsername());
         cf.setTargetConnectionFactory(delegate);
         return cf;
+    }
+
+    @Bean
+    DokmotConnection dokmotInfo(JmsTemplate template, DokmotQueueConfig queueConfig) {
+        return new DokmotConnection(template, queueConfig);
     }
 }

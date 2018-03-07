@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -7,11 +10,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DokmotQueueConfig {
 
+    @NotNull
     String hostname;
+    @Positive
     int port;
+    @NotNull
     String name;
+    @NotNull
     String channelname;
+    @NotNull
     String username;
+    @NotNull
     String queuename;
 
     public String getHostname() {

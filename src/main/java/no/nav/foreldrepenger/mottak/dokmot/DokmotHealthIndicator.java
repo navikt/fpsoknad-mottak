@@ -13,10 +13,10 @@ public class DokmotHealthIndicator implements HealthIndicator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotHealthIndicator.class);
 
-    private final QueuePinger pinger;
+    private final DokmotQueuePinger pinger;
 
     @Inject
-    public DokmotHealthIndicator(QueuePinger pinger) {
+    public DokmotHealthIndicator(DokmotQueuePinger pinger) {
         this.pinger = pinger;
     }
 
@@ -25,8 +25,8 @@ public class DokmotHealthIndicator implements HealthIndicator {
         try {
             pinger.ping();
             return Health.up().build();
-        } catch (RemoteUnavailableException e) {
-            LOG.warn("Could not verify health of queue", e);
+        } catch (DokmotQueueUnavailableException e) {
+            LOG.warn("Could not verify health of queue {}", pinger.getQueueConfig(), e);
             return Health.down().withException(e).build();
         }
     }
