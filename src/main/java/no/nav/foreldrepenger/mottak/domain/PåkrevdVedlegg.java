@@ -18,7 +18,11 @@ import lombok.ToString;
 public class PåkrevdVedlegg extends Vedlegg {
 
     public PåkrevdVedlegg(Skjemanummer skjemanummer, Resource vedlegg) throws IOException {
-        this(new VedleggMetaData(skjemanummer), vedlegg);
+        this(skjemanummer.getBeskrivelse(), skjemanummer, vedlegg);
+    }
+
+    public PåkrevdVedlegg(String beskrivelse, Skjemanummer skjemanummer, Resource vedlegg) throws IOException {
+        this(new VedleggMetaData(beskrivelse, skjemanummer), vedlegg);
     }
 
     public PåkrevdVedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {

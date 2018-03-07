@@ -13,7 +13,11 @@ public class VedleggMetaData {
     private final Skjemanummer skjemanummer;
 
     public VedleggMetaData(Skjemanummer skjemanummer) {
-        this(skjemanummer.dokumentTypeId(), Filtype.PDF, skjemanummer);
+        this(skjemanummer.dokumentTypeId(), skjemanummer);
+    }
+
+    public VedleggMetaData(String beskrivelse, Skjemanummer skjemanummer) {
+        this(beskrivelse, Filtype.PDF, skjemanummer);
     }
 
     @JsonCreator
