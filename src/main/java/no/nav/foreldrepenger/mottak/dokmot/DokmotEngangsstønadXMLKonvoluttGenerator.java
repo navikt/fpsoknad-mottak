@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -34,6 +36,8 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 
 @Service
 public class DokmotEngangsstønadXMLKonvoluttGenerator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DokmotEngangsstønadXMLKonvoluttGenerator.class);
 
     private static final String FORELDREPENGER = "FOR";
 
@@ -75,7 +79,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                         .withAvsender(new Person(søknad.getSøker().getFnr().getId()))
                         .withBruker(new Person(søknad.getSøker().getFnr().getId())))
                 .withHoveddokument(hoveddokument(søknad))
-                .withVedleggListe(dokmotVedleggListe(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
+                .withVedleggListe(dokmotVedleggListe(søknad));
     }
 
     private Hoveddokument hoveddokument(Søknad søknad) {
@@ -95,11 +99,11 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                                 .collect(toList()));
     }
 
-    private static List<no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg> dokmotVedleggListe(
-            List<? extends Vedlegg> påkrevdeVedlegg, List<? extends Vedlegg> frivilligeVedlegg) {
-        return Stream.concat(påkrevdeVedlegg.stream(), frivilligeVedlegg.stream())
-                .map(DokmotEngangsstønadXMLKonvoluttGenerator::dokmotVedlegg)
-                .collect(toList());
+    private static List<no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg> dokmotVedleggListe(Søknad søknad) {
+        return Stream
+                .concat(JukseVedlegg.påkrevdVedlegg(søknad) /* påkrevdeVedlegg */.stream(),
+                        søknad.getFrivilligeVedlegg().stream())
+                .map(DokmotEngangsstønadXMLKonvoluttGenerator::dokmotVedlegg).collect(toList());
     }
 
     private static no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg dokmotVedlegg(Vedlegg vedlegg) {

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.dokmot;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -10,6 +11,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
@@ -51,6 +53,8 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 @Service
 public class DokmotEngangsstønadXMLGenerator {
 
+    private static final Logger LOG = getLogger(DokmotEngangsstønadXMLGenerator.class);
+
     private static final JAXBContext CONTEXT = Jaxb.context(SoeknadsskjemaEngangsstoenad.class);
     private final PdfGenerator pdfGenerator;
 
@@ -82,7 +86,9 @@ public class DokmotEngangsstønadXMLGenerator {
                 .withTilknytningNorge((tilknytningFra(engangsstønad.getMedlemsskap())))
                 .withOpplysningerOmFar(farFra(engangsstønad.getAnnenForelder()))
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
-                .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
+                .withVedleggListe(
+                        vedleggFra(JukseVedlegg.påkrevdVedlegg(søknad)/* søknad.getPåkrevdeVedlegg() */,
+                                søknad.getFrivilligeVedlegg()));
     }
 
     private VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg, List<ValgfrittVedlegg> valgfrieVedlegg) {
