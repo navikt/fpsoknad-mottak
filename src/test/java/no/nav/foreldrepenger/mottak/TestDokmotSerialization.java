@@ -75,7 +75,7 @@ public class TestDokmotSerialization {
         assertEquals(søknad.getBegrunnelseForSenSøknad(), dokmotModel.getOpplysningerOmBarn().getBegrunnelse());
         assertEquals(søknad.getSøker().getFnr().getId(),
                 Bruker.class.cast(dokmotModel.getBruker()).getPersonidentifikator());
-        assertEquals(dokmotModel.getVedleggListe().getVedlegg().size(), 1);
+        assertEquals(dokmotModel.getVedleggListe().getVedlegg().size(), 2);
         Engangsstønad ytelse = (Engangsstønad) søknad.getYtelse();
         assertEquals(ytelse.getRelasjonTilBarn().getAntallBarn(), dokmotModel.getOpplysningerOmBarn().getAntallBarn());
     }
