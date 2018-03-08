@@ -7,9 +7,9 @@ public enum Skjemanummer {
     private final String beskrivelse;
     private final boolean erPaakrevd;
 
-    Skjemanummer(String beskrivelse, String dokumentTypeId, boolean erPaakrevd) {
-        this.beskrivelse = beskrivelse;
+    Skjemanummer(String dokumentTypeId, String beskrivelse, boolean erPaakrevd) {
         this.dokumentTypeId = dokumentTypeId;
+        this.beskrivelse = beskrivelse;
         this.erPaakrevd = erPaakrevd;
     }
 
