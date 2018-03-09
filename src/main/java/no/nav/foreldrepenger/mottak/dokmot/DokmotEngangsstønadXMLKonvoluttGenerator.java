@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.mottak.domain.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
@@ -44,8 +45,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private static final String BEHANDLINGSTEMA = "ab0050";
 
     private static final String KANAL = "NAV_NO";
-
-    private static final String SKJEMANUMMER = "NAV 14-05.07"; // Engangsstønad fødsel
 
     private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
@@ -93,7 +92,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withArkivfiltype(new Arkivfiltyper().withValue(XML.name()))).stream();
 
         return new Hoveddokument()
-                .withDokumenttypeId(SkjemanummerTilDokumentTypeKode.dokumentTypeKode(SKJEMANUMMER))
+                .withDokumenttypeId(DokumentType.ENGANGSSTØNAD_FØDSEL.id)
                 .withDokumentinnholdListe(
                         Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
                                 .collect(toList()));

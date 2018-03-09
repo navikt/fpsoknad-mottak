@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 public enum Skjemanummer {
-    N6("I000047", "Terminbekreftelse", false);
+    TERMINBEKREFTELSE("I000062", "Terminbekreftelse", false);
 
     private final String dokumentTypeId;
     private final String beskrivelse;

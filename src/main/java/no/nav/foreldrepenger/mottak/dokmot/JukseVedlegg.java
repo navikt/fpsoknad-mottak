@@ -43,7 +43,7 @@ class JukseVedlegg {
     }
 
     private static PåkrevdVedlegg påkrevdVedlegg(String name) throws IOException {
-        return new PåkrevdVedlegg(Skjemanummer.N6, new ClassPathResource(name));
+        return new PåkrevdVedlegg(Skjemanummer.TERMINBEKREFTELSE, new ClassPathResource(name));
     }
 
 }
