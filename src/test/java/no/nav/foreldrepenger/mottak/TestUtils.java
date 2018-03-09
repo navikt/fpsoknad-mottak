@@ -116,11 +116,11 @@ public class TestUtils {
     }
 
     static PåkrevdVedlegg påkrevdVedlegg(String name) throws IOException {
-        return new PåkrevdVedlegg(Skjemanummer.N6, new ClassPathResource(name));
+        return new PåkrevdVedlegg(Skjemanummer.TERMINBEKREFTELSE, new ClassPathResource(name));
     }
 
     static ValgfrittVedlegg valgfrittVedlegg(String name) throws IOException {
-        return new ValgfrittVedlegg(Skjemanummer.N6, new ClassPathResource(name));
+        return new ValgfrittVedlegg(Skjemanummer.TERMINBEKREFTELSE, new ClassPathResource(name));
     }
 
     static Adopsjon adopsjon() {
