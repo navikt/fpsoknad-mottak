@@ -49,24 +49,29 @@ public class TestSerialization {
 
     @Test
     public void testSøknadNorge() throws Exception {
-        Søknad engangssøknad = engangssøknad(false, fremtidigFødsel(), påkrevdVedlegg());
+        Søknad engangssøknad = engangssøknad(false, fremtidigFødsel(), norskForelder(), påkrevdVedlegg());
         test(engangssøknad, true);
     }
 
     @Test
     public void testEngangsstønadNorge() {
-        Engangsstønad engangstønad = engangstønad(false);
+        Engangsstønad engangstønad = engangstønad(false, fremtidigFødsel(), norskForelder());
         test(engangstønad, true);
     }
 
     @Test
     public void testEngangsstønadUtland() {
-        test(engangstønad(true), true);
+        test(engangstønad(true, fremtidigFødsel(), utenlandskForelder()), true);
+    }
+
+    @Test
+    public void testEngangsstønadUkjentFar() {
+        test(engangstønad(true, fremtidigFødsel(), TestUtils.ukjentForelder()), true);
     }
 
     @Test
     public void testNorskAnnenForelder() {
-        test(norskForelder());
+        test(norskForelder(), true);
     }
 
     @Test

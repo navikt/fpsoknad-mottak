@@ -52,7 +52,8 @@ public class TestDokmotSerialization {
 
     @Test
     public void testKonvoluttXML() throws Exception {
-        Søknad engangssøknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.valgfrittVedlegg());
+        Søknad engangssøknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.norskForelder(),
+                TestUtils.valgfrittVedlegg());
         Engangsstønad engangs = (Engangsstønad) engangssøknad.getYtelse();
         String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad);
         // System.out.println(konvolutt);
@@ -70,7 +71,7 @@ public class TestDokmotSerialization {
     @Test
     public void testDokmotModelTransformation() throws Exception {
         ValgfrittVedlegg valgfrittVedlegg = TestUtils.valgfrittVedlegg();
-        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), valgfrittVedlegg);
+        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.norskForelder(), valgfrittVedlegg);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad);
         assertEquals(søknad.getBegrunnelseForSenSøknad(), dokmotModel.getOpplysningerOmBarn().getBegrunnelse());
         assertEquals(søknad.getSøker().getFnr().getId(),
@@ -82,7 +83,8 @@ public class TestDokmotSerialization {
 
     @Test
     public void testDokmotMarshalling() throws Exception {
-        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.valgfrittVedlegg());
+        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.norskForelder(),
+                TestUtils.valgfrittVedlegg());
         TestUtils.write(søknad, true, mapper);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad);
         System.out.println(søknadXMLGenerator.toXML(søknad));

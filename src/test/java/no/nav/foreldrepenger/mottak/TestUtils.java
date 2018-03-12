@@ -16,6 +16,7 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
@@ -34,6 +35,7 @@ import no.nav.foreldrepenger.mottak.domain.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
@@ -49,24 +51,21 @@ public class TestUtils {
     }
 
     public static Søknad engangssøknad(boolean utland) throws IOException {
-        return engangssøknad(utland, fremtidigFødsel());
+        return engangssøknad(utland, fremtidigFødsel(), norskForelder());
     }
 
-    static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon, Vedlegg... vedlegg) throws IOException {
-        Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(utland, relasjon), vedlegg);
+    static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
+            Vedlegg... vedlegg) throws IOException {
+        Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(utland, relasjon, annenForelder), vedlegg);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
     }
 
-    static Engangsstønad engangstønad(boolean utland) {
-        Engangsstønad stønad = engangstønad(utland, fremtidigFødsel());
-        stønad.setAnnenForelder(norskForelder());
+    static Engangsstønad engangstønad(boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder) {
+        Engangsstønad stønad = new Engangsstønad(medlemsskap(utland), relasjon);
+        stønad.setAnnenForelder(annenForelder);
         return stønad;
-    }
-
-    static Engangsstønad engangstønad(boolean utland, RelasjonTilBarn relasjon) {
-        return new Engangsstønad(medlemsskap(utland), relasjon);
     }
 
     static Utenlandsopphold utenlandsopphold() {
@@ -204,5 +203,9 @@ public class TestUtils {
 
     static Navn navnUtenMellomnavn() {
         return new Navn("Mor", null, "Monsen");
+    }
+
+    public static AnnenForelder ukjentForelder() {
+        return new UkjentForelder();
     }
 }
