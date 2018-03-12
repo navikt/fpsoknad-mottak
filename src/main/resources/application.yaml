@@ -9,7 +9,7 @@ management:
              enabled : false
          web:
             exposure:
-              include:  info, health, metrics, prometheus
+              include:  info, health, metrics, prometheus, env
 server:
      servlet :
        context-path :  /api
