@@ -6,6 +6,8 @@ import static no.nav.foreldrepenger.mottak.dokmot.ArkivVariant.ORIGINAL;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -113,7 +116,17 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withDokumentinnholdListe(new Dokumentinnhold()
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))
                         .withArkivfiltype(new Arkivfiltyper().withValue(vedlegg.getMetadata().getType().name()))
-                        .withDokument(vedlegg.getVedlegg()));
+                        .withDokument(xxx(vedlegg)));
+    }
+
+    private static byte[] xxx(Vedlegg vedlegg) {
+        try {
+            FileUtils.writeByteArrayToFile(new File(vedlegg.getMetadata().getSkjemanummer() + " .pdf"),
+                    vedlegg.getVedlegg());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return vedlegg.getVedlegg();
     }
 
     private static String referanseId() {
