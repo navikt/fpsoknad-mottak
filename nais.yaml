@@ -44,10 +44,8 @@ fasitResources:
       propertyMap: 
           queueName: DOKMOT_QUEUENAME
           queueManager: DOKMOT_QUEUEMANAGER
-    - alias : FPSOKNADMOTTAK_SPRING_ACTIVE_PROFILES
-      resourceType: applicationProperties
-      propertyMap:
-          queueName: SPRING_ACTIVE_PROFILES   
+    - alias : FPSOKNADMOTTAK_PROPERTIES
+      resourceType: applicationProperties 
   exposed:
     - alias: fpsoknad-mottak-api
       resourceType: restservice
