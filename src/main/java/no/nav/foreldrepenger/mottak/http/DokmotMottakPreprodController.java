@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
@@ -8,27 +9,28 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 
 @RestController
-@RequestMapping(DokmotMottakController.DOKMOT)
-public class DokmotMottakController {
+@RequestMapping(value = DokmotMottakPreprodController.DOKMOT_PREPROD, produces = APPLICATION_XML_VALUE)
+@Profile("preprod")
+public class DokmotMottakPreprodController {
 
-    private static final Logger LOG = getLogger(DokmotMottakController.class);
+    private static final Logger LOG = getLogger(DokmotMottakPreprodController.class);
 
-    public static final String DOKMOT = "/mottak/dokmot";
+    public static final String DOKMOT_PREPROD = "/mottak/preprod";
 
     private final DokmotJMSSender sender;
     @Autowired
@@ -37,21 +39,23 @@ public class DokmotMottakController {
     DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator;
 
     @Inject
-    public DokmotMottakController(DokmotJMSSender sender) {
+    public DokmotMottakPreprodController(DokmotJMSSender sender) {
         this.sender = sender;
     }
 
-    @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
-    public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
-        LOG.info("I was pinged");
-        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
+    @PostMapping("/søknad")
+    public ResponseEntity<String> søknad(@Valid @RequestBody Søknad søknad) {
+        return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toXML(søknad));
     }
 
-    @PostMapping(value = "/send", produces = APPLICATION_XML_VALUE)
-    public ResponseEntity<String> send(@Valid @RequestBody Søknad søknad) {
-        LOG.info("Sender søknad til DOKMOT {}", søknad);
-        sender.sendSøknad(søknad);
-        return ResponseEntity.status(HttpStatus.OK).body("OK");
+    @PostMapping("/konvolutt")
+    public ResponseEntity<String> konvolutt(@Valid @RequestBody Søknad søknad) {
+        return ResponseEntity.status(HttpStatus.OK).body(konvoluttGenerator.toXML(søknad));
+    }
+
+    @PostMapping(value = "/model", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<SoeknadsskjemaEngangsstoenad> model(@Valid @RequestBody Søknad søknad) {
+        return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toDokmotModel(søknad));
     }
 
     @Override
