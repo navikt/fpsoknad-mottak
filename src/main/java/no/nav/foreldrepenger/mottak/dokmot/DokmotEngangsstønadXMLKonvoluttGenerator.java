@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.HovedSkjemanummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
@@ -92,7 +92,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withArkivfiltype(new Arkivfiltyper().withValue(XML.name()))).stream();
 
         return new Hoveddokument()
-                .withDokumenttypeId(DokumentType.ENGANGSSTØNAD_FØDSEL.id)
+                .withDokumenttypeId(HovedSkjemanummer.ENGANGSSTØNAD_FØDSEL.id)
                 .withDokumentinnholdListe(
                         Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
                                 .collect(toList()));
@@ -109,7 +109,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
         return new no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg()
                 .withBrukeroppgittTittel(vedlegg.getMetadata().getBeskrivelse())
-                .withDokumenttypeId(vedlegg.getMetadata().getSkjemanummer().dokumentTypeId())
+                .withDokumenttypeId(vedlegg.getMetadata().getSkjemanummer().id)
                 .withDokumentinnholdListe(new Dokumentinnhold()
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))
                         .withArkivfiltype(new Arkivfiltyper().withValue(vedlegg.getMetadata().getType().name()))

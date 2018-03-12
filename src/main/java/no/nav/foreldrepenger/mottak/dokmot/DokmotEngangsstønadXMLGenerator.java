@@ -100,7 +100,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.Vedlegg vedlegg) {
         return new Vedlegg()
-                .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().dokumentTypeId())
+                .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().id)
                 .withInnsendingsvalg(Innsendingsvalg.LASTET_OPP)
                 .withErPaakrevdISoeknadsdialog(vedlegg instanceof PåkrevdVedlegg);
     }

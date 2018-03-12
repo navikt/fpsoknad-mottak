@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak;
 
+import static no.nav.foreldrepenger.mottak.domain.VedleggSkjemanummer.TERMINBEKREFTELSE;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +31,6 @@ import no.nav.foreldrepenger.mottak.domain.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.domain.Skjemanummer;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
@@ -116,11 +117,11 @@ public class TestUtils {
     }
 
     static PåkrevdVedlegg påkrevdVedlegg(String name) throws IOException {
-        return new PåkrevdVedlegg(Skjemanummer.TERMINBEKREFTELSE, new ClassPathResource(name));
+        return new PåkrevdVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
     }
 
     static ValgfrittVedlegg valgfrittVedlegg(String name) throws IOException {
-        return new ValgfrittVedlegg(Skjemanummer.TERMINBEKREFTELSE, new ClassPathResource(name));
+        return new ValgfrittVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
     }
 
     static Adopsjon adopsjon() {
@@ -128,8 +129,7 @@ public class TestUtils {
     }
 
     static Fødsel fødsel() {
-        Fødsel fødsel = new Fødsel(forrigeMåned());
-        return fødsel;
+        return new Fødsel(forrigeMåned());
     }
 
     static FramtidigOppholdsInformasjon framtidigOppHoldIUtlandetHeleåret() {

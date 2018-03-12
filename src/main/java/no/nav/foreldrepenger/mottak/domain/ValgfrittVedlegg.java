@@ -17,7 +17,7 @@ import lombok.ToString;
 @Data
 public class ValgfrittVedlegg extends Vedlegg {
 
-    public ValgfrittVedlegg(Skjemanummer skjemanummer, Resource vedlegg) throws IOException {
+    public ValgfrittVedlegg(VedleggSkjemanummer skjemanummer, Resource vedlegg) throws IOException {
         this(new VedleggMetaData(skjemanummer), vedlegg);
     }
 
