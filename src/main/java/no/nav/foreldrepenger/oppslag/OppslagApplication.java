@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"no.nav.foreldrepenger.oppslag", "no.nav.security.spring"})
+@ComponentScan
 @EnableOIDCTokenValidation(ignore="org.springframework")
 public class OppslagApplication {
 
