@@ -44,7 +44,7 @@ node {
       try {
          sh "${mvn} versions:set -B -DnewVersion=${releaseVersion}"
          sh "mkdir -p /tmp/${application}"
-         sh "${mvn} -Palltests clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
+         sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
          slackSend([
             color: 'good',
             message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed  (${changelog})"
