@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.neovisionaries.i18n.CountryCode;
 
-@JsonPropertyOrder({ "id", "fodselsdaato", "navn", "kjonn", "adresse" })
+@JsonPropertyOrder({ "id", "fodselsdato", "navn", "kjonn", "adresse" })
 public class Person {
 
     @JsonUnwrapped

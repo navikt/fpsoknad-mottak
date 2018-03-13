@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.oppslag.http;
 
-import static org.springframework.http.HttpStatus.OK;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-
+import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.domain.ID;
+import no.nav.foreldrepenger.oppslag.domain.Person;
+import no.nav.foreldrepenger.oppslag.person.PersonClient;
 import no.nav.security.spring.oidc.validation.api.Protected;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.ID;
-import no.nav.foreldrepenger.oppslag.domain.Person;
-import no.nav.foreldrepenger.oppslag.person.PersonClient;
+import javax.inject.Inject;
+import javax.validation.Valid;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @Validated
@@ -29,9 +28,9 @@ public class PersonController {
     @Inject
     private PersonClient personClient;
 
-    @GetMapping(value = "/")
+    @GetMapping
     @Protected
-    public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
+    public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
         return new ResponseEntity<>(personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr)), OK);
     }
 
@@ -39,5 +38,4 @@ public class PersonController {
     public String toString() {
         return getClass().getSimpleName() + " [aktorClient=" + aktorClient + ", personClient=" + personClient + "]";
     }
-
 }
