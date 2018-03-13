@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.OK;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import no.nav.security.spring.oidc.validation.api.Protected;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class PersonController {
     private PersonClient personClient;
 
     @GetMapping(value = "/")
+    @Protected
     public ResponseEntity<Person> person(@Valid @RequestParam(value = "fnr", required = true) Fodselsnummer fnr) {
         return new ResponseEntity<>(personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr)), OK);
     }

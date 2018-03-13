@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import no.nav.security.spring.oidc.validation.api.Protected;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ class FpsakController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
+    @Protected
     public ResponseEntity<List<Ytelse>> casesFor(@Valid @RequestParam("aktør") AktorId aktor) {
         return ResponseEntity.ok(fpsakClient.casesFor(aktor));
     }

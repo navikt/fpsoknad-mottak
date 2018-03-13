@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import no.nav.security.spring.oidc.validation.api.Protected;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ class InfotrygdController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/infotrygd")
+    @Protected
     public ResponseEntity<List<Ytelse>> casesFor(@Valid @RequestParam("fnr") Fodselsnummer fnr) {
         LocalDate now = LocalDate.now();
         LocalDate oneYearAgo = LocalDate.now().minusMonths(12);

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.oppslag.http;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.MedlPeriode;
 import no.nav.foreldrepenger.oppslag.medl.MedlClient;
+import no.nav.security.spring.oidc.validation.api.Protected;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ class MedlController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/medl")
+    @Protected
     public ResponseEntity<List<MedlPeriode>> medlemskap(@Valid @RequestParam("fnr") Fodselsnummer fnr) {
        return ResponseEntity.ok(medlClient.medlInfo(fnr));
     }

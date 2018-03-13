@@ -7,6 +7,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import no.nav.security.spring.oidc.validation.api.Protected;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,7 @@ public class OppslagController {
     }
 
     @GetMapping(value = "/")
+    @Protected
     public ResponseEntity<SøkerInformasjon> oppslag(@Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
         AktorId aktorid = aktorClient.aktorIdForFnr(fnr);
         Person person = personClient.hentPersonInfo(new ID(aktorid, fnr));
