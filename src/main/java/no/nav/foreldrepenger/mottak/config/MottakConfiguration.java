@@ -10,7 +10,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 public class MottakConfiguration {
 
     @Bean
-    @Qualifier("kvitteringstekster")
+    @Qualifier("landkoder")
     public MessageSource landkoder() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("landkoder");
