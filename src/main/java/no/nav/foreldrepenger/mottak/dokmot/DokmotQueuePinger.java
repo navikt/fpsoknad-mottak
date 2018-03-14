@@ -21,8 +21,7 @@ public class DokmotQueuePinger {
 
     public void ping() {
         try {
-            LOG.info("Pinging queue {}", connection.getQueueConfig());
-            connection.getTemplate().getConnectionFactory().createConnection().close();
+            connection.ping();
         } catch (JMSException e) {
             LOG.warn("Unable to ping queue at {}", connection.getQueueConfig());
             throw new DokmotQueueUnavailableException(e);

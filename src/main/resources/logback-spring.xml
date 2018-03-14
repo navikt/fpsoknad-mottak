@@ -15,4 +15,5 @@
 	<root level="info">
 		<appender-ref ref="stdout" />
 	</root>
+	<logger name="org.springframework.beans" level="info" />
 </configuration>
