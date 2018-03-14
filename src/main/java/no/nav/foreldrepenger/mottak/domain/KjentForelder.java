@@ -8,5 +8,6 @@ import lombok.EqualsAndHashCode;
 public abstract class KjentForelder extends AnnenForelder {
 
     private final boolean lever;
+    private final Navn navn;
 
 }

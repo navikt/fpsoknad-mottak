@@ -76,7 +76,7 @@ public class TestSerialization {
 
     @Test
     public void testUtenlandskAnnenForelder() {
-        test(utenlandskForelder());
+        test(utenlandskForelder(), true);
     }
 
     @Test

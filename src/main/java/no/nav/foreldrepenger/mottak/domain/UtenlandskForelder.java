@@ -14,11 +14,18 @@ import lombok.ToString;
 public final class UtenlandskForelder extends KjentForelder {
 
     private final CountryCode land;
+    private final String id;
 
-    @JsonCreator
-    public UtenlandskForelder(@JsonProperty("lever") boolean lever, @JsonProperty("land") CountryCode land) {
-        super(lever);
-        this.land = land;
+    public UtenlandskForelder(CountryCode land) {
+        this(true, null, null, land);
     }
 
+    @JsonCreator
+    public UtenlandskForelder(@JsonProperty("lever") boolean lever, @JsonProperty("navn") Navn navn,
+            @JsonProperty("id") String id,
+            @JsonProperty("land") CountryCode land) {
+        super(lever, navn);
+        this.id = id;
+        this.land = land;
+    }
 }

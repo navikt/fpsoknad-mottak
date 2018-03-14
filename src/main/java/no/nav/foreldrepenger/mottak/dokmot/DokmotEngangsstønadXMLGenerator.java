@@ -22,6 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.RelasjonTilBarn;
@@ -200,23 +201,46 @@ public class DokmotEngangsstønadXMLGenerator {
             return null;
         }
         if (annenForelder instanceof UkjentForelder) {
-            return new OpplysningerOmFar()
-                    .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
-                            .withAarsak("Ukjent annen forelder"));
+            return ukjentFar();
         }
         if (annenForelder instanceof NorskForelder) {
-            // Todo Navn ?
-            return new OpplysningerOmFar()
-                    .withPersonidentifikator(NorskForelder.class.cast(annenForelder).getFnr().getFnr());
+            return norskFar(annenForelder);
         }
         if (annenForelder instanceof UtenlandskForelder) {
-            // TODO navn og eller utenlandsk FNR?
-            return new OpplysningerOmFar()
-                    .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
-                            .withUtenlandskfnrLand(new Landkoder()
-                                    .withKode(UtenlandskForelder.class.cast(annenForelder).getLand().getAlpha2())));
+            return utenlandskFar(annenForelder);
         }
-        throw new IllegalArgumentException("Dette skal aldri skje");
+        throw new IllegalArgumentException("Dette skal aldri skje, hva har du gjort nå da ?");
+    }
+
+    private static OpplysningerOmFar ukjentFar() {
+        return new OpplysningerOmFar()
+                .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
+                        .withAarsak("Ukjent annen forelder"));
+    }
+
+    private static OpplysningerOmFar utenlandskFar(AnnenForelder annenForelder) {
+        UtenlandskForelder utenlandsskFar = UtenlandskForelder.class.cast(annenForelder);
+        // TODO her er det muligens noe rart
+        OpplysningerOmFar far = new OpplysningerOmFar()
+                .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
+                        .withUtenlandskfnrLand(new Landkoder()
+                                .withKode(utenlandsskFar.getLand().getAlpha2())));
+        return farMedNavnHvisSatt(far, utenlandsskFar.getNavn());
+    }
+
+    private static OpplysningerOmFar norskFar(AnnenForelder annenForelder) {
+        NorskForelder norskFar = NorskForelder.class.cast(annenForelder);
+        OpplysningerOmFar far = new OpplysningerOmFar()
+                .withPersonidentifikator(norskFar.getFnr().getFnr());
+        return farMedNavnHvisSatt(far, norskFar.getNavn());
+    }
+
+    private static OpplysningerOmFar farMedNavnHvisSatt(OpplysningerOmFar far, Navn navn) {
+        if (navn != null) {
+            return far.withFornavn(navn.getFornavn())
+                    .withEtternavn(navn.getMellomnavn() + " " + navn.getEtternavn());
+        }
+        return far;
     }
 
     @Override

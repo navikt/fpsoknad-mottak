@@ -20,10 +20,10 @@ import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -73,11 +73,11 @@ public class TestUtils {
     }
 
     static NorskForelder norskForelder() {
-        return new NorskForelder(true, fnr());
+        return new NorskForelder(true, farnavn(), fnr());
     }
 
     static UtenlandskForelder utenlandskForelder() {
-        return new UtenlandskForelder(true, CountryCode.SE);
+        return new UtenlandskForelder(true, farnavn(), null, CountryCode.SE);
     }
 
     static Medlemsskap medlemsskap() {
@@ -159,6 +159,10 @@ public class TestUtils {
 
     private static Navn navn() {
         return new Navn("Mor", "Godhjerta", "Morsen");
+    }
+
+    private static Navn farnavn() {
+        return new Navn("Far", "Faraday", "Farsen");
     }
 
     static FremtidigFødsel fremtidigFødsel() {

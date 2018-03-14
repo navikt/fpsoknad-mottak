@@ -15,9 +15,14 @@ public final class NorskForelder extends KjentForelder {
 
     private final Fødselsnummer fnr;
 
+    public NorskForelder(Fødselsnummer fnr) {
+        this(true, null, fnr);
+    }
+
     @JsonCreator
-    public NorskForelder(@JsonProperty("lever") boolean lever, @JsonProperty("fnr") Fødselsnummer fnr) {
-        super(lever);
+    public NorskForelder(@JsonProperty("lever") boolean lever, @JsonProperty("navn") Navn navn,
+            @JsonProperty("fnr") Fødselsnummer fnr) {
+        super(lever, navn);
         this.fnr = fnr;
     }
 
