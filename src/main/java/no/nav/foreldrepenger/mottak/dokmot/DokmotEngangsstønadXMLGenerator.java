@@ -204,10 +204,10 @@ public class DokmotEngangsstønadXMLGenerator {
             return ukjentFar();
         }
         if (annenForelder instanceof NorskForelder) {
-            return norskFar(annenForelder);
+            return norskFarFra(annenForelder);
         }
         if (annenForelder instanceof UtenlandskForelder) {
-            return utenlandskFar(annenForelder);
+            return utenlandskFarFra(annenForelder);
         }
         throw new IllegalArgumentException("Dette skal aldri skje, hva har du gjort nå da ?");
     }
@@ -218,7 +218,7 @@ public class DokmotEngangsstønadXMLGenerator {
                         .withAarsak("Ukjent annen forelder"));
     }
 
-    private static OpplysningerOmFar utenlandskFar(AnnenForelder annenForelder) {
+    private static OpplysningerOmFar utenlandskFarFra(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsskFar = UtenlandskForelder.class.cast(annenForelder);
         // TODO her er det muligens noe rart
         OpplysningerOmFar far = new OpplysningerOmFar()
@@ -228,7 +228,7 @@ public class DokmotEngangsstønadXMLGenerator {
         return farMedNavnHvisSatt(far, utenlandsskFar.getNavn());
     }
 
-    private static OpplysningerOmFar norskFar(AnnenForelder annenForelder) {
+    private static OpplysningerOmFar norskFarFra(AnnenForelder annenForelder) {
         NorskForelder norskFar = NorskForelder.class.cast(annenForelder);
         OpplysningerOmFar far = new OpplysningerOmFar()
                 .withPersonidentifikator(norskFar.getFnr().getFnr());
@@ -238,9 +238,13 @@ public class DokmotEngangsstønadXMLGenerator {
     private static OpplysningerOmFar farMedNavnHvisSatt(OpplysningerOmFar far, Navn navn) {
         if (navn != null) {
             return far.withFornavn(navn.getFornavn())
-                    .withEtternavn(navn.getMellomnavn() + " " + navn.getEtternavn());
+                    .withEtternavn(mellomnavn(navn.getMellomnavn()) + navn.getEtternavn());
         }
         return far;
+    }
+
+    private static String mellomnavn(String mellomnavn) {
+        return mellomnavn == null ? "" : mellomnavn + " ";
     }
 
     @Override
