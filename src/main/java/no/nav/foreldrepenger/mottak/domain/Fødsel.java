@@ -27,6 +27,13 @@ public class Fødsel extends RelasjonTilBarn {
     public Fødsel(@JsonProperty("antallBarn") int antallBarn,
             @JsonProperty("fødselsdato") List<LocalDate> fødselsdato) {
         super(antallBarn);
-        this.fødselsdato = fødselsdato;
+        this.fødselsdato = fødselsdato(antallBarn, fødselsdato);
+    }
+
+    private static List<LocalDate> fødselsdato(int antallBarn, List<LocalDate> fødselsdato) {
+        if (fødselsdato.size() == antallBarn) {
+            return fødselsdato;
+        }
+        throw new IllegalStateException("Forventet " + antallBarn + " fødselsdatoer, fikk " + fødselsdato.size());
     }
 }
