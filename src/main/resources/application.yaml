@@ -7,22 +7,16 @@ no.nav.security.oidc :
 
 http.proxy : http://webproxy-utvikler.nav.no:8088
 
-info :
-    app:
-      version: @project.version@
-    build:
-       time:  @timestamp@  
-management:
-    endpoints: 
-         security:
-             enabled : false
-         web:
-            exposure:
-              include:  info, health, metrics, prometheus
-server:
-     servlet :
-       context-path :  /api
-     use-forward-headers: true                        
+info.app:
+    version: @project.version@
+    build.time:  @timestamp@
+      
+management.endpoints: 
+     security.enabled : false
+     web.exposure.include:  info, health, metrics, prometheus
+server.servlet :
+    context-path :  /api
+    use-forward-headers: true                        
 spring :
     jackson :
       default-property-inclusion : NON_NULL
@@ -32,10 +26,6 @@ spring :
       serialization :
          write_single_elem_arrays_unwrapped : true
          fail-on-empty-beans: false
-    main : 
-       banner-mode : 'off'
-    metrics :
-      web :
-        server :
-           auto-time-requests: true   
+    main.banner-mode : 'off'
+    metrics.web.server.auto-time-requests: true   
                
