@@ -22,7 +22,7 @@ public class SøkerSerializer extends StdSerializer<Søker> {
     public void serialize(Søker søker, JsonGenerator jgen, SerializerProvider provider) throws IOException {
         jgen.writeStartObject();
         jgen.writeStringField("aktør", søker.getAktør().getId());
-        jgen.writeStringField("fnr", søker.getFnr().getId());
+        jgen.writeStringField("fnr", søker.getFnr().getFnr());
         jgen.writeStringField("søknadsRolle", søker.getSøknadsRolle().name());
         jgen.writeStringField("fornavn", søker.getNavn().getFornavn());
         jgen.writeStringField("mellomnavn", søker.getNavn().getMellomnavn());

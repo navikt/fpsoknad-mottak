@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 
@@ -29,7 +29,7 @@ public class SøkerDeserializer extends StdDeserializer<Søker> {
     @Override
     public Søker deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode rootNode = p.getCodec().readTree(p);
-        return new Søker(new Fodselsnummer(textValue(rootNode, "fnr")), new AktorId(textValue(rootNode, "aktør")),
+        return new Søker(new Fødselsnummer(textValue(rootNode, "fnr")), new AktorId(textValue(rootNode, "aktør")),
                 BrukerRolle.valueOf(textValue(rootNode, "søknadsRolle")), navn(rootNode));
     }
 

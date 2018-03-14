@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
@@ -197,8 +197,8 @@ public class TestUtils {
         return new AktorId("11111111111111111");
     }
 
-    static Fodselsnummer fnr() {
-        return new Fodselsnummer("03016536325");
+    static Fødselsnummer fnr() {
+        return new Fødselsnummer("03016536325");
     }
 
     static Navn navnUtenMellomnavn() {

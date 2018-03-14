@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.mottak.domain.serialization.SøkerSerializer;
 @JsonDeserialize(using = SøkerDeserializer.class)
 public class Søker {
     @NotNull(message = "{ytelse.fnr.notnull}")
-    private final Fodselsnummer fnr;
+    private final Fødselsnummer fnr;
     @NotNull(message = "{ytelse.aktør.notnull}")
     private final AktorId aktør;
     @NotNull(message = "{ytelse.søknadsrolle.notnull}")
@@ -24,7 +24,7 @@ public class Søker {
     private final Navn navn;
 
     @JsonCreator
-    public Søker(@JsonProperty("fnr") Fodselsnummer fnr, @JsonProperty("aktør") AktorId aktør,
+    public Søker(@JsonProperty("fnr") Fødselsnummer fnr, @JsonProperty("aktør") AktorId aktør,
             @JsonProperty("søknadsRolle") BrukerRolle søknadsRolle, @JsonProperty("navn") Navn navn) {
         this.fnr = fnr;
         this.aktør = aktør;

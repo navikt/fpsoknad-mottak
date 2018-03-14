@@ -73,7 +73,7 @@ public class PdfGenerator {
             document.add(logo);
 
             document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
-            document.add(centeredParagraph(søknad.getSøker().getFnr().getId(), NORMAL));
+            document.add(centeredParagraph(søknad.getSøker().getFnr().getFnr(), NORMAL));
             String navn = navn(søknad.getSøker().getNavn());
             if (!navn.isEmpty()) {
                 document.add(centeredParagraph(navn, NORMAL));

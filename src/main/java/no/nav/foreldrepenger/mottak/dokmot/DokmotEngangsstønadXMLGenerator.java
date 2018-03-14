@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.PåkrevdVedlegg;
@@ -105,8 +105,8 @@ public class DokmotEngangsstønadXMLGenerator {
                 .withErPaakrevdISoeknadsdialog(vedlegg instanceof PåkrevdVedlegg);
     }
 
-    private static Aktoer brukerFra(Fodselsnummer søker) {
-        return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(søker.getId());
+    private static Aktoer brukerFra(Fødselsnummer søker) {
+        return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(søker.getFnr());
     }
 
     private static Soknadsvalg søknadsvalgFra(Søknad søknad, Engangsstønad engangsstønad) {
@@ -207,7 +207,7 @@ public class DokmotEngangsstønadXMLGenerator {
         if (annenForelder instanceof NorskForelder) {
             // Todo Navn ?
             return new OpplysningerOmFar()
-                    .withPersonidentifikator(NorskForelder.class.cast(annenForelder).getFnr().getId());
+                    .withPersonidentifikator(NorskForelder.class.cast(annenForelder).getFnr().getFnr());
         }
         if (annenForelder instanceof UtenlandskForelder) {
             // TODO navn og eller utenlandsk FNR?

@@ -75,8 +75,8 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                         .withBehandlingstema(new Behandlingstema().withValue(BEHANDLINGSTEMA))
                         .withForsendelseInnsendt(LocalDateTime.now())
                         .withForsendelseMottatt(søknad.getMottattdato())
-                        .withAvsender(new Person(søknad.getSøker().getFnr().getId()))
-                        .withBruker(new Person(søknad.getSøker().getFnr().getId())))
+                        .withAvsender(new Person(søknad.getSøker().getFnr().getFnr()))
+                        .withBruker(new Person(søknad.getSøker().getFnr().getFnr())))
                 .withHoveddokument(hoveddokument(søknad))
                 .withVedleggListe(dokmotVedleggListe(søknad));
     }

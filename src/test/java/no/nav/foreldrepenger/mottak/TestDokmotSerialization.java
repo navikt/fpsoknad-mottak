@@ -74,7 +74,7 @@ public class TestDokmotSerialization {
         Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.norskForelder(), valgfrittVedlegg);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad);
         assertEquals(søknad.getBegrunnelseForSenSøknad(), dokmotModel.getOpplysningerOmBarn().getBegrunnelse());
-        assertEquals(søknad.getSøker().getFnr().getId(),
+        assertEquals(søknad.getSøker().getFnr().getFnr(),
                 Bruker.class.cast(dokmotModel.getBruker()).getPersonidentifikator());
         assertEquals(dokmotModel.getVedleggListe().getVedlegg().size(), 2);
         Engangsstønad ytelse = (Engangsstønad) søknad.getYtelse();

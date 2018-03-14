@@ -9,4 +9,5 @@ public class MottakApplication {
     public static void main(String[] args) {
         SpringApplication.run(MottakApplication.class, args);
     }
+
 }

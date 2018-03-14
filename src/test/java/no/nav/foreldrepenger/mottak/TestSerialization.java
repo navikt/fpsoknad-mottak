@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.Fodselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -91,7 +91,7 @@ public class TestSerialization {
 
     @Test
     public void testFnr() throws JsonProcessingException {
-        test(new Fodselsnummer("03016536325"), true);
+        test(new Fødselsnummer("03016536325"), true);
     }
 
     @Test
