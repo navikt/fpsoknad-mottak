@@ -1,18 +1,17 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static org.springframework.util.StreamUtils.copyToByteArray;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 import org.springframework.core.io.Resource;
-import org.springframework.util.StreamUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.common.base.Splitter;
 
 import lombok.Data;
 
@@ -32,7 +31,7 @@ public abstract class Vedlegg {
     }
 
     public Vedlegg(VedleggMetaData metadata, InputStream inputStream) throws IOException {
-        this(metadata, StreamUtils.copyToByteArray(inputStream));
+        this(metadata, copyToByteArray(inputStream));
     }
 
     @JsonCreator
@@ -41,31 +40,4 @@ public abstract class Vedlegg {
         this.metadata = metadata;
         this.vedlegg = vedlegg;
     }
-
-    private static Resource validate(Resource vedlegg) {
-        if (!vedlegg.exists()) {
-            throw new IllegalArgumentException("Vedlegg " + vedlegg.getDescription() + " ikke funnet");
-        }
-        return vedlegg;
-    }
-
-    private static String fileNameFra(Resource vedlegg) {
-        String fileName = vedlegg.getFilename();
-        if (fileName == null) {
-            throw new IllegalArgumentException("Vedlegg " + vedlegg.getDescription() + " har ikke noe filenavn");
-        }
-        return fileName;
-    }
-
-    private static Filtype typeFra(String fileName) {
-        String extension = Splitter.on(".").splitToList(fileName).get(1).toUpperCase();
-        try {
-            return Filtype.valueOf(extension);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(
-                    "Fil " + fileName + " med extension " + extension + " ikke støttet, gyldig typer er "
-                            + Arrays.toString(Filtype.values()));
-        }
-    }
-
 }

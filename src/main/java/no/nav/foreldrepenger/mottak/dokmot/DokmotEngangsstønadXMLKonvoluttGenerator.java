@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.dokmot.ArkivVariant.ARKIV;
 import static no.nav.foreldrepenger.mottak.dokmot.ArkivVariant.ORIGINAL;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
+import static no.nav.foreldrepenger.mottak.domain.HovedSkjemanummer.ENGANGSSTØNAD_FØDSEL;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -16,11 +17,8 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.HovedSkjemanummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
@@ -38,9 +36,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Variantformater;
 @Service
 public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DokmotEngangsstønadXMLKonvoluttGenerator.class);
-
-    private static final String FORELDREPENGER = "FOR";
+    private static final String TEMA = "FOR";
 
     private static final String BEHANDLINGSTEMA = "ab0050";
 
@@ -55,22 +51,18 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     }
 
     public String toXML(Søknad søknad) {
-        return xmlFra(dokmotModelFra(søknad));
+        return Jaxb.marshall(CONTEXT, dokmotModelFra(søknad));
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad) {
         return dokumentForsendelseFra(søknad);
     }
 
-    public String xmlFra(Dokumentforsendelse model) {
-        return Jaxb.marshall(CONTEXT, model);
-    }
-
     private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad) {
         return new Dokumentforsendelse()
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
                         .withKanalreferanseId(referanseId())
-                        .withTema(new Tema().withValue(FORELDREPENGER))
+                        .withTema(new Tema().withValue(TEMA))
                         .withMottakskanal(new Mottakskanaler().withValue(KANAL))
                         .withBehandlingstema(new Behandlingstema().withValue(BEHANDLINGSTEMA))
                         .withForsendelseInnsendt(LocalDateTime.now())
@@ -92,7 +84,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withArkivfiltype(new Arkivfiltyper().withValue(XML.name()))).stream();
 
         return new Hoveddokument()
-                .withDokumenttypeId(HovedSkjemanummer.ENGANGSSTØNAD_FØDSEL.id)
+                .withDokumenttypeId(ENGANGSSTØNAD_FØDSEL.id)
                 .withDokumentinnholdListe(
                         Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
                                 .collect(toList()));
@@ -118,10 +110,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private static String referanseId() {
         return UUID.randomUUID().toString();
-    }
-
-    enum Variant {
-        ARKIV, ORIGINAL
     }
 
     @Override

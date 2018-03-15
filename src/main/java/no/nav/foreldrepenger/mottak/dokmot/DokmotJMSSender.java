@@ -25,7 +25,7 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Inject
     public DokmotJMSSender(JmsTemplate template, DokmotEngangsstønadXMLKonvoluttGenerator generator,
-                           CallIdGenerator callIdGenerator) {
+            CallIdGenerator callIdGenerator) {
         this.dokmotTemplate = template;
         this.generator = generator;
         this.callIdGenerator = callIdGenerator;
@@ -44,14 +44,14 @@ public class DokmotJMSSender implements SøknadSender {
             return SøknadSendingsResultat.OK;
         } catch (JmsException e) {
             LOG.warn("Unable to send to DOKMOT", e);
-            throw (e);
+            throw (new DokmotQueueUnavailableException(e));
         }
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotTemplate + ", generator=" + generator
-            + ", callIdGenerator=" + callIdGenerator + "]";
+                + ", callIdGenerator=" + callIdGenerator + "]";
     }
 
 }

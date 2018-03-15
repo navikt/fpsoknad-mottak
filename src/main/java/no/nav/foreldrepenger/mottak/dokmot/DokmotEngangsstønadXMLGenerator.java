@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.dokmot;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -11,7 +10,6 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
@@ -54,8 +52,6 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 @Service
 public class DokmotEngangsstønadXMLGenerator {
 
-    private static final Logger LOG = getLogger(DokmotEngangsstønadXMLGenerator.class);
-
     private static final JAXBContext CONTEXT = Jaxb.context(SoeknadsskjemaEngangsstoenad.class);
     private final PdfGenerator pdfGenerator;
 
@@ -78,7 +74,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad) {
 
-        // Mor er det samme som bruker i dette use-caset
+        // Mor er bruker i dette use-caset, derfor setter vi ikke opplysninger om mor, samme som Team Søknad gjør
         Engangsstønad engangsstønad = Engangsstønad.class.cast(søknad.getYtelse());
         return new SoeknadsskjemaEngangsstoenad()
                 .withBruker(brukerFra(søknad.getSøker().getFnr()))
@@ -209,7 +205,7 @@ public class DokmotEngangsstønadXMLGenerator {
         if (annenForelder instanceof UtenlandskForelder) {
             return utenlandskFarFra(annenForelder);
         }
-        throw new IllegalArgumentException("Dette skal aldri skje, hva har du gjort nå da ?");
+        throw new IllegalArgumentException("Dette skal aldri skje, hva har du gjort nå, da ?");
     }
 
     private static OpplysningerOmFar ukjentFar() {
@@ -220,7 +216,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static OpplysningerOmFar utenlandskFarFra(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsskFar = UtenlandskForelder.class.cast(annenForelder);
-        // TODO her er det muligens noe rart
+        // Til info dette r litt rart modellert
         OpplysningerOmFar far = new OpplysningerOmFar()
                 .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
                         .withUtenlandskfnrLand(new Landkoder()
@@ -236,11 +232,10 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     private static OpplysningerOmFar farMedNavnHvisSatt(OpplysningerOmFar far, Navn navn) {
-        if (navn != null) {
-            return far.withFornavn(navn.getFornavn())
-                    .withEtternavn(mellomnavn(navn.getMellomnavn()) + navn.getEtternavn());
-        }
-        return far;
+        return navn != null
+                ? far.withFornavn(navn.getFornavn())
+                        .withEtternavn(mellomnavn(navn.getMellomnavn()) + navn.getEtternavn())
+                : far;
     }
 
     private static String mellomnavn(String mellomnavn) {
