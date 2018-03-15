@@ -2,6 +2,9 @@ package no.nav.foreldrepenger.mottak.domain.serialization;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -9,6 +12,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 
 public class MedlemsskapSerializer extends StdSerializer<Medlemsskap> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MedlemsskapSerializer.class);
 
     public MedlemsskapSerializer() {
         this(null);
@@ -20,6 +25,7 @@ public class MedlemsskapSerializer extends StdSerializer<Medlemsskap> {
 
     @Override
     public void serialize(Medlemsskap value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        LOG.info("Serializing");
         jgen.writeStartObject();
         jgen.writeBooleanField("norgeSiste12", value.getTidligereOppholdsInfo().isBoddINorge());
         jgen.writeStringField("arbeidSiste12", value.getTidligereOppholdsInfo().getArbeidsInfo().name());

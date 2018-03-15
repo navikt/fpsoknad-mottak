@@ -27,4 +27,9 @@ public class JacksonModulesConfiguration {
     public Module parameterNamesModule() {
         return new ParameterNamesModule(PROPERTIES);
     }
+
+    @Bean
+    public Module custonSerializers() {
+        return new CustomSerializerModule();
+    }
 }

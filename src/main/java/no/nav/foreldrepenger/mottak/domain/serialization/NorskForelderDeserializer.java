@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
+import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.booleanValue;
 import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.navn;
 import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
 
@@ -14,29 +15,28 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 
-public class SøkerDeserializer extends StdDeserializer<Søker> {
+public class NorskForelderDeserializer extends StdDeserializer<NorskForelder> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SøkerDeserializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NorskForelderDeserializer.class);
 
-    public SøkerDeserializer() {
+    public NorskForelderDeserializer() {
         this(null);
     }
 
-    public SøkerDeserializer(Class<Søker> søker) {
-        super(søker);
+    public NorskForelderDeserializer(Class<NorskForelder> forelder) {
+        super(forelder);
     }
 
     @Override
-    public Søker deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public NorskForelder deserialize(JsonParser p, DeserializationContext ctxt)
+            throws IOException, JsonProcessingException {
         LOG.info("Deserializing");
         JsonNode rootNode = p.getCodec().readTree(p);
-        return new Søker(new Fødselsnummer(textValue(rootNode, "fnr")), new AktorId(textValue(rootNode, "aktør")),
-                BrukerRolle.valueOf(textValue(rootNode, "søknadsRolle")), navn(rootNode));
+        return new NorskForelder(booleanValue(rootNode, "lever", true), navn(rootNode),
+                new Fødselsnummer(textValue(rootNode, "fnr")));
     }
 
 }

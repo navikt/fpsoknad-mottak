@@ -1,12 +1,18 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.arrayNode;
+import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.booleanValue;
+import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.StreamSupport;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,9 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 
 import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
@@ -26,6 +30,8 @@ import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 
 public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MedlemsskapSerializer.class);
 
     public MedlemsskapDeserializer() {
         this(null);
@@ -38,6 +44,7 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     @Override
     public Medlemsskap deserialize(JsonParser parser, DeserializationContext ctx)
             throws IOException, JsonProcessingException {
+        LOG.info("Deserialing");
         JsonNode rootNode = parser.getCodec().readTree(parser);
         return new Medlemsskap(tidligereOpphold(rootNode, parser), framtidigOpphold(rootNode, parser));
     }
@@ -80,18 +87,6 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
 
     private static boolean norgeSiste12(JsonNode rootNode) {
         return booleanValue(rootNode, "norgeSiste12");
-    }
-
-    private static ArrayNode arrayNode(JsonNode rootNode, String nodeName) {
-        return ArrayNode.class.cast(rootNode.get(nodeName));
-    }
-
-    private static String textValue(JsonNode rootNode, String fieldName) {
-        return TextNode.class.cast(rootNode.get(fieldName)).textValue();
-    }
-
-    private static boolean booleanValue(JsonNode rootNode, String fieldName) {
-        return BooleanNode.class.cast(rootNode.get(fieldName)).booleanValue();
     }
 
     private static Iterator<JsonNode> iterator(ArrayNode utland) {

@@ -162,7 +162,7 @@ public class TestUtils {
     }
 
     private static Navn farnavn() {
-        return new Navn("Far", "Faraday", "Farsen");
+        return new Navn("Far", "Faraday", "Farsken");
     }
 
     static FremtidigFødsel fremtidigFødsel() {

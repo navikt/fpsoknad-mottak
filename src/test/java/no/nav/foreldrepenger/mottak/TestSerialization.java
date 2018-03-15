@@ -9,18 +9,22 @@ import static no.nav.foreldrepenger.mottak.TestUtils.framtidigOppholdINorge;
 import static no.nav.foreldrepenger.mottak.TestUtils.fremtidigFødsel;
 import static no.nav.foreldrepenger.mottak.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.TestUtils.medlemsskap;
+import static no.nav.foreldrepenger.mottak.TestUtils.navnUtenMellomnavn;
 import static no.nav.foreldrepenger.mottak.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.omsorgsovertakelse;
 import static no.nav.foreldrepenger.mottak.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.TestUtils.søker;
+import static no.nav.foreldrepenger.mottak.TestUtils.ukjentForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.utenlandsopphold;
 import static no.nav.foreldrepenger.mottak.TestUtils.varighet;
+import static no.nav.foreldrepenger.mottak.TestUtils.write;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
@@ -41,6 +46,11 @@ public class TestSerialization {
 
     @Autowired
     ObjectMapper mapper;
+
+    @Before
+    public void init() {
+        mapper.registerModule(new CustomSerializerModule());
+    }
 
     @Test
     public void testVedlegg() throws IOException {
@@ -66,7 +76,7 @@ public class TestSerialization {
 
     @Test
     public void testEngangsstønadUkjentFar() {
-        test(engangstønad(true, fremtidigFødsel(), TestUtils.ukjentForelder()), true);
+        test(engangstønad(true, fremtidigFødsel(), ukjentForelder()), true);
     }
 
     @Test
@@ -77,6 +87,11 @@ public class TestSerialization {
     @Test
     public void testUtenlandskAnnenForelder() {
         test(utenlandskForelder(), true);
+    }
+
+    @Test
+    public void testUkjentForelder() {
+        test(ukjentForelder(), true);
     }
 
     @Test
@@ -131,7 +146,7 @@ public class TestSerialization {
 
     @Test
     public void testSøkerUtenMellomNavn() {
-        test(søker(TestUtils.navnUtenMellomnavn()));
+        test(søker(navnUtenMellomnavn()));
     }
 
     @Test
@@ -165,7 +180,7 @@ public class TestSerialization {
 
     private static void test(Object object, boolean print, ObjectMapper mapper) {
         try {
-            String serialized = TestUtils.write(object, print, mapper);
+            String serialized = write(object, print, mapper);
             Object deserialized = mapper.readValue(serialized, object.getClass());
             if (print) {
                 System.out.println(deserialized);
