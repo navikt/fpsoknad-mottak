@@ -29,7 +29,7 @@ public class JacksonModulesConfiguration {
     }
 
     @Bean
-    public Module custonSerializers() {
+    public Module customSerializers() {
         return new CustomSerializerModule();
     }
 }
