@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static org.springframework.util.StreamUtils.copyToByteArray;
 
 import java.io.IOException;
@@ -16,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @Data
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
         @Type(value = ValgfrittVedlegg.class, name = "valgfritt"),
         @Type(value = PåkrevdVedlegg.class, name = "påkrevd")

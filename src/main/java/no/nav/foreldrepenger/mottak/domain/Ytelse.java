@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+
 import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
         @Type(value = Engangsstønad.class, name = "engangsstønad"),
 })

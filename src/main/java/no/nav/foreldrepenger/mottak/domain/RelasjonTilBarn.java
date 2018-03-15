@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
@@ -11,7 +14,7 @@ import lombok.Data;
 
 @Valid
 @Data
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
         @Type(value = Fødsel.class, name = "fødsel"),
         @Type(value = Adopsjon.class, name = "adopsjon"),

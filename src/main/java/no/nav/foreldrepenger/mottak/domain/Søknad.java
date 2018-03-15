@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -45,7 +46,7 @@ public class Søknad {
         return vedlegg.stream()
                 .filter(s -> s instanceof PåkrevdVedlegg)
                 .map(s -> PåkrevdVedlegg.class.cast(s))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @JsonIgnore
@@ -53,6 +54,6 @@ public class Søknad {
         return vedlegg.stream()
                 .filter(s -> s instanceof ValgfrittVedlegg)
                 .map(s -> ValgfrittVedlegg.class.cast(s))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }
