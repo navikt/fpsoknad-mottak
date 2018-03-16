@@ -11,7 +11,6 @@ import lombok.Data;
 
 @Data
 @JsonPropertyOrder({ "fødselNorge", "norgeNeste12", "utenlandsOpphold" })
-
 public class FramtidigOppholdsInformasjon {
 
     private final boolean fødselNorge;
