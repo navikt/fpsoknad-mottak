@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import javax.validation.constraints.Past;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,8 +18,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Fødsel extends RelasjonTilBarn {
 
-    // @Past(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}")
-    private final List<LocalDate> fødselsdato;
+    private final List<@Past LocalDate> fødselsdato;
 
     public Fødsel(LocalDate fødselsdato) {
         this(1, Collections.singletonList(fødselsdato));
