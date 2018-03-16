@@ -11,9 +11,11 @@ info.app:
     version: @project.version@
     build.time:  @timestamp@
       
-management.endpoints: 
+management:
+   endpoints: 
      security.enabled : false
      web.exposure.include:  info, health, metrics, prometheus
+   health.jms.enabled: false
 server.servlet :
     context-path :  /api
     use-forward-headers: true                        
