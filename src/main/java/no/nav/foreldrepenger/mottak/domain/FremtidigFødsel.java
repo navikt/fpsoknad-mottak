@@ -16,6 +16,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+
 public class FremtidigFødsel extends RelasjonTilBarn {
     @NotNull(message = "{ytelse.relasjontilbarn.framtidigfødsel.termindato.notnull}")
     @Future(message = "{ytelse.relasjontilbarn.framtidigfødsel.termindato.fortid}")

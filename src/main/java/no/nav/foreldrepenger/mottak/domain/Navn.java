@@ -2,10 +2,12 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 
 @Data
+@JsonPropertyOrder({ "fornavn", "mellomnavn", "etternavn" })
 public class Navn {
 
     private final String fornavn;

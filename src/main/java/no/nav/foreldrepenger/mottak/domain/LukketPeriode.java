@@ -7,11 +7,13 @@ import javax.validation.constraints.Past;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 
 @Data
 @Periode
+@JsonPropertyOrder({ "fom", "tom" })
 public class LukketPeriode {
 
     @NotNull

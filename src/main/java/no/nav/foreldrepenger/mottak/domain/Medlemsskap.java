@@ -2,9 +2,12 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import lombok.Data;
 
 @Data
+@JsonPropertyOrder({ "tidligereOppholdsInfo", "framtidigOppholdsInfo" })
 public class Medlemsskap {
 
     @Valid

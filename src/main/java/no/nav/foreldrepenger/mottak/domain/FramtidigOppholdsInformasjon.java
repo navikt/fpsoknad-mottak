@@ -5,10 +5,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
 
 @Data
+@JsonPropertyOrder({ "fødselNorge", "norgeNeste12", "utenlandsOpphold" })
+
 public class FramtidigOppholdsInformasjon {
 
     private final boolean fødselNorge;
