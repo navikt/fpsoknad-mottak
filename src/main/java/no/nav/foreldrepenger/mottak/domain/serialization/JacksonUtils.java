@@ -25,7 +25,7 @@ final class JacksonUtils {
         return Optional.ofNullable(rootNode.get(nodeName))
                 .filter(s -> s instanceof ArrayNode)
                 .map(s -> ArrayNode.class.cast(s))
-                .orElseThrow(() -> new IllegalArgumentException("Node " + nodeName + " er ikke en arrayNode"));
+                .orElse(null);
     }
 
     static String textValue(JsonNode rootNode, String fieldName) {
