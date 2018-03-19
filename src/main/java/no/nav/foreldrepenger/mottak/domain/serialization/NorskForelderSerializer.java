@@ -2,9 +2,6 @@ package no.nav.foreldrepenger.mottak.domain.serialization;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.WritableTypeId;
@@ -15,8 +12,6 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 
 public class NorskForelderSerializer extends StdSerializer<NorskForelder> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(NorskForelderSerializer.class);
 
     public NorskForelderSerializer() {
         this(null);
@@ -29,7 +24,6 @@ public class NorskForelderSerializer extends StdSerializer<NorskForelder> {
     @Override
     public void serialize(NorskForelder forelder, JsonGenerator jgen, SerializerProvider provider)
             throws IOException {
-        LOG.info("Serializing");
         jgen.writeBooleanField("lever", forelder.isLever());
         jgen.writeStringField("fnr", forelder.getFnr().getFnr());
         JacksonUtils.writeNavn(forelder.getNavn(), jgen);

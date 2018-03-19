@@ -11,9 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -31,8 +28,6 @@ import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 
 public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MedlemsskapSerializer.class);
-
     public MedlemsskapDeserializer() {
         this(null);
     }
@@ -44,7 +39,6 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     @Override
     public Medlemsskap deserialize(JsonParser parser, DeserializationContext ctx)
             throws IOException, JsonProcessingException {
-        LOG.info("Deserialing");
         JsonNode rootNode = parser.getCodec().readTree(parser);
         return new Medlemsskap(tidligereOpphold(rootNode, parser), framtidigOpphold(rootNode, parser));
     }

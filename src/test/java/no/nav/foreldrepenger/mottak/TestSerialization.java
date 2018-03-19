@@ -18,7 +18,7 @@ import static no.nav.foreldrepenger.mottak.TestUtils.ukjentForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.utenlandsopphold;
 import static no.nav.foreldrepenger.mottak.TestUtils.varighet;
-import static no.nav.foreldrepenger.mottak.TestUtils.write;
+import static no.nav.foreldrepenger.mottak.TestUtils.serialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -180,7 +180,7 @@ public class TestSerialization {
 
     private static void test(Object object, boolean print, ObjectMapper mapper) {
         try {
-            String serialized = write(object, print, mapper);
+            String serialized = serialize(object, print, mapper);
             Object deserialized = mapper.readValue(serialized, object.getClass());
             if (print) {
                 System.out.println(deserialized);

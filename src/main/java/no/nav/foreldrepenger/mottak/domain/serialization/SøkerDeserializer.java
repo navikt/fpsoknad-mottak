@@ -5,9 +5,6 @@ import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.tex
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -21,8 +18,6 @@ import no.nav.foreldrepenger.mottak.domain.Søker;
 
 public class SøkerDeserializer extends StdDeserializer<Søker> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SøkerDeserializer.class);
-
     public SøkerDeserializer() {
         this(null);
     }
@@ -33,7 +28,6 @@ public class SøkerDeserializer extends StdDeserializer<Søker> {
 
     @Override
     public Søker deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        LOG.info("Deserializing");
         JsonNode rootNode = p.getCodec().readTree(p);
         return new Søker(new Fødselsnummer(textValue(rootNode, "fnr")), new AktorId(textValue(rootNode, "aktør")),
                 BrukerRolle.valueOf(textValue(rootNode, "søknadsRolle")), navn(rootNode));

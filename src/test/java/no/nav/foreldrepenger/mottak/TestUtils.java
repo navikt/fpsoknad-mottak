@@ -128,7 +128,11 @@ public class TestUtils {
     }
 
     static Fødsel fødsel() {
-        return new Fødsel(forrigeMåned());
+        return fødsel(forrigeMåned());
+    }
+
+    static Fødsel fødsel(LocalDate date) {
+        return new Fødsel(date);
     }
 
     static FramtidigOppholdsInformasjon framtidigOppHoldIUtlandetHeleåret() {
@@ -140,12 +144,13 @@ public class TestUtils {
         return new FramtidigOppholdsInformasjon(true, true, Collections.emptyList());
     }
 
-    static String write(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
+    static String serialize(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        if (print) {
-            System.out.println(serialized);
-            return serialized;
-        }
+        return print ? printSerialized(serialized) : serialized;
+    }
+
+    static String printSerialized(String serialized) {
+        System.out.println(serialized);
         return serialized;
     }
 

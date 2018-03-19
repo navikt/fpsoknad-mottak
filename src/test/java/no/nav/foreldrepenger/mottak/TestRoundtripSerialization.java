@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -48,6 +50,15 @@ public class TestRoundtripSerialization {
                         String.class),
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(engangssøknad.getBegrunnelseForSenSøknad(), response.getOpplysningerOmBarn().getBegrunnelse());
+        // TODO more checks
+    }
+
+    @Test
+    public void testSøknadFødselFramtidShouldNotValidate() throws IOException {
+        Søknad engangssøknad = engangssøknad(false, fødsel(TestUtils.nesteMåned()), norskForelder(), påkrevdVedlegg());
+        ResponseEntity<String> response = template.postForEntity("/mottak/preprod/søknad", engangssøknad, String.class);
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY_422, response.getStatusCodeValue());
+        System.out.println(response.getBody());
         // TODO more checks
     }
 

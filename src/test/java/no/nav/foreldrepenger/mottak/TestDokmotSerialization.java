@@ -85,7 +85,7 @@ public class TestDokmotSerialization {
     public void testDokmotMarshalling() throws Exception {
         Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.norskForelder(),
                 TestUtils.valgfrittVedlegg());
-        TestUtils.write(søknad, true, mapper);
+        TestUtils.serialize(søknad, true, mapper);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad);
         System.out.println(søknadXMLGenerator.toXML(søknad));
         SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.toXML(søknad), SØKNADCTX,
