@@ -13,12 +13,19 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 
 final class JacksonUtils {
 
+    private static final String ETTERNAVN = "etternavn";
+    private static final String MELLOMNAVN = "mellomnavn";
+    private static final String FORNAVN = "fornavn";
+
     private JacksonUtils() {
 
     }
 
     static ArrayNode arrayNode(JsonNode rootNode, String nodeName) {
-        return ArrayNode.class.cast(rootNode.get(nodeName));
+        return Optional.ofNullable(rootNode.get(nodeName))
+                .filter(s -> s instanceof ArrayNode)
+                .map(s -> ArrayNode.class.cast(s))
+                .orElseThrow(() -> new IllegalArgumentException("Node " + nodeName + " er ikke en arrayNode"));
     }
 
     static String textValue(JsonNode rootNode, String fieldName) {
@@ -42,15 +49,16 @@ final class JacksonUtils {
     }
 
     static void writeNavn(Navn navn, JsonGenerator jgen) throws IOException {
-        jgen.writeStringField("fornavn", navn.getFornavn());
-        jgen.writeStringField("mellomnavn", navn.getMellomnavn());
-        jgen.writeStringField("etternavn", navn.getEtternavn());
+        jgen.writeStringField(FORNAVN, navn.getFornavn());
+        jgen.writeStringField(MELLOMNAVN, navn.getMellomnavn());
+        jgen.writeStringField(ETTERNAVN, navn.getEtternavn());
     }
 
     static Navn navn(JsonNode rootNode) {
         return new Navn(
-                textValue(rootNode, "fornavn"), textValue(rootNode, "mellomnavn"),
-                textValue(rootNode, "etternavn"));
+                textValue(rootNode, FORNAVN),
+                textValue(rootNode, MELLOMNAVN),
+                textValue(rootNode, ETTERNAVN));
     }
 
 }
