@@ -1,0 +1,9 @@
+dokmot :
+   queuename : ueue  
+   hostname : hostname
+   port : 2412
+   name : name
+   usrname : user
+   channelname : channel
+               
+       

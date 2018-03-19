@@ -1,14 +1,10 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,19 +24,17 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEnga
 @Profile("preprod")
 public class DokmotMottakPreprodController {
 
-    private static final Logger LOG = getLogger(DokmotMottakPreprodController.class);
-
     public static final String DOKMOT_PREPROD = "/mottak/preprod";
 
     private final DokmotJMSSender sender;
-    @Autowired
-    DokmotEngangsstønadXMLGenerator søknadGenerator;
-    @Autowired
-    DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator;
+    private final DokmotEngangsstønadXMLGenerator søknadGenerator;
+    private final DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator;
 
-    @Inject
-    public DokmotMottakPreprodController(DokmotJMSSender sender) {
+    public DokmotMottakPreprodController(DokmotJMSSender sender, DokmotEngangsstønadXMLGenerator søknadGenerator,
+            DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator) {
         this.sender = sender;
+        this.søknadGenerator = søknadGenerator;
+        this.konvoluttGenerator = konvoluttGenerator;
     }
 
     @PostMapping("/søknad")
@@ -54,12 +48,14 @@ public class DokmotMottakPreprodController {
     }
 
     @PostMapping(value = "/model", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<SoeknadsskjemaEngangsstoenad> model(@Valid @RequestBody Søknad søknad) {
+    public ResponseEntity<SoeknadsskjemaEngangsstoenad> dokmotmodel(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toDokmotModel(søknad));
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [sender=" + sender + "]";
+        return getClass().getSimpleName() + " [sender=" + sender + ", søknadGenerator=" + søknadGenerator
+                + ", konvoluttGenerator=" + konvoluttGenerator + "]";
     }
+
 }
