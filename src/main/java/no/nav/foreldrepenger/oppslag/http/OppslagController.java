@@ -1,34 +1,26 @@
 package no.nav.foreldrepenger.oppslag.http;
 
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-
+import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.domain.*;
+import no.nav.foreldrepenger.oppslag.orchestrate.CoordinatedLookup;
+import no.nav.foreldrepenger.oppslag.person.PersonClient;
+import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.spring.oidc.validation.api.Protected;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.domain.AggregatedLookupResults;
-import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.ID;
-import no.nav.foreldrepenger.oppslag.domain.Person;
-import no.nav.foreldrepenger.oppslag.domain.SøkerInformasjon;
-import no.nav.foreldrepenger.oppslag.orchestrate.CoordinatedLookup;
-import no.nav.foreldrepenger.oppslag.person.PersonClient;
+import javax.inject.Inject;
+
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 @RestController
-@Validated
 @RequestMapping("/oppslag")
 public class OppslagController {
 
@@ -40,6 +32,8 @@ public class OppslagController {
     private AktorIdClient aktorClient;
     @Inject
     private CoordinatedLookup personInfo;
+    @Inject
+    private OIDCValidationContext oidcCtx;
 
     @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
@@ -49,7 +43,13 @@ public class OppslagController {
 
     @GetMapping(value = "/")
     @Protected
-    public ResponseEntity<SøkerInformasjon> oppslag(@Valid @RequestParam(value = "fnr") Fodselsnummer fnr) {
+    public ResponseEntity<SøkerInformasjon> gimmeAllYouGot() {
+        String fnrFromClaims = oidcCtx.getClaims("selvbetjening").getClaimSet().getSubject();
+        if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
         AktorId aktorid = aktorClient.aktorIdForFnr(fnr);
         Person person = personClient.hentPersonInfo(new ID(aktorid, fnr));
         AggregatedLookupResults results = personInfo.gimmeAllYouGot(new ID(aktorid, fnr));

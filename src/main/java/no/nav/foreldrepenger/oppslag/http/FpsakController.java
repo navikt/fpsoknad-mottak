@@ -30,7 +30,7 @@ class FpsakController {
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/fpsak")
     @Protected
-    public ResponseEntity<List<Ytelse>> casesFor(@Valid @RequestParam("aktør") AktorId aktor) {
+    public ResponseEntity<List<Ytelse>> existingCases(@Valid @RequestParam("aktør") AktorId aktor) {
         return ResponseEntity.ok(fpsakClient.casesFor(aktor));
     }
 }

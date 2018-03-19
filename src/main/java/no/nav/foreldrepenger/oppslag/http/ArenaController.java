@@ -1,37 +1,37 @@
 package no.nav.foreldrepenger.oppslag.http;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-
-import no.nav.security.spring.oidc.validation.api.Protected;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.security.oidc.context.OIDCValidationContext;
+import no.nav.security.spring.oidc.validation.api.Protected;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
-@Validated
 class ArenaController {
 
-    private final ArenaClient arenaClient;
+    @Inject
+    private ArenaClient arenaClient;
 
     @Inject
-    public ArenaController(ArenaClient arenaClient) {
-        this.arenaClient = arenaClient;
-    }
+    private OIDCValidationContext oidcCtx;
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/arena")
     @Protected
-    public ResponseEntity<List<Ytelse>> incomeForAktor(@Valid @RequestParam("fnr") Fodselsnummer fnr) {
+    public ResponseEntity<List<Ytelse>> benefits() {
+        String fnrFromClaims = oidcCtx.getClaims("selvbetjening").getClaimSet().getSubject();
+        if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
         LocalDate now = LocalDate.now();
         LocalDate oneYearAgo = LocalDate.now().minusMonths(12);
         return ResponseEntity.ok(arenaClient.ytelser(fnr, oneYearAgo, now));
