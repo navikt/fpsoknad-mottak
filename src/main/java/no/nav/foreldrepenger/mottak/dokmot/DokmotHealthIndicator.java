@@ -7,12 +7,18 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
+
 @Component
 public class DokmotHealthIndicator implements HealthIndicator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotHealthIndicator.class);
 
     private final DokmotQueuePinger pinger;
+
+    private final Counter dokmotSuccess = Metrics.counter("dokmot.health", "response", "success");
+    private final Counter dokmotFailure = Metrics.counter("dokmot.health", "response", "failure");
 
     private final Environment env;
 
@@ -25,8 +31,10 @@ public class DokmotHealthIndicator implements HealthIndicator {
     public Health health() {
         try {
             pinger.ping();
+            dokmotSuccess.increment();
             return isPreprodOrDev() ? upWithDetails() : up();
         } catch (Exception e) {
+            dokmotFailure.increment();
             LOG.warn("Could not verify health of queue {}", pinger.getQueueConfig(), e);
             return isPreprodOrDev() ? downWithDetails(e) : down();
         }
