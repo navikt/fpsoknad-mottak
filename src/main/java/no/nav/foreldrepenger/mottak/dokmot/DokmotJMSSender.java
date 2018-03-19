@@ -9,6 +9,8 @@ import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
@@ -16,6 +18,9 @@ import no.nav.foreldrepenger.mottak.http.CallIdGenerator;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
+
+    private final Counter dokmotSuccess = Metrics.counter("dokmot,send", "søknad", "success");
+    private final Counter dokmotFailure = Metrics.counter("dokmot.send", "søknad", "failure");
 
     private final JmsTemplate dokmotTemplate;
     private final DokmotEngangsstønadXMLKonvoluttGenerator generator;
@@ -41,9 +46,11 @@ public class DokmotJMSSender implements SøknadSender {
                 msg.setStringProperty("callId", callIdGenerator.getOrCreate());
                 return msg;
             });
+            dokmotSuccess.increment();
             return SøknadSendingsResultat.OK;
         } catch (JmsException e) {
             LOG.warn("Unable to send to DOKMOT", e);
+            dokmotFailure.increment();
             throw (new DokmotQueueUnavailableException(e));
         }
     }
