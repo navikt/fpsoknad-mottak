@@ -12,9 +12,7 @@ info.app:
     build.time:  @timestamp@
       
 management:
-   endpoints: 
-     security.enabled : false
-     web.exposure.include:  info, health, metrics, prometheus
+   endpoints.web.exposure.include:  info, health, metrics, prometheus
    health.jms.enabled: false
 server.servlet :
     context-path :  /api
