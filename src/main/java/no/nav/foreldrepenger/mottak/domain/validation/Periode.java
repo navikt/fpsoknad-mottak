@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.domain.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

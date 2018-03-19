@@ -93,7 +93,8 @@ public class TestUtils {
 
     static TidligereOppholdsInformasjon tidligereOppHoldIUtlandetHeleåret() {
         return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET,
-                Collections.singletonList(new Utenlandsopphold(CountryCode.SE)));
+                Collections.singletonList(new Utenlandsopphold(CountryCode.SE,
+                        new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now()))));
     }
 
     static TidligereOppholdsInformasjon tidligereOppHoldINorge() {
@@ -137,7 +138,8 @@ public class TestUtils {
 
     static FramtidigOppholdsInformasjon framtidigOppHoldIUtlandetHeleåret() {
         return new FramtidigOppholdsInformasjon(true, false,
-                Collections.singletonList(new Utenlandsopphold(CountryCode.SE)));
+                Collections.singletonList(new Utenlandsopphold(CountryCode.SE,
+                        new LukketPeriode(LocalDate.now(), LocalDate.now().plusYears(1)))));
     }
 
     static FramtidigOppholdsInformasjon framtidigOppholdINorge() {

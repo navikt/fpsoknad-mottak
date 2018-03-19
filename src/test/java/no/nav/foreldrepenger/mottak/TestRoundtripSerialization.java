@@ -58,8 +58,6 @@ public class TestRoundtripSerialization {
         Søknad engangssøknad = engangssøknad(false, fødsel(TestUtils.nesteMåned()), norskForelder(), påkrevdVedlegg());
         ResponseEntity<String> response = template.postForEntity("/mottak/preprod/søknad", engangssøknad, String.class);
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY_422, response.getStatusCodeValue());
-        System.out.println(response.getBody());
-        // TODO more checks
     }
 
     @Test

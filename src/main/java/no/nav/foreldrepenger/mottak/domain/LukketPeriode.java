@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 
 @Data
 @Periode
@@ -22,18 +23,9 @@ public class LukketPeriode {
     @NotNull
     private final LocalDate tom;
 
-    public LukketPeriode() {
-        this(LocalDate.now().minusYears(1), LocalDate.now());
-    }
-
     @JsonCreator
     public LukketPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom) {
         this.fom = fom;
         this.tom = tom;
     }
-
-    public boolean overlapperPeriode(LukketPeriode other) {
-        return fom.isBefore(other.getTom()) && other.getFom().isBefore(fom);
-    }
-
 }

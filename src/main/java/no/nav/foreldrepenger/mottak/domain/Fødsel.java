@@ -12,10 +12,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.validation.BarnOgFødselsdatoer;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@BarnOgFødselsdatoer
 public class Fødsel extends RelasjonTilBarn {
 
     private final List<@Past(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") LocalDate> fødselsdato;
@@ -28,13 +30,6 @@ public class Fødsel extends RelasjonTilBarn {
     public Fødsel(@JsonProperty("antallBarn") int antallBarn,
             @JsonProperty("fødselsdato") List<LocalDate> fødselsdato) {
         super(antallBarn);
-        this.fødselsdato = fødselsdato(antallBarn, fødselsdato);
-    }
-
-    private static List<LocalDate> fødselsdato(int antallBarn, List<LocalDate> fødselsdato) {
-        if (fødselsdato.size() == antallBarn) {
-            return fødselsdato;
-        }
-        throw new IllegalStateException("Forventet " + antallBarn + " fødselsdatoer, fikk " + fødselsdato.size());
+        this.fødselsdato = fødselsdato;
     }
 }

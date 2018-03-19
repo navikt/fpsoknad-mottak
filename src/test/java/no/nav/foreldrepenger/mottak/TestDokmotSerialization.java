@@ -52,7 +52,7 @@ public class TestDokmotSerialization {
 
     @Test
     public void testKonvoluttXML() throws Exception {
-        Søknad engangssøknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.norskForelder(),
+        Søknad engangssøknad = engangssøknad(true, TestUtils.fødsel(), TestUtils.norskForelder(),
                 TestUtils.valgfrittVedlegg());
         Engangsstønad engangs = (Engangsstønad) engangssøknad.getYtelse();
         String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad);

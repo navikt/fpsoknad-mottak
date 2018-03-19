@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
+import no.nav.foreldrepenger.mottak.domain.validation.PeriodeValidator;
+
 @Constraint(validatedBy = PeriodeValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
