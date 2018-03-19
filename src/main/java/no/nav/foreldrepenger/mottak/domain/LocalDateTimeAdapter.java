@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.serialization;
+package no.nav.foreldrepenger.mottak.domain;
 
 import java.time.LocalDateTime;
 
