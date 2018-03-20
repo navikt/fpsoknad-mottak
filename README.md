@@ -1,21 +1,30 @@
-# fpsoknad-oppslag
+fpsoknad-oppslag
+================
 
 Slår opp info fra diverse interne registre for å assistere selvbetjent søknad om foreldrepenger og engangsstønad
 
-### For å bygge:
-Standard Maven-opplegg, `mvn compile|test|package|install` osv. Det bygges en kjørbar "fatjar"
-
-Som default kjøres kun enhetstester. For å inkludere de saktegående testene, bruk `-Palltests`
+# Komme i gang
 
 ### For å kjøre lokalt:
 
 Start no.nav.foreldrepenger.oppslag.OppslagApplication
 
-Default konfigurasjon er lagt i application.properties.
+Default konfigurasjon er lagt i application.yaml.
 
-### For å kjøre i et testmiljø med registre tilgjengelig: 
+### For å kjøre i et internt testmiljø med registre tilgjengelig: 
  
-Få tak i en Java truststore med gyldige sertifikater for aktuelt testmiljø.
+Få tak i en Java truststore med gyldige sertifikater for aktuelt miljø.
 
 `java -jar fpsoknad-oppslag-<version>.jar -Djavax.net.ssl.trustStore=/path/til/truststore -Djavax.net.ssl.trustStorePassword=........`
- 
+
+---
+
+# Henvendelser
+
+Spørsmål knyttet til koden eller prosjektet kan rettes mot:
+
+* "Bris"-teamet, bris@nav.no
+
+## For NAV-ansatte
+
+Interne henvendelser kan sendes via Slack i kanalen #bris.
