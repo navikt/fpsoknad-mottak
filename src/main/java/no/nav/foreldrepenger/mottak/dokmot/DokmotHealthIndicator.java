@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.Health;
@@ -62,7 +64,8 @@ public class DokmotHealthIndicator implements HealthIndicator {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pinger=" + pinger + "]";
+        return getClass().getSimpleName() + " [pinger=" + pinger + "activeProfiles "
+                + Arrays.toString(env.getActiveProfiles()) + "]";
     }
 
 }
