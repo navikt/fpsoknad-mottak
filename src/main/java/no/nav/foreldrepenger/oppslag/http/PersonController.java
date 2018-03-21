@@ -5,7 +5,9 @@ import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.ID;
 import no.nav.foreldrepenger.oppslag.domain.Person;
 import no.nav.foreldrepenger.oppslag.person.PersonClient;
+import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.context.OIDCValidationContext;
+import no.nav.security.oidc.filter.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.Protected;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,15 +26,19 @@ public class PersonController {
 
     @Inject
     private AktorIdClient aktorClient;
+
     @Inject
     private PersonClient personClient;
+
     @Inject
-    private OIDCValidationContext oidcCtx;
+    private OIDCRequestContextHolder contextHolder;
 
     @GetMapping
     @Protected
     public ResponseEntity<Person> person() {
-        String fnrFromClaims = oidcCtx.getClaims("selvbetjening").getClaimSet().getSubject();
+        OIDCValidationContext context = (OIDCValidationContext) contextHolder
+            .getRequestAttribute(OIDCConstants.OIDC_VALIDATION_CONTEXT);
+        String fnrFromClaims = context.getClaims("selvbetjening").getClaimSet().getSubject();
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
             return ResponseEntity.badRequest().build();
         }

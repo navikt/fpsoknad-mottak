@@ -4,7 +4,9 @@ import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
 import no.nav.foreldrepenger.oppslag.domain.*;
 import no.nav.foreldrepenger.oppslag.orchestrate.CoordinatedLookup;
 import no.nav.foreldrepenger.oppslag.person.PersonClient;
+import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.context.OIDCValidationContext;
+import no.nav.security.oidc.filter.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.Protected;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -28,12 +30,15 @@ public class OppslagController {
 
     @Inject
     private PersonClient personClient;
+
     @Inject
     private AktorIdClient aktorClient;
+
     @Inject
     private CoordinatedLookup personInfo;
+
     @Inject
-    private OIDCValidationContext oidcCtx;
+    private OIDCRequestContextHolder contextHolder;
 
     @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
@@ -44,7 +49,9 @@ public class OppslagController {
     @GetMapping(value = "/")
     @Protected
     public ResponseEntity<SøkerInformasjon> gimmeAllYouGot() {
-        String fnrFromClaims = oidcCtx.getClaims("selvbetjening").getClaimSet().getSubject();
+        OIDCValidationContext context = (OIDCValidationContext) contextHolder
+            .getRequestAttribute(OIDCConstants.OIDC_VALIDATION_CONTEXT);
+        String fnrFromClaims = context.getClaims("selvbetjening").getClaimSet().getSubject();
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
             return ResponseEntity.badRequest().build();
         }
