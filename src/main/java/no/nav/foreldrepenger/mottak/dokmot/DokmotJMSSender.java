@@ -39,7 +39,7 @@ public class DokmotJMSSender implements SøknadSender {
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
         String xml = generator.toXML(søknad);
         try {
-            dokmotConnection.getTemplate().send(session -> {
+            dokmotConnection.send(session -> {
                 LOG.trace("Sending message to DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
                 TextMessage msg = session.createTextMessage(xml);
                 msg.setStringProperty("callId", callIdGenerator.getOrCreate());
@@ -48,7 +48,7 @@ public class DokmotJMSSender implements SøknadSender {
             dokmotSuccess.increment();
             return SøknadSendingsResultat.OK;
         } catch (JmsException e) {
-            LOG.warn("Unable to send to DOKMOT", e);
+            LOG.warn("Unable to send to DOKMOT at {}", dokmotConnection.getQueueConfig().toString(), e);
             dokmotFailure.increment();
             throw (new DokmotQueueUnavailableException(e));
         }

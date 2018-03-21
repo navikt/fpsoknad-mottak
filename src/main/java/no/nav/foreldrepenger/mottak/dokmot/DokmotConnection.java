@@ -5,6 +5,7 @@ import javax.jms.JMSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
 public class DokmotConnection {
 
@@ -23,12 +24,12 @@ public class DokmotConnection {
         template.getConnectionFactory().createConnection().close();
     }
 
-    public DokmotQueueConfig getQueueConfig() {
-        return queueConfig;
+    public void send(MessageCreator msg) {
+        template.send(msg);
     }
 
-    public JmsTemplate getTemplate() {
-        return template;
+    public DokmotQueueConfig getQueueConfig() {
+        return queueConfig;
     }
 
     @Override
