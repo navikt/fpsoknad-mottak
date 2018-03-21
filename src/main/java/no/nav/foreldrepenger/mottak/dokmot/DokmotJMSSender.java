@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 import javax.jms.TextMessage;
 
@@ -37,7 +39,8 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Override
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
-        String xml = generator.toXML(søknad);
+        String ref = UUID.randomUUID().toString();
+        String xml = generator.toXML(søknad, ref);
         try {
             dokmotConnection.send(session -> {
                 LOG.trace("Sending message to DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
@@ -46,7 +49,7 @@ public class DokmotJMSSender implements SøknadSender {
                 return msg;
             });
             dokmotSuccess.increment();
-            return SøknadSendingsResultat.OK;
+            return SøknadSendingsResultat.OK.withRef(ref);
         } catch (JmsException e) {
             LOG.warn("Unable to send to DOKMOT at {}", dokmotConnection.getQueueConfig().toString(), e);
             dokmotFailure.increment();

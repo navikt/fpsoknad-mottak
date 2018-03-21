@@ -4,4 +4,15 @@ public class SøknadSendingsResultat {
 
     public static final SøknadSendingsResultat OK = new SøknadSendingsResultat();
 
+    private String ref;
+
+    public SøknadSendingsResultat withRef(String ref) {
+        this.ref = ref;
+        return this;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
 }

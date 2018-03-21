@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.http;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
+import java.util.UUID;
+
 import javax.validation.Valid;
 
 import org.springframework.context.annotation.Profile;
@@ -44,7 +46,8 @@ public class DokmotMottakPreprodController {
 
     @PostMapping("/konvolutt")
     public ResponseEntity<String> konvolutt(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.status(HttpStatus.OK).body(konvoluttGenerator.toXML(søknad));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(konvoluttGenerator.toXML(søknad, UUID.randomUUID().toString()));
     }
 
     @PostMapping(value = "/model", produces = APPLICATION_JSON_VALUE)

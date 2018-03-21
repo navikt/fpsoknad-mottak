@@ -21,6 +21,7 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 
 @RestController
 @RequestMapping(DokmotMottakController.DOKMOT)
@@ -50,8 +51,8 @@ public class DokmotMottakController {
     @PostMapping(value = "/send", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> send(@Valid @RequestBody Søknad søknad) {
         LOG.info("Sender søknad til DOKMOT {}", søknad);
-        sender.sendSøknad(søknad);
-        return ResponseEntity.status(HttpStatus.OK).body("OK");
+        SøknadSendingsResultat result = sender.sendSøknad(søknad);
+        return ResponseEntity.status(HttpStatus.OK).body(result.getRef());
     }
 
     @Override

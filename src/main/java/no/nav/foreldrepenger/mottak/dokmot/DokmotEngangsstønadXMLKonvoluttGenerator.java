@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -50,18 +49,18 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
         this.søknadGenerator = Objects.requireNonNull(generator);
     }
 
-    public String toXML(Søknad søknad) {
-        return Jaxb.marshall(CONTEXT, dokmotModelFra(søknad));
+    public String toXML(Søknad søknad, String ref) {
+        return Jaxb.marshall(CONTEXT, dokmotModelFra(søknad, ref));
     }
 
-    public Dokumentforsendelse dokmotModelFra(Søknad søknad) {
-        return dokumentForsendelseFra(søknad);
+    public Dokumentforsendelse dokmotModelFra(Søknad søknad, String ref) {
+        return dokumentForsendelseFra(søknad, ref);
     }
 
-    private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad) {
+    private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad, String ref) {
         return new Dokumentforsendelse()
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
-                        .withKanalreferanseId(referanseId())
+                        .withKanalreferanseId(ref)
                         .withTema(new Tema().withValue(TEMA))
                         .withMottakskanal(new Mottakskanaler().withValue(KANAL))
                         .withBehandlingstema(new Behandlingstema().withValue(BEHANDLINGSTEMA))
@@ -106,10 +105,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))
                         .withArkivfiltype(new Arkivfiltyper().withValue(vedlegg.getMetadata().getType().name()))
                         .withDokument(vedlegg.getVedlegg()));
-    }
-
-    private static String referanseId() {
-        return UUID.randomUUID().toString();
     }
 
     @Override

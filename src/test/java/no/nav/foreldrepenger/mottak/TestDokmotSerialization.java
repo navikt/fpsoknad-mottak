@@ -6,6 +6,8 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import javax.xml.bind.JAXBContext;
 
 import org.junit.Test;
@@ -55,7 +57,7 @@ public class TestDokmotSerialization {
         Søknad engangssøknad = engangssøknad(true, TestUtils.fødsel(), TestUtils.norskForelder(),
                 TestUtils.valgfrittVedlegg());
         Engangsstønad engangs = (Engangsstønad) engangssøknad.getYtelse();
-        String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad);
+        String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad, UUID.randomUUID().toString());
         // System.out.println(konvolutt);
         Dokumentforsendelse unmarshalled = unmarshal(konvolutt, FORSENDELSECTX, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
