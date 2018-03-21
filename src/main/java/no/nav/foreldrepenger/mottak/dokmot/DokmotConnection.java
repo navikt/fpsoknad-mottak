@@ -27,6 +27,10 @@ public class DokmotConnection {
         return queueConfig;
     }
 
+    public JmsTemplate getTemplate() {
+        return template;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig + "]";

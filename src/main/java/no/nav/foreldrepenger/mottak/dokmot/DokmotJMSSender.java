@@ -6,7 +6,6 @@ import javax.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.JmsException;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import io.micrometer.core.instrument.Counter;
@@ -22,16 +21,16 @@ public class DokmotJMSSender implements SøknadSender {
     private final Counter dokmotSuccess = Metrics.counter("dokmot,send", "søknad", "success");
     private final Counter dokmotFailure = Metrics.counter("dokmot.send", "søknad", "failure");
 
-    private final JmsTemplate dokmotTemplate;
+    private final DokmotConnection dokmotConnection;
     private final DokmotEngangsstønadXMLKonvoluttGenerator generator;
     private final CallIdGenerator callIdGenerator;
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotJMSSender.class);
 
     @Inject
-    public DokmotJMSSender(JmsTemplate template, DokmotEngangsstønadXMLKonvoluttGenerator generator,
+    public DokmotJMSSender(DokmotConnection connection, DokmotEngangsstønadXMLKonvoluttGenerator generator,
             CallIdGenerator callIdGenerator) {
-        this.dokmotTemplate = template;
+        this.dokmotConnection = connection;
         this.generator = generator;
         this.callIdGenerator = callIdGenerator;
     }
@@ -40,8 +39,8 @@ public class DokmotJMSSender implements SøknadSender {
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
         String xml = generator.toXML(søknad);
         try {
-            dokmotTemplate.send(session -> {
-                LOG.trace("Sending message to DOKMOT: {}", xml);
+            dokmotConnection.getTemplate().send(session -> {
+                LOG.trace("Sending message to DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
                 TextMessage msg = session.createTextMessage(xml);
                 msg.setStringProperty("callId", callIdGenerator.getOrCreate());
                 return msg;
@@ -57,7 +56,7 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotTemplate + ", generator=" + generator
+        return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotConnection + ", generator=" + generator
                 + ", callIdGenerator=" + callIdGenerator + "]";
     }
 
