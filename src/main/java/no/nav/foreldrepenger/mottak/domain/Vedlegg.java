@@ -50,9 +50,10 @@ public abstract class Vedlegg {
     }
 
     private String bytes() {
-        if (vedlegg.length > 50) {
-            return Arrays.toString(vedlegg).substring(0, 49) + ".... " + (vedlegg.length - 50) + " more bytes";
+        String vedleggAsString = Arrays.toString(vedlegg);
+        if (vedleggAsString.length() >= 50) {
+            return vedleggAsString.substring(0, 49) + ".... " + (vedleggAsString.length() - 50) + " more bytes";
         }
-        return Arrays.toString(vedlegg);
+        return vedleggAsString;
     }
 }
