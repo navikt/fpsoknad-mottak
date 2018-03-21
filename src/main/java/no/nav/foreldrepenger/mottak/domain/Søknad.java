@@ -39,7 +39,7 @@ public class Søknad {
     @JsonCreator
     public Søknad(@JsonProperty("mottattdato") LocalDateTime mottattdato, @JsonProperty("søker") Søker søker,
             @JsonProperty("ytelse") Ytelse ytelse,
-            @JsonProperty("påkrevdeVedlegg") List<Vedlegg> vedlegg) {
+            @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {
         this.mottattdato = mottattdato;
         this.søker = søker;
         this.ytelse = ytelse;

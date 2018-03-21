@@ -6,6 +6,7 @@ import static org.springframework.util.StreamUtils.copyToByteArray;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import org.springframework.core.io.Resource;
 
@@ -41,5 +42,17 @@ public abstract class Vedlegg {
             throws IOException {
         this.metadata = metadata;
         this.vedlegg = vedlegg;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + bytes();
+    }
+
+    private String bytes() {
+        if (vedlegg.length > 50) {
+            return Arrays.toString(vedlegg).substring(0, 49) + ".... " + (vedlegg.length - 50) + " more bytes";
+        }
+        return Arrays.toString(vedlegg);
     }
 }
