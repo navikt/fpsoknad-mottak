@@ -2,9 +2,8 @@ package no.nav.foreldrepenger.oppslag.http;
 
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
-import no.nav.security.oidc.OIDCConstants;
-import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.oidc.filter.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.Protected;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +27,7 @@ class InfotrygdController {
     @RequestMapping(method = { RequestMethod.GET }, value = "/infotrygd")
     @Protected
     public ResponseEntity<List<Ytelse>> benefits() {
-        OIDCValidationContext context = (OIDCValidationContext) contextHolder
-            .getRequestAttribute(OIDCConstants.OIDC_VALIDATION_CONTEXT);
-        String fnrFromClaims = context.getClaims("selvbetjening").getClaimSet().getSubject();
+        String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
             return ResponseEntity.badRequest().build();
         }
