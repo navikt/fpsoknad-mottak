@@ -109,6 +109,11 @@
 	<dependencies>
 		<!--<dependency> <groupId>no.nav.security</groupId> <artifactId>oidc-spring-support</artifactId> 
 			<version>${oidc-spring-support.version}</version> </dependency> -->
+		 <dependency>
+            <groupId>no.nav.security</groupId>
+            <artifactId>oidc-spring-support</artifactId>
+            <version>0.1.0-UNSTABLE</version>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
