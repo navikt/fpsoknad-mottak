@@ -8,8 +8,10 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.eclipse.jetty.http.HttpStatus;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
+import no.nav.security.spring.oidc.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplication.class)
 @RunWith(SpringRunner.class)
@@ -42,8 +46,20 @@ public class TestRoundtripSerialization {
         assertEquals("Hello joe", template.getForObject("/mottak/dokmot/ping?navn=joe", String.class));
     }
 
+    @Before
+    public void setSecurity() {
+        template.getRestTemplate().setInterceptors(
+                Collections.singletonList((request, body, execution) -> {
+                    request.getHeaders()
+                            .add(HttpHeaders.AUTHORIZATION,
+                                    JwtTokenGenerator.createSignedJWT("12345678910").serialize());
+                    return execution.execute(request, body);
+                }));
+    }
+
     @Test
     public void testSøknadFødselMedNorskFar() throws IOException {
+
         Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg());
         SoeknadsskjemaEngangsstoenad response = unmarshal(
                 template.postForObject("/mottak/preprod/søknad", engangssøknad,

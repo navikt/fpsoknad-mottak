@@ -49,7 +49,7 @@ public class DokmotJMSSender implements SøknadSender {
                     return msg;
                 });
                 dokmotSuccess.increment();
-                return SøknadSendingsResultat.OK.withReference(reference);
+                return new SøknadSendingsResultat(reference, "Dette gikk jo fint");
             } catch (JmsException e) {
                 LOG.warn("Feil ved sending til DOKMOT ({})", dokmotConnection.getQueueConfig().toString(), e);
                 dokmotFailure.increment();
@@ -57,7 +57,7 @@ public class DokmotJMSSender implements SøknadSender {
             }
         }
         LOG.info("DOKMOT is disabled");
-        return SøknadSendingsResultat.OK;
+        return new SøknadSendingsResultat("Disabled, set dokmot.enabled=true to enable");
     }
 
     @Override
