@@ -114,6 +114,12 @@
             <artifactId>oidc-spring-support</artifactId>
             <version>0.1.0-UNSTABLE</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.security</groupId>
+            <artifactId>oidc-spring-test</artifactId>
+            <version>0.1.1-SNAPHOT</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
