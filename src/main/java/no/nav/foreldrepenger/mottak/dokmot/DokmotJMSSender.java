@@ -37,23 +37,27 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Override
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
-        LOG.info("Sender søknad til DOKMOT {}", søknad);
-        String reference = idGenerator.getOrCreate();
-        String xml = generator.toXML(søknad, reference);
-        try {
-            dokmotConnection.send(session -> {
-                LOG.trace("Sender XML til DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
-                TextMessage msg = session.createTextMessage(xml);
-                msg.setStringProperty("callId", reference);
-                return msg;
-            });
-            dokmotSuccess.increment();
-            return SøknadSendingsResultat.OK.withReference(reference);
-        } catch (JmsException e) {
-            LOG.warn("Feil ved sending til DOKMOT ({})", dokmotConnection.getQueueConfig().toString(), e);
-            dokmotFailure.increment();
-            throw (new DokmotQueueUnavailableException(e));
+        if (dokmotConnection.isEnabled()) {
+            LOG.info("Sender søknad til DOKMOT {}", søknad);
+            String reference = idGenerator.getOrCreate();
+            String xml = generator.toXML(søknad, reference);
+            try {
+                dokmotConnection.send(session -> {
+                    LOG.trace("Sender XML til DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
+                    TextMessage msg = session.createTextMessage(xml);
+                    msg.setStringProperty("callId", reference);
+                    return msg;
+                });
+                dokmotSuccess.increment();
+                return SøknadSendingsResultat.OK.withReference(reference);
+            } catch (JmsException e) {
+                LOG.warn("Feil ved sending til DOKMOT ({})", dokmotConnection.getQueueConfig().toString(), e);
+                dokmotFailure.increment();
+                throw (new DokmotQueueUnavailableException(e));
+            }
         }
+        LOG.info("DOKMOT is disabled");
+        return SøknadSendingsResultat.OK;
     }
 
     @Override

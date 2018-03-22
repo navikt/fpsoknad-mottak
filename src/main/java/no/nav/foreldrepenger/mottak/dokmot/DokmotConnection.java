@@ -32,6 +32,10 @@ public class DokmotConnection {
         return queueConfig;
     }
 
+    public boolean isEnabled() {
+        return queueConfig.isEnabled();
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig + "]";

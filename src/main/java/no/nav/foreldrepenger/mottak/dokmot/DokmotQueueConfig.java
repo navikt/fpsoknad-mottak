@@ -22,6 +22,7 @@ public class DokmotQueueConfig {
     String username;
     @NotNull
     String queuename;
+    boolean enabled;
 
     public String getHostname() {
         return hostname;
