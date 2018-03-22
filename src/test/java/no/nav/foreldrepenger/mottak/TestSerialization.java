@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class TestSerialization {
 
     @Test
     public void testResult() {
-        test(SøknadSendingsResultat.OK.withReference("42"), true);
+        test(SøknadSendingsResultat.OK.withReference("42").withMottattDato(LocalDateTime.now()), true);
     }
 
     @Test

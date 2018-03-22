@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
@@ -48,7 +49,7 @@ public class DokmotMottakController {
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
-    @PostMapping(value = "/send", produces = APPLICATION_XML_VALUE)
+    @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<SøknadSendingsResultat> send(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(sender.sendSøknad(søknad));
     }
