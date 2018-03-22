@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import lombok.Data;
+
+@Data
 public class SøknadSendingsResultat {
 
     public static final SøknadSendingsResultat OK = new SøknadSendingsResultat();

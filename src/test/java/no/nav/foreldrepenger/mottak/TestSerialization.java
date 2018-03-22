@@ -13,12 +13,12 @@ import static no.nav.foreldrepenger.mottak.TestUtils.navnUtenMellomnavn;
 import static no.nav.foreldrepenger.mottak.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.omsorgsovertakelse;
 import static no.nav.foreldrepenger.mottak.TestUtils.påkrevdVedlegg;
+import static no.nav.foreldrepenger.mottak.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.TestUtils.søker;
 import static no.nav.foreldrepenger.mottak.TestUtils.ukjentForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.TestUtils.utenlandsopphold;
 import static no.nav.foreldrepenger.mottak.TestUtils.varighet;
-import static no.nav.foreldrepenger.mottak.TestUtils.serialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -39,6 +39,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters
@@ -50,6 +51,11 @@ public class TestSerialization {
     @Before
     public void init() {
         mapper.registerModule(new CustomSerializerModule());
+    }
+
+    @Test
+    public void testResult() {
+        test(SøknadSendingsResultat.OK.withReference("42"), true);
     }
 
     @Test
