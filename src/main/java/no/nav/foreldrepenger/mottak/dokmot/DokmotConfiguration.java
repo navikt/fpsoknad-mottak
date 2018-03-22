@@ -56,7 +56,7 @@ public class DokmotConfiguration {
     }
 
     @Bean
-    DokmotConnection dokmotInfo(JmsTemplate template, DokmotQueueConfig queueConfig) {
+    DokmotConnection dokmotConnection(JmsTemplate template, DokmotQueueConfig queueConfig) {
         return new DokmotConnection(template, queueConfig);
     }
 }

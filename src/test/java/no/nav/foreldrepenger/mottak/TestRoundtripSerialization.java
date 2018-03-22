@@ -29,7 +29,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplication.class)
 @RunWith(SpringRunner.class)
-@ActiveProfiles("preprod")
+@ActiveProfiles(profiles = "preprod,dev")
 public class TestRoundtripSerialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestRoundtripSerialization.class);

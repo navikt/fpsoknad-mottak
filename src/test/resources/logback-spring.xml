@@ -13,5 +13,5 @@
 		<appender-ref ref="stdout" />
 	</root>
 
-<logger name="org.springframework.boot" level="trace" />
+<logger name="org.springframework.boot" level="info" />
 </configuration>
