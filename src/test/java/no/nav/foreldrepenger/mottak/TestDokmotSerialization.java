@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -33,6 +34,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 
 @RunWith(SpringRunner.class)
+@Profile("dev")
 @ContextConfiguration(classes = { MottakConfiguration.class, PdfGenerator.class, DokmotEngangsstønadXMLGenerator.class,
         DokmotEngangsstønadXMLKonvoluttGenerator.class, UUIDIdGenerator.class })
 @AutoConfigureJsonTesters
