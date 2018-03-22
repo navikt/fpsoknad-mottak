@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGener
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
+import no.nav.security.spring.oidc.validation.api.Protected;
 
 @RestController
 @RequestMapping(DokmotMottakController.DOKMOT)
@@ -43,12 +44,14 @@ public class DokmotMottakController {
         this.sender = sender;
     }
 
+    @Protected
     @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
+    @Protected
     @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<SøknadSendingsResultat> send(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(sender.sendSøknad(søknad));

@@ -20,6 +20,7 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGener
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @RestController
 @RequestMapping(value = DokmotMottakPreprodController.DOKMOT_PREPROD, produces = APPLICATION_XML_VALUE)
@@ -39,17 +40,20 @@ public class DokmotMottakPreprodController {
         this.konvoluttGenerator = konvoluttGenerator;
     }
 
+    @Unprotected
     @PostMapping("/søknad")
     public ResponseEntity<String> søknad(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toXML(søknad));
     }
 
+    @Unprotected
     @PostMapping("/konvolutt")
     public ResponseEntity<String> konvolutt(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(konvoluttGenerator.toXML(søknad, UUID.randomUUID().toString()));
     }
 
+    @Unprotected
     @PostMapping(value = "/model", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<SoeknadsskjemaEngangsstoenad> dokmotmodel(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toDokmotModel(søknad));
