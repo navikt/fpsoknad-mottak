@@ -24,6 +24,14 @@ public class DokmotQueueConfig {
     String queuename;
     boolean enabled;
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public String getHostname() {
         return hostname;
     }
