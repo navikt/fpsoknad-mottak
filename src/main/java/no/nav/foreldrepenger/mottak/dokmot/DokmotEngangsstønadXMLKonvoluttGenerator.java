@@ -90,9 +90,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     }
 
     private static List<no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg> dokmotVedleggListe(Søknad søknad) {
-        return Stream
-                .concat(JukseVedlegg.påkrevdVedlegg(søknad) /* påkrevdeVedlegg */.stream(),
-                        søknad.getFrivilligeVedlegg().stream())
+        return Stream.concat(søknad.getPåkrevdeVedlegg().stream(), søknad.getFrivilligeVedlegg().stream())
                 .map(DokmotEngangsstønadXMLKonvoluttGenerator::dokmotVedlegg).collect(toList());
     }
 

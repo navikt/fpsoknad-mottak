@@ -17,6 +17,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import no.nav.foreldrepenger.mottak.domain.CorrelationIdGenerator;
+
 @Component
 @Order(1)
 public class CorrelationIdFilter extends GenericFilterBean {
@@ -41,7 +43,7 @@ public class CorrelationIdFilter extends GenericFilterBean {
         String key = generator.getKey();
         String correlationId = HttpServletRequest.class.cast(req).getHeader(key);
         if (correlationId != null) {
-            LOG.trace("{} is already set in request to {}", key, correlationId);
+            LOG.trace("{} is set in request to {}", key, correlationId);
             MDC.put(key, correlationId);
         } else {
             MDC.put(key, generator.create());

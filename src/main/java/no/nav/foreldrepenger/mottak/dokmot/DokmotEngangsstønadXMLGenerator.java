@@ -83,9 +83,7 @@ public class DokmotEngangsstønadXMLGenerator {
                 .withTilknytningNorge((tilknytningFra(engangsstønad.getMedlemsskap())))
                 .withOpplysningerOmFar(farFra(engangsstønad.getAnnenForelder()))
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
-                .withVedleggListe(
-                        vedleggFra(JukseVedlegg.påkrevdVedlegg(søknad)/* søknad.getPåkrevdeVedlegg() */,
-                                søknad.getFrivilligeVedlegg()));
+                .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
     }
 
     private VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg, List<ValgfrittVedlegg> valgfrieVedlegg) {

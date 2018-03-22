@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import no.nav.foreldrepenger.mottak.domain.CorrelationIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
-import no.nav.foreldrepenger.mottak.http.CorrelationIdGenerator;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
