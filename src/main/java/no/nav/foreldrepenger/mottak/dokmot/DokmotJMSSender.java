@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
-import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.jms.TextMessage;
 
@@ -15,7 +13,7 @@ import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
-import no.nav.foreldrepenger.mottak.http.CallIdGenerator;
+import no.nav.foreldrepenger.mottak.http.CorrelationIdGenerator;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
@@ -25,31 +23,31 @@ public class DokmotJMSSender implements SøknadSender {
 
     private final DokmotConnection dokmotConnection;
     private final DokmotEngangsstønadXMLKonvoluttGenerator generator;
-    private final CallIdGenerator callIdGenerator;
+    private final CorrelationIdGenerator idGenerator;
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotJMSSender.class);
 
     @Inject
     public DokmotJMSSender(DokmotConnection connection, DokmotEngangsstønadXMLKonvoluttGenerator generator,
-            CallIdGenerator callIdGenerator) {
+            CorrelationIdGenerator callIdGenerator) {
         this.dokmotConnection = connection;
         this.generator = generator;
-        this.callIdGenerator = callIdGenerator;
+        this.idGenerator = callIdGenerator;
     }
 
     @Override
     public SøknadSendingsResultat sendSøknad(Søknad søknad) {
-        String ref = UUID.randomUUID().toString();
-        String xml = generator.toXML(søknad, ref);
+        String reference = idGenerator.getOrCreate();
+        String xml = generator.toXML(søknad, reference);
         try {
             dokmotConnection.send(session -> {
                 LOG.trace("Sending message to DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
                 TextMessage msg = session.createTextMessage(xml);
-                msg.setStringProperty("callId", callIdGenerator.getOrCreate());
+                msg.setStringProperty("callId", reference);
                 return msg;
             });
             dokmotSuccess.increment();
-            return SøknadSendingsResultat.OK.withRef(ref);
+            return SøknadSendingsResultat.OK.withReference(reference);
         } catch (JmsException e) {
             LOG.warn("Unable to send to DOKMOT at {}", dokmotConnection.getQueueConfig().toString(), e);
             dokmotFailure.increment();
@@ -60,7 +58,7 @@ public class DokmotJMSSender implements SøknadSender {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotConnection + ", generator=" + generator
-                + ", callIdGenerator=" + callIdGenerator + "]";
+                + ", callIdGenerator=" + idGenerator + "]";
     }
 
 }

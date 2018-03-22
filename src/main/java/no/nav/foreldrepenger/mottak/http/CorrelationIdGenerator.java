@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
-public interface CallIdGenerator {
+public interface CorrelationIdGenerator {
 
     String getOrCreate();
 

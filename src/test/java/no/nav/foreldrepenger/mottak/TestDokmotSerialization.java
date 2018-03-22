@@ -6,8 +6,6 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.UUID;
-
 import javax.xml.bind.JAXBContext;
 
 import org.junit.Test;
@@ -23,7 +21,9 @@ import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.ReferenceNumberGenerator;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.UUIDReferenceNumberGenerator;
 import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
@@ -34,7 +34,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, PdfGenerator.class, DokmotEngangsstønadXMLGenerator.class,
-        DokmotEngangsstønadXMLKonvoluttGenerator.class })
+        DokmotEngangsstønadXMLKonvoluttGenerator.class, UUIDReferenceNumberGenerator.class })
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {
 
@@ -43,6 +43,8 @@ public class TestDokmotSerialization {
 
     @Autowired
     ObjectMapper mapper;
+    @Autowired
+    ReferenceNumberGenerator refGenerator;
     @Autowired
     DokmotEngangsstønadXMLGenerator søknadXMLGenerator;
     @Autowired
@@ -57,7 +59,7 @@ public class TestDokmotSerialization {
         Søknad engangssøknad = engangssøknad(true, TestUtils.fødsel(), TestUtils.norskForelder(),
                 TestUtils.valgfrittVedlegg());
         Engangsstønad engangs = (Engangsstønad) engangssøknad.getYtelse();
-        String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad, UUID.randomUUID().toString());
+        String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad, refGenerator.generateReferenceNumber());
         // System.out.println(konvolutt);
         Dokumentforsendelse unmarshalled = unmarshal(konvolutt, FORSENDELSECTX, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);

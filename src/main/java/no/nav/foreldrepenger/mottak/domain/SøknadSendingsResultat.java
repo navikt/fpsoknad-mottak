@@ -6,7 +6,7 @@ public class SøknadSendingsResultat {
 
     private String ref;
 
-    public SøknadSendingsResultat withRef(String ref) {
+    public SøknadSendingsResultat withReference(String ref) {
         this.ref = ref;
         return this;
     }

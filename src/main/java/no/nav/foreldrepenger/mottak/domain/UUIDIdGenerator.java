@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.domain;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -9,13 +9,15 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.http.CorrelationIdGenerator;
+
 @Component
-public class UUIDCallIdGenerator implements CallIdGenerator {
+public class UUIDIdGenerator implements CorrelationIdGenerator {
 
     private final String key;
 
     @Inject
-    public UUIDCallIdGenerator(@Value("${callid.key:X-Nav-CallId}") String key) {
+    public UUIDIdGenerator(@Value("${callid.key:X-Nav-CallId}") String key) {
         this.key = key;
     }
 
