@@ -23,7 +23,6 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @Unprotected
@@ -46,7 +45,7 @@ public class DokmotMottakPreprodController {
         this.konvoluttGenerator = konvoluttGenerator;
     }
 
-    @GetMapping(value = "/ping")
+    @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> unsecuredPing(@RequestParam("navn") String navn) {
         LOG.info("I was unprotected and pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Unprotected hello " + navn);
@@ -61,11 +60,6 @@ public class DokmotMottakPreprodController {
     public ResponseEntity<String> konvolutt(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(konvoluttGenerator.toXML(søknad, UUID.randomUUID().toString()));
-    }
-
-    @PostMapping(value = "/model", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<SoeknadsskjemaEngangsstoenad> dokmotmodel(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toDokmotModel(søknad));
     }
 
     @Override

@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
+import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @RestController
 
@@ -46,9 +47,16 @@ public class DokmotMottakController {
     }
 
     @GetMapping(value = "/ping")
+    @Unprotected
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
-        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
+        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + "from unprotected resource");
+    }
+
+    @GetMapping(value = "/ping1")
+    public ResponseEntity<String> ping1(@RequestParam("navn") String navn) {
+        LOG.info("I was pinged");
+        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + "from protected resource");
     }
 
     @PostMapping(value = "/send")
