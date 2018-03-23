@@ -24,7 +24,7 @@ import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @Unprotected
 @RestController
-@RequestMapping(value = DokmotMottakPreprodController.DOKMOT_PREPROD, produces = APPLICATION_XML_VALUE)
+@RequestMapping(path = DokmotMottakPreprodController.DOKMOT_PREPROD, produces = APPLICATION_XML_VALUE)
 @Profile("preprod")
 public class DokmotMottakPreprodController {
 

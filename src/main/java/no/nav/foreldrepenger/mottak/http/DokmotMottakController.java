@@ -26,8 +26,8 @@ import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
 
-@RequestMapping(name = DokmotMottakController.DOKMOT, produces = APPLICATION_JSON_VALUE)
-@ProtectedWithClaims(issuer="selvbetjening", claimMap={"acr=Level4"})
+@RequestMapping(path = DokmotMottakController.DOKMOT, produces = APPLICATION_JSON_VALUE)
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class DokmotMottakController {
 
     private static final Logger LOG = getLogger(DokmotMottakController.class);
@@ -44,7 +44,6 @@ public class DokmotMottakController {
     public DokmotMottakController(DokmotJMSSender sender) {
         this.sender = sender;
     }
-
 
     @GetMapping(value = "/ping")
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
