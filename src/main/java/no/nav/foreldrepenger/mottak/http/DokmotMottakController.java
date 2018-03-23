@@ -50,13 +50,13 @@ public class DokmotMottakController {
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
-        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + "from unprotected resource");
+        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + " from unprotected resource");
     }
 
     @GetMapping(value = "/ping1")
     public ResponseEntity<String> ping1(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
-        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + "from protected resource");
+        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + " from protected resource");
     }
 
     @PostMapping(value = "/send")
