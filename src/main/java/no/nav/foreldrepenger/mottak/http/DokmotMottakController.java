@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -26,7 +25,7 @@ import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 import no.nav.security.spring.oidc.validation.api.Protected;
 
 @RestController
-@RequestMapping(DokmotMottakController.DOKMOT)
+@RequestMapping(name = DokmotMottakController.DOKMOT, produces = APPLICATION_JSON_VALUE)
 @Protected
 public class DokmotMottakController {
 
@@ -45,13 +44,13 @@ public class DokmotMottakController {
         this.sender = sender;
     }
 
-    @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
+    @GetMapping(value = "/ping")
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
-    @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/send")
     public ResponseEntity<SøknadSendingsResultat> send(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(sender.sendSøknad(søknad));
     }
