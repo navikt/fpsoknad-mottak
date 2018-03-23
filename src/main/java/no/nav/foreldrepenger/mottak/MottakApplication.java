@@ -4,7 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import no.nav.security.spring.oidc.validation.api.EnableOIDCTokenValidation;
-@EnableOIDCTokenValidation(ignore="org.springframework")
+
+@EnableOIDCTokenValidation(ignore = { "org.springframework", "springfox" })
 @SpringBootApplication
 public class MottakApplication {
 
