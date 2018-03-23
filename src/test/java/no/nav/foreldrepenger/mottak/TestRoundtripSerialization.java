@@ -49,7 +49,7 @@ public class TestRoundtripSerialization {
     }
 
     @Before
-    public void setSecurity() {
+    public void setAuthoriztion() {
         template.getRestTemplate().setInterceptors(
                 Collections.singletonList((request, body, execution) -> {
                     request.getHeaders()
