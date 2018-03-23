@@ -33,7 +33,7 @@ import no.nav.security.spring.oidc.validation.api.Unprotected;
 public class DokmotMottakPreprodController {
 
     public static final String DOKMOT_PREPROD = "/mottak/preprod";
-    private static final Logger LOG = getLogger(DokmotMottakController.class);
+    private static final Logger LOG = getLogger(DokmotMottakPreprodController.class);
 
     private final DokmotJMSSender sender;
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
@@ -47,7 +47,7 @@ public class DokmotMottakPreprodController {
     }
 
     @GetMapping(value = "/ping")
-    public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
+    public ResponseEntity<String> unsecuredPing(@RequestParam("navn") String navn) {
         LOG.info("I was unprotected and pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Unprotected hello " + navn);
     }
