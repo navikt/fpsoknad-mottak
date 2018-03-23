@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
@@ -7,12 +8,15 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
@@ -29,6 +33,7 @@ import no.nav.security.spring.oidc.validation.api.Unprotected;
 public class DokmotMottakPreprodController {
 
     public static final String DOKMOT_PREPROD = "/mottak/preprod";
+    private static final Logger LOG = getLogger(DokmotMottakController.class);
 
     private final DokmotJMSSender sender;
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
@@ -39,6 +44,12 @@ public class DokmotMottakPreprodController {
         this.sender = sender;
         this.søknadGenerator = søknadGenerator;
         this.konvoluttGenerator = konvoluttGenerator;
+    }
+
+    @GetMapping(value = "/ping")
+    public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
+        LOG.info("I was unprotected and pinged");
+        return ResponseEntity.status(HttpStatus.OK).body("Unprotected hello " + navn);
     }
 
     @PostMapping("/søknad")
