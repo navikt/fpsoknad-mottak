@@ -25,7 +25,8 @@ import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
-@RequestMapping(DokmotMottakController.DOKMOT)
+
+@RequestMapping(name = DokmotMottakController.DOKMOT, produces = APPLICATION_JSON_VALUE)
 @ProtectedWithClaims(issuer="selvbetjening", claimMap={"acr=Level4"})
 public class DokmotMottakController {
 
@@ -44,13 +45,14 @@ public class DokmotMottakController {
         this.sender = sender;
     }
 
-    @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
+
+    @GetMapping(value = "/ping")
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
-    @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/send")
     public ResponseEntity<SøknadSendingsResultat> send(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(sender.sendSøknad(søknad));
     }
