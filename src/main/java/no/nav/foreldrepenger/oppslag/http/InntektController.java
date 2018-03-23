@@ -4,7 +4,7 @@ import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
 import no.nav.security.oidc.filter.OIDCRequestContextHolder;
-import no.nav.security.spring.oidc.validation.api.Protected;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 
 @RestController
+@ProtectedWithClaims(issuer="selvbetjening", claimMap={"acr=Level4"})
 class InntektController {
 
     @Inject
@@ -23,7 +24,6 @@ class InntektController {
     private OIDCRequestContextHolder contextHolder;
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/income")
-    @Protected
     public ResponseEntity<?> income() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {

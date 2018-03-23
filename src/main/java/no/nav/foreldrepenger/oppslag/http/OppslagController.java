@@ -6,7 +6,7 @@ import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.orchestrate.CoordinatedLookup;
 import no.nav.foreldrepenger.oppslag.person.PersonClient;
 import no.nav.security.oidc.filter.OIDCRequestContextHolder;
-import no.nav.security.spring.oidc.validation.api.Protected;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 @RestController
+@ProtectedWithClaims(issuer="selvbetjening", claimMap={"acr=Level4"})
 @RequestMapping("/oppslag")
 public class OppslagController {
 
@@ -46,7 +47,6 @@ public class OppslagController {
     }
 
     @GetMapping(value = "/")
-    @Protected
     public ResponseEntity<SøkerInformasjon> gimmeAllYouGot() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
