@@ -48,6 +48,7 @@ public class SwaggerConfiguration {
     public Docket preprodDocket() {
         return docket("preprod")
                 .paths(or(
+                        regex("/local" + ".*"),
                         regex(DokmotMottakController.DOKMOT + ".*"),
                         regex(DokmotMottakPreprodController.DOKMOT_PREPROD + ".*")))
                 .build();
