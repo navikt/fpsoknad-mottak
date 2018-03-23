@@ -32,7 +32,7 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEnga
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.security.spring.oidc.test.JwtTokenGenerator;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplication.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplicationLocal.class)
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = "preprod,dev")
 @Ignore
@@ -54,7 +54,7 @@ public class TestRoundtripSerialization {
                 Collections.singletonList((request, body, execution) -> {
                     request.getHeaders()
                             .add(HttpHeaders.AUTHORIZATION,
-                                    JwtTokenGenerator.createSignedJWT("12345678910").serialize());
+                                    "Bearer " + JwtTokenGenerator.createSignedJWT("12345678910").serialize());
                     return execution.execute(request, body);
                 }));
     }

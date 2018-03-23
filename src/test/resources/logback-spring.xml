@@ -14,4 +14,6 @@
 	</root>
 
 <logger name="org.springframework.boot" level="info" />
+<logger name="no.nav.security" level="debug" />
+
 </configuration>
