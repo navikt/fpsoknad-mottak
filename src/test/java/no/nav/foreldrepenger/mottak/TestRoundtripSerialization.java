@@ -12,6 +12,7 @@ import java.util.Collections;
 
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ import no.nav.security.spring.oidc.test.JwtTokenGenerator;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplication.class)
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = "preprod,dev")
+@Ignore
 public class TestRoundtripSerialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestRoundtripSerialization.class);
