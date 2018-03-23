@@ -27,6 +27,7 @@ import no.nav.security.spring.oidc.validation.api.Protected;
 
 @RestController
 @RequestMapping(DokmotMottakController.DOKMOT)
+@Protected
 public class DokmotMottakController {
 
     private static final Logger LOG = getLogger(DokmotMottakController.class);
@@ -44,14 +45,12 @@ public class DokmotMottakController {
         this.sender = sender;
     }
 
-    @Protected
     @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
-    @Protected
     @PostMapping(value = "/send", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<SøknadSendingsResultat> send(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.status(HttpStatus.OK).body(sender.sendSøknad(søknad));
