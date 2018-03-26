@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.person.PersonClient;
 
 @Component
-public class AktørHealthIndicator extends AbstractEnvAwareWSHealthIndicator {
+public class TPSHealthIndicator extends AbstractEnvAwareWSHealthIndicator {
 
-    private final AktorIdClient client;
+    private final PersonClient client;
 
-    public AktørHealthIndicator(AktorIdClient client, Environment env,
-            @Value("${AKTOER_V2_ENDPOINTURL}") URI serviceUrl) {
+    public TPSHealthIndicator(PersonClient client, Environment env,
+            @Value("${VIRKSOMHET_PERSON_V3_ENDPOINTURL}") URI serviceUrl) {
         super(env, serviceUrl);
         this.client = client;
     }
