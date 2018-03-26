@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.oppslag.aareg.AaregClient;
+import no.nav.foreldrepenger.oppslag.medl.MedlClient;
 
 @Component
-public class AaregHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
+public class MedlHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
-    private final AaregClient client;
+    private final MedlClient client;
 
-    public AaregHealthIndicator(AaregClient client, Environment env,
-            @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") URI serviceUrl) {
+    public MedlHealthIndicator(MedlClient client, Environment env,
+            @Value("${VIRKSOMHET_MEDLEMSKAP_V2_ENDPOINTURL}") URI serviceUrl) {
         super(env, serviceUrl);
         this.client = client;
     }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
 
 @Component
-public class AktørHealthIndicator extends AbstractEnvAwareWSHealthIndicator {
+public class AktørHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
     private final AktorIdClient client;
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.oppslag.person.PersonClient;
 
 @Component
-public class TPSHealthIndicator extends AbstractEnvAwareWSHealthIndicator {
+public class TPSHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
     private final PersonClient client;
 

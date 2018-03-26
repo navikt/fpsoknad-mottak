@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
 
 @Component
-public class InntektHealthIndicator extends AbstractEnvAwareWSHealthIndicator {
+public class InntektHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
     private final InntektClient client;
 

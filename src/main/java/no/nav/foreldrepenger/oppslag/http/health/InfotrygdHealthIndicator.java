@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
 
 @Component
-public class InfotrygdHealthIndicator extends AbstractEnvAwareWSHealthIndicator {
+public class InfotrygdHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
     private final InfotrygdClient client;
 

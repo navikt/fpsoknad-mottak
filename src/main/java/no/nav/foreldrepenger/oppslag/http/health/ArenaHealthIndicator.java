@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
 
 @Component
-public class ArenaHealthIndicator extends AbstractEnvAwareWSHealthIndicator {
+public class ArenaHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
     private final ArenaClient client;
 
