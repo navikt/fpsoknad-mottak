@@ -33,6 +33,11 @@ public class FpsakClient {
     @Inject
     public FpsakClient(ForeldrepengesakV1 fpsakV1) {
         this.fpsakV1 = Objects.requireNonNull(fpsakV1);
+
+    }
+
+    public void ping() {
+        fpsakV1.ping();
     }
 
     public List<Ytelse> casesFor(AktorId aktor) {

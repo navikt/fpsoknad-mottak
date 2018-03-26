@@ -7,7 +7,7 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.core.env.Environment;
 
-public abstract class EnvironmentAwareServiceHealthIndicator implements HealthIndicator {
+abstract class EnvironmentAwareServiceHealthIndicator implements HealthIndicator {
 
     private final URI serviceUrl;
     private final Environment env;
