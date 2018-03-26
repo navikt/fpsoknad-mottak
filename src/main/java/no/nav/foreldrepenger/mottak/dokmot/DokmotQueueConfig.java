@@ -84,7 +84,7 @@ public class DokmotQueueConfig {
     public String toString() {
         return getClass().getSimpleName() + " [hostname=" + hostname + ", port=" + port + ", name=" + name
                 + ", channelname="
-                + channelname + ", username=" + username + ", queuename=" + queuename + "]";
+                + channelname + ", username=" + "********" + ", queuename=" + queuename + "]";
     }
 
 }
