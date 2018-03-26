@@ -24,6 +24,8 @@ resources:
       memory: 1536Mi
 fasitResources:
   used:
+    - alias : FPSOKNADOPPSLAG_PROPERTIES
+      resourceType: applicationProperties
     - alias: aad_b2c_clientid
       resourceType: credential
       propertyMap:
