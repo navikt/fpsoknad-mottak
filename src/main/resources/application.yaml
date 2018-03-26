@@ -1,32 +1,33 @@
-info :
-    app:
-      version: @project.version@
-    build:
-       time:  @timestamp@
-management:
-    endpoints:
-         security:
-             enabled : false
-         web:
-            exposure:
-              include:  info, health, metrics, prometheus
-server:
-     servlet :
-       context-path :  /api
-     use-forward-headers: true
-spring :
-    main :
-       banner-mode : 'off'
-    metrics :
-      web :
-        server :
-           auto-time-requests: true
-
 no.nav.security.oidc:
     issuers: selvbetjening
     issuer.selvbetjening:
-      uri: set as anv during deployment
-      accepted_audience: set as anv during deployment
+      uri: SET from FASIT
+      accepted_audience: Set from FASIT
 
-http.proxy: http://webproxy-utvikler.nav.no:8088
+http.proxy : http://webproxy-utvikler.nav.no:8088
+
+info.app:
+    version: @project.version@
+    build.time:  @timestamp@
+      
+management:
+    endpoints.web.exposure.include:  info, health, metrics, prometheus
+    health :
+      diskspace.enabled: false
+      jms.enabled: false
+server.servlet :
+    context-path :  /api
+    use-forward-headers: true                        
+spring :
+    jackson :
+      default-property-inclusion :  non_null 
+      deserialization :
+         accept_single_value_as_array: true
+         fail-on-unknown-properties: false
+      serialization :
+         write_single_elem_arrays_unwrapped : true
+         fail-on-empty-beans: false
+    main.banner-mode : 'off'
+    metrics.web.server.auto-time-requests: true   
+               
 
