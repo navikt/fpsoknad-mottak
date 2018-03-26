@@ -2,10 +2,12 @@ package no.nav.foreldrepenger.oppslag.infotrygd;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import no.nav.foreldrepenger.oppslag.ws.WsClient;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
 
+@Configuration
 public class InfotrygdConfiguration {
 
     @SuppressWarnings("unchecked")
