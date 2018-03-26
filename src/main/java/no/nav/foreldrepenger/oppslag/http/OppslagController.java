@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.oppslag.http;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import javax.inject.Inject;
 
@@ -48,7 +48,7 @@ public class OppslagController {
     private OIDCRequestContextHolder contextHolder;
 
     @Unprotected
-    @GetMapping(value = "/ping", produces = APPLICATION_XML_VALUE)
+    @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
