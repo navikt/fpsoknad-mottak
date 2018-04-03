@@ -13,7 +13,7 @@
 	<artifactId>fpsoknad-mottak</artifactId>
 	<version>0-SNAPSHOT</version>
 	<properties>
-		<oidc-spring-support.version>0.1.0-UNSTABLE</oidc-spring-support.version>
+		<oidc-spring-support.version>0.1.4</oidc-spring-support.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 		<springfox.version>2.8.0</springfox.version>
@@ -112,12 +112,12 @@
 		 <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>oidc-spring-support</artifactId>
-            <version>0.1.3</version>
+            <version>${oidc-spring-support.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>oidc-spring-test</artifactId>
-            <version>0.1.3</version>
+            <version>${oidc-spring-support.version}</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
