@@ -52,8 +52,11 @@ fasitResources:
       resourceType: webserviceendpoint
     - alias : securityTokenService
       resourceType: baseurl
-    - alias : fpselvbetjening
+    - alias : srvfpsoknad-oppslag
       resourceType: credential
+      propertyMap:
+        username: fpselvbetjening_username
+        password: fpselvbetjening_password 
   exposed:
     - alias: fpsoknad-oppslag-api
       resourceType: restservice
