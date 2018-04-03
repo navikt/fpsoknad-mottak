@@ -37,7 +37,7 @@ node {
    }
 
    stage("OWASP CVE check") {
-      // TODO failed mysteriouly sh "${mvn} -Powasp dependency-check:check"
+       sh "${mvn} -Powasp dependency-check:check"
    }
 
    stage("Build & publish") {
