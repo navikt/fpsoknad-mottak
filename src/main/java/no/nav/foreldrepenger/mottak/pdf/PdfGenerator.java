@@ -23,6 +23,7 @@ import org.springframework.util.StreamUtils;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
@@ -32,11 +33,15 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 
 @Service
@@ -68,57 +73,129 @@ public class PdfGenerator {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, baos);
             document.open();
-            Image logo = logo();
-            logo.setAlignment(Image.ALIGN_CENTER);
-            document.add(logo);
-
-            document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
-            document.add(centeredParagraph(søknad.getSøker().getFnr().getFnr(), NORMAL));
-            String navn = navn(søknad.getSøker().getNavn());
-            if (!navn.isEmpty()) {
-                document.add(centeredParagraph(navn, NORMAL));
-            }
-            document.add(separator());
-
-            document.add(blankLine());
-
-            document.add(paragraph(getMessage("ombarn", kvitteringstekster), HEADING));
-            document.add(paragraph(
-                    getMessage("gjelder", kvitteringstekster, stønad.getRelasjonTilBarn().getAntallBarn()),
-                    NORMAL));
+            logo(document);
+            overskrift(document);
+            søker(søknad, document);
+            omBarn(stønad, document);
             if (erFremtidigFødsel(stønad)) {
-                FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
-                document.add(
-                        paragraph(getMessage("termindato", kvitteringstekster, dato(ff.getTerminDato())), NORMAL));
-                if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
-                    document.add(paragraph(
-                            getMessage("termindatotekst", kvitteringstekster, dato(ff.getUtstedtDato())), NORMAL));
-                }
+                fødsel(søknad, stønad, document);
             }
-
-            document.add(blankLine());
-            document.add(paragraph(getMessage("tilknytning", kvitteringstekster), HEADING));
-            document.add(paragraph(getMessage("siste12", kvitteringstekster), NORMAL));
-            document.add(
-                    paragraph(formatOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()), NORMAL));
-            document.add(paragraph(getMessage("neste12", kvitteringstekster,
-                    formatOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold())), NORMAL));
+            blankLine(document);
+            medlemsskap(medlemsskap, document);
             if (erFremtidigFødsel(stønad)) {
-                document.add(paragraph(getMessage("føde", kvitteringstekster,
-                        countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())), NORMAL));
+                fødselsSted(medlemsskap, document);
             }
 
-            document.add(blankLine());
-
-            document.add(paragraph(getMessage("tillegg", kvitteringstekster), HEADING));
-            document.add(
-                    paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
-
+            blankLine(document);
+            omFar(stønad, document);
             document.close();
             return baos.toByteArray();
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private void omFar(Engangsstønad stønad, Document document) throws DocumentException {
+        document.add(paragraph(getMessage("omfar", kvitteringstekster), HEADING));
+        AnnenForelder annenForelder = stønad.getAnnenForelder();
+        if (annenForelder != null) {
+            if (annenForelder instanceof NorskForelder) {
+                norskForelder(document, annenForelder);
+            }
+            if (annenForelder instanceof UtenlandskForelder) {
+                utenlandskForelder(document, annenForelder);
+            }
+            if (annenForelder instanceof UkjentForelder) {
+                document.add(paragraph("Ukjent", NORMAL));
+            }
+            blankLine(document);
+        }
+    }
+
+    private void utenlandskForelder(Document document, AnnenForelder annenForelder) throws DocumentException {
+        UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
+        document.add(paragraph(getMessage("nasjonalitet", kvitteringstekster, utenlandsForelder.getLand().getAlpha2()),
+                NORMAL));
+        String navn = navn(utenlandsForelder.getNavn());
+        if (!navn.isEmpty()) {
+            document.add(paragraph(getMessage("navn", kvitteringstekster, navn), NORMAL));
+        }
+        if (utenlandsForelder.getId() != null) {
+            document.add(paragraph(getMessage("utenlandskid", kvitteringstekster, utenlandsForelder.getId()), NORMAL));
+        }
+    }
+
+    private void norskForelder(Document document, AnnenForelder annenForelder) throws DocumentException {
+        NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
+        document.add(paragraph(getMessage("nasjonalitet", kvitteringstekster, "Norsk"), NORMAL));
+        String navn = navn(norskForelder.getNavn());
+        if (!navn.isEmpty()) {
+            document.add(paragraph(getMessage("navn", kvitteringstekster, navn), NORMAL));
+        }
+        document.add(paragraph(getMessage("fødselsnummer", kvitteringstekster, norskForelder.getFnr().getFnr()),
+                NORMAL));
+    }
+
+    private void fødselsSted(Medlemsskap medlemsskap, Document document) throws DocumentException {
+        document.add(paragraph(getMessage("føde", kvitteringstekster,
+                countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())), NORMAL));
+    }
+
+    private void medlemsskap(Medlemsskap medlemsskap, Document document) throws DocumentException {
+        document.add(paragraph(getMessage("tilknytning", kvitteringstekster), HEADING));
+        document.add(paragraph(getMessage("siste12", kvitteringstekster), NORMAL));
+        document.add(
+                paragraph(formatOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()), NORMAL));
+        document.add(paragraph(getMessage("neste12", kvitteringstekster,
+                formatOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold())), NORMAL));
+    }
+
+    private void omBarn(Engangsstønad stønad, Document document) throws DocumentException {
+        document.add(paragraph(getMessage("ombarn", kvitteringstekster), HEADING));
+        document.add(paragraph(
+                getMessage("gjelder", kvitteringstekster, stønad.getRelasjonTilBarn().getAntallBarn()),
+                NORMAL));
+    }
+
+    private void overskrift(Document document) throws DocumentException {
+        document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
+    }
+
+    private void logo(Document document)
+            throws BadElementException, MalformedURLException, IOException, DocumentException {
+        Image logo = logo();
+        logo.setAlignment(Image.ALIGN_CENTER);
+        document.add(logo);
+    }
+
+    private void søker(Søknad søknad, Document document) throws DocumentException {
+        document.add(centeredParagraph(søknad.getSøker().getFnr().getFnr(), NORMAL));
+        String navn = navn(søknad.getSøker().getNavn());
+        if (!navn.isEmpty()) {
+            document.add(centeredParagraph(navn, NORMAL));
+        }
+        document.add(separator());
+        blankLine(document);
+    }
+
+    private void fødsel(Søknad søknad, Engangsstønad stønad, Document document) throws DocumentException {
+        FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
+        document.add(
+                paragraph(getMessage("termindato", kvitteringstekster, dato(ff.getTerminDato())), NORMAL));
+        if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
+            document.add(paragraph(
+                    getMessage("termindatotekst", kvitteringstekster, dato(ff.getUtstedtDato())), NORMAL));
+        }
+    }
+
+    private void blankLine(Document document) throws DocumentException {
+        document.add(blankLine());
+    }
+
+    private void tileggsOpplysninger(Søknad søknad, Document document) throws DocumentException {
+        document.add(paragraph(getMessage("tillegg", kvitteringstekster), HEADING));
+        document.add(
+                paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
     }
 
     private Image logo() throws BadElementException, MalformedURLException, IOException {

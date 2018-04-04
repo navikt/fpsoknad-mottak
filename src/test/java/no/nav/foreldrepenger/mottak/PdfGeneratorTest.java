@@ -2,6 +2,9 @@ package no.nav.foreldrepenger.mottak;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +25,11 @@ public class PdfGeneratorTest {
     @Test
     public void signature() throws Exception {
         assertTrue(TestUtils.hasPdfSignature(gen.generate(TestUtils.engangssøknad(true))));
+    }
+
+    // @Test
+    public void far() throws Exception {
+        byte[] pdf = gen.generate(TestUtils.engangssøknad(true));
+        FileUtils.writeByteArrayToFile(new File("jalla.pdf"), pdf);
     }
 }
