@@ -119,8 +119,9 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap) {
+        medlemsskap.getFramtidigOppholdsInfo().isFødselNorge();
         return new TilknytningNorge()
-                .withOppholdNorgeNaa(true) // What else ?
+                .withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
                 .withTidligereOppholdNorge(medlemsskap.getTidligereOppholdsInfo().isBoddINorge())
                 .withTidligereOppholdUtenlands(tidligereOppholdUtenlandsFra(medlemsskap.getTidligereOppholdsInfo()))
                 .withFremtidigOppholdNorge(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
