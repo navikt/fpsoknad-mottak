@@ -88,14 +88,14 @@ node {
          }
       }
     }
-    
+
     stage('Deploy to Prod') {
        timeout(time: 5, unit: 'MINUTES') {
            input id: 'prod', message: "Deploy to prod?"
        }
 
        callback = "${env.BUILD_URL}input/Deploy/"
-       def deploy = deployLib.deployNaisApp(app, releaseVersion, 'p', zone, namespace, callback, committer, false).key
+       def deploy = deployLib.deployNaisApp(application, releaseVersion, 'p', zone, namespace, callback, committer, false).key
        try {
            timeout(time: 15, unit: 'MINUTES') {
                input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
