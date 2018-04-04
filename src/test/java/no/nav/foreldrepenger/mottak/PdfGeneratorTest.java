@@ -9,7 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.pdf.ByteArray2PdfConverter;
 import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 
 @RunWith(SpringRunner.class)
@@ -23,10 +22,5 @@ public class PdfGeneratorTest {
     @Test
     public void signature() throws Exception {
         assertTrue(TestUtils.hasPdfSignature(gen.generate(TestUtils.engangssøknad(true))));
-    }
-
-    @Test
-    public void convert() throws Exception {
-        new ByteArray2PdfConverter().convert("pdf/jks.jpg");
     }
 }
