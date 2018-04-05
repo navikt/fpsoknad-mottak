@@ -28,7 +28,6 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.ListItem;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
@@ -155,12 +154,11 @@ public class PdfGenerator {
     }
 
     private static com.itextpdf.text.List bulletedList(List<String> oppholdsInfo) {
-        com.itextpdf.text.List l = new com.itextpdf.text.List();
-        l.setListSymbol(new Chunk("\u2022", new Font()));
-        for (String uo : oppholdsInfo) {
-            l.add(new ListItem(uo));
-        }
-        return l;
+        com.itextpdf.text.List bulletedList = new com.itextpdf.text.List();
+        bulletedList.setListSymbol(new Chunk("\u2022", new Font()));
+        bulletedList.setSymbolIndent(12);
+        oppholdsInfo.stream().forEach(s -> bulletedList.add(s));
+        return bulletedList;
     }
 
     private void omBarn(Engangsstønad stønad, Document document) throws DocumentException {
