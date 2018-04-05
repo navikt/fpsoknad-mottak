@@ -7,6 +7,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import javax.validation.ConstraintViolationException;
 
+import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -52,6 +53,12 @@ public class CommonControllerErrorHandlers {
       invalidRequestsCounter.increment();
       return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
    }
+
+    @ExceptionHandler({ OIDCUnauthorizedException.class })
+    public ResponseEntity<String> handleOIDCUnauthorizedException(OIDCUnauthorizedException e) {
+        forbiddenRequestsCounter.increment();
+        return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
+    }
 
    @ExceptionHandler({ Exception.class })
    public ResponseEntity<String> handleGeneralException(Exception e) {
