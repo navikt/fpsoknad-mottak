@@ -86,26 +86,18 @@ node {
             timeout(time: 15, unit: 'MINUTES') {
                input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
             }
+             slackSend([
+                 color: 'good',
+                 message: "${application} version ${releaseVersion} has been deployed to pre-prod."
+             ])
          } catch (Exception ex) {
+             slackSend([
+                 color: 'danger',
+                 message: "Unable to deploy ${application} version ${releaseVersion} to pre-prod. See https://jira.adeo.no/browse/${deploy} for details"
+             ])
             throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", ex)
          }
       }
-   }
-
-   stage('Deploy to Prod') {
-       timeout(time: 5, unit: 'MINUTES') {
-           input id: 'prod', message: "Deploy to prod?"
-       }
-
-       callback = "${env.BUILD_URL}input/Deploy/"
-       def deploy = deployLib.deployNaisApp(application, releaseVersion, 'p', zone, namespace, callback, committer).key
-       try {
-           timeout(time: 15, unit: 'MINUTES') {
-               input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
-           }
-       } catch (Exception e) {
-           throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", e)
-       }
    }
 
    stage("Tag") {
