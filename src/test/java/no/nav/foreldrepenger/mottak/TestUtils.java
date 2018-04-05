@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.core.io.ClassPathResource;
 
@@ -86,15 +88,18 @@ public class TestUtils {
 
     static Medlemsskap medlemsskap(boolean utland) {
         if (utland) {
-            return new Medlemsskap(tidligereOppHoldIUtlandetHeleåret(), framtidigOppHoldIUtlandetHeleåret());
+            return new Medlemsskap(tidligereOppHoldIUtlandet(), framtidigOppHoldIUtlandet());
         }
         return new Medlemsskap(tidligereOppHoldINorge(), framtidigOppholdINorge());
     }
 
-    static TidligereOppholdsInformasjon tidligereOppHoldIUtlandetHeleåret() {
-        return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET,
-                Collections.singletonList(new Utenlandsopphold(CountryCode.SE,
-                        new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now()))));
+    static TidligereOppholdsInformasjon tidligereOppHoldIUtlandet() {
+        List<Utenlandsopphold> utenlandOpphold = new ArrayList<Utenlandsopphold>();
+        utenlandOpphold.add(new Utenlandsopphold(CountryCode.SE,
+                new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now().minusMonths(6))));
+        utenlandOpphold.add(new Utenlandsopphold(CountryCode.FI,
+                new LukketPeriode(LocalDate.now().minusMonths(6), LocalDate.now())));
+        return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET, utenlandOpphold);
     }
 
     static TidligereOppholdsInformasjon tidligereOppHoldINorge() {
@@ -136,10 +141,13 @@ public class TestUtils {
         return new Fødsel(date);
     }
 
-    static FramtidigOppholdsInformasjon framtidigOppHoldIUtlandetHeleåret() {
-        return new FramtidigOppholdsInformasjon(true, false,
-                Collections.singletonList(new Utenlandsopphold(CountryCode.SE,
-                        new LukketPeriode(LocalDate.now(), LocalDate.now().plusYears(1)))));
+    static FramtidigOppholdsInformasjon framtidigOppHoldIUtlandet() {
+        List<Utenlandsopphold> opphold = new ArrayList<>();
+        opphold.add(new Utenlandsopphold(CountryCode.GR,
+                new LukketPeriode(LocalDate.now(), LocalDate.now().plusMonths(6))));
+        opphold.add(new Utenlandsopphold(CountryCode.DE,
+                new LukketPeriode(LocalDate.now().plusMonths(6), LocalDate.now().plusYears(1))));
+        return new FramtidigOppholdsInformasjon(true, false, opphold);
     }
 
     static FramtidigOppholdsInformasjon framtidigOppholdINorge() {

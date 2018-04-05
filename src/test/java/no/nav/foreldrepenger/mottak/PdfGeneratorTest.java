@@ -27,9 +27,11 @@ public class PdfGeneratorTest {
         assertTrue(TestUtils.hasPdfSignature(gen.generate(TestUtils.engangssøknad(true))));
     }
 
-    // @Test
+    @Test
     public void far() throws Exception {
         byte[] pdf = gen.generate(TestUtils.engangssøknad(true));
         FileUtils.writeByteArrayToFile(new File("jalla.pdf"), pdf);
+        byte[] pdf1 = gen.generate(TestUtils.engangssøknad(false));
+        FileUtils.writeByteArrayToFile(new File("jalla1.pdf"), pdf1);
     }
 }
