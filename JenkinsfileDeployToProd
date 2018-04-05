@@ -10,7 +10,7 @@ node {
    def namespace = 'default'
 
    stage('Deploy to Prod') {
-       version = ${env.version}
+       version = "${env.version}"
        callback = "${env.BUILD_URL}input/Deploy/"
        def deploy = deployLib.deployNaisApp(application, version, 'p', zone, namespace, callback, "Jenkins").key
        try {
