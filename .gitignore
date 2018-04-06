@@ -30,4 +30,5 @@ target/*
 *.iml
 
 .DS_Store
+.factorypath
 /target/
