@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -8,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
@@ -60,8 +62,8 @@ public class PdfGenerator {
     @Inject
     public PdfGenerator(@Qualifier("landkoder") MessageSource landkoder,
             @Qualifier("kvitteringstekster") MessageSource kvitteringstekster) {
-        this.landkoder = Objects.requireNonNull(landkoder);
-        this.kvitteringstekster = Objects.requireNonNull(kvitteringstekster);
+        this.landkoder = requireNonNull(landkoder);
+        this.kvitteringstekster = requireNonNull(kvitteringstekster);
     }
 
     public byte[] generate(Søknad søknad) {
@@ -80,6 +82,9 @@ public class PdfGenerator {
             if (erFremtidigFødsel(stønad)) {
                 fødsel(søknad, stønad, document);
             }
+            if (erFødt(stønad)) {
+                født(søknad, stønad, document);
+            }
             blankLine(document);
             medlemsskap(medlemsskap, document);
             if (erFremtidigFødsel(stønad)) {
@@ -93,6 +98,13 @@ public class PdfGenerator {
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private void født(Søknad søknad, Engangsstønad stønad, Document document) throws DocumentException {
+        Fødsel ff = Fødsel.class.cast(stønad.getRelasjonTilBarn());
+        document.add(
+                paragraph(getMessage("fødselsdato", kvitteringstekster, dato(ff.getFødselsdato())),
+                        NORMAL));
     }
 
     private void omFar(Engangsstønad stønad, Document document) throws DocumentException {
@@ -140,14 +152,16 @@ public class PdfGenerator {
         List<String> siste12 = utenlandsOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold());
         if (siste12.size() == 1) {
             document.add(paragraph(getMessage("siste12solo", kvitteringstekster, siste12.get(0)), NORMAL));
-        } else {
+        }
+        else {
             document.add(paragraph(getMessage("siste12", kvitteringstekster), NORMAL));
             document.add(bulletedList(siste12));
         }
         List<String> neste12 = utenlandsOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold());
         if (neste12.size() == 1) {
             document.add(paragraph(getMessage("neste12solo", kvitteringstekster, neste12.get(0)), NORMAL));
-        } else {
+        }
+        else {
             document.add(paragraph(getMessage("neste12", kvitteringstekster), NORMAL));
             document.add(bulletedList(neste12));
         }
@@ -229,6 +243,17 @@ public class PdfGenerator {
 
     private static boolean erFremtidigFødsel(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof FremtidigFødsel;
+    }
+
+    private static boolean erFødt(Engangsstønad stønad) {
+        return stønad.getRelasjonTilBarn() instanceof Fødsel;
+    }
+
+    String dato(List<LocalDate> fødselsdato) {
+        return fødselsdato.stream()
+                .distinct()
+                .map(s -> dato(s))
+                .collect(Collectors.joining(", "));
     }
 
     private static String dato(LocalDate dato) {
