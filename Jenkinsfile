@@ -85,7 +85,7 @@ node {
             }
             slackSend([
                     color: 'good',
-                    message: "${applicatin} version ${releaseVersion} has been deployed to pre-prod."
+                    message: "${application} version ${releaseVersion} has been deployed to pre-prod."
             ])
          } catch (Exception ex) {
               slackSend([
