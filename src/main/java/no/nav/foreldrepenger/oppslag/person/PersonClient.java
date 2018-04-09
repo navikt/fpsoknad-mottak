@@ -39,6 +39,7 @@ public class PersonClient {
     private final Barnutvelger barneVelger;
 
     private final Counter errorCounter = Metrics.counter("errors.lookup.person");
+    private final Counter missingLanguageCounter = Metrics.counter("lookup.user.missinglanguage");
 
     public PersonClient(PersonV3 person, Barnutvelger barneVelger) {
         this.person = Objects.requireNonNull(person);
@@ -53,8 +54,10 @@ public class PersonClient {
 
         try {
             HentPersonRequest request = request(id.getFnr(), ADRESSE, FAMILIERELASJONER);
-            return PersonMapper.map(id, hentPerson(id.getFnr(), request).getPerson(),
-                    barnFor(hentPerson(id.getFnr(), request).getPerson()));
+            Person person = PersonMapper.map(id, hentPerson(id.getFnr(), request).getPerson(),
+                barnFor(hentPerson(id.getFnr(), request).getPerson()));
+            collectLanguageMetrics(person);
+            return person;
         } catch (Exception ex) {
             errorCounter.increment();
             throw new RuntimeException(ex);
@@ -101,6 +104,12 @@ public class PersonClient {
         } catch (HentPersonSikkerhetsbegrensning e) {
             LOG.warn("Sikkerhetsbegrensning ved oppslag av {}", fnr.getFnr(), e);
             throw new ForbiddenException(e);
+        }
+    }
+
+    private void collectLanguageMetrics(Person person) {
+        if (person.getMålform() == null) {
+            missingLanguageCounter.increment();
         }
     }
 
