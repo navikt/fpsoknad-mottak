@@ -22,20 +22,20 @@ public class NorskForelderSerializer extends StdSerializer<NorskForelder> {
     }
 
     @Override
-    public void serialize(NorskForelder forelder, JsonGenerator jgen, SerializerProvider provider)
+    public void serialize(NorskForelder forelder, JsonGenerator gen, SerializerProvider provider)
             throws IOException {
-        jgen.writeBooleanField("lever", forelder.isLever());
-        jgen.writeStringField("fnr", forelder.getFnr().getFnr());
-        JacksonUtils.writeNavn(forelder.getNavn(), jgen);
+        gen.writeBooleanField("lever", forelder.isLever());
+        gen.writeStringField("fnr", forelder.getFnr().getFnr());
+        JacksonUtils.writeNavn(forelder.getNavn(), gen);
     }
 
     @Override
     public void serializeWithType(NorskForelder value, JsonGenerator gen, SerializerProvider provider,
-            TypeSerializer typeSer) throws IOException {
-        WritableTypeId typeId = typeSer.typeId(value, JsonToken.START_OBJECT);
-        typeSer.writeTypePrefix(gen, typeId);
+            TypeSerializer typeSerializer) throws IOException {
+        WritableTypeId typeId = typeSerializer.typeId(value, JsonToken.START_OBJECT);
+        typeSerializer.writeTypePrefix(gen, typeId);
         serialize(value, gen, provider);
-        typeSer.writeTypeSuffix(gen, typeId);
+        typeSerializer.writeTypeSuffix(gen, typeId);
 
     }
 

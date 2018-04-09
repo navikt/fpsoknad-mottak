@@ -58,17 +58,20 @@ public class SøknadSendingsResultat {
         if (message == null) {
             if (other.message != null)
                 return false;
-        } else if (!message.equals(other.message))
+        }
+        else if (!message.equals(other.message))
             return false;
         if (mottattDato == null) {
             if (other.mottattDato != null)
                 return false;
-        } else if (!mottattDato.equals(other.mottattDato))
+        }
+        else if (!mottattDato.equals(other.mottattDato))
             return false;
         if (ref == null) {
             if (other.ref != null)
                 return false;
-        } else if (!ref.equals(other.ref))
+        }
+        else if (!ref.equals(other.ref))
             return false;
         return true;
     }

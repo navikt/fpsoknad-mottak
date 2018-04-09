@@ -22,24 +22,29 @@ public class DokmotHealthIndicator implements HealthIndicator {
     private final Counter dokmotSuccess = Metrics.counter("dokmot.health", "response", "success");
     private final Counter dokmotFailure = Metrics.counter("dokmot.health", "response", "failure");
 
-    private final Environment env;
+    private Environment env;
 
     public DokmotHealthIndicator(DokmotQueuePinger pinger, Environment env) {
         this.pinger = pinger;
         this.env = env;
+
     }
 
     @Override
     public Health health() {
-        try {
-            pinger.ping();
-            dokmotSuccess.increment();
-            return isPreprodOrDev() ? upWithDetails() : up();
-        } catch (Exception e) {
-            dokmotFailure.increment();
-            LOG.warn("Could not verify health of queue {}", pinger.getQueueConfig(), e);
-            return isPreprodOrDev() ? downWithDetails(e) : down();
+        if (isDev()) {
+            try {
+                pinger.ping();
+                dokmotSuccess.increment();
+                return isPreprod() ? upWithDetails() : up();
+            } catch (Exception e) {
+                dokmotFailure.increment();
+                LOG.warn("Could not verify health of DOKMOT {}", pinger.getQueueConfig(), e);
+                return isPreprod() ? downWithDetails(e) : down();
+            }
         }
+        LOG.info("In DEV mode, not verifying health of DOKMOT");
+        return up();
     }
 
     private static Health down() {
@@ -50,8 +55,12 @@ public class DokmotHealthIndicator implements HealthIndicator {
         return Health.down().withDetail("config", pinger.getQueueConfig().toString()).withException(e).build();
     }
 
-    private boolean isPreprodOrDev() {
-        return env.acceptsProfiles("dev", "preprod");
+    private boolean isPreprod() {
+        return env.acceptsProfiles("preprod");
+    }
+
+    private boolean isDev() {
+        return env.acceptsProfiles("dev");
     }
 
     private static Health up() {

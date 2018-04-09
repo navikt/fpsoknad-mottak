@@ -67,7 +67,7 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
 
     private static Utenlandsopphold utenlandopphold(JsonNode node, Iterator<JsonNode> utland, ObjectCodec codec) {
         try {
-            JsonParser parser = ((ObjectNode) utland.next()).traverse();
+            JsonParser parser = ObjectNode.class.cast(utland.next()).traverse();
             parser.setCodec(codec);
             return parser.readValueAs(Utenlandsopphold.class);
         } catch (IOException e) {

@@ -35,7 +35,6 @@ public class Adopsjon extends RelasjonTilBarn {
         super(antallBarn);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.ektefellesBarn = ektefellesBarn;
-
     }
 
 }

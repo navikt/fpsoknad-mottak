@@ -22,13 +22,13 @@ import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGener
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
-import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @RestController
 
 @RequestMapping(path = DokmotMottakController.DOKMOT, produces = APPLICATION_JSON_VALUE)
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@Unprotected
+// @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class DokmotMottakController {
 
     private static final Logger LOG = getLogger(DokmotMottakController.class);

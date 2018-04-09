@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.domain.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,10 +7,8 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-import no.nav.foreldrepenger.mottak.domain.validation.PeriodeValidator;
-
-@Constraint(validatedBy = PeriodeValidator.class)
-@Target({ ElementType.TYPE })
+@Constraint(validatedBy = OppholdValidator.class)
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Opphold {
 

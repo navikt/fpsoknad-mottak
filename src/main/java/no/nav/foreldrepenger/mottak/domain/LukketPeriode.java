@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.domain;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +17,6 @@ import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 public class LukketPeriode {
 
     @NotNull
-    @Past
     private final LocalDate fom;
     @NotNull
     private final LocalDate tom;
@@ -27,5 +25,13 @@ public class LukketPeriode {
     public LukketPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom) {
         this.fom = fom;
         this.tom = tom;
+    }
+
+    public boolean overlapper(LukketPeriode annenPeriode) {
+        return inneholderDato(annenPeriode.getFom()) || inneholderDato(annenPeriode.getTom());
+    }
+
+    private boolean inneholderDato(LocalDate annenDato) {
+        return annenDato.isAfter(this.getFom()) && annenDato.isBefore(this.getTom());
     }
 }

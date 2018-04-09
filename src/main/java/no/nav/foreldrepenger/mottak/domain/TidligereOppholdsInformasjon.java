@@ -7,12 +7,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.validation.Opphold;
 
 @Data
 public class TidligereOppholdsInformasjon {
 
     private final boolean boddINorge;
     private final ArbeidsInformasjon arbeidsInfo;
+    @Opphold
     private final List<Utenlandsopphold> utenlandsOpphold;
 
     @JsonCreator
