@@ -83,7 +83,15 @@ node {
             timeout(time: 15, unit: 'MINUTES') {
                input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
             }
+            slackSend([
+                    color: 'good',
+                    message: "${application} version ${releaseVersion} has been deployed to pre-prod."
+            ])
          } catch (Exception ex) {
+              slackSend([
+                    color: 'warning',
+                    message: "Build ${releaseVersion} of ${application} could not be deployed to pre-prod"
+            ])
             throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", ex)
          }
       }
