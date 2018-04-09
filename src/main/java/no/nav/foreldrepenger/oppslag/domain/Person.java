@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.neovisionaries.i18n.CountryCode;
 
-@JsonPropertyOrder({ "id", "fodselsdato", "navn", "kjonn", "adresse" })
+@JsonPropertyOrder({ "id", "fodselsdato", "navn", "kjonn", "adresse", "målform" })
 public class Person {
 
     @JsonUnwrapped
@@ -17,16 +17,18 @@ public class Person {
     private final Kjonn kjonn;
     private final LocalDate fodselsdato;
     private final Adresse adresse;
+    private final String målform;
     @JsonUnwrapped
     private final Navn navn;
     private final List<Barn> barn;
 
-    public Person(ID id, CountryCode landKode, Kjonn kjonn, Navn navn, Adresse adresse, LocalDate fodselsdato,
-            List<Barn> barn) {
+    public Person(ID id, CountryCode landKode, Kjonn kjonn, Navn navn, Adresse adresse, String målform,
+                  LocalDate fodselsdato, List<Barn> barn) {
         this.id = id;
         this.landKode = landKode;
         this.kjonn = kjonn;
         this.adresse = adresse;
+        this.målform = målform;
         this.navn = navn;
         this.fodselsdato = fodselsdato;
         this.barn = barn;
@@ -44,32 +46,8 @@ public class Person {
         return fodselsdato;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, landKode, kjonn, adresse, navn, fodselsdato, barn);
-    }
-
     public CountryCode getLandKode() {
         return landKode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Person other = (Person) obj;
-        return Objects.equals(this.adresse, other.adresse) && Objects.equals(this.barn, other.barn)
-                && Objects.equals(this.fodselsdato, other.fodselsdato) && Objects.equals(this.id, other.id)
-                && Objects.equals(this.landKode, other.landKode)
-                && Objects.equals(this.kjonn, other.kjonn) && Objects.equals(this.navn, other.navn);
     }
 
     public List<Barn> getBarn() {
@@ -80,14 +58,45 @@ public class Person {
         return adresse;
     }
 
+    public String getMålform() {
+        return målform;
+    }
+
     public Navn getNavn() {
         return navn;
     }
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [id=" + id + ", fodselsdato=" + fodselsdato + ", adresse=" + adresse
-                + ", navn=" + navn + ", barn=" + barn + "]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(id, person.id) &&
+            landKode == person.landKode &&
+            kjonn == person.kjonn &&
+            Objects.equals(fodselsdato, person.fodselsdato) &&
+            Objects.equals(adresse, person.adresse) &&
+            Objects.equals(målform, person.målform) &&
+            Objects.equals(navn, person.navn) &&
+            Objects.equals(barn, person.barn);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, landKode, kjonn, fodselsdato, adresse, målform, navn, barn);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+            "id=" + id +
+            ", landKode=" + landKode +
+            ", kjonn=" + kjonn +
+            ", fodselsdato=" + fodselsdato +
+            ", adresse=" + adresse +
+            ", målform='" + målform + '\'' +
+            ", navn=" + navn +
+            ", barn=" + barn +
+            '}';
+    }
 }

@@ -13,10 +13,7 @@ import no.nav.foreldrepenger.oppslag.domain.Kjonn;
 import no.nav.foreldrepenger.oppslag.domain.Navn;
 import no.nav.foreldrepenger.oppslag.domain.Person;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Gateadresse;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.StrukturertAdresse;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 final class PersonMapper {
@@ -27,11 +24,17 @@ final class PersonMapper {
 
     }
 
-    static Person map(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person, List<Barn> barn) {
+    public static Person map(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person, List<Barn> barn) {
         return new no.nav.foreldrepenger.oppslag.domain.Person(id,
-                countryCode(person), Kjonn.valueOf(person.getKjoenn().getKjoenn().getValue()),
-                name(person.getPersonnavn()),
-                address(person.getBostedsadresse().getStrukturertAdresse()), birthDate(person), barn);
+            countryCode(person), Kjonn.valueOf(person.getKjoenn().getKjoenn().getValue()),
+            name(person.getPersonnavn()),
+            address(person.getBostedsadresse().getStrukturertAdresse()),
+            målform(person),
+            birthDate(person), barn);
+    }
+
+    public static Barn map(NorskIdent id, Fodselsnummer fnrMor, HentPersonResponse barn) {
+        return new Barn(fnrMor, new Fodselsnummer(id.getIdent()), birthDate(barn.getPerson()));
     }
 
     private static Adresse address(StrukturertAdresse adresse) {
@@ -72,8 +75,13 @@ final class PersonMapper {
         return CalendarConverter.toLocalDate(person.getFoedselsdato().getFoedselsdato());
     }
 
-    public static Barn map(NorskIdent id, Fodselsnummer fnrMor, HentPersonResponse barn) {
-        return new Barn(fnrMor, new Fodselsnummer(id.getIdent()), birthDate(barn.getPerson()));
+    private static String målform(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+        if (person instanceof Bruker) {
+            Bruker bruker = (Bruker) person;
+            return bruker.getMaalform() != null ? bruker.getMaalform().getValue() : null;
+        }
+
+        return null;
     }
 
 }

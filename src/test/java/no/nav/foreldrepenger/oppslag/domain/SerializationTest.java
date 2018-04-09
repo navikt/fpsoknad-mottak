@@ -11,10 +11,11 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,8 +24,8 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.person.PoststedFinner;
 import no.nav.foreldrepenger.oppslag.person.StatiskPoststedFinner;
 
-//@Tag("fast")
-@RunWith(SpringJUnit4ClassRunner.class)
+@Tag("fast")
+@ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
 public class SerializationTest {
 
@@ -36,7 +37,6 @@ public class SerializationTest {
         PoststedFinner finner = new StatiskPoststedFinner();
         assertTrue(finner.poststed("1353").equalsIgnoreCase("Bærums Verk"));
         assertTrue(finner.poststed("1332").equalsIgnoreCase("Østerås"));
-
     }
 
     @Test
@@ -109,7 +109,7 @@ public class SerializationTest {
     }
 
     private static Person person() {
-        return new Person(id(), CountryCode.NO, Kjonn.M, name(), adresse(), birthDate(), Collections.emptyList());
+        return new Person(id(), CountryCode.NO, Kjonn.M, name(), adresse(), "nynorsk", birthDate(), Collections.emptyList());
     }
 
     private static LocalDate birthDate() {
