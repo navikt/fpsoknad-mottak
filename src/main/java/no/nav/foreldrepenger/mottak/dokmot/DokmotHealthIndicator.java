@@ -32,7 +32,7 @@ public class DokmotHealthIndicator implements HealthIndicator {
 
     @Override
     public Health health() {
-        if (isDev()) {
+        if (!isDev()) {
             try {
                 pinger.ping();
                 dokmotSuccess.increment();

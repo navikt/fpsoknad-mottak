@@ -14,7 +14,7 @@ public class TidligereOppholdsInformasjon {
 
     private final boolean boddINorge;
     private final ArbeidsInformasjon arbeidsInfo;
-    @Opphold
+    @Opphold(fortid = true)
     private final List<Utenlandsopphold> utenlandsOpphold;
 
     @JsonCreator

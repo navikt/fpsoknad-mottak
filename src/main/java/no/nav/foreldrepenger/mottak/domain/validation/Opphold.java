@@ -16,5 +16,7 @@ public @interface Opphold {
 
     Class<?>[] payload() default {};
 
-    String message() default "Periodene overlapper";
+    boolean fortid() default false;
+
+    String message() default "Nei gi deg, da";
 }

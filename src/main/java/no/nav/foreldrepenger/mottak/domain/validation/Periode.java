@@ -16,5 +16,5 @@ public @interface Periode {
 
     Class<?>[] payload() default {};
 
-    String message() default "Perioden er ikke gyldig";
+    String message() default "{ytelse.medlemsskap.periode.ugyldig}";
 }
