@@ -83,9 +83,8 @@ public class PeriodeTest {
         assertTrue(periode3.overlapper(periode1));
         TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(true, ARBEIDET_I_UTLANDET,
                 opphold(periode1, periode2, periode3));
-        Set<ConstraintViolation<TidligereOppholdsInformasjon>> constraintViolations = validator.validate(tidligere);
-        System.out.println(constraintViolations);
-        assertFalse(constraintViolations.isEmpty());
+        // assertEquals(tidligere.getUtenlandsOpphold().size(), 3);
+        assertFalse(validator.validate(tidligere).isEmpty());
     }
 
     private static LocalDate now() {
