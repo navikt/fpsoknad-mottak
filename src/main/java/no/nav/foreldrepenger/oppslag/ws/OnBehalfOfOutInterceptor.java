@@ -3,7 +3,10 @@ package no.nav.foreldrepenger.oppslag.ws;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Base64;
+import java.util.List;
+import java.util.Objects;
 
+import javax.inject.Inject;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,54 +19,69 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.rt.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import no.nav.security.oidc.context.OIDCValidationContext;
+import no.nav.security.oidc.context.TokenContext;
+import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
+import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
+
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class OnBehalfOfOutInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final Logger logger = LoggerFactory.getLogger(OnBehalfOfOutInterceptor.class);
 
-    public static final String REQUEST_CONTEXT_ONBEHALFOF_TOKEN_TYPE = "request.onbehalfof.tokentype";
-    public static final String REQUEST_CONTEXT_ONBEHALFOF_TOKEN = "request.onbehalfof.token";
-
+    @Inject
+    private SpringOIDCRequestContextHolder oidcRequestContextHolder;
+    
     public enum TokenType {
         OIDC("urn:ietf:params:oauth:token-type:jwt");
-
         public String valueType;
-
         TokenType(String valueType) {
             this.valueType = valueType;
         }
     }
 
     public OnBehalfOfOutInterceptor() {
-        // This can be in any stage before the WS-SP interceptors
-        // setup the STS client and issued token interceptor.
         super(Phase.SETUP);
     }
 
     @Override
     public void handleMessage(Message message) throws Fault {
-        logger.debug("looking up OnBehalfOfToken from requestcontext with key:" + REQUEST_CONTEXT_ONBEHALFOF_TOKEN);
-        String token = (String) message.get(REQUEST_CONTEXT_ONBEHALFOF_TOKEN);
-        TokenType tokenType = (TokenType) message.get(REQUEST_CONTEXT_ONBEHALFOF_TOKEN_TYPE);
-
-        if ((token != null) && (tokenType != null)) {
+    	
+    	logger.debug("looking up OnBehalfOfToken from SpringOIDCRequestContextHolder.");
+        String token = getTokenFromFirstIssuerInValidationContext(); 
+      
+        if (token != null) {
             byte[] tokenBytes = token.getBytes();
-            String wrappedToken = wrapTokenForTransport(tokenBytes, tokenType);
-
-            // This will make sure that the STS client puts the OnBehalfOf Element in the token issue request
+            String wrappedToken = wrapTokenForTransport(tokenBytes, TokenType.OIDC);
             message.put(SecurityConstants.STS_TOKEN_ON_BEHALF_OF, createOnBehalfOfElement(wrappedToken));
         } else {
-            logger.info("could not find OnBehalfOfToken token in requestcontext. do nothing");
-            // TODO: there is choice here between failing or silently ignore adding of onbehalfof element which is up to
-            // the user.
-            // throw new RuntimeException("could not find OnBehalfOfToken token in requestcontext with key " +
-            // REQUEST_CONTEXT_ONBEHALFOF_TOKEN);
+            logger.warn("could not find OnBehalfOfToken token in requestcontext.");
+            throw new OIDCUnauthorizedException("no OIDC token found when attempting to invoke sts.");
         }
     }
-
+    
+    private String getTokenFromFirstIssuerInValidationContext(){
+    	OIDCValidationContext context = oidcRequestContextHolder.getOIDCValidationContext();
+    	List<String> issuers = context.getIssuers();
+    	if(context != null && issuers != null){
+    		String issuerName = issuers.stream().filter(Objects::nonNull).findFirst().orElse(null);
+    		logger.debug("getting first issuer in validation context: " + issuerName);
+    		TokenContext token = context.getToken(issuerName);
+    		logger.debug("found token: " + token);
+    		return token != null ? token.getIdToken() : null;
+    	}
+    	logger.warn("no issuers found in oidcvalidationcontext. returning null");
+    	return null;
+    }
+    
     private String wrapTokenForTransport(byte[] token, TokenType tokenType) {
         switch (tokenType) {
         case OIDC:

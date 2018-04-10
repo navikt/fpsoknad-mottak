@@ -8,12 +8,12 @@ import no.nav.foreldrepenger.oppslag.ws.WsClient;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.MedlemskapV2;
 
 @Configuration
-public class MedlConfiguration {
+public class MedlConfiguration extends WsClient<MedlemskapV2>{
 
     @SuppressWarnings("unchecked")
     @Bean
     public MedlemskapV2 medlemskapV2(@Value("${VIRKSOMHET_MEDLEMSKAP_V2_ENDPOINTURL}") String serviceUrl) {
-        return new WsClient<MedlemskapV2>().createPort(serviceUrl, MedlemskapV2.class);
+        return createPort(serviceUrl, MedlemskapV2.class);
     }
 
 }

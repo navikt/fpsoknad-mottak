@@ -1,12 +1,16 @@
 package no.nav.foreldrepenger.oppslag.ws;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
-import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.Soap12;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.Endpoint;
+import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.feature.Feature;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.ws.policy.EndpointPolicy;
@@ -16,112 +20,94 @@ import org.apache.cxf.ws.policy.attachment.reference.ReferenceResolver;
 import org.apache.cxf.ws.policy.attachment.reference.RemoteReferenceResolver;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.apache.neethi.Policy;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 class STSClientConfig {
-    public static final String STS_URL_KEY = "SECURITYTOKENSERVICE_URL";
-    public static final String SERVICEUSER_USERNAME = "FPSELVBETJENING_USERNAME";
-    public static final String SERVICEUSER_PASSWORD = "FPSELVBETJENING_PASSWORD";
 
-    // Only use no transportbinding on localhost, should use the requestSamlPolicy.xml with transport binding https
-    // when in production.
-    private static final String STS_REQUEST_SAML_POLICY = "classpath:policy/requestSamlPolicyNoTransportBinding.xml";
-    private static final String STS_CLIENT_AUTHENTICATION_POLICY = "classpath:policy/untPolicy.xml";
+	private static final String POLICY_PATH = "classpath:policy/";
+   
+    private  final String STS_REQUEST_SAML_POLICY = POLICY_PATH + "requestSamlPolicy.xml";
+    private  final String STS_CLIENT_AUTHENTICATION_POLICY = POLICY_PATH + "untPolicy.xml";
+    private  final String STS_REQUEST_SAML_POLICY_NO_TRANSPORTBINDING = POLICY_PATH + "requestSamlPolicyNoTransportBinding.xml";
+    
+    @Value("${stsclient.debug:false}")
+    private boolean debug;
+    
+    private final URI stsUrl;
+    private final String serviceUser;
+    private final String servicePwd;
 
-    public static <T> T configureRequestSamlToken(T port) {
+	public STSClientConfig(@Value("${SECURITYTOKENSERVICE_URL}") URI stsUrl, @Value("${FPSELVBETJENING_USERNAME}") String serviceUser, @Value("${FPSELVBETJENING_PASSWORD}") String servicePwd) {		
+		this.stsUrl = stsUrl;
+		this.serviceUser = serviceUser;
+		this.servicePwd = servicePwd;
+	}
+
+	public <T> T configureRequestSamlToken(T port) {
         Client client = ClientProxy.getClient(port);
         // do not have onbehalfof token so cache token in endpoint
         configureStsRequestSamlToken(client, true);
         return port;
     }
 
-    public static <T> T configureRequestSamlTokenOnBehalfOfOidc(T port) {
+    public <T> T configureRequestSamlTokenOnBehalfOfOidc(T port, OnBehalfOfOutInterceptor onBehalfOfOutInterceptor) {
         Client client = ClientProxy.getClient(port);
-        // Add interceptor to exctract token from request context and add to STS
-        // request as the OnbehalfOf element. Could use a callbackhandler instead if the oidc token
-        // can be retrieved from the thread, i.e. Spring SecurityContext etc, leaving this to the implementer of
-        // the application.
-        client.getOutInterceptors().add(new OnBehalfOfOutInterceptor());
+        client.getOutInterceptors().add(onBehalfOfOutInterceptor);
         // want to cache the token with the OnBehalfOfToken, not per proxy
         configureStsRequestSamlToken(client, false);
         return port;
     }
 
-    protected static void configureStsRequestSamlToken(Client client, boolean cacheTokenInEndpoint) {
-        // TODO: remove custom client when STS is updated to support the cxf client
-        STSClient stsClient = createCustomSTSClient(client.getBus());
-        configureStsWithPolicyForClient(stsClient, client, STS_REQUEST_SAML_POLICY, cacheTokenInEndpoint);
+    protected void configureStsRequestSamlToken(Client client, boolean cacheTokenInEndpoint) {
+        STSClient stsClient = new STSClient(client.getBus());
+        String policy = STS_REQUEST_SAML_POLICY;
+        if(debug){
+            // For debugging
+            stsClient.setFeatures(new ArrayList<Feature>(Arrays.asList(new LoggingFeature())));
+            policy = STS_REQUEST_SAML_POLICY_NO_TRANSPORTBINDING;
+        }
+        configureStsWithPolicyForClient(stsClient, client, policy, cacheTokenInEndpoint);
     }
 
-    protected static void configureStsWithPolicyForClient(STSClient stsClient, Client client, String policyReference,
+    protected void configureStsWithPolicyForClient(STSClient stsClient, Client client, String policyReference,
             boolean cacheTokenInEndpoint) {
-        String location = requireProperty(STS_URL_KEY);
-        String username = requireProperty(SERVICEUSER_USERNAME);
-        String password = requireProperty(SERVICEUSER_PASSWORD);
-
-        configureSTSClient(stsClient, location, username, password);
-
+        configureSTSClient(stsClient);
         client.getRequestContext().put(org.apache.cxf.rt.security.SecurityConstants.STS_CLIENT, stsClient);
         client.getRequestContext().put(org.apache.cxf.rt.security.SecurityConstants.CACHE_ISSUED_TOKEN_IN_ENDPOINT,
                 cacheTokenInEndpoint);
         setEndpointPolicyReference(client, policyReference);
     }
 
-    /** Creating custom STS client because the STS on Datapower requires KeyType as a child to RequestSecurityToken and
-     * TokenType as a child to SecondaryParameters. Standard CXF client put both elements in SecondaryParameters. By
-     * overriding the useSecondaryParameters method you can exactly specify the request in the
-     * RequestSecurityTokenTemplate in the policy.
-     *
-     * @param bus
-     * @return */
-    protected static STSClient createCustomSTSClient(Bus bus) {
-        return new STSClientWSTrust13and14(bus);
-    }
-
-    protected static STSClient configureSTSClient(STSClient stsClient, String location, String username,
-            String password) {
+    protected STSClient configureSTSClient(STSClient stsClient) {
 
         stsClient.setEnableAppliesTo(false);
         stsClient.setAllowRenewing(false);
-        stsClient.setLocation(location);
-        // For debugging
-        // stsClient.setFeatures(new ArrayList<Feature>(Arrays.asList(new LoggingFeature())));
+        stsClient.setLocation(stsUrl.toString());
 
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put(org.apache.cxf.rt.security.SecurityConstants.USERNAME, username);
-        properties.put(org.apache.cxf.rt.security.SecurityConstants.PASSWORD, password);
+        properties.put(org.apache.cxf.rt.security.SecurityConstants.USERNAME, serviceUser);
+        properties.put(org.apache.cxf.rt.security.SecurityConstants.PASSWORD, servicePwd);
 
         stsClient.setProperties(properties);
-
         // used for the STS client to authenticate itself to the STS provider.
         stsClient.setPolicy(STS_CLIENT_AUTHENTICATION_POLICY);
         return stsClient;
     }
 
-    protected static void setEndpointPolicyReference(Client client, String uri) {
+    protected void setEndpointPolicyReference(Client client, String uri) {
         Policy policy = resolvePolicyReference(client, uri);
         setClientEndpointPolicy(client, policy);
     }
-
-    private static String requireProperty(String key) {
-        String property = System.getenv(key);
-        return property != null ? property : systemProperty(key);
-    }
-
-    private static String systemProperty(String key) {
-        String property = System.getProperty(key);
-        if (property == null) {
-            throw new IllegalStateException("Required property " + key + " not available.");
-        }
-        return property;
-    }
-
-    private static Policy resolvePolicyReference(Client client, String uri) {
+    
+    private Policy resolvePolicyReference(Client client, String uri) {
         PolicyBuilder policyBuilder = client.getBus().getExtension(PolicyBuilder.class);
         ReferenceResolver resolver = new RemoteReferenceResolver("", policyBuilder);
         return resolver.resolveReference(uri);
     }
 
-    private static void setClientEndpointPolicy(Client client, Policy policy) {
+    private void setClientEndpointPolicy(Client client, Policy policy) {
         Endpoint endpoint = client.getEndpoint();
         EndpointInfo endpointInfo = endpoint.getEndpointInfo();
 

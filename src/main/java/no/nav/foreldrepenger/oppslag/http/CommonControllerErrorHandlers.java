@@ -54,16 +54,9 @@ public class CommonControllerErrorHandlers {
       return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
    }
 
-    @ExceptionHandler({ OIDCUnauthorizedException.class })
-    public ResponseEntity<String> handleOIDCUnauthorizedException(OIDCUnauthorizedException e) {
-        forbiddenRequestsCounter.increment();
-        return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
-    }
-
-   @ExceptionHandler({ Exception.class })
-   public ResponseEntity<String> handleGeneralException(Exception e) {
-      errorCounter.increment();
-      return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
+   @ExceptionHandler({ OIDCUnauthorizedException.class })
+   public ResponseEntity<String> handleOIDCUnauthorizedException(OIDCUnauthorizedException e) {
+	   forbiddenRequestsCounter.increment();
+	   return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
    }
-
 }
