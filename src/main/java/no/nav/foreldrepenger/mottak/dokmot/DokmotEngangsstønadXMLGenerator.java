@@ -220,6 +220,7 @@ public class DokmotEngangsstønadXMLGenerator {
         OpplysningerOmFar far = new OpplysningerOmFar()
                 .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
                         .withUtenlandskfnrEllerForklaring(utenlandsskFar.getId())
+                        .withAarsak(null)
                         .withUtenlandskfnrLand(new Landkoder()
                                 .withKode(utenlandsskFar.getLand().getAlpha2())));
         return farMedNavnHvisSatt(far, utenlandsskFar.getNavn());
