@@ -4,6 +4,9 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -15,6 +18,8 @@ import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 @Periode
 @JsonPropertyOrder({ "fom", "tom" })
 public class LukketPeriode {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LukketPeriode.class);
 
     @NotNull
     private final LocalDate fom;
@@ -28,7 +33,10 @@ public class LukketPeriode {
     }
 
     public boolean overlapper(LukketPeriode annenPeriode) {
-        return inneholderDato(annenPeriode.getFom()) || inneholderDato(annenPeriode.getTom());
+        LOG.info("Sammeligner {} med {}", this, annenPeriode);
+        boolean overlapper = inneholderDato(annenPeriode.getFom()) || inneholderDato(annenPeriode.getTom());
+        LOG.info("Periodene overlapper {}", overlapper ? "" : "IKKE");
+        return overlapper;
     }
 
     private boolean inneholderDato(LocalDate annenDato) {

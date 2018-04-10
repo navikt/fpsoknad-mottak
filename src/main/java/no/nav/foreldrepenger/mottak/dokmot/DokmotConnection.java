@@ -19,9 +19,14 @@ public class DokmotConnection {
         this.queueConfig = queueConfig;
     }
 
-    public void ping() throws JMSException {
+    public void ping() {
         LOG.info("Pinging queue {}", queueConfig);
-        template.getConnectionFactory().createConnection().close();
+        try {
+            template.getConnectionFactory().createConnection().close();
+        } catch (JMSException e) {
+            LOG.warn("Unable to ping queue at {}", queueConfig);
+            throw new DokmotQueueUnavailableException(e, queueConfig);
+        }
     }
 
     public void send(MessageCreator msg) {

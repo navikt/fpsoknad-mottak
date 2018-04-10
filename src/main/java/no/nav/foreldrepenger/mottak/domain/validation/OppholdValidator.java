@@ -7,11 +7,10 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.Pair;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 
 public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenlandsopphold>> {
@@ -28,43 +27,58 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
     @Override
     public boolean isValid(List<Utenlandsopphold> alleOpphold, ConstraintValidatorContext context) {
 
-        List<Pair<LukketPeriode, LukketPeriode>> ikkeValidertePerioder = new ArrayList<>();
-        if (alleOpphold.isEmpty()) {
-            return true;
-        }
+        boolean valid = true;
         List<Utenlandsopphold> copy = new ArrayList<>(alleOpphold);
         while (!copy.isEmpty()) {
             Utenlandsopphold opphold = copy.remove(0);
             for (Utenlandsopphold o : copy) {
                 if (validerFortid(opphold)) {
                     LOG.debug("Periode {} er ikke utelukkende i fortiden", opphold);
-                    errorMessage(context);
-                    ikkeValidertePerioder.add(Pair.of(opphold.getVarighet(), o.getVarighet()));
+                    errorMessageFortidFremtid(context, opphold, "er ikke utelukkende i fortiden");
+                    valid = false;
                 }
                 if (validerFramtid(opphold)) {
                     LOG.debug("Periode {} er ikke i utelukkende framtiden", opphold);
-                    errorMessage(context);
-                    ikkeValidertePerioder.add(Pair.of(opphold.getVarighet(), o.getVarighet()));
+                    errorMessageFortidFremtid(context, opphold, "er ikke i utelukkende framtiden");
+                    valid = false;
                 }
-                LOG.info("Sammenligner {} og {}", opphold.getVarighet(), o.getVarighet());
+                LOG.debug("Sammenligner {} og {}", opphold.getVarighet(), o.getVarighet());
                 if (o.getVarighet().overlapper(opphold.getVarighet())) {
                     LOG.debug("Periodene overlapper");
-                    errorMessage(context);
-                    ikkeValidertePerioder.add(Pair.of(opphold.getVarighet(), o.getVarighet()));
+                    errorMessageOverlap(context, opphold, o);
+                    valid = false;
                 }
                 else {
-                    LOG.debug("Periode {} validert OK", opphold);
+                    LOG.info("Periode {} validert OK", opphold);
                 }
             }
         }
-        return ikkeValidertePerioder.isEmpty();
+        return valid;
     }
 
-    private void errorMessage(ConstraintValidatorContext context) {
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(
-                "{ytelse.medlemsskap.periode.ugyldig}")
-                .addPropertyNode("varighet")
+    private static void errorMessageFortidFremtid(ConstraintValidatorContext context, Utenlandsopphold opphold,
+            String txt) {
+        HibernateConstraintValidatorContext hibernateContext = context
+                .unwrap(HibernateConstraintValidatorContext.class);
+        hibernateContext.disableDefaultConstraintViolation();
+        hibernateContext.addExpressionVariable("fra", opphold.getVarighet().getFom())
+                .addExpressionVariable("til", opphold.getVarighet().getTom())
+                .addExpressionVariable("txt", txt)
+                .buildConstraintViolationWithTemplate("Perioden ${fra} - ${til} ${txt}")
+                .addConstraintViolation();
+    }
+
+    private static void errorMessageOverlap(ConstraintValidatorContext context, Utenlandsopphold periode1,
+            Utenlandsopphold periode2) {
+        HibernateConstraintValidatorContext hibernateContext = context
+                .unwrap(HibernateConstraintValidatorContext.class);
+        hibernateContext.disableDefaultConstraintViolation();
+        hibernateContext
+                .addExpressionVariable("fra1", periode1.getVarighet().getFom())
+                .addExpressionVariable("til1", periode1.getVarighet().getTom())
+                .addExpressionVariable("fra2", periode2.getVarighet().getFom())
+                .addExpressionVariable("til2", periode2.getVarighet().getTom())
+                .buildConstraintViolationWithTemplate("Periodene ${fra1} - ${til1} og ${fra2} - ${til2} overlpper")
                 .addConstraintViolation();
     }
 
@@ -84,5 +98,10 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
     private static boolean isBeforeNow(Utenlandsopphold opphold) {
         return opphold.getVarighet().getFom().isBefore(LocalDate.now()) ||
                 opphold.getVarighet().getTom().isBefore((LocalDate.now()));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [fortid=" + fortid + "]";
     }
 }

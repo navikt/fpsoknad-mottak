@@ -37,7 +37,7 @@ public class DokmotHealthIndicator implements HealthIndicator {
                 pinger.ping();
                 dokmotSuccess.increment();
                 return isPreprod() ? upWithDetails() : up();
-            } catch (Exception e) {
+            } catch (DokmotQueueUnavailableException e) {
                 dokmotFailure.increment();
                 LOG.warn("Could not verify health of DOKMOT {}", pinger.getQueueConfig(), e);
                 return isPreprod() ? downWithDetails(e) : down();
