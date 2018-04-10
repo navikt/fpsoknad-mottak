@@ -216,13 +216,12 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static OpplysningerOmFar utenlandskFarFra(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsskFar = UtenlandskForelder.class.cast(annenForelder);
-        // Til info dette er litt rart modellert
         OpplysningerOmFar far = new OpplysningerOmFar()
                 .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
-                        .withUtenlandskfnrEllerForklaring(utenlandsskFar.getId())
-                        .withAarsak(null)
+                        .withAarsak("utenlandsk")
                         .withUtenlandskfnrLand(new Landkoder()
-                                .withKode(utenlandsskFar.getLand().getAlpha2())));
+                                .withKode(utenlandsskFar.getLand().getAlpha3()))
+                        .withUtenlandskfnrEllerForklaring(utenlandsskFar.getId()));
         return farMedNavnHvisSatt(far, utenlandsskFar.getNavn());
     }
 
