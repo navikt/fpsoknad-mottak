@@ -111,6 +111,7 @@ public class PersonClient {
         if (person.getMålform() == null) {
             missingLanguageCounter.increment();
         }
+        LOG.info("Målform: " + person.getMålform() != null ? person.getMålform() : "ukjent");
     }
 
     @Override
