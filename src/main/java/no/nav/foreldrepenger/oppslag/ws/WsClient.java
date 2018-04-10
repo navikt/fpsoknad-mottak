@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class WsClient<T> {
 	
 	@Inject
-	private STSClientConfig stsClientConfig;
+	private EndpointSTSClientConfig endpointStsClientConfig;
 	
 	@Inject
 	private OnBehalfOfOutInterceptor onBehalfOfOutInterceptor;
@@ -31,7 +31,7 @@ public class WsClient<T> {
         Arrays.stream(interceptors).forEach(client.getOutInterceptors()::add);
         client.getOutInterceptors().add(new CallIdHeader());
         
-        stsClientConfig.configureRequestSamlTokenOnBehalfOfOidc(port, onBehalfOfOutInterceptor);
+        endpointStsClientConfig.configureRequestSamlTokenOnBehalfOfOidc(port, onBehalfOfOutInterceptor);
         return port;
     }
 
