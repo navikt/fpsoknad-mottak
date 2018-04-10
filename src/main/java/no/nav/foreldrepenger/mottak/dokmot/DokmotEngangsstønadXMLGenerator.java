@@ -74,7 +74,8 @@ public class DokmotEngangsstønadXMLGenerator {
 
     public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad) {
 
-        // Mor er bruker i dette use-caset, derfor setter vi ikke opplysninger om mor, samme som Team Søknad gjør
+        // Mor er bruker i dette use-caset, derfor setter vi ikke opplysninger om mor,
+        // samme som Team Søknad gjør
         Engangsstønad engangsstønad = Engangsstønad.class.cast(søknad.getYtelse());
         return new SoeknadsskjemaEngangsstoenad()
                 .withBruker(brukerFra(søknad.getSøker().getFnr()))
@@ -215,9 +216,10 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static OpplysningerOmFar utenlandskFarFra(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsskFar = UtenlandskForelder.class.cast(annenForelder);
-        // Til info dette r litt rart modellert
+        // Til info dette er litt rart modellert
         OpplysningerOmFar far = new OpplysningerOmFar()
                 .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
+                        .withUtenlandskfnrEllerForklaring(utenlandsskFar.getId())
                         .withUtenlandskfnrLand(new Landkoder()
                                 .withKode(utenlandsskFar.getLand().getAlpha2())));
         return farMedNavnHvisSatt(far, utenlandsskFar.getNavn());

@@ -79,7 +79,7 @@ public class TestUtils {
     }
 
     static UtenlandskForelder utenlandskForelder() {
-        return new UtenlandskForelder(true, farnavn(), null, CountryCode.SE);
+        return new UtenlandskForelder(true, farnavn(), "123456", CountryCode.SE);
     }
 
     static Medlemsskap medlemsskap() {
@@ -94,7 +94,7 @@ public class TestUtils {
     }
 
     static TidligereOppholdsInformasjon tidligereOppHoldIUtlandet() {
-        List<Utenlandsopphold> utenlandOpphold = new ArrayList<Utenlandsopphold>();
+        List<Utenlandsopphold> utenlandOpphold = new ArrayList<>();
         utenlandOpphold.add(new Utenlandsopphold(CountryCode.SE,
                 new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now().minusMonths(6))));
         utenlandOpphold.add(new Utenlandsopphold(CountryCode.FI,
