@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import com.neovisionaries.i18n.CountryCode;
 
-public class PeriodeTest {
+public class PeriodeValidatorTest {
 
     private static Validator validator;
 

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.validation.PastOrToday;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,8 +21,9 @@ public class FremtidigFødsel extends RelasjonTilBarn {
     @NotNull(message = "{ytelse.relasjontilbarn.framtidigfødsel.termindato.notnull}")
     @Future(message = "{ytelse.relasjontilbarn.framtidigfødsel.termindato.fortid}")
     private final LocalDate terminDato;
+
+    @PastOrToday
     @NotNull(message = "{ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.notnull}")
-    @Past(message = "{ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.fortid}")
     private final LocalDate utstedtDato;
 
     public FremtidigFødsel(LocalDate terminDato, LocalDate utstedtDato) {
