@@ -5,21 +5,15 @@ import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Service;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.CorrelationIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
-import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
-
-    private final Counter dokmotSuccess = Metrics.counter("dokmot,send", "søknad", "success");
-    private final Counter dokmotFailure = Metrics.counter("dokmot.send", "søknad", "failure");
 
     private final DokmotConnection dokmotConnection;
     private final DokmotEngangsstønadXMLKonvoluttGenerator generator;
@@ -36,28 +30,22 @@ public class DokmotJMSSender implements SøknadSender {
     }
 
     @Override
-    public SøknadSendingsResultat sendSøknad(Søknad søknad) {
+    public Kvittering sendSøknad(Søknad søknad) {
         if (dokmotConnection.isEnabled()) {
             LOG.info("Sender søknad til DOKMOT {}", søknad);
             String reference = idGenerator.getOrCreate();
             String xml = generator.toXML(søknad, reference);
-            try {
-                dokmotConnection.send(session -> {
-                    LOG.trace("Sender XML til DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
-                    TextMessage msg = session.createTextMessage(xml);
-                    msg.setStringProperty("callId", reference);
-                    return msg;
-                });
-                dokmotSuccess.increment();
-                return new SøknadSendingsResultat(reference, "Dette gikk jo fint");
-            } catch (JmsException e) {
-                LOG.warn("Feil ved sending til DOKMOT ({})", dokmotConnection.getQueueConfig().toString(), e);
-                dokmotFailure.increment();
-                throw new DokmotQueueUnavailableException(e, dokmotConnection.getQueueConfig());
-            }
+
+            dokmotConnection.send(session -> {
+                LOG.trace("Sender XML til DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
+                TextMessage msg = session.createTextMessage(xml);
+                msg.setStringProperty("callId", reference);
+                return msg;
+            });
+            return new Kvittering(reference);
         }
-        LOG.info("DOKMOT is disabled");
-        return new SøknadSendingsResultat("Disabled, set dokmot.enabled=true to enable");
+        LOG.info("DOKMOT er deaktivert, ingenting å sende");
+        return Kvittering.IKKE_SENDT;
     }
 
     @Override

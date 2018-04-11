@@ -8,7 +8,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
+import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
@@ -48,20 +47,20 @@ public class DokmotMottakController {
 
     @GetMapping(value = "/ping")
     @Unprotected
-    public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
+    public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("I was pinged");
-        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + " from unprotected resource");
+        return ResponseEntity.ok("Hallo " + navn + " fra ubeskyttet ressurs");
     }
 
     @GetMapping(value = "/ping1")
-    public ResponseEntity<String> ping1(@RequestParam("navn") String navn) {
+    public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("I was pinged");
-        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn + " from protected resource");
+        return ResponseEntity.ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 
     @PostMapping(value = "/send")
-    public ResponseEntity<SøknadSendingsResultat> send(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.status(HttpStatus.OK).body(sender.sendSøknad(søknad));
+    public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
+        return ResponseEntity.ok(sender.sendSøknad(søknad));
     }
 
     @Override

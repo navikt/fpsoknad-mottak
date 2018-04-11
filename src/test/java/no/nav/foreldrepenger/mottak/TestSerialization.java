@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 
@@ -51,6 +53,12 @@ public class TestSerialization {
     @Before
     public void init() {
         mapper.registerModule(new CustomSerializerModule());
+    }
+
+    @Test
+    public void testKvittering() {
+        Kvittering kvittering = new Kvittering("42", LocalDateTime.now());
+        test(kvittering, true);
     }
 
     @Test
