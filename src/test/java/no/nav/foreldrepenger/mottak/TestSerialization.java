@@ -41,7 +41,6 @@ import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.SøknadSendingsResultat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters
@@ -59,12 +58,6 @@ public class TestSerialization {
     public void testKvittering() {
         Kvittering kvittering = new Kvittering("42", LocalDateTime.now());
         test(kvittering, true);
-    }
-
-    @Test
-    public void testResult() {
-        SøknadSendingsResultat result = new SøknadSendingsResultat("42");
-        test(result, true);
     }
 
     @Test

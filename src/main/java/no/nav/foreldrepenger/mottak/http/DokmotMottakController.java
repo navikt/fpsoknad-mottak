@@ -3,11 +3,9 @@ package no.nav.foreldrepenger.mottak.http;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,14 +33,14 @@ public class DokmotMottakController {
     public static final String DOKMOT = "/mottak/dokmot";
 
     private final DokmotJMSSender sender;
-    @Autowired
-    DokmotEngangsstønadXMLGenerator søknadGenerator;
-    @Autowired
-    DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator;
+    private final DokmotEngangsstønadXMLGenerator søknadGenerator;
+    private final DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator;
 
-    @Inject
-    public DokmotMottakController(DokmotJMSSender sender) {
+    public DokmotMottakController(DokmotJMSSender sender, DokmotEngangsstønadXMLGenerator søknadGenerator,
+            DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator) {
         this.sender = sender;
+        this.søknadGenerator = søknadGenerator;
+        this.konvoluttGenerator = konvoluttGenerator;
     }
 
     @GetMapping(value = "/ping")

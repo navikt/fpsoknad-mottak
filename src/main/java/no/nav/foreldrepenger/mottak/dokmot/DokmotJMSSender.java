@@ -44,7 +44,7 @@ public class DokmotJMSSender implements SøknadSender {
             });
             return new Kvittering(reference);
         }
-        LOG.info("DOKMOT er deaktivert, ingenting å sende");
+        LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
         return Kvittering.IKKE_SENDT;
     }
 
