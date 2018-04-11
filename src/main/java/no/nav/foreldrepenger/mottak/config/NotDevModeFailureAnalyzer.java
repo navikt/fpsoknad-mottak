@@ -10,13 +10,13 @@ public class NotDevModeFailureAnalyzer extends AbstractFailureAnalyzer<Unsatisfi
 
     @Override
     protected FailureAnalysis analyze(Throwable rootFailure, UnsatisfiedDependencyException cause) {
-        Throwable most = cause.getMostSpecificCause();
-        if (most instanceof DetailedJMSException) {
+        Throwable mostDetailedException = cause.getMostSpecificCause();
+        if (mostDetailedException instanceof DetailedJMSException) {
             return new FailureAnalysis(
-                    "Spring profile 'dev' must be active when running locally. This sets dummy values for the dokmot configuration so that your application starts. It will also make your logging output look nicer (no JSON)",
-                    "Set -Dspring.profiles.active=dev in your run configuration to activate", most);
+                    "Spring profile 'dev' must be active when running locally. This sets dummy values for the dokmot configuration so that your application will actually start. It will also make your logging output look nicer (no JSON)",
+                    "Set -Dspring.profiles.active=dev in your run configuration to activate", mostDetailedException);
         }
-        return new FailureAnalysis(rootFailure.getMessage(), "Fix your setup ", cause);
+        return new FailureAnalysis(rootFailure.getMessage(), "Fix your setup", cause);
     }
 
 }

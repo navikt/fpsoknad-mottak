@@ -53,7 +53,7 @@ public class DokmotJMSSender implements SøknadSender {
             } catch (JmsException e) {
                 LOG.warn("Feil ved sending til DOKMOT ({})", dokmotConnection.getQueueConfig().toString(), e);
                 dokmotFailure.increment();
-                throw new DokmotQueueUnavailableException(e);
+                throw new DokmotQueueUnavailableException(e, dokmotConnection.getQueueConfig());
             }
         }
         LOG.info("DOKMOT is disabled");

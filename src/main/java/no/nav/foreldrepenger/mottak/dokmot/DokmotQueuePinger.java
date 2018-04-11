@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
 import javax.inject.Inject;
-import javax.jms.JMSException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +19,7 @@ public class DokmotQueuePinger {
     }
 
     public void ping() {
-        try {
-            connection.ping();
-        } catch (JMSException e) {
-            LOG.warn("Unable to ping queue at {}", connection.getQueueConfig());
-            throw new DokmotQueueUnavailableException(e);
-        }
+        connection.ping();
     }
 
     public DokmotQueueConfig getQueueConfig() {
@@ -36,5 +30,4 @@ public class DokmotQueuePinger {
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + "]";
     }
-
 }

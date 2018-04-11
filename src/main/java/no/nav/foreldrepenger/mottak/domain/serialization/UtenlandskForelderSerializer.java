@@ -32,11 +32,11 @@ public class UtenlandskForelderSerializer extends StdSerializer<UtenlandskForeld
 
     @Override
     public void serializeWithType(UtenlandskForelder value, JsonGenerator gen, SerializerProvider provider,
-            TypeSerializer typeSer) throws IOException {
-        WritableTypeId typeId = typeSer.typeId(value, JsonToken.START_OBJECT);
-        typeSer.writeTypePrefix(gen, typeId);
+            TypeSerializer typeSerializer) throws IOException {
+        WritableTypeId typeId = typeSerializer.typeId(value, JsonToken.START_OBJECT);
+        typeSerializer.writeTypePrefix(gen, typeId);
         serialize(value, gen, provider);
-        typeSer.writeTypeSuffix(gen, typeId);
+        typeSerializer.writeTypeSuffix(gen, typeId);
 
     }
 }

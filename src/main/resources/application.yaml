@@ -1,8 +1,8 @@
 no.nav.security.oidc:
     issuers: selvbetjening
     issuer.selvbetjening:
-      uri: SET from FASIT
-      accepted_audience: Set from FASIT
+      uri: <Set from FASIT>
+      accepted_audience: <Set from FASIT>
 
 http.proxy : http://webproxy-utvikler.nav.no:8088
 
@@ -23,7 +23,7 @@ spring :
       default-property-inclusion :  non_null 
       deserialization :
          accept_single_value_as_array: true
-         fail-on-unknown-properties: false
+         fail-on-unknown-properties: true
       serialization :
          write_single_elem_arrays_unwrapped : true
          fail-on-empty-beans: false

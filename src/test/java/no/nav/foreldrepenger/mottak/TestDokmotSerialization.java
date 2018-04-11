@@ -89,7 +89,7 @@ public class TestDokmotSerialization {
 
     @Test
     public void testDokmotMarshalling() throws Exception {
-        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.norskForelder(),
+        Søknad søknad = engangssøknad(true, TestUtils.fremtidigFødsel(), TestUtils.utenlandskForelder(),
                 TestUtils.valgfrittVedlegg());
         TestUtils.serialize(søknad, true, mapper);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad);

@@ -4,7 +4,7 @@ import static no.nav.foreldrepenger.mottak.TestUtils.adopsjon;
 import static no.nav.foreldrepenger.mottak.TestUtils.aktoer;
 import static no.nav.foreldrepenger.mottak.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.TestUtils.engangstønad;
-import static no.nav.foreldrepenger.mottak.TestUtils.framtidigOppHoldIUtlandetHeleåret;
+import static no.nav.foreldrepenger.mottak.TestUtils.framtidigOppHoldIUtlandet;
 import static no.nav.foreldrepenger.mottak.TestUtils.framtidigOppholdINorge;
 import static no.nav.foreldrepenger.mottak.TestUtils.fremtidigFødsel;
 import static no.nav.foreldrepenger.mottak.TestUtils.fødsel;
@@ -138,7 +138,7 @@ public class TestSerialization {
 
     @Test
     public void testFremtidigOppholdUtland() {
-        test(framtidigOppHoldIUtlandetHeleåret(), true);
+        test(framtidigOppHoldIUtlandet(), true);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -12,10 +13,6 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
 
     @Override
     public String marshal(LocalDateTime v) throws Exception {
-        if (v != null) {
-            return v.toString();
-        } else {
-            return null;
-        }
+        return Optional.ofNullable(v).map(s -> s.toString()).orElse(null);
     }
 }
