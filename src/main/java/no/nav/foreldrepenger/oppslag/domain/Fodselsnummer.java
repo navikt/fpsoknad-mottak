@@ -4,8 +4,9 @@ import java.util.Objects;
 
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonValue;
 
 @Validated
 public class Fodselsnummer {

@@ -6,7 +6,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.oppslag.person.PersonClient;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +23,7 @@ import no.nav.foreldrepenger.oppslag.domain.Person;
 import no.nav.foreldrepenger.oppslag.domain.SøkerInformasjon;
 import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.orchestrate.CoordinatedLookup;
+import no.nav.foreldrepenger.oppslag.person.PersonClient;
 import no.nav.security.oidc.filter.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;

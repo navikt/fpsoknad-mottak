@@ -2,12 +2,10 @@ package no.nav.foreldrepenger.oppslag.http;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import javax.validation.ConstraintViolationException;
 
-import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +16,7 @@ import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.IncompleteRequestException;
 import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
+import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 
 @ControllerAdvice
 public class CommonControllerErrorHandlers {

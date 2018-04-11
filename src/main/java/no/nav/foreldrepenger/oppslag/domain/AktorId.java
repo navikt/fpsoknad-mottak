@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.oppslag.domain;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class AktorId {
 

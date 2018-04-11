@@ -1,17 +1,19 @@
 package no.nav.foreldrepenger.oppslag.http;
 
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
-import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
-import no.nav.security.oidc.filter.OIDCRequestContextHolder;
-import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
+import java.time.LocalDate;
+
+import javax.inject.Inject;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import java.time.LocalDate;
+import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
+import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
+import no.nav.security.oidc.filter.OIDCRequestContextHolder;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
 @ProtectedWithClaims(issuer="selvbetjening", claimMap={"acr=Level4"})

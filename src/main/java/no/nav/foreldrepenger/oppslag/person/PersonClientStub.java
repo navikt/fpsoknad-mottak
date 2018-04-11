@@ -1,10 +1,15 @@
 package no.nav.foreldrepenger.oppslag.person;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.oppslag.domain.*;
-
 import java.time.LocalDate;
 import java.util.Collections;
+
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.oppslag.domain.Adresse;
+import no.nav.foreldrepenger.oppslag.domain.ID;
+import no.nav.foreldrepenger.oppslag.domain.Kjonn;
+import no.nav.foreldrepenger.oppslag.domain.Navn;
+import no.nav.foreldrepenger.oppslag.domain.Person;
 
 public class PersonClientStub implements PersonClient {
     @Override

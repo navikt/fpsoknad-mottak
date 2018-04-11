@@ -5,7 +5,6 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import no.nav.foreldrepenger.oppslag.ws.CallIdHeader;
 import no.nav.foreldrepenger.oppslag.ws.WsClient;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 

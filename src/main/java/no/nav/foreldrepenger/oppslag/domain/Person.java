@@ -8,8 +8,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.oppslag.person.EØSLandVelger;
-
 @JsonPropertyOrder({ "id", "fodselsdato", "navn", "kjonn", "adresse", "målform" })
 public class Person {
 
@@ -23,7 +21,6 @@ public class Person {
     @JsonUnwrapped
     private final Navn navn;
     private final List<Barn> barn;
-    private final boolean isEøs;
 
     public Person(ID id, CountryCode landKode, Kjonn kjonn, Navn navn, Adresse adresse, String målform,
             LocalDate fodselsdato, List<Barn> barn) {
@@ -35,11 +32,6 @@ public class Person {
         this.navn = navn;
         this.fodselsdato = fodselsdato;
         this.barn = barn;
-        this.isEøs = EØSLandVelger.erAnnetEØSLand(landKode);
-    }
-
-    public boolean isEøs() {
-        return isEøs;
     }
 
     public Kjonn getKjonn() {
@@ -88,7 +80,8 @@ public class Person {
                 Objects.equals(adresse, person.adresse) &&
                 Objects.equals(målform, person.målform) &&
                 Objects.equals(navn, person.navn) &&
-                Objects.equals(barn, person.barn);
+                Objects.equals(landKode, person.landKode) &
+                        Objects.equals(barn, person.barn);
     }
 
     @Override
@@ -98,15 +91,8 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", landKode=" + landKode +
-                ", kjonn=" + kjonn +
-                ", fodselsdato=" + fodselsdato +
-                ", adresse=" + adresse +
-                ", målform='" + målform + '\'' +
-                ", navn=" + navn +
-                ", barn=" + barn +
-                '}';
+        return getClass().getSimpleName() + " [id=" + id + ", landKode=" + landKode + ", kjonn=" + kjonn
+                + ", fodselsdato=" + fodselsdato
+                + ", adresse=" + adresse + ", målform=" + målform + ", navn=" + navn + ", barn=" + barn + "]";
     }
 }

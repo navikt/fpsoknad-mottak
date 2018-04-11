@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.oppslag.http;
 
-import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
-import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
-import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.util.List;
+import no.nav.foreldrepenger.oppslag.domain.AktorId;
+import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
 @Validated
