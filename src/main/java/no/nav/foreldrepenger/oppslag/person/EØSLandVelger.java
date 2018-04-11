@@ -42,7 +42,7 @@ public final class EØSLandVelger {
     }
 
     public static boolean erAnnetEØSLand(CountryCode cc) {
-        return EØSLAND.contains(cc);
+        return cc != null ? EØSLAND.contains(cc) : true;
     }
 
 }
