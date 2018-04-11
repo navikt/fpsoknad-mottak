@@ -40,6 +40,10 @@ node {
         currentBuild.displayName = "${releaseVersion}"
     }
 
+    stage("OWASP CVE check") {
+        sh "${mvn} -Powasp dependency-check:check"
+    }
+
     stage("Build & publish") {
        try {
          sh "${mvn} versions:set -B -DnewVersion=${releaseVersion}"
