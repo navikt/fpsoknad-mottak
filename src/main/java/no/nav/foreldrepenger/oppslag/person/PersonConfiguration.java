@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.oppslag.person;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,7 +24,14 @@ public class PersonConfiguration {
     }
 
     @Bean
-    public PersonClient prsonKlient(Barnutvelger barneVelger, PersonV3 person) {
-        return new PersonClient(person, barneVelger);
+    @ConditionalOnProperty(name = "stub.person", matchIfMissing = true, havingValue = "false")
+    public PersonClient personKlientTpsWs(Barnutvelger barneVelger, PersonV3 person) {
+        return new PersonClientTpsWs(person, barneVelger);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "stub.person", havingValue = "true")
+    public PersonClient personKlientStub() {
+        return new PersonClientStub();
     }
 }
