@@ -7,10 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
+import org.springframework.stereotype.Component;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 
+@Component
 public class DokmotConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotConnection.class);
@@ -27,7 +29,7 @@ public class DokmotConnection {
     }
 
     public void ping() {
-        LOG.info("Pinging DOKMOT queue {}", queueConfig);
+        LOG.info("Pinging DOKMOT {}", queueConfig);
         try {
             template.getConnectionFactory().createConnection().close();
         } catch (JMSException e) {
@@ -41,7 +43,7 @@ public class DokmotConnection {
             template.send(msg);
             dokmotSuccess.increment();
         } catch (JmsException e) {
-            LOG.warn("Unable to send to DOKMOT queue at {}", queueConfig);
+            LOG.warn("Unable to send to DOKMOT at {}", queueConfig);
             dokmotFailure.increment();
             throw new DokmotQueueUnavailableException(e, queueConfig);
         }

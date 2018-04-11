@@ -54,9 +54,4 @@ public class DokmotConfiguration {
         cf.setTargetConnectionFactory(delegate);
         return cf;
     }
-
-    @Bean
-    DokmotConnection dokmotConnection(JmsTemplate template, DokmotQueueConfig queueConfig) {
-        return new DokmotConnection(template, queueConfig);
-    }
 }

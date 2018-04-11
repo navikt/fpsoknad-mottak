@@ -2,12 +2,12 @@ package no.nav.foreldrepenger.mottak.dokmot;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
+import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg.LASTET_OPP;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
 import org.springframework.stereotype.Service;
@@ -33,7 +33,6 @@ import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Landkoder;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
@@ -55,7 +54,6 @@ public class DokmotEngangsstønadXMLGenerator {
     private static final JAXBContext CONTEXT = Jaxb.context(SoeknadsskjemaEngangsstoenad.class);
     private final PdfGenerator pdfGenerator;
 
-    @Inject
     public DokmotEngangsstønadXMLGenerator(PdfGenerator pdfGenerator) {
         this.pdfGenerator = pdfGenerator;
     }
@@ -97,7 +95,7 @@ public class DokmotEngangsstønadXMLGenerator {
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.Vedlegg vedlegg) {
         return new Vedlegg()
                 .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().id)
-                .withInnsendingsvalg(Innsendingsvalg.LASTET_OPP)
+                .withInnsendingsvalg(LASTET_OPP)
                 .withErPaakrevdISoeknadsdialog(vedlegg instanceof PåkrevdVedlegg);
     }
 
@@ -116,11 +114,11 @@ public class DokmotEngangsstønadXMLGenerator {
         if (relasjonTilBarn instanceof FremtidigFødsel || relasjonTilBarn instanceof Fødsel) {
             return FOEDSEL;
         }
-        throw new IllegalArgumentException(relasjonTilBarn.getClass().getSimpleName() + " er foreløpig ikke støttet");
+        throw new IllegalArgumentException(
+                "Relasjon til barn " + relasjonTilBarn.getClass().getSimpleName() + " er foreløpig ikke støttet");
     }
 
     private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap) {
-        medlemsskap.getFramtidigOppholdsInfo().isFødselNorge();
         return new TilknytningNorge()
                 .withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
                 .withTidligereOppholdNorge(medlemsskap.getTidligereOppholdsInfo().isBoddINorge())
@@ -163,7 +161,7 @@ public class DokmotEngangsstønadXMLGenerator {
             return fødselFra(Fødsel.class.cast(relasjon), søknad.getBegrunnelseForSenSøknad());
         }
         throw new IllegalArgumentException(
-                "Relasjon " + relasjon.getClass().getSimpleName() + " foreløpig ikke støttet");
+                "Relasjon til barn " + relasjon.getClass().getSimpleName() + " er foreløpig ikke støttet");
     }
 
     private static OpplysningerOmBarn fødselFra(Fødsel fødsel, String begrunnelse) {
@@ -188,7 +186,7 @@ public class DokmotEngangsstønadXMLGenerator {
         case MOR:
             return ENGANGSSTOENADMOR;
         default:
-            throw new IllegalArgumentException(rolle + " foreløpig ikke støttet");
+            throw new IllegalArgumentException("Rolle " + rolle + " er foreløpig ikke støttet");
         }
     }
 
@@ -247,5 +245,4 @@ public class DokmotEngangsstønadXMLGenerator {
     public String toString() {
         return getClass().getSimpleName() + " [pdfGenerator=" + pdfGenerator + "]";
     }
-
 }

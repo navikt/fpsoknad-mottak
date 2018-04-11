@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Vedlegg;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
@@ -44,7 +44,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
 
-    @Inject
     public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
         this.søknadGenerator = Objects.requireNonNull(generator);
     }
@@ -101,7 +100,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withDokumenttypeId(vedlegg.getMetadata().getSkjemanummer().id)
                 .withDokumentinnholdListe(new Dokumentinnhold()
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))
-                        .withArkivfiltype(new Arkivfiltyper().withValue(vedlegg.getMetadata().getType().name()))
+                        .withArkivfiltype(new Arkivfiltyper().withValue(Filtype.PDF.name()))
                         .withDokument(vedlegg.getVedlegg()));
     }
 

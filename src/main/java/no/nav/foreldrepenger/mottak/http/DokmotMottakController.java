@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
-import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
@@ -32,27 +30,22 @@ public class DokmotMottakController {
 
     public static final String DOKMOT = "/mottak/dokmot";
 
-    private final DokmotJMSSender sender;
-    private final DokmotEngangsstønadXMLGenerator søknadGenerator;
-    private final DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator;
+    private final SøknadSender sender;
 
-    public DokmotMottakController(DokmotJMSSender sender, DokmotEngangsstønadXMLGenerator søknadGenerator,
-            DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator) {
+    public DokmotMottakController(SøknadSender sender) {
         this.sender = sender;
-        this.søknadGenerator = søknadGenerator;
-        this.konvoluttGenerator = konvoluttGenerator;
     }
 
     @GetMapping(value = "/ping")
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("I was pinged");
+        LOG.info("Jeg ble pinged");
         return ResponseEntity.ok("Hallo " + navn + " fra ubeskyttet ressurs");
     }
 
     @GetMapping(value = "/ping1")
     public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("I was pinged");
+        LOG.info("Jeg ble pinged");
         return ResponseEntity.ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
-import javax.inject.Inject;
 import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ public class DokmotJMSSender implements SøknadSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotJMSSender.class);
 
-    @Inject
     public DokmotJMSSender(DokmotConnection connection, DokmotEngangsstønadXMLKonvoluttGenerator generator,
             CorrelationIdGenerator callIdGenerator) {
         this.dokmotConnection = connection;
