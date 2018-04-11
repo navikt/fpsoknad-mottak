@@ -9,7 +9,7 @@ import no.nav.foreldrepenger.oppslag.ws.WsClient;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 
 @Configuration
-public class PersonConfiguration {
+public class PersonConfiguration extends WsClient<PersonV3>{
 
     @Bean
     public Barnutvelger barneVelger(PersonV3 personV3,
@@ -20,7 +20,7 @@ public class PersonConfiguration {
     @SuppressWarnings("unchecked")
     @Bean
     public PersonV3 personV3(@Value("${VIRKSOMHET_PERSON_V3_ENDPOINTURL}") String serviceUrl) {
-        return new WsClient<PersonV3>().createPort(serviceUrl, PersonV3.class);
+        return createPort(serviceUrl, PersonV3.class);
     }
 
     @Bean

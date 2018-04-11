@@ -8,11 +8,11 @@ import no.nav.foreldrepenger.oppslag.ws.WsClient;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.ForeldrepengesakV1;
 
 @Configuration
-public class FpsakConfiguration {
+public class FpsakConfiguration extends WsClient<ForeldrepengesakV1>{
 
     @SuppressWarnings("unchecked")
     @Bean
     public ForeldrepengesakV1 fpsakV1(@Value("${VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL}") String serviceUrl) {
-        return new WsClient<ForeldrepengesakV1>().createPort(serviceUrl, ForeldrepengesakV1.class);
+        return createPort(serviceUrl, ForeldrepengesakV1.class);
     }
 }
