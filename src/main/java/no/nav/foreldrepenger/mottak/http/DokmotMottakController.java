@@ -39,16 +39,17 @@ public class DokmotMottakController {
     @GetMapping(value = "/ping")
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("Jeg ble pinged");
+        LOG.info("Jeg ble pinget");
         return ResponseEntity.ok("Hallo " + navn + " fra ubeskyttet ressurs");
     }
 
     @GetMapping(value = "/ping1")
     public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("Jeg ble pinged");
+        LOG.info("Jeg ble pinget");
         return ResponseEntity.ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 
+    @Unprotected
     @PostMapping(value = "/send")
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.ok(sender.sendSøknad(søknad));

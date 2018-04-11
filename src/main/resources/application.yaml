@@ -5,6 +5,7 @@ no.nav.security.oidc:
       accepted_audience: <Set from FASIT>
 
 http.proxy : http://webproxy-utvikler.nav.no:8088
+requests.level : INFO
 
 info.app:
     version: @project.version@

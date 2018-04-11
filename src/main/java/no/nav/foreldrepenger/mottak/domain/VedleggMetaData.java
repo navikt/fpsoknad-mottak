@@ -21,5 +21,4 @@ public class VedleggMetaData {
         this.beskrivelse = beskrivelse;
         this.skjemanummer = skjemanummer;
     }
-
 }

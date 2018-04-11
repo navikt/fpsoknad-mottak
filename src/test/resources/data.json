@@ -18,7 +18,7 @@
     "relasjonTilBarn": {
       "type": "termin",
       "antallBarn": 1,
-      "terminDato": "2018-04-01",
+      "terminDato": "2018-05-01",
       "utstedtDato": "2018-04-02"
     },
     "annenForelder": { "type": "ukjent" }
@@ -28,7 +28,6 @@
       "type": "påkrevd",
       "metadata": {
         "beskrivelse": "Terminbekreftelse",
-        "type": "PDF",
         "skjemanummer": "TERMINBEKREFTELSE"
       },
       "vedlegg":

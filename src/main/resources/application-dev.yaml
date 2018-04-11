@@ -18,3 +18,5 @@ no.nav.security.oidc:
     selvbetjening.uri: http://metadata
     selvbetjening.accepted_audience: aud-localhost
     selvbetjening.cookie_name: localhost-idtoken
+
+requests.level : TRACE
