@@ -33,6 +33,11 @@ public class PastOrTodayValidatorTest {
     }
 
     @Test
+    public void testNull() {
+        assertFalse(validator.validate(new TestClass(null)).isEmpty());
+    }
+
+    @Test
     public void testFramtid() {
         assertFalse(validator.validate(new TestClass(LocalDate.now().plusDays(1))).isEmpty());
     }
