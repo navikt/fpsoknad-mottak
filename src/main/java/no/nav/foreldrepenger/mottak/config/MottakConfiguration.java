@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +26,8 @@ public class MottakConfiguration {
         return messageSource;
     }
 
-    @Bean
-    @ConditionalOnProperty(name = "requests.level", havingValue = "trace")
+    // @Bean
+    // @ConditionalOnProperty(name = "requests.level", havingValue = "trace")
     public CommonsRequestLoggingFilter requestLoggingFilter() {
         CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
         loggingFilter.setIncludeClientInfo(false);
