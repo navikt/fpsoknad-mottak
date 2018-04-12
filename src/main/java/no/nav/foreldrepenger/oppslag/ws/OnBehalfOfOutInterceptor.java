@@ -100,9 +100,8 @@ public class OnBehalfOfOutInterceptor extends AbstractPhaseInterceptor<Message> 
             Document document = builder.parse(new InputSource(new StringReader(content)));
             return document.getDocumentElement();
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            new RuntimeException(e);
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     private static String wrapWithBinarySecurityToken(byte[] token, String valueType) {
