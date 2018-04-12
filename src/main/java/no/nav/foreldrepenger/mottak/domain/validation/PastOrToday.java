@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 public @interface PastOrToday {
     String message()
 
-    default "{ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.fortid}";
+    default "{ytelse.relasjontilbarn.framtidig.terminbekreftelse.fortid}";
 
     Class<?>[] groups() default {};
 

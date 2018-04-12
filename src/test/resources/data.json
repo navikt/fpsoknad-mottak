@@ -18,7 +18,7 @@
     "relasjonTilBarn": {
       "type": "termin",
       "antallBarn": 1,
-      "terminDato": "2018-05-01",
+      "terminDato": "2018-02-01",
       "utstedtDato": "2018-04-02"
     },
     "annenForelder": { "type": "ukjent" }

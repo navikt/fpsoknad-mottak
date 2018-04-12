@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Documented
 @ReportAsSingleViolation
 public @interface Termindato {
-    String message() default "{ytelse.relasjontilbarn.framtidigfødsel.terminbekreftelse.fortid}";
+    String message() default "{ytelse.relasjontilbarn.framtidig.terminbekreftelse.fortid}";
 
     Class<?>[] groups() default {};
 

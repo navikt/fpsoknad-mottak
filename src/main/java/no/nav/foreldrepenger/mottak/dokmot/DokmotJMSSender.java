@@ -35,7 +35,7 @@ public class DokmotJMSSender implements SøknadSender {
             String xml = generator.toXML(søknad, reference);
 
             dokmotConnection.send(session -> {
-                LOG.trace("Sender XML til DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
+                LOG.info("Sender XML til DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(), xml);
                 TextMessage msg = session.createTextMessage(xml);
                 msg.setStringProperty("callId", reference);
                 return msg;
