@@ -3,7 +3,5 @@ management :
    endpoint: 
      health.show-details : always
      security.enabled : false
-     
-requests.level : TRACE
-               
+                    
        
