@@ -126,7 +126,8 @@ public class PdfGenerator {
 
     private void utenlandskForelder(Document document, AnnenForelder annenForelder) throws DocumentException {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
-        document.add(paragraph(getMessage("nasjonalitet", kvitteringstekster, utenlandsForelder.getLand().getAlpha2()),
+        document.add(paragraph(getMessage("nasjonalitet", kvitteringstekster,
+            getMessage(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName(), landkoder)),
                 NORMAL));
         navn(document, utenlandsForelder.getNavn(), NORMAL);
         if (utenlandsForelder.getId() != null) {
@@ -222,12 +223,6 @@ public class PdfGenerator {
 
     private void blankLine(Document document) throws DocumentException {
         document.add(blankLine());
-    }
-
-    private void tileggsOpplysninger(Søknad søknad, Document document) throws DocumentException {
-        document.add(paragraph(getMessage("tillegg", kvitteringstekster), HEADING));
-        document.add(
-                paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
     }
 
     private Image logo() throws BadElementException, MalformedURLException, IOException {
