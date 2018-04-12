@@ -224,12 +224,6 @@ public class PdfGenerator {
         document.add(blankLine());
     }
 
-    private void tileggsOpplysninger(Søknad søknad, Document document) throws DocumentException {
-        document.add(paragraph(getMessage("tillegg", kvitteringstekster), HEADING));
-        document.add(
-                paragraph(Optional.ofNullable(søknad.getTilleggsopplysninger()).orElse("Ingen"), NORMAL));
-    }
-
     private Image logo() throws BadElementException, MalformedURLException, IOException {
         return Image.getInstance(
                 StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
