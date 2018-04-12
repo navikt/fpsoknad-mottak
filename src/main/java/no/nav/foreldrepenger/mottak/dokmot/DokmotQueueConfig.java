@@ -80,6 +80,15 @@ public class DokmotQueueConfig {
         this.queuename = queuename;
     }
 
+    public DokmotQueueConfig loggable() {
+        DokmotQueueConfig unwrapped = new DokmotQueueConfig();
+        unwrapped.setChannelname(getChannelname());
+        unwrapped.setHostname(getHostname());
+        unwrapped.setPort(getPort());
+        unwrapped.setQueuename(getQueuename());
+        return unwrapped;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [hostname=" + hostname + ", port=" + port + ", name=" + name
