@@ -54,5 +54,4 @@ public class DokmotConfiguration {
         cf.setTargetConnectionFactory(delegate);
         return cf;
     }
-
 }
