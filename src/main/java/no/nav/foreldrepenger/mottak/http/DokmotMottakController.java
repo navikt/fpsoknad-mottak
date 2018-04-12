@@ -49,7 +49,6 @@ public class DokmotMottakController {
         return ResponseEntity.ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 
-    @Unprotected
     @PostMapping(value = "/send")
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         return ResponseEntity.ok(sender.sendSøknad(søknad));

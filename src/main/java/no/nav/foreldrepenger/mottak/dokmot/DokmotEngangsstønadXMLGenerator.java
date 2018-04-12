@@ -209,7 +209,7 @@ public class DokmotEngangsstønadXMLGenerator {
     private static OpplysningerOmFar ukjentFar() {
         return new OpplysningerOmFar()
                 .withKanIkkeOppgiFar(new KanIkkeOppgiFar()
-                        .withAarsak("Ukjent annen forelder"));
+                        .withAarsak("ukjent"));
     }
 
     private static OpplysningerOmFar utenlandskFarFra(AnnenForelder annenForelder) {

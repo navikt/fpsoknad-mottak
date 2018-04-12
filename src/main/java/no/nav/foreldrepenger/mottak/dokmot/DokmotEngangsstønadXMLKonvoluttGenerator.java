@@ -56,6 +56,10 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
         return dokumentForsendelseFra(søknad, ref);
     }
 
+    public String toSøknadsXML(Søknad søknad) {
+        return søknadGenerator.toXML(søknad);
+    }
+
     private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad, String ref) {
         return new Dokumentforsendelse()
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()

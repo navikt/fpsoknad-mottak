@@ -29,11 +29,11 @@ public class DokmotConnection {
     }
 
     public void ping() {
-        LOG.info("Pinging DOKMOT {}", queueConfig);
+        LOG.info("Pinging DOKMOT {}", queueConfig.loggable());
         try {
             template.getConnectionFactory().createConnection().close();
         } catch (JMSException e) {
-            LOG.warn("Unable to send to DOKMOT queue at {}", queueConfig);
+            LOG.warn("Unable to send to DOKMOT queue at {}", queueConfig.loggable());
             throw new DokmotQueueUnavailableException(e, queueConfig);
         }
     }
@@ -43,7 +43,7 @@ public class DokmotConnection {
             template.send(msg);
             dokmotSuccess.increment();
         } catch (JmsException e) {
-            LOG.warn("Unable to send to DOKMOT at {}", queueConfig);
+            LOG.warn("Unable to send to DOKMOT at {}", queueConfig.loggable());
             dokmotFailure.increment();
             throw new DokmotQueueUnavailableException(e, queueConfig);
         }
@@ -59,6 +59,6 @@ public class DokmotConnection {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig + "]";
+        return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig.loggable() + "]";
     }
 }

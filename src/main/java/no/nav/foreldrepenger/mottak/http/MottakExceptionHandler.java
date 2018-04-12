@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import no.nav.foreldrepenger.mottak.dokmot.DokmotQueueConfig;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotQueueUnavailableException;
 
 @ControllerAdvice
@@ -33,16 +32,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { DokmotQueueUnavailableException.class })
     protected ResponseEntity<Object> handleConflict(DokmotQueueUnavailableException e, WebRequest request) {
-        return handleExceptionInternal(e, unproxy(e.getConfig()), new HttpHeaders(), INTERNAL_SERVER_ERROR, request);
-    }
-
-    private static DokmotQueueConfig unproxy(DokmotQueueConfig proxied) {
-        DokmotQueueConfig unwrapped = new DokmotQueueConfig();
-        unwrapped.setChannelname(proxied.getChannelname());
-        unwrapped.setHostname(proxied.getHostname());
-        unwrapped.setPort(proxied.getPort());
-        unwrapped.setQueuename(proxied.getQueuename());
-        return unwrapped;
+        return handleExceptionInternal(e, e.getConfig().loggable(), new HttpHeaders(), INTERNAL_SERVER_ERROR, request);
     }
 
     private static String responseBody(MethodArgumentNotValidException e) {

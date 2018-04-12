@@ -14,15 +14,15 @@ import javax.validation.constraints.NotNull;
 @NotNull
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PastOrTodayValidator.class)
+@Constraint(validatedBy = TermindatoValidator.class)
 @Documented
 @ReportAsSingleViolation
-public @interface PastOrToday {
-    String message()
-
-    default "{ytelse.relasjontilbarn.framtidig.terminbekreftelse.fortid}";
+public @interface Termindato {
+    String message() default "{ytelse.relasjontilbarn.framtidig.terminbekreftelse.fortid}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    int weeks() default 3;
 }

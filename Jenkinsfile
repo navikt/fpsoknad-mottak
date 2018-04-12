@@ -41,7 +41,7 @@ node {
     }
 
     stage("OWASP CVE check") {
-        sh "${mvn} -Powasp dependency-check:check"
+      //  sh "${mvn} -Powasp dependency-check:check"
     }
 
     stage("Build & publish") {
