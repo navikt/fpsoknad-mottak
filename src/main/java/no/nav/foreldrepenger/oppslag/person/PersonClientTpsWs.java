@@ -3,8 +3,7 @@ package no.nav.foreldrepenger.oppslag.person;
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.BARN;
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.FNR;
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.request;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.ADRESSE;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +53,7 @@ public class PersonClientTpsWs implements PersonClient {
     public Person hentPersonInfo(ID id) {
 
         try {
-            HentPersonRequest request = request(id.getFnr(), ADRESSE);
+            HentPersonRequest request = request(id.getFnr(), ADRESSE, KOMMUNIKASJON, BANKKONTO);
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson =
                 hentPerson(id.getFnr(), request).getPerson();
             Person person = PersonMapper.map(id, tpsPerson, Collections.emptyList());
