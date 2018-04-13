@@ -105,7 +105,7 @@ public class PersonClientTpsWs implements PersonClient {
             LOG.warn("Kunne ikke slå opp person " + "{}", fnr.getFnr(), e);
             throw new NotFoundException(e);
         } catch (HentPersonSikkerhetsbegrensning e) {
-            LOG.warn("Sikkerhetsbegrensning ved oppslag av {}", fnr.getFnr(), e);
+            LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);
             throw new ForbiddenException(e);
         }
     }
