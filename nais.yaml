@@ -1,8 +1,8 @@
 name: fpsoknad-mottak
 image: repo.adeo.no:5443/fpsoknad-mottak
 replicas:
-    min: 1
-    max: 1
+    min: 2
+    max: 2
     cpuThresholdPercentage: 50
 prometheus:
     enabled: true
@@ -34,26 +34,26 @@ fasitResources:
          url: NO_NAV_SECURITY_OIDC_ISSUER_SELVBETJENING_URI
     - alias: mqGateway01
       resourceType: queuemanager
-      propertyMap: 
+      propertyMap:
           hostname: DOKMOT_HOSTNAME
           port: DOKMOT_PORT
           name: DOKMOT_NAME
     - alias: dokmot_channel
       resourceType: channel
-      propertyMap: 
+      propertyMap:
           name: DOKMOT_CHANNELNAME
     - alias: brisdokmot
       resourceType: credential
-      propertyMap: 
+      propertyMap:
           username: DOKMOT_USERNAME
           password: DOKMOT_PASSWORD
     - alias : dokmot_motta_forsendelse_ditt_nav
       resourceType: queue
-      propertyMap: 
+      propertyMap:
           queueName: DOKMOT_QUEUENAME
           queueManager: DOKMOT_QUEUEMANAGER
     - alias : FPSOKNADMOTTAK_PROPERTIES
-      resourceType: applicationProperties 
+      resourceType: applicationProperties
   exposed:
     - alias: fpsoknad-mottak-api
       resourceType: restservice
