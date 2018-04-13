@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +25,6 @@ import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjon;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
@@ -40,6 +37,7 @@ public class PersonClientTpsWs implements PersonClient {
 
     private final Counter errorCounter = Metrics.counter("errors.lookup.person");
     private final Counter missingLanguageCounter = Metrics.counter("lookup.user.missinglanguage");
+    private final Counter bankkontoCounter = Metrics.counter("lookup.user.haskonto");
 
     public PersonClientTpsWs(PersonV3 person, Barnutvelger barneVelger) {
         this.person = Objects.requireNonNull(person);
@@ -56,9 +54,11 @@ public class PersonClientTpsWs implements PersonClient {
 
         try {
             HentPersonRequest request = request(id.getFnr(), ADRESSE, FAMILIERELASJONER);
-            Person person = PersonMapper.map(id, hentPerson(id.getFnr(), request).getPerson(),
-                barnFor(hentPerson(id.getFnr(), request).getPerson()));
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson =
+                hentPerson(id.getFnr(), request).getPerson();
+            Person person = PersonMapper.map(id, tpsPerson, barnFor(tpsPerson));
             collectLanguageMetrics(person);
+            collectBankkontoMetrics(tpsPerson);
             return person;
         } catch (Exception ex) {
             errorCounter.increment();
@@ -114,6 +114,15 @@ public class PersonClientTpsWs implements PersonClient {
             missingLanguageCounter.increment();
         }
         LOG.info("Målform: " + person.getMålform() != null ? person.getMålform() : "ukjent");
+    }
+
+    private void collectBankkontoMetrics(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
+        if (person instanceof Bruker) {
+            Bruker bruker = Bruker.class.cast(person);
+            if (bruker.getBankkonto() != null) {
+                bankkontoCounter.increment();
+            }
+        }
     }
 
     @Override
