@@ -59,7 +59,6 @@ public class PeriodeValidatorTest {
         FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(true, true,
                 opphold(periode2, periode1));
         Set<ConstraintViolation<FramtidigOppholdsInformasjon>> constraintViolations = validator.validate(framtidig);
-        System.out.println(constraintViolations);
         assertFalse(constraintViolations.isEmpty());
     }
 
@@ -83,7 +82,6 @@ public class PeriodeValidatorTest {
         assertTrue(periode3.overlapper(periode1));
         TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(true, ARBEIDET_I_UTLANDET,
                 opphold(periode1, periode2, periode3));
-        // assertEquals(tidligere.getUtenlandsOpphold().size(), 3);
         assertFalse(validator.validate(tidligere).isEmpty());
     }
 

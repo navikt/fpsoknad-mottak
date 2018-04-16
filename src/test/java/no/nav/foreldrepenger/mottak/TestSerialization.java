@@ -57,54 +57,54 @@ public class TestSerialization {
     @Test
     public void testKvittering() {
         Kvittering kvittering = new Kvittering("42", LocalDateTime.now());
-        test(kvittering, true);
+        test(kvittering, false);
     }
 
     @Test
     public void testVedlegg() throws IOException {
-        test(påkrevdVedlegg("terminbekreftelse.pdf"), true);
+        test(påkrevdVedlegg("terminbekreftelse.pdf"), false);
     }
 
     @Test
     public void testSøknadNorge() throws Exception {
         Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg());
-        test(engangssøknad, true);
+        test(engangssøknad, false);
     }
 
     @Test
     public void testEngangsstønadNorge() {
         Engangsstønad engangstønad = engangstønad(false, fremtidigFødsel(), norskForelder());
-        test(engangstønad, true);
+        test(engangstønad, false);
     }
 
     @Test
     public void testEngangsstønadUtland() {
-        test(engangstønad(true, fremtidigFødsel(), utenlandskForelder()), true);
+        test(engangstønad(true, fremtidigFødsel(), utenlandskForelder()), false);
     }
 
     @Test
     public void testEngangsstønadUkjentFar() {
-        test(engangstønad(true, fremtidigFødsel(), ukjentForelder()), true);
+        test(engangstønad(true, fremtidigFødsel(), ukjentForelder()), false);
     }
 
     @Test
     public void testNorskAnnenForelder() {
-        test(norskForelder(), true);
+        test(norskForelder(), false);
     }
 
     @Test
     public void testUtenlandskAnnenForelder() {
-        test(utenlandskForelder(), true);
+        test(utenlandskForelder(), false);
     }
 
     @Test
     public void testUkjentForelder() {
-        test(ukjentForelder(), true);
+        test(ukjentForelder(), false);
     }
 
     @Test
     public void testMedlemsskap() {
-        test(medlemsskap(), true);
+        test(medlemsskap(), false);
     }
 
     @Test
@@ -114,12 +114,12 @@ public class TestSerialization {
 
     @Test
     public void testFnr() throws JsonProcessingException {
-        test(new Fødselsnummer("03016536325"), true);
+        test(new Fødselsnummer("03016536325"), false);
     }
 
     @Test
     public void testAktør() throws JsonProcessingException {
-        test(new AktorId("111111111"), true);
+        test(new AktorId("111111111"), false);
     }
 
     @Test
@@ -129,17 +129,17 @@ public class TestSerialization {
 
     @Test
     public void testFødsel() {
-        test(fødsel(), true);
+        test(fødsel(), false);
     }
 
     @Test
     public void testFremtidigOppholdNorge() {
-        test(framtidigOppholdINorge(), true);
+        test(framtidigOppholdINorge(), false);
     }
 
     @Test
     public void testFremtidigOppholdUtland() {
-        test(framtidigOppHoldIUtlandet(), true);
+        test(framtidigOppHoldIUtlandet(), false);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class TestSerialization {
 
     @Test
     public void testUtenlandsopphold() {
-        test(utenlandsopphold(), true);
+        test(utenlandsopphold(), false);
     }
 
     @Test

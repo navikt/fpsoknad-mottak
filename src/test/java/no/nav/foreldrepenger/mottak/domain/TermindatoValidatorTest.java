@@ -38,7 +38,6 @@ public class TermindatoValidatorTest {
     public void testFjernFortid() {
         Set<ConstraintViolation<TestClass>> validate = validator
                 .validate(new TestClass(LocalDate.now().minusWeeks(3).minusDays(1)));
-        validate.forEach(s -> System.out.println(s));
         assertFalse(validate.isEmpty());
     }
 

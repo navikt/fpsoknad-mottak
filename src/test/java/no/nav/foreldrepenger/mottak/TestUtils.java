@@ -160,7 +160,6 @@ public class TestUtils {
     }
 
     static String printSerialized(String serialized) {
-        System.out.println(serialized);
         return serialized;
     }
 
