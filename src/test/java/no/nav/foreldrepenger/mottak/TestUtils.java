@@ -56,7 +56,11 @@ public class TestUtils {
         return engangssøknad(utland, fremtidigFødsel(), norskForelder());
     }
 
-    static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
+    public static Søknad engangssøknad(RelasjonTilBarn relasjon) throws IOException {
+        return engangssøknad(false, relasjon, norskForelder());
+    }
+
+    public static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
             Vedlegg... vedlegg) throws IOException {
         Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(utland, relasjon, annenForelder), vedlegg);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
@@ -74,7 +78,7 @@ public class TestUtils {
         return new Utenlandsopphold(CountryCode.SE, varighet());
     }
 
-    static NorskForelder norskForelder() {
+    public static NorskForelder norskForelder() {
         return new NorskForelder(true, farnavn(), fnr());
     }
 
@@ -113,7 +117,7 @@ public class TestUtils {
         return overtakelse;
     }
 
-    static PåkrevdVedlegg påkrevdVedlegg() throws IOException {
+    public static PåkrevdVedlegg påkrevdVedlegg() throws IOException {
         return påkrevdVedlegg("terminbekreftelse.pdf");
     }
 
@@ -137,7 +141,7 @@ public class TestUtils {
         return fødsel(forrigeMåned());
     }
 
-    static Fødsel fødsel(LocalDate date) {
+    public static Fødsel fødsel(LocalDate date) {
         return new Fødsel(date);
     }
 
@@ -203,7 +207,7 @@ public class TestUtils {
         return Period.ofMonths(n);
     }
 
-    static LocalDate nå() {
+    public static LocalDate nå() {
         return LocalDate.now();
     }
 
