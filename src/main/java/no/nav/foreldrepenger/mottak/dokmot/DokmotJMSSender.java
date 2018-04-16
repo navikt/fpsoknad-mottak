@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.dokmot;
 
 import javax.jms.TextMessage;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ public class DokmotJMSSender implements SøknadSender {
     private final DokmotConnection dokmotConnection;
     private final DokmotEngangsstønadXMLKonvoluttGenerator generator;
     private final CorrelationIdGenerator idGenerator;
+
+    private final Counter sentCounter = Metrics.counter("fpsoknad.mottak.sent");
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotJMSSender.class);
 
@@ -41,6 +45,7 @@ public class DokmotJMSSender implements SøknadSender {
                 msg.setStringProperty("callId", reference);
                 return msg;
             });
+            sentCounter.increment();
             return new Kvittering(reference);
         }
         LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
