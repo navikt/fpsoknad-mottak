@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.oppslag.person.RequestUtils.FNR;
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.request;
 import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -53,10 +52,10 @@ public class PersonClientTpsWs implements PersonClient {
     public Person hentPersonInfo(ID id) {
 
         try {
-            HentPersonRequest request = request(id.getFnr(), ADRESSE, KOMMUNIKASJON, BANKKONTO);
+            HentPersonRequest request = request(id.getFnr(), ADRESSE, KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson =
                 hentPerson(id.getFnr(), request).getPerson();
-            Person person = PersonMapper.map(id, tpsPerson, Collections.emptyList());
+            Person person = PersonMapper.map(id, tpsPerson, barnFor(tpsPerson));
             collectLanguageMetrics(person);
             collectBankkontoMetrics(tpsPerson);
             return person;
