@@ -56,6 +56,11 @@ public class TermindatoValidatorTest {
         assertTrue(validator.validate(new TestClass(LocalDate.now().plusDays(1))).isEmpty());
     }
 
+    @Test
+    public void testAkkuratTreUkerFortid() {
+        assertTrue(validator.validate(new TestClass(LocalDate.now().minusWeeks(3))).isEmpty());
+    }
+
     private static class TestClass {
 
         @Termindato

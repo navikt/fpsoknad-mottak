@@ -16,7 +16,7 @@ public class TermindatoValidator implements ConstraintValidator<Termindato, Loca
 
     @Override
     public boolean isValid(LocalDate terminDato, ConstraintValidatorContext context) {
-        return terminDato.isAfter(LocalDate.now().minusWeeks(weeks));
+        return terminDato.isAfter(LocalDate.now().minusWeeks(weeks).minusDays(1));
     }
 
     @Override
