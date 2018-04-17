@@ -18,17 +18,19 @@ public class Person {
     private final LocalDate fodselsdato;
     private final Adresse adresse;
     private final String målform;
+    private final Bankkonto bankkonto;
     @JsonUnwrapped
     private final Navn navn;
     private final List<Barn> barn;
 
     public Person(ID id, CountryCode landKode, Kjonn kjonn, Navn navn, Adresse adresse, String målform,
-            LocalDate fodselsdato, List<Barn> barn) {
+                  Bankkonto bankkonto, LocalDate fodselsdato, List<Barn> barn) {
         this.id = id;
         this.landKode = landKode;
         this.kjonn = kjonn;
         this.adresse = adresse;
         this.målform = målform;
+        this.bankkonto = bankkonto;
         this.navn = navn;
         this.fodselsdato = fodselsdato;
         this.barn = barn;
@@ -62,6 +64,10 @@ public class Person {
         return målform;
     }
 
+    public Bankkonto getBankkonto() {
+        return bankkonto;
+    }
+
     public Navn getNavn() {
         return navn;
     }
@@ -79,6 +85,7 @@ public class Person {
                 Objects.equals(fodselsdato, person.fodselsdato) &&
                 Objects.equals(adresse, person.adresse) &&
                 Objects.equals(målform, person.målform) &&
+                Objects.equals(bankkonto, person.bankkonto) &&
                 Objects.equals(navn, person.navn) &&
                 Objects.equals(landKode, person.landKode) &
                         Objects.equals(barn, person.barn);
@@ -86,13 +93,14 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, landKode, kjonn, fodselsdato, adresse, målform, navn, barn);
+        return Objects.hash(id, landKode, kjonn, fodselsdato, adresse, målform, bankkonto, navn, barn);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [id=" + id + ", landKode=" + landKode + ", kjonn=" + kjonn
                 + ", fodselsdato=" + fodselsdato
-                + ", adresse=" + adresse + ", målform=" + målform + ", navn=" + navn + ", barn=" + barn + "]";
+                + ", adresse=" + adresse + ", målform=" + målform + ", bankkonto=" + bankkonto
+                + ", navn=" + navn + ", barn=" + barn + "]";
     }
 }

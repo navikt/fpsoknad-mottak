@@ -5,11 +5,7 @@ import java.util.Collections;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.oppslag.domain.Adresse;
-import no.nav.foreldrepenger.oppslag.domain.ID;
-import no.nav.foreldrepenger.oppslag.domain.Kjonn;
-import no.nav.foreldrepenger.oppslag.domain.Navn;
-import no.nav.foreldrepenger.oppslag.domain.Person;
+import no.nav.foreldrepenger.oppslag.domain.*;
 
 public class PersonClientStub implements PersonClient {
     @Override
@@ -18,7 +14,8 @@ public class PersonClientStub implements PersonClient {
         Adresse adresse = new Adresse(CountryCode.NO, "0123", "Oslo",
             "Veien", "42", "A");
         Person person = new Person(id, CountryCode.NO, Kjonn.valueOf("M"), navn,
-            adresse, "nynoregsk", LocalDate.now().minusYears(20), Collections.emptyList());
+            adresse, "nynoregsk", new Bankkonto("1234567890", "Pæng r'us"),
+            LocalDate.now().minusYears(20), Collections.emptyList());
         return person;
     }
 

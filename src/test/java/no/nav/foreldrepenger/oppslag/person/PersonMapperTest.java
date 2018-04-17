@@ -1,10 +1,11 @@
 package no.nav.foreldrepenger.oppslag.person;
 
-import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.ID;
-import no.nav.foreldrepenger.oppslag.domain.Person;
+import no.nav.foreldrepenger.oppslag.domain.*;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoNorge;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkontonummer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontonummerUtland;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.BankkontoUtland;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bostedsadresse;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Foedselsdato;
@@ -27,17 +28,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PersonMapperTest {
 
     @Test
-    public void norwegianWithMålform() {
+    public void basePerson() {
         ID id = new ID(new AktorId("123445"), new Fodselsnummer("123456378910"));
-        Person mapped = PersonMapper.map(id, person(), Collections.emptyList());
+        Person mapped = PersonMapper.map(id, createBasePerson(), Collections.emptyList());
         assertEquals("123456378910", mapped.getId().getFnr().getFnr());
         assertEquals("Diego", mapped.getNavn().getFornavn());
         assertEquals("Armando", mapped.getNavn().getMellomnavn());
         assertEquals("Maradona", mapped.getNavn().getEtternavn());
+    }
+
+    @Test
+    public void withMålform() {
+        ID id = new ID(new AktorId("123445"), new Fodselsnummer("123456378910"));
+        Bruker tpsPerson = personWithMålform();
+        Person mapped = PersonMapper.map(id, tpsPerson, Collections.emptyList());
         assertEquals("Turkmenistansk", mapped.getMålform());
     }
 
-    private no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person() {
+    @Test
+    public void withNorskKonto() {
+        ID id = new ID(new AktorId("123445"), new Fodselsnummer("123456378910"));
+        Bruker tpsPerson = personWithNorskKonto();
+        Person mapped = PersonMapper.map(id, tpsPerson, Collections.emptyList());
+        Bankkonto expected = new Bankkonto("1234567890", "Ripoff inc.");
+        assertEquals(expected, mapped.getBankkonto());
+    }
+
+    @Test
+    public void withUtenlandskKonto() {
+        ID id = new ID(new AktorId("123445"), new Fodselsnummer("123456378910"));
+        Bruker tpsPerson = personWithUtenlandskKonto();
+        Person mapped = PersonMapper.map(id, tpsPerson, Collections.emptyList());
+        Bankkonto expected = new Bankkonto("swiftster", "bankkode");
+        assertEquals(expected, mapped.getBankkonto());
+    }
+
+    private Bruker createBasePerson() {
         Bruker person = new Bruker();
 
         Kjoenn kjoenn = new Kjoenn();
@@ -70,11 +96,45 @@ public class PersonMapperTest {
         foedselsdato.setFoedselsdato(CalendarConverter.toXMLGregorianCalendar(LocalDate.now()));
         person.setFoedselsdato(foedselsdato);
 
+        return person;
+    }
+
+    private Bruker personWithMålform() {
+        Bruker basePerson = createBasePerson();
         Spraak spraak = new Spraak();
         spraak.setValue("Turkmenistansk");
-        person.setMaalform(spraak);
+        basePerson.setMaalform(spraak);
+        return basePerson;
+    }
 
-        return person;
+    private Bruker personWithNorskKonto() {
+        Bruker basePerson = createBasePerson();
+        basePerson.setBankkonto(norskKonto());
+        return basePerson;
+    }
+
+    private Bruker personWithUtenlandskKonto() {
+        Bruker basePerson = createBasePerson();
+        basePerson.setBankkonto(utenlandskKonto());
+        return basePerson;
+    }
+
+    private no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkonto norskKonto() {
+        BankkontoNorge bankkonto = new BankkontoNorge();
+        Bankkontonummer kontonr = new Bankkontonummer();
+        kontonr.setBankkontonummer("1234567890");
+        kontonr.setBanknavn("Ripoff inc.");
+        bankkonto.setBankkonto(kontonr);
+        return bankkonto;
+    }
+
+    private no.nav.tjeneste.virksomhet.person.v3.informasjon.Bankkonto utenlandskKonto() {
+        BankkontoUtland bankkonto = new BankkontoUtland();
+        BankkontonummerUtland kontonr = new BankkontonummerUtland();
+        kontonr.setSwift("swiftster");
+        kontonr.setBankkode("bankkode");
+        bankkonto.setBankkontoUtland(kontonr);
+        return bankkonto;
     }
 
 }

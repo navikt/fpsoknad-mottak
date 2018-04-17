@@ -50,6 +50,11 @@ public class SerializationTest {
     }
 
     @Test
+    public void testBankkontoSerialization() throws IOException {
+        test(bankkonto());
+    }
+
+    @Test
     public void testKjonnSerialization() throws IOException {
         test(Kjonn.K);
     }
@@ -109,7 +114,8 @@ public class SerializationTest {
     }
 
     private static Person person() {
-        return new Person(id(), CountryCode.NO, Kjonn.M, name(), adresse(), "nynorsk", birthDate(), Collections.emptyList());
+        return new Person(id(), CountryCode.NO, Kjonn.M, name(), adresse(), "nynorsk",
+            bankkonto(), birthDate(), Collections.emptyList());
     }
 
     private static LocalDate birthDate() {
@@ -126,6 +132,10 @@ public class SerializationTest {
 
     private static Adresse adresse() {
         return new Adresse(CountryCode.NO, "0360", "Oslo", "Fagerborggata", "6", "A");
+    }
+
+    private static Bankkonto bankkonto() {
+        return new Bankkonto("1234567890", "Pæng r'us");
     }
 
     private static Ytelse ytelse() {
