@@ -11,6 +11,7 @@ import org.hibernate.validator.constraintvalidation.HibernateConstraintValidator
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 
 public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenlandsopphold>> {
@@ -43,7 +44,7 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
                     valid = false;
                 }
                 LOG.debug("Sammenligner {} og {}", opphold.getVarighet(), o.getVarighet());
-                if (o.getVarighet().overlapper(opphold.getVarighet())) {
+                if (overlapper(o.getVarighet(), opphold.getVarighet())) {
                     LOG.debug("Periodene overlapper");
                     errorMessageOverlap(context, opphold, o);
                     valid = false;
@@ -54,6 +55,20 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
             }
         }
         return valid;
+    }
+
+    private static boolean overlapper(LukketPeriode førstePeriode, LukketPeriode annenPeriode) {
+        LOG.info("Sammeligner {} med {}", førstePeriode, annenPeriode);
+        if (annenPeriode.getFom().isAfter(førstePeriode.getTom())) {
+            LOG.info("Periodene overlapper ikke");
+            return false;
+        }
+        if (annenPeriode.getTom().isBefore(førstePeriode.getFom())) {
+            LOG.info("Periodene overlapper ikke");
+            return false;
+        }
+        LOG.info("Periodene overlapper");
+        return true;
     }
 
     private static void errorMessageFortidFremtid(ConstraintValidatorContext context, Utenlandsopphold opphold,

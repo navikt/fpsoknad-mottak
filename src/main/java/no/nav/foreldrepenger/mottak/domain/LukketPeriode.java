@@ -30,26 +30,6 @@ public class LukketPeriode {
     public LukketPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom) {
         this.fom = fom;
         this.tom = tom;
-        validate(fom, tom);
     }
 
-    public boolean overlapper(LukketPeriode annenPeriode) {
-        LOG.info("Sammeligner {} med {}", this, annenPeriode);
-        if (annenPeriode.getFom().isAfter(this.getTom())) {
-            LOG.info("Periodene overlapper ikke");
-            return false;
-        }
-        if (annenPeriode.getTom().isBefore(this.getFom())) {
-            LOG.info("Periodene overlapper ikke");
-            return false;
-        }
-        LOG.info("Periodene overlapper");
-        return true;
-    }
-
-    private static void validate(LocalDate fom, LocalDate tom) {
-        if (fom.isAfter(tom)) {
-            throw new IllegalStateException("Startdato må være tiligere enn sluttdato");
-        }
-    }
 }
