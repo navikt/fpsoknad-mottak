@@ -65,11 +65,6 @@ public class SerializationTest {
     }
 
     @Test
-    public void testAdresseSerialization() throws IOException {
-        test(adresse());
-    }
-
-    @Test
     public void testPersonSerialization() throws IOException {
         test(person());
     }
@@ -114,7 +109,7 @@ public class SerializationTest {
     }
 
     private static Person person() {
-        return new Person(id(), CountryCode.NO, Kjonn.M, name(), adresse(), "nynorsk",
+        return new Person(id(), CountryCode.NO, Kjonn.M, name(), "nynorsk",
             bankkonto(), birthDate(), Collections.emptyList());
     }
 
@@ -128,10 +123,6 @@ public class SerializationTest {
 
     private static AktorId aktoer() {
         return new AktorId("11111111111111111");
-    }
-
-    private static Adresse adresse() {
-        return new Adresse(CountryCode.NO, "0360", "Oslo", "Fagerborggata", "6", "A");
     }
 
     private static Bankkonto bankkonto() {
