@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.mottak.domain.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
@@ -33,18 +34,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
 
 @Service
 public class PdfGenerator {
@@ -108,9 +97,14 @@ public class PdfGenerator {
     }
 
     private void omFar(Engangsstønad stønad, Document document) throws DocumentException {
-        document.add(paragraph(getMessage("omfar", kvitteringstekster), HEADING));
         AnnenForelder annenForelder = stønad.getAnnenForelder();
+
+        document.add(paragraph(getMessage("omfar", kvitteringstekster), HEADING));
         if (annenForelder != null) {
+            if (annenForelder instanceof KjentForelder && !((KjentForelder) annenForelder).hasId()) {
+                return;
+            }
+
             if (annenForelder instanceof NorskForelder) {
                 norskForelder(document, annenForelder);
             }

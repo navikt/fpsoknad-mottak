@@ -28,4 +28,9 @@ public final class UtenlandskForelder extends KjentForelder {
         this.id = id;
         this.land = land;
     }
+
+    @Override
+    public boolean hasId() {
+        return id != null;
+    }
 }

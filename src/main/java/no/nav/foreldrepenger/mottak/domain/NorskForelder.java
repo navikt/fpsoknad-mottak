@@ -26,4 +26,8 @@ public final class NorskForelder extends KjentForelder {
         this.fnr = fnr;
     }
 
+    @Override
+    public boolean hasId() {
+        return fnr != null && fnr.getFnr() != null;
+    }
 }
