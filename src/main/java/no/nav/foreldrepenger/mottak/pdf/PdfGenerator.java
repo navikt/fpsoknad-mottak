@@ -99,11 +99,12 @@ public class PdfGenerator {
     private void omFar(Engangsstønad stønad, Document document) throws DocumentException {
         AnnenForelder annenForelder = stønad.getAnnenForelder();
 
-        document.add(paragraph(getMessage("omfar", kvitteringstekster), HEADING));
         if (annenForelder != null) {
             if (annenForelder instanceof KjentForelder && !((KjentForelder) annenForelder).hasId()) {
                 return;
             }
+
+            document.add(paragraph(getMessage("omfar", kvitteringstekster), HEADING));
 
             if (annenForelder instanceof NorskForelder) {
                 norskForelder(document, annenForelder);
