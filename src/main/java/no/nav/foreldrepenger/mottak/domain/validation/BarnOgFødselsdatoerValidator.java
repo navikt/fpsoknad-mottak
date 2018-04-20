@@ -9,6 +9,6 @@ public class BarnOgFødselsdatoerValidator implements ConstraintValidator<BarnOg
 
     @Override
     public boolean isValid(Fødsel fødsel, ConstraintValidatorContext ctx) {
-        return fødsel.getAntallBarn() == fødsel.getFødselsdato().size();
+        return fødsel.getFødselsdato().size() == 1;
     }
 }
