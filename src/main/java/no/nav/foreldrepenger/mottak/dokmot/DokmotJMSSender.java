@@ -30,13 +30,16 @@ public class DokmotJMSSender implements SøknadSender {
     @Override
     public Kvittering sendSøknad(Søknad søknad) {
         if (dokmotConnection.isEnabled()) {
-            LOG.info("Sender søknad til DOKMOT {}", søknad);
+            // LOG.info("Sender søknad til DOKMOT {}", søknad);
+            LOG.info("Sender søknad til DOKMOT");
             String reference = idGenerator.getOrCreate();
             String xml = generator.toXML(søknad, reference);
 
             dokmotConnection.send(session -> {
-                LOG.info("Sender SøknadsXML til DOKMOT {} : ({})", dokmotConnection.getQueueConfig().toString(),
-                        generator.toSøknadsXML(søknad));
+                LOG.info("Sender SøknadsXML til DOKMOT");
+                // LOG.info("Sender SøknadsXML til DOKMOT {} : ({})",
+                // dokmotConnection.getQueueConfig().toString(),
+                // generator.toSøknadsXML(søknad));
                 TextMessage msg = session.createTextMessage(xml);
                 msg.setStringProperty("callId", reference);
                 return msg;
