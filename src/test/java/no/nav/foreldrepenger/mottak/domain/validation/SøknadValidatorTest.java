@@ -1,7 +1,9 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.domain.validation;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import no.nav.foreldrepenger.mottak.domain.Søknad;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
