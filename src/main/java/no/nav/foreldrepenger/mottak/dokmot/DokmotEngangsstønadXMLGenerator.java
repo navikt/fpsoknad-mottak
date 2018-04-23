@@ -146,7 +146,7 @@ public class DokmotEngangsstønadXMLGenerator {
     private static Utenlandsopphold utenlandsoppholdFra(no.nav.foreldrepenger.mottak.domain.Utenlandsopphold opphold) {
         return new Utenlandsopphold()
                 .withLand(new Landkoder()
-                        .withValue(opphold.getLand().getAlpha3()))
+                        .withKode(opphold.getLand().getAlpha3()))
                 .withPeriode(new Periode()
                         .withFom(opphold.getVarighet().getFom())
                         .withTom(opphold.getVarighet().getTom()));
