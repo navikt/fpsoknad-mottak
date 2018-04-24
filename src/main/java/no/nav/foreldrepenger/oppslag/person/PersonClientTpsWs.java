@@ -3,13 +3,15 @@ package no.nav.foreldrepenger.oppslag.person;
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.BARN;
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.FNR;
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.request;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.ADRESSE;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,11 @@ import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
@@ -53,8 +60,8 @@ public class PersonClientTpsWs implements PersonClient {
 
         try {
             HentPersonRequest request = request(id.getFnr(), ADRESSE, KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson =
-                hentPerson(id.getFnr(), request).getPerson();
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(id.getFnr(), request)
+                    .getPerson();
             Person person = PersonMapper.map(id, tpsPerson, barnFor(tpsPerson));
             collectLanguageMetrics(person);
             collectBankkontoMetrics(tpsPerson);
@@ -100,7 +107,7 @@ public class PersonClientTpsWs implements PersonClient {
         try {
             return person.hentPerson(request);
         } catch (HentPersonPersonIkkeFunnet e) {
-            LOG.warn("Kunne ikke slå opp person " + "{}", fnr.getFnr(), e);
+            LOG.warn("Kunne ikke slå opp person {}", fnr.getFnr(), e);
             throw new NotFoundException(e);
         } catch (HentPersonSikkerhetsbegrensning e) {
             LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);
@@ -112,7 +119,7 @@ public class PersonClientTpsWs implements PersonClient {
         if (person.getMålform() == null) {
             missingLanguageCounter.increment();
         }
-        LOG.info("Målform: " + person.getMålform() != null ? person.getMålform() : "ukjent");
+        LOG.info("Målform: {}", person.getMålform() != null ? person.getMålform() : "ukjent");
     }
 
     private void collectBankkontoMetrics(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
