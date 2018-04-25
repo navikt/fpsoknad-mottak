@@ -10,7 +10,6 @@ import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.Bruker;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 import org.slf4j.Logger;
@@ -32,9 +31,7 @@ public class PersonClientTpsWs implements PersonClient {
     private final PersonV3 person;
     private final Barnutvelger barneVelger;
 
-    private final Counter errorCounter = Metrics.counter("errors.lookup.person");
-    private final Counter missingLanguageCounter = Metrics.counter("lookup.user.missinglanguage");
-    private final Counter bankkontoCounter = Metrics.counter("lookup.user.haskonto");
+    private final Counter errorCounter = Metrics.counter("person.lookup.error");
 
     public PersonClientTpsWs(PersonV3 person, Barnutvelger barneVelger) {
         this.person = Objects.requireNonNull(person);
@@ -54,8 +51,6 @@ public class PersonClientTpsWs implements PersonClient {
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(id.getFnr(), request)
                     .getPerson();
             Person person = PersonMapper.map(id, tpsPerson, Collections.emptyList());
-            collectLanguageMetrics(person);
-            collectBankkontoMetrics(tpsPerson);
             return person;
         } catch (Exception ex) {
             errorCounter.increment();
@@ -73,22 +68,6 @@ public class PersonClientTpsWs implements PersonClient {
         } catch (HentPersonSikkerhetsbegrensning e) {
             LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);
             throw new ForbiddenException(e);
-        }
-    }
-
-    private void collectLanguageMetrics(Person person) {
-        if (person.getMålform() == null) {
-            missingLanguageCounter.increment();
-        }
-        LOG.info("Målform: {}", person.getMålform() != null ? person.getMålform() : "ukjent");
-    }
-
-    private void collectBankkontoMetrics(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-        if (person instanceof Bruker) {
-            Bruker bruker = Bruker.class.cast(person);
-            if (bruker.getBankkonto() != null) {
-                bankkontoCounter.increment();
-            }
         }
     }
 
