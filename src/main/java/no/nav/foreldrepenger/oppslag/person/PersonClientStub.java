@@ -4,7 +4,6 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.domain.*;
 
 import java.time.LocalDate;
-import java.util.Collections;
 
 public class PersonClientStub implements PersonClient {
     @Override
@@ -12,7 +11,7 @@ public class PersonClientStub implements PersonClient {
         Navn navn = new Navn("Jan", "H.", "Johansen");
         return new Person(id, CountryCode.NO, Kjonn.valueOf("M"), navn,
             "nynoregsk", new Bankkonto("1234567890", "Pæng r'us"),
-            LocalDate.now().minusYears(20), Collections.emptyList());
+            LocalDate.now().minusYears(20));
     }
 
     @Override

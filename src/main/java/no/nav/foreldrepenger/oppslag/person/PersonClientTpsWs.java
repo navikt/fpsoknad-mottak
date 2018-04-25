@@ -15,7 +15,6 @@ import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.Objects;
 
 import static no.nav.foreldrepenger.oppslag.person.RequestUtils.request;
@@ -28,13 +27,11 @@ public class PersonClientTpsWs implements PersonClient {
     private static final Logger LOG = LoggerFactory.getLogger(PersonClientTpsWs.class);
 
     private final PersonV3 person;
-    private final Barnutvelger barneVelger;
 
     private final Counter errorCounter = Metrics.counter("person.lookup.error");
 
-    public PersonClientTpsWs(PersonV3 person, Barnutvelger barneVelger) {
+    public PersonClientTpsWs(PersonV3 person) {
         this.person = Objects.requireNonNull(person);
-        this.barneVelger = Objects.requireNonNull(barneVelger);
     }
 
     @Override
@@ -47,10 +44,9 @@ public class PersonClientTpsWs implements PersonClient {
 
         try {
             HentPersonRequest request = request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(id.getFnr(), request)
-                    .getPerson();
-            Person person = PersonMapper.map(id, tpsPerson, Collections.emptyList());
-            return person;
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson =
+                hentPerson(id.getFnr(), request).getPerson();
+            return PersonMapper.map(id, tpsPerson);
         } catch (Exception ex) {
             errorCounter.increment();
             throw new RuntimeException(ex);
@@ -72,7 +68,7 @@ public class PersonClientTpsWs implements PersonClient {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [person=" + person + ", barneVelger=" + barneVelger + "]";
+        return getClass().getSimpleName() + " [person=" + person + "]";
     }
 
 }

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Collections;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -110,7 +109,7 @@ public class SerializationTest {
 
     private static Person person() {
         return new Person(id(), CountryCode.NO, Kjonn.M, name(), "nynorsk",
-            bankkonto(), birthDate(), Collections.emptyList());
+            bankkonto(), birthDate());
     }
 
     private static LocalDate birthDate() {
