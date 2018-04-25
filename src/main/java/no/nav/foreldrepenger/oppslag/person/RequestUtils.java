@@ -11,6 +11,7 @@ public class RequestUtils {
 
     static final String OFFISIELL_ADRESSE = "OFFISIELL ADRESSE";
     static final String FNR = "FNR";
+    static final String DNR = "DNR";
     static final String MOR = "MORA";
     static final String BARN = "BARN";
 

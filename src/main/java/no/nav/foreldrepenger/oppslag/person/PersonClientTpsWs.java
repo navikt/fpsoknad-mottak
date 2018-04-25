@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.oppslag.person;
 
-import static no.nav.foreldrepenger.oppslag.person.RequestUtils.BARN;
-import static no.nav.foreldrepenger.oppslag.person.RequestUtils.FNR;
-import static no.nav.foreldrepenger.oppslag.person.RequestUtils.request;
+import static no.nav.foreldrepenger.oppslag.person.RequestUtils.*;
 import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.ADRESSE;
 import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
 import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
@@ -78,6 +76,7 @@ public class PersonClientTpsWs implements PersonClient {
         String idType = id.getIdent().getType().getValue();
         switch (idType) {
         case FNR:
+        case DNR:
             Fodselsnummer fnrMor = new Fodselsnummer(id.getIdent().getIdent());
             return person.getHarFraRolleI().stream().filter(this::isBarn).map(s -> hentBarn(s, fnrMor))
                     .filter(barn -> barneVelger.erStonadsberettigetBarn(fnrMor, barn)).collect(Collectors.toList());
