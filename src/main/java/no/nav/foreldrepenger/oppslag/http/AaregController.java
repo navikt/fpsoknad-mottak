@@ -13,7 +13,7 @@ import no.nav.foreldrepenger.oppslag.aareg.AaregClient;
 import no.nav.foreldrepenger.oppslag.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
-import no.nav.security.oidc.filter.OIDCRequestContextHolder;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController

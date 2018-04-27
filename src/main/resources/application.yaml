@@ -1,7 +1,7 @@
 no.nav.security.oidc:
     issuers: selvbetjening
     issuer.selvbetjening:
-      uri: SET from FASIT
+      discoveryurl: SET from FASIT
       accepted_audience: Set from FASIT
 
 http.proxy : http://webproxy-utvikler.nav.no:8088

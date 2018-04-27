@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.oppslag.http.util;
 
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.context.OIDCValidationContext;
-import no.nav.security.oidc.filter.OIDCRequestContextHolder;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
 
 public class FnrExtractor {
 

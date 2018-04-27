@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.oppslag.domain.SøkerInformasjon;
 import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.orchestrate.CoordinatedLookup;
 import no.nav.foreldrepenger.oppslag.person.PersonClient;
-import no.nav.security.oidc.filter.OIDCRequestContextHolder;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 

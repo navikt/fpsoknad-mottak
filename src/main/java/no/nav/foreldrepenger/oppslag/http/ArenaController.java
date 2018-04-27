@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.domain.Ytelse;
 import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
-import no.nav.security.oidc.filter.OIDCRequestContextHolder;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController

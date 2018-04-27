@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
-import no.nav.security.oidc.filter.OIDCRequestContextHolder;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController

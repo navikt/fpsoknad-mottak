@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.oppslag.domain.ID;
 import no.nav.foreldrepenger.oppslag.domain.Person;
 import no.nav.foreldrepenger.oppslag.http.util.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.person.PersonClient;
-import no.nav.security.oidc.filter.OIDCRequestContextHolder;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
