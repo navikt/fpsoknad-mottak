@@ -15,7 +15,7 @@ dokmot :
 no.nav.security.oidc:
   issuers: selvbetjening
   issuer:
-    selvbetjening.uri: http://metadata
+    selvbetjening.discoveryurl: http://metadata
     selvbetjening.accepted_audience: aud-localhost
     selvbetjening.cookie_name: localhost-idtoken
 

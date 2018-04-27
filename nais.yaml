@@ -31,7 +31,7 @@ fasitResources:
     - alias: aad_b2c_discovery
       resourceType: baseurl
       propertyMap:
-         url: NO_NAV_SECURITY_OIDC_ISSUER_SELVBETJENING_URI
+         url: NO_NAV_SECURITY_OIDC_ISSUER_SELVBETJENING_DISCOVERYURL
     - alias: mqGateway01
       resourceType: queuemanager
       propertyMap:
