@@ -23,10 +23,10 @@ public class CallIdFilter extends GenericFilterBean {
 
     private static final Logger LOG = getLogger(CallIdFilter.class);
 
-    private final CallIdGenerator generator;
+    private final UUIDCallIdGenerator generator;
 
     @Inject
-    public CallIdFilter(CallIdGenerator generator) {
+    public CallIdFilter(UUIDCallIdGenerator generator) {
         this.generator = generator;
     }
 
