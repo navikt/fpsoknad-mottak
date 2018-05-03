@@ -1,11 +1,10 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.http.lookup.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.http.lookup.aktor.AktorId;
+import no.nav.foreldrepenger.oppslag.http.lookup.person.Fodselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 public class AktorIdClientStub implements AktorIdClient {
 

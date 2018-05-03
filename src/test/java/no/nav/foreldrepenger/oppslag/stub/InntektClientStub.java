@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.Inntekt;
-import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
+import no.nav.foreldrepenger.oppslag.http.lookup.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.http.lookup.inntekt.Inntekt;
+import no.nav.foreldrepenger.oppslag.http.lookup.inntekt.InntektClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

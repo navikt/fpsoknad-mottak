@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
+import no.nav.foreldrepenger.oppslag.http.lookup.ytelser.arena.ArenaClient;
+import no.nav.foreldrepenger.oppslag.http.lookup.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.http.lookup.ytelser.Ytelse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

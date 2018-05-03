@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.aareg.AaregClient;
-import no.nav.foreldrepenger.oppslag.domain.Arbeidsforhold;
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.http.lookup.aareg.AaregClient;
+import no.nav.foreldrepenger.oppslag.http.lookup.aareg.Arbeidsforhold;
+import no.nav.foreldrepenger.oppslag.http.lookup.person.Fodselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

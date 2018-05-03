@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
 import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.oppslag.domain.*;
-import no.nav.foreldrepenger.oppslag.person.PersonClient;
+import no.nav.foreldrepenger.oppslag.http.lookup.person.*;
+import no.nav.foreldrepenger.oppslag.http.lookup.person.PersonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

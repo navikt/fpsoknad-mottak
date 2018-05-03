@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.domain.AktorId;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
-import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
+import no.nav.foreldrepenger.oppslag.http.lookup.aktor.AktorId;
+import no.nav.foreldrepenger.oppslag.http.lookup.ytelser.Ytelse;
+import no.nav.foreldrepenger.oppslag.http.lookup.ytelser.fpsak.FpsakClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

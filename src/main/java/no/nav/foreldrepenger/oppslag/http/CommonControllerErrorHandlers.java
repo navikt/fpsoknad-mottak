@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.oppslag.domain.exceptions.ForbiddenException;
-import no.nav.foreldrepenger.oppslag.domain.exceptions.IncompleteRequestException;
-import no.nav.foreldrepenger.oppslag.domain.exceptions.NotFoundException;
+import no.nav.foreldrepenger.oppslag.exceptions.ForbiddenException;
+import no.nav.foreldrepenger.oppslag.exceptions.IncompleteRequestException;
+import no.nav.foreldrepenger.oppslag.exceptions.NotFoundException;
 import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 
 @ControllerAdvice
