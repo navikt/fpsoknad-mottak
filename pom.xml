@@ -316,8 +316,7 @@
             <artifactId>oidc-spring-support</artifactId>
             <version>${oidc-spring-support.version}</version>
         </dependency>
-
-  <dependency>
+        <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>oidc-spring-test</artifactId>
             <version>${oidc-spring-support.version}</version>

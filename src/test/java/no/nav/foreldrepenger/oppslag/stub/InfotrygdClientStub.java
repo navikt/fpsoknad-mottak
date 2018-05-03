@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.domain.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.domain.Ytelse;
-import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.infotrygd.InfotrygdClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

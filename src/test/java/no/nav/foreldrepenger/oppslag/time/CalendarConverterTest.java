@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.oppslag.time;
 
+import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

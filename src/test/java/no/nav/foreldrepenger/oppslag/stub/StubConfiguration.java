@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.aareg.AaregClient;
-import no.nav.foreldrepenger.oppslag.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.arena.ArenaClient;
-import no.nav.foreldrepenger.oppslag.fpsak.FpsakClient;
-import no.nav.foreldrepenger.oppslag.infotrygd.InfotrygdClient;
-import no.nav.foreldrepenger.oppslag.inntekt.InntektClient;
-import no.nav.foreldrepenger.oppslag.medl.MedlClient;
-import no.nav.foreldrepenger.oppslag.person.PersonClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.AaregClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.arena.ArenaClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.fpsak.FpsakClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.infotrygd.InfotrygdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.inntekt.InntektClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.PersonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
