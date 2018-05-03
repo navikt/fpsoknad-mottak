@@ -12,14 +12,18 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseInterceptor;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.oppslag.lookup.UUIDCallIdGenerator;
+
 @Component
 public class WsClient<T> {
 
     @Inject
-	private EndpointSTSClientConfig endpointStsClientConfig;
+    private EndpointSTSClientConfig endpointStsClientConfig;
 
     @Inject
-	private OnBehalfOfOutInterceptor onBehalfOfOutInterceptor;
+    UUIDCallIdGenerator generator;
+    @Inject
+    private OnBehalfOfOutInterceptor onBehalfOfOutInterceptor;
 
     @SuppressWarnings("unchecked")
     public T createPort(String serviceUrl, Class<?> portType, PhaseInterceptor<? extends Message>... interceptors) {
@@ -29,7 +33,7 @@ public class WsClient<T> {
         T port = (T) jaxWsProxyFactoryBean.create();
         Client client = ClientProxy.getClient(port);
         Arrays.stream(interceptors).forEach(client.getOutInterceptors()::add);
-        client.getOutInterceptors().add(new CallIdHeader());
+        client.getOutInterceptors().add(new CallIdHeader(generator));
 
         endpointStsClientConfig.configureRequestSamlTokenOnBehalfOfOidc(port, onBehalfOfOutInterceptor);
         return port;
