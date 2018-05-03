@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.http.lookup.person.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.http.lookup.medl.MedlPeriode;
-import no.nav.foreldrepenger.oppslag.http.lookup.medl.MedlClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlPeriode;
+import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
