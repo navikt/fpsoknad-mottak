@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.foreldrepenger.mottak.http.FPFordelMottakController;
-
 @Component
 public class FPFordelConnection {
 
@@ -29,9 +27,7 @@ public class FPFordelConnection {
     public void ping() {
         LOG.info("Pinger {}", config.getUri());
         try {
-            ResponseEntity<String> response = template.getForEntity(
-                    FPFordelMottakController.FPFORDEL + "/internal/isReady",
-                    String.class);
+            ResponseEntity<String> response = template.getForEntity("/internal/isReady", String.class);
             LOG.info("Got response entity {} ({})", response.getBody(), response.getStatusCodeValue());
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke pinge {}", config.getUri(), e);
