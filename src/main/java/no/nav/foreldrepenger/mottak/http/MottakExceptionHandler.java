@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotQueueUnavailableException;
+import no.nav.foreldrepenger.mottak.fpfordel.FPFordelUnavailableException;
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
@@ -29,7 +30,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
                 UNPROCESSABLE_ENTITY, request);
     }
 
-    @ExceptionHandler(value = { DokmotQueueUnavailableException.class })
+    @ExceptionHandler(value = { DokmotQueueUnavailableException.class, FPFordelUnavailableException.class })
     protected ResponseEntity<Object> handleConflict(DokmotQueueUnavailableException e, WebRequest request) {
         return handleExceptionInternal(e, new ApiError(INTERNAL_SERVER_ERROR, ExceptionUtils.getRootCauseMessage(e), e),
                 new HttpHeaders(),
