@@ -7,7 +7,7 @@ import static org.springframework.http.ResponseEntity.ok;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,15 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.fpfordel.FPFordelConfig;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadSender;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @RestController
-@Profile("dev")
 @RequestMapping(path = FPFordelMottakController.FPFORDEL, produces = APPLICATION_JSON_VALUE)
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class FPFordelMottakController {
+
+    @Autowired
+    private FPFordelConfig cfg;
 
     private static final Logger LOG = getLogger(FPFordelMottakController.class);
 
@@ -41,7 +44,7 @@ public class FPFordelMottakController {
     @GetMapping(value = "/ping")
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("Jeg ble pinget");
+        LOG.info("Jeg ble pinget {}", cfg.getUri());
         return ok("Hallo " + navn + " fra ubeskyttet ressurs");
     }
 

@@ -12,7 +12,7 @@ public class FPFordelConfiguration {
     @Bean
     public RestTemplate restTemplate(FPFordelConfig cfg, ClientHttpRequestInterceptor... interceptors) {
         return new RestTemplateBuilder()
-                .rootUri(cfg.getFordelUrl())
+                .rootUri(cfg.getUri())
                 .interceptors(interceptors)
                 .build();
     }

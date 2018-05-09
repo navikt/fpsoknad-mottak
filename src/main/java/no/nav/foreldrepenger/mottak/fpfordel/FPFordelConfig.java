@@ -5,21 +5,21 @@ import javax.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@ConfigurationProperties(prefix = "fp")
+@ConfigurationProperties(prefix = "fpfordel")
 @Configuration
 public class FPFordelConfig {
 
     boolean enabled;
 
     @NotNull
-    String fordelUrl;
+    String uri;
 
-    public String getFordelUrl() {
-        return fordelUrl;
+    public String getUri() {
+        return uri;
     }
 
-    public void setFordelUrl(String fordelUrl) {
-        this.fordelUrl = fordelUrl;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public boolean isEnabled() {
@@ -32,7 +32,7 @@ public class FPFordelConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [enabled=" + enabled + ", fordelUrl=" + fordelUrl + "]";
+        return getClass().getSimpleName() + " [enabled=" + enabled + ", uri=" + uri + "]";
     }
 
 }
