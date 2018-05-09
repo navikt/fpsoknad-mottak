@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UUIDIdGenerator implements CorrelationIdGenerator {
+public class UUIDIdGenerator {
 
     private final String key;
 
@@ -19,21 +19,18 @@ public class UUIDIdGenerator implements CorrelationIdGenerator {
         this.key = key;
     }
 
-    @Override
     public String getOrCreate() {
         return Optional.ofNullable(MDC.get(key)).orElse(create());
     }
 
-    @Override
     public String create() {
         return doCreate();
     }
 
-    private String doCreate() {
+    private static String doCreate() {
         return UUID.randomUUID().toString();
     }
 
-    @Override
     public String getKey() {
         return key;
     }

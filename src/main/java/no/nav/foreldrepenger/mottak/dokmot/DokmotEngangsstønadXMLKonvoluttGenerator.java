@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;

@@ -3,10 +3,10 @@ package no.nav.foreldrepenger.mottak.config;
 import com.fasterxml.jackson.core.json.PackageVersion;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapDeserializer;
 import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapSerializer;
 import no.nav.foreldrepenger.mottak.domain.serialization.NorskForelderDeserializer;

@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
-import static no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon.ARBEIDET_I_UTLANDET;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon.ARBEIDET_I_UTLANDET;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -19,10 +19,10 @@ import org.junit.Test;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 
 public class PeriodeValidatorTest {
 

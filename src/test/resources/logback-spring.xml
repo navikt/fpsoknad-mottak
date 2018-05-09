@@ -13,7 +13,10 @@
 		<appender-ref ref="stdout" />
 	</root>
 
-<logger name="no.nav.security" level="debug" />
-<logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="${requests.level}"/>
+<logger name="no.nav.security" level="info" />
+<logger name="org.springframework" level="info" />
+<logger name="org.eclipse.jetty" level="info" />
+<logger name="springfox.documentation" level="info" />
+
 
 </configuration>

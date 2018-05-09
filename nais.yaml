@@ -54,6 +54,10 @@ fasitResources:
           queueManager: DOKMOT_QUEUEMANAGER
     - alias : FPSOKNADMOTTAK_PROPERTIES
       resourceType: applicationProperties
+#    - alias: fp.motta_dokumentforsendelse
+#      resourceType: restservice
+#      propertyMap:
+#          url: FP_FORDELURL
   exposed:
     - alias: fpsoknad-mottak-api
       resourceType: restservice

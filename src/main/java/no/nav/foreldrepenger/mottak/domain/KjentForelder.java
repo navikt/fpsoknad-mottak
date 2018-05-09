@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

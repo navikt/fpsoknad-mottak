@@ -12,23 +12,23 @@ import javax.xml.bind.JAXBContext;
 
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.PåkrevdVedlegg;
-import no.nav.foreldrepenger.mottak.domain.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
@@ -85,14 +85,15 @@ public class DokmotEngangsstønadXMLGenerator {
                 .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
     }
 
-    private VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg, List<ValgfrittVedlegg> valgfrieVedlegg) {
+    private static VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg,
+            List<ValgfrittVedlegg> valgfrieVedlegg) {
         return new VedleggListe()
                 .withVedlegg(Stream.concat(påkrevdeVedlegg.stream(), valgfrieVedlegg.stream())
                         .map(DokmotEngangsstønadXMLGenerator::vedleggFra)
                         .collect(toList()));
     }
 
-    private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.Vedlegg vedlegg) {
+    private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
                 .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().id)
                 .withInnsendingsvalg(LASTET_OPP)
@@ -143,7 +144,7 @@ public class DokmotEngangsstønadXMLGenerator {
                         .collect(toList()));
     }
 
-    private static Utenlandsopphold utenlandsoppholdFra(no.nav.foreldrepenger.mottak.domain.Utenlandsopphold opphold) {
+    private static Utenlandsopphold utenlandsoppholdFra(no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold opphold) {
         return new Utenlandsopphold()
                 .withLand(new Landkoder()
                         .withKode(opphold.getLand().getAlpha3()))

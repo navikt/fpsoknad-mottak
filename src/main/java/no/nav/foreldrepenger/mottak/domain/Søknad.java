@@ -18,6 +18,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @Validated

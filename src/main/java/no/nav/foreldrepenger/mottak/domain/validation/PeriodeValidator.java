@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.domain.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 
 public class PeriodeValidator implements ConstraintValidator<Periode, LukketPeriode> {
 

@@ -6,22 +6,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.CorrelationIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
+import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
 
     private final DokmotConnection dokmotConnection;
     private final DokmotEngangsstønadXMLKonvoluttGenerator generator;
-    private final CorrelationIdGenerator idGenerator;
+    private final UUIDIdGenerator idGenerator;
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotJMSSender.class);
 
     public DokmotJMSSender(DokmotConnection connection, DokmotEngangsstønadXMLKonvoluttGenerator generator,
-            CorrelationIdGenerator callIdGenerator) {
+            UUIDIdGenerator callIdGenerator) {
         this.dokmotConnection = connection;
         this.generator = generator;
         this.idGenerator = callIdGenerator;
@@ -30,17 +30,10 @@ public class DokmotJMSSender implements SøknadSender {
     @Override
     public Kvittering sendSøknad(Søknad søknad) {
         if (dokmotConnection.isEnabled()) {
-            // LOG.info("Sender søknad til DOKMOT {}", søknad);
-            LOG.info("Sender søknad til DOKMOT");
             String reference = idGenerator.getOrCreate();
-            String xml = generator.toXML(søknad, reference);
-
             dokmotConnection.send(session -> {
                 LOG.info("Sender SøknadsXML til DOKMOT");
-                // LOG.info("Sender SøknadsXML til DOKMOT {} : ({})",
-                // dokmotConnection.getQueueConfig().toString(),
-                // generator.toSøknadsXML(søknad));
-                TextMessage msg = session.createTextMessage(xml);
+                TextMessage msg = session.createTextMessage(generator.toXML(søknad, reference));
                 msg.setStringProperty("callId", reference);
                 return msg;
             });

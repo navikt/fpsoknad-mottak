@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1">
+  <xsd:complexType name="Verge">
+    <xsd:complexContent>
+      <xsd:extension base="felles:Fullmektig">
+        <xsd:sequence>
+          <xsd:element name="vergetype" type="felles:Vergetype"/>
+          <xsd:element name="tvungenForvaltning" type="xsd:boolean"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="OppholdUtlandet">
+    <xsd:sequence>
+      <xsd:element name="periode" type="felles:Periode"/>
+      <xsd:element name="land" type="felles:Land"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Adopsjon">
+    <xsd:complexContent>
+      <xsd:extension base="felles:SoekersRelasjonTilBarnet">
+        <xsd:sequence>
+          <xsd:element name="omsorgsovertakelsesdato" type="xsd:date"/>
+          <xsd:element minOccurs="0" name="ankomstdato" type="xsd:date"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="foedselsdato" type="xsd:date"/>
+          <xsd:element name="adopsjonAvEktefellesBarn" type="xsd:boolean"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Foedsel">
+    <xsd:complexContent>
+      <xsd:extension base="felles:SoekersRelasjonTilBarnet">
+        <xsd:sequence>
+          <xsd:element name="foedselsdato" type="xsd:date"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Omsorgsovertakelse">
+    <xsd:complexContent>
+      <xsd:extension base="felles:SoekersRelasjonTilBarnet">
+        <xsd:sequence>
+          <xsd:element name="omsorgsovertakelsesdato" type="xsd:date"/>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="foedselsdato" type="xsd:date"/>
+          <xsd:element minOccurs="0" name="beskrivelse" type="xsd:string"/>
+          <xsd:element name="omsorgsovertakelseaarsak" type="felles:Omsorgsovertakelseaarsaker"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Omsorgsovertakelseaarsaker">
+    <xsd:complexContent>
+      <xsd:extension base="felles:Kodeverk"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Rettigheter">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="harAnnenForelderRett" type="xsd:boolean"/>
+      <xsd:element minOccurs="0" name="harOmsorgForBarnetIPeriodene" type="xsd:boolean"/>
+      <xsd:element minOccurs="0" name="harAleneomsorgForBarnet" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" name="SoekersRelasjonTilBarnet">
+    <xsd:sequence>
+      <xsd:element name="antallBarn" type="xsd:int"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Termin">
+    <xsd:complexContent>
+      <xsd:extension base="felles:SoekersRelasjonTilBarnet">
+        <xsd:sequence>
+          <xsd:element name="termindato" type="xsd:date"/>
+          <xsd:element name="utstedtdato" type="xsd:date"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Medlemskap">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="oppholdNorge" type="felles:OppholdNorge"/>
+      <xsd:element minOccurs="0" name="iNorgeVedFoedselstidspunkt" type="xsd:boolean"/>
+      <xsd:element minOccurs="0" name="boddINorgeSiste12Mnd" type="xsd:boolean"/>
+      <xsd:element minOccurs="0" name="borINorgeNeste12Mnd" type="xsd:boolean"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="oppholdUtlandet" type="felles:OppholdUtlandet"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OppholdNorge">
+    <xsd:sequence>
+      <xsd:element name="periode" type="felles:Periode"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Bruker">
+    <xsd:sequence>
+      <xsd:element name="aktoerId" type="xsd:string"/>
+      <xsd:element name="soeknadsrolle" type="felles:Brukerroller"/>
+      <xsd:element name="spraakvalg" type="felles:Spraakkode"/>
+      <xsd:element minOccurs="0" name="fullmektig" type="felles:Fullmektig"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Spraakkode">
+    <xsd:complexContent>
+      <xsd:extension base="felles:Kodeverk"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Brukerroller">
+    <xsd:complexContent>
+      <xsd:extension base="felles:Kodeverk"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Fullmektig">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="aktoerId" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="navn" type="xsd:string"/>
+      <xsd:element name="kontaktperson" type="xsd:boolean"/>
+      <xsd:element name="stoenadmottaker" type="xsd:boolean"/>
+      <xsd:element minOccurs="0" name="periode" type="felles:Periode"/>
+      <xsd:element minOccurs="0" name="beskrivelse" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" name="AnnenForelder"/>
+  <xsd:complexType name="AnnenForelderMedNorskIdent">
+    <xsd:complexContent>
+      <xsd:extension base="felles:AnnenForelder">
+        <xsd:sequence>
+          <xsd:element name="aktoerId" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="AnnenForelderUtenNorskIdent">
+    <xsd:complexContent>
+      <xsd:extension base="felles:AnnenForelder">
+        <xsd:sequence>
+          <xsd:element name="utenlandskPersonidentifikator" type="xsd:string"/>
+          <xsd:element name="land" type="felles:Land"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="UkjentForelder">
+    <xsd:complexContent>
+      <xsd:extension base="felles:AnnenForelder"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Vedlegg">
+    <xsd:sequence>
+      <xsd:element name="id" type="xsd:ID"/>
+      <xsd:element name="innsendingstype" type="felles:Innsendingstype"/>
+      <xsd:element minOccurs="0" name="skjemanummer" type="xsd:string"/>
+      <xsd:element name="tilleggsinformasjon" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" name="Ytelse"/>
+  <xsd:complexType abstract="true" name="LukketPeriode">
+    <xsd:sequence>
+      <xsd:element name="fom" type="xsd:date"/>
+      <xsd:element name="tom" type="xsd:date"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Land">
+    <xsd:complexContent>
+      <xsd:extension base="felles:Kodeverk"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Periode">
+    <xsd:sequence>
+      <xsd:element name="fom" type="xsd:date"/>
+      <xsd:element minOccurs="0" name="tom" type="xsd:date"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Innsendingstype">
+    <xsd:complexContent>
+      <xsd:extension base="felles:Kodeverk"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Kodeverk">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="kodeverk" type="xsd:string"/>
+        <xsd:attribute name="kode" type="xsd:string"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="Vergetype">
+    <xsd:complexContent>
+      <xsd:extension base="felles:Kodeverk"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>

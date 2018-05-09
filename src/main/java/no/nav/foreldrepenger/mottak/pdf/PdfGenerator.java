@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.mottak.domain.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
@@ -34,6 +33,19 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.KjentForelder;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 
 @Service
 public class PdfGenerator {
@@ -122,7 +134,7 @@ public class PdfGenerator {
     private void utenlandskForelder(Document document, AnnenForelder annenForelder) throws DocumentException {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         document.add(paragraph(getMessage("nasjonalitet", kvitteringstekster,
-            getMessage(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName(), landkoder)),
+                getMessage(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName(), landkoder)),
                 NORMAL));
         navn(document, utenlandsForelder.getNavn(), NORMAL);
         if (utenlandsForelder.getId() != null) {
@@ -182,14 +194,14 @@ public class PdfGenerator {
         document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
     }
 
-    private void logo(Document document)
+    private static void logo(Document document)
             throws BadElementException, MalformedURLException, IOException, DocumentException {
         Image logo = logo();
         logo.setAlignment(Image.ALIGN_CENTER);
         document.add(logo);
     }
 
-    private void søker(Søknad søknad, Document document) throws DocumentException {
+    private static void søker(Søknad søknad, Document document) throws DocumentException {
         document.add(centeredParagraph(søknad.getSøker().getFnr().getFnr(), NORMAL));
         String navn = navn(søknad.getSøker().getNavn());
         if (!navn.isEmpty()) {
@@ -216,11 +228,11 @@ public class PdfGenerator {
         }
     }
 
-    private void blankLine(Document document) throws DocumentException {
+    private static void blankLine(Document document) throws DocumentException {
         document.add(blankLine());
     }
 
-    private Image logo() throws BadElementException, MalformedURLException, IOException {
+    private static Image logo() throws BadElementException, MalformedURLException, IOException {
         return Image.getInstance(
                 StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
     }
@@ -298,11 +310,11 @@ public class PdfGenerator {
                 opphold.getVarighet().getTom().format(DATE_FMT);
     }
 
-    private String getMessage(String key, MessageSource messages, Object... values) {
+    private static String getMessage(String key, MessageSource messages, Object... values) {
         return getMessage(key, null, messages, values);
     }
 
-    private String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
+    private static String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
         return messages.getMessage(key, values, defaultValue, BOKMÅL);
     }
 

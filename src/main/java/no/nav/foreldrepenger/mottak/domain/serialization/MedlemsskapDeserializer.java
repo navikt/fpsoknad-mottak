@@ -20,11 +20,11 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import no.nav.foreldrepenger.mottak.domain.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon;
 
 public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
 
@@ -43,7 +43,7 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
         return new Medlemsskap(tidligereOpphold(rootNode, parser), framtidigOpphold(rootNode, parser));
     }
 
-    private TidligereOppholdsInformasjon tidligereOpphold(JsonNode rootNode, JsonParser parser) {
+    private static TidligereOppholdsInformasjon tidligereOpphold(JsonNode rootNode, JsonParser parser) {
         return new TidligereOppholdsInformasjon(norgeSiste12(rootNode), arbeidsInfo(rootNode),
                 utenlandsOpphold(rootNode, parser, "utenlandsopphold"));
     }

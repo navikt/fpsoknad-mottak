@@ -11,8 +11,8 @@ import org.hibernate.validator.constraintvalidation.HibernateConstraintValidator
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.mottak.domain.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 
 public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenlandsopphold>> {
 

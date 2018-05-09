@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
@@ -30,9 +30,9 @@ public class DokmotMottakController {
 
     public static final String DOKMOT = "/mottak/dokmot";
 
-    private final SøknadSender sender;
+    private final DokmotJMSSender sender;
 
-    public DokmotMottakController(SøknadSender sender) {
+    public DokmotMottakController(DokmotJMSSender sender) {
         this.sender = sender;
     }
 

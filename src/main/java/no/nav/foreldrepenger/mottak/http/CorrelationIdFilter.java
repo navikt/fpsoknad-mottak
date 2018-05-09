@@ -17,7 +17,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import no.nav.foreldrepenger.mottak.domain.CorrelationIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
 
 @Component
 @Order(1)
@@ -25,10 +25,10 @@ public class CorrelationIdFilter extends GenericFilterBean {
 
     private static final Logger LOG = getLogger(CorrelationIdFilter.class);
 
-    private final CorrelationIdGenerator generator;
+    private final UUIDIdGenerator generator;
 
     @Inject
-    public CorrelationIdFilter(CorrelationIdGenerator generator) {
+    public CorrelationIdFilter(UUIDIdGenerator generator) {
         this.generator = generator;
     }
 
@@ -45,7 +45,8 @@ public class CorrelationIdFilter extends GenericFilterBean {
         if (correlationId != null) {
             LOG.trace("{} is set in request to {}", key, correlationId);
             MDC.put(key, correlationId);
-        } else {
+        }
+        else {
             MDC.put(key, generator.create());
             LOG.trace("{} was not set in request, now set in MDC to {}", key, MDC.get(key));
         }
