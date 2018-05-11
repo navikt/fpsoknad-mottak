@@ -25,9 +25,10 @@ public class FPFordelConnection {
     }
 
     public void ping() {
-        LOG.info("Pinger {}", config.getUri());
+        String pingEndpoint = config.getUri() + "/internal/isReady";
+        LOG.info("Pinger {}", pingEndpoint);
         try {
-            ResponseEntity<String> response = template.getForEntity("/internal/isReady", String.class);
+            ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
             LOG.info("Got response entity {} ({})", response.getBody(), response.getStatusCodeValue());
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke pinge {}", config.getUri(), e);
