@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadSender;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @RestController
 @RequestMapping(path = FPFordelMottakController.FPFORDEL, produces = APPLICATION_JSON_VALUE)
-// @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-@Unprotected
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class FPFordelMottakController {
 
     private static final Logger LOG = getLogger(FPFordelMottakController.class);
@@ -37,6 +37,7 @@ public class FPFordelMottakController {
     }
 
     @GetMapping(value = "/ping")
+    @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         sender.ping();
         return ok("Hallo " + navn + " fra ubeskyttet ressurs");
