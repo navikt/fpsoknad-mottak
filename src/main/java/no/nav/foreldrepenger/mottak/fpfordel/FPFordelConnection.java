@@ -29,9 +29,9 @@ public class FPFordelConnection {
         LOG.info("Pinger {}", pingEndpoint);
         try {
             ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
-            LOG.info("Got response entity {} ({})", response.getBody(), response.getStatusCodeValue());
+            LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke pinge {}", config.getUri(), e);
+            LOG.warn("Kunne ikke pinge {}", pingEndpoint, e);
             throw new FPFordelUnavailableException(e);
         }
     }
