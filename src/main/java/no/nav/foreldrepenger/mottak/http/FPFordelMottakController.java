@@ -39,7 +39,7 @@ public class FPFordelMottakController {
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("Pinger");
-        // sender.ping();
+        sender.ping();
         return ok("Hallo " + navn + " fra ubeskyttet ressurs");
     }
 

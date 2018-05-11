@@ -20,6 +20,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     public void ping() {
+        LOG.info("Pinger");
         connection.ping();
     }
 
