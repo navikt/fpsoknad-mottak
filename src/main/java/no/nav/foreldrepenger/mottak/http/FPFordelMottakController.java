@@ -23,7 +23,6 @@ import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @RestController
 @RequestMapping(path = FPFordelMottakController.FPFORDEL, produces = APPLICATION_JSON_VALUE)
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class FPFordelMottakController {
 
     private static final Logger LOG = getLogger(FPFordelMottakController.class);
@@ -44,12 +43,15 @@ public class FPFordelMottakController {
     }
 
     @GetMapping(value = "/ping1")
+    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("Jeg ble pinget");
         return ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 
     @PostMapping(value = "/send")
+    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         return ok(sender.sendSøknad(søknad));
     }
