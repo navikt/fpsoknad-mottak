@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
-public class DokmotQueueUnavailableException extends RuntimeException {
+import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
+
+public class DokmotQueueUnavailableException extends RemoteUnavailableException {
 
     private final DokmotQueueConfig config;
 
