@@ -38,20 +38,13 @@ public class FPFordelMottakController {
     @GetMapping(value = "/ping")
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        sender.ping();
+        LOG.info("Pinger");
+        // sender.ping();
         return ok("Hallo " + navn + " fra ubeskyttet ressurs");
-    }
-
-    @GetMapping(value = "/ping1")
-    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-    public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("Jeg ble pinget");
-        return ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 
     @PostMapping(value = "/send")
     @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         return ok(sender.sendSøknad(søknad));
     }
