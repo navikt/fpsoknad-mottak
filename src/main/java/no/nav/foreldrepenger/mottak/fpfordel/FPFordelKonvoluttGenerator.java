@@ -6,6 +6,7 @@ import static org.apache.http.entity.ContentType.APPLICATION_XML;
 import static org.apache.http.entity.mime.HttpMultipartMode.RFC6532;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,8 +17,10 @@ import org.apache.http.entity.mime.FormBodyPartBuilder;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
@@ -38,7 +41,7 @@ public class FPFordelKonvoluttGenerator {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public HttpEntity createPayload(Søknad søknad, String ref) {
+    public byte[] createPayload(Søknad søknad, AktorId aktørId, String ref) {
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create()
                 .setMimeSubtype("mixed")
@@ -46,19 +49,29 @@ public class FPFordelKonvoluttGenerator {
 
         final AtomicInteger id = new AtomicInteger(1);
 
-        builder.addPart(buildPart("metadata", metadata(søknad, ref)))
-                .addPart(buildPart(HOVEDDOKUMENT, xmlDocument(søknad), id))
+        builder.addPart(buildPart("metadata", metadata(søknad, aktørId, ref)))
+                .addPart(buildPart(HOVEDDOKUMENT, xmlDocument(søknad, aktørId), id))
                 .addPart(buildPart(HOVEDDOKUMENT, pdfDocument(søknad), id, true));
 
         return medVedlegg(søknad, builder, id);
 
     }
 
-    private static HttpEntity medVedlegg(Søknad søknad, MultipartEntityBuilder builder, final AtomicInteger id) {
+    private static byte[] medVedlegg(Søknad søknad, MultipartEntityBuilder builder,
+            final AtomicInteger id) {
         søknad.getVedlegg()
                 .stream()
                 .forEach(s -> addVedlegg(s.getVedlegg(), builder, id));
-        return builder.build();
+        return toByteArray(builder.build());
+
+    }
+
+    private static byte[] toByteArray(HttpEntity entity) {
+        try {
+            return EntityUtils.toByteArray(entity);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     private ContentBody pdfDocument(Søknad søknad) {
@@ -67,15 +80,15 @@ public class FPFordelKonvoluttGenerator {
                 HOVEDDOKUMENT + ".pdf");
     }
 
-    private ContentBody xmlDocument(Søknad søknad) {
-        return new ByteArrayBody(søknadGenerator.toXML(søknad).getBytes(),
+    private ContentBody xmlDocument(Søknad søknad, AktorId aktørId) {
+        return new ByteArrayBody(søknadGenerator.toXML(søknad, aktørId).getBytes(),
                 APPLICATION_XML.withCharset(UTF_8),
                 HOVEDDOKUMENT + ".xml");
     }
 
-    private ContentBody metadata(Søknad søknad, String ref) {
+    private ContentBody metadata(Søknad søknad, AktorId aktorId, String ref) {
         return new ByteArrayBody(
-                metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, ref)).getBytes(),
+                metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktorId, ref)).getBytes(),
                 APPLICATION_JSON, "metadata.json");
     }
 

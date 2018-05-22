@@ -28,8 +28,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -45,8 +43,6 @@ public class TestRoundtripSerialization {
 
     @Autowired
     private TestRestTemplate template;
-    @Autowired
-    private ObjectMapper mapper;
 
     @Before
     public void setAuthoriztion() {
@@ -105,10 +101,6 @@ public class TestRoundtripSerialization {
                 Dokumentforsendelse.class);
         assertEquals("FOR", response.getForsendelsesinformasjon().getTema().getValue());
 
-    }
-
-    private static String bearerToken() {
-        return "Bearer " + createSignedJWT("12345678910").serialize();
     }
 
     private static <T> T unmarshal(String xml, Class<T> clazz) {

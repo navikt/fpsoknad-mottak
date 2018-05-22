@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
@@ -28,7 +29,7 @@ public class DokmotJMSSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering sendSøknad(Søknad søknad) {
+    public Kvittering sendSøknad(Søknad søknad, AktorId aktorId) {
         if (dokmotConnection.isEnabled()) {
             String reference = idGenerator.getOrCreate();
             dokmotConnection.send(session -> {

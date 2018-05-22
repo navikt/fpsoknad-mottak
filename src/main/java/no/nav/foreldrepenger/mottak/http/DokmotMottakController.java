@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.ok;
 
 import javax.validation.Valid;
 
@@ -40,18 +41,18 @@ public class DokmotMottakController {
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("Jeg ble pinget");
-        return ResponseEntity.ok("Hallo " + navn + " fra ubeskyttet ressurs");
+        return ok("Hallo " + navn + " fra ubeskyttet ressurs");
     }
 
     @GetMapping(value = "/ping1")
     public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("Jeg ble pinget");
-        return ResponseEntity.ok("Hallo " + navn + " fra beskyttet ressurs");
+        return ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 
     @PostMapping(value = "/send")
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.ok(sender.sendSøknad(søknad));
+        return ok(sender.sendSøknad(søknad, null));
     }
 
     @Override

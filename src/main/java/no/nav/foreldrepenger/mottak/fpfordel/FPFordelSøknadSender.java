@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
@@ -31,10 +32,10 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering sendSøknad(Søknad søknad) {
+    public Kvittering sendSøknad(Søknad søknad, AktorId aktorId) {
         if (connection.isEnabled()) {
             String ref = idGenerator.getOrCreate();
-            connection.send(generator.createPayload(søknad, ref));
+            connection.send(generator.createPayload(søknad, aktorId, ref));
             return new Kvittering(ref);
         }
         return Kvittering.IKKE_SENDT;

@@ -43,7 +43,7 @@ public class DokmotConnection {
             template.send(msg);
             dokmotSuccess.increment();
         } catch (JmsException e) {
-            LOG.warn("Unable to send to DOKMOT at {}", queueConfig.loggable());
+            LOG.warn("Unable to send to DOKMOT at {}", queueConfig.loggable(), e);
             dokmotFailure.increment();
             throw new DokmotQueueUnavailableException(e, queueConfig);
         }

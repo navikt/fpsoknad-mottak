@@ -1,12 +1,10 @@
 package no.nav.foreldrepenger.mottak.fpfordel;
 
-import java.io.IOException;
 import java.net.URI;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -36,16 +34,18 @@ public class FPFordelConnection {
             ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
             LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke pinge {}", pingEndpoint, e);
+            LOG.warn("Kunne ikke pinge FPFordel på {}", pingEndpoint, e);
             throw new FPFordelUnavailableException(e);
         }
     }
 
-    public URI send(HttpEntity entity) {
+    public URI send(byte[] bytes) {
+        String postEndpoint = config.getUri() + "/fpfordel/api/dokumentforsendelse";
+        LOG.info("Poster til {}", postEndpoint);
         try {
-            return template.postForLocation(config.getUri(),
-                    new org.springframework.http.HttpEntity<>(EntityUtils.toByteArray(entity)));
-        } catch (IOException e) {
+            return template.postForLocation(postEndpoint, new HttpEntity<>(bytes));
+        } catch (RestClientException e) {
+            LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);
         }
     }

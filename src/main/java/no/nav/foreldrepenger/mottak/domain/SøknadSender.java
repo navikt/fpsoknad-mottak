@@ -2,6 +2,6 @@ package no.nav.foreldrepenger.mottak.domain;
 
 public interface SøknadSender {
 
-    Kvittering sendSøknad(Søknad søknad);
+    Kvittering sendSøknad(Søknad søknad, AktorId aktorId);
 
 }

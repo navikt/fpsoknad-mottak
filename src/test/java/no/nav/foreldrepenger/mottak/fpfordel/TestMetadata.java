@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
+import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -18,7 +19,7 @@ public class TestMetadata {
 
     @Test
     public void testMetadata() throws Exception {
-        FPFordelMetadata metadata = new FPFordelMetadata(ForeldrepengerTestUtils.søknad(), "42");
+        FPFordelMetadata metadata = new FPFordelMetadata(ForeldrepengerTestUtils.søknad(), new AktorId("42"), "42");
         String json = new FPFordelMetdataGenerator(mapper).generateMetadata(metadata, true);
         System.out.println(json);
     }

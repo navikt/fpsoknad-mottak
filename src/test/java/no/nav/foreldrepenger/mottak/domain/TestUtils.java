@@ -232,7 +232,7 @@ public class TestUtils {
     }
 
     static Fødselsnummer fnr() {
-        return new Fødselsnummer("03016536325");
+        return new Fødselsnummer("01010133333");
     }
 
     public static Navn navnUtenMellomnavn() {

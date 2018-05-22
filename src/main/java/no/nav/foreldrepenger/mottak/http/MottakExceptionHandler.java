@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { RemoteUnavailableException.class })
     protected ResponseEntity<Object> handleConflict(RemoteUnavailableException e, WebRequest request) {
-        return handleExceptionInternal(e, new ApiError(INTERNAL_SERVER_ERROR, ExceptionUtils.getRootCauseMessage(e), e),
+        return handleExceptionInternal(e, new ApiError(INTERNAL_SERVER_ERROR, getRootCauseMessage(e), e),
                 new HttpHeaders(),
                 INTERNAL_SERVER_ERROR, request);
     }
@@ -38,7 +38,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return e.getBindingResult().getFieldErrors()
                 .stream()
                 .map(MottakExceptionHandler::errorMessage)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private static String errorMessage(FieldError error) {

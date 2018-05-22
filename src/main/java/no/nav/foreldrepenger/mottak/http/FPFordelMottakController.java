@@ -30,9 +30,11 @@ public class FPFordelMottakController {
     public static final String FPFORDEL = "/mottak/fpfordel";
 
     private final FPFordelSøknadSender sender;
+    private final AktørIdService aktørIdService;
 
-    public FPFordelMottakController(FPFordelSøknadSender sender) {
+    public FPFordelMottakController(FPFordelSøknadSender sender, AktørIdService aktørIdService) {
         this.sender = sender;
+        this.aktørIdService = aktørIdService;
     }
 
     @GetMapping(value = "/ping")
@@ -46,11 +48,12 @@ public class FPFordelMottakController {
     @PostMapping(value = "/send")
     @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
-        return ok(sender.sendSøknad(søknad));
+        return ok(sender.sendSøknad(søknad, aktørIdService.getAktørId()));
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [sender=" + sender + "]";
+        return getClass().getSimpleName() + " [sender=" + sender + ", aktørIdService=" + aktørIdService + "]";
     }
+
 }
