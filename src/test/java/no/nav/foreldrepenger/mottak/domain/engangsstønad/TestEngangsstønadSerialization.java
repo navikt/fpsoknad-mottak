@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.net.URI;
 import java.time.LocalDateTime;
 
 import org.junit.Before;
@@ -56,7 +57,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testKvittering() {
-        Kvittering kvittering = new Kvittering("42", LocalDateTime.now());
+        Kvittering kvittering = new Kvittering("42", LocalDateTime.now(), URI.create("http://www.vg.no"));
         test(kvittering, false);
     }
 

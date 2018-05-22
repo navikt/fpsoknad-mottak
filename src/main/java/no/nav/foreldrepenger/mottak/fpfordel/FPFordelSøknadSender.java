@@ -1,5 +1,9 @@
 package no.nav.foreldrepenger.mottak.fpfordel;
 
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
+
+import java.net.URI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,10 +39,11 @@ public class FPFordelSøknadSender implements SøknadSender {
     public Kvittering sendSøknad(Søknad søknad, AktorId aktorId) {
         if (connection.isEnabled()) {
             String ref = idGenerator.getOrCreate();
-            connection.send(generator.createPayload(søknad, aktorId, ref));
-            return new Kvittering(ref);
+            URI pollURI = connection.send(generator.createPayload(søknad, aktorId, ref));
+            return new Kvittering(ref, pollURI);
         }
-        return Kvittering.IKKE_SENDT;
+        LOG.info("Oversendelse til FPFordel ikke aktivert, ingenting å sende");
+        return IKKE_SENDT;
     }
 
     @Override

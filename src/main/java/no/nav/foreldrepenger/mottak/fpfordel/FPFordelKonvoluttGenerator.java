@@ -123,4 +123,10 @@ public class FPFordelKonvoluttGenerator {
         return builder.build();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [metadataGenerator=" + metadataGenerator + ", søknadGenerator="
+                + søknadGenerator + ", pdfGenerator=" + pdfGenerator + "]";
+    }
+
 }

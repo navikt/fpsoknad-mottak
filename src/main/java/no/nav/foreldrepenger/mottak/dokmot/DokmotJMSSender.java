@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.dokmot;
 
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
+
 import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
@@ -31,17 +33,17 @@ public class DokmotJMSSender implements SøknadSender {
     @Override
     public Kvittering sendSøknad(Søknad søknad, AktorId aktorId) {
         if (dokmotConnection.isEnabled()) {
-            String reference = idGenerator.getOrCreate();
+            String ref = idGenerator.getOrCreate();
             dokmotConnection.send(session -> {
                 LOG.info("Sender SøknadsXML til DOKMOT");
-                TextMessage msg = session.createTextMessage(generator.toXML(søknad, reference));
-                msg.setStringProperty("callId", reference);
+                TextMessage msg = session.createTextMessage(generator.toXML(søknad, ref));
+                msg.setStringProperty("callId", ref);
                 return msg;
             });
-            return new Kvittering(reference);
+            return new Kvittering(ref);
         }
         LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
-        return Kvittering.IKKE_SENDT;
+        return IKKE_SENDT;
     }
 
     @Override
