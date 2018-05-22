@@ -26,8 +26,8 @@ public class ForeldrepengerTestUtils {
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 
-    static Søknad søknad() {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), INGEN);
+    public static Søknad søknad() {
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
     }
 
     static Foreldrepenger foreldrePenger() {

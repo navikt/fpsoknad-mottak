@@ -12,12 +12,12 @@ import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.TestUtils;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { MottakConfiguration.class, PdfGenerator.class })
+@ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class })
 
-public class PdfGeneratorTest {
+public class EngangsstønadPDFGeneratorTest {
 
     @Autowired
-    PdfGenerator gen;
+    EngangsstønadPDFGenerator gen;
 
     @Test
     public void signature() throws Exception {

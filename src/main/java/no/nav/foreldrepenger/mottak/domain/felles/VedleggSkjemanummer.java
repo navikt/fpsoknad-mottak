@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
 public enum VedleggSkjemanummer {
-    TERMINBEKREFTELSE("I000062", "Terminbekreftelse");
+    SØKNAD_FOELDREPEMGER("I000005", "Søknad om foreldrepenger"), TERMINBEKREFTELSE("I000062", "Terminbekreftelse");
 
     public final String id;
     public final String beskrivelse;

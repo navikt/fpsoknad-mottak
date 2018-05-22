@@ -29,7 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
+import no.nav.foreldrepenger.mottak.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
@@ -52,9 +52,9 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 public class DokmotEngangsstønadXMLGenerator {
 
     private static final JAXBContext CONTEXT = Jaxb.context(SoeknadsskjemaEngangsstoenad.class);
-    private final PdfGenerator pdfGenerator;
+    private final EngangsstønadPDFGenerator pdfGenerator;
 
-    public DokmotEngangsstønadXMLGenerator(PdfGenerator pdfGenerator) {
+    public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator) {
         this.pdfGenerator = pdfGenerator;
     }
 
@@ -144,7 +144,8 @@ public class DokmotEngangsstønadXMLGenerator {
                         .collect(toList()));
     }
 
-    private static Utenlandsopphold utenlandsoppholdFra(no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold opphold) {
+    private static Utenlandsopphold utenlandsoppholdFra(
+            no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold opphold) {
         return new Utenlandsopphold()
                 .withLand(new Landkoder()
                         .withKode(opphold.getLand().getAlpha3()))

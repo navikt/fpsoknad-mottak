@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.mottak.fpfordel;
 
+import java.io.IOException;
+import java.net.URI;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +37,15 @@ public class FPFordelConnection {
             LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke pinge {}", pingEndpoint, e);
+            throw new FPFordelUnavailableException(e);
+        }
+    }
+
+    public URI send(HttpEntity entity) {
+        try {
+            return template.postForLocation(config.getUri(),
+                    new org.springframework.http.HttpEntity<>(EntityUtils.toByteArray(entity)));
+        } catch (IOException e) {
             throw new FPFordelUnavailableException(e);
         }
     }

@@ -49,6 +49,13 @@ public class TestUtils {
         return Foreldrepenger.builder().dekningsgrad(Dekningsgrad.GRAD100).build();
     }
 
+    public static Søknad foreldrepengerSøknad() {
+        Søknad s = new Søknad(LocalDateTime.now(), søker(), foreldrepenger());
+        s.setBegrunnelseForSenSøknad("Glemte hele ungen");
+        s.setTilleggsopplysninger("Intet å tilføye");
+        return s;
+    }
+
     public static Søknad engangssøknad(boolean utland) throws IOException {
         return engangssøknad(utland, fremtidigFødsel(), norskForelder());
     }

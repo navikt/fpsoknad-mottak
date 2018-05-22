@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
+import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
 
 @Service
 public class FPFordelSøknadSender implements SøknadSender {
@@ -14,9 +15,14 @@ public class FPFordelSøknadSender implements SøknadSender {
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
 
     private final FPFordelConnection connection;
+    private final UUIDIdGenerator idGenerator;
+    private final FPFordelKonvoluttGenerator generator;
 
-    public FPFordelSøknadSender(FPFordelConnection connection) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator,
+            UUIDIdGenerator idGenerator) {
         this.connection = connection;
+        this.generator = generator;
+        this.idGenerator = idGenerator;
     }
 
     public void ping() {
@@ -27,7 +33,9 @@ public class FPFordelSøknadSender implements SøknadSender {
     @Override
     public Kvittering sendSøknad(Søknad søknad) {
         if (connection.isEnabled()) {
-
+            String ref = idGenerator.getOrCreate();
+            connection.send(generator.createPayload(søknad, ref));
+            return new Kvittering(ref);
         }
         return Kvittering.IKKE_SENDT;
     }

@@ -26,7 +26,7 @@ import no.nav.foreldrepenger.mottak.domain.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.pdf.PdfGenerator;
+import no.nav.foreldrepenger.mottak.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -35,7 +35,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("dev")
-@ContextConfiguration(classes = { MottakConfiguration.class, PdfGenerator.class, DokmotEngangsstønadXMLGenerator.class,
+@ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class, DokmotEngangsstønadXMLGenerator.class,
         DokmotEngangsstønadXMLKonvoluttGenerator.class, UUIDIdGenerator.class })
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {

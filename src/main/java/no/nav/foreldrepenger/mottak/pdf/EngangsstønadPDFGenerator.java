@@ -3,8 +3,6 @@ package no.nav.foreldrepenger.mottak.pdf;
 import static java.util.Objects.requireNonNull;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -17,18 +15,14 @@ import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
@@ -48,7 +42,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 
 @Service
-public class PdfGenerator {
+public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
@@ -61,7 +55,7 @@ public class PdfGenerator {
     private final MessageSource kvitteringstekster;
 
     @Inject
-    public PdfGenerator(@Qualifier("landkoder") MessageSource landkoder,
+    public EngangsstønadPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
             @Qualifier("kvitteringstekster") MessageSource kvitteringstekster) {
         this.landkoder = requireNonNull(landkoder);
         this.kvitteringstekster = requireNonNull(kvitteringstekster);
@@ -194,13 +188,6 @@ public class PdfGenerator {
         document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
     }
 
-    private static void logo(Document document)
-            throws BadElementException, MalformedURLException, IOException, DocumentException {
-        Image logo = logo();
-        logo.setAlignment(Image.ALIGN_CENTER);
-        document.add(logo);
-    }
-
     private static void søker(Søknad søknad, Document document) throws DocumentException {
         document.add(centeredParagraph(søknad.getSøker().getFnr().getFnr(), NORMAL));
         String navn = navn(søknad.getSøker().getNavn());
@@ -230,11 +217,6 @@ public class PdfGenerator {
 
     private static void blankLine(Document document) throws DocumentException {
         document.add(blankLine());
-    }
-
-    private static Image logo() throws BadElementException, MalformedURLException, IOException {
-        return Image.getInstance(
-                StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
     }
 
     private static String navn(Navn søker) {
