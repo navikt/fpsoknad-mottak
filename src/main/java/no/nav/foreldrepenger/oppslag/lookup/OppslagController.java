@@ -76,7 +76,7 @@ public class OppslagController {
 
     private Fodselsnummer fnrFromClaims() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
-        if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
+        if (fnrFromClaims == null || fnrFromClaims.trim().isEmpty()) {
             throw new ForbiddenException("Fant ikke FNR i token");
         }
         return new Fodselsnummer(fnrFromClaims);
