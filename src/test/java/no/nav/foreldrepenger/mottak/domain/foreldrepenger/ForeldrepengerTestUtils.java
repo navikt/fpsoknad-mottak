@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 public class ForeldrepengerTestUtils {
 
     private static final List<Vedlegg> INGEN = Collections.emptyList();
-    private static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.påkrevdVedlegg());
+    public static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.påkrevdVedlegg());
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 

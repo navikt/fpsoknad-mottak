@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -39,11 +40,11 @@ public class FPFordelConnection {
         }
     }
 
-    public URI send(byte[] bytes) {
+    public URI send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         String postEndpoint = config.getUri() + "/fpfordel/api/dokumentforsendelse";
         LOG.info("Poster til {}", postEndpoint);
         try {
-            return template.postForLocation(postEndpoint, new HttpEntity<>(bytes));
+            return template.postForLocation(postEndpoint, payload);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);

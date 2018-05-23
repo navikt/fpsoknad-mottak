@@ -26,14 +26,13 @@ public class MottakConfiguration {
         return messageSource;
     }
 
-    // @Bean
-    // @ConditionalOnProperty(name = "requests.level", havingValue = "trace")
+    @Bean
     public CommonsRequestLoggingFilter requestLoggingFilter() {
         CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
         loggingFilter.setIncludeClientInfo(false);
         loggingFilter.setIncludeQueryString(false);
         loggingFilter.setIncludePayload(true);
-        loggingFilter.setMaxPayloadLength(1000);
+        loggingFilter.setMaxPayloadLength(10000);
         return loggingFilter;
     }
 }

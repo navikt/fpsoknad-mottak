@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.mottak.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 
-import java.net.URI;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,9 +19,9 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private final FPFordelConnection connection;
     private final UUIDIdGenerator idGenerator;
-    private final FPFordelKonvoluttGenerator generator;
+    private final FPFordelSpringKonvoluttGenerator generator;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator,
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelSpringKonvoluttGenerator generator,
             UUIDIdGenerator idGenerator) {
         this.connection = connection;
         this.generator = generator;
@@ -39,16 +37,16 @@ public class FPFordelSøknadSender implements SøknadSender {
     public Kvittering sendSøknad(Søknad søknad, AktorId aktorId) {
         if (connection.isEnabled()) {
             String ref = idGenerator.getOrCreate();
-            URI pollURI = connection.send(generator.createPayload(søknad, aktorId, ref));
-            return new Kvittering(ref, pollURI);
+            LOG.info("Sender søknad til FPFordel");
+            return new Kvittering(ref, connection.send(generator.payload(søknad, aktorId, ref)));
         }
-        LOG.info("Oversendelse til FPFordel ikke aktivert, ingenting å sende");
+        LOG.info("Leveranse til FPFordel er deaktivert, ingenting å sende");
         return IKKE_SENDT;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", idGenerator=" + idGenerator
+                + ", generator=" + generator + "]";
     }
-
 }

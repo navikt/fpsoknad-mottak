@@ -35,6 +35,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 
 public class TestUtils {
 
@@ -50,7 +51,7 @@ public class TestUtils {
     }
 
     public static Søknad foreldrepengerSøknad() {
-        Søknad s = new Søknad(LocalDateTime.now(), søker(), foreldrepenger());
+        Søknad s = new Søknad(LocalDateTime.now(), søker(), foreldrepenger(), ForeldrepengerTestUtils.ETT_VEDLEGG);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;

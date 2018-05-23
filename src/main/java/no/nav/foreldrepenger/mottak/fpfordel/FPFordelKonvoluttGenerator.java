@@ -18,13 +18,12 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.util.EntityUtils;
-import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
-@Component
+//@Component
 public class FPFordelKonvoluttGenerator {
 
     private static final ContentType APPLICATION_PDF = ContentType.create("application/pdf");
@@ -68,8 +67,10 @@ public class FPFordelKonvoluttGenerator {
 
     private static byte[] toByteArray(HttpEntity entity) {
         try {
+            System.out.println(EntityUtils.toString(entity));
             return EntityUtils.toByteArray(entity);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e);
         }
     }
