@@ -1,36 +1,39 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.StreamUtils;
+import static java.util.stream.Collectors.joining;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.*;
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StreamUtils;
+
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.draw.DottedLineSeparator;
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.Navn;
 
 public abstract class AbstractPDFGenerator {
 
-    private  final Font HEADING = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
-    private  final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
+    private final Font HEADING = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
+    private final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
@@ -96,8 +99,8 @@ public abstract class AbstractPDFGenerator {
 
     protected String navnToString(Navn navn) {
         return (Optional.ofNullable(navn.getFornavn()).orElse("") + " "
-            + Optional.ofNullable(navn.getMellomnavn()).orElse("") + " "
-            + Optional.ofNullable(navn.getEtternavn()).orElse("")).trim();
+                + Optional.ofNullable(navn.getMellomnavn()).orElse("") + " "
+                + Optional.ofNullable(navn.getEtternavn()).orElse("")).trim();
     }
 
     protected String dato(LocalDate localDate) {

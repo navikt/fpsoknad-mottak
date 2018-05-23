@@ -1,20 +1,40 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
-import org.springframework.stereotype.Component;
+import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.*;
+import org.springframework.stereotype.Component;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 
 @Component
 public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
@@ -63,8 +83,8 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
 
     private String navn(Navn søker) {
         return (Optional.ofNullable(søker.getFornavn()).orElse("") + " "
-            + Optional.ofNullable(søker.getMellomnavn()).orElse("") + " "
-            + Optional.ofNullable(søker.getEtternavn()).orElse("")).trim();
+                + Optional.ofNullable(søker.getMellomnavn()).orElse("") + " "
+                + Optional.ofNullable(søker.getEtternavn()).orElse("")).trim();
     }
 
     private Paragraph annenForelder(Foreldrepenger stønad) {
@@ -76,9 +96,11 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
 
             if (annenForelder instanceof NorskForelder) {
                 paragraph.add(norskForelder(annenForelder));
-            } else if (annenForelder instanceof UtenlandskForelder) {
+            }
+            else if (annenForelder instanceof UtenlandskForelder) {
                 paragraph.add(utenlandskForelder(annenForelder));
-            } else {
+            }
+            else {
                 paragraph.add(regularParagraph("Ukjent"));
             }
         }
@@ -90,7 +112,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         Paragraph paragraph = new Paragraph();
         paragraph.add(regularParagraph(fromMessageSource("nasjonalitet",
-            countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName()))));
+                countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName()))));
         if (utenlandsForelder.getId() != null) {
             paragraph.add(regularParagraph(fromMessageSource("utenlandskid", utenlandsForelder.getId())));
         }
@@ -109,8 +131,8 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("arbeidsforhold")));
         final List<String> formatted = arbeidsforhold.stream()
-            .map(this::format)
-            .collect(toList());
+                .map(this::format)
+                .collect(toList());
         paragraph.add(bulletedList(formatted));
         return paragraph;
     }
@@ -119,8 +141,8 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("egennæring")));
         final List<String> formatted = egenNæring.stream()
-            .map(this::format)
-            .collect(toList());
+                .map(this::format)
+                .collect(toList());
         paragraph.add(bulletedList(formatted));
         return paragraph;
     }
@@ -129,21 +151,23 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         if (arbeidsforhold instanceof NorskArbeidsforhold) {
             NorskArbeidsforhold na = NorskArbeidsforhold.class.cast(arbeidsforhold);
             return na.getArbeidsgiverNavn() + " (" + na.getOrgNummer() + ")" + "\n" +
-                dato(na.getPeriode().getFom()) + "\n" +
-                na.getBeskrivelseRelasjon();
-        } else {
+                    dato(na.getPeriode().getFom()) + "\n" +
+                    na.getBeskrivelseRelasjon();
+        }
+        else {
             UtenlandskArbeidsforhold ua = UtenlandskArbeidsforhold.class.cast(arbeidsforhold);
             return ua.getArbeidsgiverNavn() + " (" + countryName(ua.getLand().getAlpha2()) + ")" + "\n" +
-                dato(ua.getPeriode().getFom()) + "\n" +
-                ua.getBeskrivelseRelasjon();
+                    dato(ua.getPeriode().getFom()) + "\n" +
+                    ua.getBeskrivelseRelasjon();
         }
     }
 
     private String format(EgenNæring næring) {
-        return næring.getVirksomhetsType().name() + " (" + countryName(næring.getArbeidsland().getAlpha2()) + ")" + "\n" +
-            dato(næring.getPeriode().getFom()) + "\n" +
-            næring.getBeskrivelseRelasjon() + "\n" +
-            navnToString(næring.getRegnskapsfører().getNavn());
+        return næring.getVirksomhetsType().name() + " (" + countryName(næring.getArbeidsland().getAlpha2()) + ")" + "\n"
+                +
+                dato(næring.getPeriode().getFom()) + "\n" +
+                næring.getBeskrivelseRelasjon() + "\n" +
+                navnToString(næring.getRegnskapsfører().getNavn());
     }
 
     private Paragraph dekningsgrad(Dekningsgrad dekningsgrad) {
@@ -157,8 +181,8 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("perioder")));
         final List<String> formatted = perioder.stream()
-            .map(this::format)
-            .collect(toList());
+                .map(this::format)
+                .collect(toList());
         paragraph.add(bulletedList(formatted));
         return paragraph;
     }
@@ -168,16 +192,19 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         if (relasjonTilBarn instanceof Fødsel) {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
             txt = "Fødselsdato: " + dato(fødsel.getFødselsdato());
-        } else if (relasjonTilBarn instanceof Adopsjon) {
+        }
+        else if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
             txt = "Adopsjon: " + adopsjon.toString();
-        } else if (relasjonTilBarn instanceof FremtidigFødsel) {
+        }
+        else if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
             txt = "Fødsel med termin: " + dato(fødsel.getTerminDato());
-        } else {
+        }
+        else {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
             txt = "Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
-                ", " + omsorgsovertakelse.getÅrsak();
+                    ", " + omsorgsovertakelse.getÅrsak();
         }
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("barn")));
@@ -187,16 +214,19 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
 
     private String format(LukketPeriodeMedVedlegg periode) {
         String tid = dato(periode.getFom()) + " - " + dato(periode.getTom());
-        if (periode instanceof  OverføringsPeriode) {
+        if (periode instanceof OverføringsPeriode) {
             OverføringsPeriode op = OverføringsPeriode.class.cast(periode);
             return "Overføring: " + tid + ", " + op.getÅrsak();
-        } else if (periode instanceof  UttaksPeriode) {
+        }
+        else if (periode instanceof UttaksPeriode) {
             UttaksPeriode up = UttaksPeriode.class.cast(periode);
             return "Uttak: " + tid + ", " + up.getUttaksperiodeType();
-        } else if (periode instanceof  OppholdsPeriode) {
+        }
+        else if (periode instanceof OppholdsPeriode) {
             OppholdsPeriode op = OppholdsPeriode.class.cast(periode);
             return "Opphold: " + tid + ", " + op.getÅrsak();
-        } else {
+        }
+        else {
             UtsettelsesPeriode up = UtsettelsesPeriode.class.cast(periode);
             return "Utsettelse: " + tid + ", " + up.getÅrsak();
         }
@@ -206,8 +236,8 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("vedlegg")));
         final List<String> formatted = vedlegg.stream()
-            .map(this::format)
-            .collect(toList());
+                .map(this::format)
+                .collect(toList());
         paragraph.add(bulletedList(formatted));
         return paragraph;
     }
@@ -215,6 +245,5 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
     private String format(Vedlegg vedlegg) {
         return vedlegg.getMetadata().getSkjemanummer().beskrivelse;
     }
-
 
 }
