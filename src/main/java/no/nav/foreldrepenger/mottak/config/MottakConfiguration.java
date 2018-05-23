@@ -26,7 +26,7 @@ public class MottakConfiguration {
         return messageSource;
     }
 
-    @Bean
+    // @Bean
     public CommonsRequestLoggingFilter requestLoggingFilter() {
         CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
         loggingFilter.setIncludeClientInfo(false);
