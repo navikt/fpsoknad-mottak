@@ -1,65 +1,25 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import static java.util.Objects.requireNonNull;
-
-import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
-
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.KjentForelder;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.*;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
-
-    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
-
-    private static final Font HEADING = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
-    private static final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
-
-    private static final Locale BOKMÅL = CountryCode.NO.toLocale();
-
-    private final MessageSource landkoder;
-    private final MessageSource kvitteringstekster;
-
-    @Inject
-    public EngangsstønadPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
-            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster) {
-        this.landkoder = requireNonNull(landkoder);
-        this.kvitteringstekster = requireNonNull(kvitteringstekster);
-    }
 
     public byte[] generate(Søknad søknad) {
 
@@ -71,7 +31,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
             PdfWriter.getInstance(document, baos);
             document.open();
             logo(document);
-            overskrift(document);
+            document.add(center(heading(fromMessageSource("søknad_engang"))));
             søker(søknad, document);
             omBarn(stønad, document);
             if (erFremtidigFødsel(stønad)) {
@@ -98,8 +58,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
     private void født(Søknad søknad, Engangsstønad stønad, Document document) throws DocumentException {
         Fødsel ff = Fødsel.class.cast(stønad.getRelasjonTilBarn());
         document.add(
-                paragraph(getMessage("fødselsdato", kvitteringstekster, dato(ff.getFødselsdato())),
-                        NORMAL));
+                regularParagraph(fromMessageSource("fødselsdato", dato(ff.getFødselsdato()))));
     }
 
     private void omFar(Engangsstønad stønad, Document document) throws DocumentException {
@@ -110,7 +69,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
                 return;
             }
 
-            document.add(paragraph(getMessage("omfar", kvitteringstekster), HEADING));
+            document.add(heading(fromMessageSource("omfar")));
 
             if (annenForelder instanceof NorskForelder) {
                 norskForelder(document, annenForelder);
@@ -119,7 +78,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
                 utenlandskForelder(document, annenForelder);
             }
             if (annenForelder instanceof UkjentForelder) {
-                document.add(paragraph("Ukjent", NORMAL));
+                document.add(regularParagraph("Ukjent"));
             }
             blankLine(document);
         }
@@ -127,156 +86,99 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
 
     private void utenlandskForelder(Document document, AnnenForelder annenForelder) throws DocumentException {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
-        document.add(paragraph(getMessage("nasjonalitet", kvitteringstekster,
-                getMessage(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName(), landkoder)),
-                NORMAL));
-        navn(document, utenlandsForelder.getNavn(), NORMAL);
+        document.add(regularParagraph(fromMessageSource("nasjonalitet",
+                countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName()))));
+        navn(document, utenlandsForelder.getNavn());
         if (utenlandsForelder.getId() != null) {
-            document.add(paragraph(getMessage("utenlandskid", kvitteringstekster, utenlandsForelder.getId()), NORMAL));
+            document.add(regularParagraph(fromMessageSource("utenlandskid", utenlandsForelder.getId())));
         }
     }
 
     private void norskForelder(Document document, AnnenForelder annenForelder) throws DocumentException {
         NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
-        document.add(paragraph(getMessage("nasjonalitet", kvitteringstekster, "Norsk"), NORMAL));
-        navn(document, norskForelder.getNavn(), NORMAL);
-        document.add(paragraph(getMessage("fødselsnummer", kvitteringstekster, norskForelder.getFnr().getFnr()),
-                NORMAL));
+        document.add(regularParagraph(fromMessageSource("nasjonalitet", "Norsk")));
+        navn(document, norskForelder.getNavn());
+        document.add(regularParagraph(fromMessageSource("fødselsnummer", norskForelder.getFnr().getFnr())));
     }
 
     private void fødselssted(Medlemsskap medlemsskap, Document document) throws DocumentException {
-        document.add(paragraph(getMessage("føde", kvitteringstekster,
-                countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())), NORMAL));
+        document.add(regularParagraph(fromMessageSource("føde",
+                countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()))));
     }
 
     private void medlemsskap(Medlemsskap medlemsskap, Document document) throws DocumentException {
-        document.add(paragraph(getMessage("tilknytning", kvitteringstekster), HEADING));
+        document.add(heading(fromMessageSource("tilknytning")));
         List<String> siste12 = utenlandsOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold());
         if (siste12.size() == 1) {
-            document.add(paragraph(getMessage("siste12solo", kvitteringstekster, siste12.get(0)), NORMAL));
+            document.add(regularParagraph(fromMessageSource("siste12solo", siste12.get(0))));
         }
         else {
-            document.add(paragraph(getMessage("siste12", kvitteringstekster), NORMAL));
+            document.add(regularParagraph(fromMessageSource("siste12")));
             document.add(bulletedList(siste12));
         }
         List<String> neste12 = utenlandsOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold());
         if (neste12.size() == 1) {
-            document.add(paragraph(getMessage("neste12solo", kvitteringstekster, neste12.get(0)), NORMAL));
+            document.add(regularParagraph(fromMessageSource("neste12solo", neste12.get(0))));
         }
         else {
-            document.add(paragraph(getMessage("neste12", kvitteringstekster), NORMAL));
+            document.add(regularParagraph(fromMessageSource("neste12")));
             document.add(bulletedList(neste12));
         }
     }
 
-    private static com.itextpdf.text.List bulletedList(List<String> oppholdsInfo) {
-        com.itextpdf.text.List bulletedList = new com.itextpdf.text.List();
-        bulletedList.setListSymbol(new Chunk("\u2022", new Font()));
-        bulletedList.setSymbolIndent(12);
-        oppholdsInfo.stream().forEach(s -> bulletedList.add(s));
-        return bulletedList;
-    }
-
     private void omBarn(Engangsstønad stønad, Document document) throws DocumentException {
-        document.add(paragraph(getMessage("ombarn", kvitteringstekster), HEADING));
-        document.add(paragraph(
-                getMessage("gjelder", kvitteringstekster, stønad.getRelasjonTilBarn().getAntallBarn()),
-                NORMAL));
+        document.add(heading(fromMessageSource("ombarn")));
+        document.add(regularParagraph(
+            fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn())));
     }
 
-    private void overskrift(Document document) throws DocumentException {
-        document.add(centeredParagraph(getMessage("søknad", kvitteringstekster), HEADING));
-    }
-
-    private static void søker(Søknad søknad, Document document) throws DocumentException {
-        document.add(centeredParagraph(søknad.getSøker().getFnr().getFnr(), NORMAL));
-        String navn = navn(søknad.getSøker().getNavn());
+    private void søker(Søknad søknad, Document document) throws DocumentException {
+        document.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
+        String navn = navnToString(søknad.getSøker().getNavn());
         if (!navn.isEmpty()) {
-            document.add(centeredParagraph(navn, NORMAL));
+            document.add(center(regularParagraph(navn)));
         }
         document.add(separator());
         blankLine(document);
     }
 
-    private void navn(Document document, Navn navn, Font font) throws DocumentException {
-        String n = navn(navn);
+    private void navn(Document document, Navn navn) throws DocumentException {
+        String n = navnToString(navn);
         if (!n.isEmpty()) {
-            document.add(paragraph(getMessage("navn", kvitteringstekster, n), NORMAL));
+            document.add(regularParagraph(fromMessageSource("navn", n)));
         }
     }
 
     private void fødsel(Søknad søknad, Engangsstønad stønad, Document document) throws DocumentException {
         FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
         document.add(
-                paragraph(getMessage("termindato", kvitteringstekster, dato(ff.getTerminDato())), NORMAL));
+                regularParagraph(fromMessageSource("termindato", dato(ff.getTerminDato()))));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
-            document.add(paragraph(
-                    getMessage("termindatotekst", kvitteringstekster, dato(ff.getUtstedtDato())), NORMAL));
+            document.add(regularParagraph(
+                fromMessageSource("termindatotekst", dato(ff.getUtstedtDato()))));
         }
     }
 
-    private static void blankLine(Document document) throws DocumentException {
+    private void blankLine(Document document) throws DocumentException {
         document.add(blankLine());
     }
 
-    private static String navn(Navn søker) {
-        return (Optional.ofNullable(søker.getFornavn()).orElse("") + " "
-                + Optional.ofNullable(søker.getMellomnavn()).orElse("") + " "
-                + Optional.ofNullable(søker.getEtternavn()).orElse("")).trim();
-    }
-
-    private static boolean erFremtidigFødsel(Engangsstønad stønad) {
+    private boolean erFremtidigFødsel(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof FremtidigFødsel;
     }
 
-    private static boolean erFødt(Engangsstønad stønad) {
+    private boolean erFødt(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof Fødsel;
     }
 
-    String dato(List<LocalDate> fødselsdato) {
-        return fødselsdato.stream()
-                .distinct()
-                .map(s -> dato(s))
-                .collect(Collectors.joining(", "));
-    }
-
-    private static String dato(LocalDate dato) {
-        return dato.format(DATE_FMT);
-    }
-
-    private static String countryName(Boolean b) {
+    private String countryName(Boolean b) {
         return b ? "Norge" : "utlandet";
     }
 
-    private static Paragraph paragraph(String txt, Font font) {
-        return new Paragraph(new Chunk(txt, font));
-    }
-
-    private static Paragraph centeredParagraph(String txt, Font font) {
-        Paragraph p = paragraph(txt, font);
-        p.setAlignment(Element.ALIGN_CENTER);
-        return p;
-    }
-
-    private static Element separator() {
-        Paragraph p = new Paragraph();
-        DottedLineSeparator dottedline = new DottedLineSeparator();
-        dottedline.setGap(2f);
-        dottedline.setOffset(2);
-        p.add(dottedline);
-        p.add(blankLine());
-        return p;
-    }
-
-    private static Element blankLine() {
-        Paragraph p = new Paragraph();
-        p.add(Chunk.NEWLINE);
-        return p;
-    }
 
     private List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {
         if (opphold.isEmpty()) {
-            return Collections.singletonList(getMessage(CountryCode.NO.getAlpha2(), landkoder));
+            return Collections.singletonList(countryName(CountryCode.NO.getAlpha2()));
         }
         return opphold.stream()
                 .map(this::formatOpphold)
@@ -285,19 +187,10 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
 
     private String formatOpphold(Utenlandsopphold opphold) {
 
-        return getMessage(opphold.getLand().getAlpha2(), opphold.getLand().getName(), landkoder)
+        return countryName(opphold.getLand().getAlpha2(), opphold.getLand().getName())
                 + ": "
-                + opphold.getVarighet().getFom().format(DATE_FMT) + " - "
-                +
-                opphold.getVarighet().getTom().format(DATE_FMT);
-    }
-
-    private static String getMessage(String key, MessageSource messages, Object... values) {
-        return getMessage(key, null, messages, values);
-    }
-
-    private static String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
-        return messages.getMessage(key, values, defaultValue, BOKMÅL);
+                + dato(opphold.getVarighet().getFom()) + " - "
+                + dato(opphold.getVarighet().getTom())    ;
     }
 
 }
