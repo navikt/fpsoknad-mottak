@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import static java.util.Collections.singletonList;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.nesteMåned;
@@ -15,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,10 +25,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
+import no.nav.foreldrepenger.mottak.fpfordel.FPFordelConnection;
+import no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
@@ -44,13 +49,38 @@ public class TestRoundtripSerialization {
     @Autowired
     private TestRestTemplate template;
 
+    @Autowired
+    FPFordelConnection connection;
+
+    @Autowired
+    UUIDIdGenerator refGenerator;
+    @Autowired
+    FPFordelSøknadGenerator søknadXMLGenerator;
+    @Autowired
+    FPFordelKonvoluttGenerator konvoluttGenerator;
+
+    @Autowired
+    FPFordelConnection fpfordel;
+
     @Before
     public void setAuthoriztion() {
-        template.getRestTemplate().setInterceptors(
-                singletonList((request, body, execution) -> {
-                    request.getHeaders().add(AUTHORIZATION, "Bearer " + createSignedJWT("12345678910").serialize());
-                    return execution.execute(request, body);
-                }));
+        template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
+                execution) -> {
+            request.getHeaders().add(AUTHORIZATION, "Bearer " +
+                    createSignedJWT("12345678910").serialize());
+            return execution.execute(request, body);
+        }));
+    }
+
+    // @Test
+    public void testKonvolutt() throws Exception {
+
+        Søknad søknad = TestUtils.foreldrepengerSøknad();
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad,
+                new AktorId("42"),
+                refGenerator.create());
+        fpfordel.send(konvolutt);
+
     }
 
     @Test

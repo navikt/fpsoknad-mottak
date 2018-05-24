@@ -6,6 +6,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
@@ -39,6 +41,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 @Component
 public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
+
     public byte[] generate(Søknad søknad) {
         try {
             Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
@@ -49,22 +53,29 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
             logo(document);
             document.add(center(heading(fromMessageSource("søknad_fp"))));
             document.add(søker(søknad));
-            document.add(arbeidsforhold(stønad.getOpptjening().getArbeidsforhold()));
-            document.add(blankLine());
-            document.add(egenNæring(stønad.getOpptjening().getEgenNæring()));
-            document.add(blankLine());
-            document.add(barn(stønad.getRelasjonTilBarn()));
-            document.add(blankLine());
+            if (stønad.getOpptjening() != null) {
+                document.add(arbeidsforhold(stønad.getOpptjening().getArbeidsforhold()));
+                document.add(blankLine());
+                document.add(egenNæring(stønad.getOpptjening().getEgenNæring()));
+            }
+            if (stønad.getRelasjonTilBarn() != null) {
+                document.add(blankLine());
+                document.add(barn(stønad.getRelasjonTilBarn()));
+                document.add(blankLine());
+            }
             document.add(annenForelder(stønad));
             document.add(blankLine());
             document.add(dekningsgrad(stønad.getDekningsgrad()));
-            document.add(blankLine());
-            document.add(perioder(stønad.getFordeling().getPerioder()));
-            document.add(blankLine());
+            if (stønad.getFordeling() != null) {
+                document.add(blankLine());
+                document.add(perioder(stønad.getFordeling().getPerioder()));
+                document.add(blankLine());
+            }
             document.add(vedlegg(søknad.getVedlegg()));
             document.close();
             return baos.toByteArray();
         } catch (Exception e) {
+            LOG.warn("Noe gikk feil, gitt", e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -81,7 +92,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         return p;
     }
 
-    private String navn(Navn søker) {
+    private static String navn(Navn søker) {
         return (Optional.ofNullable(søker.getFornavn()).orElse("") + " "
                 + Optional.ofNullable(søker.getMellomnavn()).orElse("") + " "
                 + Optional.ofNullable(søker.getEtternavn()).orElse("")).trim();
@@ -188,24 +199,26 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
     }
 
     private Paragraph barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
-        String txt = "";
         if (relasjonTilBarn instanceof Fødsel) {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
-            txt = "Fødselsdato: " + dato(fødsel.getFødselsdato());
+            return barn("Fødselsdato: " + dato(fødsel.getFødselsdato()));
         }
-        else if (relasjonTilBarn instanceof Adopsjon) {
+        if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
-            txt = "Adopsjon: " + adopsjon.toString();
+            return barn("Adopsjon: " + adopsjon.toString());
         }
-        else if (relasjonTilBarn instanceof FremtidigFødsel) {
+        if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
-            txt = "Fødsel med termin: " + dato(fødsel.getTerminDato());
+            return barn("Fødsel med termin: " + dato(fødsel.getTerminDato()));
         }
-        else {
-            Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
-            txt = "Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
-                    ", " + omsorgsovertakelse.getÅrsak();
-        }
+
+        Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
+        return barn("Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
+                ", " + omsorgsovertakelse.getÅrsak());
+
+    }
+
+    private Paragraph barn(String txt) {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("barn")));
         paragraph.add(regularParagraph(txt));

@@ -19,9 +19,9 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private final FPFordelConnection connection;
     private final UUIDIdGenerator idGenerator;
-    private final FPFordelSpringKonvoluttGenerator generator;
+    private final FPFordelKonvoluttGenerator generator;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelSpringKonvoluttGenerator generator,
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator,
             UUIDIdGenerator idGenerator) {
         this.connection = connection;
         this.generator = generator;

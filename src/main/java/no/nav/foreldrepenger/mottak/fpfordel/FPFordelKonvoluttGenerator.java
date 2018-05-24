@@ -1,33 +1,32 @@
 package no.nav.foreldrepenger.mottak.fpfordel;
 
-import static org.apache.http.Consts.UTF_8;
-import static org.apache.http.entity.ContentType.APPLICATION_JSON;
-import static org.apache.http.entity.ContentType.APPLICATION_XML;
-import static org.apache.http.entity.mime.HttpMultipartMode.RFC6532;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
+import static org.springframework.http.MediaType.APPLICATION_XML;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.FormBodyPart;
-import org.apache.http.entity.mime.FormBodyPartBuilder;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.util.EntityUtils;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
-//@Component
+@Component
 public class FPFordelKonvoluttGenerator {
 
-    private static final ContentType APPLICATION_PDF = ContentType.create("application/pdf");
-
+    private static final String VEDLEGG = "vedlegg";
+    private static final String METADATA = "metadata";
+    private static final String CONTENT_ID = "Content-ID";
     private static final String HOVEDDOKUMENT = "hoveddokument";
     private final FPFordelMetdataGenerator metadataGenerator;
     private final FPFordelSøknadGenerator søknadGenerator;
@@ -40,88 +39,49 @@ public class FPFordelKonvoluttGenerator {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public byte[] createPayload(Søknad søknad, AktorId aktørId, String ref) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, AktorId aktørId, String ref) {
 
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create()
-                .setMimeSubtype("mixed")
-                .setMode(RFC6532);
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        AtomicInteger id = new AtomicInteger(1);
+        builder.part(METADATA, metadata(søknad, aktørId, ref), APPLICATION_JSON_UTF8);
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, aktørId), APPLICATION_XML).header(CONTENT_ID, id(id));
+        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad), APPLICATION_PDF)
+                .header(CONTENT_ID, id(id))
+                .header(CONTENT_ENCODING, "base64");
+        søknad.getVedlegg().stream().forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
-        final AtomicInteger id = new AtomicInteger(1);
-
-        builder.addPart(buildPart("metadata", metadata(søknad, aktørId, ref)))
-                .addPart(buildPart(HOVEDDOKUMENT, xmlDocument(søknad, aktørId), id))
-                .addPart(buildPart(HOVEDDOKUMENT, pdfDocument(søknad), id, true));
-
-        return medVedlegg(søknad, builder, id);
-
+        return new HttpEntity<>(builder.build(), headers());
     }
 
-    private static byte[] medVedlegg(Søknad søknad, MultipartEntityBuilder builder,
-            final AtomicInteger id) {
-        søknad.getVedlegg()
-                .stream()
-                .forEach(s -> addVedlegg(s.getVedlegg(), builder, id));
-        return toByteArray(builder.build());
-
+    private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger id) {
+        builder.part(VEDLEGG, encode(vedlegg.getVedlegg()), APPLICATION_PDF)
+                .headers(new VedleggHeaderConsumer(vedlegg.getMetadata().getBeskrivelse()));
     }
 
-    private static byte[] toByteArray(HttpEntity entity) {
-        try {
-            System.out.println(EntityUtils.toString(entity));
-            return EntityUtils.toByteArray(entity);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e);
-        }
+    private static String id(AtomicInteger id) {
+        return String.valueOf(id.getAndIncrement());
     }
 
-    private ContentBody pdfDocument(Søknad søknad) {
-        return new ByteArrayBody(encode(pdfGenerator.generate(søknad)),
-                APPLICATION_PDF,
-                HOVEDDOKUMENT + ".pdf");
+    private static HttpHeaders headers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MULTIPART_FORM_DATA);
+        return headers;
     }
 
-    private ContentBody xmlDocument(Søknad søknad, AktorId aktørId) {
-        return new ByteArrayBody(søknadGenerator.toXML(søknad, aktørId).getBytes(),
-                APPLICATION_XML.withCharset(UTF_8),
-                HOVEDDOKUMENT + ".xml");
+    private String metadata(Søknad søknad, AktorId aktørId, String ref) {
+        return metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktørId, ref));
     }
 
-    private ContentBody metadata(Søknad søknad, AktorId aktorId, String ref) {
-        return new ByteArrayBody(
-                metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktorId, ref)).getBytes(),
-                APPLICATION_JSON, "metadata.json");
+    private byte[] pdfHovedDokument(Søknad søknad) {
+        return encode(pdfGenerator.generate(søknad));
+    }
+
+    private String xmlHovedDokument(Søknad søknad, AktorId aktørId) {
+        return søknadGenerator.toXML(søknad, aktørId);
     }
 
     private static byte[] encode(byte[] bytes) {
         return Base64.getEncoder().encode(bytes);
-    }
-
-    private static MultipartEntityBuilder addVedlegg(byte[] vedlegg, MultipartEntityBuilder builder, AtomicInteger id) {
-        String vedleggNavn = "vedlegg-" + String.valueOf(id);
-        return builder.addPart(buildPart(vedleggNavn, new ByteArrayBody(encode(vedlegg), APPLICATION_PDF,
-                vedleggNavn + ".pdf"), id, true));
-    }
-
-    private static FormBodyPart buildPart(String name, ContentBody body) {
-        return buildPart(name, body, null);
-    }
-
-    private static FormBodyPart buildPart(String name, ContentBody body, AtomicInteger contentId) {
-        return buildPart(name, body, contentId, false);
-    }
-
-    private static FormBodyPart buildPart(String name, ContentBody body, AtomicInteger contentId, boolean isBase64) {
-        FormBodyPartBuilder builder = FormBodyPartBuilder.create()
-                .setName(name)
-                .setBody(body);
-        if (isBase64) {
-            builder.setField(CONTENT_ENCODING, "base64");
-        }
-        if (contentId != null) {
-            builder.setField("Content-ID", String.valueOf(contentId.getAndIncrement()));
-        }
-        return builder.build();
     }
 
     @Override
@@ -130,4 +90,16 @@ public class FPFordelKonvoluttGenerator {
                 + søknadGenerator + ", pdfGenerator=" + pdfGenerator + "]";
     }
 
+    private static final class VedleggHeaderConsumer implements Consumer<HttpHeaders> {
+        private final String filNavn;
+
+        private VedleggHeaderConsumer(String filNavn) {
+            this.filNavn = filNavn;
+        }
+
+        @Override
+        public void accept(HttpHeaders headers) {
+            headers.setContentDispositionFormData(VEDLEGG, filNavn);
+        }
+    }
 }

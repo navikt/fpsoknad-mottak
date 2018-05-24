@@ -20,3 +20,4 @@ no.nav.security.oidc:
     selvbetjening.cookie_name: localhost-idtoken
 
 requests.level : TRACE
+fpfordel.uri: http://localhost:8080
