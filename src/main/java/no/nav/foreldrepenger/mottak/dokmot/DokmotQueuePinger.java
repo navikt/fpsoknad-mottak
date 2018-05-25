@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.dokmot;
 
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.domain.DokmotQueueConfig;
+
 @Component
 public class DokmotQueuePinger {
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.dokmot;
+package no.nav.foreldrepenger.mottak.domain;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;

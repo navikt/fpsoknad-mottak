@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import no.nav.foreldrepenger.mottak.domain.DokmotQueueConfig;
 
 @Component
 public class DokmotConnection {

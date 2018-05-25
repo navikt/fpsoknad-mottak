@@ -17,6 +17,8 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
+import no.nav.foreldrepenger.mottak.domain.DokmotQueueConfig;
+
 @Configuration
 public class DokmotConfiguration {
 

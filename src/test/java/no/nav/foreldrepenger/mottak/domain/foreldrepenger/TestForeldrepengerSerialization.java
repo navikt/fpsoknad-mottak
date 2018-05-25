@@ -177,7 +177,7 @@ public class TestForeldrepengerSerialization {
 
     }
 
-    private static void test(Object object, boolean log, ObjectMapper mapper) {
+    static void test(Object object, boolean log, ObjectMapper mapper) {
         try {
             String serialized = serialize(object, log, mapper);
             Object deserialized = mapper.readValue(serialized, object.getClass());
