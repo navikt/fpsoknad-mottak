@@ -45,7 +45,7 @@ public class TestUtils {
     }
 
     public static Søknad engangssøknad(boolean utland) throws IOException {
-        return engangssøknad(utland, fremtidigFødsel(), norskForelder());
+        return engangssøknad(utland, termin(), norskForelder());
     }
 
     public static Søknad engangssøknad(RelasjonTilBarn relasjon) throws IOException {
@@ -183,7 +183,7 @@ public class TestUtils {
         return new Navn("Far", "Faraday", "Farsken");
     }
 
-    public static FremtidigFødsel fremtidigFødsel() {
+    public static FremtidigFødsel termin() {
         return new FremtidigFødsel(nesteMåned(), forrigeMåned());
     }
 

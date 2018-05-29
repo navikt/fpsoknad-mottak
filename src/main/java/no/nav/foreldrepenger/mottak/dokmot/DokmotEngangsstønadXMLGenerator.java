@@ -74,13 +74,14 @@ public class DokmotEngangsstønadXMLGenerator {
 
         // Mor er bruker i dette use-caset, derfor setter vi ikke opplysninger om mor,
         // samme som Team Søknad gjør
-        Engangsstønad engangsstønad = Engangsstønad.class.cast(søknad.getYtelse());
+        Engangsstønad ytelse = Engangsstønad.class.cast(søknad.getYtelse());
         return new SoeknadsskjemaEngangsstoenad()
                 .withBruker(brukerFra(søknad.getSøker().getFnr()))
-                .withOpplysningerOmBarn(barnFra(søknad, engangsstønad))
-                .withSoknadsvalg(søknadsvalgFra(søknad, engangsstønad))
-                .withTilknytningNorge((tilknytningFra(engangsstønad.getMedlemsskap())))
-                .withOpplysningerOmFar(farFra(engangsstønad.getAnnenForelder()))
+                .withOpplysningerOmBarn(barnFra(søknad, ytelse))
+                .withSoknadsvalg(søknadsvalgFra(søknad, ytelse))
+                .withTilknytningNorge((tilknytningFra(ytelse.getMedlemsskap(),
+                        ytelse.getRelasjonTilBarn() instanceof FremtidigFødsel)))
+                .withOpplysningerOmFar(farFra(ytelse.getAnnenForelder()))
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
                 .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
     }
@@ -119,13 +120,16 @@ public class DokmotEngangsstønadXMLGenerator {
                 "Relasjon til barn " + relasjonTilBarn.getClass().getSimpleName() + " er foreløpig ikke støttet");
     }
 
-    private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap) {
-        return new TilknytningNorge()
-                .withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
+    private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap, boolean isTermin) {
+        TilknytningNorge tilknytning = new TilknytningNorge()
                 .withTidligereOppholdNorge(medlemsskap.getTidligereOppholdsInfo().isBoddINorge())
                 .withTidligereOppholdUtenlands(tidligereOppholdUtenlandsFra(medlemsskap.getTidligereOppholdsInfo()))
                 .withFremtidigOppholdNorge(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
                 .withFremtidigOppholdUtenlands(framtidigOppholdUtenlandsFra(medlemsskap.getFramtidigOppholdsInfo()));
+        return isTermin
+                ? tilknytning.withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
+                : tilknytning;
+
     }
 
     private static TidligereOppholdUtenlands tidligereOppholdUtenlandsFra(TidligereOppholdsInformasjon tidligere) {

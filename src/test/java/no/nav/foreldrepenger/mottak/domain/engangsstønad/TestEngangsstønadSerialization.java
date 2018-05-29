@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.domain.engangsstønad;
 
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangstønad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.fremtidigFødsel;
+import static no.nav.foreldrepenger.mottak.domain.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.påkrevdVedlegg;
@@ -74,18 +74,18 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testEngangsstønadNorge() {
-        Engangsstønad engangstønad = engangstønad(false, fremtidigFødsel(), norskForelder());
+        Engangsstønad engangstønad = engangstønad(false, termin(), norskForelder());
         test(engangstønad, false);
     }
 
     @Test
     public void testEngangsstønadUtland() {
-        test(TestUtils.engangstønad(true, fremtidigFødsel(), utenlandskForelder()), false);
+        test(TestUtils.engangstønad(true, termin(), utenlandskForelder()), false);
     }
 
     @Test
     public void testEngangsstønadUkjentFar() {
-        test(engangstønad(true, fremtidigFødsel(), ukjentForelder()), false);
+        test(engangstønad(true, termin(), ukjentForelder()), false);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testTermin() {
-        test(fremtidigFødsel());
+        test(termin());
     }
 
     @Test
