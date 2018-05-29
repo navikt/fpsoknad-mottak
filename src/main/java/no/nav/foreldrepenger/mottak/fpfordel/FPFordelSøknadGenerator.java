@@ -22,15 +22,18 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsforholdType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.GradertUttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.MorsAktivitetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Oppholdsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
@@ -38,6 +41,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksperiodeType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Brukerroller;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Foedsel;
@@ -49,6 +54,7 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v1.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Rettigheter;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.SoekersRelasjonTilBarnet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Termin;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Ytelse;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
@@ -64,6 +70,7 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Fordeling;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Gradering;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Oppholdsaarsaker;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Oppholdsperiode;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Overfoeringsaarsaker;
@@ -282,6 +289,23 @@ public class FPFordelSøknadGenerator {
                     .withAarsak(utsettelsesårsakFra(utsettelsesPeriode.getÅrsak()));
 
         }
+        if (periode instanceof GradertUttaksPeriode) {
+            GradertUttaksPeriode uttaksPeriode = GradertUttaksPeriode.class.cast(periode);
+            return new Gradering()
+                    .withType(new Uttaksperiodetyper()
+                            .withKode(uttaksperiodeTyperFra(uttaksPeriode.getUttaksperiodeType())))
+                    .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
+                    .withMorsAktivitetIPerioden(
+                            new MorsAktivitetsTyper()
+                                    .withKode(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType())))
+                    .withFom(uttaksPeriode.getFom())
+                    .withTom(uttaksPeriode.getTom())
+                    .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
+                    .withErArbeidstaker(uttaksPeriode.isErArbeidstaker())
+                    .withArbeidtidProsent(uttaksPeriode.getArbeidstidProsent())
+                    .withVirksomhetsnummer(uttaksPeriode.getVirksomhetsNummer())
+                    .withArbeidsforholdSomSkalGraderes(uttaksPeriode.isArbeidsForholdSomskalGraderes());
+        }
         if (periode instanceof UttaksPeriode) {
             UttaksPeriode uttaksPeriode = UttaksPeriode.class.cast(periode);
             return new Uttaksperiode()
@@ -385,10 +409,33 @@ public class FPFordelSøknadGenerator {
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
 
         if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder) {
-            return new no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder();
+            return ukjentForelder(
+                    no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder.class.cast(annenForelder));
+        }
+        if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder) {
+            return utenlandsForelder(UtenlandskForelder.class.cast(annenForelder));
+        }
+        if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder) {
+            return norskForelder(NorskForelder.class.cast(annenForelder));
         }
         throw new IllegalArgumentException(
                 "Annen forelder " + annenForelder.getClass().getSimpleName() + " er ikke støttet");
+    }
+
+    private static UkjentForelder ukjentForelder(
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder();
+    }
+
+    private static AnnenForelderUtenNorskIdent utenlandsForelder(UtenlandskForelder utenlandskForelder) {
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent()
+                .withUtenlandskPersonidentifikator(utenlandskForelder.getId())
+                .withLand(new Land().withKode(utenlandskForelder.getLand().getAlpha3()));
+    }
+
+    private static AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent()
+                .withAktoerId(norskForelder.getAktørId().getId());
     }
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
@@ -419,13 +466,10 @@ public class FPFordelSøknadGenerator {
     private static Brukerroller rolleFra(BrukerRolle søknadsRolle) {
         switch (søknadsRolle) {
         case MOR:
-            return new Brukerroller().withKode("MOR");
         case FAR:
-            return new Brukerroller().withKode("FAR");
         case MEDMOR:
-            return new Brukerroller().withKode("MEDMOR");
         case ANDRE:
-            return new Brukerroller().withKode("ANDRE");
+            return new Brukerroller().withKode(søknadsRolle.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }

@@ -158,13 +158,23 @@ public class ForeldrepengerTestUtils {
     }
 
     static List<LukketPeriodeMedVedlegg> perioder() {
-        return newArrayList(oppholdsPeriode(), overføringsPeriode(), utsettelsesPeriode(), uttaksPeriode());
+        return newArrayList(oppholdsPeriode(), overføringsPeriode(), utsettelsesPeriode(), gradertPeriode());
     }
 
     static UttaksPeriode uttaksPeriode() {
         return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG,
-                new Gradering(42d, true, "42", true),
                 FEDREKVOTE, true, MorsAktivitetstype.ARBEID_OG_UTDANNING);
+    }
+
+    static UttaksPeriode gradertPeriode() {
+        GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
+                ETT_VEDLEGG,
+                FEDREKVOTE, true, MorsAktivitetstype.ARBEID_OG_UTDANNING);
+        periode.setArbeidsForholdSomskalGraderes(true);
+        periode.setArbeidstidProsent(75d);
+        periode.setErArbeidstaker(true);
+        periode.setVirksomhetsNummer("222222");
+        return periode;
     }
 
     static FremtidigFødsel termin() {
