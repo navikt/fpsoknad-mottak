@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
+import no.nav.foreldrepenger.oppslag.lookup.Pair;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
 
 import java.util.Objects;

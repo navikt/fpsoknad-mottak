@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.joining;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Pair;
+import no.nav.foreldrepenger.oppslag.lookup.Pair;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Aktoer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsavtale;

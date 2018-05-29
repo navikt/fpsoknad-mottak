@@ -1,10 +1,7 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
 import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.ID;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Kjonn;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Navn;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Pair;
+import no.nav.foreldrepenger.oppslag.lookup.Pair;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.person;
+package no.nav.foreldrepenger.oppslag.lookup;
 
 import java.util.Objects;
 
