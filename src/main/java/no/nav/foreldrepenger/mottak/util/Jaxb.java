@@ -25,9 +25,13 @@ public final class Jaxb {
     }
 
     public static String marshall(JAXBContext context, Object model) {
+        return marshall(context, model, true);
+    }
+
+    public static String marshall(JAXBContext context, Object model, boolean isFragment) {
         try {
             StringWriter sw = new StringWriter();
-            marshaller(context).marshal(model, sw);
+            marshaller(context, isFragment).marshal(model, sw);
             return sw.toString();
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
@@ -55,11 +59,11 @@ public final class Jaxb {
         }
     }
 
-    private static Marshaller marshaller(JAXBContext context) {
+    private static Marshaller marshaller(JAXBContext context, boolean isFragment) {
         try {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, isFragment);
             return marshaller;
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);

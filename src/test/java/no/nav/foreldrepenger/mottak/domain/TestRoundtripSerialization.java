@@ -25,10 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelConnection;
@@ -59,9 +57,6 @@ public class TestRoundtripSerialization {
     @Autowired
     FPFordelKonvoluttGenerator konvoluttGenerator;
 
-    @Autowired
-    FPFordelConnection fpfordel;
-
     @Before
     public void setAuthoriztion() {
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
@@ -70,17 +65,6 @@ public class TestRoundtripSerialization {
                     createSignedJWT("12345678910").serialize());
             return execution.execute(request, body);
         }));
-    }
-
-    // @Test
-    public void testKonvolutt() throws Exception {
-
-        Søknad søknad = TestUtils.foreldrepengerSøknad();
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad,
-                new AktorId("42"),
-                refGenerator.create());
-        fpfordel.send(konvolutt);
-
     }
 
     @Test

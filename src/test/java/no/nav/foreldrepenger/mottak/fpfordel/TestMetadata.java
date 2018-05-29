@@ -29,5 +29,4 @@ public class TestMetadata {
         mapper.registerModules(new JavaTimeModule(), new Jdk8Module(), new CustomSerializerModule());
         return mapper;
     }
-
 }

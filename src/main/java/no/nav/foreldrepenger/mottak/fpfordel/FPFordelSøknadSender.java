@@ -40,7 +40,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             LOG.info("Sender søknad til FPFordel");
             return new Kvittering(ref, connection.send(generator.payload(søknad, aktorId, ref)));
         }
-        LOG.info("Leveranse til FPFordel er deaktivert, ingenting å sende");
+        LOG.info("Leveranse av søknad til FPFordel er deaktivert, ingenting å sende");
         return IKKE_SENDT;
     }
 

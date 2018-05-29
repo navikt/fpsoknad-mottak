@@ -22,13 +22,38 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 public class ForeldrepengerTestUtils {
 
     private static final List<Vedlegg> INGEN = Collections.emptyList();
-    public static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.påkrevdVedlegg());
+    public static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.valgfrittVedlegg());
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 
     public static Søknad søknad() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
     }
+
+    /*
+     *
+     * public static Foreldrepenger foreldrepenger() { return
+     * Foreldrepenger.builder() .annenForelder(norskFPForelder())
+     * .relasjonTilBarn(relasjonTilBarnFP())
+     * .dekningsgrad(Dekningsgrad.GRAD100).build(); }
+     *
+     * private static RelasjonTilBarnMedVedlegg relasjonTilBarnFP() { return new
+     * Fødsel(1, LocalDate.now()); }
+     *
+     * private static
+     * no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder
+     * norskFPForelder() { return new
+     * no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder(new
+     * AktorId("42")); }
+     *
+     * public static Søknad foreldrepengerSøknad() { Søknad s = new
+     * Søknad(LocalDateTime.now(), søker(), foreldrepenger(),
+     * ForeldrepengerTestUtils.ETT_VEDLEGG);
+     * s.setBegrunnelseForSenSøknad("Glemte hele ungen");
+     * s.setTilleggsopplysninger("Intet å tilføye");
+     *
+     * return s; }
+     */
 
     static Foreldrepenger foreldrePenger() {
         return Foreldrepenger.builder()

@@ -55,7 +55,11 @@ public class FPFordelKonvoluttGenerator {
 
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger id) {
         builder.part(VEDLEGG, encode(vedlegg.getVedlegg()), APPLICATION_PDF)
-                .headers(new VedleggHeaderConsumer(vedlegg.getMetadata().getBeskrivelse()));
+                .headers(headers(vedlegg));
+    }
+
+    private static VedleggHeaderConsumer headers(Vedlegg vedlegg) {
+        return new VedleggHeaderConsumer(vedlegg.getMetadata().getBeskrivelse());
     }
 
     private static String id(AtomicInteger id) {

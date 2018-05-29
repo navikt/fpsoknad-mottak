@@ -11,7 +11,7 @@
     <jaxb:bindings schemaLocation="../xsd/soeknad.xsd" node="/xsd:schema">
     <jaxb:bindings node="xs:complexType[@name='Soeknad']">
 			<annox:annotate>
-				<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="soeknad" namespace="http://nav.no/vedtak/felles/xml/soeknad/v1"/>
+				<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="soeknad" namespace="urn:no:nav:vedtak:felles:xml:soeknad:v1"/>
 			</annox:annotate>
 		</jaxb:bindings>
         <jaxb:schemaBindings/>

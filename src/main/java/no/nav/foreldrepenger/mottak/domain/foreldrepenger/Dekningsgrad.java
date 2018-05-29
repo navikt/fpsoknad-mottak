@@ -2,16 +2,16 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 public enum Dekningsgrad {
 
-    GRAD80("80%"), GRAD100("100%");
+    GRAD80("80"), GRAD100("100");
 
-    private final String txt;
+    private final String kode;
 
-    Dekningsgrad(String txt) {
-        this.txt = txt;
+    Dekningsgrad(String kode) {
+        this.kode = kode;
     }
 
-    public String txt() {
-        return txt;
+    public String kode() {
+        return kode;
     }
 
 }

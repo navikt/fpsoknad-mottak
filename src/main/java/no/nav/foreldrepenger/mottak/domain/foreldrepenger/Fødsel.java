@@ -26,6 +26,10 @@ public class Fødsel extends RelasjonTilBarnMedVedlegg {
         this(1, Collections.singletonList(fødselsdato), Collections.emptyList());
     }
 
+    public Fødsel(int antallBarn, LocalDate fødselsDato) {
+        this(antallBarn, Collections.singletonList(fødselsDato), Collections.emptyList());
+    }
+
     @JsonCreator
     public Fødsel(@JsonProperty("antallBarn") int antallBarn,
             @JsonProperty("fødselsdato") List<LocalDate> fødselsdato, List<Vedlegg> vedlegg) {

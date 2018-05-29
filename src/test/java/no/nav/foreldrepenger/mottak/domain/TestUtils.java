@@ -33,9 +33,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+//import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 
 public class TestUtils {
 
@@ -44,17 +42,6 @@ public class TestUtils {
                 bytes[1] == 0x50 &&
                 bytes[2] == 0x44 &&
                 bytes[3] == 0x46;
-    }
-
-    public static Foreldrepenger foreldrepenger() {
-        return Foreldrepenger.builder().dekningsgrad(Dekningsgrad.GRAD100).build();
-    }
-
-    public static Søknad foreldrepengerSøknad() {
-        Søknad s = new Søknad(LocalDateTime.now(), søker(), foreldrepenger(), ForeldrepengerTestUtils.ETT_VEDLEGG);
-        s.setBegrunnelseForSenSøknad("Glemte hele ungen");
-        s.setTilleggsopplysninger("Intet å tilføye");
-        return s;
     }
 
     public static Søknad engangssøknad(boolean utland) throws IOException {

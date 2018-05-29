@@ -184,7 +184,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
     private Paragraph dekningsgrad(Dekningsgrad dekningsgrad) {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("dekningsgrad")));
-        paragraph.add(regularParagraph(dekningsgrad.txt()));
+        paragraph.add(regularParagraph(dekningsgrad.kode() + "%"));
         return paragraph;
     }
 
