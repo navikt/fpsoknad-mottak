@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,7 +20,7 @@ public class UtenlandskArbeidsforhold extends Arbeidsforhold {
 
     @Builder
     private UtenlandskArbeidsforhold(String arbeidsgiverNavn, String bekreftelseRelasjon, ÅpenPeriode periode,
-            List<Vedlegg> vedlegg, CountryCode land, boolean harHattArbeidIPerioden) {
+            List<String> vedlegg, CountryCode land, boolean harHattArbeidIPerioden) {
         super(arbeidsgiverNavn, bekreftelseRelasjon, periode, vedlegg == null ? Collections.emptyList() : vedlegg);
         this.land = land;
         this.harHattArbeidIPerioden = harHattArbeidIPerioden;

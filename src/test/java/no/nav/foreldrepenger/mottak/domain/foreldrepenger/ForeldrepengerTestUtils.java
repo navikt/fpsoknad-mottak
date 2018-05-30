@@ -23,37 +23,13 @@ public class ForeldrepengerTestUtils {
 
     private static final List<Vedlegg> INGEN = Collections.emptyList();
     public static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.valgfrittVedlegg());
+    public static final List<String> ETT_VEDLEGG_REF = Collections.singletonList("42");
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 
     public static Søknad søknad() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
     }
-
-    /*
-     *
-     * public static Foreldrepenger foreldrepenger() { return
-     * Foreldrepenger.builder() .annenForelder(norskFPForelder())
-     * .relasjonTilBarn(relasjonTilBarnFP())
-     * .dekningsgrad(Dekningsgrad.GRAD100).build(); }
-     *
-     * private static RelasjonTilBarnMedVedlegg relasjonTilBarnFP() { return new
-     * Fødsel(1, LocalDate.now()); }
-     *
-     * private static
-     * no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder
-     * norskFPForelder() { return new
-     * no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder(new
-     * AktorId("42")); }
-     *
-     * public static Søknad foreldrepengerSøknad() { Søknad s = new
-     * Søknad(LocalDateTime.now(), søker(), foreldrepenger(),
-     * ForeldrepengerTestUtils.ETT_VEDLEGG);
-     * s.setBegrunnelseForSenSøknad("Glemte hele ungen");
-     * s.setTilleggsopplysninger("Intet å tilføye");
-     *
-     * return s; }
-     */
 
     static Foreldrepenger foreldrePenger() {
         return Foreldrepenger.builder()
@@ -106,6 +82,7 @@ public class ForeldrepengerTestUtils {
 
     static NorskArbeidsforhold norskArbeidsforhold() {
         return NorskArbeidsforhold.builder()
+                .vedlegg(ETT_VEDLEGG_REF)
                 .arbeidsgiverNavn("boss")
                 .bekreftelseRelasjon("relasjon")
                 .type(ArbeidsforholdType.ORDINÆRT)
@@ -150,6 +127,7 @@ public class ForeldrepengerTestUtils {
 
     static UtenlandskArbeidsforhold utenlandskArbeidsforhold() {
         return UtenlandskArbeidsforhold.builder()
+                .vedlegg(ETT_VEDLEGG_REF)
                 .arbeidsgiverNavn("boss")
                 .bekreftelseRelasjon("relasjon")
                 .harHattArbeidIPerioden(true)
@@ -162,13 +140,13 @@ public class ForeldrepengerTestUtils {
     }
 
     static UttaksPeriode uttaksPeriode() {
-        return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG,
+        return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
                 FEDREKVOTE, true, MorsAktivitetstype.ARBEID_OG_UTDANNING);
     }
 
     static UttaksPeriode gradertPeriode() {
         GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
-                ETT_VEDLEGG,
+                ETT_VEDLEGG_REF,
                 FEDREKVOTE, true, MorsAktivitetstype.ARBEID_OG_UTDANNING);
         periode.setArbeidsForholdSomskalGraderes(true);
         periode.setArbeidstidProsent(75d);
@@ -182,17 +160,17 @@ public class ForeldrepengerTestUtils {
     }
 
     static OverføringsPeriode overføringsPeriode() {
-        return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG,
+        return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
                 Overføringsårsak.ALENEOMSORG);
     }
 
     static OppholdsPeriode oppholdsPeriode() {
-        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG,
+        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
                 Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER);
     }
 
     static UtsettelsesPeriode utsettelsesPeriode() {
-        return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG,
+        return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
                 UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARN);
     }
 

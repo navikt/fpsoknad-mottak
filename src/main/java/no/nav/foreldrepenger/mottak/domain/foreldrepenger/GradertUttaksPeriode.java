@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -24,7 +23,7 @@ public class GradertUttaksPeriode extends UttaksPeriode {
     @Builder
     @JsonCreator
     public GradertUttaksPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
-            @JsonProperty("vedlegg") List<Vedlegg> vedlegg,
+            @JsonProperty("vedlegg") List<String> vedlegg,
             @JsonProperty("UttaksperiodeType") UttaksperiodeType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
             @JsonProperty("morsAktivitetsType") MorsAktivitetstype morsAktivitetsType) {

@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 
 @Data
@@ -29,5 +28,5 @@ public abstract class LukketPeriodeMedVedlegg {
 
     private final LocalDate fom;
     private final LocalDate tom;
-    private final List<Vedlegg> vedlegg;
+    private final List<String> vedlegg;
 }

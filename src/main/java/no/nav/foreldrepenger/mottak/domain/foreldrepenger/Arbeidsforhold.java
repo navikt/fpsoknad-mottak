@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
@@ -22,5 +21,5 @@ public abstract class Arbeidsforhold {
     private final String arbeidsgiverNavn;
     private final String beskrivelseRelasjon;
     private final ÅpenPeriode periode;
-    private final List<Vedlegg> vedlegg;
+    private final List<String> vedlegg;
 }

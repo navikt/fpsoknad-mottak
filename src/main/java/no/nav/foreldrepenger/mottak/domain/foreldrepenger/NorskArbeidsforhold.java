@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,7 +17,7 @@ public class NorskArbeidsforhold extends Arbeidsforhold {
 
     @Builder
     private NorskArbeidsforhold(String arbeidsgiverNavn, String bekreftelseRelasjon, ÅpenPeriode periode,
-            List<Vedlegg> vedlegg, String orgNummer, ArbeidsforholdType type) {
+            List<String> vedlegg, String orgNummer, ArbeidsforholdType type) {
         super(arbeidsgiverNavn, bekreftelseRelasjon, periode, vedlegg == null ? Collections.emptyList() : vedlegg);
         this.orgNummer = orgNummer;
         this.type = type;

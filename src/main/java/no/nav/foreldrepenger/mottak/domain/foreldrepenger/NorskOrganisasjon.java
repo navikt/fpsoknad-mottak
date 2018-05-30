@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -23,7 +22,7 @@ public class NorskOrganisasjon extends EgenNæring {
     @Builder
     private NorskOrganisasjon(CountryCode arbeidsland, Virksomhetstype virksomhetsType, ÅpenPeriode periode,
             String beskrivelseRelasjon, Regnskapsfører regnskapsfører, boolean erNyOpprettet, boolean erVarigEndring,
-            long næringsinntektBrutto, LocalDate endringsDato, String beskrivelseEndring, List<Vedlegg> vedlegg,
+            long næringsinntektBrutto, LocalDate endringsDato, String beskrivelseEndring, List<String> vedlegg,
             String orgNummer, String orgName) {
         super(arbeidsland, virksomhetsType, periode, beskrivelseRelasjon, regnskapsfører, erNyOpprettet, erVarigEndring,
                 næringsinntektBrutto, endringsDato, beskrivelseEndring,

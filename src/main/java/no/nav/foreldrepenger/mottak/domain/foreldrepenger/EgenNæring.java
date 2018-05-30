@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
@@ -33,6 +32,6 @@ public abstract class EgenNæring {
     private final long næringsinntektBrutto;
     private final LocalDate endringsDato;
     private final String beskrivelseEndring;
-    private final List<Vedlegg> vedlegg;
+    private final List<String> vedlegg;
 
 }
