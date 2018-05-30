@@ -1,20 +1,19 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
 import static java.util.stream.Collectors.joining;
+import static org.springframework.util.StreamUtils.copyToByteArray;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
-
-import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.StreamUtils;
 
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
@@ -26,52 +25,56 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 
 public abstract class AbstractPDFGenerator {
 
-    private final Font HEADING = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
-    private final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
+    private static final String LOGO = "pdf/nav-logo.png";
+    private static final Font HEADING = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
+    private static final Font NORMAL = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL);
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
-    @Inject
-    @Qualifier("landkoder")
-    private MessageSource landkoder;
+    private final MessageSource landkoder;
 
-    @Inject
-    @Qualifier("kvitteringstekster")
-    private MessageSource kvitteringstekster;
+    private final MessageSource kvitteringstekster;
+    private final Locale locale;
 
-    protected void logo(Document document)
+    public AbstractPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
+            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster, Locale locale) {
+        this.landkoder = landkoder;
+        this.kvitteringstekster = kvitteringstekster;
+        this.locale = locale;
+    }
+
+    protected static void logo(Document document)
             throws IOException, DocumentException {
         Image logo = logo();
         logo.setAlignment(Image.ALIGN_CENTER);
         document.add(logo);
     }
 
-    protected Paragraph heading(String txt) {
+    protected static Paragraph heading(String txt) {
         return paragraph(txt, HEADING);
     }
 
-    protected Paragraph regularParagraph(String txt) {
+    protected static Paragraph regularParagraph(String txt) {
         return paragraph(txt, NORMAL);
     }
 
-    protected Paragraph center(Paragraph paragraph) {
+    protected static Paragraph center(Paragraph paragraph) {
         paragraph.setAlignment(Element.ALIGN_CENTER);
         return paragraph;
     }
 
-    protected Element blankLine() {
+    protected static Element blankLine() {
         Paragraph p = new Paragraph();
         p.add(Chunk.NEWLINE);
         return p;
     }
 
-    protected Element separator() {
+    protected static Element separator() {
         Paragraph p = new Paragraph();
         DottedLineSeparator dottedline = new DottedLineSeparator();
         dottedline.setGap(2f);
@@ -89,7 +92,7 @@ public abstract class AbstractPDFGenerator {
         return getMessage(key, kvitteringstekster, values);
     }
 
-    protected com.itextpdf.text.List bulletedList(java.util.List<String> elements) {
+    protected static com.itextpdf.text.List bulletedList(java.util.List<String> elements) {
         com.itextpdf.text.List bulletedList = new com.itextpdf.text.List();
         bulletedList.setListSymbol(new Chunk("\u2022", new Font()));
         bulletedList.setSymbolIndent(12);
@@ -97,26 +100,31 @@ public abstract class AbstractPDFGenerator {
         return bulletedList;
     }
 
-    protected String navnToString(Navn navn) {
-        return (Optional.ofNullable(navn.getFornavn()).orElse("") + " "
-                + Optional.ofNullable(navn.getMellomnavn()).orElse("") + " "
-                + Optional.ofNullable(navn.getEtternavn()).orElse("")).trim();
+    protected static String navnToString(Navn navn) {
+        return (formatNavn(navn.getFornavn()) + " "
+                + formatNavn(navn.getMellomnavn()) + " "
+                + formatNavn(navn.getEtternavn()) + " ").trim();
     }
 
-    protected String dato(LocalDate localDate) {
+    private static String formatNavn(String navn) {
+        return Optional.ofNullable(navn).orElse("");
+    }
+
+    protected static String dato(LocalDate localDate) {
         return localDate.format(DATE_FMT);
     }
 
-    protected String dato(List<LocalDate> dates) {
-        return dates.stream().map(d -> dato(d)).collect(joining(", "));
+    protected static String dato(List<LocalDate> dates) {
+        return dates.stream()
+                .map(d -> dato(d))
+                .collect(joining(", "));
     }
 
-    private Image logo() throws BadElementException, IOException {
-        return Image.getInstance(
-                StreamUtils.copyToByteArray(new ClassPathResource("pdf/nav-logo.png").getInputStream()));
+    private static Image logo() throws BadElementException, IOException {
+        return Image.getInstance(copyToByteArray(new ClassPathResource(LOGO).getInputStream()));
     }
 
-    private Paragraph paragraph(String txt, Font font) {
+    private static Paragraph paragraph(String txt, Font font) {
         return new Paragraph(new Chunk(txt, font));
     }
 
@@ -126,7 +134,12 @@ public abstract class AbstractPDFGenerator {
 
     private String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
         ((ResourceBundleMessageSource) messages).setDefaultEncoding("utf-8");
-        return messages.getMessage(key, values, defaultValue, CountryCode.NO.toLocale());
+        return messages.getMessage(key, values, defaultValue, locale);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [landkoder=" + landkoder + ", kvitteringstekster=" + kvitteringstekster
+                + "]";
+    }
 }

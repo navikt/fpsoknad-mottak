@@ -48,7 +48,8 @@ public class FPFordelKonvoluttGenerator {
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
-        søknad.getVedlegg().stream().forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
+        søknad.getVedlegg().stream()
+                .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
         return new HttpEntity<>(builder.build(), headers());
     }

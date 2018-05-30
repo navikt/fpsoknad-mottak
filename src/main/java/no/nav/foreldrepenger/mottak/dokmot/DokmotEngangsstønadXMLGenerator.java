@@ -126,9 +126,12 @@ public class DokmotEngangsstønadXMLGenerator {
                 .withTidligereOppholdUtenlands(tidligereOppholdUtenlandsFra(medlemsskap.getTidligereOppholdsInfo()))
                 .withFremtidigOppholdNorge(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
                 .withFremtidigOppholdUtenlands(framtidigOppholdUtenlandsFra(medlemsskap.getFramtidigOppholdsInfo()));
-        return isTermin
-                ? tilknytning.withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
-                : tilknytning;
+        return tilknytning.withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge());
+        /*
+         * return isTermin ?
+         * tilknytning.withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().
+         * isFødselNorge()) : tilknytning;
+         */
 
     }
 

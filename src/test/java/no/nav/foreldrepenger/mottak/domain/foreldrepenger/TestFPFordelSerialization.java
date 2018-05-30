@@ -9,8 +9,6 @@ import static no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator.M
 import static no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator.VEDLEGG;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
@@ -22,9 +20,9 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
@@ -35,6 +33,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
+import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TestUtils;
@@ -47,12 +46,10 @@ import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureJsonTesters
+
 public class TestFPFordelSerialization {
 
     private static final ObjectMapper mapper = mapper();
-
-    @Mock
-    ForeldrepengerPDFGenerator pdfGenerator;
 
     private static ObjectMapper mapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -80,11 +77,10 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() throws Exception {
-        when(pdfGenerator.generate(any(Søknad.class))).thenReturn(new String("42").getBytes());
+        MottakConfiguration mottakConfiguration = new MottakConfiguration();
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
-                new FPFordelSøknadGenerator(), pdfGenerator);
-
+                new FPFordelSøknadGenerator(), new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(), mottakConfiguration.kvitteringstekster()));
         Søknad søknad = søknad(valgfrittVedlegg());
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad,
                 new AktorId("42"), new UUIDIdGenerator("jalla").create());
@@ -95,12 +91,17 @@ public class TestFPFordelSerialization {
         assertEquals(1, metadata.size());
         assertEquals(2, hoveddokumenter.size());
         assertEquals(1, vedlegg.size());
-        assertEquals(konvolutt.getHeaders().get(CONTENT_TYPE).get(0), MULTIPART_FORM_DATA_VALUE);
-        assertEquals(metadata.get(0).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_JSON_UTF8_VALUE);
-        assertEquals(hoveddokumenter.get(0).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_XML_VALUE);
-        assertEquals(hoveddokumenter.get(1).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_PDF_VALUE);
-        assertEquals(vedlegg.get(0).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_PDF_VALUE);
+        assertMediaType(konvolutt, MULTIPART_FORM_DATA_VALUE);
+        assertMediaType(metadata.get(0), APPLICATION_JSON_UTF8_VALUE);
+        assertMediaType(hoveddokumenter.get(0), APPLICATION_XML_VALUE);
+        assertMediaType(hoveddokumenter.get(1), APPLICATION_PDF_VALUE);
+        assertTrue(TestUtils.hasPdfSignature(Base64.getDecoder().decode((byte[]) hoveddokumenter.get(1).getBody())));
+        assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
         assertTrue(TestUtils.hasPdfSignature(Base64.getDecoder().decode((byte[]) vedlegg.get(0).getBody())));
+    }
+
+    private static void assertMediaType(HttpEntity<?> entity, String type) {
+        assertEquals(entity.getHeaders().get(CONTENT_TYPE).get(0), type);
     }
 
 }

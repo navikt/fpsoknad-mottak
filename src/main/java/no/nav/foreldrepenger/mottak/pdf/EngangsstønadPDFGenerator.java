@@ -1,25 +1,37 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.*;
+
+import no.nav.foreldrepenger.mottak.domain.KjentForelder;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import org.springframework.stereotype.Service;
-
-import java.io.ByteArrayOutputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
+
+    public EngangsstønadPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster) {
+        super(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
+    }
 
     public byte[] generate(Søknad søknad) {
 
@@ -129,10 +141,10 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
     private void omBarn(Engangsstønad stønad, Document document) throws DocumentException {
         document.add(heading(fromMessageSource("ombarn")));
         document.add(regularParagraph(
-            fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn())));
+                fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn())));
     }
 
-    private void søker(Søknad søknad, Document document) throws DocumentException {
+    private static void søker(Søknad søknad, Document document) throws DocumentException {
         document.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
         String navn = navnToString(søknad.getSøker().getNavn());
         if (!navn.isEmpty()) {
@@ -155,26 +167,25 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
                 regularParagraph(fromMessageSource("termindato", dato(ff.getTerminDato()))));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
             document.add(regularParagraph(
-                fromMessageSource("termindatotekst", dato(ff.getUtstedtDato()))));
+                    fromMessageSource("termindatotekst", dato(ff.getUtstedtDato()))));
         }
     }
 
-    private void blankLine(Document document) throws DocumentException {
+    private static void blankLine(Document document) throws DocumentException {
         document.add(blankLine());
     }
 
-    private boolean erFremtidigFødsel(Engangsstønad stønad) {
+    private static boolean erFremtidigFødsel(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof FremtidigFødsel;
     }
 
-    private boolean erFødt(Engangsstønad stønad) {
+    private static boolean erFødt(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof Fødsel;
     }
 
-    private String countryName(Boolean b) {
+    private static String countryName(Boolean b) {
         return b ? "Norge" : "utlandet";
     }
-
 
     private List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {
         if (opphold.isEmpty()) {
@@ -190,7 +201,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
         return countryName(opphold.getLand().getAlpha2(), opphold.getLand().getName())
                 + ": "
                 + dato(opphold.getVarighet().getFom()) + " - "
-                + dato(opphold.getVarighet().getTom())    ;
+                + dato(opphold.getVarighet().getTom());
     }
 
 }

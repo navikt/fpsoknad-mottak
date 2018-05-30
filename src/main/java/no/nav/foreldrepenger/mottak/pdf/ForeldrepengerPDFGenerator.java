@@ -8,12 +8,14 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -40,6 +42,10 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 
 @Component
 public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
+
+    public ForeldrepengerPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster) {
+        super(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
 
@@ -80,7 +86,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         }
     }
 
-    private Element søker(Søknad søknad) {
+    private static Element søker(Søknad søknad) {
         Paragraph p = new Paragraph();
         p.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
         String navn = navn(søknad.getSøker().getNavn());
