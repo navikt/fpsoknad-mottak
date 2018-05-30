@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.oppslag.lookup;
 
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-import javax.inject.Inject;
-
+import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.ID;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
+import no.nav.security.spring.oidc.validation.api.Unprotected;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.ID;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Person;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.PersonClient;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.SøkerInformasjon;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
-import no.nav.security.spring.oidc.validation.api.Unprotected;
+import javax.inject.Inject;
+
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -33,14 +29,12 @@ public class OppslagController {
 
     private static final Logger LOG = getLogger(OppslagController.class);
 
-    @Inject
-    private PersonClient personClient;
 
     @Inject
     private AktorIdClient aktorClient;
 
     @Inject
-    private CoordinatedLookup personInfo;
+    private CoordinatedLookup lookup;
 
     @Inject
     private OIDCRequestContextHolder contextHolder;
@@ -53,19 +47,11 @@ public class OppslagController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity<SøkerInformasjon> gimmeAllYouGot() {
+    public ResponseEntity<AggregatedLookupResults> gimmeAllYouGot() {
         Fodselsnummer fnr = fnrFromClaims();
-        AktorId aktorid = aktorClient.aktorIdForFnr(fnr);
-        Person person = personClient.hentPersonInfo(new ID(aktorid, fnr));
-        AggregatedLookupResults results = personInfo.gimmeAllYouGot(new ID(aktorid, fnr));
-        return new ResponseEntity<>(
-                new SøkerInformasjon(
-                        person,
-                        results.getInntekt(),
-                        results.getYtelser(),
-                        results.getArbeidsforhold(),
-                        results.getMedlPerioder()),
-                OK);
+        AktorId aktorid = aktør(fnr);
+        AggregatedLookupResults results = lookup.gimmeAllYouGot(new ID(aktorid, fnr));
+        return new ResponseEntity<>(results, OK);
     }
 
     @GetMapping(value = "/aktor")
@@ -82,11 +68,8 @@ public class OppslagController {
         return new Fodselsnummer(fnrFromClaims);
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [personClient=" + personClient + ", aktorClient=" + aktorClient
-                + ", personInfo=" + personInfo
-                + "]";
+    private AktorId aktør(Fodselsnummer fnr) {
+        return aktorClient.aktorIdForFnr(fnr);
     }
 
 }
