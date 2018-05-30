@@ -9,6 +9,7 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +30,10 @@ public class ForeldrepengerTestUtils {
 
     public static Søknad søknad() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
+    }
+
+    public static Søknad søknad(Vedlegg... vedlegg) {
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), Arrays.<Vedlegg>asList(vedlegg));
     }
 
     static Foreldrepenger foreldrePenger() {

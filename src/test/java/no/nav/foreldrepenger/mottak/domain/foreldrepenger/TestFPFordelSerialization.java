@@ -2,8 +2,23 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static no.nav.foreldrepenger.mottak.domain.TestUtils.valgfrittVedlegg;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
+import static no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
+import static no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator.METADATA;
+import static no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator.VEDLEGG;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
+import java.util.Base64;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +37,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelManuellKvittering;
@@ -37,9 +53,6 @@ public class TestFPFordelSerialization {
 
     @Mock
     ForeldrepengerPDFGenerator pdfGenerator;
-
-    @Mock
-    FPFordelSøknadGenerator søknadGenerator;
 
     private static ObjectMapper mapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -60,10 +73,8 @@ public class TestFPFordelSerialization {
     @Test
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
-        Søknad søknad = ForeldrepengerTestUtils.søknad();
-        FPFordelSøknadGenerator generator = new FPFordelSøknadGenerator();
-        String xml = generator.toXML(søknad, aktørId);
-        // Soeknad model = generator.toFPFordelModel(søknad, aktørId);
+        Søknad søknad = søknad();
+        String xml = new FPFordelSøknadGenerator().toXML(søknad, aktørId);
         System.out.println(xml);
     }
 
@@ -74,11 +85,22 @@ public class TestFPFordelSerialization {
                 new FPFordelMetdataGenerator(mapper),
                 new FPFordelSøknadGenerator(), pdfGenerator);
 
-        Søknad søknad = ForeldrepengerTestUtils.søknad();
+        Søknad søknad = søknad(valgfrittVedlegg());
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad,
                 new AktorId("42"), new UUIDIdGenerator("jalla").create());
-        System.out.println(konvolutt);
-
+        assertEquals(3, konvolutt.getBody().size());
+        List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
+        List<HttpEntity<?>> hoveddokumenter = konvolutt.getBody().get(HOVEDDOKUMENT);
+        List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
+        assertEquals(1, metadata.size());
+        assertEquals(2, hoveddokumenter.size());
+        assertEquals(1, vedlegg.size());
+        assertEquals(konvolutt.getHeaders().get(CONTENT_TYPE).get(0), MULTIPART_FORM_DATA_VALUE);
+        assertEquals(metadata.get(0).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_JSON_UTF8_VALUE);
+        assertEquals(hoveddokumenter.get(0).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_XML_VALUE);
+        assertEquals(hoveddokumenter.get(1).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_PDF_VALUE);
+        assertEquals(vedlegg.get(0).getHeaders().get(CONTENT_TYPE).get(0), APPLICATION_PDF_VALUE);
+        assertTrue(TestUtils.hasPdfSignature(Base64.getDecoder().decode((byte[]) vedlegg.get(0).getBody())));
     }
 
 }

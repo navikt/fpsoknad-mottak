@@ -24,10 +24,10 @@ import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 @Component
 public class FPFordelKonvoluttGenerator {
 
-    private static final String VEDLEGG = "vedlegg";
-    private static final String METADATA = "metadata";
-    private static final String CONTENT_ID = "Content-ID";
-    private static final String HOVEDDOKUMENT = "hoveddokument";
+    public static final String VEDLEGG = "vedlegg";
+    public static final String METADATA = "metadata";
+    public static final String CONTENT_ID = "Content-ID";
+    public static final String HOVEDDOKUMENT = "hoveddokument";
     private final FPFordelMetdataGenerator metadataGenerator;
     private final FPFordelSøknadGenerator søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;
