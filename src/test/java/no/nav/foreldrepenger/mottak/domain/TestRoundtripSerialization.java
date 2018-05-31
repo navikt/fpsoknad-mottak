@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -39,7 +40,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplicationLocal.class)
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = "preprod,dev")
-// @AutoConfigureWireMock(port = 0)
+@AutoConfigureWireMock(port = 0)
 public class TestRoundtripSerialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestRoundtripSerialization.class);

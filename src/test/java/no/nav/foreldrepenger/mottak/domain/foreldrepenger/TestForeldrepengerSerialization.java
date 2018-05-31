@@ -65,6 +65,11 @@ public class TestForeldrepengerSerialization {
     }
 
     @Test
+    public void testEttersending() throws Exception {
+        test(new Ettersending("42", ForeldrepengerTestUtils.ETT_VEDLEGG));
+    }
+
+    @Test
     public void testSøknad() {
         test(søknad());
     }

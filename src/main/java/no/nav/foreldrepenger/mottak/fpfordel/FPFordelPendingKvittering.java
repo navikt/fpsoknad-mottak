@@ -1,19 +1,52 @@
 package no.nav.foreldrepenger.mottak.fpfordel;
 
-import java.time.Period;
+import java.time.Duration;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FPFordelPendingKvittering extends FPFordelKvittering {
 
     static final String STATUS = "PENDING";
-    private final Period pollInterval;
+    private final Duration pollInterval;
 
-    public Period getPollInterval() {
+    public Duration getPollInterval() {
         return pollInterval;
     }
 
-    public FPFordelPendingKvittering(Period pollInterval) {
+    @JsonCreator
+    public FPFordelPendingKvittering(@JsonProperty("pollInterval") Duration pollInterval) {
         super(STATUS);
         this.pollInterval = pollInterval;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pollInterval);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FPFordelPendingKvittering other = (FPFordelPendingKvittering) obj;
+        if (pollInterval == null) {
+            if (other.pollInterval != null)
+                return false;
+        }
+        else if (!pollInterval.equals(other.pollInterval))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [pollInterval=" + pollInterval + "]";
     }
 
 }

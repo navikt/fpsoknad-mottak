@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadSender;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
@@ -34,6 +35,12 @@ public class FPFordelMottakController {
     @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         return ok(sender.sendSøknad(søknad, aktørIdService.getAktørId()));
+    }
+
+    @PostMapping(value = "/ettersend")
+    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+    public ResponseEntity<Kvittering> send(@Valid @RequestBody Ettersending ettersending) {
+        return ok(sender.sendEttersending(ettersending, aktørIdService.getAktørId()));
     }
 
     @Override

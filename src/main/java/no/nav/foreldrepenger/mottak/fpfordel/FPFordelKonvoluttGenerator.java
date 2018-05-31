@@ -19,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @Component
@@ -54,6 +55,13 @@ public class FPFordelKonvoluttGenerator {
         return new HttpEntity<>(builder.build(), headers());
     }
 
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, AktorId aktørId,
+            String ref) {
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part(METADATA, metadata(ettersending, aktørId, ref), APPLICATION_JSON_UTF8);
+        return new HttpEntity<>(builder.build(), headers());
+    }
+
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger id) {
         builder.part(VEDLEGG, encode(vedlegg.getVedlegg()), APPLICATION_PDF)
                 .headers(headers(vedlegg));
@@ -75,6 +83,10 @@ public class FPFordelKonvoluttGenerator {
 
     private String metadata(Søknad søknad, AktorId aktørId, String ref) {
         return metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktørId, ref));
+    }
+
+    private String metadata(Ettersending ettersending, AktorId aktørId, String ref) {
+        return metadataGenerator.generateMetadata(new FPFordelMetadata(ettersending, aktørId, ref));
     }
 
     private byte[] pdfHovedDokument(Søknad søknad) {
@@ -107,4 +119,5 @@ public class FPFordelKonvoluttGenerator {
             headers.setContentDispositionFormData(VEDLEGG, filNavn);
         }
     }
+
 }

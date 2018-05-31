@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.dokmot;
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 
 import javax.jms.TextMessage;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
 public class DokmotJMSSender implements SøknadSender {
@@ -44,6 +46,11 @@ public class DokmotJMSSender implements SøknadSender {
         }
         LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
         return IKKE_SENDT;
+    }
+
+    @Override
+    public Kvittering sendEttersending(@Valid Ettersending ettersending, AktorId aktørId) {
+        throw new IllegalArgumentException("Ettersending for engangsstønad ikke implementert");
     }
 
     @Override

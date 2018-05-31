@@ -10,13 +10,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelMetdataGenerator.Files;
 
 @JsonPropertyOrder({ "forsendelsesId", "brukerId", "forsendelseMottatt", "filer" })
@@ -25,14 +24,27 @@ public class FPFordelMetadata {
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private final LocalDateTime forsendelseMottatt;
     private final String brukerId;
-    @JsonInclude(value = Include.NON_EMPTY)
     private final List<Files> filer;
+    private final String saksNr;
+
+    public FPFordelMetadata(Ettersending ettersending, AktorId aktorId, String ref) {
+        this(files(ettersending), aktorId, ref, ettersending.getSaksnr());
+    }
+
+    public String getSaksNr() {
+        return saksNr;
+    }
 
     public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref) {
+        this(files(søknad), aktorId, ref, null);
+    }
+
+    public FPFordelMetadata(List<Files> filer, AktorId aktorId, String ref, String saksnr) {
         this.forsendelsesId = ref;
         this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();
-        this.filer = files(søknad);
+        this.filer = filer;
+        this.saksNr = saksnr;
     }
 
     public List<Files> getFiler() {
@@ -58,6 +70,12 @@ public class FPFordelMetadata {
                 .map(s -> vedlegg(s, id))
                 .collect(toList()));
         return dokumenter;
+    }
+
+    private static List<Files> files(Ettersending ettersending) {
+        AtomicInteger id = new AtomicInteger(1);
+        return ettersending.getVedlegg().stream().map(s -> vedlegg(s, id)).collect(toList());
+
     }
 
     private static Files søknad(final AtomicInteger id) {

@@ -2,15 +2,20 @@ package no.nav.foreldrepenger.mottak.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
 public class FPFordelSøknadSender implements SøknadSender {
@@ -34,13 +39,24 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering sendSøknad(Søknad søknad, AktorId aktorId) {
+    public Kvittering sendSøknad(Søknad søknad, AktorId aktørId) {
+        String ref = idGenerator.getOrCreate();
+        return send("søknad", ref, generator.payload(søknad, aktørId, ref), aktørId);
+    }
+
+    @Override
+    public Kvittering sendEttersending(@Valid Ettersending ettersending, AktorId aktørId) {
+        String ref = idGenerator.getOrCreate();
+        return send("vedlegg", ref, generator.payload(ettersending, aktørId, ref), aktørId);
+    }
+
+    private Kvittering send(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload,
+            AktorId aktørId) {
         if (connection.isEnabled()) {
-            String ref = idGenerator.getOrCreate();
-            LOG.info("Sender søknad til FPFordel");
-            return new Kvittering(ref, connection.send(generator.payload(søknad, aktorId, ref)));
+            LOG.info("Sender {} til FPFordel", type);
+            return new Kvittering(ref, connection.send(payload));
         }
-        LOG.info("Leveranse av søknad til FPFordel er deaktivert, ingenting å sende");
+        LOG.info("Sendning av {} til FPFordel er deaktivert, ingenting å sende", type);
         return IKKE_SENDT;
     }
 
@@ -49,4 +65,5 @@ public class FPFordelSøknadSender implements SøknadSender {
         return getClass().getSimpleName() + " [connection=" + connection + ", idGenerator=" + idGenerator
                 + ", generator=" + generator + "]";
     }
+
 }
