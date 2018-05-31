@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
@@ -34,13 +33,11 @@ public class DokmotMottakPreprodController {
     public static final String DOKMOT_PREPROD = "/mottak/preprod";
     private static final Logger LOG = getLogger(DokmotMottakPreprodController.class);
 
-    private final DokmotJMSSender sender;
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
     private final DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator;
 
-    public DokmotMottakPreprodController(DokmotJMSSender sender, DokmotEngangsstønadXMLGenerator søknadGenerator,
+    public DokmotMottakPreprodController(DokmotEngangsstønadXMLGenerator søknadGenerator,
             DokmotEngangsstønadXMLKonvoluttGenerator konvoluttGenerator) {
-        this.sender = sender;
         this.søknadGenerator = søknadGenerator;
         this.konvoluttGenerator = konvoluttGenerator;
     }
@@ -63,8 +60,8 @@ public class DokmotMottakPreprodController {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [sender=" + sender + ", søknadGenerator=" + søknadGenerator
-                + ", konvoluttGenerator=" + konvoluttGenerator + "]";
+        return getClass().getSimpleName() + " [søknadGenerator=" + søknadGenerator + ", konvoluttGenerator="
+                + konvoluttGenerator + "]";
     }
 
 }
