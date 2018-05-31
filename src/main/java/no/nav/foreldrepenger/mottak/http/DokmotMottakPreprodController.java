@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.http;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.http.ResponseEntity.ok;
 
 import java.util.UUID;
 
@@ -10,7 +11,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,18 +48,17 @@ public class DokmotMottakPreprodController {
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> unsecuredPing(@RequestParam("navn") String navn) {
         LOG.info("I was unprotected and pinged");
-        return ResponseEntity.status(HttpStatus.OK).body("Unprotected hello " + navn);
+        return ok().body("Unprotected hello " + navn);
     }
 
     @PostMapping("/søknad")
     public ResponseEntity<String> søknad(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.status(HttpStatus.OK).body(søknadGenerator.toXML(søknad));
+        return ok().body(søknadGenerator.toXML(søknad));
     }
 
     @PostMapping("/konvolutt")
     public ResponseEntity<String> konvolutt(@Valid @RequestBody Søknad søknad) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(konvoluttGenerator.toXML(søknad, UUID.randomUUID().toString()));
+        return ok().body(konvoluttGenerator.toXML(søknad, UUID.randomUUID().toString()));
     }
 
     @Override
