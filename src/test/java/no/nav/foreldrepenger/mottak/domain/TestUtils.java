@@ -33,7 +33,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon;
-//import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 
 public class TestUtils {
 

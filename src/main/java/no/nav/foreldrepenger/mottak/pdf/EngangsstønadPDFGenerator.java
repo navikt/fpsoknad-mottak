@@ -46,6 +46,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
             document.add(center(heading(fromMessageSource("søknad_engang"))));
             søker(søknad, document);
             omBarn(stønad, document);
+
             if (erFremtidigFødsel(stønad)) {
                 fødsel(søknad, stønad, document);
             }
@@ -53,12 +54,11 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
                 født(søknad, stønad, document);
             }
             blankLine(document);
-            medlemsskap(medlemsskap, document);
-            if (erFremtidigFødsel(stønad)) {
-                fødselssted(medlemsskap, document);
-            }
 
+            medlemsskap(medlemsskap, document);
+            fødselssted(medlemsskap, stønad, document);
             blankLine(document);
+
             omFar(stønad, document);
             document.close();
             return baos.toByteArray();
@@ -113,9 +113,16 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
         document.add(regularParagraph(fromMessageSource("fødselsnummer", norskForelder.getFnr().getFnr())));
     }
 
-    private void fødselssted(Medlemsskap medlemsskap, Document document) throws DocumentException {
-        document.add(regularParagraph(fromMessageSource("føde",
+    private void fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad, Document document) throws DocumentException {
+        if (erFremtidigFødsel(stønad)) {
+            document.add(regularParagraph(fromMessageSource("føderi",
                 countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()))));
+        } else {
+            Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
+            boolean inNorway = !stønad.getMedlemsskap().varUtenlands(fødsel.getFødselsdato().get(0));
+            document.add(regularParagraph(fromMessageSource("fødtei", countryName(inNorway))));
+        }
+
     }
 
     private void medlemsskap(Medlemsskap medlemsskap, Document document) throws DocumentException {
