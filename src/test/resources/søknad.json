@@ -144,14 +144,14 @@
       "utenlandsopphold" : [ {
         "land" : "SE",
         "varighet" : {
-          "fom" : "2017-05-31",
-          "tom" : "2017-06-30"
+          "fom" : "2017-06-30",
+          "tom" : "2017-08-30"
         }
       }, {
         "land" : "FI",
         "varighet" : {
           "fom" : "2017-11-30",
-          "tom" : "2018-05-31"
+          "tom" : "2018-06-30"
         }
       } ],
       "fødselNorge" : true,
@@ -159,14 +159,14 @@
       "framtidigUtenlandsopphold" : [ {
         "land" : "GR",
         "varighet" : {
-          "fom" : "2018-05-31",
+          "fom" : "2018-06-30",
           "tom" : "2018-11-30"
         }
       }, {
         "land" : "DE",
         "varighet" : {
           "fom" : "2018-12-30",
-          "tom" : "2019-05-31"
+          "tom" : "2019-06-30"
         }
       } ]
     }
