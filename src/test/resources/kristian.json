@@ -12,7 +12,7 @@
       "arbeidSiste12": "IKKE_ARBEIDET"
     },
     "relasjonTilBarn": {
-      "type": "termin",
+      "type": "fødsel",
       "antallBarn": 1,
       "terminDato": "2018-06-01",
       "utstedtDato": "2018-05-01"
