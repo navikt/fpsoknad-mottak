@@ -22,13 +22,12 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class ForeldrepengerTestUtils {
 
-    private static final List<Vedlegg> INGEN = Collections.emptyList();
     public static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.valgfrittVedlegg());
     public static final List<String> ETT_VEDLEGG_REF = Collections.singletonList("42");
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 
-    public static Søknad søknad() {
+    public static Søknad foreldrepenger() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
     }
 

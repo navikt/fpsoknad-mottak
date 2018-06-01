@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 
 @Service
-public class AktørIdService {
+public class AktørIdService implements AktørIDLookup {
 
     private final RestTemplate template;
     private final URI aktørURI;
@@ -20,6 +20,7 @@ public class AktørIdService {
         this.aktørURI = aktørURI;
     }
 
+    @Override
     public AktorId getAktørId() {
         return template.getForObject(aktørURI, AktorId.class);
     }

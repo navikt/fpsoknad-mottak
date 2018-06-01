@@ -21,6 +21,6 @@ public class ForeldrepengerPDFGeneratorTest {
 
     @Test
     public void signature() throws Exception {
-        assertTrue(TestUtils.hasPdfSignature(gen.generate(ForeldrepengerTestUtils.søknad())));
+        assertTrue(TestUtils.hasPdfSignature(gen.generate(ForeldrepengerTestUtils.foreldrepenger())));
     }
 }

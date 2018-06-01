@@ -24,9 +24,9 @@ public class FPFordelMottakController {
     public static final String FPFORDEL = "/mottak/fpfordel";
 
     private final FPFordelSøknadSender sender;
-    private final AktørIdService aktørIdService;
+    private final AktørIDLookup aktørIdService;
 
-    public FPFordelMottakController(FPFordelSøknadSender sender, AktørIdService aktørIdService) {
+    public FPFordelMottakController(FPFordelSøknadSender sender, AktørIDLookup aktørIdService) {
         this.sender = sender;
         this.aktørIdService = aktørIdService;
     }

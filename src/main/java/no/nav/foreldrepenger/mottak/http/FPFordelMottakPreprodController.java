@@ -23,11 +23,11 @@ import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @Unprotected
 @RestController
-@RequestMapping(path = FPFordelMottakPreprodController.DOKMOT_FPFORDEL)
+@RequestMapping(path = FPFordelMottakPreprodController.PREPROD_FPFORDEL)
 @Profile("preprod")
 public class FPFordelMottakPreprodController {
 
-    public static final String DOKMOT_FPFORDEL = "/mottak/fpfordel/preprod";
+    public static final String PREPROD_FPFORDEL = "/mottak/fpfordel/preprod";
 
     private final FPFordelSøknadGenerator søknadGenerator;
     private final FPFordelKonvoluttGenerator konvoluttGenerator;
@@ -47,6 +47,12 @@ public class FPFordelMottakPreprodController {
     @PostMapping(value = "/søknad", produces = APPLICATION_XML_VALUE)
     public ResponseEntity<String> søknad(@Valid @RequestBody Søknad søknad) {
         return ok().body(søknadGenerator.toXML(søknad, new AktorId("42")));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [søknadGenerator=" + søknadGenerator + ", konvoluttGenerator="
+                + konvoluttGenerator + "]";
     }
 
 }

@@ -43,7 +43,7 @@ public class DokmotMottakPreprodController {
     }
 
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> unsecuredPing(@RequestParam("navn") String navn) {
+    public ResponseEntity<String> insecurePing(@RequestParam("navn") String navn) {
         LOG.info("I was unprotected and pinged");
         return ok().body("Unprotected hello " + navn);
     }
