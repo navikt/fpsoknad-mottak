@@ -91,7 +91,7 @@ public class TestUtils {
     static TidligereOppholdsInformasjon tidligereOppHoldIUtlandet() {
         List<Utenlandsopphold> utenlandOpphold = new ArrayList<>();
         utenlandOpphold.add(new Utenlandsopphold(CountryCode.SE,
-                new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now().minusMonths(6))));
+                new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now().minusMonths(6).minusDays(1))));
         utenlandOpphold.add(new Utenlandsopphold(CountryCode.FI,
                 new LukketPeriode(LocalDate.now().minusMonths(6), LocalDate.now())));
         return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET, utenlandOpphold);
@@ -149,7 +149,7 @@ public class TestUtils {
         opphold.add(new Utenlandsopphold(CountryCode.GR,
                 new LukketPeriode(LocalDate.now(), LocalDate.now().plusMonths(6))));
         opphold.add(new Utenlandsopphold(CountryCode.DE,
-                new LukketPeriode(LocalDate.now().plusMonths(6), LocalDate.now().plusYears(1))));
+                new LukketPeriode(LocalDate.now().plusMonths(6).plusDays(1), LocalDate.now().plusYears(1))));
         return new FramtidigOppholdsInformasjon(true, false, opphold);
     }
 

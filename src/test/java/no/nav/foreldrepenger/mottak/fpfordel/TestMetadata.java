@@ -20,7 +20,7 @@ public class TestMetadata {
 
     @Test
     public void testMetadataSøknad() throws Exception {
-        FPFordelMetadata metadata = new FPFordelMetadata(ForeldrepengerTestUtils.søknad(), new AktorId("42"), "42");
+        FPFordelMetadata metadata = new FPFordelMetadata(ForeldrepengerTestUtils.foreldrepenger(), new AktorId("42"), "42");
         String json = new FPFordelMetdataGenerator(mapper).generateMetadata(metadata, true);
         System.out.println(json);
     }

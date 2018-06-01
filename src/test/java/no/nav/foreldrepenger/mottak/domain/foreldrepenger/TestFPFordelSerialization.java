@@ -87,7 +87,7 @@ public class TestFPFordelSerialization {
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
         FPFordelSøknadGenerator fpFordelSøknadGenerator = new FPFordelSøknadGenerator();
-        String xml = fpFordelSøknadGenerator.toXML(søknad(), aktørId);
+        String xml = fpFordelSøknadGenerator.toXML(ForeldrepengerTestUtils.foreldrepenger(), aktørId);
         System.out.println(xml);
     }
 

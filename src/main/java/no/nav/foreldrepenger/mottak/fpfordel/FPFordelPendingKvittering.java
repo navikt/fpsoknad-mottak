@@ -1,14 +1,18 @@
 package no.nav.foreldrepenger.mottak.fpfordel;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+
 import java.time.Duration;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FPFordelPendingKvittering extends FPFordelKvittering {
 
     static final String STATUS = "PENDING";
+    @JsonFormat(shape = STRING)
     private final Duration pollInterval;
 
     public Duration getPollInterval() {

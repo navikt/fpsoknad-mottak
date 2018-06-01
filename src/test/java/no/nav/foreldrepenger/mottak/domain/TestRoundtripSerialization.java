@@ -1,12 +1,16 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.nesteMåned;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.påkrevdVedlegg;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
 import static no.nav.foreldrepenger.mottak.http.DokmotMottakController.DOKMOT;
 import static no.nav.foreldrepenger.mottak.http.DokmotMottakPreprodController.DOKMOT_PREPROD;
+import static no.nav.foreldrepenger.mottak.http.FPFordelMottakController.FPFORDEL;
+import static no.nav.foreldrepenger.mottak.http.FPFordelMottakPreprodController.PREPROD_FPFORDEL;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.security.spring.oidc.test.JwtTokenGenerator.createSignedJWT;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
@@ -36,6 +40,8 @@ import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
+import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplicationLocal.class)
 @RunWith(SpringRunner.class)
@@ -81,23 +87,38 @@ public class TestRoundtripSerialization {
     }
 
     @Test
+    public void testForeldrepengerSøknadXML() throws IOException {
+        Søknad foreldrepenger = foreldrepenger();
+        Soeknad søknad = unmarshal(template.postForObject(PREPROD_FPFORDEL + "/søknad", foreldrepenger, String.class),
+                Soeknad.class);
+        assertEquals(søknad.getMottattDato(), foreldrepenger.getMottattdato().toLocalDate());
+        assertEquals(søknad.getBegrunnelseForSenSoeknad(), foreldrepenger.getBegrunnelseForSenSøknad());
+        Foreldrepenger fpxml = Foreldrepenger.class.cast(søknad.getOmYtelse());
+        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger fpjson = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(foreldrepenger.getYtelse());
+        assertEquals(fpjson.getDekningsgrad().kode(), fpxml.getDekningsgrad().getDekningsgrad().getKode());
+    }
+
+    @Test
+    public void testForeldrepengerSøknadSend() throws IOException {
+        assertEquals(IKKE_SENDT, template.postForObject(FPFORDEL + "/send", foreldrepenger(), Kvittering.class));
+    }
+
+    @Test
     public void testSøknadFødselMedNorskFar() throws IOException {
 
         Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg());
         SoeknadsskjemaEngangsstoenad response = unmarshal(
-                template.postForObject(DOKMOT_PREPROD + "/søknad", engangssøknad,
-                        String.class),
+                template.postForObject(DOKMOT_PREPROD + "/søknad", engangssøknad, String.class),
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(engangssøknad.getBegrunnelseForSenSøknad(), response.getOpplysningerOmBarn().getBegrunnelse());
 
     }
 
     @Test
-    public void testSøknadSend() throws IOException {
-        assertEquals("0",
-                template.postForObject(DOKMOT + "/send",
-                        engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class)
-                        .getReferanseId());
+    public void testEngangsstønadSøknadSend() throws IOException {
+        assertEquals(IKKE_SENDT, template.postForObject(DOKMOT + "/send",
+                engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class));
     }
 
     @Test
