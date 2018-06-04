@@ -34,6 +34,13 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
                 INTERNAL_SERVER_ERROR, request);
     }
 
+    @ExceptionHandler(value = { Exception.class })
+    protected ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+        return handleExceptionInternal(ex, new ApiError(INTERNAL_SERVER_ERROR, getRootCauseMessage(ex), ex),
+            new HttpHeaders(),
+            INTERNAL_SERVER_ERROR, request);
+    }
+
     private static List<String> responseBody(MethodArgumentNotValidException e) {
         return e.getBindingResult().getFieldErrors()
                 .stream()
