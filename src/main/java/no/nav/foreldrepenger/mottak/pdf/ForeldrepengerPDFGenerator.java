@@ -57,6 +57,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
             PdfWriter.getInstance(document, baos);
             document.open();
             logo(document);
+
             document.add(center(heading(fromMessageSource("søknad_fp"))));
             document.add(søker(søknad));
             if (stønad.getOpptjening() != null) {
@@ -87,6 +88,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
     }
 
     private static Element søker(Søknad søknad) {
+        LOG.info("Søker er {}", søknad.getSøker());
         Paragraph p = new Paragraph();
 
         p.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
