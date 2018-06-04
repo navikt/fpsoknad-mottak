@@ -445,7 +445,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Utsettelsesaarsaker utsettelsesårsakFra(UtsettelsesÅrsak årsak) {
-        if (type == null) {
+        if (årsak == null) {
             return null;
         }
         switch (årsak) {
@@ -461,7 +461,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Oppholdsaarsaker oppholdsårsakerFra(Oppholdsårsak årsak) {
-        if (type == null) {
+        if (årsak == null) {
             return null;
         }
         switch (årsak) {
@@ -475,7 +475,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Overfoeringsaarsaker overføringsÅrsakFra(Overføringsårsak årsak) {
-        if (type == null) {
+        if (årsak == null) {
             return null;
         }
         switch (årsak) {
