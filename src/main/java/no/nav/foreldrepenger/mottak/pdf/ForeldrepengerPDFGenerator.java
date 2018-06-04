@@ -59,7 +59,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
             logo(document);
 
             document.add(center(heading(fromMessageSource("søknad_fp"))));
-            document.add(søker(søknad));
+            // document.add(søker(søknad));
             if (stønad.getOpptjening() != null) {
                 document.add(arbeidsforhold(stønad.getOpptjening().getArbeidsforhold()));
                 document.add(blankLine());
@@ -92,10 +92,12 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         Paragraph p = new Paragraph();
 
         p.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
-        /*
-         * String navn = navn(søknad.getSøker().getNavn()); if (navn != null &&
-         * !navn.isEmpty()) { p.add(center(regularParagraph(navn))); }
-         */
+        String navn = navn(søknad.getSøker().getNavn());
+        if (navn != null &&
+                !navn.isEmpty()) {
+            p.add(center(regularParagraph(navn)));
+        }
+
         p.add(separator());
         p.add(blankLine());
         return p;
