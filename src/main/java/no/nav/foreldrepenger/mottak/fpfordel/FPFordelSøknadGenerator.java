@@ -495,6 +495,9 @@ public class FPFordelSøknadGenerator {
 
     private static Rettigheter rettighetrFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter) {
+        if (rettigheter == null) {
+            return null;
+        }
         return new Rettigheter()
                 .withHarOmsorgForBarnetIPeriodene(rettigheter.isHarOmsorgForBarnetIPeriodene())
                 .withHarAnnenForelderRett(rettigheter.isHarAnnenForelderRett())
