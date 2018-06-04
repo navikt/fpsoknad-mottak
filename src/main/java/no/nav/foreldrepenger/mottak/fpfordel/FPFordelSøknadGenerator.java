@@ -17,6 +17,7 @@ import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsforholdType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
@@ -50,6 +51,7 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v1.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Land;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.LukketPeriode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Medlemskap;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.OppholdUtlandet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Rettigheter;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.SoekersRelasjonTilBarnet;
@@ -250,7 +252,23 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap) {
-        return new Medlemskap();
+        return new Medlemskap()
+                .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()))
+                .withINorgeVedFoedselstidspunkt(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
+                .withBorINorgeNeste12Mnd(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
+                .withBoddINorgeSiste12Mnd(medlemsskap.getTidligereOppholdsInfo().isBoddINorge());
+    }
+
+    private static List<OppholdUtlandet> oppholdUtlandetFra(List<Utenlandsopphold> utenlandsOpphold) {
+        return utenlandsOpphold.stream()
+                .map(s -> utenlandOppholdFra(s))
+                .collect(toList());
+    }
+
+    private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
+        return new OppholdUtlandet()
+                .withLand(new Land()
+                        .withKode(opphold.getLand().getAlpha3()));
     }
 
     private static Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling fordeling) {

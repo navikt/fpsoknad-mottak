@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.MDC;
@@ -11,31 +13,21 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiError {
+class ApiError {
 
+    private static final String UUID = "X-Nav-CallId";
     private final HttpStatus status;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    @JsonFormat(shape = STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private final LocalDateTime timestamp;
+    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     private final List<String> messages;
     private final String uuid;
 
-    ApiError(HttpStatus status) {
-        this(status, null);
-    }
-
-    ApiError(HttpStatus status, Throwable e) {
-        this(status, e != null ? e.getMessage() : null, e);
-    }
-
-    ApiError(HttpStatus status, String message, Throwable e) {
-        this(status, Collections.singletonList(message), e);
-    }
-
-    public ApiError(HttpStatus status, List<String> messages, Throwable e) {
+    ApiError(HttpStatus status, Throwable t, List<String> messages) {
         this.timestamp = LocalDateTime.now();
         this.status = status;
         this.messages = messages;
-        this.uuid = MDC.get("X-Nav-CallId");
+        this.uuid = MDC.get(UUID);
     }
 
     public String getUuid() {
@@ -54,4 +46,9 @@ public class ApiError {
         return messages;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[status=" + status + ", timestamp=" + timestamp + ", messages=" + messages
+                + ", uuid=" + uuid + "]";
+    }
 }

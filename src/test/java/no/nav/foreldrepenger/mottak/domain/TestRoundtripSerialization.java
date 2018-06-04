@@ -7,10 +7,8 @@ import static no.nav.foreldrepenger.mottak.domain.TestUtils.nesteMåned;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
-import static no.nav.foreldrepenger.mottak.http.DokmotMottakController.DOKMOT;
-import static no.nav.foreldrepenger.mottak.http.DokmotMottakPreprodController.DOKMOT_PREPROD;
-import static no.nav.foreldrepenger.mottak.http.FPFordelMottakController.FPFORDEL;
-import static no.nav.foreldrepenger.mottak.http.FPFordelMottakPreprodController.PREPROD_FPFORDEL;
+import static no.nav.foreldrepenger.mottak.http.MottakPreprodController.INNSENDING_PREPROD;
+import static no.nav.foreldrepenger.mottak.http.MottakController.MOTTAK;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.security.spring.oidc.test.JwtTokenGenerator.createSignedJWT;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
@@ -77,19 +75,19 @@ public class TestRoundtripSerialization {
     @Test
     public void testPing() {
         assertEquals("Hallo joe fra ubeskyttet ressurs",
-                template.getForObject(DOKMOT + "/ping?navn=joe", String.class));
+                template.getForObject(MOTTAK + "/ping?navn=joe", String.class));
     }
 
     @Test
     public void testPing1() {
         assertEquals("Hallo joe fra beskyttet ressurs",
-                template.getForObject(DOKMOT + "/ping1?navn=joe", String.class));
+                template.getForObject(MOTTAK + "/ping1?navn=joe", String.class));
     }
 
     @Test
     public void testForeldrepengerSøknadXML() throws IOException {
         Søknad foreldrepenger = foreldrepenger();
-        Soeknad søknad = unmarshal(template.postForObject(PREPROD_FPFORDEL + "/søknad", foreldrepenger, String.class),
+        Soeknad søknad = unmarshal(template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class),
                 Soeknad.class);
         assertEquals(søknad.getMottattDato(), foreldrepenger.getMottattdato().toLocalDate());
         assertEquals(søknad.getBegrunnelseForSenSoeknad(), foreldrepenger.getBegrunnelseForSenSøknad());
@@ -101,7 +99,7 @@ public class TestRoundtripSerialization {
 
     @Test
     public void testForeldrepengerSøknadSend() throws IOException {
-        assertEquals(IKKE_SENDT, template.postForObject(FPFORDEL + "/send", foreldrepenger(), Kvittering.class));
+        assertEquals(IKKE_SENDT, template.postForObject(MOTTAK + "/send", foreldrepenger(), Kvittering.class));
     }
 
     @Test
@@ -109,7 +107,7 @@ public class TestRoundtripSerialization {
 
         Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg());
         SoeknadsskjemaEngangsstoenad response = unmarshal(
-                template.postForObject(DOKMOT_PREPROD + "/søknad", engangssøknad, String.class),
+                template.postForObject(INNSENDING_PREPROD + "/søknad", engangssøknad, String.class),
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(engangssøknad.getBegrunnelseForSenSøknad(), response.getOpplysningerOmBarn().getBegrunnelse());
 
@@ -117,13 +115,13 @@ public class TestRoundtripSerialization {
 
     @Test
     public void testEngangsstønadSøknadSend() throws IOException {
-        assertEquals(IKKE_SENDT, template.postForObject(DOKMOT + "/send",
+        assertEquals(IKKE_SENDT, template.postForObject(MOTTAK + "/send",
                 engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class));
     }
 
     @Test
     public void testSøknadFødselFramtidShouldNotValidate() throws IOException {
-        assertEquals(UNPROCESSABLE_ENTITY_422, template.postForEntity(DOKMOT_PREPROD + "/søknad",
+        assertEquals(UNPROCESSABLE_ENTITY_422, template.postForEntity(INNSENDING_PREPROD + "/søknad",
                 engangssøknad(false, fødsel(nesteMåned()), norskForelder(), påkrevdVedlegg()),
                 String.class).getStatusCodeValue());
 
@@ -133,7 +131,7 @@ public class TestRoundtripSerialization {
     public void testSøknadKonvoluttFødselMedNorskFar() throws IOException {
         Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg());
         Dokumentforsendelse response = unmarshal(
-                template.postForObject(DOKMOT_PREPROD + "/konvolutt", engangssøknad, String.class),
+                template.postForObject(INNSENDING_PREPROD + "/konvolutt", engangssøknad, String.class),
                 Dokumentforsendelse.class);
         assertEquals("FOR", response.getForsendelsesinformasjon().getTema().getValue());
 
