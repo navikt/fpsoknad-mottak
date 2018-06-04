@@ -88,11 +88,12 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
 
     private static Element søker(Søknad søknad) {
         Paragraph p = new Paragraph();
+
         p.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
-        String navn = navn(søknad.getSøker().getNavn());
-        if (navn != null && !navn.isEmpty()) {
-            p.add(center(regularParagraph(navn)));
-        }
+        /*
+         * String navn = navn(søknad.getSøker().getNavn()); if (navn != null &&
+         * !navn.isEmpty()) { p.add(center(regularParagraph(navn))); }
+         */
         p.add(separator());
         p.add(blankLine());
         return p;
