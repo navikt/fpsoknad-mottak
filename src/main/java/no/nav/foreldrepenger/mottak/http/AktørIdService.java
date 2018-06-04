@@ -25,7 +25,7 @@ public class AktørIdService implements AktørIDLookup {
 
     @Override
     public AktorId getAktørId() {
-        LOG.info("Henter aktørId fra {", aktørURI);
+        LOG.info("Henter aktørId fra {}", aktørURI);
         return template.getForObject(aktørURI, AktorId.class);
     }
 
