@@ -45,7 +45,6 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { Exception.class })
     protected ResponseEntity<Object> handleUncaught(Exception e, WebRequest request) {
-        LOG.warn("Caught exception: " + e.getMessage());
         return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
     }
 
