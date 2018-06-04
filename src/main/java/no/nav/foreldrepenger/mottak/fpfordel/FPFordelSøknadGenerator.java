@@ -348,6 +348,9 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling fordeling) {
+        if (fordeling == null) {
+            return null;
+        }
         return new Fordeling()
                 .withPerioder(perioderFra(fordeling.getPerioder()))
                 .withOenskerKvoteOverfoert(overføringsÅrsakFra(fordeling.getØnskerKvoteOverført()))
