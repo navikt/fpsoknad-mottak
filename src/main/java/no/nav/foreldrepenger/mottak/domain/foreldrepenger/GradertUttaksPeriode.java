@@ -24,9 +24,9 @@ public class GradertUttaksPeriode extends UttaksPeriode {
     @JsonCreator
     public GradertUttaksPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
             @JsonProperty("vedlegg") List<String> vedlegg,
-            @JsonProperty("UttaksperiodeType") UttaksperiodeType uttaksperiodeType,
+            @JsonProperty("UttaksperiodeType") StønadskontoType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
-            @JsonProperty("morsAktivitetsType") MorsAktivitetstype morsAktivitetsType) {
+            @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType) {
         super(fom, tom, vedlegg, uttaksperiodeType, ønskerSamtidigUttak, morsAktivitetsType);
 
     }

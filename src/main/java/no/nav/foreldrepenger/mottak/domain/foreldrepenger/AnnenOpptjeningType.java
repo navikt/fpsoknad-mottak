@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 public enum AnnenOpptjeningType {
-    VENTELØNN, LØNN_UNDER_UTDANNING, MILITÆR_ELLER_SIVILTJENESTE, ETTERLØNN, SLUTTPAKKE, VARTPENGER
+    VENTELONN, LONN_UTDANNING, MILITAER_SIVIL_TJENESTE, ETTERLONN_ARBEIDSGIVER
 }

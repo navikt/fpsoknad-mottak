@@ -25,16 +25,16 @@ import lombok.ToString;
         @Type(value = GradertUttaksPeriode.class, name = "gradert")
 })
 public class UttaksPeriode extends LukketPeriodeMedVedlegg {
-    private final UttaksperiodeType uttaksperiodeType;
+    private final StønadskontoType uttaksperiodeType;
     private final boolean ønskerSamtidigUttak;
-    private final MorsAktivitetstype morsAktivitetsType;
+    private final MorsAktivitet morsAktivitetsType;
 
     @JsonCreator
     public UttaksPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
             @JsonProperty("vedlegg") List<String> vedlegg,
-            @JsonProperty("UttaksperiodeType") UttaksperiodeType uttaksperiodeType,
+            @JsonProperty("UttaksperiodeType") StønadskontoType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
-            @JsonProperty("morsAktivitetsType") MorsAktivitetstype morsAktivitetsType) {
+            @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType) {
         super(fom, tom, vedlegg != null ? vedlegg : Collections.emptyList());
         this.uttaksperiodeType = uttaksperiodeType;
         this.ønskerSamtidigUttak = ønskerSamtidigUttak;

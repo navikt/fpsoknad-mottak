@@ -4,7 +4,7 @@ import static com.google.inject.internal.util.Lists.newArrayList;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.medlemsskap;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.navnUtenMellomnavn;
 import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksperiodeType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
 
 import java.time.LocalDate;
@@ -89,7 +89,7 @@ public class ForeldrepengerTestUtils {
                 .vedlegg(ETT_VEDLEGG_REF)
                 .arbeidsgiverNavn("boss")
                 .bekreftelseRelasjon("relasjon")
-                .type(ArbeidsforholdType.ORDINÆRT)
+                .type(ArbeidsforholdType.ORDINÆRT_ARBEIDSFORHOLD)
                 .orgNummer("222222222")
                 .periode(åpenPeriode()).build();
     }
@@ -126,7 +126,7 @@ public class ForeldrepengerTestUtils {
     }
 
     static AnnenOpptjening annenOpptjening() {
-        return new AnnenOpptjening(AnnenOpptjeningType.SLUTTPAKKE, åpenPeriode(), null);
+        return new AnnenOpptjening(AnnenOpptjeningType.LONN_UTDANNING, åpenPeriode(), null);
     }
 
     static UtenlandskArbeidsforhold utenlandskArbeidsforhold() {
@@ -145,13 +145,13 @@ public class ForeldrepengerTestUtils {
 
     static UttaksPeriode uttaksPeriode() {
         return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
-                FEDREKVOTE, true, MorsAktivitetstype.ARBEID_OG_UTDANNING);
+                FEDREKVOTE, true, MorsAktivitet.ARBEID_OG_UTDANNING);
     }
 
     static UttaksPeriode gradertPeriode() {
         GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
                 ETT_VEDLEGG_REF,
-                FEDREKVOTE, true, MorsAktivitetstype.ARBEID_OG_UTDANNING);
+                FEDREKVOTE, true, MorsAktivitet.ARBEID_OG_UTDANNING);
         periode.setArbeidsForholdSomskalGraderes(true);
         periode.setArbeidstidProsent(75d);
         periode.setErArbeidstaker(true);
@@ -175,7 +175,7 @@ public class ForeldrepengerTestUtils {
 
     static UtsettelsesPeriode utsettelsesPeriode() {
         return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
-                UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARN);
+                UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET);
     }
 
     static Fordeling fordeling() {

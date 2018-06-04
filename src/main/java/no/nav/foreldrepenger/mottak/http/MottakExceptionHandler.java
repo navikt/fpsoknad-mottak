@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, String... messages) {
-        return logAndHandle(status, e, req, Arrays.asList(messages));
+        return logAndHandle(status, e, req, asList(messages));
     }
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, List<String> messages) {

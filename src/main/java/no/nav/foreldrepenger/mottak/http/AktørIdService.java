@@ -14,7 +14,7 @@ public class AktørIdService implements AktørIDLookup {
     private final RestTemplate template;
     private final URI aktørURI;
 
-    public AktørIdService(@Value("${fpmottak.uri:http://fpsoknad-mottak/api/aktor}") URI aktørURI,
+    public AktørIdService(@Value("${fpoppslag.uri:http://fpsoknad-oppslag/api/aktor}") URI aktørURI,
             RestTemplate template) {
         this.template = template;
         this.aktørURI = aktørURI;
