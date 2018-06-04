@@ -44,7 +44,9 @@ public class FPFordelConnection {
         String postEndpoint = config.getUri() + "/fpfordel/api/dokumentforsendelse";
         LOG.info("Poster til {}", postEndpoint);
         try {
-            return template.postForLocation(postEndpoint, payload);
+            URI pollURI = template.postForLocation(postEndpoint, payload);
+            LOG.info("Received URI {}", pollURI);
+            return pollURI;
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);
