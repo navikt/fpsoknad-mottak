@@ -19,16 +19,16 @@ import org.springframework.web.filter.GenericFilterBean;
 
 @Component
 @Order(1)
-public class CallIdFilter extends GenericFilterBean {
+public class CallAndConsumerIdFilter extends GenericFilterBean {
 
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
 
-    private static final Logger LOG = getLogger(CallIdFilter.class);
+    private static final Logger LOG = getLogger(CallAndConsumerIdFilter.class);
 
     private final UUIDCallIdGenerator generator;
 
     @Inject
-    public CallIdFilter(UUIDCallIdGenerator generator) {
+    public CallAndConsumerIdFilter(UUIDCallIdGenerator generator) {
         this.generator = generator;
     }
 
