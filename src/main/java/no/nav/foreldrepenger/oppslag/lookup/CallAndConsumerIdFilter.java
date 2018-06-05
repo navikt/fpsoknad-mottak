@@ -43,12 +43,12 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
         HttpServletRequest req = HttpServletRequest.class.cast(request);
         String callId = req.getHeader(generator.getCallIdKey());
         String consumerId = req.getHeader(NAV_CONSUMER_ID);
+        if (consumerId != null) {
+            MDC.put(NAV_CONSUMER_ID, consumerId);
+        }
         if (callId != null) {
             LOG.trace("{} is already set in request {}", generator.getCallIdKey(), callId);
             MDC.put(generator.getCallIdKey(), callId);
-            if (consumerId != null) {
-                MDC.put(NAV_CONSUMER_ID, consumerId);
-            }
         }
         else {
             MDC.put(generator.getCallIdKey(), generator.create());
