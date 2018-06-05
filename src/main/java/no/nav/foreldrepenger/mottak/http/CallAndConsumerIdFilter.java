@@ -21,14 +21,14 @@ import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
 
 @Component
 @Order(1)
-public class CorrelationIdFilter extends GenericFilterBean {
+public class CallAndConsumerIdFilter extends GenericFilterBean {
 
-    private static final Logger LOG = getLogger(CorrelationIdFilter.class);
+    private static final Logger LOG = getLogger(CallAndConsumerIdFilter.class);
 
     private final UUIDIdGenerator generator;
 
     @Inject
-    public CorrelationIdFilter(UUIDIdGenerator generator) {
+    public CallAndConsumerIdFilter(UUIDIdGenerator generator) {
         this.generator = generator;
     }
 
@@ -39,12 +39,17 @@ public class CorrelationIdFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    private void getOrCreateCorrelationId(ServletRequest req) {
+    private void getOrCreateCorrelationId(ServletRequest request) {
         String key = generator.getKey();
-        String correlationId = HttpServletRequest.class.cast(req).getHeader(key);
-        if (correlationId != null) {
-            LOG.trace("{} is set in request to {}", key, correlationId);
-            MDC.put(key, correlationId);
+        HttpServletRequest req = HttpServletRequest.class.cast(request);
+        String callId = req.getHeader(key);
+        String consumerId = req.getHeader("Nav-Consumer-Id");
+        if (consumerId != null) {
+            MDC.put("Nav-Consumer-Id", consumerId);
+        }
+        if (callId != null) {
+            LOG.trace("{} is set in request to {}", key, callId);
+            MDC.put(key, callId);
         }
         else {
             MDC.put(key, generator.create());
