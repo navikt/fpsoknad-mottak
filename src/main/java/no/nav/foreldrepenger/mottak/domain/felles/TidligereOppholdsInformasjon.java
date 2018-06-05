@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,5 +26,11 @@ public class TidligereOppholdsInformasjon {
         this.boddINorge = boddINorge;
         this.arbeidsInfo = arbeidsInfo;
         this.utenlandsOpphold = utenlandsOpphold == null ? Collections.emptyList() : utenlandsOpphold;
+    }
+
+    public boolean varUtenlands(LocalDate day) {
+        return utenlandsOpphold
+                .stream()
+                .anyMatch(s -> s.getVarighet().isWithinPeriode(day));
     }
 }

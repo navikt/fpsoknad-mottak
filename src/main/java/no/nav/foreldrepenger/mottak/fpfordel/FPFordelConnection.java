@@ -45,7 +45,7 @@ public class FPFordelConnection {
         LOG.info("Poster til {}", postEndpoint);
         try {
             URI pollURI = template.postForLocation(postEndpoint, payload);
-            LOG.info("Received URI {}", pollURI);
+            LOG.info("Mottok URI {}", pollURI);
             return pollURI;
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
