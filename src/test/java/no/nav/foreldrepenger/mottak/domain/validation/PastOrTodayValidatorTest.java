@@ -11,8 +11,6 @@ import javax.validation.Validator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import no.nav.foreldrepenger.mottak.domain.validation.PastOrToday;
-
 public class PastOrTodayValidatorTest {
 
     private static Validator validator;

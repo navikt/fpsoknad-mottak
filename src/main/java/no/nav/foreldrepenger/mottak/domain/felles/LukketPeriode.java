@@ -30,9 +30,6 @@ public class LukketPeriode {
 
     @JsonIgnore
     public boolean isWithinPeriode(LocalDate day) {
-        LocalDate dayBeforeFirst = fom.minusDays(1);
-        LocalDate dayAfterLast = tom.plusDays(1);
-        return day.isAfter(dayBeforeFirst) && day.isBefore(dayAfterLast);
+        return day.isAfter(fom.minusDays(1)) && day.isBefore(tom.plusDays(1));
     }
-
 }

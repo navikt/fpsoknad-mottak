@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
 
-    private static final String UUID = "X-Nav-CallId";
+    private static final String UUID = "Nav-CallId";
     private final HttpStatus status;
     @JsonFormat(shape = STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private final LocalDateTime timestamp;

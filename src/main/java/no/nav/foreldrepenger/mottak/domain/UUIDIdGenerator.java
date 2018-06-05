@@ -15,7 +15,7 @@ public class UUIDIdGenerator {
     private final String key;
 
     @Inject
-    public UUIDIdGenerator(@Value("${callid.key:X-Nav-CallId}") String key) {
+    public UUIDIdGenerator(@Value("${callid.key:Nav-CallId}") String key) {
         this.key = key;
     }
 
