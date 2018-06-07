@@ -47,16 +47,16 @@ public class MottakController {
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         if (isForeldrepenger(søknad)) {
             LOG.info("Sender foreldrepengesøknad til FPFordel");
-            return ok(fpfordelSender.sendSøknad(søknad, oppslag.getSøker()));
+            return ok(fpfordelSender.send(søknad, oppslag.getSøker()));
         }
         LOG.info("Sender engangsstønadssøknad til DOKMOT");
-        return ok(dokmotSender.sendSøknad(søknad, oppslag.getSøker()));
+        return ok(dokmotSender.send(søknad, oppslag.getSøker()));
     }
 
     @PostMapping(value = "/ettersend")
     @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Ettersending ettersending) {
-        return ok(fpfordelSender.sendEttersending(ettersending, oppslag.getSøker()));
+        return ok(fpfordelSender.send(ettersending, oppslag.getSøker()));
     }
 
     @GetMapping(value = "/ping")

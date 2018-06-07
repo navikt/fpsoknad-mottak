@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import java.util.Collections;
 import java.util.List;
 
 import lombok.Builder;
@@ -18,7 +17,7 @@ public class NorskArbeidsforhold extends Arbeidsforhold {
     @Builder
     private NorskArbeidsforhold(String arbeidsgiverNavn, String bekreftelseRelasjon, ÅpenPeriode periode,
             List<String> vedlegg, String orgNummer, ArbeidsforholdType type) {
-        super(arbeidsgiverNavn, bekreftelseRelasjon, periode, vedlegg == null ? Collections.emptyList() : vedlegg);
+        super(arbeidsgiverNavn, bekreftelseRelasjon, periode, vedlegg);
         this.orgNummer = orgNummer;
         this.type = type;
     }

@@ -29,5 +29,4 @@ public abstract class RelasjonTilBarn {
     public RelasjonTilBarn(int antallBarn) {
         this.antallBarn = antallBarn;
     }
-
 }

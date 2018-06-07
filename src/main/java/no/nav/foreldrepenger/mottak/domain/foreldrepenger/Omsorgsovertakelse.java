@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,7 +26,7 @@ public class Omsorgsovertakelse extends RelasjonTilBarnMedVedlegg {
 
     public Omsorgsovertakelse(LocalDate omsorgsovertakelsesdato, OmsorgsOvertakelsesÅrsak årsak,
             LocalDate fødselsdato) {
-        this(1, omsorgsovertakelsesdato, årsak, Collections.singletonList(fødselsdato), Collections.emptyList());
+        this(1, omsorgsovertakelsesdato, årsak, singletonList(fødselsdato), emptyList());
     }
 
     @JsonCreator
@@ -32,7 +34,7 @@ public class Omsorgsovertakelse extends RelasjonTilBarnMedVedlegg {
             LocalDate omsorgsovertakelsesdato,
             OmsorgsOvertakelsesÅrsak årsak,
             List<LocalDate> fødselsdatoer, List<Vedlegg> vedlegg) {
-        super(antallBarn, vedlegg == null ? Collections.emptyList() : vedlegg);
+        super(antallBarn, vedlegg);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.årsak = årsak;
         this.fødselsdatoer = fødselsdatoer;

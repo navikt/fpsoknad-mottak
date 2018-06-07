@@ -51,7 +51,7 @@ public abstract class AbstractPDFGenerator {
     protected static void logo(Document document)
             throws IOException, DocumentException {
         Image logo = logo();
-        logo.setAlignment(Image.ALIGN_CENTER);
+        logo.setAlignment(Element.ALIGN_CENTER);
         document.add(logo);
     }
 

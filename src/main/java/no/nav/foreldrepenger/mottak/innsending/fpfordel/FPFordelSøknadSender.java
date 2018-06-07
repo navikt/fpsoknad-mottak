@@ -2,35 +2,37 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
+import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
-import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
 public class FPFordelSøknadSender implements SøknadSender {
 
+    private static final String VEDLEGG = "vedlegg";
+
+    private static final String SØKNAD = "søknad";
+
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
 
     private final FPFordelConnection connection;
-    private final UUIDIdGenerator idGenerator;
-    private final FPFordelKonvoluttGenerator generator;
+    private final CallIdGenerator callIdGenerator;
+    private final FPFordelKonvoluttGenerator konvoluttGenerator;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator,
-            UUIDIdGenerator idGenerator) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator,
+            CallIdGenerator callIdGenerator) {
         this.connection = connection;
-        this.generator = generator;
-        this.idGenerator = idGenerator;
+        this.konvoluttGenerator = konvoluttGenerator;
+        this.callIdGenerator = callIdGenerator;
     }
 
     public void ping() {
@@ -39,15 +41,15 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering sendSøknad(Søknad søknad, Person søker) {
-        String ref = idGenerator.getOrCreate();
-        return send("søknad", ref, generator.payload(søknad, søker, ref));
+    public Kvittering send(Søknad søknad, Person søker) {
+        String ref = callIdGenerator.getOrCreate();
+        return send(SØKNAD, ref, konvoluttGenerator.payload(søknad, søker, ref));
     }
 
     @Override
-    public Kvittering sendEttersending(@Valid Ettersending ettersending, Person person) {
-        String ref = idGenerator.getOrCreate();
-        return send("vedlegg", ref, generator.payload(ettersending, person, ref));
+    public Kvittering send(Ettersending ettersending, Person person) {
+        String ref = callIdGenerator.getOrCreate();
+        return send(VEDLEGG, ref, konvoluttGenerator.payload(ettersending, person, ref));
     }
 
     private Kvittering send(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
@@ -61,8 +63,8 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", idGenerator=" + idGenerator
-                + ", generator=" + generator + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", callIdGenerator=" + callIdGenerator
+                + ", konvoluttGenerator=" + konvoluttGenerator + "]";
     }
 
 }

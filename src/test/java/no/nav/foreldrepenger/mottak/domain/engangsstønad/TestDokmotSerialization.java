@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLGenerator;
@@ -44,7 +44,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 @ActiveProfiles("dev")
 @ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class,
         DokmotEngangsstønadXMLGenerator.class,
-        DokmotEngangsstønadXMLKonvoluttGenerator.class, UUIDIdGenerator.class })
+        DokmotEngangsstønadXMLKonvoluttGenerator.class, CallIdGenerator.class })
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {
 
@@ -54,7 +54,7 @@ public class TestDokmotSerialization {
     @Autowired
     ObjectMapper mapper;
     @Autowired
-    UUIDIdGenerator refGenerator;
+    CallIdGenerator refGenerator;
     @Autowired
     DokmotEngangsstønadXMLGenerator søknadXMLGenerator;
     @Autowired

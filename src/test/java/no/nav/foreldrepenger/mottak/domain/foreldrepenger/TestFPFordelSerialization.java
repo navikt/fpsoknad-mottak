@@ -38,7 +38,7 @@ import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelManuellKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
@@ -101,7 +101,7 @@ public class TestFPFordelSerialization {
                         mottakConfiguration.kvitteringstekster()));
         Søknad søknad = søknad(valgfrittVedlegg());
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
-                new UUIDIdGenerator("jalla").create());
+                new CallIdGenerator("jalla").create());
         assertEquals(3, konvolutt.getBody().size());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         List<HttpEntity<?>> hoveddokumenter = konvolutt.getBody().get(HOVEDDOKUMENT);

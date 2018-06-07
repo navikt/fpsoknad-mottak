@@ -17,7 +17,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 
 @Component
 @Order(1)
@@ -25,10 +25,10 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
 
     private static final Logger LOG = getLogger(CallAndConsumerIdFilter.class);
 
-    private final UUIDIdGenerator generator;
+    private final CallIdGenerator generator;
 
     @Inject
-    public CallAndConsumerIdFilter(UUIDIdGenerator generator) {
+    public CallAndConsumerIdFilter(CallIdGenerator generator) {
         this.generator = generator;
     }
 
@@ -40,7 +40,7 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
     }
 
     private void getOrCreateCorrelationId(ServletRequest request) {
-        String key = generator.getKey();
+        String key = generator.getCallIdKey();
         HttpServletRequest req = HttpServletRequest.class.cast(request);
         String callId = req.getHeader(key);
         String consumerId = req.getHeader("Nav-Consumer-Id");

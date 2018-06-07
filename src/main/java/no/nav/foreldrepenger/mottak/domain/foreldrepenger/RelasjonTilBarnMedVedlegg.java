@@ -2,8 +2,10 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+import static java.util.Collections.emptyList;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -32,6 +34,6 @@ public abstract class RelasjonTilBarnMedVedlegg {
 
     public RelasjonTilBarnMedVedlegg(int antallBarn, List<Vedlegg> vedlegg) {
         this.antallBarn = antallBarn;
-        this.vedlegg = vedlegg;
+        this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }
 }

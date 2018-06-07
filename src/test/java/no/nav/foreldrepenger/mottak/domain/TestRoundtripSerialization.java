@@ -56,7 +56,7 @@ public class TestRoundtripSerialization {
     FPFordelConnection connection;
 
     @Autowired
-    UUIDIdGenerator refGenerator;
+    CallIdGenerator refGenerator;
     @Autowired
     FPFordelSøknadGenerator søknadXMLGenerator;
     @Autowired

@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static java.util.Collections.emptyList;
+
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,13 +25,13 @@ public class FremtidigFødsel extends RelasjonTilBarnMedVedlegg {
     private final LocalDate utstedtDato;
 
     public FremtidigFødsel(LocalDate terminDato, LocalDate utstedtDato) {
-        this(1, terminDato, utstedtDato, Collections.emptyList());
+        this(1, terminDato, utstedtDato, emptyList());
     }
 
     @JsonCreator
     public FremtidigFødsel(int antallBarn, LocalDate terminDato,
             LocalDate utstedtDato, List<Vedlegg> vedlegg) {
-        super(antallBarn, vedlegg == null ? Collections.emptyList() : vedlegg);
+        super(antallBarn, vedlegg);
         this.terminDato = terminDato;
         this.utstedtDato = utstedtDato;
     }

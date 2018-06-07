@@ -30,9 +30,9 @@ public class TidligereOppholdsInformasjon {
         this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }
 
-    public boolean varUtenlands(LocalDate day) {
+    public boolean varUtenlands(LocalDate dato) {
         return utenlandsOpphold
                 .stream()
-                .anyMatch(s -> s.getVarighet().isWithinPeriode(day));
+                .anyMatch(s -> s.getVarighet().isWithinPeriode(dato));
     }
 }

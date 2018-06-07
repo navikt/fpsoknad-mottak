@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import javax.validation.constraints.Max;
@@ -34,8 +33,7 @@ public class UtenlandskOrganisasjon extends EgenNæring {
             long næringsinntektBrutto, LocalDate endringsDato, String beskrivelseEndring, List<String> vedlegg,
             String orgName, CountryCode registrertLand, int stillingsprosent) {
         super(arbeidsland, virksomhetsType, periode, beskrivelseRelasjon, regnskapsfører, erNyOpprettet, erVarigEndring,
-                næringsinntektBrutto, endringsDato, beskrivelseEndring,
-                vedlegg == null ? Collections.emptyList() : vedlegg);
+                næringsinntektBrutto, endringsDato, beskrivelseEndring, vedlegg);
         this.orgName = orgName;
         this.registrertLand = registrertLand;
         this.stillingsprosent = stillingsprosent;

@@ -20,5 +20,4 @@ public class Medlemsskap {
     public boolean varUtenlands(LocalDate day) {
         return tidligereOppholdsInfo.varUtenlands(day);
     }
-
 }

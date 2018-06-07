@@ -1,8 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static java.util.Collections.emptyList;
+
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -27,14 +28,14 @@ public class Adopsjon extends RelasjonTilBarnMedVedlegg {
     private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.adopsjon.fødselssdato.framtid}") LocalDate> fødselsdatoer;
 
     public Adopsjon(LocalDate omsorgsovertakelsesdato, boolean ektefellesBarn, LocalDate fødselsdato) {
-        this(omsorgsovertakelsesdato, ektefellesBarn, 1, Collections.emptyList(), null, fødselsdato);
+        this(omsorgsovertakelsesdato, ektefellesBarn, 1, emptyList(), null, fødselsdato);
     }
 
     @JsonCreator
     public Adopsjon(LocalDate omsorgsovertakelsesdato,
             boolean ektefellesBarn,
             int antallBarn, List<Vedlegg> vedlegg, LocalDate ankomstDato, LocalDate... fødselsdatoer) {
-        super(antallBarn, vedlegg == null ? Collections.emptyList() : vedlegg);
+        super(antallBarn, vedlegg);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.ektefellesBarn = ektefellesBarn;
         this.ankomstDato = ankomstDato;

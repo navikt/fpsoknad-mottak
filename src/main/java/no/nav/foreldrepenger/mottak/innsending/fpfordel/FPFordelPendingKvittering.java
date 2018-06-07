@@ -32,19 +32,24 @@ public class FPFordelPendingKvittering extends FPFordelKvittering {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         FPFordelPendingKvittering other = (FPFordelPendingKvittering) obj;
         if (pollInterval == null) {
-            if (other.pollInterval != null)
+            if (other.pollInterval != null) {
                 return false;
+            }
         }
-        else if (!pollInterval.equals(other.pollInterval))
+        else if (!pollInterval.equals(other.pollInterval)) {
             return false;
+        }
         return true;
     }
 

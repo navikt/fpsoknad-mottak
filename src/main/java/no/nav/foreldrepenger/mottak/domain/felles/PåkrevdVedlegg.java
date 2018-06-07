@@ -38,5 +38,4 @@ public class PåkrevdVedlegg extends Vedlegg {
             throws IOException {
         super(metadata, vedlegg);
     }
-
 }

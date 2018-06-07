@@ -44,16 +44,16 @@ public abstract class Vedlegg {
         this.vedlegg = vedlegg;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + bytes();
-    }
-
     private String bytes() {
         String vedleggAsString = Arrays.toString(vedlegg);
         if (vedleggAsString.length() >= 50) {
             return vedleggAsString.substring(0, 49) + ".... " + (vedleggAsString.length() - 50) + " more bytes";
         }
         return vedleggAsString;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + bytes();
     }
 }

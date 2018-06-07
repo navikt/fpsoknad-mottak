@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -21,7 +20,7 @@ public class UtenlandskArbeidsforhold extends Arbeidsforhold {
     @Builder
     private UtenlandskArbeidsforhold(String arbeidsgiverNavn, String bekreftelseRelasjon, ÅpenPeriode periode,
             List<String> vedlegg, CountryCode land, boolean harHattArbeidIPerioden) {
-        super(arbeidsgiverNavn, bekreftelseRelasjon, periode, vedlegg == null ? Collections.emptyList() : vedlegg);
+        super(arbeidsgiverNavn, bekreftelseRelasjon, periode, vedlegg);
         this.land = land;
         this.harHattArbeidIPerioden = harHattArbeidIPerioden;
     }

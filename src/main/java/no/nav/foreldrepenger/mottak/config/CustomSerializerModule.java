@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import com.fasterxml.jackson.core.json.PackageVersion;
+import static com.fasterxml.jackson.core.json.PackageVersion.VERSION;
+
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
@@ -16,7 +17,7 @@ import no.nav.foreldrepenger.mottak.domain.serialization.UtenlandskForelderSeria
 public class CustomSerializerModule extends SimpleModule {
 
     public CustomSerializerModule() {
-        super(PackageVersion.VERSION);
+        super(VERSION);
         addSerializers();
         addDeserializers();
     }

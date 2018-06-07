@@ -35,25 +35,32 @@ public class FPSakFordeltKvittering extends FPFordelKvittering {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         FPSakFordeltKvittering other = (FPSakFordeltKvittering) obj;
         if (jounalId == null) {
-            if (other.jounalId != null)
+            if (other.jounalId != null) {
                 return false;
+            }
         }
-        else if (!jounalId.equals(other.jounalId))
+        else if (!jounalId.equals(other.jounalId)) {
             return false;
+        }
         if (saksnummer == null) {
-            if (other.saksnummer != null)
+            if (other.saksnummer != null) {
                 return false;
+            }
         }
-        else if (!saksnummer.equals(other.saksnummer))
+        else if (!saksnummer.equals(other.saksnummer)) {
             return false;
+        }
         return true;
     }
 

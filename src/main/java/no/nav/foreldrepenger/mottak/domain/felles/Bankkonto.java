@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Bankkonto {
 
-    private String kontonummer;
-    private String banknavn;
+    private final String kontonummer;
+    private final String banknavn;
 
     @JsonCreator
     public Bankkonto(@JsonProperty("kontonummer") String kontonummer,
@@ -27,10 +27,12 @@ public class Bankkonto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         Bankkonto bankkonto = (Bankkonto) o;
         return Objects.equals(kontonummer, bankkonto.kontonummer) &&
                 Objects.equals(banknavn, bankkonto.banknavn);

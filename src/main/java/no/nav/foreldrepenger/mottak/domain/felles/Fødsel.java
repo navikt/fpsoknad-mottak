@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static java.util.Collections.singletonList;
+
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -22,7 +23,7 @@ public class Fødsel extends RelasjonTilBarn {
     private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") LocalDate> fødselsdato;
 
     public Fødsel(LocalDate fødselsdato) {
-        this(1, Collections.singletonList(fødselsdato));
+        this(1, singletonList(fødselsdato));
     }
 
     @JsonCreator
