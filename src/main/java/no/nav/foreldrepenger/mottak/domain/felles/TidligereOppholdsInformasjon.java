@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static java.util.Collections.emptyList;
+
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,7 +27,7 @@ public class TidligereOppholdsInformasjon {
             @JsonProperty("utenlandsOpphold") List<Utenlandsopphold> utenlandsOpphold) {
         this.boddINorge = boddINorge;
         this.arbeidsInfo = arbeidsInfo;
-        this.utenlandsOpphold = utenlandsOpphold == null ? Collections.emptyList() : utenlandsOpphold;
+        this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }
 
     public boolean varUtenlands(LocalDate day) {

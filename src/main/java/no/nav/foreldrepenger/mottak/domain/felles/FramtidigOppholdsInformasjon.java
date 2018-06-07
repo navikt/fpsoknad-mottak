@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -28,6 +30,6 @@ public class FramtidigOppholdsInformasjon {
             @JsonProperty("utenlandsOpphold") List<Utenlandsopphold> utenlandsOpphold) {
         this.fødselNorge = fødselNorge;
         this.norgeNeste12 = norgeNeste12;
-        this.utenlandsOpphold = utenlandsOpphold == null ? Collections.emptyList() : utenlandsOpphold;
+        this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }
 }
