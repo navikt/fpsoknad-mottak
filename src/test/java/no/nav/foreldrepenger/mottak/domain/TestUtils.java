@@ -19,6 +19,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
@@ -26,6 +27,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.felles.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
@@ -171,7 +173,7 @@ public class TestUtils {
     }
 
     public static Søker søker(Navn navn) {
-        return new Søker(fnr(), aktoer(), BrukerRolle.MOR, navn);
+        return new Søker(BrukerRolle.MOR);
     }
 
     private static Navn navn() {
@@ -228,5 +230,21 @@ public class TestUtils {
 
     public static AnnenForelder ukjentForelder() {
         return new UkjentForelder();
+    }
+
+    public static Person person() {
+        Person søker = new Person();
+        søker.aktørId = new AktorId("42");
+        søker.bankkonto = new Bankkonto("2000.20.20000", "Store Fiskerbank");
+        søker.fnr = new Fødselsnummer("010101010101");
+        søker.fornavn = "Mor";
+        søker.mellomnavn = "Mellommor";
+        søker.etternavn = "Moro";
+        søker.fødselsdato = LocalDate.now().minusYears(25);
+        søker.kjønn = "K";
+        søker.ikkeNordiskEøsLand = false;
+        søker.land = CountryCode.NO;
+        søker.målform = "NN";
+        return søker;
     }
 }

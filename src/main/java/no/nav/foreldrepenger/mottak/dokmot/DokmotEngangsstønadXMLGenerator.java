@@ -25,6 +25,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
@@ -58,25 +59,25 @@ public class DokmotEngangsstønadXMLGenerator {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public byte[] toPdf(Søknad søknad) {
-        return pdfGenerator.generate(søknad);
+    public byte[] toPdf(Søknad søknad, Person søker) {
+        return pdfGenerator.generate(søknad, søker);
     }
 
-    public String toXML(Søknad søknad) {
-        return toXML(toDokmotModel(søknad));
+    public String toXML(Søknad søknad, Person person) {
+        return toXML(toDokmotModel(søknad, person));
     }
 
     public String toXML(SoeknadsskjemaEngangsstoenad model) {
         return Jaxb.marshall(CONTEXT, model);
     }
 
-    public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad) {
+    public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad, Person søker) {
 
         // Mor er bruker i dette use-caset, derfor setter vi ikke opplysninger om mor,
         // samme som Team Søknad gjør
         Engangsstønad ytelse = Engangsstønad.class.cast(søknad.getYtelse());
         return new SoeknadsskjemaEngangsstoenad()
-                .withBruker(brukerFra(søknad.getSøker().getFnr()))
+                .withBruker(brukerFra(søker.fnr))
                 .withOpplysningerOmBarn(barnFra(søknad, ytelse))
                 .withSoknadsvalg(søknadsvalgFra(søknad, ytelse))
                 .withTilknytningNorge((tilknytningFra(ytelse.getMedlemsskap(),

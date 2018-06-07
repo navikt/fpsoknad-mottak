@@ -43,6 +43,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
+import no.nav.foreldrepenger.mottak.domain.TestUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters
@@ -64,13 +65,18 @@ public class TestForeldrepengerSerialization {
     }
 
     @Test
+    public void testPerson() {
+        test(TestUtils.person());
+    }
+
+    @Test
     public void testEttersending() throws Exception {
         test(new Ettersending("42", ForeldrepengerTestUtils.ETT_VEDLEGG));
     }
 
     @Test
     public void testSøknad() {
-        test(ForeldrepengerTestUtils.foreldrepenger());
+        test(ForeldrepengerTestUtils.foreldrepenger(), true);
     }
 
     @Test

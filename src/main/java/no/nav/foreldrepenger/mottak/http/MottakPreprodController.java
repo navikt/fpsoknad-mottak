@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -17,10 +18,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.neovisionaries.i18n.CountryCode;
+
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadGenerator;
@@ -51,11 +57,11 @@ public class MottakPreprodController {
 
     @PostMapping("/søknad")
     public ResponseEntity<String> søknad(@Valid @RequestBody Søknad søknad) {
-        return isForeldrepenger(søknad) ? ok().body(fpsøknad(søknad)) : ok().body(essøknad(søknad));
+        return isForeldrepenger(søknad) ? ok().body(fpsøknad(søknad)) : ok().body(essøknad(søknad, søker()));
     }
 
-    private String essøknad(Søknad søknad) {
-        return dokmotSøknadGenerator.toXML(søknad);
+    private String essøknad(Søknad søknad, Person søker) {
+        return dokmotSøknadGenerator.toXML(søknad, søker);
     }
 
     private String fpsøknad(Søknad søknad) {
@@ -64,19 +70,36 @@ public class MottakPreprodController {
 
     @PostMapping(path = "/konvolutt", produces = { APPLICATION_XML_VALUE, APPLICATION_JSON_VALUE })
     public ResponseEntity<Object> konvolutt(@Valid @RequestBody Søknad søknad) {
-        return isForeldrepenger(søknad) ? ok().body(fpKonvolutt(søknad)) : ok().body(eskonvolutt(søknad));
+        return isForeldrepenger(søknad) ? ok().body(fpKonvolutt(søknad, søker()))
+                : ok().body(eskonvolutt(søknad, søker()));
     }
 
-    private String eskonvolutt(Søknad søknad) {
-        return dokmotKonvoluttGenerator.toXML(søknad, UUID.randomUUID().toString());
+    private String eskonvolutt(Søknad søknad, Person søker) {
+        return dokmotKonvoluttGenerator.toXML(søknad, søker, UUID.randomUUID().toString());
     }
 
-    private Object fpKonvolutt(Søknad søknad) {
-        return fpfordelKonvoluttGenerator.payload(søknad, new AktorId("42"), "999");
+    private Object fpKonvolutt(Søknad søknad, Person søker) {
+        return fpfordelKonvoluttGenerator.payload(søknad, søker, "999");
     }
 
     private static boolean isForeldrepenger(Søknad søknad) {
         return søknad.getYtelse() instanceof Foreldrepenger;
+    }
+
+    private static Person søker() {
+        Person søker = new Person();
+        søker.aktørId = new AktorId("42");
+        søker.bankkonto = new Bankkonto("2000.20.20000", "Store Fiskerbank");
+        søker.fnr = new Fødselsnummer("010101010101");
+        søker.fornavn = "Mor";
+        søker.mellomnavn = "Mellommor";
+        søker.etternavn = "Moro";
+        søker.fødselsdato = LocalDate.now().minusYears(25);
+        søker.kjønn = "K";
+        søker.ikkeNordiskEøsLand = false;
+        søker.land = CountryCode.NO;
+        søker.målform = "NN";
+        return søker;
     }
 
     @Override

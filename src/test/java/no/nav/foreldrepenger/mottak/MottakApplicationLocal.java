@@ -10,8 +10,9 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.http.AktørIDLookup;
+import no.nav.foreldrepenger.mottak.domain.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.security.spring.oidc.test.TokenGeneratorConfiguration;
 import no.nav.security.spring.oidc.validation.api.EnableOIDCTokenValidation;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -29,12 +30,12 @@ public class MottakApplicationLocal {
 
     @Bean
     @Primary
-    public AktørIDLookup aktørService() {
-        return new AktørIDLookup() {
+    public Oppslag aktørService() {
+        return new Oppslag() {
 
             @Override
-            public AktorId getAktørId() {
-                return new AktorId("42");
+            public Person getSøker() {
+                return TestUtils.person();
             }
         };
     }

@@ -24,6 +24,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 
 @Service
@@ -33,7 +34,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
         super(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
     }
 
-    public byte[] generate(Søknad søknad) {
+    public byte[] generate(Søknad søknad, Person søker) {
 
         try {
             Engangsstønad stønad = Engangsstønad.class.cast(søknad.getYtelse());
@@ -44,7 +45,7 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
             document.open();
             logo(document);
             document.add(center(heading(fromMessageSource("søknad_engang"))));
-            søker(søknad, document);
+            søker(søker, document);
             omBarn(stønad, document);
 
             if (erFremtidigFødsel(stønad)) {
@@ -113,11 +114,13 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
         document.add(regularParagraph(fromMessageSource("fødselsnummer", norskForelder.getFnr().getFnr())));
     }
 
-    private void fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad, Document document) throws DocumentException {
+    private void fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad, Document document)
+            throws DocumentException {
         if (erFremtidigFødsel(stønad)) {
             document.add(regularParagraph(fromMessageSource("føderi",
-                countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()))));
-        } else {
+                    countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()))));
+        }
+        else {
             Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
             boolean inNorway = !stønad.getMedlemsskap().varUtenlands(fødsel.getFødselsdato().get(0));
             document.add(regularParagraph(fromMessageSource("fødtei", countryName(inNorway))));
@@ -151,9 +154,9 @@ public class EngangsstønadPDFGenerator extends AbstractPDFGenerator {
                 fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn())));
     }
 
-    private static void søker(Søknad søknad, Document document) throws DocumentException {
-        document.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
-        String navn = navnToString(søknad.getSøker().getNavn());
+    private static void søker(Person søker, Document document) throws DocumentException {
+        document.add(center(regularParagraph(søker.fnr.getFnr())));
+        String navn = navnToString(new Navn(søker.fornavn, søker.mellomnavn, søker.etternavn));
         if (!navn.isEmpty()) {
             document.add(center(regularParagraph(navn)));
         }

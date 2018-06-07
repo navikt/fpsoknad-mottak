@@ -10,9 +10,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import no.nav.foreldrepenger.mottak.domain.Kvittering;
 
 @Component
 public class FPFordelConnection {
+
+    private static final String FPFORDEL_PATH = "/fpfordel/api/dokumentforsendelse";
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
 
@@ -40,13 +45,18 @@ public class FPFordelConnection {
         }
     }
 
-    public URI send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        String postEndpoint = config.getUri() + "/fpfordel/api/dokumentforsendelse";
+    public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
+        URI postEndpoint = UriComponentsBuilder
+                .fromUriString(config.getUri())
+                .pathSegment(FPFORDEL_PATH)
+                .build()
+                .toUri();
         LOG.info("Poster til {}", postEndpoint);
         try {
+            // TODO check what we get, poll until timeout
             URI pollURI = template.postForLocation(postEndpoint, payload);
             LOG.info("Mottok URI {}", pollURI);
-            return pollURI;
+            return new Kvittering(ref);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);

@@ -33,14 +33,13 @@ public class MottakController {
     public static final String MOTTAK = "/mottak";
 
     private final FPFordelSøknadSender fpfordelSender;
-    private final AktørIDLookup aktørIdService;
+    private final Oppslag oppslag;
     private final DokmotJMSSender dokmotSender;
 
-    public MottakController(FPFordelSøknadSender sender, DokmotJMSSender dokmotSender,
-            AktørIDLookup aktørIdService) {
+    public MottakController(FPFordelSøknadSender sender, DokmotJMSSender dokmotSender, Oppslag oppslag) {
         this.fpfordelSender = sender;
         this.dokmotSender = dokmotSender;
-        this.aktørIdService = aktørIdService;
+        this.oppslag = oppslag;
     }
 
     @PostMapping(value = "/send")
@@ -48,16 +47,16 @@ public class MottakController {
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         if (isForeldrepenger(søknad)) {
             LOG.info("Sender foreldrepengesøknad til FPFordel");
-            return ok(fpfordelSender.sendSøknad(søknad, aktørIdService.getAktørId()));
+            return ok(fpfordelSender.sendSøknad(søknad, oppslag.getSøker()));
         }
         LOG.info("Sender engangsstønadssøknad til DOKMOT");
-        return ok(dokmotSender.sendSøknad(søknad, null));
+        return ok(dokmotSender.sendSøknad(søknad, oppslag.getSøker()));
     }
 
     @PostMapping(value = "/ettersend")
     @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Ettersending ettersending) {
-        return ok(fpfordelSender.sendEttersending(ettersending, aktørIdService.getAktørId()));
+        return ok(fpfordelSender.sendEttersending(ettersending, oppslag.getSøker()));
     }
 
     @GetMapping(value = "/ping")
@@ -80,7 +79,7 @@ public class MottakController {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [sender=" + fpfordelSender + ", aktørIdService=" + aktørIdService
+        return getClass().getSimpleName() + " [sender=" + fpfordelSender + ", oppslagsService=" + oppslag
                 + ", dokmotSender=" + dokmotSender + "]";
     }
 

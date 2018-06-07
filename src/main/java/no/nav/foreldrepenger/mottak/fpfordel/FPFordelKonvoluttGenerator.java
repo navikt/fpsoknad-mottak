@@ -18,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
@@ -40,13 +41,14 @@ public class FPFordelKonvoluttGenerator {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, AktorId aktørId, String ref) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker, String ref) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        builder.part(METADATA, metadata(søknad, aktørId, ref), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, aktørId), APPLICATION_XML).header(CONTENT_ID, id(id));
-        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad), APPLICATION_PDF)
+        builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
+                id(id));
+        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
         søknad.getVedlegg().stream()
@@ -55,10 +57,10 @@ public class FPFordelKonvoluttGenerator {
         return new HttpEntity<>(builder.build(), headers());
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, AktorId aktørId,
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, Person søker,
             String ref) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part(METADATA, metadata(ettersending, aktørId, ref), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(ettersending, søker.aktørId, ref), APPLICATION_JSON_UTF8);
         return new HttpEntity<>(builder.build(), headers());
     }
 
@@ -89,8 +91,8 @@ public class FPFordelKonvoluttGenerator {
         return metadataGenerator.generateMetadata(new FPFordelMetadata(ettersending, aktørId, ref));
     }
 
-    private byte[] pdfHovedDokument(Søknad søknad) {
-        return encode(pdfGenerator.generate(søknad));
+    private byte[] pdfHovedDokument(Søknad søknad, Person søker) {
+        return encode(pdfGenerator.generate(søknad, søker));
     }
 
     private String xmlHovedDokument(Søknad søknad, AktorId aktørId) {

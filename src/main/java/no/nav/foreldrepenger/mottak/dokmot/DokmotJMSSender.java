@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.UUIDIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
@@ -33,12 +33,12 @@ public class DokmotJMSSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering sendSøknad(Søknad søknad, AktorId aktorId) {
+    public Kvittering sendSøknad(Søknad søknad, Person søker) {
         if (dokmotConnection.isEnabled()) {
             String ref = idGenerator.getOrCreate();
             dokmotConnection.send(session -> {
                 LOG.info("Sender SøknadsXML til DOKMOT");
-                TextMessage msg = session.createTextMessage(generator.toXML(søknad, ref));
+                TextMessage msg = session.createTextMessage(generator.toXML(søknad, søker, ref));
                 msg.setStringProperty("callId", ref);
                 return msg;
             });
@@ -49,7 +49,7 @@ public class DokmotJMSSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering sendEttersending(@Valid Ettersending ettersending, AktorId aktørId) {
+    public Kvittering sendEttersending(@Valid Ettersending ettersending, Person søker) {
         throw new IllegalArgumentException("Ettersending for engangsstønad ikke implementert");
     }
 

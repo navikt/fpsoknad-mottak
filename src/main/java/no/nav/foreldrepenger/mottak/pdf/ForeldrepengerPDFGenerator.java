@@ -17,8 +17,8 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
@@ -49,7 +49,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
 
-    public byte[] generate(Søknad søknad) {
+    public byte[] generate(Søknad søknad, Person søker) {
         try {
             Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
             Document document = new Document();
@@ -59,7 +59,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
             logo(document);
 
             document.add(center(heading(fromMessageSource("søknad_fp"))));
-            // document.add(søker(søknad));
+            document.add(søker(søker));
             if (stønad.getOpptjening() != null) {
                 document.add(arbeidsforhold(stønad.getOpptjening().getArbeidsforhold()));
                 document.add(blankLine());
@@ -87,12 +87,11 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         }
     }
 
-    private static Element søker(Søknad søknad) {
-        LOG.info("Søker er {}", søknad.getSøker());
+    private static Element søker(Person søker) {
         Paragraph p = new Paragraph();
 
-        p.add(center(regularParagraph(søknad.getSøker().getFnr().getFnr())));
-        String navn = navn(søknad.getSøker().getNavn());
+        p.add(center(regularParagraph(søker.fnr.getFnr())));
+        String navn = navn(søker);
         if (navn != null &&
                 !navn.isEmpty()) {
             p.add(center(regularParagraph(navn)));
@@ -103,13 +102,13 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         return p;
     }
 
-    private static String navn(Navn søker) {
+    private static String navn(Person søker) {
         if (søker == null) {
             return null;
         }
-        return (Optional.ofNullable(søker.getFornavn()).orElse("") + " "
-                + Optional.ofNullable(søker.getMellomnavn()).orElse("") + " "
-                + Optional.ofNullable(søker.getEtternavn()).orElse("")).trim();
+        return (Optional.ofNullable(søker.fornavn).orElse("") + " "
+                + Optional.ofNullable(søker.mellomnavn).orElse("") + " "
+                + Optional.ofNullable(søker.etternavn).orElse("")).trim();
     }
 
     private Paragraph annenForelder(Foreldrepenger stønad) {

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.hasPdfSignature;
+import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.valgfrittVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
@@ -99,8 +100,8 @@ public class TestFPFordelSerialization {
                 new FPFordelSøknadGenerator(), new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
                         mottakConfiguration.kvitteringstekster()));
         Søknad søknad = søknad(valgfrittVedlegg());
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad,
-                new AktorId("42"), new UUIDIdGenerator("jalla").create());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
+                new UUIDIdGenerator("jalla").create());
         assertEquals(3, konvolutt.getBody().size());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         List<HttpEntity<?>> hoveddokumenter = konvolutt.getBody().get(HOVEDDOKUMENT);

@@ -2,18 +2,17 @@ package no.nav.foreldrepenger.mottak.domain.engangsstønad;
 
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangstønad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.serialize;
+import static no.nav.foreldrepenger.mottak.domain.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.ukjentForelder;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.utenlandskForelder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.LocalDateTime;
 
 import org.junit.Before;
@@ -57,7 +56,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testKvittering() {
-        Kvittering kvittering = new Kvittering("42", LocalDateTime.now(), URI.create("http://www.vg.no"));
+        Kvittering kvittering = new Kvittering("42", LocalDateTime.now());
         test(kvittering, false);
     }
 
