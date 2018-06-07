@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.Data;
@@ -16,7 +15,7 @@ public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
     private final UtsettelsesÅrsak årsak;
 
     public UtsettelsesPeriode(LocalDate fom, LocalDate tom, List<String> vedlegg, UtsettelsesÅrsak årsak) {
-        super(fom, tom, vedlegg == null ? Collections.emptyList() : vedlegg);
+        super(fom, tom, vedlegg);
         this.årsak = årsak;
     }
 }
