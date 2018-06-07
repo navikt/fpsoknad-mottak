@@ -22,14 +22,10 @@ public class OppslagService implements Oppslag {
     private final RestTemplate template;
     private final URI baseURI;
 
-    public OppslagService(@Value("${oppslag.baseuri:http://fpsoknad-oppslag/api/oppslag}") URI baseURI,
+    public OppslagService(@Value("${oppslag.baseuri:http://fpsoknad-oppslag/api}") URI baseURI,
             RestTemplate template) {
         this.template = template;
         this.baseURI = baseURI;
-    }
-
-    private AktorId getAktørId() {
-        return oppslag(AKTØR, AktorId.class);
     }
 
     @Override
