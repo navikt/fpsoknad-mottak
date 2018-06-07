@@ -20,16 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLGenerator;
-import no.nav.foreldrepenger.mottak.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadGenerator;
+import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLGenerator;
+import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
 @Unprotected

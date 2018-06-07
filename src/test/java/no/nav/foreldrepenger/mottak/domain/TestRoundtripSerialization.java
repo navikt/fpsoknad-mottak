@@ -32,9 +32,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
-import no.nav.foreldrepenger.mottak.fpfordel.FPFordelConnection;
-import no.nav.foreldrepenger.mottak.fpfordel.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.fpfordel.FPFordelSøknadGenerator;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelConnection;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
