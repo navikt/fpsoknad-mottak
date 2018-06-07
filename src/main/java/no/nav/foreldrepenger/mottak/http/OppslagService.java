@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 @Service
 public class OppslagService implements Oppslag {
 
-    private static final String AKTØR = "/oppslag/aktør";
+    private static final String AKTØR = "/oppslag/aktor";
     private static final String PERSON = "/person";
 
     private static final Logger LOG = LoggerFactory.getLogger(OppslagService.class);
