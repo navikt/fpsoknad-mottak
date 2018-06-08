@@ -6,8 +6,11 @@ import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.LocalDate.now;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 
 public class AaregClientStub implements AaregClient {
 
@@ -20,6 +23,7 @@ public class AaregClientStub implements AaregClient {
 
     @Override
     public List<Arbeidsforhold> arbeidsforhold(Fodselsnummer fnr) {
-        return new ArrayList<>();
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold("0123456789", "orgnummer", "Kjerrekusk", now().minusYears(1), empty());
+        return singletonList(arbeidsforhold);
     }
 }
