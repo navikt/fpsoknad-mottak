@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
-import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             return connection.send(payload, ref);
         }
         LOG.info("Sendning av {} til FPFordel er deaktivert, ingenting å sende", type);
-        return IKKE_SENDT;
+        return new Kvittering(IKKE_SENDT_FPSAK);
     }
 
     @Override

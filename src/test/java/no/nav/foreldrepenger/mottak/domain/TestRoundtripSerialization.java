@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.nesteMåned;
@@ -99,7 +98,8 @@ public class TestRoundtripSerialization {
 
     @Test
     public void testForeldrepengerSøknadSend() throws IOException {
-        assertEquals(IKKE_SENDT, template.postForObject(MOTTAK + "/send", foreldrepenger(), Kvittering.class));
+        assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK,
+                template.postForObject(MOTTAK + "/send", foreldrepenger(), Kvittering.class).getLeveranseStatus());
     }
 
     @Test
@@ -115,8 +115,9 @@ public class TestRoundtripSerialization {
 
     @Test
     public void testEngangsstønadSøknadSend() throws IOException {
-        assertEquals(IKKE_SENDT, template.postForObject(MOTTAK + "/send",
-                engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class));
+        assertEquals(LeveranseStatus.IKKE_SENDT_DOKMOT, template.postForObject(MOTTAK + "/send",
+                engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class)
+                .getLeveranseStatus());
     }
 
     @Test

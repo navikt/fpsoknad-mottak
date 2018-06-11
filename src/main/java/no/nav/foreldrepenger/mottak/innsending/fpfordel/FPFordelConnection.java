@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
+
 import java.net.URI;
 
 import org.slf4j.Logger;
@@ -56,7 +58,7 @@ public class FPFordelConnection {
             // TODO check what we get, poll until timeout
             URI pollURI = template.postForLocation(postEndpoint, payload);
             LOG.info("Mottok URI {}", pollURI);
-            return new Kvittering(ref);
+            return new Kvittering(SENDT_FPSAK);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);

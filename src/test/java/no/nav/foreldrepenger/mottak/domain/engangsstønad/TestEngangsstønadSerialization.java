@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.engangsstønad;
 
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangstønad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
@@ -13,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testKvittering() {
-        Kvittering kvittering = new Kvittering("42", LocalDateTime.now());
+        Kvittering kvittering = new Kvittering("42", SENDT_FPSAK);
         test(kvittering, false);
     }
 

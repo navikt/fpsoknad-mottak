@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static java.time.LocalDateTime.now;
 
 import java.time.LocalDateTime;
 
@@ -15,18 +14,24 @@ import lombok.Data;
 @JsonInclude(NON_NULL)
 public class Kvittering {
 
-    public static final Kvittering IKKE_SENDT = new Kvittering("0", LocalDateTime.now());
     private final String referanseId;
     private final LocalDateTime mottattDato;
+    private final LeveranseStatus leveranseStatus;
 
-    public Kvittering(String referanseId) {
-        this(referanseId, now());
+    public Kvittering(LeveranseStatus leveranseStatus) {
+        this(null, leveranseStatus);
+    }
+
+    public Kvittering(String ref, LeveranseStatus leveranseStatus) {
+        this(ref, LocalDateTime.now(), leveranseStatus);
     }
 
     @JsonCreator
     public Kvittering(@JsonProperty("referanseId") String referanseId,
-            @JsonProperty("mottattDato") LocalDateTime mottattDato) {
+            @JsonProperty("mottattDato") LocalDateTime mottattDato,
+            @JsonProperty("leveranseStatus") LeveranseStatus leveranseStatus) {
         this.referanseId = referanseId;
         this.mottattDato = mottattDato;
+        this.leveranseStatus = leveranseStatus;
     }
 }
