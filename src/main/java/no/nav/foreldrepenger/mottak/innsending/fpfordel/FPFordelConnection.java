@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
-
 import java.net.URI;
 
 import org.slf4j.Logger;
@@ -25,10 +23,12 @@ public class FPFordelConnection {
 
     private final RestTemplate template;
     private final FPFordelConfig config;
+    private final FPFordelResponseHandler responseHandler;
 
-    public FPFordelConnection(RestTemplate template, FPFordelConfig config) {
+    public FPFordelConnection(RestTemplate template, FPFordelConfig config, FPFordelResponseHandler responseHandler) {
         this.template = template;
         this.config = config;
+        this.responseHandler = responseHandler;
     }
 
     public boolean isEnabled() {
@@ -53,12 +53,9 @@ public class FPFordelConnection {
                 .pathSegment(FPFORDEL_PATH)
                 .build()
                 .toUri();
-        LOG.info("Poster til {}", postEndpoint);
         try {
-            // TODO check what we get, poll until timeout
-            URI pollURI = template.postForLocation(postEndpoint, payload);
-            LOG.info("Mottok URI {}", pollURI);
-            return new Kvittering(SENDT_FPSAK);
+            LOG.info("Sender søknad til {}", postEndpoint);
+            return responseHandler.handle(template.postForEntity(postEndpoint, payload, FPFordelKvittering.class), ref);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);
@@ -67,6 +64,8 @@ public class FPFordelConnection {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", config=" + config + "]";
+        return getClass().getSimpleName() + " [template=" + template + ", config=" + config + ", responseHandler="
+                + responseHandler + "]";
     }
+
 }

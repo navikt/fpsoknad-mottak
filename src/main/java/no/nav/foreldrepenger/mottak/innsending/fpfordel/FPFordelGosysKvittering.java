@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FPFordelManuellKvittering extends FPFordelKvittering {
+public class FPFordelGosysKvittering extends FPFordelKvittering {
 
     static final String STATUS = "Manuell journalføring";
 
@@ -16,7 +16,7 @@ public class FPFordelManuellKvittering extends FPFordelKvittering {
     }
 
     @JsonCreator
-    public FPFordelManuellKvittering(@JsonProperty("journalpostId") String journalpostId) {
+    public FPFordelGosysKvittering(@JsonProperty("journalpostId") String journalpostId) {
         super(STATUS);
         this.journalpostId = journalpostId;
     }
@@ -37,7 +37,7 @@ public class FPFordelManuellKvittering extends FPFordelKvittering {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        FPFordelManuellKvittering other = (FPFordelManuellKvittering) obj;
+        FPFordelGosysKvittering other = (FPFordelGosysKvittering) obj;
         if (journalpostId == null) {
             if (other.journalpostId != null) {
                 return false;

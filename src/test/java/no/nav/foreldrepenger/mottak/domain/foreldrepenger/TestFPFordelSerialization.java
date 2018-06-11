@@ -40,7 +40,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelManuellKvittering;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
@@ -67,7 +67,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testManuellKvittering() throws Exception {
-        TestForeldrepengerSerialization.test(new FPFordelManuellKvittering("42"), true, mapper);
+        TestForeldrepengerSerialization.test(new FPFordelGosysKvittering("42"), true, mapper);
     }
 
     @Test

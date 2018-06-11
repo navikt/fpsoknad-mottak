@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "status")
 @JsonSubTypes({
         @Type(value = FPFordelPendingKvittering.class, name = FPFordelPendingKvittering.STATUS),
-        @Type(value = FPFordelManuellKvittering.class, name = FPFordelManuellKvittering.STATUS),
+        @Type(value = FPFordelGosysKvittering.class, name = FPFordelGosysKvittering.STATUS),
         @Type(value = FPSakFordeltKvittering.class, name = FPSakFordeltKvittering.STATUS)
 })
 public abstract class FPFordelKvittering {
