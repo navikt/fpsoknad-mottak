@@ -51,6 +51,7 @@ public class OppslagController {
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
+        aktorClient.ping();
         return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
     }
 
