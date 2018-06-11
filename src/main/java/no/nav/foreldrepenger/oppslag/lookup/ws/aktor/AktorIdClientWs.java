@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.oppslag.lookup.ws.aktor;
 
 import java.util.Objects;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +17,13 @@ public class AktorIdClientWs implements AktorIdClient {
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientWs.class);
 
     private final AktoerV2 aktoerV2;
+    private final AktoerV2 healthIndicator;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.aktorid");
 
-    @Inject
-    public AktorIdClientWs(AktoerV2 aktoerV2) {
+    public AktorIdClientWs(AktoerV2 aktoerV2, AktoerV2 healthIndicator) {
         this.aktoerV2 = Objects.requireNonNull(aktoerV2);
+        this.healthIndicator = Objects.requireNonNull(healthIndicator);
     }
 
     public AktorId aktorIdForFnr(Fodselsnummer fnr) {
@@ -40,7 +39,7 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     public void ping() {
-        aktoerV2.ping();
+    	healthIndicator.ping();
     }
 
     private static HentAktoerIdForIdentRequest request(Fodselsnummer fnr) {
