@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.oppslag.lookup;
 
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.oppslag.lookup.ws.Oppslag;
+import no.nav.foreldrepenger.oppslag.lookup.ws.Søkerinfo;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.AaregClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -46,9 +45,6 @@ public class OppslagController {
     private AaregClient aaregClient;
 
     @Inject
-    private CoordinatedLookup lookup;
-
-    @Inject
     private OIDCRequestContextHolder contextHolder;
 
     @Unprotected
@@ -59,19 +55,12 @@ public class OppslagController {
     }
 
     @GetMapping
-    public ResponseEntity<Oppslag> oppslag() {
+    public ResponseEntity<Søkerinfo> essensiellSøkerinfo() {
         Fodselsnummer fnr = fnrFromClaims();
         Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
         List<Arbeidsforhold> arbeidsforhold = aaregClient.arbeidsforhold(fnr);
 
-        return ok(new Oppslag(person, arbeidsforhold));
-    }
-
-    public ResponseEntity<AggregatedLookupResults> gimmeAllYouGot() {
-        Fodselsnummer fnr = fnrFromClaims();
-        AktorId aktorid = aktør(fnr);
-        AggregatedLookupResults results = lookup.gimmeAllYouGot(new ID(aktorid, fnr));
-        return new ResponseEntity<>(results, OK);
+        return ok(new Søkerinfo(person, arbeidsforhold));
     }
 
     @GetMapping(value = "/aktor")
