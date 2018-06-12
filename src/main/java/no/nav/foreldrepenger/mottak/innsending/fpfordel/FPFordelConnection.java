@@ -17,9 +17,9 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 @Component
 public class FPFordelConnection {
 
-    private static final String PING_PATH = "/internal/isReady";
+    private static final String PING_PATH = "internal/isReady";
 
-    private static final String FPFORDEL_PATH = "/fpfordel/api/dokumentforsendelse";
+    private static final String FPFORDEL_PATH = "fpfordel/api/dokumentforsendelse";
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
 
