@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
-import java.net.URI;
-
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +10,7 @@ public class FPFordelHealthIndicator extends EnvironmentAwareHealthIndicator {
 
     private final FPFordelConnection connection;
 
-    public FPFordelHealthIndicator(Environment env, URI serviceUrl, FPFordelConnection connection) {
+    public FPFordelHealthIndicator(Environment env, FPFordelConnection connection) {
         super(env, connection.pingEndpoint());
         this.connection = connection;
     }
