@@ -17,6 +17,8 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 @Component
 public class FPFordelConnection {
 
+    private static final String PING_PATH = "/internal/isReady";
+
     private static final String FPFORDEL_PATH = "/fpfordel/api/dokumentforsendelse";
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
@@ -36,7 +38,7 @@ public class FPFordelConnection {
     }
 
     public void ping() {
-        String pingEndpoint = config.getUri() + "/internal/isReady";
+        URI pingEndpoint = pingEndpoint();
         LOG.info("Pinger {}", pingEndpoint);
         try {
             ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
@@ -47,12 +49,12 @@ public class FPFordelConnection {
         }
     }
 
+    protected URI pingEndpoint() {
+        return endpointFor(PING_PATH);
+    }
+
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        URI postEndpoint = UriComponentsBuilder
-                .fromUriString(config.getUri())
-                .pathSegment(FPFORDEL_PATH)
-                .build()
-                .toUri();
+        URI postEndpoint = endpointFor(FPFORDEL_PATH);
         try {
             LOG.info("Sender søknad til {}", postEndpoint);
             return responseHandler.handle(template.postForEntity(postEndpoint, payload,
@@ -61,6 +63,14 @@ public class FPFordelConnection {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);
         }
+    }
+
+    private URI endpointFor(String path) {
+        return UriComponentsBuilder
+                .fromUriString(config.getUri())
+                .pathSegment(path)
+                .build().toUri();
+
     }
 
     @Override
