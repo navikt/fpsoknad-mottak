@@ -33,10 +33,13 @@ public class FPFordelConfiguration {
                 return super.canRead(clazz, mediaType);
             }
         };
-        return new RestTemplateBuilder()
+        RestTemplate jalla = new RestTemplateBuilder()
                 .rootUri(cfg.getUri())
                 .interceptors(interceptors)
-                .messageConverters(cv)
+                // .messageConverters(cv)
                 .build();
+
+        jalla.getMessageConverters().add(cv);
+        return jalla;
     }
 }
