@@ -40,7 +40,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MottakApplicationLocal.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = "preprod,dev")
 @AutoConfigureWireMock(port = 0)
@@ -63,6 +63,7 @@ public class TestRoundtripSerialization {
 
     @Before
     public void setAuthoriztion() {
+
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
                 execution) -> {
             request.getHeaders().add(AUTHORIZATION, "Bearer " +

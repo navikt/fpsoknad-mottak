@@ -33,49 +33,72 @@ public class FPFordelResponseHandler {
         return handle(kvittering, ref, maxAntallForsøk);
     }
 
-    public Kvittering handle(ResponseEntity<FPFordelKvittering> kvittering, String ref, int n) {
+    public Kvittering handle(ResponseEntity<FPFordelKvittering> respons, String ref, int n) {
 
-        if (kvittering.getStatusCode() != OK) {
-            LOG.warn("FPFordel returnerte ikke forventet statuskode 200, fikk {}", kvittering.getStatusCode());
+        LOG.info("Fikk respons {}", respons);
+        if (respons.getStatusCode() != OK) {
+            LOG.warn("FPFordel returnerte ikke forventet statuskode 200, fikk {}", respons.getStatusCode());
             return new Kvittering(FP_FORDEL_MESSED_UP);
         }
 
-        if (!kvittering.hasBody()) {
+        if (!respons.hasBody()) {
             LOG.warn("FPFordel returnerte ikke forventet kvittering");
-            String location = kvittering.getHeaders().getFirst(LOCATION);
+            String location = pollURI(respons);
             if (location != null && location.contains("redirect_url")) {
-                LOG.warn("Open AM roter det til for oss ({)}", location);
+                LOG.warn("Open AM roter det til for oss ({})", location);
             }
             return new Kvittering(FP_FORDEL_MESSED_UP);
         }
 
-        if (kvittering.getBody() instanceof FPFordelPendingKvittering) {
-            FPFordelPendingKvittering pendingKvittering = FPFordelPendingKvittering.class.cast(kvittering.getBody());
-            String pollURI = kvittering.getHeaders().getFirst(LOCATION);
-            if (pollURI == null) {
-                LOG.warn("FPFordel returnerte ikke forventet URI for polling");
-                return new Kvittering(FP_FORDEL_MESSED_UP);
-            }
-            if (n >= 0) {
-                return poll(pollURI, ref, pendingKvittering.getPollInterval().toMillis(), n - 1);
-            }
-            LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp", maxAntallForsøk);
-            return new Kvittering(ref, SENDT_FPSAK);
+        if (respons.getBody() instanceof FPFordelPendingKvittering) {
+            return pollUntil(ref, pollURI(respons), FPFordelPendingKvittering.class.cast(respons.getBody()), n);
         }
-        if (kvittering.getBody() instanceof FPFordelGosysKvittering) {
-            LOG.info("Søknaden er sendt til manuell behandling");
-            return new Kvittering(ref, SENDT_GOSYS);
+        if (respons.getBody() instanceof FPFordelGosysKvittering) {
+            return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(respons.getBody()));
         }
-        if (kvittering.getBody() instanceof FPSakFordeltKvittering) {
-            LOG.info("Søknaden er sendt og motatt av FPSak");
-            return new Kvittering(ref, SENDT_OG_MOTATT_FPSAK);
+        if (respons.getBody() instanceof FPSakFordeltKvittering) {
+            return sendtOgMotattKvittering(ref, FPSakFordeltKvittering.class.cast(respons.getBody()));
+
         }
-        throw new FPFordelUnavailableException("Uventet respons fra FPFordel " + kvittering.getBody());
+        throw new FPFordelUnavailableException("Uventet respons fra FPFordel " + respons.getBody());
+    }
+
+    private static String pollURI(ResponseEntity<FPFordelKvittering> respons) {
+        return respons.getHeaders().getFirst(LOCATION);
+    }
+
+    private Kvittering pollUntil(String ref, String pollURI, FPFordelPendingKvittering pollKvittering, int n) {
+        LOG.info("Søknaden er mottatt, men ikke behandlet i FPSak");
+        if (pollURI == null) {
+            LOG.warn("FPFordel returnerte ikke forventet URI for polling");
+            return new Kvittering(FP_FORDEL_MESSED_UP);
+        }
+        if (n >= 0) {
+            return poll(pollURI, ref, pollKvittering.getPollInterval().toMillis(), n - 1);
+        }
+        LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp", maxAntallForsøk);
+        return new Kvittering(ref, SENDT_FPSAK);
+    }
+
+    private static Kvittering gosysKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
+        LOG.info("Søknaden er sendt til manuell behandling i Gosys");
+        Kvittering kvittering = new Kvittering(ref, SENDT_GOSYS);
+        kvittering.setJournalId(gosysKvittering.getJounalId());
+        return kvittering;
+    }
+
+    private static Kvittering sendtOgMotattKvittering(String ref, FPSakFordeltKvittering fordeltKvittering) {
+        LOG.info("Søknaden er sendt og motatt av FPSak, journalId er {}, saksnummer er {}",
+                fordeltKvittering.getJounalId(), fordeltKvittering.getSaksnummer());
+        Kvittering kvittering = new Kvittering(ref, SENDT_OG_MOTATT_FPSAK);
+        kvittering.setJournalId(fordeltKvittering.getJounalId());
+        kvittering.setSaksNr(fordeltKvittering.getSaksnummer());
+        return kvittering;
     }
 
     private Kvittering poll(String pollURI, String ref, long pollDuration, int n) {
         try {
-            LOG.info("Poller URI {}", pollURI);
+            LOG.info("Poller URI {} for {}. gang (av {})", pollURI, maxAntallForsøk - n, maxAntallForsøk);
             Thread.sleep(pollDuration);
             return handle(template.getForEntity(pollURI, FPFordelKvittering.class), ref, n);
         } catch (RestClientException | InterruptedException e) {

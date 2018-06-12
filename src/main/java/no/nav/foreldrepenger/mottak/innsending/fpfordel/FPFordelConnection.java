@@ -55,7 +55,8 @@ public class FPFordelConnection {
                 .toUri();
         try {
             LOG.info("Sender søknad til {}", postEndpoint);
-            return responseHandler.handle(template.postForEntity(postEndpoint, payload, FPFordelKvittering.class), ref);
+            return responseHandler.handle(template.postForEntity(postEndpoint, payload,
+                    FPFordelKvittering.class), ref);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);

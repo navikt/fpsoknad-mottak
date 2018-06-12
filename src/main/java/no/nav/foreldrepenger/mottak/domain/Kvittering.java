@@ -17,6 +17,8 @@ public class Kvittering {
     private final String referanseId;
     private final LocalDateTime mottattDato;
     private final LeveranseStatus leveranseStatus;
+    private String journalId;
+    private String saksNr;
 
     public Kvittering(LeveranseStatus leveranseStatus) {
         this(null, leveranseStatus);

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.engangsstønad;
 
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangstønad;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
@@ -35,6 +34,7 @@ import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TestUtils;
 
@@ -56,8 +56,10 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testKvittering() {
-        Kvittering kvittering = new Kvittering("42", SENDT_FPSAK);
-        test(kvittering, false);
+        Kvittering kvittering = new Kvittering("42", LeveranseStatus.SENDT_OG_MOTATT_FPSAK);
+        kvittering.setJournalId("555");
+        kvittering.setSaksNr("666");
+        test(kvittering, true);
     }
 
     @Test

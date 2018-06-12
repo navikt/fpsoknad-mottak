@@ -37,10 +37,11 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
@@ -66,20 +67,22 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testManuellKvittering() throws Exception {
-        TestForeldrepengerSerialization.test(new FPFordelGosysKvittering("42"), true, mapper);
+    public void testGosysKvittering() throws Exception {
+        FPFordelKvittering kvittering = new FPFordelGosysKvittering("42");
+        TestForeldrepengerSerialization.test(kvittering, true, mapper);
     }
 
     @Test
     public void testPollKvittering() throws Exception {
-        TestForeldrepengerSerialization.test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), true,
-                mapper);
+        FPFordelKvittering kvittering = new FPFordelPendingKvittering(Duration.ofSeconds(6));
+        TestForeldrepengerSerialization.test(kvittering, true, mapper);
 
     }
 
     @Test
     public void testFordeltKvittering() throws Exception {
-        TestForeldrepengerSerialization.test(new FPSakFordeltKvittering("123", "456"), true,
+        FPFordelKvittering kvittering = new FPSakFordeltKvittering("123", "456");
+        TestForeldrepengerSerialization.test(kvittering, true,
                 mapper);
 
     }

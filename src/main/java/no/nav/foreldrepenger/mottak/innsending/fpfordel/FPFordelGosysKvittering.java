@@ -9,21 +9,21 @@ public class FPFordelGosysKvittering extends FPFordelKvittering {
 
     static final String STATUS = "Manuell journalføring";
 
-    private final String journalpostId;
-
-    public String getJournalpostId() {
-        return journalpostId;
-    }
+    private final String jounalId;
 
     @JsonCreator
-    public FPFordelGosysKvittering(@JsonProperty("journalpostId") String journalpostId) {
+    public FPFordelGosysKvittering(@JsonProperty("jounalId") String jounalId) {
         super(STATUS);
-        this.journalpostId = journalpostId;
+        this.jounalId = jounalId;
+    }
+
+    public String getJounalId() {
+        return jounalId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(journalpostId, getStatus());
+        return Objects.hash(jounalId, getStatus());
     }
 
     @Override
@@ -38,12 +38,12 @@ public class FPFordelGosysKvittering extends FPFordelKvittering {
             return false;
         }
         FPFordelGosysKvittering other = (FPFordelGosysKvittering) obj;
-        if (journalpostId == null) {
-            if (other.journalpostId != null) {
+        if (jounalId == null) {
+            if (other.jounalId != null) {
                 return false;
             }
         }
-        else if (!journalpostId.equals(other.journalpostId)) {
+        else if (!jounalId.equals(other.jounalId)) {
             return false;
         }
         return true;
@@ -51,7 +51,7 @@ public class FPFordelGosysKvittering extends FPFordelKvittering {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [journalpostId=" + journalpostId + ", status=" + getStatus() + "]";
+        return getClass().getSimpleName() + " [jounalId=" + jounalId + ", status=" + getStatus() + "]";
     }
 
 }
