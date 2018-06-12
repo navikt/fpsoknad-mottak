@@ -15,5 +15,8 @@
 	<root level="info">
 		<appender-ref ref="stdout" />
 	</root>
-    <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="${requests.level}"/>
+     <springProfile name="dev,preprod">
+        <logger name="org.springframework.web.client" level="trace" />
+        <logger name="org.apache.http" level="trace" />
+    </springProfile>
 </configuration>
