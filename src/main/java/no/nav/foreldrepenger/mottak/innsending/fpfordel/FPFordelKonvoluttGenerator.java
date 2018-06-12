@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -79,7 +78,7 @@ public class FPFordelKonvoluttGenerator {
 
     private static HttpHeaders headers() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("multipart/mixed"));
+        // headers.setContentType(MediaType.parseMediaType("multipart/mixed"));
         // headers.setContentType(MULTIPART_FORM_DATA);
         return headers;
     }
