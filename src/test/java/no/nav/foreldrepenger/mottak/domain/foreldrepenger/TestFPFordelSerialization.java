@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -112,7 +111,7 @@ public class TestFPFordelSerialization {
         assertEquals(1, metadata.size());
         assertEquals(2, hoveddokumenter.size());
         assertEquals(1, vedlegg.size());
-        assertMediaType(konvolutt, MediaType.parseMediaType("multipart/mixed").toString());
+        assertMediaType(konvolutt, "multipart/mixed");
         assertMediaType(metadata.get(0), APPLICATION_JSON_UTF8_VALUE);
         assertMediaType(hoveddokumenter.get(0), APPLICATION_XML_VALUE);
         assertMediaType(hoveddokumenter.get(1), APPLICATION_PDF_VALUE);
