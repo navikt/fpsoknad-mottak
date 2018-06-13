@@ -1,32 +1,29 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.oppslag.lookup.ws.inntekt.Inntekt;
+import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlPeriode;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.*;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlPeriode;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.PoststedFinner;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.StatiskPoststedFinner;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neovisionaries.i18n.CountryCode;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Optional;
+
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Tag("fast")
 @ExtendWith(SpringExtension.class)
@@ -114,7 +111,7 @@ public class SerializationTest {
 
     private static Person person() {
         return new Person(id(), CountryCode.NO, Kjonn.M, name(), "nynorsk",
-            bankkonto(), birthDate());
+            bankkonto(), birthDate(), emptyList());
     }
 
     private static LocalDate birthDate() {

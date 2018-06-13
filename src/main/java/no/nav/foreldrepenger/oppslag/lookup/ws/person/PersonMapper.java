@@ -4,8 +4,10 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.lookup.Pair;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
+import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 import java.time.LocalDate;
+import java.util.List;
 
 final class PersonMapper {
 
@@ -13,13 +15,18 @@ final class PersonMapper {
 
     }
 
-    public static no.nav.foreldrepenger.oppslag.lookup.ws.person.Person map(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-        return new no.nav.foreldrepenger.oppslag.lookup.ws.person.Person(id,
+    public static Person map(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person, List<Barn> barn) {
+        return new Person(id,
             countryCode(person), Kjonn.valueOf(person.getKjoenn().getKjoenn().getValue()),
             name(person.getPersonnavn()),
             målform(person),
             bankkonto(person),
-            birthDate(person));
+            birthDate(person),
+            barn);
+    }
+
+    public static Barn map(NorskIdent id, Fodselsnummer fnrMor, HentPersonResponse barn) {
+        return new Barn(fnrMor, new Fodselsnummer(id.getIdent()), birthDate(barn.getPerson()));
     }
 
     private static Navn name(Personnavn navn) {

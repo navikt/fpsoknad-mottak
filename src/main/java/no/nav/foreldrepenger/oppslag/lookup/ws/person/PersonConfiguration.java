@@ -17,8 +17,13 @@ public class PersonConfiguration extends WsClient<PersonV3>{
     }
 
     @Bean
-    public PersonClient personKlientTpsWs(PersonV3 person) {
-        return new PersonClientTpsWs(person);
+    public Barnutvelger barnutvelger(PersonV3 personV3, @Value("${foreldrepenger.selvbetjening.maxmonthsback:12}") int months) {
+        return new BarnMorRelasjonSjekkendeBarnutvelger(months);
+    }
+
+    @Bean
+    public PersonClient personKlientTpsWs(PersonV3 person, Barnutvelger barnutvelger) {
+        return new PersonClientTpsWs(person, barnutvelger);
     }
 
 }

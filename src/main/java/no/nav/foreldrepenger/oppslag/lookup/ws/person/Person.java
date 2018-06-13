@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.neovisionaries.i18n.CountryCode;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @JsonPropertyOrder({"id", "fodselsdato", "navn", "kjonn", "målform"})
@@ -19,9 +20,10 @@ public class Person {
     private final Bankkonto bankkonto;
     @JsonUnwrapped
     private final Navn navn;
+    private final List<Barn> barn;
 
     public Person(ID id, CountryCode landKode, Kjonn kjonn, Navn navn, String målform,
-                  Bankkonto bankkonto, LocalDate fodselsdato) {
+                  Bankkonto bankkonto, LocalDate fodselsdato, List<Barn> barn) {
         this.id = id;
         this.landKode = landKode;
         this.kjonn = kjonn;
@@ -29,6 +31,7 @@ public class Person {
         this.bankkonto = bankkonto;
         this.navn = navn;
         this.fodselsdato = fodselsdato;
+        this.barn = barn;
     }
 
     public Kjonn getKjonn() {
@@ -57,6 +60,10 @@ public class Person {
 
     public Navn getNavn() {
         return navn;
+    }
+
+    public List<Barn> getBarn() {
+        return barn;
     }
 
     @Override
