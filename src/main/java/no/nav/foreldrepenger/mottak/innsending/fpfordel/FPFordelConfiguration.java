@@ -49,14 +49,6 @@ public class FPFordelConfiguration {
             this.partConverters.add(new ResourceHttpMessageConverter());
         }
 
-        /*
-         * @Override public void setSupportedMediaTypes(List<MediaType>
-         * supportedMediaTypes) { LOG.info("Types before {}", supportedMediaTypes);
-         * LOG.info("Setting supported mediatypes to multipart/mixed");
-         * super.setSupportedMediaTypes(
-         * Collections.singletonList(MediaType.parseMediaType("multipart/mixed"))); }
-         */
-
         @Override
         public boolean canWrite(Class<?> clazz, @Nullable MediaType mediaType) {
             LOG.info("Checking if we can write  {} for {}", clazz, mediaType);
@@ -111,6 +103,7 @@ public class FPFordelConfiguration {
 
         private void writeParts(OutputStream os, MultiValueMap<String, Object> parts, byte[] boundary)
                 throws IOException {
+            LOG.info("Writing {} parts", parts.size());
             for (Map.Entry<String, List<Object>> entry : parts.entrySet()) {
                 String name = entry.getKey();
                 for (Object part : entry.getValue()) {
@@ -131,12 +124,14 @@ public class FPFordelConfiguration {
             Class<?> partType = partBody.getClass();
             HttpHeaders partHeaders = partEntity.getHeaders();
             MediaType partContentType = partHeaders.getContentType();
+            LOG.info("Trying to write part {} of type {}", name, partContentType);
             for (HttpMessageConverter<?> messageConverter : partConverters) {
                 if (messageConverter.canWrite(partType, partContentType)) {
                     /*
                      * Charset charset = isFilenameCharsetSet() ? StandardCharsets.US_ASCII :
                      * this.charset;
                      */
+                    LOG.info("Writing part using {}", messageConverter.getClass().getSimpleName());
                     HttpOutputMessage multipartMessage = new MultipartHttpOutputMessage(os, StandardCharsets.US_ASCII);
                     multipartMessage.getHeaders().setContentDispositionFormData(name, getFilename(partBody));
                     if (!partHeaders.isEmpty()) {
