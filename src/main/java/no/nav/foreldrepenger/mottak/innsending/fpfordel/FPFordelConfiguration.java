@@ -77,14 +77,17 @@ public class FPFordelConfiguration {
                 HttpOutputMessage outputMessage) throws IOException {
 
             final byte[] boundary = generateMultipartBoundary();
+            LOG.info("Writing multipart ({} parts)", parts.size());
+
             Map<String, String> parameters = new HashMap<>(2);
             parameters.put("boundary", new String(boundary, "US-ASCII"));
             /*
              * if (!isFilenameCharsetSet()) { parameters.put("charset",
              * this.charset.name()); }
              */
-
-            MediaType contentType = new MediaType(MediaType.MULTIPART_FORM_DATA, parameters);
+            MediaType contentType = new MediaType(MediaType.parseMediaType("multipart/mixed"), parameters);
+            // MediaType contentType = new MediaType(MediaType.MULTIPART_FORM_DATA,
+            // parameters);
             HttpHeaders headers = outputMessage.getHeaders();
             headers.setContentType(contentType);
 
@@ -131,7 +134,7 @@ public class FPFordelConfiguration {
                      * Charset charset = isFilenameCharsetSet() ? StandardCharsets.US_ASCII :
                      * this.charset;
                      */
-                    LOG.info("Writing part using {}", messageConverter.getClass().getSimpleName());
+                    LOG.info("Writing part {} using {}", name, messageConverter.getClass().getSimpleName());
                     HttpOutputMessage multipartMessage = new MultipartHttpOutputMessage(os, StandardCharsets.US_ASCII);
                     multipartMessage.getHeaders().setContentDispositionFormData(name, getFilename(partBody));
                     if (!partHeaders.isEmpty()) {
@@ -146,7 +149,7 @@ public class FPFordelConfiguration {
                     "found for request type [" + partType.getName() + "]");
         }
 
-        private void writeBoundary(OutputStream os, byte[] boundary) throws IOException {
+        private static void writeBoundary(OutputStream os, byte[] boundary) throws IOException {
             os.write('-');
             os.write('-');
             os.write(boundary);
