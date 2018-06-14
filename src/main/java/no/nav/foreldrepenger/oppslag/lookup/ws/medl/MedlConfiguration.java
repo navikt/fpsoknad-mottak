@@ -23,12 +23,8 @@ public class MedlConfiguration extends WsClient<MedlemskapV2> {
         return createPortForHealthIndicator(serviceUrl, MedlemskapV2.class);
     }
 
-    /*
-     * @Bean public MedlClient medlClientWs(@Qualifier("medlemskapV2") MedlemskapV2
-     * medlemskapV2,
-     * 
-     * @Qualifier("healthIndicator") MedlemskapV2 healthIndicator) { return new
-     * MedlClientWs(medlemskapV2, healthIndicator); }
-     */
-
+    @Bean
+    public MedlClient medlClientWs(MedlemskapV2 medlemskapV2, MedlemskapV2 healthIndicator) {
+        return new MedlClientWs(medlemskapV2, healthIndicator);
+    }
 }

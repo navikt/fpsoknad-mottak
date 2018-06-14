@@ -4,12 +4,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
@@ -23,7 +19,6 @@ import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.Foedselsnummer;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.Personidentifikator;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.meldinger.HentPeriodeListeRequest;
 
-@Component
 public class MedlClientWs implements MedlClient {
     private static final Logger LOG = LoggerFactory.getLogger(MedlClientWs.class);
 
@@ -32,9 +27,7 @@ public class MedlClientWs implements MedlClient {
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.medl");
 
-    @Inject
-    public MedlClientWs(@Qualifier("medlemskapV2") MedlemskapV2 medlemskapV2,
-            @Qualifier("healthIndicator") MedlemskapV2 healthIndicator) {
+    public MedlClientWs(MedlemskapV2 medlemskapV2, MedlemskapV2 healthIndicator) {
         this.medlemskapV2 = medlemskapV2;
         this.healthIndicator = healthIndicator;
     }
