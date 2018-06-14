@@ -1,5 +1,20 @@
 package no.nav.foreldrepenger.oppslag.lookup;
 
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.ResponseEntity.ok;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.lookup.ws.Søkerinfo;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.AaregClient;
@@ -13,20 +28,6 @@ import no.nav.foreldrepenger.oppslag.lookup.ws.person.PersonClient;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
-import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.inject.Inject;
-import java.util.List;
-
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -35,24 +36,29 @@ public class OppslagController {
 
     private static final Logger LOG = getLogger(OppslagController.class);
 
-    @Inject
-    private AktorIdClient aktorClient;
+    private final AktorIdClient aktorClient;
+
+    private final PersonClient personClient;
+
+    private final AaregClient aaregClient;
+
+    private final OIDCRequestContextHolder contextHolder;
 
     @Inject
-    private PersonClient personClient;
-
-    @Inject
-    private AaregClient aaregClient;
-
-    @Inject
-    private OIDCRequestContextHolder contextHolder;
+    public OppslagController(AktorIdClient aktorClient, PersonClient personClient, AaregClient aaregClient,
+            OIDCRequestContextHolder contextHolder) {
+        this.aktorClient = aktorClient;
+        this.personClient = personClient;
+        this.aaregClient = aaregClient;
+        this.contextHolder = contextHolder;
+    }
 
     @Unprotected
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
         LOG.info("I was pinged");
         aktorClient.ping();
-        return ResponseEntity.status(HttpStatus.OK).body("Hello " + navn);
+        return ok("Hello " + navn);
     }
 
     @GetMapping
@@ -78,8 +84,10 @@ public class OppslagController {
         return new Fodselsnummer(fnrFromClaims);
     }
 
-    private AktorId aktør(Fodselsnummer fnr) {
-        return aktorClient.aktorIdForFnr(fnr);
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [aktorClient=" + aktorClient + ", personClient=" + personClient
+                + ", aaregClient=" + aaregClient + ", contextHolder=" + contextHolder + "]";
     }
 
 }

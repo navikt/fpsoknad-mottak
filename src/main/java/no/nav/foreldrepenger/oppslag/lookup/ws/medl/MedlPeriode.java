@@ -6,29 +6,30 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.TidsAvgrensetBrukerInfo;
 
 public class MedlPeriode extends TidsAvgrensetBrukerInfo {
 
-    private String status;
-    private String type;
-    private String grunnlagstype;
-    private String land;
+    private final String status;
+    private final String type;
+    private final String grunnlagstype;
+    private final String land;
 
-   @JsonCreator
-   public MedlPeriode(
-         @JsonProperty("from") LocalDate from,
-         @JsonProperty("to") Optional<LocalDate> to,
-         @JsonProperty("status") String status,
-         @JsonProperty("type") String type,
-         @JsonProperty("grunnlagstype") String grunnlagstype,
-         @JsonProperty("land") String land) {
-      super(from, to);
-      this.status = status;
-      this.type = type;
-      this.grunnlagstype = grunnlagstype;
-      this.land = land;
-   }
+    @JsonCreator
+    public MedlPeriode(
+            @JsonProperty("from") LocalDate from,
+            @JsonProperty("to") Optional<LocalDate> to,
+            @JsonProperty("status") String status,
+            @JsonProperty("type") String type,
+            @JsonProperty("grunnlagstype") String grunnlagstype,
+            @JsonProperty("land") String land) {
+        super(from, to);
+        this.status = status;
+        this.type = type;
+        this.grunnlagstype = grunnlagstype;
+        this.land = land;
+    }
 
     public String getStatus() {
         return status;
@@ -44,16 +45,6 @@ public class MedlPeriode extends TidsAvgrensetBrukerInfo {
 
     public String getLand() {
         return land;
-    }
-
-    @Override
-    public String toString() {
-        return "MedlPeriode{" +
-                "status='" + status + '\'' +
-                ", type='" + type + '\'' +
-                ", grunnlagstype='" + grunnlagstype + '\'' +
-                ", land='" + land + '\'' +
-                '}';
     }
 
     @Override
@@ -78,4 +69,11 @@ public class MedlPeriode extends TidsAvgrensetBrukerInfo {
     public int hashCode() {
         return Objects.hash(super.hashCode(), status, type, grunnlagstype, land);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", grunnlagstype=" + grunnlagstype
+                + ", land=" + land + "]";
+    }
+
 }

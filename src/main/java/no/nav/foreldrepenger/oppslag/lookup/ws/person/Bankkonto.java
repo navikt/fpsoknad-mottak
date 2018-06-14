@@ -1,18 +1,18 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 public class Bankkonto {
 
-    private String kontonummer;
-    private String banknavn;
+    private final String kontonummer;
+    private final String banknavn;
 
     @JsonCreator
     public Bankkonto(@JsonProperty("kontonummer") String kontonummer,
-                     @JsonProperty("banknavn") String banknavn) {
+            @JsonProperty("banknavn") String banknavn) {
         this.kontonummer = kontonummer;
         this.banknavn = banknavn;
     }
@@ -27,11 +27,13 @@ public class Bankkonto {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Bankkonto bankkonto = (Bankkonto) o;
         return Objects.equals(kontonummer, bankkonto.kontonummer) &&
-            Objects.equals(banknavn, bankkonto.banknavn);
+                Objects.equals(banknavn, bankkonto.banknavn);
     }
 
     @Override
@@ -41,10 +43,7 @@ public class Bankkonto {
 
     @Override
     public String toString() {
-        return "Bankkonto{" +
-            "kontonummer='" + kontonummer + '\'' +
-            ", banknavn='" + banknavn + '\'' +
-            '}';
+        return getClass().getSimpleName() + " [kontonummer=" + kontonummer + ", banknavn=" + banknavn + "]";
     }
 
 }
