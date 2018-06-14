@@ -6,11 +6,12 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.TidsAvgrensetBrukerInfo;
 
 public class Ytelse extends TidsAvgrensetBrukerInfo {
-    private String type;
-    private String status;
+    private final String type;
+    private final String status;
 
     public Ytelse(String type, String status, LocalDate from) {
         this(type, status, from, Optional.empty());

@@ -7,6 +7,10 @@ import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.Medlemsperiode;
 
 public class MedlemsperiodeMapper {
 
+    private MedlemsperiodeMapper() {
+
+    }
+
     public static MedlPeriode map(Medlemsperiode periode) {
         return new MedlPeriode(
                 CalendarConverter.toLocalDate(periode.getFraOgMed()),

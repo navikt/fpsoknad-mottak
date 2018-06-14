@@ -10,25 +10,27 @@ import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.PersonIdent;
 
 final class InntektMapper {
 
-   public static Inntekt map(no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt inntekt) {
-      return new Inntekt(
-         Optional.ofNullable(inntekt.getOpptjeningsperiode())
-            .map(p -> CalendarConverter.toLocalDate(p.getStartDato())).orElse(null),
-         Optional.ofNullable(inntekt.getOpptjeningsperiode())
-            .map(p -> CalendarConverter.toLocalDate(p.getSluttDato())),
-         Optional.ofNullable(inntekt.getBeloep()).map(b -> b.doubleValue()).orElse(0.0),
-         employerID(inntekt.getVirksomhet())
-      );
-   }
+    private InntektMapper() {
 
-   private static String employerID(Aktoer aktoer) {
-      if (aktoer instanceof PersonIdent) {
-         return ((PersonIdent) aktoer).getPersonIdent();
-      } else if (aktoer instanceof Organisasjon) {
-         return ((Organisasjon) aktoer).getOrgnummer();
-      } else {
-         return ((AktoerId) aktoer).getAktoerId();
-      }
-   }
+    }
 
+    public static Inntekt map(no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt inntekt) {
+        return new Inntekt(
+                Optional.ofNullable(inntekt.getOpptjeningsperiode())
+                        .map(p -> CalendarConverter.toLocalDate(p.getStartDato())).orElse(null),
+                Optional.ofNullable(inntekt.getOpptjeningsperiode())
+                        .map(p -> CalendarConverter.toLocalDate(p.getSluttDato())),
+                Optional.ofNullable(inntekt.getBeloep()).map(b -> b.doubleValue()).orElse(0.0),
+                employerID(inntekt.getVirksomhet()));
+    }
+
+    private static String employerID(Aktoer aktoer) {
+        if (aktoer instanceof PersonIdent) {
+            return PersonIdent.class.cast(aktoer).getPersonIdent();
+        }
+        if (aktoer instanceof Organisasjon) {
+            return Organisasjon.class.cast(aktoer).getOrgnummer();
+        }
+        return AktoerId.class.cast(aktoer).getAktoerId();
+    }
 }

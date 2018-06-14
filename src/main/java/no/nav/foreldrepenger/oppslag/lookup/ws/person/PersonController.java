@@ -1,31 +1,35 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.lookup.FnrExtractor;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
+import static org.springframework.http.ResponseEntity.ok;
+
+import javax.inject.Inject;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-
-import static org.springframework.http.HttpStatus.OK;
+import no.nav.foreldrepenger.oppslag.lookup.FnrExtractor;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = {"acr=Level4"})
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @RequestMapping("/person")
 public class PersonController {
 
-    @Inject
-    private AktorIdClient aktorClient;
+    private final AktorIdClient aktorClient;
+    private final PersonClient personClient;
+    private final OIDCRequestContextHolder contextHolder;
 
     @Inject
-    private PersonClient personClient;
-
-    @Inject
-    private OIDCRequestContextHolder contextHolder;
+    public PersonController(AktorIdClient aktorClient, PersonClient personClient,
+            OIDCRequestContextHolder contextHolder) {
+        this.aktorClient = aktorClient;
+        this.personClient = personClient;
+        this.contextHolder = contextHolder;
+    }
 
     @GetMapping
     public ResponseEntity<Person> person() {
@@ -35,7 +39,7 @@ public class PersonController {
         }
 
         Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
-        return new ResponseEntity<>(personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr)), OK);
+        return ok(personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr)));
     }
 
     @Override

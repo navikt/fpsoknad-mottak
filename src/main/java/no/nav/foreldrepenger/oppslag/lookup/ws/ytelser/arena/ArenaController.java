@@ -1,41 +1,47 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.arena;
 
+import static org.springframework.http.ResponseEntity.badRequest;
+import static org.springframework.http.ResponseEntity.ok;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.foreldrepenger.oppslag.lookup.FnrExtractor;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.oppslag.lookup.FnrExtractor;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
-@ProtectedWithClaims(issuer="selvbetjening", claimMap={"acr=Level4"})
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 class ArenaController {
 
-    @Inject
-    private ArenaClient arenaClient;
+    private final ArenaClient arenaClient;
 
-    @Inject
-    private OIDCRequestContextHolder contextHolder;
+    private final OIDCRequestContextHolder contextHolder;
 
-    @RequestMapping(method = { RequestMethod.GET }, value = "/arena")
+    public ArenaController(ArenaClient arenaClient, OIDCRequestContextHolder contextHolder) {
+        this.arenaClient = arenaClient;
+        this.contextHolder = contextHolder;
+    }
+
+    @GetMapping(value = "/arena")
     public ResponseEntity<List<Ytelse>> benefits() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
-            return ResponseEntity.badRequest().build();
+            return badRequest().build();
         }
 
         Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
-        LocalDate now = LocalDate.now();
-        LocalDate oneYearAgo = LocalDate.now().minusMonths(12);
-        return ResponseEntity.ok(arenaClient.ytelser(fnr, oneYearAgo, now));
+        return ok(arenaClient.ytelser(fnr, LocalDate.now().minusMonths(12), LocalDate.now()));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [arenaClient=" + arenaClient + ", contextHolder=" + contextHolder + "]";
     }
 }
