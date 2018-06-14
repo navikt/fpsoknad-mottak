@@ -1,5 +1,20 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.BARN;
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.DNR;
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.FNR;
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.request;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
@@ -12,33 +27,32 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.*;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 public class PersonClientTpsWs implements PersonClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersonClientTpsWs.class);
 
     private final PersonV3 person;
+    private final PersonV3 healthIndicator;
     private final Barnutvelger barnutvelger;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("person.lookup.error");
 
-    public PersonClientTpsWs(PersonV3 person, Barnutvelger barnutvelger) {
+    public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, Barnutvelger barnutvelger) {
         this.person = Objects.requireNonNull(person);
+        this.healthIndicator = healthIndicator;
         this.barnutvelger = Objects.requireNonNull(barnutvelger);
     }
 
     @Override
     public void ping() {
-        person.ping();
+        try {
+            LOG.info("Pinger TPS");
+            healthIndicator.ping();
+        } catch (Exception ex) {
+            ERROR_COUNTER.increment();
+            throw ex;
+        }
     }
 
     @Override
@@ -47,8 +61,8 @@ public class PersonClientTpsWs implements PersonClient {
         try {
             LOG.info("Doing person lookup");
             HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson =
-                hentPerson(id.getFnr(), request).getPerson();
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(id.getFnr(), request)
+                    .getPerson();
             return PersonMapper.map(id, tpsPerson, barnFor(tpsPerson));
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
@@ -61,17 +75,17 @@ public class PersonClientTpsWs implements PersonClient {
         PersonIdent id = PersonIdent.class.cast(person.getAktoer());
         String idType = id.getIdent().getType().getValue();
         switch (idType) {
-            case FNR:
-            case DNR:
-                Fodselsnummer fnrMor = new Fodselsnummer(id.getIdent().getIdent());
-                return person.getHarFraRolleI().stream()
+        case FNR:
+        case DNR:
+            Fodselsnummer fnrMor = new Fodselsnummer(id.getIdent().getIdent());
+            return person.getHarFraRolleI().stream()
                     .filter(this::isBarn)
                     .map(s -> hentBarn(s, fnrMor))
                     .filter(Objects::nonNull)
                     .filter(barn -> barnutvelger.erStonadsberettigetBarn(fnrMor, barn))
                     .collect(Collectors.toList());
-            default:
-                throw new IllegalStateException("ID type " + idType + " ikke støttet");
+        default:
+            throw new IllegalStateException("ID type " + idType + " ikke støttet");
         }
     }
 
