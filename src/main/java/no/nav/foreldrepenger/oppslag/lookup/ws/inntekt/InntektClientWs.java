@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.IncompleteRequestException;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeSikkerhetsbegrensning;
@@ -31,16 +31,18 @@ public class InntektClientWs implements InntektClient {
     private static final Logger log = LoggerFactory.getLogger(InntektClientWs.class);
 
     private final InntektV3 inntektV3;
+    private final InntektV3 healthIndicator;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.inntekt");
 
     @Inject
-    public InntektClientWs(InntektV3 inntektV3) {
+    public InntektClientWs(InntektV3 inntektV3, InntektV3 healthIndicator) {
         this.inntektV3 = inntektV3;
+        this.healthIndicator = healthIndicator;
     }
 
     public void ping() {
-        inntektV3.ping();
+        healthIndicator.ping();
     }
 
     public List<Inntekt> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
@@ -48,8 +50,8 @@ public class InntektClientWs implements InntektClient {
         try {
             HentInntektListeResponse res = inntektV3.hentInntektListe(req);
             return res.getArbeidsInntektIdent().getArbeidsInntektMaaned().stream()
-                .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
-                .map(InntektMapper::map).collect(toList());
+                    .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
+                    .map(InntektMapper::map).collect(toList());
         } catch (HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter | HentInntektListeSikkerhetsbegrensning e) {
             log.warn("Error while retrieving income", e);
             throw new ForbiddenException(e);
@@ -73,7 +75,7 @@ public class InntektClientWs implements InntektClient {
         ainntektsfilter.setValue("ForeldrepengerA-Inntekt");
         ainntektsfilter.setKodeRef("ForeldrepengerA-Inntekt");
         ainntektsfilter.setKodeverksRef(
-            "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+                "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
         req.setAinntektsfilter(ainntektsfilter);
 
         Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
@@ -85,7 +87,7 @@ public class InntektClientWs implements InntektClient {
         formaal.setValue("Foreldrepenger");
         formaal.setKodeRef("Foreldrepenger");
         formaal.setKodeverksRef(
-            "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
+                "http://nav.no/kodeverk/Term/A-inntektsfilter/ForeldrepengerA-Inntekt/nb/Foreldrepenger_20a-inntekt?v=6");
         req.setFormaal(formaal);
 
         return req;
