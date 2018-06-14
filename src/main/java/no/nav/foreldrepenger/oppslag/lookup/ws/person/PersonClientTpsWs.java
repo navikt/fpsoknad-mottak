@@ -67,6 +67,7 @@ public class PersonClientTpsWs implements PersonClient {
                 return person.getHarFraRolleI().stream()
                     .filter(this::isBarn)
                     .map(s -> hentBarn(s, fnrMor))
+                    .filter(Objects::nonNull)
                     .filter(barn -> barnutvelger.erStonadsberettigetBarn(fnrMor, barn))
                     .collect(Collectors.toList());
             default:
@@ -84,7 +85,7 @@ public class PersonClientTpsWs implements PersonClient {
             Fodselsnummer fnrBarn = new Fodselsnummer(id.getIdent());
             return PersonMapper.map(id, fnrMor, hentPerson(fnrBarn, request(fnrBarn, FAMILIERELASJONER)));
         }
-        throw new IllegalStateException("ID type " + id.getType().getValue() + " ikke støttet");
+        return null;
     }
 
     private HentPersonResponse hentPerson(Fodselsnummer fnr, HentPersonRequest request) {

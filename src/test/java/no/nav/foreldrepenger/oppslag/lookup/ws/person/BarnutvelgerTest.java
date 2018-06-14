@@ -13,7 +13,7 @@ public class BarnutvelgerTest {
 
     private static final Fodselsnummer MOR = new Fodselsnummer("28016432662");
     private static final String BARN_FNR = DateTimeFormatter.ofPattern("ddMMyy").format(now().minusMonths(2)) + "36325";
-    
+
     @Test
     public void testStønadsberettigetRelasjon() {
         int months = 2;

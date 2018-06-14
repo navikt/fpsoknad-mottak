@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Aktoer;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
