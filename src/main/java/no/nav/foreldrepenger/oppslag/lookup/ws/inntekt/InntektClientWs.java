@@ -28,7 +28,7 @@ import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeRequest;
 import no.nav.tjeneste.virksomhet.inntekt.v3.meldinger.HentInntektListeResponse;
 
 public class InntektClientWs implements InntektClient {
-    private static final Logger log = LoggerFactory.getLogger(InntektClientWs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InntektClientWs.class);
 
     private final InntektV3 inntektV3;
     private final InntektV3 healthIndicator;
@@ -43,6 +43,7 @@ public class InntektClientWs implements InntektClient {
 
     public void ping() {
         try {
+            LOG.info("Pinger");
             healthIndicator.ping();
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
@@ -58,10 +59,10 @@ public class InntektClientWs implements InntektClient {
                     .flatMap(aim -> aim.getArbeidsInntektInformasjon().getInntektListe().stream())
                     .map(InntektMapper::map).collect(toList());
         } catch (HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter | HentInntektListeSikkerhetsbegrensning e) {
-            log.warn("Error while retrieving income", e);
+            LOG.warn("Error while retrieving income", e);
             throw new ForbiddenException(e);
         } catch (HentInntektListeUgyldigInput e) {
-            log.warn("Error while retrieving income", e);
+            LOG.warn("Error while retrieving income", e);
             throw new IncompleteRequestException(e);
         } catch (Exception ex) {
             ERROR_COUNTER.increment();

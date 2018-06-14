@@ -22,7 +22,7 @@ import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.Personidentifikator;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.meldinger.HentPeriodeListeRequest;
 
 public class MedlClientWs implements MedlClient {
-    private static final Logger log = LoggerFactory.getLogger(MedlClientWs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MedlClientWs.class);
 
     private final MedlemskapV2 medlemskapV2;
     private final MedlemskapV2 healthIndicator;
@@ -37,6 +37,7 @@ public class MedlClientWs implements MedlClient {
 
     public void ping() {
         try {
+            LOG.info("Pinger");
             healthIndicator.ping();
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
@@ -56,7 +57,7 @@ public class MedlClientWs implements MedlClient {
         } catch (PersonIkkeFunnet ex) {
             throw new NotFoundException(ex);
         } catch (Sikkerhetsbegrensning ex) {
-            log.warn("Sikkerhetsfeil fra MEDL", ex);
+            LOG.warn("Sikkerhetsfeil fra MEDL", ex);
             throw new ForbiddenException(ex);
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
