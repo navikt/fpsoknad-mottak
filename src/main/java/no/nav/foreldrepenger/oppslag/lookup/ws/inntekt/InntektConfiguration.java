@@ -24,7 +24,8 @@ public class InntektConfiguration extends WsClient<InntektV3> {
     }
 
     @Bean
-    public InntektClient inntektClientWs(InntektV3 inntektV3, InntektV3 healthIndicator) {
+    public InntektClient inntektClientWs(@Qualifier("inntektV3") InntektV3 inntektV3,
+            @Qualifier("healthIndicator") InntektV3 healthIndicator) {
         return new InntektClientWs(inntektV3, healthIndicator);
     }
 

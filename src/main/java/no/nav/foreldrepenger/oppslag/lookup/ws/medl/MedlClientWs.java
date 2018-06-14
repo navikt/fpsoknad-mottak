@@ -37,7 +37,7 @@ public class MedlClientWs implements MedlClient {
 
     public void ping() {
         try {
-            LOG.info("Pinger");
+            LOG.info("Pinger MEDL");
             healthIndicator.ping();
         } catch (Exception ex) {
             ERROR_COUNTER.increment();

@@ -42,7 +42,7 @@ public class AktorIdClientWs implements AktorIdClient {
     @Override
     public void ping() {
         try {
-            LOG.info("Pinger");
+            LOG.info("Pinger Aktørregisteret");
             healthIndicator.ping();
         } catch (Exception ex) {
             ERROR_COUNTER.increment();

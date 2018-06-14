@@ -43,7 +43,7 @@ public class InntektClientWs implements InntektClient {
 
     public void ping() {
         try {
-            LOG.info("Pinger");
+            LOG.info("Pinger Inntekt");
             healthIndicator.ping();
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
