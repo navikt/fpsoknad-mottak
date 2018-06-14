@@ -12,7 +12,7 @@ import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 public class InntektConfiguration extends WsClient<InntektV3> {
 
     @Bean
-    @Qualifier("InntektV3")
+    @Qualifier("inntektV3")
     public InntektV3 inntektV3(@Value("${VIRKSOMHET_INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
         return createPort(serviceUrl, InntektV3.class);
     }
