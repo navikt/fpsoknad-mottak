@@ -8,17 +8,21 @@ import no.nav.foreldrepenger.oppslag.lookup.ws.WsClient;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.MedlemskapV2;
 
 @Configuration
-public class MedlConfiguration extends WsClient<MedlemskapV2>{
+public class MedlConfiguration extends WsClient<MedlemskapV2> {
 
-    @SuppressWarnings("unchecked")
     @Bean
     public MedlemskapV2 medlemskapV2(@Value("${VIRKSOMHET_MEDLEMSKAP_V2_ENDPOINTURL}") String serviceUrl) {
         return createPort(serviceUrl, MedlemskapV2.class);
     }
 
     @Bean
-    public MedlClient medlClientWs(MedlemskapV2 medlemskapV2) {
-        return new MedlClientWs(medlemskapV2);
+    public MedlemskapV2 healthIndicator(@Value("${VIRKSOMHET_MEDLEMSKAP_V2_ENDPOINTURL}") String serviceUrl) {
+        return createPortForHealthIndicator(serviceUrl, MedlemskapV2.class);
+    }
+
+    @Bean
+    public MedlClient medlClientWs(MedlemskapV2 medlemskapV2, MedlemskapV2 healthIndicator) {
+        return new MedlClientWs(medlemskapV2, healthIndicator);
     }
 
 }

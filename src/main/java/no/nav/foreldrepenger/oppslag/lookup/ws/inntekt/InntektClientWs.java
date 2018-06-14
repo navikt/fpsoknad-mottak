@@ -42,7 +42,12 @@ public class InntektClientWs implements InntektClient {
     }
 
     public void ping() {
-        healthIndicator.ping();
+        try {
+            healthIndicator.ping();
+        } catch (Exception ex) {
+            ERROR_COUNTER.increment();
+            throw ex;
+        }
     }
 
     public List<Inntekt> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {

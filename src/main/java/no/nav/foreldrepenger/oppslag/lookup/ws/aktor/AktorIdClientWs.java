@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
@@ -26,6 +26,7 @@ public class AktorIdClientWs implements AktorIdClient {
         this.healthIndicator = Objects.requireNonNull(healthIndicator);
     }
 
+    @Override
     public AktorId aktorIdForFnr(Fodselsnummer fnr) {
         try {
             return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
@@ -38,8 +39,14 @@ public class AktorIdClientWs implements AktorIdClient {
         }
     }
 
+    @Override
     public void ping() {
-    	healthIndicator.ping();
+        try {
+            healthIndicator.ping();
+        } catch (Exception ex) {
+            ERROR_COUNTER.increment();
+            throw ex;
+        }
     }
 
     private static HentAktoerIdForIdentRequest request(Fodselsnummer fnr) {
