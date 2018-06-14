@@ -5,8 +5,6 @@ import static java.util.stream.Collectors.toList;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +33,6 @@ public class InntektClientWs implements InntektClient {
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.inntekt");
 
-    @Inject
     public InntektClientWs(InntektV3 inntektV3, InntektV3 healthIndicator) {
         this.inntektV3 = inntektV3;
         this.healthIndicator = healthIndicator;

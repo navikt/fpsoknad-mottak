@@ -4,8 +4,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +27,6 @@ public class MedlClientWs implements MedlClient {
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.medl");
 
-    @Inject
     public MedlClientWs(MedlemskapV2 medlemskapV2, MedlemskapV2 healthIndicator) {
         this.medlemskapV2 = medlemskapV2;
         this.healthIndicator = healthIndicator;
