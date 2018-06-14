@@ -1,26 +1,38 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
+import static java.time.LocalDate.now;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
-import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
-import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.GregorianCalendar;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.GregorianCalendar;
-
-import static java.time.LocalDate.now;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
+import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Aktoer;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Foedselsdato;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Kjoenn;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Kjoennstyper;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personidenter;
+import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HentPersonInfoTest {
@@ -33,9 +45,12 @@ public class HentPersonInfoTest {
     @Mock
     private PersonV3 tps;
 
+    @Mock
+    private PersonV3 healthIndicator;
+
     @Before
     public void setUp() {
-        klient = new PersonClientTpsWs(tps, barnutvelger);
+        klient = new PersonClientTpsWs(tps, healthIndicator, barnutvelger);
     }
 
     @Test
@@ -95,7 +110,8 @@ public class HentPersonInfoTest {
         XMLGregorianCalendar xcal = null;
         try {
             xcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
-        } catch (DatatypeConfigurationException ignored) {}
+        } catch (DatatypeConfigurationException ignored) {
+        }
         foedselsdato.setFoedselsdato(xcal);
         return foedselsdato;
     }
