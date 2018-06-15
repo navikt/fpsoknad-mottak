@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.WsClient;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
-import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 
 @Configuration
 public class InfotrygdConfiguration extends WsClient<InfotrygdSakV1> {
@@ -22,7 +21,7 @@ public class InfotrygdConfiguration extends WsClient<InfotrygdSakV1> {
     @Qualifier("healthIndicatorInfotrygd")
     public InfotrygdSakV1 healthIndicatorInfotrygd(
             @Value("${VIRKSOMHET_INFOTRYGDSAK_V1_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, InntektV3.class);
+        return createPortForHealthIndicator(serviceUrl, InfotrygdSakV1.class);
     }
 
     @Bean

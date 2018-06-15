@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.WsClient;
-import no.nav.tjeneste.virksomhet.inntekt.v3.binding.InntektV3;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.YtelseskontraktV3;
 
 @SpringBootConfiguration
@@ -25,7 +24,7 @@ public class ArenaConfiguration extends WsClient<YtelseskontraktV3> {
     @Qualifier("healthIndicatorArena")
     public YtelseskontraktV3 healthIndicatorArena(
             @Value("${VIRKSOMHET_YTELSESKONTRAKT_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, InntektV3.class);
+        return createPortForHealthIndicator(serviceUrl, YtelseskontraktV3.class);
     }
 
     @Bean
