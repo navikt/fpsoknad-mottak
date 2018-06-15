@@ -36,7 +36,7 @@ public class PersonClientTpsWs implements PersonClient {
     private final PersonV3 healthIndicator;
     private final Barnutvelger barnutvelger;
 
-    private static final Counter ERROR_COUNTER = Metrics.counter("person.lookup.error");
+    private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.person");
 
     public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, Barnutvelger barnutvelger) {
         this.person = Objects.requireNonNull(person);
