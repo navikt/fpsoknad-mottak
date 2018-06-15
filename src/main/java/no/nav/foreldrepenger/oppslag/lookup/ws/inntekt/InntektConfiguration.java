@@ -18,8 +18,8 @@ public class InntektConfiguration extends WsClient<InntektV3> {
     }
 
     @Bean
-    @Qualifier("healthIndicator")
-    public InntektV3 healthIndicator(@Value("${VIRKSOMHET_INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
+    @Qualifier("healthIndicatorInntekt")
+    public InntektV3 healthIndicatorInntekt(@Value("${VIRKSOMHET_INNTEKT_V3_ENDPOINTURL}") String serviceUrl) {
         return createPortForHealthIndicator(serviceUrl, InntektV3.class);
     }
 
