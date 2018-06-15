@@ -58,7 +58,7 @@ public class OppslagController {
     @Unprotected
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping(
-            @RequestParam(name = "register", defaultValue = "aktør", required = false) Pingable register) {
+            @RequestParam(name = "register", defaultValue = "all", required = false) Pingable register) {
         LOG.info("Vil pinge register {}", register);
         switch (register) {
         case aareg:
@@ -79,28 +79,17 @@ public class OppslagController {
         return ok(registerNavn(register) + " er i toppform");
     }
 
-    private String registerNavn(Pingable register) {
-        return register.equals(Pingable.all)
-                ? Arrays.stream(Pingable.values())
-                        .map(Pingable::name)
-                        .filter(s -> s != "all")
-                        .collect(Collectors.joining(","))
-                : register.name();
-    }
-
     @GetMapping
     public ResponseEntity<Søkerinfo> essensiellSøkerinfo() {
         Fodselsnummer fnr = fnrFromClaims();
         Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
         List<Arbeidsforhold> arbeidsforhold = aaregClient.arbeidsforhold(fnr);
-
         return ok(new Søkerinfo(person, arbeidsforhold));
     }
 
     @GetMapping(value = "/aktor")
     public AktorId getAktørId() {
         return aktorClient.aktorIdForFnr(fnrFromClaims());
-
     }
 
     private Fodselsnummer fnrFromClaims() {
@@ -109,6 +98,15 @@ public class OppslagController {
             throw new ForbiddenException("Fant ikke FNR i token");
         }
         return new Fodselsnummer(fnrFromClaims);
+    }
+
+    private static String registerNavn(Pingable register) {
+        return register.equals(Pingable.all)
+                ? Arrays.stream(Pingable.values())
+                        .map(Pingable::name)
+                        .filter(s -> s != "all")
+                        .collect(Collectors.joining(","))
+                : register.name();
     }
 
     @Override
