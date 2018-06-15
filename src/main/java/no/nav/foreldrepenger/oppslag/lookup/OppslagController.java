@@ -57,7 +57,7 @@ public class OppslagController {
 
     @Unprotected
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn,
+    public ResponseEntity<String> ping(
             @RequestParam(name = "register", defaultValue = "aktør", required = false) Pingable register) {
         LOG.info("Vil pinge register {}", register);
         switch (register) {
@@ -76,7 +76,7 @@ public class OppslagController {
             aaregClient.ping();
             break;
         }
-        return ok("Hallo " + navn + ", " + registerNavn(register) + " var i toppform");
+        return ok(registerNavn(register) + " er i toppform");
     }
 
     private String registerNavn(Pingable register) {
