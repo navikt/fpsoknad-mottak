@@ -14,7 +14,7 @@ public class Person {
     @JsonUnwrapped
     private final ID id;
     private final CountryCode landKode;
-    private final Kjonn kjonn;
+    private final Kjønn kjonn;
     private final LocalDate fodselsdato;
     private final String målform;
     private final Bankkonto bankkonto;
@@ -22,11 +22,11 @@ public class Person {
     private final Navn navn;
     private final List<Barn> barn;
 
-    public Person(ID id, CountryCode landKode, Kjonn kjonn, Navn navn, String målform,
+    public Person(ID id, CountryCode landKode, Kjønn kjønn, Navn navn, String målform,
                   Bankkonto bankkonto, LocalDate fodselsdato, List<Barn> barn) {
         this.id = id;
         this.landKode = landKode;
-        this.kjonn = kjonn;
+        this.kjonn = kjønn;
         this.målform = målform;
         this.bankkonto = bankkonto;
         this.navn = navn;
@@ -34,7 +34,7 @@ public class Person {
         this.barn = barn;
     }
 
-    public Kjonn getKjonn() {
+    public Kjønn getKjonn() {
         return kjonn;
     }
 

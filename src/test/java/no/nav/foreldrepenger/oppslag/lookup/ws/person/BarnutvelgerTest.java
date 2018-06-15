@@ -18,11 +18,15 @@ public class BarnutvelgerTest {
     public void testStønadsberettigetRelasjon() {
         int months = 2;
 
-        Barn barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(1));
+        Barn barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(1), navn(), Kjønn.K);
         assertThat(new BarnMorRelasjonSjekkendeBarnutvelger(months).erStonadsberettigetBarn(MOR, barn)).isTrue();
 
-        barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(3));
+        barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(3), navn(), Kjønn.K);
         assertThat(new BarnMorRelasjonSjekkendeBarnutvelger(months).erStonadsberettigetBarn(MOR, barn)).isFalse();
+    }
+
+    private Navn navn() {
+        return new Navn("Test", "T", "Testesen");
     }
 
 }
