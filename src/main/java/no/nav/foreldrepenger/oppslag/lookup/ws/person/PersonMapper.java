@@ -16,17 +16,26 @@ final class PersonMapper {
     }
 
     public static Person map(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person, List<Barn> barn) {
-        return new Person(id,
-            countryCode(person), Kjonn.valueOf(person.getKjoenn().getKjoenn().getValue()),
+        return new Person(
+            id,
+            countryCode(person),
+            Kjønn.valueOf(person.getKjoenn().getKjoenn().getValue()),
             name(person.getPersonnavn()),
             målform(person),
             bankkonto(person),
             birthDate(person),
-            barn);
+            barn
+        );
     }
 
     public static Barn map(NorskIdent id, Fodselsnummer fnrMor, HentPersonResponse barn) {
-        return new Barn(fnrMor, new Fodselsnummer(id.getIdent()), birthDate(barn.getPerson()));
+        return new Barn(
+            fnrMor,
+            new Fodselsnummer(id.getIdent()),
+            birthDate(barn.getPerson()),
+            name(barn.getPerson().getPersonnavn()),
+            Kjønn.valueOf(barn.getPerson().getKjoenn().getKjoenn().getValue())
+        );
     }
 
     private static Navn name(Personnavn navn) {

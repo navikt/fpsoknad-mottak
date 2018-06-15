@@ -5,9 +5,11 @@ import no.nav.foreldrepenger.oppslag.lookup.ws.person.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
+import java.util.List;
 
-import static java.util.Collections.emptyList;
+import static java.time.LocalDate.now;
+import static java.util.Collections.singletonList;
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.Kjønn.M;
 
 public class PersonClientStub implements PersonClient {
 
@@ -16,14 +18,24 @@ public class PersonClientStub implements PersonClient {
     @Override
     public Person hentPersonInfo(ID id) {
         Navn navn = new Navn("Skjegg", "Stub", "Sveen");
-        return new Person(id, CountryCode.NO, Kjonn.valueOf("M"), navn,
+        return new Person(id, CountryCode.NO, Kjønn.valueOf("M"), navn,
             "NN", new Bankkonto("1234567890", "Stub NOR"),
-            LocalDate.now().minusYears(20), emptyList());
+            now().minusYears(20), barn(id.getFnr()));
     }
 
     @Override
     public void ping() {
         LOG.info("PONG");
 
+    }
+
+    private List<Barn> barn(Fodselsnummer fnrMor) {
+        Barn barn = new Barn(fnrMor,
+            new Fodselsnummer("01011812345"),
+            now().minusYears(1),
+            new Navn("Mo", null, "Sveen"),
+            M);
+
+        return singletonList(barn);
     }
 }

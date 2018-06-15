@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
-public enum Kjonn {
-    M("M"), K("M");
+public enum Kjønn {
+    M("M"), K("K");
 
     private final String verdi;
 
-    Kjonn(String verdi) {
+    Kjønn(String verdi) {
         this.verdi = verdi;
     }
 

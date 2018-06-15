@@ -57,7 +57,7 @@ public class SerializationTest {
 
     @Test
     public void testKjonnSerialization() throws IOException {
-        test(Kjonn.K);
+        test(Kjønn.K);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SerializationTest {
     }
 
     private static Person person() {
-        return new Person(id(), CountryCode.NO, Kjonn.M, name(), "nynorsk",
+        return new Person(id(), CountryCode.NO, Kjønn.M, name(), "nynorsk",
             bankkonto(), birthDate(), emptyList());
     }
 
