@@ -7,14 +7,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.HentYtelseskontraktListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.YtelseskontraktV3;
@@ -25,23 +25,31 @@ public class ArenaClientWs implements ArenaClient {
     private static final Logger LOG = LoggerFactory.getLogger(ArenaClientWs.class);
 
     private final YtelseskontraktV3 ytelser;
+    private final YtelseskontraktV3 healthIndicator;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.arena");
 
     @Inject
-    public ArenaClientWs(YtelseskontraktV3 ytelser) {
+    public ArenaClientWs(YtelseskontraktV3 ytelser, YtelseskontraktV3 healthIndicator) {
         this.ytelser = ytelser;
+        this.healthIndicator = healthIndicator;
     }
 
     public void ping() {
-        ytelser.ping();
+        try {
+            LOG.info("Pinger Arena");
+            healthIndicator.ping();
+        } catch (Exception ex) {
+            ERROR_COUNTER.increment();
+            throw ex;
+        }
     }
 
     public List<Ytelse> ytelser(Fodselsnummer fnr, LocalDate from, LocalDate to) {
         try {
             return ytelser.hentYtelseskontraktListe(request(fnr, from, to)).getYtelseskontraktListe().stream()
-                .map(YtelseskontraktMapper::map)
-                .collect(toList());
+                    .map(YtelseskontraktMapper::map)
+                    .collect(toList());
         } catch (HentYtelseskontraktListeSikkerhetsbegrensning ex) {
             LOG.warn("Sikkehetsfeil fra Arena", ex);
             throw new ForbiddenException(ex);

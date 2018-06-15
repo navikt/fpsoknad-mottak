@@ -1,24 +1,34 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.WsClient;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import org.springframework.context.annotation.Configuration;
+import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
 
 @Configuration
-public class AaregConfiguration extends WsClient<ArbeidsforholdV3>{
+public class AaregConfiguration extends WsClient<ArbeidsforholdV3> {
 
-    @SuppressWarnings("unchecked")
     @Bean
+    @Qualifier("arbeidsforholdV3")
     public ArbeidsforholdV3 arbeidsforholdV3(
             @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") String serviceUrl) {
         return createPort(serviceUrl, ArbeidsforholdV3.class);
     }
 
     @Bean
-    public AaregClient aaregClientWs(ArbeidsforholdV3 arbeidsforholdV3) {
-        return new AaregClientWs(arbeidsforholdV3);
+    @Qualifier("healthIndicatorAareg")
+    public ArbeidsforholdV3 healthIndicatorAareg(
+            @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") String serviceUrl) {
+        return createPortForHealthIndicator(serviceUrl, InfotrygdSakV1.class);
+    }
+
+    @Bean
+    public AaregClient aaregClientWs(@Qualifier("arbeidsforholdV3") ArbeidsforholdV3 arbeidsforholdV3,
+            @Qualifier("healthIndicatorAareg") ArbeidsforholdV3 healthIndicator) {
+        return new AaregClientWs(arbeidsforholdV3, healthIndicator);
     }
 }

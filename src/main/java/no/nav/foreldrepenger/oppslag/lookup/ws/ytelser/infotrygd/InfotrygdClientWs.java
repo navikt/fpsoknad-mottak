@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.FinnSakListePersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.FinnSakListeSikkerhetsbegrensning;
@@ -28,16 +28,25 @@ public class InfotrygdClientWs implements InfotrygdClient {
     private static final Logger log = LoggerFactory.getLogger(InfotrygdClientWs.class);
 
     private final InfotrygdSakV1 infotrygd;
+    private final InfotrygdSakV1 healthIndicator;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.infotrygd");
+    private static final Logger LOG = LoggerFactory.getLogger(InfotrygdClientWs.class);
 
     @Inject
-    public InfotrygdClientWs(InfotrygdSakV1 infotrygd) {
+    public InfotrygdClientWs(InfotrygdSakV1 infotrygd, InfotrygdSakV1 healthIdicator) {
         this.infotrygd = infotrygd;
+        this.healthIndicator = healthIdicator;
     }
 
     public void ping() {
-        infotrygd.ping();
+        try {
+            LOG.info("Pinger Infotrygd");
+            healthIndicator.ping();
+        } catch (Exception ex) {
+            ERROR_COUNTER.increment();
+            throw ex;
+        }
     }
 
     public List<Ytelse> casesFor(Fodselsnummer fnr, LocalDate from, LocalDate to) {

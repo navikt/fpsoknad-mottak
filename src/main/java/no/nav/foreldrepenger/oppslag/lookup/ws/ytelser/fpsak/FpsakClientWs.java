@@ -5,16 +5,14 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.inject.Inject;
-
-import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
+import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.FinnSakListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.binding.ForeldrepengesakV1;
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.informasjon.Aktoer;
@@ -22,20 +20,26 @@ import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.meldinger.FinnSakListeRequ
 import no.nav.tjeneste.virksomhet.foreldrepengesak.v1.meldinger.FinnSakListeResponse;
 
 public class FpsakClientWs implements FpsakClient {
-    private static final Logger log = LoggerFactory.getLogger(FpsakClientWs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FpsakClientWs.class);
 
     private final ForeldrepengesakV1 fpsakV1;
+    private final ForeldrepengesakV1 healthIndicator;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.fpsak");
 
-    @Inject
-    public FpsakClientWs(ForeldrepengesakV1 fpsakV1) {
+    public FpsakClientWs(ForeldrepengesakV1 fpsakV1, ForeldrepengesakV1 healthIndicator) {
         this.fpsakV1 = Objects.requireNonNull(fpsakV1);
-
+        this.healthIndicator = Objects.requireNonNull(healthIndicator);
     }
 
     public void ping() {
-        fpsakV1.ping();
+        try {
+            LOG.info("Pinger FPsak");
+            healthIndicator.ping();
+        } catch (Exception ex) {
+            ERROR_COUNTER.increment();
+            throw ex;
+        }
     }
 
     public List<Ytelse> casesFor(AktorId aktor) {
@@ -49,7 +53,7 @@ public class FpsakClientWs implements FpsakClient {
         } catch (FinnSakListeSikkerhetsbegrensning ex) {
             throw new ForbiddenException(ex);
         } catch (Exception ex) {
-            log.warn("Error while reading from Fpsak", ex);
+            LOG.warn("Error while reading from Fpsak", ex);
             ERROR_COUNTER.increment();
             throw new RuntimeException("Error while reading from Fpsak", ex);
         }
