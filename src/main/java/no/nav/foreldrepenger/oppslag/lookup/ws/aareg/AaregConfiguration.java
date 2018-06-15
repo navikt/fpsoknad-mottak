@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.WsClient;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
-import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
 
 @Configuration
 public class AaregConfiguration extends WsClient<ArbeidsforholdV3> {
@@ -23,7 +22,7 @@ public class AaregConfiguration extends WsClient<ArbeidsforholdV3> {
     @Qualifier("healthIndicatorAareg")
     public ArbeidsforholdV3 healthIndicatorAareg(
             @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, InfotrygdSakV1.class);
+        return createPortForHealthIndicator(serviceUrl, ArbeidsforholdV3.class);
     }
 
     @Bean
