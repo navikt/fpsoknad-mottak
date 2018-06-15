@@ -24,7 +24,8 @@ public class AktorIdConfiguration extends WsClient<AktoerV2> {
     }
 
     @Bean
-    public AktorIdClient aktorIdClientWs(AktoerV2 aktoerV2, AktoerV2 healthIndicator) {
+    public AktorIdClient aktorIdClientWs(@Qualifier("aktoerV2") AktoerV2 aktoerV2,
+            @Qualifier("healthIndicatorAktør") AktoerV2 healthIndicator) {
         return new AktorIdClientWs(aktoerV2, healthIndicator);
     }
 }

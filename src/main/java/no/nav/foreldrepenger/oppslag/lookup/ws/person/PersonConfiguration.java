@@ -30,7 +30,8 @@ public class PersonConfiguration extends WsClient<PersonV3> {
     }
 
     @Bean
-    public PersonClient personKlientTpsWs(PersonV3 personV3, PersonV3 healthIndicator, Barnutvelger barnutvelger) {
+    public PersonClient personKlientTpsWs(@Qualifier("personV3") PersonV3 personV3,
+            @Qualifier("healthIndicatorPerson") PersonV3 healthIndicator, Barnutvelger barnutvelger) {
         return new PersonClientTpsWs(personV3, healthIndicator, barnutvelger);
     }
 
