@@ -4,7 +4,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -58,8 +60,29 @@ public class OppslagController {
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn,
             @RequestParam(name = "register", defaultValue = "aktør", required = false) Pingable register) {
         LOG.info("Vil pinge register {}", register);
+        switch (register) {
+        case aareg:
+            aaregClient.ping();
+        case aktør:
+            aktorClient.ping();
+            break;
+        case tps:
+            personClient.ping();
+            break;
+        case all:
+            aktorClient.ping();
+            personClient.ping();
+            aaregClient.ping();
+            break;
+        }
         aktorClient.ping();
-        return ok("Hello " + navn);
+        return ok("Hallo " + navn + ", " + registerNavn(register) + " var i toppform");
+    }
+
+    private String registerNavn(Pingable register) {
+        return register.equals(Pingable.all)
+                ? Arrays.stream(Pingable.values()).map(Pingable::name).collect(Collectors.joining(","))
+                : register.name();
     }
 
     @GetMapping
