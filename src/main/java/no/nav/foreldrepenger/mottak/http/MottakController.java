@@ -11,18 +11,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.mottak.config.Level4RestController;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadSender;
+import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 import no.nav.security.spring.oidc.validation.api.Unprotected;
 
-@Level4RestController(path = MottakController.MOTTAK, produces = APPLICATION_JSON_VALUE)
+@RestController
+@RequestMapping(path = MottakController.MOTTAK, produces = APPLICATION_JSON_VALUE)
 public class MottakController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
@@ -39,7 +42,8 @@ public class MottakController {
         this.oppslag = oppslag;
     }
 
-    @PostMapping("/send")
+    @PostMapping(value = "/send")
+    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         if (isForeldrepenger(søknad)) {
             LOG.info("Sender foreldrepengesøknad til FPFordel");
@@ -49,21 +53,23 @@ public class MottakController {
         return ok(dokmotSender.send(søknad, oppslag.getSøker()));
     }
 
-    @PostMapping("/ettersend")
+    @PostMapping(value = "/ettersend")
+    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Ettersending ettersending) {
         return ok(fpfordelSender.send(ettersending, oppslag.getSøker()));
     }
 
-    @GetMapping("/ping")
+    @GetMapping(value = "/ping")
     @Unprotected
     public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("Jeg ble pinget (ubeskyttet ressurs)");
+        LOG.info("Jeg ble pinget");
         return ok("Hallo " + navn + " fra ubeskyttet ressurs");
     }
 
-    @GetMapping("/ping1")
+    @GetMapping(value = "/ping1")
+    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
-        LOG.info("Jeg ble pinget (beskyttet ressurs");
+        LOG.info("Jeg ble pinget");
         return ok("Hallo " + navn + " fra beskyttet ressurs");
     }
 
