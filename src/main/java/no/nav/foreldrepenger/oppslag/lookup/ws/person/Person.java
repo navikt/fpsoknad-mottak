@@ -8,14 +8,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-@JsonPropertyOrder({"id", "fodselsdato", "navn", "kjonn", "målform"})
+@JsonPropertyOrder({"id", "fødselsdato", "navn", "kjønn", "målform"})
 public class Person {
 
     @JsonUnwrapped
     private final ID id;
     private final CountryCode landKode;
-    private final Kjønn kjonn;
-    private final LocalDate fodselsdato;
+    private final Kjønn kjønn;
+    private final LocalDate fødselsdato;
     private final String målform;
     private final Bankkonto bankkonto;
     @JsonUnwrapped
@@ -23,27 +23,27 @@ public class Person {
     private final List<Barn> barn;
 
     public Person(ID id, CountryCode landKode, Kjønn kjønn, Navn navn, String målform,
-                  Bankkonto bankkonto, LocalDate fodselsdato, List<Barn> barn) {
+                  Bankkonto bankkonto, LocalDate fødselsdato, List<Barn> barn) {
         this.id = id;
         this.landKode = landKode;
-        this.kjonn = kjønn;
+        this.kjønn = kjønn;
         this.målform = målform;
         this.bankkonto = bankkonto;
         this.navn = navn;
-        this.fodselsdato = fodselsdato;
+        this.fødselsdato = fødselsdato;
         this.barn = barn;
     }
 
-    public Kjønn getKjonn() {
-        return kjonn;
+    public Kjønn getKjønn() {
+        return kjønn;
     }
 
     public ID getId() {
         return id;
     }
 
-    public LocalDate getFodselsdato() {
-        return fodselsdato;
+    public LocalDate getFødselsdato() {
+        return fødselsdato;
     }
 
     public CountryCode getLandKode() {
@@ -75,8 +75,8 @@ public class Person {
         Person person = (Person) o;
         return Objects.equals(id, person.id) &&
             landKode == person.landKode &&
-            kjonn == person.kjonn &&
-            Objects.equals(fodselsdato, person.fodselsdato) &&
+            kjønn == person.kjønn &&
+            Objects.equals(fødselsdato, person.fødselsdato) &&
             Objects.equals(målform, person.målform) &&
             Objects.equals(bankkonto, person.bankkonto) &&
             Objects.equals(navn, person.navn) &&
@@ -85,13 +85,13 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, landKode, kjonn, fodselsdato, målform, bankkonto, navn);
+        return Objects.hash(id, landKode, kjønn, fødselsdato, målform, bankkonto, navn);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [id=" + id + ", landKode=" + landKode + ", kjonn=" + kjonn
-            + ", fodselsdato=" + fodselsdato
+        return getClass().getSimpleName() + " [id=" + id + ", landKode=" + landKode + ", kjønn=" + kjønn
+            + ", fødselsdato=" + fødselsdato
             + ", målform=" + målform + ", bankkonto=" + bankkonto
             + ", navn=" + navn + "]";
     }
