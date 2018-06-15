@@ -55,8 +55,9 @@ public class OppslagController {
 
     @Unprotected
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> ping(@RequestParam("navn") String navn) {
-        LOG.info("I was pinged");
+    public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn,
+            @RequestParam(name = "register", defaultValue = "aktør", required = false) Pingable register) {
+        LOG.info("Vil pinge register {}", register);
         aktorClient.ping();
         return ok("Hello " + navn);
     }
