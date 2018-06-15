@@ -81,7 +81,10 @@ public class OppslagController {
 
     private String registerNavn(Pingable register) {
         return register.equals(Pingable.all)
-                ? Arrays.stream(Pingable.values()).map(Pingable::name).collect(Collectors.joining(","))
+                ? Arrays.stream(Pingable.values())
+                        .map(Pingable::name)
+                        .filter(s -> s != "all")
+                        .collect(Collectors.joining(","))
                 : register.name();
     }
 
