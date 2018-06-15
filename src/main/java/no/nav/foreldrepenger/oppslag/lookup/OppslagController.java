@@ -63,6 +63,7 @@ public class OppslagController {
         switch (register) {
         case aareg:
             aaregClient.ping();
+            break;
         case aktør:
             aktorClient.ping();
             break;
@@ -75,7 +76,6 @@ public class OppslagController {
             aaregClient.ping();
             break;
         }
-        aktorClient.ping();
         return ok("Hallo " + navn + ", " + registerNavn(register) + " var i toppform");
     }
 
