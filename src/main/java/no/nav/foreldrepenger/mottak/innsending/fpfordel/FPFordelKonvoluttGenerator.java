@@ -64,6 +64,9 @@ public class FPFordelKonvoluttGenerator {
             jukseSøker.aktørId = new AktorId("1000104312026");
             søker = jukseSøker;
         }
+        else {
+            LOG.info("Inga juksing for {} {}", søker.aktørId, søker.fnr);
+        }
         builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
                 id(id));
