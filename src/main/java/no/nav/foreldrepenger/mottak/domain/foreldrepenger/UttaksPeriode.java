@@ -31,7 +31,7 @@ public class UttaksPeriode extends LukketPeriodeMedVedlegg {
     @JsonCreator
     public UttaksPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
             @JsonProperty("vedlegg") List<String> vedlegg,
-            @JsonProperty("UttaksperiodeType") StønadskontoType uttaksperiodeType,
+            @JsonProperty("uttaksperiodeType") StønadskontoType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
             @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType) {
         super(fom, tom, vedlegg);

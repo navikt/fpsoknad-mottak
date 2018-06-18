@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" 
-xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" 
-xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1"
-xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" schemaLocation="../uttak/uttak.xsd"/>
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
   <xsd:complexType name="Virksomhetstyper">
@@ -93,7 +90,6 @@ xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
         <xsd:sequence>
           <xsd:element name="navn" type="xsd:string"/>
           <xsd:element name="registrertILand" type="felles:Land"/>
-          <xsd:element name="stillingsprosent" type="xsd:integer"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>

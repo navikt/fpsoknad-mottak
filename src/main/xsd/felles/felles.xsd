@@ -94,14 +94,8 @@
     <xsd:sequence>
       <xsd:element name="aktoerId" type="xsd:string"/>
       <xsd:element name="soeknadsrolle" type="felles:Brukerroller"/>
-      <xsd:element name="spraakvalg" type="felles:Spraakkode"/>
       <xsd:element minOccurs="0" name="fullmektig" type="felles:Fullmektig"/>
     </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="Spraakkode">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType name="Brukerroller">
     <xsd:complexContent>

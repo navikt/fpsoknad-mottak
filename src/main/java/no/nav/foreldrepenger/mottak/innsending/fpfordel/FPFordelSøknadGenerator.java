@@ -205,7 +205,6 @@ public class FPFordelSøknadGenerator {
                     .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsfører()))
                     .withVirksomhetstype(virksomhetsTypeFra(utenlandskOrg.getVirksomhetsType()))
                     .withArbeidsland(landFra(utenlandskOrg.getArbeidsland()))
-                    .withStillingsprosent(BigInteger.valueOf(utenlandskOrg.getStillingsprosent()))
                     .withRegistrertILand(landFra(utenlandskOrg.getRegistrertLand()));
         }
         throw new IllegalArgumentException("Vil aldri skje");
