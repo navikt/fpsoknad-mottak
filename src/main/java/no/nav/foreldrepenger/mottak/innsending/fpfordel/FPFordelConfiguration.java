@@ -15,6 +15,7 @@ public class FPFordelConfiguration {
         RestTemplate template = new RestTemplateBuilder()
                 .rootUri(cfg.getUri())
                 .interceptors(interceptors)
+                .errorHandler(new FPFordeResponseErrorHandler())
                 .build();
         template.getMessageConverters().add(new MultipartMixedAwreMessageConverter());
         return template;
