@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_GOSYS;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_MOTATT_FPSAK;
 import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.HttpStatus.OK;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +35,11 @@ public class FPFordelResponseHandler {
     public Kvittering handle(ResponseEntity<FPFordelKvittering> respons, String ref, int n) {
 
         LOG.info("Fikk respons {}", respons);
-        if (respons.getStatusCode() != OK) {
-            LOG.warn("FPFordel returnerte ikke forventet statuskode 200, fikk {}", respons.getStatusCode());
-            return new Kvittering(FP_FORDEL_MESSED_UP);
-        }
-
+        /*
+         * if (respons.getStatusCode() != OK) {
+         * LOG.warn("FPFordel returnerte ikke forventet statuskode 200, fikk {}",
+         * respons.getStatusCode()); return new Kvittering(FP_FORDEL_MESSED_UP); }
+         */
         if (!respons.hasBody()) {
             LOG.warn("FPFordel returnerte ikke forventet kvittering");
             String location = pollURI(respons);
