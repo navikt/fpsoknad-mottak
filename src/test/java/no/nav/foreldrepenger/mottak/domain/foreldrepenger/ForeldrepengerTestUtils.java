@@ -103,7 +103,6 @@ public class ForeldrepengerTestUtils {
                 .næringsinntektBrutto(100_000)
                 .orgName("My org")
                 .registrertLand(CountryCode.SE)
-                .stillingsprosent(42)
                 .virksomhetsType(FISKE)
                 .arbeidsland(CountryCode.SE).beskrivelseEndring("Stor endring")
                 .beskrivelseRelasjon("relasjon")
