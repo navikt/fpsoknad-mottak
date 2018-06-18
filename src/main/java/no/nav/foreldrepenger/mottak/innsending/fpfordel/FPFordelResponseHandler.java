@@ -41,8 +41,9 @@ public class FPFordelResponseHandler {
          * respons.getStatusCode()); return new Kvittering(FP_FORDEL_MESSED_UP); }
          */
         if (!respons.hasBody()) {
-            LOG.warn("FPFordel returnerte ikke forventet kvittering");
+            LOG.warn("FPFordel returnerte ikke forventet kvittering, ingen body i svaret");
             String location = pollURI(respons);
+            LOG.info("Fikk location header {}", location);
             if (location != null && location.contains("redirect_url")) {
                 LOG.warn("Open AM roter det til for oss ({})", location);
             }
