@@ -49,7 +49,7 @@ public class FPFordelKonvoluttGenerator {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        if (søker.aktørId.getId() == "1000104925555") {
+        if (søker.aktørId.equals(AktorId.valueOf("1000104925555"))) {
             LOG.info("Så juksar me litt");
             Person jukseSøker = new Person();
             jukseSøker.bankkonto = søker.bankkonto;
@@ -64,6 +64,7 @@ public class FPFordelKonvoluttGenerator {
             jukseSøker.aktørId = new AktorId("1000104312026");
             søker = jukseSøker;
         }
+
         else {
             LOG.info("Inga juksing for {} {}", søker.aktørId, søker.fnr);
         }
