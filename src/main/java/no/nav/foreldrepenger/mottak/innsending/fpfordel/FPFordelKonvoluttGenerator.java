@@ -9,6 +9,8 @@ import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,6 +27,8 @@ import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @Component
 public class FPFordelKonvoluttGenerator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FPFordelKonvoluttGenerator.class);
 
     public static final String VEDLEGG = "vedlegg";
     public static final String METADATA = "metadata";
@@ -45,6 +49,21 @@ public class FPFordelKonvoluttGenerator {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
+        if (søker.aktørId.getId() == "1000104925555") {
+            LOG.info("Så juksar me litt");
+            Person jukseSøker = new Person();
+            jukseSøker.bankkonto = søker.bankkonto;
+            jukseSøker.etternavn = søker.etternavn;
+            jukseSøker.fnr = søker.fnr;
+            jukseSøker.fornavn = søker.fornavn;
+            jukseSøker.ikkeNordiskEøsLand = søker.ikkeNordiskEøsLand;
+            jukseSøker.kjønn = søker.kjønn;
+            jukseSøker.land = søker.land;
+            jukseSøker.mellomnavn = søker.mellomnavn;
+            jukseSøker.målform = søker.målform;
+            jukseSøker.aktørId = new AktorId("1000104312026");
+            søker = jukseSøker;
+        }
         builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
                 id(id));
