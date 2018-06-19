@@ -99,8 +99,8 @@ public class FPFordelResponseHandler {
 
     private Kvittering poll(String pollURI, String ref, long pollDuration, int n) {
         try {
-            LOG.info("Poller URI {} for {}. gang av {}", pollURI, maxAntallForsøk - n, maxAntallForsøk);
             Thread.sleep(pollDuration);
+            LOG.info("Poller URI {} for {}. gang av {}", pollURI, maxAntallForsøk - n, maxAntallForsøk);
             return handle(template.getForEntity(pollURI, FPFordelKvittering.class), ref, n);
         } catch (RestClientException | InterruptedException e) {
             LOG.warn("Kunne ikke polle FPFordel på {}", pollURI, e);
