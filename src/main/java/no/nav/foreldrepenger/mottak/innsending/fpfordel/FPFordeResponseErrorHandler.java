@@ -19,8 +19,8 @@ class FPFordeResponseErrorHandler extends DefaultResponseErrorHandler {
     public void handleError(ClientHttpResponse response) throws IOException {
 
         if (response.getStatusCode() == FORBIDDEN) {
-            LOG.debug(FORBIDDEN + ". Throwing ForbiddenException exception");
-            throw new ForbiddenException("");
+            LOG.warn(FORBIDDEN + ". Throwing ForbiddenException exception");
+            throw new ForbiddenException(response.getStatusText());
         }
         super.handleError(response);
     }
