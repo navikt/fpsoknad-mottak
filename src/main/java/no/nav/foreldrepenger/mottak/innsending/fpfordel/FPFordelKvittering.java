@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use = NAME, include = PROPERTY, property = "status")
+@JsonTypeInfo(use = NAME, include = PROPERTY, property = "forsendelseStatus")
 @JsonSubTypes({
         @Type(value = FPFordelPendingKvittering.class, name = FPFordelPendingKvittering.STATUS),
         @Type(value = FPFordelGosysKvittering.class, name = FPFordelGosysKvittering.STATUS),
@@ -16,14 +16,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public abstract class FPFordelKvittering {
 
-    private final String status;
+    private final String forsendelseStatus;
 
     @JsonIgnore
-    public String getStatus() {
-        return status;
+    public String getforsendelseStatus() {
+        return forsendelseStatus;
     }
 
-    public FPFordelKvittering(String status) {
-        this.status = status;
+    public FPFordelKvittering(String forsendelseStatus) {
+        this.forsendelseStatus = forsendelseStatus;
     }
 }

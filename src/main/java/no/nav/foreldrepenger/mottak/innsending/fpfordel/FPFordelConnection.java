@@ -38,7 +38,7 @@ public class FPFordelConnection {
     }
 
     public void ping() {
-        URI pingEndpoint = pingEndpoint();
+        URI pingEndpoint = endpointFor(PING_PATH);
         LOG.info("Pinger {}", pingEndpoint);
         try {
             ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
@@ -49,7 +49,7 @@ public class FPFordelConnection {
         }
     }
 
-    protected URI pingEndpoint() {
+    URI pingEndpoint() {
         return endpointFor(PING_PATH);
     }
 
@@ -65,7 +65,7 @@ public class FPFordelConnection {
         }
     }
 
-    private URI endpointFor(String path) {
+    public URI endpointFor(String path) {
         return UriComponentsBuilder
                 .fromUriString(config.getUri())
                 .pathSegment(path)

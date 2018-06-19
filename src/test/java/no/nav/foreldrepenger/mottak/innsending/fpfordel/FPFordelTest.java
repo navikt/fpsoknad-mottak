@@ -75,7 +75,8 @@ public class FPFordelTest {
                 søknadGenerator,
                 pdfGenerator);
         return new FPFordelSøknadSender(
-                new FPFordelConnection(template, cfg, new FPFordelResponseHandler(template, 2)), konvoluttGenerator,
+                new FPFordelConnection(template, cfg, new FPFordelResponseHandler(template, 2)),
+                konvoluttGenerator,
                 new CallIdGenerator("jalla"));
     }
 
@@ -88,13 +89,12 @@ public class FPFordelTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.LOCATION, "http://some.host.for.fpfordel/poll/id");
         ResponseEntity<FPFordelKvittering> pollreceipt = new ResponseEntity<>(
-                new FPFordelPendingKvittering(Duration.ofMillis(100)), headers, HttpStatus.OK);
+                new FPFordelPendingKvittering(Duration.ofMillis(100)), headers, HttpStatus.ACCEPTED);
         return pollreceipt;
     }
 
     private static ResponseEntity<FPFordelKvittering> nullBody() {
-        ResponseEntity<FPFordelKvittering> pollreceipt = new ResponseEntity<>(null, HttpStatus.OK);
-        return pollreceipt;
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     private static ResponseEntity<FPFordelKvittering> pollReceiptError() {
@@ -109,7 +109,7 @@ public class FPFordelTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.LOCATION, "http://some.host.for.fpfordel/poll/id");
         ResponseEntity<FPFordelKvittering> pollreceipt = new ResponseEntity<>(
-                new FPSakFordeltKvittering(JOURNALID, SAKSNR), headers, HttpStatus.OK);
+                new FPSakFordeltKvittering(JOURNALID, SAKSNR), headers, HttpStatus.SEE_OTHER);
         return pollreceipt;
     }
 
@@ -140,7 +140,7 @@ public class FPFordelTest {
         assertEquals(SAKSNR, kvittering.getSaksNr());
     }
 
-    // @Test
+    @Test
     public void unexpectedStatusCode() throws Exception {
         when(template.postForEntity(any(URI.class), any(HttpEntity.class), eq(FPFordelKvittering.class)))
                 .thenReturn(pollReceiptError());

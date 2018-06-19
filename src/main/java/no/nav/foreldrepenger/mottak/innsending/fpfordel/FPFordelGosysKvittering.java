@@ -23,7 +23,7 @@ public class FPFordelGosysKvittering extends FPFordelKvittering {
 
     @Override
     public int hashCode() {
-        return Objects.hash(jounalId, getStatus());
+        return Objects.hash(jounalId, getforsendelseStatus());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class FPFordelGosysKvittering extends FPFordelKvittering {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [jounalId=" + jounalId + ", status=" + getStatus() + "]";
+        return getClass().getSimpleName() + " [jounalId=" + jounalId + ", status=" + getforsendelseStatus() + "]";
     }
 
 }
