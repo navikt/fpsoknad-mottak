@@ -8,7 +8,6 @@ import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -93,6 +92,12 @@ public class FPFordelTest {
         return pollreceipt;
     }
 
+    private static ResponseEntity<FPFordelKvittering> pollReceiptNoLocation() {
+        ResponseEntity<FPFordelKvittering> pollreceipt = new ResponseEntity<>(
+                new FPFordelPendingKvittering(Duration.ofMillis(100)), HttpStatus.ACCEPTED);
+        return pollreceipt;
+    }
+
     private static ResponseEntity<FPFordelKvittering> nullBody() {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -115,7 +120,7 @@ public class FPFordelTest {
 
     @Test
     public void pollTwiceThenGosys() throws Exception {
-        when(template.getForEntity(anyString(), eq(FPFordelKvittering.class))).thenReturn(pollReceipt, goysReceipt);
+        when(template.getForEntity(any(URI.class), eq(FPFordelKvittering.class))).thenReturn(pollReceipt, goysReceipt);
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertEquals(SENDT_GOSYS, kvittering.getLeveranseStatus());
         assertEquals(JOURNALID, kvittering.getJournalId());
@@ -124,7 +129,7 @@ public class FPFordelTest {
 
     @Test
     public void pollThriceGivesUp() throws Exception {
-        when(template.getForEntity(anyString(), eq(FPFordelKvittering.class))).thenReturn(pollReceipt, pollReceipt);
+        when(template.getForEntity(any(URI.class), eq(FPFordelKvittering.class))).thenReturn(pollReceipt, pollReceipt);
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertEquals(SENDT_FPSAK, kvittering.getLeveranseStatus());
         assertEquals(null, kvittering.getJournalId());
@@ -133,11 +138,20 @@ public class FPFordelTest {
 
     @Test
     public void pollOnceThenOK() throws Exception {
-        when(template.getForEntity(anyString(), eq(FPFordelKvittering.class))).thenReturn(pollReceipt, fordeltReceipt);
+        when(template.getForEntity(any(URI.class), eq(FPFordelKvittering.class))).thenReturn(pollReceipt,
+                fordeltReceipt);
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertEquals(SENDT_OG_MOTATT_FPSAK, kvittering.getLeveranseStatus());
         assertEquals(JOURNALID, kvittering.getJournalId());
         assertEquals(SAKSNR, kvittering.getSaksNr());
+    }
+
+    @Test
+    public void pollNoLocation() throws Exception {
+        when(template.getForEntity(any(URI.class), eq(FPFordelKvittering.class))).thenReturn(pollReceipt,
+                pollReceiptNoLocation());
+        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        assertEquals(FP_FORDEL_MESSED_UP, kvittering.getLeveranseStatus());
     }
 
     @Test

@@ -54,7 +54,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private Kvittering send(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         if (connection.isEnabled()) {
-            LOG.info("Sender {} til FPFordel", type);
+            LOG.info("Sender {} til FPFordel", type.toLowerCase());
             return connection.send(payload, ref);
         }
         LOG.info("Sendning av {} til FPFordel er deaktivert, ingenting å sende", type);

@@ -37,14 +37,26 @@ public class FPFordelConnection {
         return config.isEnabled();
     }
 
-    public void ping() {
+    public String ping() {
         URI pingEndpoint = endpointFor(PING_PATH);
         LOG.info("Pinger {}", pingEndpoint);
         try {
             ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
             LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
+            return response.getBody();
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke pinge FPFordel på {}", pingEndpoint, e);
+            throw new FPFordelUnavailableException(e);
+        }
+    }
+
+    public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
+        URI postEndpoint = endpointFor(FPFORDEL_PATH);
+        try {
+            LOG.info("Sender søknad til {}", postEndpoint);
+            return responseHandler.handle(template.postForEntity(postEndpoint, payload, FPFordelKvittering.class), ref);
+        } catch (RestClientException e) {
+            LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
             throw new FPFordelUnavailableException(e);
         }
     }
@@ -53,19 +65,7 @@ public class FPFordelConnection {
         return endpointFor(PING_PATH);
     }
 
-    public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        URI postEndpoint = endpointFor(FPFORDEL_PATH);
-        try {
-            LOG.info("Sender søknad til {}", postEndpoint);
-            return responseHandler.handle(template.postForEntity(postEndpoint, payload,
-                    FPFordelKvittering.class), ref);
-        } catch (RestClientException e) {
-            LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
-            throw new FPFordelUnavailableException(e);
-        }
-    }
-
-    public URI endpointFor(String path) {
+    private URI endpointFor(String path) {
         return UriComponentsBuilder
                 .fromUriString(config.getUri())
                 .pathSegment(path)
