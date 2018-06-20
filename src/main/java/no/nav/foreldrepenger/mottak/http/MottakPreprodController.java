@@ -28,7 +28,7 @@ import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLGen
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
-import no.nav.security.spring.oidc.validation.api.Unprotected;
+import no.nav.security.oidc.api.Unprotected;
 
 @Unprotected
 @RestController

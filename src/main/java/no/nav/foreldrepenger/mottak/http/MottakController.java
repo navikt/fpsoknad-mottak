@@ -21,8 +21,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadSender;
-import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
-import no.nav.security.spring.oidc.validation.api.Unprotected;
+import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.oidc.api.Unprotected;
 
 @RestController
 @RequestMapping(path = MottakController.MOTTAK, produces = APPLICATION_JSON_VALUE)
