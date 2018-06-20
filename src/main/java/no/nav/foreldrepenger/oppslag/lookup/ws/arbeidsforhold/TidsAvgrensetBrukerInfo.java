@@ -6,20 +6,20 @@ import java.util.Optional;
 
 public abstract class TidsAvgrensetBrukerInfo {
 
-    private final LocalDate from;
-    private final Optional<LocalDate> to;
+    private final LocalDate fom;
+    private final Optional<LocalDate> tom;
 
-    public TidsAvgrensetBrukerInfo(LocalDate from, Optional<LocalDate> to) {
-        this.from = from;
-        this.to = to;
+    public TidsAvgrensetBrukerInfo(LocalDate fom, Optional<LocalDate> tom) {
+        this.fom = fom;
+        this.tom = tom;
     }
 
-    public LocalDate getFrom() {
-        return from;
+    public LocalDate getFom() {
+        return fom;
     }
 
-    public Optional<LocalDate> getTo() {
-        return to;
+    public Optional<LocalDate> getTom() {
+        return tom;
     }
 
     @Override
@@ -31,20 +31,20 @@ public abstract class TidsAvgrensetBrukerInfo {
             return false;
         }
         TidsAvgrensetBrukerInfo that = (TidsAvgrensetBrukerInfo) o;
-        return Objects.equals(from, that.from) &&
-                Objects.equals(to, that.to);
+        return Objects.equals(fom, that.fom) &&
+                Objects.equals(tom, that.tom);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from, to);
+        return Objects.hash(fom, tom);
     }
 
     @Override
     public String toString() {
         return "TidsAvgrensetBrukerInfo{" +
-                "from=" + from +
-                ", to=" + to +
+                "fom=" + fom +
+                ", tom=" + tom +
                 '}';
     }
 }
