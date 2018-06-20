@@ -51,7 +51,12 @@ public class ArbeidsforholdMapper {
 
     private static boolean gjeldendeAvtale(Arbeidsavtale avtale) {
         LocalDate fom = toLocalDate(avtale.getFomGyldighetsperiode());
-        LocalDate tom = toLocalDate(avtale.getTomGyldighetsperiode());
+        LocalDate tom;
+        if (avtale.getTomGyldighetsperiode() != null) {
+            tom = toLocalDate(avtale.getTomGyldighetsperiode());
+        } else {
+            tom = now();
+        }
 
         return dateWithinPeriod(now(), fom, tom);
     }
