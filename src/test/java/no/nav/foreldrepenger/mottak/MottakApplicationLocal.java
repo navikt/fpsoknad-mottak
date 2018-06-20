@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Primary;
 import no.nav.foreldrepenger.mottak.domain.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
 import no.nav.security.spring.oidc.test.TokenGeneratorConfiguration;
-import no.nav.security.spring.oidc.validation.api.EnableOIDCTokenValidation;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableOIDCTokenValidation(ignore = { "org.springframework" })
