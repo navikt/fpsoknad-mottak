@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Person;
 
 import java.util.List;

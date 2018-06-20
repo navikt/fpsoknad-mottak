@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.lookup.ws.Søkerinfo;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.AaregClient;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
@@ -42,16 +42,16 @@ public class OppslagController {
 
     private final PersonClient personClient;
 
-    private final AaregClient aaregClient;
+    private final ArbeidsforholdClient arbeidsforholdClient;
 
     private final OIDCRequestContextHolder contextHolder;
 
     @Inject
-    public OppslagController(AktorIdClient aktorClient, PersonClient personClient, AaregClient aaregClient,
+    public OppslagController(AktorIdClient aktorClient, PersonClient personClient, ArbeidsforholdClient arbeidsforholdClient,
             OIDCRequestContextHolder contextHolder) {
         this.aktorClient = aktorClient;
         this.personClient = personClient;
-        this.aaregClient = aaregClient;
+        this.arbeidsforholdClient = arbeidsforholdClient;
         this.contextHolder = contextHolder;
     }
 
@@ -62,7 +62,7 @@ public class OppslagController {
         LOG.info("Vil pinge register {}", register);
         switch (register) {
         case aareg:
-            aaregClient.ping();
+            arbeidsforholdClient.ping();
             break;
         case aktør:
             aktorClient.ping();
@@ -73,7 +73,7 @@ public class OppslagController {
         case all:
             aktorClient.ping();
             personClient.ping();
-            aaregClient.ping();
+            arbeidsforholdClient.ping();
             break;
         }
         return ok(registerNavn(register) + " er i toppform");
@@ -83,7 +83,7 @@ public class OppslagController {
     public ResponseEntity<Søkerinfo> essensiellSøkerinfo() {
         Fodselsnummer fnr = fnrFromClaims();
         Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
-        List<Arbeidsforhold> arbeidsforhold = aaregClient.arbeidsforhold(fnr);
+        List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
         return ok(new Søkerinfo(person, arbeidsforhold));
     }
 
@@ -112,7 +112,7 @@ public class OppslagController {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [aktorClient=" + aktorClient + ", personClient=" + personClient
-                + ", aaregClient=" + aaregClient + ", contextHolder=" + contextHolder + "]";
+                + ", aaregClient=" + arbeidsforholdClient + ", contextHolder=" + contextHolder + "]";
     }
 
 }

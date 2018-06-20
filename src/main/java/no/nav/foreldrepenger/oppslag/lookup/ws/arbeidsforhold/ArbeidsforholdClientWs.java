@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
+package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
 import static java.util.stream.Collectors.toList;
 
@@ -20,15 +20,15 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.R
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
 
-public class AaregClientWs implements AaregClient {
-    private static final Logger LOG = LoggerFactory.getLogger(AaregClientWs.class);
+public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdClientWs.class);
 
     private final ArbeidsforholdV3 arbeidsforholdV3;
     private final ArbeidsforholdV3 healthIndicator;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.aareg");
 
-    public AaregClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator) {
+    public ArbeidsforholdClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
         this.healthIndicator = healthIndicator;
     }

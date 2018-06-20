@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
+package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
 import no.nav.foreldrepenger.oppslag.lookup.Pair;
 import no.nav.foreldrepenger.oppslag.time.DateUtil;

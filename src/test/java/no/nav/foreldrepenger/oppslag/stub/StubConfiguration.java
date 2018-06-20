@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.AaregClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.arena.ArenaClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.fpsak.FpsakClient;
@@ -31,8 +31,8 @@ public class StubConfiguration {
 
     @Bean
     @Primary
-    public AaregClient getAaregClientStub() {
-        return new AaregClientStub();
+    public ArbeidsforholdClient getAaregClientStub() {
+        return new ArbeidsforholdClientStub();
     }
 
     @Bean

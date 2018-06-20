@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.oppslag.lookup.ws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.oppslag.lookup.ws.inntekt.Inntekt;
 import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlPeriode;

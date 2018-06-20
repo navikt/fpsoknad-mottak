@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.TidsAvgrensetBrukerInfo;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.TidsAvgrensetBrukerInfo;
 
 public class Ytelse extends TidsAvgrensetBrukerInfo {
     private final String type;

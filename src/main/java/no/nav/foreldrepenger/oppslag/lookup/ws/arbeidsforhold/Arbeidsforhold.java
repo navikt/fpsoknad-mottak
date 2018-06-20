@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
+package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
 import java.time.LocalDate;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
+package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
 import java.util.List;
 
@@ -16,15 +16,15 @@ import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
 @ProtectedWithClaims(issuer="selvbetjening", claimMap={"acr=Level4"})
-class AaregController {
+class ArbeidsforholdController {
 
     @Inject
-    private AaregClient aaregClient;
+    private ArbeidsforholdClient arbeidsforholdClient;
 
     @Inject
     private OIDCRequestContextHolder contextHolder;
 
-    @RequestMapping(method = { RequestMethod.GET }, value = "/aareg")
+    @RequestMapping(method = { RequestMethod.GET }, value = "/arbeidsforhold")
     public ResponseEntity<List<Arbeidsforhold>> workHistory() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
@@ -32,7 +32,7 @@ class AaregController {
         }
 
         Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
-        List<Arbeidsforhold> arbeidsforhold = aaregClient.arbeidsforhold(fnr);
+        List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
         return ResponseEntity.ok(arbeidsforhold);
     }
 }

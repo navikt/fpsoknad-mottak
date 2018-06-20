@@ -1,10 +1,10 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
+package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 
 import java.util.List;
 
-public interface AaregClient {
+public interface ArbeidsforholdClient {
 
     void ping();
 

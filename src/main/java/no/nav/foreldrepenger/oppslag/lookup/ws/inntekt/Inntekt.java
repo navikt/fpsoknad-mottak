@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.TidsAvgrensetBrukerInfo;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.TidsAvgrensetBrukerInfo;
 
 public class Inntekt extends TidsAvgrensetBrukerInfo {
 

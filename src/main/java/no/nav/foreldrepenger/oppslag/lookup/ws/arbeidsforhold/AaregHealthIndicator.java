@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
+package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
 import java.net.URI;
 
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AaregHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
-    private final AaregClient client;
+    private final ArbeidsforholdClient client;
 
-    public AaregHealthIndicator(AaregClient client, Environment env,
-            @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") URI serviceUrl) {
+    public AaregHealthIndicator(ArbeidsforholdClient client, Environment env,
+                                @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") URI serviceUrl) {
         super(env, serviceUrl);
         this.client = client;
     }

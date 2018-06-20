@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
+package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import org.junit.jupiter.api.Tag;
@@ -41,9 +41,9 @@ public class ArbeidsforholdMapperTest {
 
         LocalDate now = LocalDate.now();
         LocalDate earlier = now.minusMonths(2);
-        no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold expected =
-            new no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold(arbeidsgiverId, arbeidsgiverIdType, 100d, earlier, Optional.of(now));
-        no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold actual = ArbeidsforholdMapper.map(forhold);
+        no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold expected =
+            new no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold(arbeidsgiverId, arbeidsgiverIdType, 100d, earlier, Optional.of(now));
+        no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold actual = ArbeidsforholdMapper.map(forhold);
 
         assertEquals(expected, actual);
     }

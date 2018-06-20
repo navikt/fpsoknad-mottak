@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.AaregClient;
-import no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +13,9 @@ import static java.time.LocalDate.now;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-public class AaregClientStub implements AaregClient {
+public class ArbeidsforholdClientStub implements ArbeidsforholdClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AaregClientStub.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdClientStub.class);
 
     @Override
     public void ping() {
