@@ -81,6 +81,17 @@ public class FPFordelResponseHandler {
         return new Kvittering(ref, SENDT_FPSAK);
     }
 
+    private Kvittering poll(String pollURI, String ref, long pollDuration, int n) {
+        try {
+            Thread.sleep(pollDuration);
+            LOG.info("Poller  {} for {}. gang av {}", pollURI, maxAntallForsøk - n, maxAntallForsøk);
+            return handle(template.getForEntity(pollURI, FPFordelKvittering.class), ref, n);
+        } catch (RestClientException | InterruptedException e) {
+            LOG.warn("Kunne ikke polle FPFordel på {}", pollURI, e);
+            throw new FPFordelUnavailableException(e);
+        }
+    }
+
     private static Kvittering gosysKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
         LOG.info("Søknaden er sendt til manuell behandling i Gosys");
         Kvittering kvittering = new Kvittering(ref, SENDT_GOSYS);
@@ -95,17 +106,6 @@ public class FPFordelResponseHandler {
         kvittering.setJournalId(fordeltKvittering.getJounalId());
         kvittering.setSaksNr(fordeltKvittering.getSaksnummer());
         return kvittering;
-    }
-
-    private Kvittering poll(String pollURI, String ref, long pollDuration, int n) {
-        try {
-            Thread.sleep(pollDuration);
-            LOG.info("Poller  {} for {}. gang av {}", pollURI, maxAntallForsøk - n, maxAntallForsøk);
-            return handle(template.getForEntity(pollURI, FPFordelKvittering.class), ref, n);
-        } catch (RestClientException | InterruptedException e) {
-            LOG.warn("Kunne ikke polle FPFordel på {}", pollURI, e);
-            throw new FPFordelUnavailableException(e);
-        }
     }
 
     @Override
