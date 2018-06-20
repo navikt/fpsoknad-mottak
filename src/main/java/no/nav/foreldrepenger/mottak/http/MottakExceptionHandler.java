@@ -37,6 +37,11 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
     }
 
+    @ExceptionHandler(value = { ForbiddenException.class })
+    protected ResponseEntity<Object> handleForbidden(ForbiddenException e, WebRequest request) {
+        return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
+    }
+
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
