@@ -31,10 +31,10 @@ import static org.junit.Assert.assertTrue;
 public class SerializationTest {
 
     @Inject
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @Test
-    public void testPostnr() throws IOException {
+    public void testPostnr() {
         PoststedFinner finner = new StatiskPoststedFinner();
         assertTrue(finner.poststed("1353").equalsIgnoreCase("Bærums Verk"));
         assertTrue(finner.poststed("1332").equalsIgnoreCase("Østerås"));
@@ -146,7 +146,7 @@ public class SerializationTest {
 
     private static Arbeidsforhold arbeidsforhold() {
         LocalDate now = LocalDate.now();
-        return new Arbeidsforhold("arbgiver", "typen", "yrket",
+        return new Arbeidsforhold("arbgiver", "typen", 100d,
                 now.minusMonths(2), Optional.of(now));
     }
 

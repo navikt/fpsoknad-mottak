@@ -45,13 +45,18 @@ public class AaregClientWs implements AaregClient {
 
     public List<Arbeidsforhold> arbeidsforhold(Fodselsnummer fnr) {
         try {
-            FinnArbeidsforholdPrArbeidstakerRequest req = request(fnr);
-            FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(req);
-            return response.getArbeidsforhold().stream()
-                    .map(ArbeidsforholdMapper::map)
-                    .collect(toList());
+            FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(request(fnr));
+
+            List<Arbeidsforhold> arbeidsforhold = response.getArbeidsforhold().stream()
+                .map(ArbeidsforholdMapper::map)
+                .collect(toList());
+
+            // TODO: Må kalle på Organisasjon-tjenesten, og plukke navn basert på dato
+            arbeidsforhold.forEach(a -> a.setArbeidsgiverNavn("S.Vindel & Søn"));
+
+            return arbeidsforhold;
         } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning ex) {
-            LOG.warn("Sikkehetsfeil fra AAREG", ex);
+            LOG.warn("Sikkerhetsfeil fra AAREG", ex);
             throw new ForbiddenException(ex);
         } catch (FinnArbeidsforholdPrArbeidstakerUgyldigInput ex) {
             throw new IncompleteRequestException(ex);

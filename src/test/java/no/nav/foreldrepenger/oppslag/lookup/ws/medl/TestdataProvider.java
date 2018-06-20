@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.medl;
 
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.Medlemsperiode;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.kodeverk.GrunnlagstypeMedTerm;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.informasjon.kodeverk.LandkodeMedTerm;
@@ -13,8 +13,8 @@ public class TestdataProvider {
 
    public static Medlemsperiode medlemsperiode(LocalDate from, LocalDate to) {
       Medlemsperiode periode = new Medlemsperiode();
-      periode.setFraOgMed(CalendarConverter.toXMLGregorianCalendar(from));
-      periode.setTilOgMed(CalendarConverter.toXMLGregorianCalendar(to));
+      periode.setFraOgMed(DateUtil.toXMLGregorianCalendar(from));
+      periode.setTilOgMed(DateUtil.toXMLGregorianCalendar(to));
       StatuskodeMedTerm status = new StatuskodeMedTerm();
       status.setTerm("statusen");
       periode.setStatus(status);

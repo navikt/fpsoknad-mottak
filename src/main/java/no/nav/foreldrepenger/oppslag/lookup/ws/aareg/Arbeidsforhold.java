@@ -8,18 +8,15 @@ public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
 
     private String arbeidsgiverId;
     private String arbeidsgiverIdType;
-    private String yrke;
+    private Double stillingsprosent;
 
-    public Arbeidsforhold(
-            String arbeidsgiverId,
-            String arbeidsgiverIdType,
-            String yrke,
-            LocalDate from,
-            Optional<LocalDate> to) {
+    private String arbeidsgiverNavn;
+
+    public Arbeidsforhold(String arbeidsgiverId, String arbeidsgiverIdType, Double stillingsprosent, LocalDate from, Optional<LocalDate> to) {
         super(from, to);
         this.arbeidsgiverId = arbeidsgiverId;
         this.arbeidsgiverIdType = arbeidsgiverIdType;
-        this.yrke = yrke;
+        this.stillingsprosent = stillingsprosent;
     }
 
     public String getArbeidsgiverId() {
@@ -30,8 +27,16 @@ public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
         return arbeidsgiverIdType;
     }
 
-    public String getYrke() {
-        return yrke;
+    public Double getStillingsprosent() {
+        return stillingsprosent;
+    }
+
+    public String getArbeidsgiverNavn() {
+        return arbeidsgiverNavn;
+    }
+
+    public void setArbeidsgiverNavn(String arbeidsgiverNavn) {
+        this.arbeidsgiverNavn = arbeidsgiverNavn;
     }
 
     @Override
@@ -46,15 +51,12 @@ public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
             return false;
         }
         Arbeidsforhold that = (Arbeidsforhold) o;
-        return Objects.equals(arbeidsgiverId, that.arbeidsgiverId) &&
-                Objects.equals(arbeidsgiverIdType, that.arbeidsgiverIdType) &&
-                Objects.equals(yrke, that.yrke);
+        return Objects.equals(arbeidsgiverId, that.arbeidsgiverId) && Objects.equals(arbeidsgiverIdType, that.arbeidsgiverIdType);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), arbeidsgiverId, arbeidsgiverIdType, yrke);
+        return Objects.hash(super.hashCode(), arbeidsgiverId, arbeidsgiverIdType);
     }
 
     @Override
@@ -62,7 +64,6 @@ public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
         return "Arbeidsforhold{" +
                 "arbeidsgiverId='" + arbeidsgiverId + '\'' +
                 ", arbeidsgiverIdType='" + arbeidsgiverIdType + '\'' +
-                ", yrke='" + yrke + '\'' +
                 '}';
     }
 }

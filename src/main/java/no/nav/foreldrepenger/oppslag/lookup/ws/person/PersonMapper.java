@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
 import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.lookup.Pair;
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
@@ -58,7 +58,7 @@ final class PersonMapper {
     }
 
     private static LocalDate birthDate(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-        return CalendarConverter.toLocalDate(person.getFoedselsdato().getFoedselsdato());
+        return DateUtil.toLocalDate(person.getFoedselsdato().getFoedselsdato());
     }
 
     private static String målform(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {

@@ -24,8 +24,10 @@ public class AaregClientStub implements AaregClient {
 
     @Override
     public List<Arbeidsforhold> arbeidsforhold(Fodselsnummer fnr) {
-        Arbeidsforhold arbeidsforhold1 = new Arbeidsforhold("0123456789", "orgnummer", "Kjerrekusk", now().minusYears(1), empty());
-        Arbeidsforhold arbeidsforhold2 = new Arbeidsforhold("999999999", "orgnummer", "Feier", now().minusYears(2), of(now().minusYears(1)));
+        Arbeidsforhold arbeidsforhold1 = new Arbeidsforhold("0123456789", "orgnummer",
+            69d, now().minusYears(1), empty());
+        Arbeidsforhold arbeidsforhold2 = new Arbeidsforhold("999999999", "orgnummer",
+            100d, now().minusYears(2), of(now().minusYears(1)));
         return Arrays.asList(arbeidsforhold1, arbeidsforhold2);
     }
 }

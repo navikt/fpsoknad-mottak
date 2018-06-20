@@ -15,7 +15,7 @@ import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.HentYtelseskontraktListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.YtelseskontraktV3;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt.Periode;
@@ -62,8 +62,8 @@ public class ArenaClientWs implements ArenaClient {
     private HentYtelseskontraktListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
         HentYtelseskontraktListeRequest req = new HentYtelseskontraktListeRequest();
         Periode periode = new Periode();
-        periode.setFom(CalendarConverter.toXMLGregorianCalendar(from));
-        periode.setTom(CalendarConverter.toXMLGregorianCalendar(to));
+        periode.setFom(DateUtil.toXMLGregorianCalendar(from));
+        periode.setTom(DateUtil.toXMLGregorianCalendar(to));
         req.setPeriode(periode);
         req.setPersonidentifikator(fnr.getFnr());
         return req;

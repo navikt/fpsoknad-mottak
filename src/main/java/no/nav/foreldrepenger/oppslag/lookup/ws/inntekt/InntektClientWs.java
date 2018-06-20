@@ -13,7 +13,7 @@ import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.IncompleteRequestException;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeUgyldigInput;
@@ -82,8 +82,8 @@ public class InntektClientWs implements InntektClient {
         req.setAinntektsfilter(ainntektsfilter);
 
         Uttrekksperiode uttrekksperiode = new Uttrekksperiode();
-        uttrekksperiode.setMaanedFom(CalendarConverter.toXMLGregorianCalendar(from));
-        uttrekksperiode.setMaanedTom(CalendarConverter.toXMLGregorianCalendar(to));
+        uttrekksperiode.setMaanedFom(DateUtil.toXMLGregorianCalendar(from));
+        uttrekksperiode.setMaanedTom(DateUtil.toXMLGregorianCalendar(to));
         req.setUttrekksperiode(uttrekksperiode);
 
         Formaal formaal = new Formaal();

@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -80,7 +80,7 @@ public class PersonMapperTest {
         person.setBostedsadresse(bostedsadresse);
 
         Foedselsdato foedselsdato = new Foedselsdato();
-        foedselsdato.setFoedselsdato(CalendarConverter.toXMLGregorianCalendar(LocalDate.now()));
+        foedselsdato.setFoedselsdato(DateUtil.toXMLGregorianCalendar(LocalDate.now()));
         person.setFoedselsdato(foedselsdato);
 
         return person;

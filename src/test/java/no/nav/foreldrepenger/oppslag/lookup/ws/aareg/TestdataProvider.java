@@ -1,11 +1,12 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
 
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import static no.nav.foreldrepenger.oppslag.time.DateUtil.toXMLGregorianCalendar;
 
 public class TestdataProvider {
 
@@ -17,8 +18,8 @@ public class TestdataProvider {
         Gyldighetsperiode gyldighetsperiode = new Gyldighetsperiode();
         LocalDate now = LocalDate.now();
         LocalDate earlier = now.minusMonths(2);
-        gyldighetsperiode.setFom(CalendarConverter.toXMLGregorianCalendar(earlier));
-        gyldighetsperiode.setTom(CalendarConverter.toXMLGregorianCalendar(now));
+        gyldighetsperiode.setFom(toXMLGregorianCalendar(earlier));
+        gyldighetsperiode.setTom(toXMLGregorianCalendar(now));
 
         AnsettelsesPeriode ansettelsesperiode = new AnsettelsesPeriode();
         ansettelsesperiode.setPeriode(gyldighetsperiode);
@@ -32,6 +33,9 @@ public class TestdataProvider {
         Yrker yrker = new Yrker();
         yrker.setValue("yrke1");
         avtale.setYrke(yrker);
+        avtale.setStillingsprosent(BigDecimal.valueOf(100d));
+        avtale.setFomGyldighetsperiode(toXMLGregorianCalendar(now.minusMonths(6)));
+        avtale.setTomGyldighetsperiode(toXMLGregorianCalendar(now.plusMonths(6)));
         forhold.getArbeidsavtale().add(avtale);
 
         avtale = new Arbeidsavtale();
@@ -40,15 +44,6 @@ public class TestdataProvider {
         avtale.setYrke(yrker);
         forhold.getArbeidsavtale().add(avtale);
         return forhold;
-    }
-
-    public static FinnArbeidsforholdPrArbeidstakerResponse response() {
-        Organisasjon org = new Organisasjon();
-        org.setOrgnummer("889640782");
-        org.setNavn("NAV");
-        FinnArbeidsforholdPrArbeidstakerResponse response = new FinnArbeidsforholdPrArbeidstakerResponse();
-        response.getArbeidsforhold().add(forhold(org));
-        return response;
     }
 
 }

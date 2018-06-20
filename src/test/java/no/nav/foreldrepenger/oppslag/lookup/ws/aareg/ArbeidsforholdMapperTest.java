@@ -14,16 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArbeidsforholdMapperTest {
 
-    static Stream<Arguments> valueProvider() {
+    private static Stream<Arguments> valueProvider() {
         Organisasjon orgUtenNavn = new Organisasjon();
         orgUtenNavn.setOrgnummer("12345");
-        Organisasjon orgMedNavn = new Organisasjon();
-        orgMedNavn.setNavn("el orgo");
 
         HistoriskArbeidsgiverMedArbeidsgivernummer histUtenNavn = new HistoriskArbeidsgiverMedArbeidsgivernummer();
         histUtenNavn.setArbeidsgivernummer("12346");
-        HistoriskArbeidsgiverMedArbeidsgivernummer histMedNavn = new HistoriskArbeidsgiverMedArbeidsgivernummer();
-        histMedNavn.setNavn("gamle saker");
 
         Person person = new Person();
         NorskIdent norskIdent = new NorskIdent();
@@ -32,8 +28,6 @@ public class ArbeidsforholdMapperTest {
 
         return Stream.of(
             Arguments.of("12345", "orgnr", orgUtenNavn),
-            Arguments.of("el orgo", "navn", orgMedNavn),
-            Arguments.of("gamle saker", "navn", histMedNavn),
             Arguments.of("12346", "arbeidsgivernr", histUtenNavn),
             Arguments.of("12347", "fnr", person)
         );
@@ -48,7 +42,7 @@ public class ArbeidsforholdMapperTest {
         LocalDate now = LocalDate.now();
         LocalDate earlier = now.minusMonths(2);
         no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold expected =
-            new no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold(arbeidsgiverId, arbeidsgiverIdType, "yrke1/yrke2", earlier, Optional.of(now));
+            new no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold(arbeidsgiverId, arbeidsgiverIdType, 100d, earlier, Optional.of(now));
         no.nav.foreldrepenger.oppslag.lookup.ws.aareg.Arbeidsforhold actual = ArbeidsforholdMapper.map(forhold);
 
         assertEquals(expected, actual);

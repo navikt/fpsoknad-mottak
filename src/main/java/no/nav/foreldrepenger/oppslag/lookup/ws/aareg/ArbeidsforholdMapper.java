@@ -1,55 +1,59 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.aareg;
 
-import static java.util.stream.Collectors.joining;
+import no.nav.foreldrepenger.oppslag.lookup.Pair;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
+import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.oppslag.lookup.Pair;
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Aktoer;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsavtale;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.HistoriskArbeidsgiverMedArbeidsgivernummer;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Organisasjon;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Person;
-import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Yrker;
+import static java.time.LocalDate.now;
+import static no.nav.foreldrepenger.oppslag.time.DateUtil.dateWithinPeriod;
+import static no.nav.foreldrepenger.oppslag.time.DateUtil.toLocalDate;
 
 public class ArbeidsforholdMapper {
 
     public static Arbeidsforhold map(
             no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold forhold) {
         return new Arbeidsforhold(
-                arbeidsgiver(forhold.getArbeidsgiver()).getFirst(),
-                arbeidsgiver(forhold.getArbeidsgiver()).getSecond(),
-                yrker(forhold.getArbeidsavtale()),
-                CalendarConverter.toLocalDate(forhold.getAnsettelsesPeriode().getPeriode().getFom()),
-                Optional.ofNullable(forhold.getAnsettelsesPeriode().getPeriode().getTom())
-                        .map(CalendarConverter::toLocalDate));
+                arbeidsgiverIdOgType(forhold.getArbeidsgiver()).getFirst(),
+                arbeidsgiverIdOgType(forhold.getArbeidsgiver()).getSecond(),
+                stillingsprosent(forhold.getArbeidsavtale()),
+                toLocalDate(forhold.getAnsettelsesPeriode().getPeriode().getFom()),
+                Optional.ofNullable(forhold.getAnsettelsesPeriode().getPeriode().getTom()).map(DateUtil::toLocalDate));
     }
 
-    private static String yrker(List<Arbeidsavtale> avtaler) {
-        return avtaler.stream()
-                .map(Arbeidsavtale::getYrke)
-                .distinct()
-                .map(Yrker::getValue)
-                .collect(joining("/"));
-    }
-
-    private static Pair<String, String> arbeidsgiver(Aktoer aktor) {
+    private static Pair<String, String> arbeidsgiverIdOgType(Aktoer aktor) {
         Pair<String, String> pair;
         if (aktor instanceof Organisasjon) {
             Organisasjon org = (Organisasjon) aktor;
-            pair = org.getNavn() != null ? Pair.of(org.getNavn(), "navn") : Pair.of(org.getOrgnummer(), "orgnr");
+            pair = Pair.of(org.getOrgnummer(), "orgnr");
         } else if (aktor instanceof HistoriskArbeidsgiverMedArbeidsgivernummer) {
             HistoriskArbeidsgiverMedArbeidsgivernummer h = (HistoriskArbeidsgiverMedArbeidsgivernummer) aktor;
-            pair = h.getNavn() != null ? Pair.of(h.getNavn(), "navn")
-                    : Pair.of(h.getArbeidsgivernummer(), "arbeidsgivernr");
+            pair = Pair.of(h.getArbeidsgivernummer(), "arbeidsgivernr");
         } else {
             Person person = (Person) aktor;
             pair = Pair.of(person.getIdent().getIdent(), "fnr");
         }
 
         return pair;
+    }
+
+    private static Double stillingsprosent(List<Arbeidsavtale> avtaler) {
+        return avtaler.stream()
+            .filter(ArbeidsforholdMapper::gjeldendeAvtale)
+            .map(Arbeidsavtale::getStillingsprosent)
+            .map(BigDecimal::doubleValue)
+            .findFirst().orElse(null);
+    }
+
+    private static boolean gjeldendeAvtale(Arbeidsavtale avtale) {
+        LocalDate fom = toLocalDate(avtale.getFomGyldighetsperiode());
+        LocalDate tom = toLocalDate(avtale.getTomGyldighetsperiode());
+
+        return dateWithinPeriod(now(), fom, tom);
     }
 
 }

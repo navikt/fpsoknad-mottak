@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.oppslag.lookup.ws.inntekt;
 
 import java.util.Optional;
 
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Aktoer;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.AktoerId;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Organisasjon;
@@ -17,9 +17,9 @@ final class InntektMapper {
     public static Inntekt map(no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt inntekt) {
         return new Inntekt(
                 Optional.ofNullable(inntekt.getOpptjeningsperiode())
-                        .map(p -> CalendarConverter.toLocalDate(p.getStartDato())).orElse(null),
+                        .map(p -> DateUtil.toLocalDate(p.getStartDato())).orElse(null),
                 Optional.ofNullable(inntekt.getOpptjeningsperiode())
-                        .map(p -> CalendarConverter.toLocalDate(p.getSluttDato())),
+                        .map(p -> DateUtil.toLocalDate(p.getSluttDato())),
                 Optional.ofNullable(inntekt.getBeloep()).map(b -> b.doubleValue()).orElse(0.0),
                 employerID(inntekt.getVirksomhet()));
     }

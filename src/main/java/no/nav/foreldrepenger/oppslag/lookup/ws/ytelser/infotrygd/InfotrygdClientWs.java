@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.FinnSakListePersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.FinnSakListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
@@ -52,8 +52,8 @@ public class InfotrygdClientWs implements InfotrygdClient {
     public List<Ytelse> casesFor(Fodselsnummer fnr, LocalDate from, LocalDate to) {
         FinnSakListeRequest req = new FinnSakListeRequest();
         Periode periode = new Periode();
-        periode.setFom(CalendarConverter.toXMLGregorianCalendar(from));
-        periode.setTom(CalendarConverter.toXMLGregorianCalendar(to));
+        periode.setFom(DateUtil.toXMLGregorianCalendar(from));
+        periode.setTom(DateUtil.toXMLGregorianCalendar(to));
         req.setPeriode(periode);
         req.setPersonident(fnr.getFnr());
         try {

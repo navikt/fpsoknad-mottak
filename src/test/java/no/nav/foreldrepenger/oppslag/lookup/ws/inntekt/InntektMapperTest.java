@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.inntekt;
 
-import no.nav.foreldrepenger.oppslag.time.CalendarConverter;
+import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.AktoerId;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Organisasjon;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Periode;
@@ -67,8 +67,8 @@ class InntektMapperTest {
         String virksomhetId,
         no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt inntekt) {
         Inntekt expected = new Inntekt(
-            CalendarConverter.toLocalDate(inntekt.getOpptjeningsperiode().getStartDato()),
-            Optional.of(inntekt.getOpptjeningsperiode().getSluttDato()).map(CalendarConverter::toLocalDate),
+            DateUtil.toLocalDate(inntekt.getOpptjeningsperiode().getStartDato()),
+            Optional.of(inntekt.getOpptjeningsperiode().getSluttDato()).map(DateUtil::toLocalDate),
             inntekt.getBeloep().doubleValue(),
             virksomhetId);
         Inntekt actual = InntektMapper.map(inntekt);

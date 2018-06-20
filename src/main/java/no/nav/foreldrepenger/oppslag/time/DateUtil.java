@@ -6,11 +6,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public final class CalendarConverter {
-
-    private CalendarConverter() {
-
-    }
+public final class DateUtil {
 
     public static LocalDate toLocalDate(XMLGregorianCalendar cal) {
         return LocalDate.of(cal.getYear(), cal.getMonth(), cal.getDay());
@@ -26,6 +22,13 @@ public final class CalendarConverter {
         } catch (DatatypeConfigurationException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public static boolean dateWithinPeriod(LocalDate date, LocalDate start, LocalDate end) {
+        if (date.isEqual(start) || date.isEqual(end)) {
+            return true;
+        }
+        return date.isAfter(start) && date.isBefore(end);
     }
 
 }
