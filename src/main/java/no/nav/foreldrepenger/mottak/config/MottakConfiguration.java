@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
+import no.nav.foreldrepenger.mottak.http.FnrExtractor;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
+
 @Configuration
 public class MottakConfiguration {
 
@@ -34,5 +37,10 @@ public class MottakConfiguration {
         loggingFilter.setIncludePayload(true);
         loggingFilter.setMaxPayloadLength(10000);
         return loggingFilter;
+    }
+
+    @Bean
+    public FnrExtractor fnsExtractor(OIDCRequestContextHolder holder) {
+        return new FnrExtractor(holder);
     }
 }

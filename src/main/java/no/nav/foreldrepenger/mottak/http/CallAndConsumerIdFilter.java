@@ -27,9 +27,12 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
 
     private final CallIdGenerator generator;
 
+    private final FnrExtractor extractor;
+
     @Inject
-    public CallAndConsumerIdFilter(CallIdGenerator generator) {
+    public CallAndConsumerIdFilter(CallIdGenerator generator, FnrExtractor extractor) {
         this.generator = generator;
+        this.extractor = extractor;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
         String callId = req.getHeader(key);
         String consumerId = req.getHeader("Nav-Consumer-Id");
         if (consumerId != null) {
-            MDC.put("Nav-Consumer-Id", consumerId);
+            MDC.put("Nav-Consumer-Id", extractor.fnrFromToken());
         }
         if (callId != null) {
             LOG.trace("{} is set in request to {}", key, callId);
