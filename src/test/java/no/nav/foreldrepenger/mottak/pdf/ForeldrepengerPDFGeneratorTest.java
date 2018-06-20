@@ -12,9 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { MottakConfiguration.class, ForeldrepengerPDFGenerator.class })
+@ContextConfiguration(classes = { MottakConfiguration.class, ForeldrepengerPDFGenerator.class,
+        SpringOIDCRequestContextHolder.class })
 
 public class ForeldrepengerPDFGeneratorTest {
 

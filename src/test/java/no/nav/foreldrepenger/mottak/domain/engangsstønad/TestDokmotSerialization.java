@@ -27,8 +27,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLGenerator;
@@ -39,12 +39,13 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsj
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
+import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("dev")
 @ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class,
         DokmotEngangsstønadXMLGenerator.class,
-        DokmotEngangsstønadXMLKonvoluttGenerator.class, CallIdGenerator.class })
+        DokmotEngangsstønadXMLKonvoluttGenerator.class, CallIdGenerator.class, SpringOIDCRequestContextHolder.class })
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {
 

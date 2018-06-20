@@ -40,7 +40,7 @@ public class MottakConfiguration {
     }
 
     @Bean
-    public FnrExtractor fnsExtractor(OIDCRequestContextHolder holder) {
+    public FnrExtractor fnrExtractor(OIDCRequestContextHolder holder) {
         return new FnrExtractor(holder);
     }
 }
