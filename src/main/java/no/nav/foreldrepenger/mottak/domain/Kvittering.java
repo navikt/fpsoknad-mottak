@@ -20,10 +20,6 @@ public class Kvittering {
     private String journalId;
     private String saksNr;
 
-    public Kvittering(LeveranseStatus leveranseStatus) {
-        this(null, leveranseStatus);
-    }
-
     public Kvittering(String ref, LeveranseStatus leveranseStatus) {
         this(ref, LocalDateTime.now(), leveranseStatus);
     }

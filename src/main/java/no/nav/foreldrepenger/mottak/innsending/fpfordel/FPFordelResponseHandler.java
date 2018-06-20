@@ -40,7 +40,7 @@ public class FPFordelResponseHandler {
         LOG.info("Behandler respons {}", respons);
         if (!respons.hasBody()) {
             LOG.warn("Fikk ingen kvittering");
-            return new Kvittering(FP_FORDEL_MESSED_UP);
+            return new Kvittering(ref, FP_FORDEL_MESSED_UP);
         }
         switch (respons.getStatusCode()) {
         case ACCEPTED:
@@ -51,7 +51,7 @@ public class FPFordelResponseHandler {
             return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(respons.getBody()));
         default:
             LOG.warn("Fikk uventet response kode {}", respons.getStatusCode());
-            return new Kvittering(FP_FORDEL_MESSED_UP);
+            return new Kvittering(ref, FP_FORDEL_MESSED_UP);
         }
     }
 
@@ -63,7 +63,7 @@ public class FPFordelResponseHandler {
             return pollForsøk(URI.create(location), ref, pollDuration(respons), MILLISECONDS, forsøk);
         }
         LOG.info("Fikk ikke den forventede location headeren");
-        return new Kvittering(FP_FORDEL_MESSED_UP);
+        return new Kvittering(ref, FP_FORDEL_MESSED_UP);
     }
 
     private static long pollDuration(ResponseEntity<FPFordelKvittering> respons) {
@@ -81,6 +81,7 @@ public class FPFordelResponseHandler {
 
     private Kvittering poll(URI uri, String ref, long durationMs, int forsøk) {
         try {
+            LOG.info("Venter i {}ms", durationMs);
             Thread.sleep(durationMs);
             LOG.info("Poller {} for {}. gang av {}", uri, maxAntallForsøk - forsøk, maxAntallForsøk);
             return handle(template.getForEntity(uri, FPFordelKvittering.class), ref, forsøk);

@@ -86,7 +86,7 @@ public class FPFordelTest {
         return new FPFordelSøknadSender(
                 new FPFordelConnection(template, cfg, new FPFordelResponseHandler(template, 3)),
                 konvoluttGenerator,
-                new CallIdGenerator("jalla"));
+                new CallIdGenerator("Nav-CallId"));
     }
 
     private static ResponseEntity<FPFordelKvittering> gosysReceipt() {

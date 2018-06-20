@@ -43,7 +43,7 @@ public class DokmotJMSSender implements SøknadSender {
             return new Kvittering(ref, LeveranseStatus.SENDT_DOKMOT);
         }
         LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
-        return new Kvittering(LeveranseStatus.IKKE_SENDT_DOKMOT);
+        return new Kvittering("42", LeveranseStatus.IKKE_SENDT_DOKMOT);
     }
 
     @Override
