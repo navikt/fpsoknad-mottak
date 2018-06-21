@@ -20,14 +20,14 @@ public class Kvittering {
     private String journalId;
     private String saksNr;
 
-    public Kvittering(String ref, LeveranseStatus leveranseStatus) {
-        this(ref, LocalDateTime.now(), leveranseStatus);
+    public Kvittering(LeveranseStatus leveranseStatus, String ref) {
+        this(leveranseStatus, LocalDateTime.now(), ref);
     }
 
     @JsonCreator
-    public Kvittering(@JsonProperty("referanseId") String referanseId,
+    public Kvittering(@JsonProperty("leveranseStatus") LeveranseStatus leveranseStatus,
             @JsonProperty("mottattDato") LocalDateTime mottattDato,
-            @JsonProperty("leveranseStatus") LeveranseStatus leveranseStatus) {
+            @JsonProperty("referanseId") String referanseId) {
         this.referanseId = referanseId;
         this.mottattDato = mottattDato;
         this.leveranseStatus = leveranseStatus;

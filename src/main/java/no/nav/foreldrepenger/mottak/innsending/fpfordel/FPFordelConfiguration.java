@@ -17,7 +17,7 @@ public class FPFordelConfiguration {
                 .interceptors(interceptors)
                 .errorHandler(new FPFordeResponseErrorHandler())
                 .build();
-        template.getMessageConverters().add(new MultipartMixedAwreMessageConverter());
+        template.getMessageConverters().add(new MultipartMixedAwareMessageConverter());
         return template;
     }
 }

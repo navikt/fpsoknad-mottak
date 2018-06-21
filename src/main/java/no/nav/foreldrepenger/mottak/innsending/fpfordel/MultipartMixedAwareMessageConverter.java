@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static org.springframework.http.MediaType.parseMediaType;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -23,25 +25,20 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.lang.Nullable;
 import org.springframework.util.MultiValueMap;
 
-final class MultipartMixedAwreMessageConverter extends FormHttpMessageConverter {
+final class MultipartMixedAwareMessageConverter extends FormHttpMessageConverter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MultipartMixedAwreMessageConverter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MultipartMixedAwareMessageConverter.class);
 
     private static final String MULTIPART_MIXED_VALUE = "multipart/mixed";
-    private static final MediaType MULTIPART_MIXED = MediaType.parseMediaType(MULTIPART_MIXED_VALUE);
-    @Nullable
+    private static final MediaType MULTIPART_MIXED = parseMediaType(MULTIPART_MIXED_VALUE);
     private Charset multipartCharset;
     private Charset charset = DEFAULT_CHARSET;
 
-    private List<MediaType> supportedMediaTypes = new ArrayList<>();
-
     private List<HttpMessageConverter<?>> partConverters = new ArrayList<>();
 
-    public MultipartMixedAwreMessageConverter() {
-        this.supportedMediaTypes.add(MULTIPART_MIXED);
+    public MultipartMixedAwareMessageConverter() {
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         stringHttpMessageConverter.setWriteAcceptCharset(false);
         this.partConverters.add(new ByteArrayHttpMessageConverter());
@@ -51,30 +48,26 @@ final class MultipartMixedAwreMessageConverter extends FormHttpMessageConverter 
     }
 
     @Override
-    public boolean canWrite(Class<?> clazz, @Nullable MediaType mediaType) {
+    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
         LOG.info("Checking if we can write {} for media type {}", clazz, mediaType);
         return MultiValueMap.class.isAssignableFrom(clazz);
     }
 
     private boolean isFilenameCharsetSet() {
-        return (this.multipartCharset != null);
+        return this.multipartCharset != null;
     }
 
     private void applyDefaultCharset() {
-        for (HttpMessageConverter<?> candidate : this.partConverters) {
-            if (candidate instanceof AbstractHttpMessageConverter) {
-                AbstractHttpMessageConverter<?> converter = (AbstractHttpMessageConverter<?>) candidate;
-                if (converter.getDefaultCharset() != null) {
-                    converter.setDefaultCharset(this.charset);
-                }
-            }
-        }
+        partConverters.stream()
+                .filter(s -> s instanceof AbstractHttpMessageConverter)
+                .map(s -> AbstractHttpMessageConverter.class.cast(s))
+                .filter(s -> s.getDefaultCharset() != null)
+                .forEach(s -> s.setDefaultCharset(charset));
     }
 
     @Override
-    public void write(MultiValueMap<String, ?> map, @Nullable MediaType contentType,
-            HttpOutputMessage outputMessage)
-            throws IOException, HttpMessageNotWritableException {
+    public void write(MultiValueMap<String, ?> map, MediaType contentType, HttpOutputMessage outputMessage)
+            throws IOException {
         writeMultipart((MultiValueMap<String, Object>) map, outputMessage);
     }
 
@@ -93,7 +86,6 @@ final class MultipartMixedAwreMessageConverter extends FormHttpMessageConverter 
 
         HttpHeaders headers = outputMessage.getHeaders();
         headers.setContentType(new MediaType(MULTIPART_MIXED, parameters));
-
         if (outputMessage instanceof StreamingHttpOutputMessage) {
             StreamingHttpOutputMessage streamingOutputMessage = (StreamingHttpOutputMessage) outputMessage;
             streamingOutputMessage.setBody(outputStream -> {
@@ -218,11 +210,10 @@ final class MultipartMixedAwreMessageConverter extends FormHttpMessageConverter 
                 for (Map.Entry<String, List<String>> entry : this.headers.entrySet()) {
                     byte[] headerName = getBytes(entry.getKey());
                     for (String headerValueString : entry.getValue()) {
-                        byte[] headerValue = getBytes(headerValueString);
                         this.outputStream.write(headerName);
                         this.outputStream.write(':');
                         this.outputStream.write(' ');
-                        this.outputStream.write(headerValue);
+                        this.outputStream.write(getBytes(headerValueString));
                         writeNewLine(this.outputStream);
                     }
                 }

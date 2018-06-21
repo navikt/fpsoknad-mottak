@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.dokmot;
 
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_DOKMOT;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_DOKMOT;
+
 import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
@@ -8,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -40,10 +42,10 @@ public class DokmotJMSSender implements SøknadSender {
                 msg.setStringProperty("callId", ref);
                 return msg;
             });
-            return new Kvittering(ref, LeveranseStatus.SENDT_DOKMOT);
+            return new Kvittering(SENDT_DOKMOT, ref);
         }
         LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
-        return new Kvittering("42", LeveranseStatus.IKKE_SENDT_DOKMOT);
+        return new Kvittering(IKKE_SENDT_DOKMOT, "42");
     }
 
     @Override

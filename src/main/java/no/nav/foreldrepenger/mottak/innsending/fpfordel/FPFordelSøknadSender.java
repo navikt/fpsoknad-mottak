@@ -60,7 +60,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             return kvittering;
         }
         LOG.info("Sendning av {} til FPFordel er deaktivert, ingenting å sende", type);
-        return new Kvittering(ref, IKKE_SENDT_FPSAK);
+        return new Kvittering(IKKE_SENDT_FPSAK, ref);
     }
 
     @Override

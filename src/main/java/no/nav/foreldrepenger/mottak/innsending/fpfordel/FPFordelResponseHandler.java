@@ -40,7 +40,7 @@ public class FPFordelResponseHandler {
         LOG.info("Behandler respons {}", respons);
         if (!respons.hasBody()) {
             LOG.warn("Fikk ingen kvittering");
-            return new Kvittering(ref, FP_FORDEL_MESSED_UP);
+            return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
         switch (respons.getStatusCode()) {
         case ACCEPTED:
@@ -51,7 +51,7 @@ public class FPFordelResponseHandler {
             return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(respons.getBody()));
         default:
             LOG.warn("Fikk uventet response kode {}", respons.getStatusCode());
-            return new Kvittering(ref, FP_FORDEL_MESSED_UP);
+            return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
     }
 
@@ -63,7 +63,7 @@ public class FPFordelResponseHandler {
             return pollForsøk(URI.create(location), ref, pollDuration(respons), MILLISECONDS, forsøk);
         }
         LOG.info("Fikk ikke den forventede location headeren");
-        return new Kvittering(ref, FP_FORDEL_MESSED_UP);
+        return new Kvittering(FP_FORDEL_MESSED_UP, ref);
     }
 
     private static long pollDuration(ResponseEntity<FPFordelKvittering> respons) {
@@ -76,7 +76,7 @@ public class FPFordelResponseHandler {
             return poll(uri, ref, unit.toMillis(duration), forsøk - 1);
         }
         LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp", maxAntallForsøk);
-        return new Kvittering(ref, SENDT_FPSAK);
+        return new Kvittering(SENDT_FPSAK, ref);
     }
 
     private Kvittering poll(URI uri, String ref, long durationMs, int forsøk) {
@@ -93,7 +93,7 @@ public class FPFordelResponseHandler {
 
     private static Kvittering gosysKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
         LOG.info("Søknaden er sendt til manuell behandling i Gosys");
-        Kvittering kvittering = new Kvittering(ref, SENDT_GOSYS);
+        Kvittering kvittering = new Kvittering(SENDT_GOSYS, ref);
         kvittering.setJournalId(gosysKvittering.getJounalId());
         return kvittering;
     }
@@ -101,7 +101,7 @@ public class FPFordelResponseHandler {
     private static Kvittering sendtOgMotattKvittering(String ref, FPSakFordeltKvittering fordeltKvittering) {
         LOG.info("Søknaden er motatt og behandlet av FPSak, journalId er {}, saksnummer er {}",
                 fordeltKvittering.getJounalId(), fordeltKvittering.getSaksnummer());
-        Kvittering kvittering = new Kvittering(ref, SENDT_OG_MOTATT_FPSAK);
+        Kvittering kvittering = new Kvittering(SENDT_OG_MOTATT_FPSAK, ref);
         kvittering.setJournalId(fordeltKvittering.getJounalId());
         kvittering.setSaksNr(fordeltKvittering.getSaksnummer());
         return kvittering;
