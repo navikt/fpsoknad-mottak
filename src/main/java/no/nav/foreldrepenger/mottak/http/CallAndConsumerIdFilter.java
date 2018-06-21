@@ -23,6 +23,10 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 @Order(1)
 public class CallAndConsumerIdFilter extends GenericFilterBean {
 
+    private static final String NAV_USER_ID = "userId";
+
+    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
+
     private static final Logger LOG = getLogger(CallAndConsumerIdFilter.class);
 
     private final CallIdGenerator generator;
@@ -38,24 +42,25 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        getOrCreateCorrelationId(request);
+        handleMDCvalues(request);
         chain.doFilter(request, response);
     }
 
-    private void getOrCreateCorrelationId(ServletRequest request) {
-        String key = generator.getCallIdKey();
+    private void handleMDCvalues(ServletRequest request) {
         HttpServletRequest req = HttpServletRequest.class.cast(request);
-        String callId = req.getHeader(key);
-        String consumerId = req.getHeader("Nav-Consumer-Id");
-        if (consumerId != null) {
-            MDC.put("Nav-Consumer-Id", extractor.fnrFromToken());
-        }
-        if (callId != null) {
-            LOG.trace("{} is set in request to {}", key, callId);
-            MDC.put(key, callId);
+        propagateOrcreate(NAV_CONSUMER_ID, req, "fpsoknad-mottak");
+        propagateOrcreate(generator.getCallIdKey(), req, generator.create());
+        MDC.put(NAV_USER_ID, extractor.fnrFromToken());
+    }
+
+    private static void propagateOrcreate(String key, HttpServletRequest req, String defaultValue) {
+        String value = req.getHeader(key);
+        if (value != null) {
+            LOG.trace("{} is set in request to {}", key, value);
+            MDC.put(key, value);
         }
         else {
-            MDC.put(key, generator.create());
+            MDC.put(key, defaultValue);
             LOG.trace("{} was not set in request, now set in MDC to {}", key, MDC.get(key));
         }
     }
