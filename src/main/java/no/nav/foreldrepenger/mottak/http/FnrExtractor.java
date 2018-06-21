@@ -1,6 +1,9 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+
 import no.nav.security.oidc.OIDCConstants;
+import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 
@@ -15,9 +18,20 @@ public final class FnrExtractor {
     public String fnrFromToken() {
         OIDCValidationContext context = (OIDCValidationContext) ctxHolder
                 .getRequestAttribute(OIDCConstants.OIDC_VALIDATION_CONTEXT);
-        String fnr = context.getClaims("selvbetjening").getClaimSet().getSubject();
+        if (context == null) {
+            return "ingen";
+        }
+        OIDCClaims claims = context.getClaims("selvbetjening");
+        if (claims == null) {
+            return "ingen";
+        }
+        JWTClaimsSet claimSet = claims.getClaimSet();
+        if (claimSet == null) {
+            return "ingen";
+        }
+        String fnr = claimSet.getSubject();
         if (fnr == null || fnr.trim().isEmpty()) {
-            return "ukjent";
+            return "ingen";
         }
         return fnr;
     }
