@@ -419,7 +419,7 @@ public class FPFordelSøknadGenerator {
         case FEDREKVOTE:
         case FELLESPERIODE:
         case FORELDREPENGER:
-        case FORELDREPENGER_FØR_FØDSEL:
+        case FORELDREPENGER_FØR_FOEDSEL:
         case MØDREKVOTE:
             return new Uttaksperiodetyper().withKode(type.name());
         default:
