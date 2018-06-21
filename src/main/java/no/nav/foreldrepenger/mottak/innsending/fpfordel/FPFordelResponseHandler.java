@@ -48,7 +48,17 @@ public class FPFordelResponseHandler {
         case SEE_OTHER:
             return sendtOgMotattKvittering(ref, FPSakFordeltKvittering.class.cast(respons.getBody()));
         case OK:
-            return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(respons.getBody()));
+            FPFordelKvittering kvittering = FPFordelKvittering.class.cast(respons.getBody());
+            if (kvittering instanceof FPFordelPendingKvittering) {
+                LOG.info("Poller igen");
+                return poll(respons, ref, forsøk);
+            }
+            if (kvittering instanceof FPSakFordeltKvittering) {
+                return sendtOgMotattKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
+            }
+            if (kvittering instanceof FPFordelGosysKvittering) {
+                return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(respons.getBody()));
+            }
         default:
             LOG.warn("Fikk uventet response kode {}", respons.getStatusCode());
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
