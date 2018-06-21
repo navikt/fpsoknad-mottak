@@ -29,20 +29,16 @@ public class TestdataProvider {
         type.setValue("typen");
         forhold.setArbeidsforholdstype(type);
 
-        Arbeidsavtale avtale = new Arbeidsavtale();
-        Yrker yrker = new Yrker();
-        yrker.setValue("yrke1");
-        avtale.setYrke(yrker);
-        avtale.setStillingsprosent(BigDecimal.valueOf(100d));
-        avtale.setFomGyldighetsperiode(toXMLGregorianCalendar(now.minusMonths(6)));
-        avtale.setTomGyldighetsperiode(toXMLGregorianCalendar(now.plusMonths(6)));
-        forhold.getArbeidsavtale().add(avtale);
+        Arbeidsavtale avtale1 = new Arbeidsavtale();
+        avtale1.setStillingsprosent(BigDecimal.valueOf(100d));
+        avtale1.setFomGyldighetsperiode(toXMLGregorianCalendar(now.minusMonths(6)));
+        avtale1.setTomGyldighetsperiode(toXMLGregorianCalendar(now.minusMonths(2)));
+        forhold.getArbeidsavtale().add(avtale1);
 
-        avtale = new Arbeidsavtale();
-        yrker = new Yrker();
-        yrker.setValue("yrke2");
-        avtale.setYrke(yrker);
-        forhold.getArbeidsavtale().add(avtale);
+        Arbeidsavtale avtale2 = new Arbeidsavtale();
+        avtale2.setFomGyldighetsperiode(toXMLGregorianCalendar(now.minusMonths(2)));
+        forhold.getArbeidsavtale().add(avtale2);
+
         return forhold;
     }
 

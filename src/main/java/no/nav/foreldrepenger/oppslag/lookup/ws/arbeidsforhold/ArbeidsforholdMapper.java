@@ -7,6 +7,7 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
@@ -45,6 +46,7 @@ public class ArbeidsforholdMapper {
         return avtaler.stream()
             .filter(ArbeidsforholdMapper::gjeldendeAvtale)
             .map(Arbeidsavtale::getStillingsprosent)
+            .filter(Objects::nonNull)
             .map(BigDecimal::doubleValue)
             .findFirst().orElse(null);
     }
