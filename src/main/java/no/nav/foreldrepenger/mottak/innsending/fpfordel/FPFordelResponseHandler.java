@@ -37,6 +37,8 @@ public class FPFordelResponseHandler {
             LOG.warn("Fikk ingen kvittering etter leveranse av søknad");
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
+
+        LOG.info("Fikk respons body {}", respons.getBody());
         FPFordelKvittering kvittering = FPFordelKvittering.class.cast(respons.getBody());
         LOG.info("Fikk kvittering {}", kvittering);
         switch (respons.getStatusCode()) {
