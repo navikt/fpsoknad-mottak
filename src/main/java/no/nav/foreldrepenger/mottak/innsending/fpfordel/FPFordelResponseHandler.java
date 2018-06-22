@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_GOSYS;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_MOTATT_FPSAK;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
@@ -38,35 +38,32 @@ public class FPFordelResponseHandler {
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
 
-        LOG.info("Fikk respons body {}", respons.getBody());
         FPFordelKvittering kvittering = FPFordelKvittering.class.cast(respons.getBody());
-        LOG.info("Fikk kvittering {}", kvittering);
         switch (respons.getStatusCode()) {
         case ACCEPTED:
             if (kvittering instanceof FPFordelPendingKvittering) {
-                LOG.info("Søknaden er mottatt, men ikke behandlet i FPSak");
+                LOG.info("Søknaden er mottatt, men ikke forsøkt behandlet i FPSak");
                 FPFordelPendingKvittering pendingKvittering = FPFordelPendingKvittering.class.cast(respons.getBody());
-                URI location = location(respons);
+                URI pollURI = pollURIFra(respons);
                 for (int i = 1; i <= maxAntallForsøk; i++) {
-                    LOG.info("Poller {} for {}. gang av {}", location, i, maxAntallForsøk);
-                    respons = poll(location, ref, pendingKvittering);
+                    LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
+                    respons = poll(pollURI, ref, pendingKvittering);
                     kvittering = FPFordelKvittering.class.cast(respons.getBody());
                     LOG.info("Behandler respons {} ({})", respons, i);
                     switch (respons.getStatusCode()) {
                     case OK:
                         if (kvittering instanceof FPFordelPendingKvittering) {
-                            LOG.info("Søknaden er mottatt, men ikke behandlet i FPSak");
+                            LOG.info("Søknaden er mottatt av FPFordel, men ikke forsøkt behandlet i FPSak");
                             pendingKvittering = FPFordelPendingKvittering.class.cast(kvittering);
                             continue;
                         }
                         if (kvittering instanceof FPFordelGosysKvittering) {
                             return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(kvittering));
                         }
-                        if (kvittering instanceof FPFordelKvittering) {
-                            return sendtOgMotattKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
-                        }
+                        LOG.warn("Uventet kvittering {} for statuskode {}", kvittering, respons.getStatusCode());
+                        return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
-                        return sendtOgMotattKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
+                        return sendtOgForsøktBehandletKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad", respons.getStatusCode());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
@@ -81,7 +78,7 @@ public class FPFordelResponseHandler {
         }
     }
 
-    private static URI location(ResponseEntity<FPFordelKvittering> respons) {
+    private static URI pollURIFra(ResponseEntity<FPFordelKvittering> respons) {
         return Optional
                 .ofNullable(respons.getHeaders().getFirst(LOCATION))
                 .map(URI::create)
@@ -106,10 +103,10 @@ public class FPFordelResponseHandler {
         return kvittering;
     }
 
-    private static Kvittering sendtOgMotattKvittering(String ref, FPSakFordeltKvittering fordeltKvittering) {
-        LOG.info("Søknaden er motatt og behandlet av FPSak, journalId er {}, saksnummer er {}",
+    private static Kvittering sendtOgForsøktBehandletKvittering(String ref, FPSakFordeltKvittering fordeltKvittering) {
+        LOG.info("Søknaden er motatt og forsøkt behandlet av FPSak, journalId er {}, saksnummer er {}",
                 fordeltKvittering.getJournalpostId(), fordeltKvittering.getSaksnummer());
-        Kvittering kvittering = new Kvittering(SENDT_OG_MOTATT_FPSAK, ref);
+        Kvittering kvittering = new Kvittering(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref);
         kvittering.setJournalId(fordeltKvittering.getJournalpostId());
         kvittering.setSaksNr(fordeltKvittering.getSaksnummer());
         return kvittering;

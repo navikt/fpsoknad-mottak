@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_GOSYS;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_MOTATT_FPSAK;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
 import static org.hamcrest.CoreMatchers.is;
@@ -151,7 +151,7 @@ public class FPFordelTest {
         when(template.getForEntity(eq(POLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         Kvittering kvittering = sender.send(foreldrepenger(), person());
-        assertThat(SENDT_OG_MOTATT_FPSAK, is(kvittering.getLeveranseStatus()));
+        assertThat(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, is(kvittering.getLeveranseStatus()));
         assertThat(JOURNALID, is(kvittering.getJournalId()));
         assertThat(SAKSNR, is(kvittering.getSaksNr()));
         verify(template).postForEntity(any(URI.class), any(HttpEntity.class), eq(FPFordelKvittering.class));
