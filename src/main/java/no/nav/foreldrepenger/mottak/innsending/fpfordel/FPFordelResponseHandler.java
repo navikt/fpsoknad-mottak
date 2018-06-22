@@ -38,6 +38,7 @@ public class FPFordelResponseHandler {
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
         FPFordelKvittering kvittering = FPFordelKvittering.class.cast(respons.getBody());
+        LOG.info("Fikk kvittering {}", kvittering);
         switch (respons.getStatusCode()) {
         case ACCEPTED:
             if (kvittering instanceof FPFordelPendingKvittering) {
