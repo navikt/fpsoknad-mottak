@@ -9,28 +9,29 @@ public class FPSakFordeltKvittering extends FPFordelKvittering {
 
     static final String STATUS = "FPSAK";
 
-    private final String jounalId;
     private final String saksnummer;
 
-    public String getJounalId() {
-        return jounalId;
+    private final String journalpostId;
+
+    @JsonCreator
+    public FPSakFordeltKvittering(@JsonProperty("journalpostId") String journalpostId,
+            @JsonProperty("saksnummer") String saksnummer) {
+        super(STATUS);
+        this.journalpostId = journalpostId;
+        this.saksnummer = saksnummer;
+    }
+
+    public String getJournalpostId() {
+        return journalpostId;
     }
 
     public String getSaksnummer() {
         return saksnummer;
     }
 
-    @JsonCreator
-    public FPSakFordeltKvittering(@JsonProperty("jounalId") String jounalId,
-            @JsonProperty("saksnummer") String saksnummer) {
-        super(STATUS);
-        this.jounalId = jounalId;
-        this.saksnummer = saksnummer;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(jounalId, saksnummer);
+        return Objects.hash(journalpostId, saksnummer);
     }
 
     @Override
@@ -45,12 +46,12 @@ public class FPSakFordeltKvittering extends FPFordelKvittering {
             return false;
         }
         FPSakFordeltKvittering other = (FPSakFordeltKvittering) obj;
-        if (jounalId == null) {
-            if (other.jounalId != null) {
+        if (journalpostId == null) {
+            if (other.journalpostId != null) {
                 return false;
             }
         }
-        else if (!jounalId.equals(other.jounalId)) {
+        else if (!journalpostId.equals(other.journalpostId)) {
             return false;
         }
         if (saksnummer == null) {
@@ -66,6 +67,6 @@ public class FPSakFordeltKvittering extends FPFordelKvittering {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [jounalId=" + jounalId + ", saksnummer=" + saksnummer + "]";
+        return getClass().getSimpleName() + " [journalpostId=" + journalpostId + ", saksnummer=" + saksnummer + "]";
     }
 }
