@@ -108,9 +108,9 @@ public class FPFordelResponseHandler {
 
     private static Kvittering sendtOgMotattKvittering(String ref, FPSakFordeltKvittering fordeltKvittering) {
         LOG.info("Søknaden er motatt og behandlet av FPSak, journalId er {}, saksnummer er {}",
-                fordeltKvittering.getJounalId(), fordeltKvittering.getSaksnummer());
+                fordeltKvittering.getJournalpostId(), fordeltKvittering.getSaksnummer());
         Kvittering kvittering = new Kvittering(SENDT_OG_MOTATT_FPSAK, ref);
-        kvittering.setJournalId(fordeltKvittering.getJounalId());
+        kvittering.setJournalId(fordeltKvittering.getJournalpostId());
         kvittering.setSaksNr(fordeltKvittering.getSaksnummer());
         return kvittering;
     }
