@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
-import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,17 +18,8 @@ public class FPFordelConfiguration {
         private static final Logger LOG = LoggerFactory.getLogger(NonRedirectingRequestFactory.class);
 
         public NonRedirectingRequestFactory() {
-            setHttpClient(HttpClientBuilder.create()
-                    .setRedirectStrategy(new DefaultRedirectStrategy() {
-
-                        @Override
-                        protected boolean isRedirectable(String method) {
-                            LOG.info("Method {} is not redirectable", method);
-                            return false;
-                        }
-
-                    })
-                    .build());
+            LOG.info("Constructng non-redirecting request factory");
+            setHttpClient(HttpClientBuilder.create().disableRedirectHandling().build());
         }
     }
 
