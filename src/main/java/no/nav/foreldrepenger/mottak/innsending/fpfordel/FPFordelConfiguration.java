@@ -30,11 +30,10 @@ public class FPFordelConfiguration {
                 .rootUri(cfg.getUri())
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
-                .additionalMessageConverters(new MultipartMixedAwareMessageConverter())
+                // .additionalMessageConverters(new MultipartMixedAwareMessageConverter())
                 .errorHandler(new FPFordeResponseErrorHandler())
                 .build();
-        // template.getMessageConverters().add(new
-        // MultipartMixedAwareMessageConverter());
+        template.getMessageConverters().add(new MultipartMixedAwareMessageConverter());
         return template;
     }
 
