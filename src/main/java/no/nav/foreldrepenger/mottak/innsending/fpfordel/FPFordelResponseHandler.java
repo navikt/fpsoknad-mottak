@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_GOSYS;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
@@ -44,7 +44,7 @@ public class FPFordelResponseHandler {
             if (kvittering instanceof FPFordelPendingKvittering) {
                 LOG.info("Søknaden er mottatt, men ikke forsøkt behandlet i FPSak");
                 FPFordelPendingKvittering pendingKvittering = FPFordelPendingKvittering.class.cast(respons.getBody());
-                URI pollURI = pollURIFra(respons);
+                URI pollURI = locationFra(respons);
                 for (int i = 1; i <= maxAntallForsøk; i++) {
                     LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
                     respons = poll(pollURI, ref, pendingKvittering);
@@ -58,11 +58,13 @@ public class FPFordelResponseHandler {
                             continue;
                         }
                         if (kvittering instanceof FPFordelGosysKvittering) {
-                            return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(kvittering));
+                            return påVentKvittering(ref, FPFordelGosysKvittering.class.cast(kvittering));
                         }
                         LOG.warn("Uventet kvittering {} for statuskode {}", kvittering, respons.getStatusCode());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
+                        URI fpSakURI = locationFra(respons);
+                        LOG.info("Sjekker (snart) saksStatus på {}", fpSakURI);
                         return sendtOgForsøktBehandletKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad", respons.getStatusCode());
@@ -78,7 +80,7 @@ public class FPFordelResponseHandler {
         }
     }
 
-    private static URI pollURIFra(ResponseEntity<FPFordelKvittering> respons) {
+    private static URI locationFra(ResponseEntity<FPFordelKvittering> respons) {
         return Optional
                 .ofNullable(respons.getHeaders().getFirst(LOCATION))
                 .map(URI::create)
@@ -96,9 +98,9 @@ public class FPFordelResponseHandler {
         }
     }
 
-    private static Kvittering gosysKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
+    private static Kvittering påVentKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
         LOG.info("Søknaden er sendt til manuell behandling i Gosys");
-        Kvittering kvittering = new Kvittering(SENDT_GOSYS, ref);
+        Kvittering kvittering = new Kvittering(PÅ_VENT, ref);
         kvittering.setJournalId(gosysKvittering.getJounalId());
         return kvittering;
     }

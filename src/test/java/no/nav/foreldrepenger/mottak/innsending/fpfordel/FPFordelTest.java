@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_GOSYS;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
@@ -127,7 +127,7 @@ public class FPFordelTest {
         when(template.getForEntity(any(URI.class), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 goysReceipt);
         Kvittering kvittering = sender.send(foreldrepenger(), person());
-        assertThat(kvittering.getLeveranseStatus(), is(SENDT_GOSYS));
+        assertThat(kvittering.getLeveranseStatus(), is(PÅ_VENT));
         assertThat(JOURNALID, is(kvittering.getJournalId()));
         assertThat(kvittering.getSaksNr(), is(nullValue()));
         verify(template).postForEntity(any(URI.class), any(HttpEntity.class), eq(FPFordelKvittering.class));

@@ -116,7 +116,7 @@ public class TestRoundtripSerialization {
 
     @Test
     public void testEngangsstønadSøknadSend() throws IOException {
-        assertEquals(LeveranseStatus.IKKE_SENDT_DOKMOT, template.postForObject(MOTTAK + "/send",
+        assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK, template.postForObject(MOTTAK + "/send",
                 engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class)
                 .getLeveranseStatus());
     }

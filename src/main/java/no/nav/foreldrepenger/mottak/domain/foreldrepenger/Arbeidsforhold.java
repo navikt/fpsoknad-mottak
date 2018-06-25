@@ -7,6 +7,8 @@ import static java.util.Collections.emptyList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -22,6 +24,7 @@ import lombok.Data;
         @Type(value = UtenlandskArbeidsforhold.class, name = "utenlandsk")
 })
 public abstract class Arbeidsforhold {
+    @Length(max = 50)
     private final String arbeidsgiverNavn;
     private final String beskrivelseRelasjon;
     private final ÅpenPeriode periode;

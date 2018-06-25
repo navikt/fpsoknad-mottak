@@ -4,6 +4,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -24,6 +25,7 @@ import lombok.Data;
 public abstract class RelasjonTilBarn {
 
     @Positive(message = "{ytelse.relasjontilbarn.antall}")
+    @Max(10)
     private final int antallBarn;
 
     public RelasjonTilBarn(int antallBarn) {
