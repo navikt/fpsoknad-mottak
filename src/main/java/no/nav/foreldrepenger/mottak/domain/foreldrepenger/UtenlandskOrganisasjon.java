@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Builder;
@@ -16,6 +18,7 @@ import lombok.ToString;
 
 public class UtenlandskOrganisasjon extends EgenNæring {
 
+    @Length(max = 50)
     private String orgName;
     private CountryCode registrertLand;
 

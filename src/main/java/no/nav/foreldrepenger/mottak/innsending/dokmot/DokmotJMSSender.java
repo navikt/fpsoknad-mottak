@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.dokmot;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 
 import javax.jms.TextMessage;
 
@@ -42,7 +42,7 @@ public class DokmotJMSSender implements SøknadSender {
                 msg.setStringProperty("callId", ref);
                 return msg;
             });
-            return new Kvittering(SENDT_FPSAK, ref);
+            return new Kvittering(PÅ_VENT, ref);
         }
         LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
         return new Kvittering(IKKE_SENDT_FPSAK, "42");

@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.AVSLÅTT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
@@ -18,6 +20,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 
 @Component
 public class FPFordelResponseHandler {
@@ -63,19 +66,43 @@ public class FPFordelResponseHandler {
                         LOG.warn("Uventet kvittering {} for statuskode {}", kvittering, respons.getStatusCode());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
-                        URI fpSakURI = locationFra(respons);
-                        LOG.info("Sjekker (snart) saksStatus på {}", fpSakURI);
-                        return sendtOgForsøktBehandletKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
+                        FPSakKvittering saksStatus = sjekkStatus(locationFra(respons), ref);
+                        if (saksStatus != null) {
+                            return saksStatusKvittering(ref, saksStatus);
+                        }
+                        FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(kvittering);
+                        return sendtOgForsøktBehandletKvittering(ref, fordelt.getJournalpostId(),
+                                fordelt.getSaksnummer());
+
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad", respons.getStatusCode());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     }
                 }
                 LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp", maxAntallForsøk);
-                return new Kvittering(SENDT_FPSAK, ref);
+                return new Kvittering(PÅ_VENT, ref);
             }
         default:
             LOG.warn("Uventet responskode {} fra leveranse av søknad", respons.getStatusCode());
+            return new Kvittering(FP_FORDEL_MESSED_UP, ref);
+        }
+    }
+
+    private static Kvittering saksStatusKvittering(String ref, FPSakKvittering saksStatus) {
+        switch (saksStatus.getForsendelseStatus()) {
+        case AVSLÅTT:
+            return kvitteringMedType(AVSLÅTT, ref, saksStatus.getJournalpostId(),
+                    saksStatus.getSaksnummer());
+        case INNVILGET:
+            return kvitteringMedType(INNVILGET, ref, saksStatus.getJournalpostId(),
+                    saksStatus.getSaksnummer());
+        case PÅ_VENT:
+            return kvitteringMedType(PÅ_VENT, ref, saksStatus.getJournalpostId(),
+                    saksStatus.getSaksnummer());
+        case PÅGÅR:
+            return kvitteringMedType(PÅGÅR, ref, saksStatus.getJournalpostId(),
+                    saksStatus.getSaksnummer());
+        default:
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
     }
@@ -85,6 +112,16 @@ public class FPFordelResponseHandler {
                 .ofNullable(respons.getHeaders().getFirst(LOCATION))
                 .map(URI::create)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private FPSakKvittering sjekkStatus(URI uri, String ref) {
+        try {
+            LOG.info("Sjekker forsendelsesstatus på {}", uri);
+            return template.getForEntity(uri, FPSakKvittering.class).getBody();
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke sjekke status for forsendelse på {}", uri, e);
+            return null;
+        }
     }
 
     private ResponseEntity<FPFordelKvittering> poll(URI uri, String ref, FPFordelPendingKvittering pendingKvittering) {
@@ -98,20 +135,22 @@ public class FPFordelResponseHandler {
         }
     }
 
-    private static Kvittering påVentKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
-        LOG.info("Søknaden er sendt til manuell behandling i Gosys");
-        Kvittering kvittering = new Kvittering(PÅ_VENT, ref);
-        kvittering.setJournalId(gosysKvittering.getJounalId());
+    private static Kvittering kvitteringMedType(LeveranseStatus type, String ref, String journalId, String saksnr) {
+        Kvittering kvittering = new Kvittering(type, ref);
+        kvittering.setJournalId(journalId);
+        kvittering.setSaksNr(saksnr);
         return kvittering;
     }
 
-    private static Kvittering sendtOgForsøktBehandletKvittering(String ref, FPSakFordeltKvittering fordeltKvittering) {
+    private static Kvittering påVentKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
+        LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}", gosysKvittering.getJounalId());
+        return kvitteringMedType(PÅ_VENT, ref, gosysKvittering.getJounalId(), null);
+    }
+
+    private static Kvittering sendtOgForsøktBehandletKvittering(String ref, String journalId, String saksnr) {
         LOG.info("Søknaden er motatt og forsøkt behandlet av FPSak, journalId er {}, saksnummer er {}",
-                fordeltKvittering.getJournalpostId(), fordeltKvittering.getSaksnummer());
-        Kvittering kvittering = new Kvittering(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref);
-        kvittering.setJournalId(fordeltKvittering.getJournalpostId());
-        kvittering.setSaksNr(fordeltKvittering.getSaksnummer());
-        return kvittering;
+                journalId, saksnr);
+        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref, journalId, saksnr);
     }
 
     @Override

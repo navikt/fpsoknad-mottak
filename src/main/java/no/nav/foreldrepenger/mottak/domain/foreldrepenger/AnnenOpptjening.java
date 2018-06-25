@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
@@ -18,7 +20,6 @@ public class AnnenOpptjening {
     public AnnenOpptjening(AnnenOpptjeningType type, ÅpenPeriode periode, List<String> vedlegg) {
         this.type = type;
         this.periode = periode;
-        this.vedlegg = (vedlegg == null ? Collections.emptyList() : vedlegg);
+        this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }
-
 }
