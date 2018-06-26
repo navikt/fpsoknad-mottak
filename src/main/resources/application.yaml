@@ -4,7 +4,7 @@ no.nav.security.oidc:
       discoveryurl: <Set from FASIT>
       accepted_audience: <Set from FASIT>
 
-http.proxy : http://webproxy-internett.nav.no:8088
+http.proxy : http://webproxy-utvikler.nav.no:8088
 
 info.app:
     version: '@project.version@'
