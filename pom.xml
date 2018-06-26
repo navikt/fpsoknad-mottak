@@ -169,6 +169,19 @@
                             <sourceDestDir>target/generated-sources</sourceDestDir>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>WsdlOrganisasjon</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>Binding.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <wsdlDirectory>src/main/resources/wsdl/organisasjon</wsdlDirectory>
+                            <sourceDestDir>target/generated-sources</sourceDestDir>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

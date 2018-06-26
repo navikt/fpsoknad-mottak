@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.oppslag.stub;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.OrganisasjonClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.arena.ArenaClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.fpsak.FpsakClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.infotrygd.InfotrygdClient;
@@ -63,5 +64,11 @@ public class StubConfiguration {
     @Primary
     public MedlClient getMedlClientStub() {
         return new MedlClientStub();
+    }
+
+    @Bean
+    @Primary
+    public OrganisasjonClient organisasjonClientStub() {
+        return new OrganisasjonClientStub();
     }
 }

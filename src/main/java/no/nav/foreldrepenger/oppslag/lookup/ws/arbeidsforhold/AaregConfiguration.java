@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold;
 
+import no.nav.tjeneste.virksomhet.organisasjon.v5.binding.OrganisasjonV5;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,8 @@ public class AaregConfiguration extends WsClient<ArbeidsforholdV3> {
 
     @Bean
     public ArbeidsforholdClient aaregClientWs(@Qualifier("arbeidsforholdV3") ArbeidsforholdV3 arbeidsforholdV3,
-                                              @Qualifier("healthIndicatorAareg") ArbeidsforholdV3 healthIndicator) {
-        return new ArbeidsforholdClientWs(arbeidsforholdV3, healthIndicator);
+                                              @Qualifier("healthIndicatorAareg") ArbeidsforholdV3 healthIndicator,
+                                              OrganisasjonClient organisasjonClient) {
+        return new ArbeidsforholdClientWs(arbeidsforholdV3, healthIndicator, organisasjonClient);
     }
 }

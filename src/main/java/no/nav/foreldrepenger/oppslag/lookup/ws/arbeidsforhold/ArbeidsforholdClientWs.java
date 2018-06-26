@@ -19,18 +19,21 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.N
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdClientWs.class);
 
     private final ArbeidsforholdV3 arbeidsforholdV3;
     private final ArbeidsforholdV3 healthIndicator;
+    private final OrganisasjonClient orgClient;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.aareg");
 
-    public ArbeidsforholdClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator) {
+    public ArbeidsforholdClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator, OrganisasjonClient orgClient) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
         this.healthIndicator = healthIndicator;
+        this.orgClient = orgClient;
     }
 
     public void ping() {
@@ -47,14 +50,10 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
         try {
             FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(request(fnr));
 
-            List<Arbeidsforhold> arbeidsforhold = response.getArbeidsforhold().stream()
+            return response.getArbeidsforhold().stream()
                 .map(ArbeidsforholdMapper::map)
+                .map(this::addArbeidsgiverNavn)
                 .collect(toList());
-
-            // TODO: Må kalle på Organisasjon-tjenesten, og plukke navn basert på dato
-            arbeidsforhold.forEach(a -> a.setArbeidsgiverNavn("S.Vindel & Søn"));
-
-            return arbeidsforhold;
         } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning ex) {
             LOG.warn("Sikkerhetsfeil fra AAREG", ex);
             throw new ForbiddenException(ex);
@@ -78,6 +77,11 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
         request.setRapportertSomRegelverk(regelverker);
 
         return request;
+    }
+
+    private Arbeidsforhold addArbeidsgiverNavn(Arbeidsforhold arbeidsforhold) {
+        arbeidsforhold.setArbeidsgiverNavn(orgClient.nameFor(arbeidsforhold.getArbeidsgiverId()).orElse("Ukjent navn"));
+        return arbeidsforhold;
     }
 
     @Override
