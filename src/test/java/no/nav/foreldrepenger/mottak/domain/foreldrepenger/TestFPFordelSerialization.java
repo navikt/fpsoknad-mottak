@@ -8,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.VEDLEGG;
+import static no.nav.foreldrepenger.mottak.innsending.fpfordel.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -108,15 +109,11 @@ public class TestFPFordelSerialization {
         assertEquals(1, metadata.size());
         assertEquals(2, hoveddokumenter.size());
         assertEquals(1, vedlegg.size());
-        // assertMediaType(konvolutt, "multipart/mixed");
+        assertMediaType(konvolutt, MULTIPART_MIXED_VALUE);
         assertMediaType(metadata.get(0), APPLICATION_JSON_UTF8_VALUE);
         assertMediaType(hoveddokumenter.get(0), APPLICATION_XML_VALUE);
         assertMediaType(hoveddokumenter.get(1), APPLICATION_PDF_VALUE);
-        // assertTrue(hasPdfSignature(Base64.getDecoder().decode((byte[])
-        // hoveddokumenter.get(1).getBody())));
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
-        // assertTrue(hasPdfSignature(Base64.getDecoder().decode((byte[])
-        // vedlegg.get(0).getBody())));
     }
 
     private static void assertMediaType(HttpEntity<?> entity, String type) {

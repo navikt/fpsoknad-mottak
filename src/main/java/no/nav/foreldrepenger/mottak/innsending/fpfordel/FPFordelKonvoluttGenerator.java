@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static no.nav.foreldrepenger.mottak.innsending.fpfordel.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
@@ -12,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -98,7 +98,7 @@ public class FPFordelKonvoluttGenerator {
 
     private static HttpHeaders headers() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("multipart/mixed"));
+        headers.setContentType(MULTIPART_MIXED);
         return headers;
     }
 

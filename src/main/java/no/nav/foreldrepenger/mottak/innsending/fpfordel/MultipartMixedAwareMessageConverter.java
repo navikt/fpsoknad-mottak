@@ -27,12 +27,12 @@ import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.MultiValueMap;
 
-final class MultipartMixedAwareMessageConverter extends FormHttpMessageConverter {
+public final class MultipartMixedAwareMessageConverter extends FormHttpMessageConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(MultipartMixedAwareMessageConverter.class);
 
-    private static final String MULTIPART_MIXED_VALUE = "multipart/mixed";
-    private static final MediaType MULTIPART_MIXED = parseMediaType(MULTIPART_MIXED_VALUE);
+    public static final String MULTIPART_MIXED_VALUE = "multipart/mixed";
+    public static final MediaType MULTIPART_MIXED = parseMediaType(MULTIPART_MIXED_VALUE);
     private Charset multipartCharset;
     private Charset charset = DEFAULT_CHARSET;
 
