@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -92,6 +94,8 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
 public class FPFordelSøknadGenerator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadGenerator.class);
     private static final String LASTET_OPP = "LASTET_OPP";
     private static final JAXBContext CONTEXT = Jaxb.context(Soeknad.class);
 
@@ -100,6 +104,7 @@ public class FPFordelSøknadGenerator {
     }
 
     public Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
+        LOG.info("Genererer FPFordel modell fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
@@ -126,6 +131,7 @@ public class FPFordelSøknadGenerator {
     private static Ytelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
+        LOG.info("Genererer FPFordel ytelse modell fra {}", ytelse);
         return new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
@@ -323,6 +329,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap) {
+        LOG.info("Genererer FPFordel medlemsskap modell fra {}", medlemsskap);
         return new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()))
                 .withINorgeVedFoedselstidspunkt(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
