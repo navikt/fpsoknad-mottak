@@ -5,7 +5,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 
-import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -100,7 +99,6 @@ public class FPFordelKonvoluttGenerator {
     private static HttpHeaders headers() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("multipart/mixed"));
-        // headers.setContentType(MULTIPART_FORM_DATA);
         return headers;
     }
 
@@ -121,7 +119,8 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private static byte[] encode(byte[] bytes) {
-        return Base64.getEncoder().encode(bytes);
+        // return Base64.getEncoder().encode(bytes);
+        return bytes;
     }
 
     @Override
