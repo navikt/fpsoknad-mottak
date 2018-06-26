@@ -8,7 +8,7 @@ info.app:
     version: @project.version@
     build.time:  @timestamp@
 
-http.proxy : http://webproxy-internett.nav.no:8088
+http.proxy : http://webproxy-utvikler.nav.no:8088
 
 management:
     endpoints.web.exposure.include:  info, health, metrics, prometheus
