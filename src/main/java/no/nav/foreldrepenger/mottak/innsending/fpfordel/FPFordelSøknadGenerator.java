@@ -137,7 +137,8 @@ public class FPFordelSøknadGenerator {
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
-                .withRettigheter(rettighetrFra(ytelse.getRettigheter()))
+                .withRettigheter(rettighetrFra(ytelse.getRettigheter(), ytelse
+                        .getAnnenForelder() instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()));
     }
@@ -500,9 +501,16 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Rettigheter rettighetrFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter) {
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
         if (rettigheter == null) {
             return null;
+        }
+        if (ukjentForelder) {
+            LOG.info("Annen forelder er ukjent, avleder verdier for  rettigheter");
+            return new Rettigheter()
+                    .withHarOmsorgForBarnetIPeriodene(true)
+                    .withHarAnnenForelderRett(false)
+                    .withHarAleneomsorgForBarnet(true);
         }
         return new Rettigheter()
                 .withHarOmsorgForBarnetIPeriodene(rettigheter.isHarOmsorgForBarnetIPeriodene())

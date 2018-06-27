@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.servlet.FilterChain;
@@ -38,25 +39,19 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        propagateOrcreate(request);
+        propagateOrCreate(request);
         chain.doFilter(request, response);
     }
 
-    private void propagateOrcreate(ServletRequest request) {
+    private void propagateOrCreate(ServletRequest request) {
         HttpServletRequest req = HttpServletRequest.class.cast(request);
-        propagateOrcreate(NAV_CONSUMER_ID, req, "fpsoknad-mottak");
-        propagateOrcreate(generator.getCallIdKey(), req, generator.create());
+        propagateOrCreate(NAV_CONSUMER_ID, req, "fpsoknad-mottak");
+        propagateOrCreate(generator.getCallIdKey(), req, generator.create());
         MDC.put(USER_ID, extractor.fnrFromToken());
     }
 
-    private static void propagateOrcreate(String key, HttpServletRequest req, String defaultValue) {
-        String value = req.getHeader(key);
-        if (value != null) {
-            MDCUtil.put(key, value);
-        }
-        else {
-            MDCUtil.put(key, defaultValue);
-        }
+    private static void propagateOrCreate(String key, HttpServletRequest req, String defaultValue) {
+        MDCUtil.put(key, Optional.ofNullable(req.getHeader(key)).orElse(defaultValue));
     }
 
     @Override
