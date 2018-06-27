@@ -6,7 +6,6 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 
@@ -365,7 +364,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static List<LukketPeriode> perioderFra(List<LukketPeriodeMedVedlegg> perioder) {
-        return perioder.stream().map(FPFordelSøknadGenerator::lukkerPeriodeFra).collect(Collectors.toList());
+        return perioder.stream().map(FPFordelSøknadGenerator::lukkerPeriodeFra).collect(toList());
 
     }
 
@@ -411,6 +410,7 @@ public class FPFordelSøknadGenerator {
             UttaksPeriode uttaksPeriode = UttaksPeriode.class.cast(periode);
             return new Uttaksperiode()
                     .withType(uttaksperiodeTyperFra(uttaksPeriode.getUttaksperiodeType()))
+
                     .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
                     .withFom(uttaksPeriode.getFom())
@@ -502,15 +502,16 @@ public class FPFordelSøknadGenerator {
 
     private static Rettigheter rettighetrFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
-        if (rettigheter == null) {
-            return null;
-        }
+
         if (ukjentForelder) {
             LOG.info("Annen forelder er ukjent, avleder verdier for  rettigheter");
             return new Rettigheter()
                     .withHarOmsorgForBarnetIPeriodene(true)
                     .withHarAnnenForelderRett(false)
                     .withHarAleneomsorgForBarnet(true);
+        }
+        if (rettigheter == null) {
+            return null;
         }
         return new Rettigheter()
                 .withHarOmsorgForBarnetIPeriodene(rettigheter.isHarOmsorgForBarnetIPeriodene())
