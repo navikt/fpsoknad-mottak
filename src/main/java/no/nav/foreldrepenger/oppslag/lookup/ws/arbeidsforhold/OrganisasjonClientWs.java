@@ -66,7 +66,12 @@ public class OrganisasjonClientWs implements OrganisasjonClient {
     private String name(SammensattNavn sammensattNavn) {
         return UstrukturertNavn.class.cast(sammensattNavn).getNavnelinje()
             .stream()
+            .filter(this::isNotEmpty)
             .collect(joining(","));
+    }
+
+    private boolean isNotEmpty(String str) {
+        return str != null && str.trim().length() != 0;
     }
 
 }
