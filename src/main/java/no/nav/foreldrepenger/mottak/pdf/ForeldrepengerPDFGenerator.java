@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforho
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 
 @Component
 public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
@@ -165,7 +167,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("egennæring")));
         final List<String> formatted = egenNæring.stream()
-                .map(this::format)
+                .map(this::formatEgenNæring)
                 .collect(toList());
         paragraph.add(bulletedList(formatted));
         return paragraph;
@@ -186,9 +188,14 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         }
     }
 
-    private String format(EgenNæring næring) {
-        return næring.getVirksomhetsType().name() + " (" + countryName(næring.getArbeidsland().getAlpha2()) + ")" + "\n"
-                +
+    private String formatEgenNæring(EgenNæring næring) {
+        return næring.getVirksomhetsTyper().stream()
+                .map(s -> formatVirksomhetsType(s, næring))
+                .collect(Collectors.joining("\n\n"));
+    }
+
+    private String formatVirksomhetsType(Virksomhetstype type, EgenNæring næring) {
+        return type.name() + " (" + countryName(næring.getArbeidsland().getAlpha2()) + ")" + "\n" +
                 dato(næring.getPeriode().getFom()) + "\n" +
                 næring.getBeskrivelseRelasjon() + "\n" +
                 navnToString(næring.getRegnskapsfører().getNavn());

@@ -1,14 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1"  xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" schemaLocation="../uttak/uttak.xsd"/>
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
-  <xsd:complexType name="Virksomhetstyper">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
-  </xsd:complexType>
+  <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
+  
   <xsd:complexType name="AnnenOpptjening">
     <xsd:sequence>
-      <xsd:element name="type" type="fp:AnnenOpptjeningTyper"/>
+      <xsd:element name="type" type="kv:AnnenOpptjeningTyper"/>
       <xsd:element minOccurs="0" name="periode" type="felles:Periode"/>
       <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
     </xsd:sequence>
@@ -28,9 +25,9 @@
   </xsd:complexType>
   <xsd:complexType abstract="true" name="EgenNaering">
     <xsd:sequence>
-      <xsd:element minOccurs="0" name="arbeidsland" type="felles:Land"/>
+      <xsd:element minOccurs="0" name="arbeidsland" type="kv:Land"/>
       <xsd:element minOccurs="0" name="regnskapsfoerer" type="fp:Regnskapsfoerer"/>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="virksomhetstype" type="fp:Virksomhetstyper"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="virksomhetstype" type="kv:Virksomhetstyper"/>
       <xsd:element minOccurs="0" name="periode" type="felles:Periode"/>
       <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
       <xsd:element minOccurs="0" name="beskrivelseAvNaerRelasjon" type="xsd:string"/>
@@ -78,7 +75,7 @@
     <xsd:complexContent>
       <xsd:extension base="fp:Arbeidsforhold">
         <xsd:sequence>
-          <xsd:element name="arbeidsland" type="felles:Land"/>
+          <xsd:element name="arbeidsland" type="kv:Land"/>
           <xsd:element name="harHattInntektIPerioden" type="xsd:boolean"/>
         </xsd:sequence>
       </xsd:extension>
@@ -89,14 +86,9 @@
       <xsd:extension base="fp:EgenNaering">
         <xsd:sequence>
           <xsd:element name="navn" type="xsd:string"/>
-          <xsd:element name="registrertILand" type="felles:Land"/>
+          <xsd:element name="registrertILand" type="kv:Land"/>
         </xsd:sequence>
       </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="MorsAktivitetsTyper">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
     </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType name="Foreldrepenger">
@@ -114,20 +106,10 @@
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
-  <xsd:complexType name="AnnenOpptjeningTyper">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Dekningsgrader">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
-  </xsd:complexType>
   <xsd:complexType name="Dekningsgrad">
     <xsd:sequence>
       <xsd:element maxOccurs="unbounded" minOccurs="0" name="perioder" type="felles:LukketPeriode"/>
-      <xsd:element name="dekningsgrad" type="fp:Dekningsgrader"/>
+      <xsd:element name="dekningsgrad" type="kv:Dekningsgrader"/>
     </xsd:sequence>
   </xsd:complexType>
 </xsd:schema>

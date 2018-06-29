@@ -31,6 +31,11 @@ public class FPFordelMetdataGenerator {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [mapper=" + mapper + "]";
+    }
+
     @JsonPropertyOrder({ "contentId", "dokumentTypeId" })
     static class Files {
 
@@ -56,15 +61,5 @@ public class FPFordelMetdataGenerator {
         public String toString() {
             return getClass().getSimpleName() + " [dokumentTypeId=" + dokumentTypeId + ", contentId=" + contentId + "]";
         }
-
     }
-
 }
-
-/*
- * { "forsendelsesId": "48f6e1cf-c5d8-4355-8e8c-b75494703959", "brukerId":
- * "9000000000", "forsendelseMottatt": "2018-05-01T00:00:00.123", "filer": [ {
- * "Content-ID": "<some ID 1>", "dokumentTypeId": "I000005" }, { "Content-ID":
- * "<some ID 2>", "dokumentTypeId": "I000005" }, { "Content-ID": "<some ID 3>",
- * "dokumentTypeId": "I000041" } ] }
- */

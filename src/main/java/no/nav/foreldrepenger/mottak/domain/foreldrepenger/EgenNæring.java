@@ -27,7 +27,7 @@ import lombok.Data;
 public abstract class EgenNæring {
 
     private final CountryCode arbeidsland;
-    private final Virksomhetstype virksomhetsType;
+    private final List<Virksomhetstype> virksomhetsTyper;
     private final ÅpenPeriode periode;
     private final String beskrivelseRelasjon;
     private final Regnskapsfører regnskapsfører;
@@ -40,7 +40,7 @@ public abstract class EgenNæring {
 
     @JsonCreator
     public EgenNæring(@JsonProperty("arbeidsland") CountryCode arbeidsland,
-            @JsonProperty("virksomhetsType") Virksomhetstype virksomhetsType,
+            @JsonProperty("virksomhetsType") List<Virksomhetstype> virksomhetsTyper,
             @JsonProperty("periode") ÅpenPeriode periode,
             @JsonProperty("beskrivelseRelasjon") String beskrivelseRelasjon,
             @JsonProperty("regnskapsfører") Regnskapsfører regnskapsfører,
@@ -51,7 +51,7 @@ public abstract class EgenNæring {
             @JsonProperty("beskrivelseEndring") String beskrivelseEndring,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         this.arbeidsland = arbeidsland;
-        this.virksomhetsType = virksomhetsType;
+        this.virksomhetsTyper = virksomhetsTyper;
         this.periode = periode;
         this.beskrivelseRelasjon = beskrivelseRelasjon;
         this.regnskapsfører = regnskapsfører;

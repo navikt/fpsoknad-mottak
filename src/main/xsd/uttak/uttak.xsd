@@ -1,13 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1"  xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" schemaLocation="../foreldrepenger/foreldrepenger.xsd"/>
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
+  <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
   <xsd:complexType name="Gradering">
     <xsd:complexContent>
       <xsd:extension base="ut:Uttaksperiode">
         <xsd:sequence>
           <xsd:element name="arbeidtidProsent" type="xsd:double"/>
           <xsd:element name="erArbeidstaker" type="xsd:boolean"/>
-          <xsd:element minOccurs="0" name="virksomhetsnummer" type="xsd:anyType"/>
+          <xsd:element minOccurs="0" name="virksomhetsnummer" type="xsd:string"/>
           <xsd:element name="arbeidsforholdSomSkalGraderes" type="xsd:boolean"/>
         </xsd:sequence>
       </xsd:extension>
@@ -17,69 +18,49 @@
     <xsd:complexContent>
       <xsd:extension base="felles:LukketPeriode">
         <xsd:sequence>
-          <xsd:element name="type" type="ut:Uttaksperiodetyper"/>
+          <xsd:element name="type" type="kv:Uttaksperiodetyper"/>
           <xsd:element minOccurs="0" name="oenskerSamtidigUttak" type="xsd:boolean"/>
-          <xsd:element minOccurs="0" name="morsAktivitetIPerioden" type="fp:MorsAktivitetsTyper"/>
+          <xsd:element minOccurs="0" name="morsAktivitetIPerioden" type="kv:MorsAktivitetsTyper"/>
         </xsd:sequence>
       </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Uttaksperiodetyper">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
     </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType name="Utsettelsesperiode">
     <xsd:complexContent>
       <xsd:extension base="felles:LukketPeriode">
         <xsd:sequence>
-          <xsd:element name="aarsak" type="ut:Utsettelsesaarsaker"/>
-          <xsd:element name="utsettelseAv" type="ut:Uttaksperiodetyper"/>
+          <xsd:element name="aarsak" type="kv:Utsettelsesaarsaker"/>
+          <xsd:element name="utsettelseAv" type="kv:Uttaksperiodetyper"/>
           <xsd:element name="erArbeidstaker" type="xsd:boolean"/>
           <xsd:element minOccurs="0" name="virksomhetsnummer" type="xsd:string"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
-  <xsd:complexType name="Utsettelsesaarsaker">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
-  </xsd:complexType>
   <xsd:complexType name="Overfoeringsperiode">
     <xsd:complexContent>
       <xsd:extension base="felles:LukketPeriode">
         <xsd:sequence>
-          <xsd:element name="aarsak" type="ut:Overfoeringsaarsaker"/>
-          <xsd:element name="overfoeringAv" type="ut:Uttaksperiodetyper"/>
+          <xsd:element name="aarsak" type="kv:Overfoeringsaarsaker"/>
+          <xsd:element name="overfoeringAv" type="kv:Uttaksperiodetyper"/>
         </xsd:sequence>
       </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Overfoeringsaarsaker">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
     </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType name="Fordeling">
     <xsd:sequence>
       <xsd:element minOccurs="0" name="annenForelderErInformert" type="xsd:boolean"/>
       <xsd:element maxOccurs="unbounded" minOccurs="0" name="perioder" type="felles:LukketPeriode"/>
-      <xsd:element minOccurs="0" name="oenskerKvoteOverfoert" type="ut:Overfoeringsaarsaker"/>
+      <xsd:element minOccurs="0" name="oenskerKvoteOverfoert" type="kv:Overfoeringsaarsaker"/>
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="Oppholdsperiode">
     <xsd:complexContent>
       <xsd:extension base="felles:LukketPeriode">
         <xsd:sequence>
-          <xsd:element name="aarsak" type="ut:Oppholdsaarsaker"/>
+          <xsd:element name="aarsak" type="kv:Oppholdsaarsaker"/>
         </xsd:sequence>
       </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Oppholdsaarsaker">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
     </xsd:complexContent>
   </xsd:complexType>
 </xsd:schema>

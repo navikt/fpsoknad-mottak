@@ -103,7 +103,7 @@ public class ForeldrepengerTestUtils {
                 .næringsinntektBrutto(100_000)
                 .orgName("My org")
                 .registrertLand(CountryCode.SE)
-                .virksomhetsType(FISKE)
+                .virksomhetsTyper(Collections.singletonList(FISKE))
                 .arbeidsland(CountryCode.SE).beskrivelseEndring("Stor endring")
                 .beskrivelseRelasjon("relasjon")
                 .endringsDato(LocalDate.now()).build();
@@ -118,14 +118,14 @@ public class ForeldrepengerTestUtils {
                 .næringsinntektBrutto(100_000)
                 .orgName("My org")
                 .orgNummer("82828282")
-                .virksomhetsType(FISKE)
+                .virksomhetsTyper(Collections.singletonList(FISKE))
                 .arbeidsland(CountryCode.SE).beskrivelseEndring("Stor endring")
                 .beskrivelseRelasjon("relasjon")
                 .endringsDato(LocalDate.now()).build();
     }
 
     static AnnenOpptjening annenOpptjening() {
-        return new AnnenOpptjening(AnnenOpptjeningType.LONN_UTDANNING, åpenPeriode(), null);
+        return new AnnenOpptjening(AnnenOpptjeningType.LØNN_UNDER_UTDANNING, åpenPeriode(), null);
     }
 
     static UtenlandskArbeidsforhold utenlandskArbeidsforhold() {

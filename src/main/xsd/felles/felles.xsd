@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1">
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1"  xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" >
+  <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
   <xsd:complexType name="Verge">
     <xsd:complexContent>
       <xsd:extension base="felles:Fullmektig">
         <xsd:sequence>
-          <xsd:element name="vergetype" type="felles:Vergetype"/>
+          <xsd:element name="vergetype" type="kv:Vergetype"/>
           <xsd:element name="tvungenForvaltning" type="xsd:boolean"/>
         </xsd:sequence>
       </xsd:extension>
@@ -12,7 +13,7 @@
   <xsd:complexType name="OppholdUtlandet">
     <xsd:sequence>
       <xsd:element name="periode" type="felles:Periode"/>
-      <xsd:element name="land" type="felles:Land"/>
+      <xsd:element name="land" type="kv:Land"/>
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="Adopsjon">
@@ -43,14 +44,9 @@
           <xsd:element name="omsorgsovertakelsesdato" type="xsd:date"/>
           <xsd:element maxOccurs="unbounded" minOccurs="0" name="foedselsdato" type="xsd:date"/>
           <xsd:element minOccurs="0" name="beskrivelse" type="xsd:string"/>
-          <xsd:element name="omsorgsovertakelseaarsak" type="felles:Omsorgsovertakelseaarsaker"/>
+          <xsd:element name="omsorgsovertakelseaarsak" type="kv:Omsorgsovertakelseaarsaker"/>
         </xsd:sequence>
       </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Omsorgsovertakelseaarsaker">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
     </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType name="Rettigheter">
@@ -127,7 +123,7 @@
       <xsd:extension base="felles:AnnenForelder">
         <xsd:sequence>
           <xsd:element name="utenlandskPersonidentifikator" type="xsd:string"/>
-          <xsd:element name="land" type="felles:Land"/>
+          <xsd:element name="land" type="kv:Land"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -140,7 +136,7 @@
   <xsd:complexType name="Vedlegg">
     <xsd:sequence>
       <xsd:element name="id" type="xsd:ID"/>
-      <xsd:element name="innsendingstype" type="felles:Innsendingstype"/>
+      <xsd:element name="innsendingstype" type="kv:Innsendingstype"/>
       <xsd:element minOccurs="0" name="skjemanummer" type="xsd:string"/>
       <xsd:element name="tilleggsinformasjon" type="xsd:string"/>
     </xsd:sequence>
@@ -153,21 +149,11 @@
       <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
     </xsd:sequence>
   </xsd:complexType>
-  <xsd:complexType name="Land">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
-  </xsd:complexType>
   <xsd:complexType name="Periode">
     <xsd:sequence>
       <xsd:element name="fom" type="xsd:date"/>
       <xsd:element minOccurs="0" name="tom" type="xsd:date"/>
     </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="Innsendingstype">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType name="Kodeverk">
     <xsd:simpleContent>
@@ -176,10 +162,5 @@
         <xsd:attribute name="kode" type="xsd:string"/>
       </xsd:extension>
     </xsd:simpleContent>
-  </xsd:complexType>
-  <xsd:complexType name="Vergetype">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
   </xsd:complexType>
 </xsd:schema>

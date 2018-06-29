@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +13,7 @@ public class FPFordelConfiguration {
 
     private static final class NonRedirectingRequestFactory extends HttpComponentsClientHttpRequestFactory {
 
-        private static final Logger LOG = LoggerFactory.getLogger(NonRedirectingRequestFactory.class);
-
         public NonRedirectingRequestFactory() {
-            LOG.info("Constructng non-redirecting request factory");
             setHttpClient(HttpClientBuilder.create().disableRedirectHandling().build());
         }
     }
@@ -30,7 +25,6 @@ public class FPFordelConfiguration {
                 .rootUri(cfg.getUri())
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
-                // .additionalMessageConverters(new MultipartMixedAwareMessageConverter())
                 .errorHandler(new FPFordeResponseErrorHandler())
                 .build();
         template.getMessageConverters().add(new MultipartMixedAwareMessageConverter());
