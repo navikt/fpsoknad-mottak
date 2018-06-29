@@ -51,7 +51,6 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Brukerroller;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Foedsel;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.LukketPeriode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Medlemskap;
@@ -74,6 +73,7 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Regnskapsfoerer;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.AnnenOpptjeningTyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Brukerroller;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Dekningsgrader;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Land;
@@ -631,11 +631,15 @@ public class FPFordelSøknadGenerator {
         case MOR:
         case FAR:
         case MEDMOR:
-        case ANDRE:
-            return new Brukerroller().withKode(søknadsRolle.name());
+            return brukerrolleMedKodeverk(søknadsRolle.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
+    }
+
+    private static Brukerroller brukerrolleMedKodeverk(String rolle) {
+        Brukerroller brukerRolle = new Brukerroller().withKode(rolle);
+        return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
 
     public String toXML(Soeknad model) {
