@@ -29,7 +29,7 @@ public abstract class EgenNæring {
     private final CountryCode arbeidsland;
     private final List<Virksomhetstype> virksomhetsTyper;
     private final ÅpenPeriode periode;
-    private final String beskrivelseRelasjon;
+    private final boolean nærRelasjon;
     private final Regnskapsfører regnskapsfører;
     private final boolean erNyOpprettet;
     private final boolean erVarigEndring;
@@ -42,7 +42,7 @@ public abstract class EgenNæring {
     public EgenNæring(@JsonProperty("arbeidsland") CountryCode arbeidsland,
             @JsonProperty("virksomhetsType") List<Virksomhetstype> virksomhetsTyper,
             @JsonProperty("periode") ÅpenPeriode periode,
-            @JsonProperty("beskrivelseRelasjon") String beskrivelseRelasjon,
+            @JsonProperty("nærRelasjon") boolean nærRelasjon,
             @JsonProperty("regnskapsfører") Regnskapsfører regnskapsfører,
             @JsonProperty("erNyOpprettet") boolean erNyOpprettet,
             @JsonProperty("erVarigEndring") boolean erVarigEndring,
@@ -53,7 +53,7 @@ public abstract class EgenNæring {
         this.arbeidsland = arbeidsland;
         this.virksomhetsTyper = virksomhetsTyper;
         this.periode = periode;
-        this.beskrivelseRelasjon = beskrivelseRelasjon;
+        this.nærRelasjon = nærRelasjon;
         this.regnskapsfører = regnskapsfører;
         this.erNyOpprettet = erNyOpprettet;
         this.erVarigEndring = erVarigEndring;

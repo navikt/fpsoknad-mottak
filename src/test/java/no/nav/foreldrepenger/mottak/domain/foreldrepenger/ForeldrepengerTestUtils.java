@@ -90,7 +90,7 @@ public class ForeldrepengerTestUtils {
                 .orgName("My org")
                 .virksomhetsTyper(Collections.singletonList(FISKE))
                 .arbeidsland(CountryCode.SE).beskrivelseEndring("Stor endring")
-                .beskrivelseRelasjon("relasjon")
+                .nærRelasjon(true)
                 .endringsDato(LocalDate.now()).build();
     }
 
@@ -105,7 +105,7 @@ public class ForeldrepengerTestUtils {
                 .orgNummer("82828282")
                 .virksomhetsTyper(Collections.singletonList(FISKE))
                 .arbeidsland(CountryCode.SE).beskrivelseEndring("Stor endring")
-                .beskrivelseRelasjon("relasjon")
+                .nærRelasjon(true)
                 .endringsDato(LocalDate.now()).build();
     }
 

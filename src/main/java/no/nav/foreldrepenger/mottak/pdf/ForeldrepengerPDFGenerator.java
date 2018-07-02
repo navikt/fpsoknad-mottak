@@ -188,7 +188,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
     private String formatVirksomhetsType(Virksomhetstype type, EgenNæring næring) {
         return type.name() + " (" + countryName(næring.getArbeidsland().getAlpha2()) + ")" + "\n" +
                 dato(næring.getPeriode().getFom()) + "\n" +
-                næring.getBeskrivelseRelasjon() + "\n" +
+                næring.isNærRelasjon() + "\n" +
                 navnToString(næring.getRegnskapsfører().getNavn());
     }
 

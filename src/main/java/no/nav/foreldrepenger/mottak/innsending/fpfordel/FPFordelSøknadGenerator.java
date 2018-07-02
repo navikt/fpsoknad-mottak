@@ -190,7 +190,7 @@ public class FPFordelSøknadGenerator {
                     .cast(egenNæring);
             return new NorskOrganisasjon()
                     .withBeskrivelseAvEndring(norskOrg.getBeskrivelseEndring())
-                    .withBeskrivelseAvNaerRelasjon(norskOrg.getBeskrivelseRelasjon())
+                    .withBeskrivelseAvNaerRelasjon(nærRelasjonFra(norskOrg.isNærRelasjon()))
                     .withEndringsDato(norskOrg.getEndringsDato())
                     .withErNyoppstartet(norskOrg.isErNyOpprettet())
                     .withErVarigEndring(norskOrg.isErVarigEndring())
@@ -207,7 +207,7 @@ public class FPFordelSøknadGenerator {
                     .cast(egenNæring);
             return new UtenlandskOrganisasjon()
                     .withBeskrivelseAvEndring(utenlandskOrg.getBeskrivelseEndring())
-                    .withBeskrivelseAvNaerRelasjon(utenlandskOrg.getBeskrivelseRelasjon())
+                    .withBeskrivelseAvNaerRelasjon(nærRelasjonFra(utenlandskOrg.isNærRelasjon()))
                     .withEndringsDato(utenlandskOrg.getEndringsDato())
                     .withErNyoppstartet(utenlandskOrg.isErNyOpprettet())
                     .withErVarigEndring(utenlandskOrg.isErVarigEndring())
@@ -220,6 +220,10 @@ public class FPFordelSøknadGenerator {
         }
         throw new IllegalArgumentException("Vil aldri skje");
 
+    }
+
+    private static String nærRelasjonFra(boolean nærRelasjon) {
+        return nærRelasjon ? "JA" : "NEI";
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(
