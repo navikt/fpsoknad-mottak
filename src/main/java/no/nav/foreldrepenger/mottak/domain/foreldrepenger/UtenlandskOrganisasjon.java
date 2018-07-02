@@ -20,18 +20,16 @@ public class UtenlandskOrganisasjon extends EgenNæring {
 
     @Length(max = 50)
     private String orgName;
-    private CountryCode registrertLand;
 
     @Builder
     private UtenlandskOrganisasjon(CountryCode arbeidsland, List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             String beskrivelseRelasjon, Regnskapsfører regnskapsfører, boolean erNyOpprettet, boolean erVarigEndring,
             long næringsinntektBrutto, LocalDate endringsDato, String beskrivelseEndring, List<String> vedlegg,
-            String orgName, CountryCode registrertLand) {
+            String orgName) {
         super(arbeidsland, virksomhetsTyper, periode, beskrivelseRelasjon, regnskapsfører, erNyOpprettet,
                 erVarigEndring,
                 næringsinntektBrutto, endringsDato, beskrivelseEndring, vedlegg);
         this.orgName = orgName;
-        this.registrertLand = registrertLand;
     }
 
 }

@@ -24,14 +24,12 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsforholdType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.GradertUttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.MorsAktivitet;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Oppholdsårsak;
@@ -64,7 +62,6 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Ytelse;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Arbeidsforhold;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Arbeidsforholdtyper;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Dekningsgrad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.EgenNaering;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
@@ -219,8 +216,7 @@ public class FPFordelSøknadGenerator {
                     .withPeriode(periodeFra(utenlandskOrg.getPeriode()))
                     .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsfører()))
                     .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()))
-                    .withArbeidsland(landFra(utenlandskOrg.getArbeidsland()))
-                    .withRegistrertILand(landFra(utenlandskOrg.getRegistrertLand()));
+                    .withArbeidsland(landFra(utenlandskOrg.getArbeidsland()));
         }
         throw new IllegalArgumentException("Vil aldri skje");
 
@@ -278,38 +274,12 @@ public class FPFordelSøknadGenerator {
 
     private static Arbeidsforhold arbeidsforholdFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Arbeidsforhold arbeidsForhold) {
-        if (arbeidsForhold instanceof NorskArbeidsforhold) {
-            return norskArbeidsforhold(NorskArbeidsforhold.class.cast(arbeidsForhold));
-        }
+
         if (arbeidsForhold instanceof UtenlandskArbeidsforhold) {
             return utenlandskArbeidsforhold(UtenlandskArbeidsforhold.class.cast(arbeidsForhold));
         }
         throw new IllegalArgumentException("Vil aldri skje");
 
-    }
-
-    private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskArbeidsforhold norskArbeidsforhold(
-            NorskArbeidsforhold arbeidsForhold) {
-        return new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskArbeidsforhold()
-                .withVirksomhetsnummer(arbeidsForhold.getOrgNummer())
-                .withBeskrivelseAvNaerRelasjon(arbeidsForhold.getBeskrivelseRelasjon())
-                .withArbeidsgiversnavn(arbeidsForhold.getArbeidsgiverNavn())
-                .withArbeidsforholdtype(arbeidsforholdtypeFra(arbeidsForhold.getType()))
-                .withPeriode(periodeFra(arbeidsForhold.getPeriode()));
-    }
-
-    private static Arbeidsforholdtyper arbeidsforholdtypeFra(ArbeidsforholdType type) {
-        if (type == null) {
-            return null;
-        }
-        switch (type) {
-        case FRILANSER_OPPDRAGSTAKER:
-        case MARITIMT_ARBEIDSFORHOLD:
-        case ORDINÆRT_ARBEIDSFORHOLD:
-            return new Arbeidsforholdtyper().withKode(type.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold utenlandskArbeidsforhold(

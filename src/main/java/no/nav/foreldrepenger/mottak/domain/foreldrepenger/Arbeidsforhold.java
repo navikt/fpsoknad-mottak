@@ -20,7 +20,6 @@ import lombok.Data;
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
-        @Type(value = NorskArbeidsforhold.class, name = "norsk"),
         @Type(value = UtenlandskArbeidsforhold.class, name = "utenlandsk")
 })
 public abstract class Arbeidsforhold {

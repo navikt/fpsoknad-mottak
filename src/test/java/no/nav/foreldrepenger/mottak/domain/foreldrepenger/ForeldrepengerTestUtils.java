@@ -48,7 +48,8 @@ public class ForeldrepengerTestUtils {
     }
 
     static Opptjening opptjening() {
-        return new Opptjening(arbeidsforhold(), egneNæringer(), andreOpptjeninger());
+        return new Opptjening(Collections.singletonList(utenlandskArbeidsforhold()), egneNæringer(),
+                andreOpptjeninger());
     }
 
     static List<AnnenOpptjening> andreOpptjeninger() {
@@ -57,11 +58,6 @@ public class ForeldrepengerTestUtils {
 
     static List<EgenNæring> egneNæringer() {
         return newArrayList(utenlandskEgenNæring(), norskEgenNæring());
-
-    }
-
-    static List<Arbeidsforhold> arbeidsforhold() {
-        return newArrayList(norskArbeidsforhold(), utenlandskArbeidsforhold());
     }
 
     static UtenlandskForelder utenlandskForelder() {
@@ -84,16 +80,6 @@ public class ForeldrepengerTestUtils {
         return new Omsorgsovertakelse(LocalDate.now(), SKAL_OVERTA_ALENE, LocalDate.now());
     }
 
-    static NorskArbeidsforhold norskArbeidsforhold() {
-        return NorskArbeidsforhold.builder()
-                .vedlegg(ETT_VEDLEGG_REF)
-                .arbeidsgiverNavn("boss")
-                .bekreftelseRelasjon("relasjon")
-                .type(ArbeidsforholdType.ORDINÆRT_ARBEIDSFORHOLD)
-                .orgNummer("222222222")
-                .periode(åpenPeriode()).build();
-    }
-
     static UtenlandskOrganisasjon utenlandskEgenNæring() {
         return UtenlandskOrganisasjon.builder()
                 .periode(åpenPeriode())
@@ -102,7 +88,6 @@ public class ForeldrepengerTestUtils {
                 .erVarigEndring(true)
                 .næringsinntektBrutto(100_000)
                 .orgName("My org")
-                .registrertLand(CountryCode.SE)
                 .virksomhetsTyper(Collections.singletonList(FISKE))
                 .arbeidsland(CountryCode.SE).beskrivelseEndring("Stor endring")
                 .beskrivelseRelasjon("relasjon")

@@ -30,7 +30,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
@@ -174,18 +173,10 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
     }
 
     private String format(Arbeidsforhold arbeidsforhold) {
-        if (arbeidsforhold instanceof NorskArbeidsforhold) {
-            NorskArbeidsforhold na = NorskArbeidsforhold.class.cast(arbeidsforhold);
-            return na.getArbeidsgiverNavn() + " (" + na.getOrgNummer() + ")" + "\n" +
-                    dato(na.getPeriode().getFom()) + "\n" +
-                    na.getBeskrivelseRelasjon();
-        }
-        else {
-            UtenlandskArbeidsforhold ua = UtenlandskArbeidsforhold.class.cast(arbeidsforhold);
-            return ua.getArbeidsgiverNavn() + " (" + countryName(ua.getLand().getAlpha2()) + ")" + "\n" +
-                    dato(ua.getPeriode().getFom()) + "\n" +
-                    ua.getBeskrivelseRelasjon();
-        }
+        UtenlandskArbeidsforhold ua = UtenlandskArbeidsforhold.class.cast(arbeidsforhold);
+        return ua.getArbeidsgiverNavn() + " (" + countryName(ua.getLand().getAlpha2()) + ")" + "\n" +
+                dato(ua.getPeriode().getFom()) + "\n" +
+                ua.getBeskrivelseRelasjon();
     }
 
     private String formatEgenNæring(EgenNæring næring) {
