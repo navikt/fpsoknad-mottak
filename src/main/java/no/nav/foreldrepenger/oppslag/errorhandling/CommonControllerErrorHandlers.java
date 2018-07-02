@@ -17,42 +17,42 @@ import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedExcept
 
 @ControllerAdvice
 public class CommonControllerErrorHandlers {
-   private Counter errorCounter = Metrics.counter("errors.unhandled");
-   private Counter invalidRequestsCounter = Metrics.counter("errors.request.invalid");
-   private Counter forbiddenRequestsCounter = Metrics.counter("errors.lookup.forbidden");
+    private Counter invalidRequestsCounter = Metrics.counter("errors.request.invalid");
+    private Counter forbiddenRequestsCounter = Metrics.counter("errors.lookup.forbidden");
 
-   @ExceptionHandler({ ConstraintViolationException.class })
-   public ResponseEntity<String> handleValidationException(ConstraintViolationException e) {
-      invalidRequestsCounter.increment();
-      return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
-   }
+    @ExceptionHandler({ ConstraintViolationException.class })
+    public ResponseEntity<String> handleValidationException(ConstraintViolationException e) {
+        invalidRequestsCounter.increment();
+        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+    }
 
-   @ExceptionHandler({ IncompleteRequestException.class })
-   public ResponseEntity<String> handleIncompleteRequestException(IncompleteRequestException e) {
-      invalidRequestsCounter.increment();
-      return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
-   }
+    @ExceptionHandler({ IncompleteRequestException.class })
+    public ResponseEntity<String> handleIncompleteRequestException(IncompleteRequestException e) {
+        invalidRequestsCounter.increment();
+        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+    }
 
-   @ExceptionHandler({ NotFoundException.class })
-   public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
-      return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
-   }
+    @ExceptionHandler({ NotFoundException.class })
+    public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), NOT_FOUND);
+    }
 
-   @ExceptionHandler({ ForbiddenException.class })
-   public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
-      forbiddenRequestsCounter.increment();
-      return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
-   }
+    @ExceptionHandler({ ForbiddenException.class })
+    public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
+        forbiddenRequestsCounter.increment();
+        return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
+    }
 
-   @ExceptionHandler({ MissingServletRequestParameterException.class })
-   public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
-      invalidRequestsCounter.increment();
-      return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
-   }
+    @ExceptionHandler({ MissingServletRequestParameterException.class })
+    public ResponseEntity<String> handleMissingServletRequestParameterException(
+            MissingServletRequestParameterException e) {
+        invalidRequestsCounter.increment();
+        return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+    }
 
-   @ExceptionHandler({ OIDCUnauthorizedException.class })
-   public ResponseEntity<String> handleOIDCUnauthorizedException(OIDCUnauthorizedException e) {
-	   forbiddenRequestsCounter.increment();
-	   return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
-   }
+    @ExceptionHandler({ OIDCUnauthorizedException.class })
+    public ResponseEntity<String> handleOIDCUnauthorizedException(OIDCUnauthorizedException e) {
+        forbiddenRequestsCounter.increment();
+        return new ResponseEntity<>(e.getMessage(), FORBIDDEN);
+    }
 }

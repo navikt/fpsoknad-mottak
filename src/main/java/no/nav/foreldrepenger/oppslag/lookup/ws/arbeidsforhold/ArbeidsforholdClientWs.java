@@ -19,7 +19,6 @@ import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.N
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Regelverker;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerRequest;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.meldinger.FinnArbeidsforholdPrArbeidstakerResponse;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdClientWs.class);
@@ -30,12 +29,14 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.aareg");
 
-    public ArbeidsforholdClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator, OrganisasjonClient orgClient) {
+    public ArbeidsforholdClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator,
+            OrganisasjonClient orgClient) {
         this.arbeidsforholdV3 = arbeidsforholdV3;
         this.healthIndicator = healthIndicator;
         this.orgClient = orgClient;
     }
 
+    @Override
     public void ping() {
         try {
             LOG.info("Pinger AAreg");
@@ -46,14 +47,16 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
         }
     }
 
+    @Override
     public List<Arbeidsforhold> arbeidsforhold(Fodselsnummer fnr) {
         try {
-            FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3.finnArbeidsforholdPrArbeidstaker(request(fnr));
+            FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3
+                    .finnArbeidsforholdPrArbeidstaker(request(fnr));
 
             return response.getArbeidsforhold().stream()
-                .map(ArbeidsforholdMapper::map)
-                .map(this::addArbeidsgiverNavn)
-                .collect(toList());
+                    .map(ArbeidsforholdMapper::map)
+                    .map(this::addArbeidsgiverNavn)
+                    .collect(toList());
         } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning ex) {
             LOG.warn("Sikkerhetsfeil fra AAREG", ex);
             throw new ForbiddenException(ex);
