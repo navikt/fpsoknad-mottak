@@ -1,20 +1,5 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
-import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.BARN;
-import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.DNR;
-import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.FNR;
-import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.request;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
@@ -27,6 +12,17 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.PersonMapper.barn;
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.PersonMapper.person;
+import static no.nav.foreldrepenger.oppslag.lookup.ws.person.RequestUtils.*;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 public class PersonClientTpsWs implements PersonClient {
 
@@ -57,13 +53,11 @@ public class PersonClientTpsWs implements PersonClient {
 
     @Override
     public Person hentPersonInfo(ID id) {
-
         try {
             LOG.info("Doing person lookup");
             HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(id.getFnr(), request)
-                    .getPerson();
-            return PersonMapper.map(id, tpsPerson, barnFor(tpsPerson));
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(request).getPerson();
+            return person(id, tpsPerson, barnFor(tpsPerson));
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
             throw new RuntimeException(ex);
@@ -77,12 +71,12 @@ public class PersonClientTpsWs implements PersonClient {
         switch (idType) {
         case FNR:
         case DNR:
-            Fodselsnummer fnrMor = new Fodselsnummer(id.getIdent().getIdent());
+            Fodselsnummer fnrSøker = new Fodselsnummer(id.getIdent().getIdent());
             return person.getHarFraRolleI().stream()
                     .filter(this::isBarn)
-                    .map(s -> hentBarn(s, fnrMor))
+                    .map(s -> hentBarn(s, fnrSøker))
                     .filter(Objects::nonNull)
-                    .filter(barn -> barnutvelger.erStonadsberettigetBarn(fnrMor, barn))
+                    .filter(barn -> barnutvelger.erStonadsberettigetBarn(fnrSøker, barn))
                     .collect(Collectors.toList());
         default:
             throw new IllegalStateException("ID type " + idType + " ikke støttet");
@@ -93,20 +87,40 @@ public class PersonClientTpsWs implements PersonClient {
         return rel.getTilRolle().getValue().equals(BARN);
     }
 
-    private Barn hentBarn(Familierelasjon rel, Fodselsnummer fnrMor) {
+    private boolean isForelder(Familierelasjon rel) {
+        String rolle = rel.getTilRolle().getValue();
+        return rolle.equals(MOR) || rolle.equals(FAR);
+    }
+
+    private boolean isNotSøker(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person forelder, Fodselsnummer fnrSøker) {
+        NorskIdent id = PersonIdent.class.cast(forelder.getAktoer()).getIdent();
+        return !fnrSøker.getFnr().equals(id.getIdent());
+    }
+
+    private Barn hentBarn(Familierelasjon rel, Fodselsnummer fnrSøker) {
         NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
         if (RequestUtils.isFnr(id)) {
             Fodselsnummer fnrBarn = new Fodselsnummer(id.getIdent());
-            return PersonMapper.map(id, fnrMor, hentPerson(fnrBarn, request(fnrBarn, FAMILIERELASJONER)));
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsBarn = hentPerson(request(fnrBarn, FAMILIERELASJONER)).getPerson();
+
+            AnnenForelder annenForelder = tpsBarn.getHarFraRolleI().stream()
+                .filter(this::isForelder)
+                .map(Familierelasjon::getTilPerson)
+                .filter(p -> this.isNotSøker(p, fnrSøker))
+                .map(PersonMapper::annenForelder)
+                .findFirst()
+                .orElse(null);
+
+            return barn(id, fnrSøker, tpsBarn, annenForelder);
         }
         return null;
     }
 
-    private HentPersonResponse hentPerson(Fodselsnummer fnr, HentPersonRequest request) {
+    private HentPersonResponse hentPerson(HentPersonRequest request) {
         try {
             return person.hentPerson(request);
         } catch (HentPersonPersonIkkeFunnet e) {
-            LOG.warn("Fant ikke person {}", fnr, e);
+            LOG.warn("Fant ikke person", e);
             throw new NotFoundException(e);
         } catch (HentPersonSikkerhetsbegrensning e) {
             LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);

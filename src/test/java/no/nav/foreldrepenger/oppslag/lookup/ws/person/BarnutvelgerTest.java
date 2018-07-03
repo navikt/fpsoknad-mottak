@@ -18,10 +18,10 @@ public class BarnutvelgerTest {
     public void testStønadsberettigetRelasjon() {
         int months = 2;
 
-        Barn barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(1), navn(), Kjønn.K);
+        Barn barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(1), navn(), Kjønn.K, null);
         assertThat(new BarnMorRelasjonSjekkendeBarnutvelger(months).erStonadsberettigetBarn(MOR, barn)).isTrue();
 
-        barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(3), navn(), Kjønn.K);
+        barn = new Barn(MOR, new Fodselsnummer(BARN_FNR), now().minusMonths(3), navn(), Kjønn.K, null);
         assertThat(new BarnMorRelasjonSjekkendeBarnutvelger(months).erStonadsberettigetBarn(MOR, barn)).isFalse();
     }
 

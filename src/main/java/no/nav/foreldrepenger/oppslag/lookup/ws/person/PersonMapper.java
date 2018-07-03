@@ -4,7 +4,6 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.lookup.Pair;
 import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
-import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +14,7 @@ final class PersonMapper {
 
     }
 
-    public static Person map(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person, List<Barn> barn) {
+    public static Person person(ID id, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person, List<Barn> barn) {
         return new Person(
             id,
             countryCode(person),
@@ -28,13 +27,22 @@ final class PersonMapper {
         );
     }
 
-    public static Barn map(NorskIdent id, Fodselsnummer fnrMor, HentPersonResponse barn) {
+    public static Barn barn(NorskIdent id, Fodselsnummer fnrMor, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person barn, AnnenForelder annenForelder) {
         return new Barn(
             fnrMor,
             new Fodselsnummer(id.getIdent()),
-            birthDate(barn.getPerson()),
-            name(barn.getPerson().getPersonnavn()),
-            Kjønn.valueOf(barn.getPerson().getKjoenn().getKjoenn().getValue())
+            birthDate(barn),
+            name(barn.getPersonnavn()),
+            Kjønn.valueOf(barn.getKjoenn().getKjoenn().getValue()),
+            annenForelder
+        );
+    }
+
+    public static AnnenForelder annenForelder(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person annenForelder) {
+        return new AnnenForelder(
+            name(annenForelder.getPersonnavn()),
+            new Fodselsnummer(PersonIdent.class.cast(annenForelder.getAktoer()).getIdent().getIdent()),
+            birthDate(annenForelder)
         );
     }
 
@@ -92,5 +100,4 @@ final class PersonMapper {
             return Pair.of(utenlandskKonto.getBankkontoUtland().getSwift(), utenlandskKonto.getBankkontoUtland().getBankkode());
         }
     }
-
 }

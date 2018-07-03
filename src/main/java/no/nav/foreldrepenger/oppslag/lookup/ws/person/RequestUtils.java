@@ -12,6 +12,7 @@ public class RequestUtils {
     static final String FNR = "FNR";
     static final String DNR = "DNR";
     static final String MOR = "MORA";
+    static final String FAR = "FARA";
     static final String BARN = "BARN";
 
     static HentPersonRequest request(String fnr, Informasjonsbehov... behov) {

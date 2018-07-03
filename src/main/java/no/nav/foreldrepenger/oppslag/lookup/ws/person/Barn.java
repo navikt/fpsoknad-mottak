@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import no.nav.foreldrepenger.oppslag.lookup.Pair;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -10,26 +9,30 @@ import static java.util.Objects.requireNonNull;
 
 public class Barn {
 
-    private final Pair<Fodselsnummer, Fodselsnummer> fnrs;
+    private final Fodselsnummer fnr;
+    private final Fodselsnummer fnrSøker;
     private final LocalDate fødselsdato;
     private final Navn navn;
     private final Kjønn kjønn;
+    private final AnnenForelder annenForelder;
 
-    public Barn(Fodselsnummer fnrMor, Fodselsnummer fnr, LocalDate fødselsdato, Navn navn, Kjønn kjønn) {
-        this.fnrs = Pair.of(fnr, fnrMor);
+    public Barn(Fodselsnummer fnrSøker, Fodselsnummer fnr, LocalDate fødselsdato, Navn navn, Kjønn kjønn, AnnenForelder annenForelder) {
+        this.fnr = fnr;
+        this.fnrSøker = fnrSøker;
         this.fødselsdato = requireNonNull(fødselsdato);
         this.navn = navn;
         this.kjønn = kjønn;
+        this.annenForelder = annenForelder;
     }
 
     @JsonUnwrapped
     public Fodselsnummer getFnr() {
-        return fnrs.getFirst();
+        return fnr;
     }
 
     @JsonUnwrapped
-    public Fodselsnummer getFnrMor() {
-        return fnrs.getSecond();
+    public Fodselsnummer getFnrSøker() {
+        return fnrSøker;
     }
 
     @JsonUnwrapped
@@ -45,9 +48,13 @@ public class Barn {
         return kjønn;
     }
 
+    public AnnenForelder getAnnenForelder() {
+        return annenForelder;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(fnrs, fødselsdato);
+        return Objects.hash(fnr, fødselsdato);
     }
 
     @Override
@@ -59,12 +66,11 @@ public class Barn {
             return false;
         }
         Barn that = (Barn) o;
-        return Objects.equals(fnrs, that.fnrs) && Objects.equals(fødselsdato, that.fødselsdato);
+        return Objects.equals(fnr, that.fnr) && Objects.equals(fødselsdato, that.fødselsdato);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [fnr=" + fnrs.getFirst() + ", fnrMor=" + fnrs.getSecond() + ", fødselsdato="
-            + fødselsdato + "]";
+        return getClass().getSimpleName() + " [fnr=" + fnr + "]";
     }
 }
