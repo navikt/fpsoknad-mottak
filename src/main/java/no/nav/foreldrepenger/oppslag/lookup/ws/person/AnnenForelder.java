@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -15,10 +17,12 @@ public class AnnenForelder {
         this.fødselsdato = fødselsdato;
     }
 
+    @JsonUnwrapped
     public Navn getNavn() {
         return navn;
     }
 
+    @JsonUnwrapped
     public Fodselsnummer getFnr() {
         return fnr;
     }
