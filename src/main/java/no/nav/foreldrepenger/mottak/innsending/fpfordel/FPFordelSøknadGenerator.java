@@ -334,8 +334,7 @@ public class FPFordelSøknadGenerator {
     private static List<OppholdNorge> oppholdNorgeFra() {
         return Collections.singletonList(new OppholdNorge()
                 .withPeriode(new Periode()
-                        .withFom(LocalDate.now().minusYears(1))
-                        .withTom(LocalDate.now().plusYears(1))));
+                        .withFom(LocalDate.now().minusYears(1)).withTom(LocalDate.now().plusYears(1))));
     }
 
     private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
@@ -353,18 +352,13 @@ public class FPFordelSøknadGenerator {
 
     private static Stream<Utenlandsopphold> safeStream(List<Utenlandsopphold> list) {
         return list == null ? Stream.empty() : list.stream();
-
-    }
-
-    private static List<OppholdUtlandet> oppholdUtlandetFra(List<Utenlandsopphold> utenlandsOpphold) {
-        return utenlandsOpphold.stream()
-                .map(s -> utenlandOppholdFra(s))
-                .collect(toList());
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
         return opphold == null ? null
                 : new OppholdUtlandet()
+                        .withPeriode(new Periode().withFom(opphold.getVarighet().getFom())
+                                .withTom(opphold.getVarighet().getTom()))
                         .withLand(landFra(opphold.getLand()));
     }
 
