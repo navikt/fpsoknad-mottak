@@ -23,7 +23,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
@@ -62,7 +61,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
             document.add(center(heading(fromMessageSource("søknad_fp"))));
             document.add(søker(søker));
             if (stønad.getOpptjening() != null) {
-                document.add(arbeidsforhold(stønad.getOpptjening().getArbeidsforhold()));
+                document.add(arbeidsforhold(stønad.getOpptjening().getUtenlandskArbeidsforhold()));
                 document.add(blankLine());
                 document.add(egenNæring(stønad.getOpptjening().getEgenNæring()));
             }
@@ -152,7 +151,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         return paragraph;
     }
 
-    private Paragraph arbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
+    private Paragraph arbeidsforhold(List<UtenlandskArbeidsforhold> arbeidsforhold) {
         Paragraph paragraph = new Paragraph();
         paragraph.add(heading(fromMessageSource("arbeidsforhold")));
         final List<String> formatted = arbeidsforhold.stream()
@@ -172,11 +171,11 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         return paragraph;
     }
 
-    private String format(Arbeidsforhold arbeidsforhold) {
+    private String format(UtenlandskArbeidsforhold arbeidsforhold) {
         UtenlandskArbeidsforhold ua = UtenlandskArbeidsforhold.class.cast(arbeidsforhold);
         return ua.getArbeidsgiverNavn() + " (" + countryName(ua.getLand().getAlpha2()) + ")" + "\n" +
                 dato(ua.getPeriode().getFom()) + "\n" +
-                ua.getBeskrivelseRelasjon();
+                ua.isNærRelasjon();
     }
 
     private String formatEgenNæring(EgenNæring næring) {

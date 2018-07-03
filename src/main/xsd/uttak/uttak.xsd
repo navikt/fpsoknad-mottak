@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1"  xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1">
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" schemaLocation="../foreldrepenger/foreldrepenger.xsd"/>
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
   <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
@@ -8,7 +8,7 @@
         <xsd:sequence>
           <xsd:element name="arbeidtidProsent" type="xsd:double"/>
           <xsd:element name="erArbeidstaker" type="xsd:boolean"/>
-          <xsd:element minOccurs="0" name="virksomhetsnummer" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="virksomhetsnummer" type="xsd:anyType"/>
           <xsd:element name="arbeidsforholdSomSkalGraderes" type="xsd:boolean"/>
         </xsd:sequence>
       </xsd:extension>

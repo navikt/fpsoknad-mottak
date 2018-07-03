@@ -1,115 +1,115 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1"  xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
-  <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" schemaLocation="../uttak/uttak.xsd"/>
-  <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
-  <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
-  
-  <xsd:complexType name="AnnenOpptjening">
-    <xsd:sequence>
-      <xsd:element name="type" type="kv:AnnenOpptjeningTyper"/>
-      <xsd:element minOccurs="0" name="periode" type="felles:Periode"/>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType abstract="true" name="Arbeidsforhold">
-    <xsd:sequence>
-      <xsd:element name="periode" type="felles:Periode"/>
-      <xsd:element minOccurs="0" name="arbeidsgiversnavn" type="xsd:string"/>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
-      <xsd:element minOccurs="0" name="beskrivelseAvNaerRelasjon" type="xsd:string"/>
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="Arbeidsforholdtyper">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Kodeverk"/>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType abstract="true" name="EgenNaering">
-    <xsd:sequence>
-      <xsd:element minOccurs="0" name="arbeidsland" type="kv:Land"/>
-      <xsd:element minOccurs="0" name="regnskapsfoerer" type="fp:Regnskapsfoerer"/>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="virksomhetstype" type="kv:Virksomhetstyper"/>
-      <xsd:element minOccurs="0" name="periode" type="felles:Periode"/>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="vedlegg" type="xsd:IDREF"/>
-      <xsd:element minOccurs="0" name="beskrivelseAvNaerRelasjon" type="xsd:string"/>
-      <xsd:element name="erNyoppstartet" type="xsd:boolean"/>
-      <xsd:element name="erVarigEndring" type="xsd:boolean"/>
-      <xsd:element minOccurs="0" name="naeringsinntektBrutto" type="xsd:integer"/>
-      <xsd:element minOccurs="0" name="endringsDato" type="xsd:date"/>
-      <xsd:element minOccurs="0" name="beskrivelseAvEndring" type="xsd:string"/>
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="NorskArbeidsforhold">
-    <xsd:complexContent>
-      <xsd:extension base="fp:Arbeidsforhold">
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1"
+            xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1"
+            xmlns:fp="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1"
+            xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1"
+            xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1">
+    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" schemaLocation="../uttak/uttak.xsd"/>
+    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
+    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
+    <xsd:complexType name="AnnenOpptjening">
         <xsd:sequence>
-          <xsd:element minOccurs="0" name="virksomhetsnummer" type="xsd:string"/>
-          <xsd:element minOccurs="0" name="arbeidsforholdtype" type="fp:Arbeidsforholdtyper"/>
+            <xsd:element name="type" type="kv:AnnenOpptjeningTyper"/>
+            <xsd:element name="periode" type="felles:Periode" minOccurs="0"/>
+            <xsd:element name="vedlegg" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="NorskOrganisasjon">
-    <xsd:complexContent>
-      <xsd:extension base="fp:EgenNaering">
+    </xsd:complexType>
+    <xsd:complexType name="Frilans">
         <xsd:sequence>
-          <xsd:element name="organisasjonsnummer" type="xsd:string"/>
-          <xsd:element name="navn" type="xsd:string"/>
+            <xsd:element name="periode" type="felles:Periode" maxOccurs="unbounded"/>
+            <xsd:element name="harInntektFraFosterhjem" type="xsd:boolean"/>
+            <xsd:element name="erNyoppstartet" type="xsd:boolean"/>
+            <xsd:element name="naerRelasjon" type="xsd:boolean"/>
+            <xsd:element name="frilansoppdrag" type="fp:Frilansoppdrag" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="vedlegg" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Opptjening">
-    <xsd:sequence>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="arbeidsforhold" type="fp:Arbeidsforhold"/>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="egenNaering" type="fp:EgenNaering"/>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="annenOpptjening" type="fp:AnnenOpptjening"/>
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="Regnskapsfoerer">
-    <xsd:sequence>
-      <xsd:element name="navn" type="xsd:string"/>
-      <xsd:element name="telefon" type="xsd:string"/>
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="UtenlandskArbeidsforhold">
-    <xsd:complexContent>
-      <xsd:extension base="fp:Arbeidsforhold">
+    </xsd:complexType>
+    <xsd:complexType name="Frilansoppdrag">
         <xsd:sequence>
-          <xsd:element name="arbeidsland" type="kv:Land"/>
-          <xsd:element name="harHattInntektIPerioden" type="xsd:boolean"/>
+            <xsd:element name="periode" type="felles:Periode"/>
+            <xsd:element name="oppdragsgiver" type="xsd:string"/>
         </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="UtenlandskOrganisasjon">
-    <xsd:complexContent>
-      <xsd:extension base="fp:EgenNaering">
+    </xsd:complexType>
+    <xsd:complexType name="EgenNaering" abstract="true">
         <xsd:sequence>
-          <xsd:element name="navn" type="xsd:string"/>
-          <xsd:element name="registrertILand" type="kv:Land"/>
+            <xsd:element name="arbeidsland" type="kv:Land" minOccurs="0"/>
+            <xsd:element name="regnskapsfoerer" type="fp:Regnskapsfoerer" minOccurs="0"/>
+            <xsd:element name="virksomhetstype" type="kv:Virksomhetstyper" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="periode" type="felles:Periode" minOccurs="0"/>
+            <xsd:element name="vedlegg" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="naerRelasjon" type="xsd:boolean" minOccurs="0"/>
+            <xsd:element name="erNyoppstartet" type="xsd:boolean"/>
+            <xsd:element name="erVarigEndring" type="xsd:boolean"/>
+            <xsd:element name="naeringsinntektBrutto" type="xsd:integer" minOccurs="0"/>
+            <xsd:element name="endringsDato" type="xsd:date" minOccurs="0"/>
+            <xsd:element name="beskrivelseAvEndring" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="erNyIArbeidslivet" type="xsd:boolean"/>
+            <xsd:element name="oppstartsdato" type="xsd:date" minOccurs="0"/>
         </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Foreldrepenger">
-    <xsd:complexContent>
-      <xsd:extension base="felles:Ytelse">
+    </xsd:complexType>
+    <xsd:complexType name="NorskOrganisasjon">
+        <xsd:complexContent>
+            <xsd:extension base="fp:EgenNaering">
+                <xsd:sequence>
+                    <xsd:element name="organisasjonsnummer" type="xsd:string"/>
+                    <xsd:element name="navn" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Opptjening">
         <xsd:sequence>
-          <xsd:element minOccurs="0" name="annenForelder" type="felles:AnnenForelder"/>
-          <xsd:element minOccurs="0" name="rettigheter" type="felles:Rettigheter"/>
-          <xsd:element minOccurs="0" name="relasjonTilBarnet" type="felles:SoekersRelasjonTilBarnet"/>
-          <xsd:element minOccurs="0" name="medlemskap" type="felles:Medlemskap"/>
-          <xsd:element minOccurs="0" name="opptjening" type="fp:Opptjening"/>
-          <xsd:element minOccurs="0" name="fordeling" type="ut:Fordeling"/>
-          <xsd:element minOccurs="0" name="dekningsgrad" type="fp:Dekningsgrad"/>
+            <xsd:element name="utenlandskArbeidsforhold" type="fp:UtenlandskArbeidsforhold" minOccurs="0"
+                         maxOccurs="unbounded"/>
+            <xsd:element name="frilans" type="fp:Frilans" minOccurs="0"/>
+            <xsd:element name="egenNaering" type="fp:EgenNaering" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="annenOpptjening" type="fp:AnnenOpptjening" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-  <xsd:complexType name="Dekningsgrad">
-    <xsd:sequence>
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="perioder" type="felles:LukketPeriode"/>
-      <xsd:element name="dekningsgrad" type="kv:Dekningsgrader"/>
-    </xsd:sequence>
-  </xsd:complexType>
+    </xsd:complexType>
+    <xsd:complexType name="Regnskapsfoerer">
+        <xsd:sequence>
+            <xsd:element name="navn" type="xsd:string"/>
+            <xsd:element name="telefon" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="UtenlandskArbeidsforhold">
+        <xsd:sequence>
+            <xsd:element name="periode" type="felles:Periode"/>
+            <xsd:element name="arbeidsgiversnavn" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="arbeidsland" type="kv:Land"/>
+            <xsd:element name="vedlegg" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="UtenlandskOrganisasjon">
+        <xsd:complexContent>
+            <xsd:extension base="fp:EgenNaering">
+                <xsd:sequence>
+                    <xsd:element name="navn" type="xsd:string"/>
+                    <xsd:element name="stillingsprosent" type="xsd:integer"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Foreldrepenger">
+        <xsd:complexContent>
+            <xsd:extension base="felles:Ytelse">
+                <xsd:sequence>
+                    <xsd:element name="annenForelder" type="felles:AnnenForelder" minOccurs="0"/>
+                    <xsd:element name="rettigheter" type="felles:Rettigheter" minOccurs="0"/>
+                    <xsd:element name="relasjonTilBarnet" type="felles:SoekersRelasjonTilBarnet" minOccurs="0"/>
+                    <xsd:element name="medlemskap" type="felles:Medlemskap" minOccurs="0"/>
+                    <xsd:element name="opptjening" type="fp:Opptjening" minOccurs="0"/>
+                    <xsd:element name="fordeling" type="ut:Fordeling" minOccurs="0"/>
+                    <xsd:element name="dekningsgrad" type="fp:Dekningsgrad" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Dekningsgrad">
+        <xsd:sequence>
+            <xsd:element name="perioder" type="felles:LukketPeriode" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="dekningsgrad" type="kv:Dekningsgrader"/>
+        </xsd:sequence>
+    </xsd:complexType>
 </xsd:schema>

@@ -61,7 +61,6 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Ytelse;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Arbeidsforhold;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Dekningsgrad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.EgenNaering;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
@@ -159,7 +158,8 @@ public class FPFordelSøknadGenerator {
         return opptjening == null ? null
                 : new Opptjening()
                         .withEgenNaering(egenNæringFra(opptjening.getEgenNæring()))
-                        .withArbeidsforhold(arbeidForholdFra(opptjening.getArbeidsforhold()))
+                        .withUtenlandskArbeidsforhold(
+                                utenlandskArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
                         .withAnnenOpptjening(annenOpptjeningFra(opptjening.getAnnenOpptjening()));
     }
 
@@ -169,10 +169,10 @@ public class FPFordelSøknadGenerator {
                 .collect(toList());
     }
 
-    private static List<Arbeidsforhold> arbeidForholdFra(
-            List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.Arbeidsforhold> arbeidsforhold) {
-        return arbeidsforhold.stream()
-                .map(FPFordelSøknadGenerator::arbeidsforholdFra)
+    private static List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforholdFra(
+            List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
+        return utenlandskArbeidsforhold.stream()
+                .map(FPFordelSøknadGenerator::utenlandskArbeidsforholdFra)
                 .collect(toList());
     }
 
@@ -190,7 +190,7 @@ public class FPFordelSøknadGenerator {
                     .cast(egenNæring);
             return new NorskOrganisasjon()
                     .withBeskrivelseAvEndring(norskOrg.getBeskrivelseEndring())
-                    .withBeskrivelseAvNaerRelasjon(nærRelasjonFra(norskOrg.isNærRelasjon()))
+                    .withNaerRelasjon(norskOrg.isNærRelasjon())
                     .withEndringsDato(norskOrg.getEndringsDato())
                     .withErNyoppstartet(norskOrg.isErNyOpprettet())
                     .withErVarigEndring(norskOrg.isErVarigEndring())
@@ -207,7 +207,7 @@ public class FPFordelSøknadGenerator {
                     .cast(egenNæring);
             return new UtenlandskOrganisasjon()
                     .withBeskrivelseAvEndring(utenlandskOrg.getBeskrivelseEndring())
-                    .withBeskrivelseAvNaerRelasjon(nærRelasjonFra(utenlandskOrg.isNærRelasjon()))
+                    .withNaerRelasjon(utenlandskOrg.isNærRelasjon())
                     .withEndringsDato(utenlandskOrg.getEndringsDato())
                     .withErNyoppstartet(utenlandskOrg.isErNyOpprettet())
                     .withErVarigEndring(utenlandskOrg.isErVarigEndring())
@@ -220,10 +220,6 @@ public class FPFordelSøknadGenerator {
         }
         throw new IllegalArgumentException("Vil aldri skje");
 
-    }
-
-    private static String nærRelasjonFra(boolean nærRelasjon) {
-        return nærRelasjon ? "JA" : "NEI";
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(
@@ -276,13 +272,9 @@ public class FPFordelSøknadGenerator {
                 .withPeriode(periodeFra(annenOpptjening.getPeriode()));
     }
 
-    private static Arbeidsforhold arbeidsforholdFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Arbeidsforhold arbeidsForhold) {
-
-        if (arbeidsForhold instanceof UtenlandskArbeidsforhold) {
-            return utenlandskArbeidsforhold(UtenlandskArbeidsforhold.class.cast(arbeidsForhold));
-        }
-        throw new IllegalArgumentException("Vil aldri skje");
+    private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold utenlandskArbeidsforholdFra(
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold arbeidsForhold) {
+        return utenlandskArbeidsforhold(arbeidsForhold);
 
     }
 
@@ -291,8 +283,6 @@ public class FPFordelSøknadGenerator {
         return new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold()
                 .withArbeidsgiversnavn(arbeidsForhold.getArbeidsgiverNavn())
                 .withArbeidsland(landFra(arbeidsForhold.getLand()))
-                .withBeskrivelseAvNaerRelasjon(arbeidsForhold.getBeskrivelseRelasjon())
-                .withHarHattInntektIPerioden(arbeidsForhold.isHarHattArbeidIPerioden())
                 .withPeriode(periodeFra(arbeidsForhold.getPeriode()));
     }
 

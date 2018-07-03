@@ -13,15 +13,15 @@ import wiremock.com.fasterxml.jackson.annotation.JsonCreator;
 @Data
 public class Opptjening {
 
-    private final List<Arbeidsforhold> arbeidsforhold;
+    private final List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold;
     private final List<EgenNæring> egenNæring;
     private final List<AnnenOpptjening> annenOpptjening;
 
     @JsonCreator
-    public Opptjening(@JsonProperty("arbeidsforhold") List<Arbeidsforhold> arbeidsforhold,
+    public Opptjening(@JsonProperty("arbeidsforhold") List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold,
             @JsonProperty("egenNæring") List<EgenNæring> egenNæring,
             @JsonProperty("annenOpptjening") List<AnnenOpptjening> annenOpptjening) {
-        this.arbeidsforhold = Optional.ofNullable(arbeidsforhold).orElse(emptyList());
+        this.utenlandskArbeidsforhold = Optional.ofNullable(utenlandskArbeidsforhold).orElse(emptyList());
         this.egenNæring = Optional.ofNullable(egenNæring).orElse(emptyList());
         this.annenOpptjening = Optional.ofNullable(annenOpptjening).orElse(emptyList());
     }
