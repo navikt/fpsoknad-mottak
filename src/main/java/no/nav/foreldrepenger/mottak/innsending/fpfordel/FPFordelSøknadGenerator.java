@@ -4,9 +4,12 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 
@@ -21,7 +24,9 @@ import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
@@ -52,6 +57,7 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v1.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Foedsel;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.LukketPeriode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Medlemskap;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.OppholdNorge;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.OppholdUtlandet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Rettigheter;
@@ -313,11 +319,41 @@ public class FPFordelSøknadGenerator {
 
     private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap) {
         LOG.info("Genererer FPFordel medlemsskap modell fra {}", medlemsskap);
-        return new Medlemskap()
-                .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()))
-                .withINorgeVedFoedselstidspunkt(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge())
-                .withBorINorgeNeste12Mnd(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
-                .withBoddINorgeSiste12Mnd(medlemsskap.getTidligereOppholdsInfo().isBoddINorge());
+        Medlemskap m = new Medlemskap()
+                .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo(),
+                        medlemsskap.getFramtidigOppholdsInfo()))
+                .withINorgeVedFoedselstidspunkt(true);
+        return (medlemsskap.getTidligereOppholdsInfo().isBoddINorge()
+                && medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
+                        ? m.withOppholdNorge(oppholdNorgeFra())
+                        : m;
+
+        // TODO sette norske perioder for de periodene man ikke er i utlandet?
+    }
+
+    private static List<OppholdNorge> oppholdNorgeFra() {
+        return Collections.singletonList(new OppholdNorge()
+                .withPeriode(new Periode()
+                        .withFom(LocalDate.now().minusYears(1))
+                        .withTom(LocalDate.now().plusYears(1))));
+    }
+
+    private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
+            FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
+        if (tidligereOppholdsInfo.isBoddINorge() && framtidigOppholdsInfo.isNorgeNeste12()) {
+            return Collections.emptyList();
+        }
+        return Stream
+                .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
+                        safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
+                .map(s -> utenlandOppholdFra(s))
+                .collect(toList());
+
+    }
+
+    private static Stream<Utenlandsopphold> safeStream(List<Utenlandsopphold> list) {
+        return list == null ? Stream.empty() : list.stream();
+
     }
 
     private static List<OppholdUtlandet> oppholdUtlandetFra(List<Utenlandsopphold> utenlandsOpphold) {
