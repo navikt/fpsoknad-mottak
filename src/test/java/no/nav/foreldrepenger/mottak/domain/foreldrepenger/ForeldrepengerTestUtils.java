@@ -43,7 +43,7 @@ public class ForeldrepengerTestUtils {
                 .fordeling(fordeling())
                 .opptjening(opptjening())
                 .relasjonTilBarn(termin())
-                .medlemsskap(medlemsskap(true))
+                .medlemsskap(medlemsskap(false))
                 .build();
     }
 
