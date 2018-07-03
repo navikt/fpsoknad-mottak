@@ -340,7 +340,7 @@ public class FPFordelSøknadGenerator {
     private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
             FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
         if (tidligereOppholdsInfo.isBoddINorge() && framtidigOppholdsInfo.isNorgeNeste12()) {
-            return Collections.singletonList(new OppholdUtlandet());
+            return Collections.emptyList();
         }
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
