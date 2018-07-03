@@ -2,11 +2,12 @@ package no.nav.foreldrepenger.oppslag.lookup.ws.person;
 
 import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.oppslag.lookup.Pair;
-import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static no.nav.foreldrepenger.oppslag.time.DateUtil.toLocalDate;
 
 final class PersonMapper {
 
@@ -66,7 +67,11 @@ final class PersonMapper {
     }
 
     private static LocalDate birthDate(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-        return DateUtil.toLocalDate(person.getFoedselsdato().getFoedselsdato());
+        if (person.getFoedselsdato() != null && person.getFoedselsdato().getFoedselsdato() != null) {
+            return toLocalDate(person.getFoedselsdato().getFoedselsdato());
+        } else {
+            return null;
+        }
     }
 
     private static String målform(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
