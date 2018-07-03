@@ -35,7 +35,7 @@ public class PersonClientStub implements PersonClient {
             now().minusYears(1),
             new Navn("Mo", null, "Sveen"),
             M,
-            null);
+            new AnnenForelder(new Navn("Anne", "N", "Forelder"), new Fodselsnummer("01019012345"), now().minusYears(25)));
 
         return singletonList(barn);
     }
