@@ -92,21 +92,31 @@ public class PersonClientTpsWs implements PersonClient {
         return rolle.equals(MOR) || rolle.equals(FAR);
     }
 
-    private boolean isNotSøker(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person forelder, Fodselsnummer fnrSøker) {
+    /*private boolean isNotSøker(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person forelder, Fodselsnummer fnrSøker) {
         NorskIdent id = PersonIdent.class.cast(forelder.getAktoer()).getIdent();
         return !fnrSøker.getFnr().equals(id.getIdent());
-    }
+    }*/
 
     private Barn hentBarn(Familierelasjon rel, Fodselsnummer fnrSøker) {
         NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
-        if (RequestUtils.isFnr(id)) {
+        if (isFnr(id)) {
             Fodselsnummer fnrBarn = new Fodselsnummer(id.getIdent());
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsBarn = hentPerson(request(fnrBarn, FAMILIERELASJONER)).getPerson();
 
-            AnnenForelder annenForelder = tpsBarn.getHarFraRolleI().stream()
+            /*AnnenForelder annenForelder = tpsBarn.getHarFraRolleI().stream()
                 .filter(this::isForelder)
                 .map(Familierelasjon::getTilPerson)
                 .filter(p -> this.isNotSøker(p, fnrSøker))
+                .map(PersonMapper::annenForelder)
+                .findFirst()
+                .orElse(null);*/
+
+            AnnenForelder annenForelder = tpsBarn.getHarFraRolleI().stream()
+                .filter(this::isForelder)
+                .map(this::toFødselsnummer)
+                .filter(Objects::nonNull)
+                .filter(fnr -> !fnr.equals(fnrSøker))
+                .map(fnr -> hentPerson(request(fnr)).getPerson())
                 .map(PersonMapper::annenForelder)
                 .findFirst()
                 .orElse(null);
@@ -114,6 +124,15 @@ public class PersonClientTpsWs implements PersonClient {
             return barn(id, fnrSøker, tpsBarn, annenForelder);
         }
         return null;
+    }
+
+    private Fodselsnummer toFødselsnummer(Familierelasjon rel) {
+        NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
+        if (isFnr(id)) {
+            return new Fodselsnummer(id.getIdent());
+        } else {
+            return null;
+        }
     }
 
     private HentPersonResponse hentPerson(HentPersonRequest request) {
