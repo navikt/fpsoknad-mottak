@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 
+import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -317,24 +318,27 @@ public class FPFordelSøknadGenerator {
         return periode == null ? null : new Periode().withFom(periode.getFom());
     }
 
-    private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap) {
-        LOG.info("Genererer FPFordel medlemsskap modell fra {}", medlemsskap);
-        Medlemskap m = new Medlemskap()
-                .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo(),
-                        medlemsskap.getFramtidigOppholdsInfo()))
+    private static Medlemskap medlemsskapFra(Medlemsskap ms) {
+        LOG.info("Genererer FPFordel medlemsskap modell fra {}", ms);
+        Medlemskap medlemsskap = new Medlemskap()
+                .withOppholdUtlandet(oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
                 .withINorgeVedFoedselstidspunkt(true);
-        return (medlemsskap.getTidligereOppholdsInfo().isBoddINorge()
-                && medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
-                        ? m.withOppholdNorge(oppholdNorgeFra())
-                        : m;
+        return (ms.getTidligereOppholdsInfo().isBoddINorge()
+                && ms.getFramtidigOppholdsInfo().isNorgeNeste12())
+                        ? medlemsskap.withOppholdNorge(kunOppholdNorge())
+                        : medlemsskap;
 
         // TODO sette norske perioder for de periodene man ikke er i utlandet?
     }
 
-    private static List<OppholdNorge> oppholdNorgeFra() {
-        return Collections.singletonList(new OppholdNorge()
+    private static List<OppholdNorge> kunOppholdNorge() {
+        return Lists.newArrayList(new OppholdNorge()
                 .withPeriode(new Periode()
-                        .withFom(LocalDate.now().minusYears(1)).withTom(LocalDate.now().plusYears(1))));
+                        .withFom(LocalDate.now().minusYears(1))
+                        .withTom(LocalDate.now())),
+                new OppholdNorge().withPeriode(new Periode()
+                        .withFom(LocalDate.now().plusDays(1))
+                        .withTom(LocalDate.now().plusYears(1))));
     }
 
     private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
@@ -350,8 +354,8 @@ public class FPFordelSøknadGenerator {
 
     }
 
-    private static Stream<Utenlandsopphold> safeStream(List<Utenlandsopphold> list) {
-        return list == null ? Stream.empty() : list.stream();
+    private static Stream<Utenlandsopphold> safeStream(List<Utenlandsopphold> opphold) {
+        return opphold == null ? Stream.empty() : opphold.stream();
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {

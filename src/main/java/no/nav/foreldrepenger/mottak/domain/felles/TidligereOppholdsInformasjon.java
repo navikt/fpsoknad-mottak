@@ -33,6 +33,6 @@ public class TidligereOppholdsInformasjon {
     public boolean varUtenlands(LocalDate dato) {
         return utenlandsOpphold
                 .stream()
-                .anyMatch(s -> s.getVarighet().isWithinPeriode(dato));
+                .anyMatch(s -> s.getVarighet().isWithinPeriod(dato));
     }
 }
