@@ -49,7 +49,11 @@ public class ForeldrepengerTestUtils {
 
     static Opptjening opptjening() {
         return new Opptjening(Collections.singletonList(utenlandskArbeidsforhold()), egneNæringer(),
-                andreOpptjeninger());
+                andreOpptjeninger(), frilans());
+    }
+
+    private static Frilans frilans() {
+        return new Frilans(åpenPeriode(), false, false, false, Collections.emptyList());
     }
 
     static List<AnnenOpptjening> andreOpptjeninger() {

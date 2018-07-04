@@ -14,10 +14,15 @@ import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 public class ÅpenPeriode {
 
     private final LocalDate fom;
+    private final LocalDate tom;
 
     @JsonCreator
-    public ÅpenPeriode(@NotNull LocalDate fom) {
+    public ÅpenPeriode(@NotNull LocalDate fom, LocalDate tom) {
         this.fom = fom;
+        this.tom = tom;
     }
 
+    public ÅpenPeriode(@NotNull LocalDate fom) {
+        this(fom, null);
+    }
 }
