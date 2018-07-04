@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
@@ -97,12 +96,17 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 @Component
 public class FPFordelSøknadGenerator {
 
+    private static final String UKJENT_KODEVERKSVERDI = "-";
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadGenerator.class);
     private static final String LASTET_OPP = "LASTET_OPP";
     private static final JAXBContext CONTEXT = Jaxb.context(Soeknad.class);
 
     public String toXML(Søknad søknad, AktorId aktørId) {
         return toXML(toFPFordelModel(søknad, aktørId));
+    }
+
+    public String toXML(Soeknad model) {
+        return marshall(CONTEXT, model, false);
     }
 
     public Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
@@ -117,20 +121,21 @@ public class FPFordelSøknadGenerator {
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
 
-    private List<Vedlegg> vedleggFra(List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
+    private static List<Vedlegg> vedleggFra(
+            List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return vedlegg.stream()
-                .map(this::vedleggFra)
+                .map(FPFordelSøknadGenerator::vedleggFra)
                 .collect(toList());
     }
 
-    private Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
+    private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
                 .withTilleggsinformasjon(vedlegg.getMetadata().getBeskrivelse())
                 .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().id)
-                .withInnsendingstype(innsendingsTypeMedKodeverk());
+                .withInnsendingstype(opplastetInnsendingsType());
     }
 
-    private static Innsendingstype innsendingsTypeMedKodeverk() {
+    private static Innsendingstype opplastetInnsendingsType() {
         Innsendingstype type = new Innsendingstype().withKode(LASTET_OPP);
         return type.withKodeverk(type.getKodeverk());
     }
@@ -144,19 +149,24 @@ public class FPFordelSøknadGenerator {
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
-                .withRettigheter(rettighetrFra(ytelse.getRettigheter(), ytelse
-                        .getAnnenForelder() instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder))
+                .withRettigheter(
+                        rettighetrFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()));
+    }
+
+    private static boolean erAnnenForelderUkjent(
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
+        return annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder;
     }
 
     private static Dekningsgrad dekningsgradFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad dekningsgrad) {
         return new Dekningsgrad()
-                .withDekningsgrad(dekningsgraderMedKodeverk(dekningsgrad.kode()));
+                .withDekningsgrad(dekningsgradFra(dekningsgrad.kode()));
     }
 
-    private static Dekningsgrader dekningsgraderMedKodeverk(String kode) {
+    private static Dekningsgrader dekningsgradFra(String kode) {
         Dekningsgrader dekningsgrad = new Dekningsgrader().withKode(kode);
         return dekningsgrad.withKodeverk(dekningsgrad.getKodeverk());
     }
@@ -233,7 +243,7 @@ public class FPFordelSøknadGenerator {
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype> typer) {
         return typer.stream()
                 .map(FPFordelSøknadGenerator::virksomhetsTypeFra)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private static Virksomhetstyper virksomhetsTypeFra(
@@ -246,12 +256,16 @@ public class FPFordelSøknadGenerator {
         case DAGMAMMA:
         case FISKE:
         case JORDBRUK_SKOGBRUK:
-            Virksomhetstyper vt = new Virksomhetstyper().withKode(type.name());
-            vt.setKodeverk(vt.getKodeverk());
-            return vt;
+            return virksomhetsTypeFra(type.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
+    }
+
+    private static Virksomhetstyper virksomhetsTypeFra(String type) {
+        Virksomhetstyper vt = new Virksomhetstyper().withKode(type);
+        vt.setKodeverk(vt.getKodeverk());
+        return vt;
     }
 
     private static Regnskapsfoerer regnskapsFørerFra(Regnskapsfører regnskapsfører) {
@@ -275,7 +289,7 @@ public class FPFordelSøknadGenerator {
     private static AnnenOpptjening annenOpptjeningFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening annenOpptjening) {
         return new AnnenOpptjening()
-                .withType(opptjeningtypeFra(annenOpptjening.getType()))
+                .withType(annenOpptjeningTypeFra(annenOpptjening.getType()))
                 .withPeriode(periodeFra(annenOpptjening.getPeriode()));
     }
 
@@ -293,7 +307,7 @@ public class FPFordelSøknadGenerator {
                 .withPeriode(periodeFra(arbeidsForhold.getPeriode()));
     }
 
-    private static AnnenOpptjeningTyper opptjeningtypeFra(AnnenOpptjeningType type) {
+    private static AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
         if (type == null) {
             return null;
         }
@@ -302,13 +316,13 @@ public class FPFordelSøknadGenerator {
         case LØNN_UNDER_UTDANNING:
         case MILITÆR_ELLER_SIVILTJENESTE:
         case VENTELØNN:
-            return annenOpptjeningTypeMedKodeverk(type.name());
+            return annenOpptjeningTypeFra(type.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
     }
 
-    private static AnnenOpptjeningTyper annenOpptjeningTypeMedKodeverk(String kode) {
+    private static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {
         AnnenOpptjeningTyper type = new AnnenOpptjeningTyper().withKode(kode);
         type.setKodeverk(type.getKodeverk());
         return type;
@@ -349,7 +363,7 @@ public class FPFordelSøknadGenerator {
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
                         safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
-                .map(s -> utenlandOppholdFra(s))
+                .map(FPFordelSøknadGenerator::utenlandOppholdFra)
                 .collect(toList());
 
     }
@@ -361,16 +375,17 @@ public class FPFordelSøknadGenerator {
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
         return opphold == null ? null
                 : new OppholdUtlandet()
-                        .withPeriode(new Periode().withFom(opphold.getVarighet().getFom())
+                        .withPeriode(new Periode()
+                                .withFom(opphold.getVarighet().getFom())
                                 .withTom(opphold.getVarighet().getTom()))
                         .withLand(landFra(opphold.getLand()));
     }
 
     private static final Land landFra(CountryCode land) {
-        return land == null ? null : landWithKodeverk(land.getAlpha3());
+        return land == null ? null : landFra(land.getAlpha3());
     }
 
-    private static final Land landWithKodeverk(String alphq3) {
+    private static final Land landFra(String alphq3) {
         Land land = new Land().withKode(alphq3);
         return land.withKodeverk(land.getKodeverk());
     }
@@ -403,7 +418,7 @@ public class FPFordelSøknadGenerator {
             return new Oppholdsperiode()
                     .withFom(oppholdsPeriode.getFom())
                     .withTom(oppholdsPeriode.getTom())
-                    .withAarsak(oppholdsårsakerFra(oppholdsPeriode.getÅrsak()));
+                    .withAarsak(oppholdsÅrsakFra(oppholdsPeriode.getÅrsak()));
 
         }
         if (periode instanceof UtsettelsesPeriode) {
@@ -411,13 +426,13 @@ public class FPFordelSøknadGenerator {
             return new Utsettelsesperiode()
                     .withFom(utsettelsesPeriode.getFom())
                     .withTom(utsettelsesPeriode.getTom())
-                    .withAarsak(utsettelsesårsakFra(utsettelsesPeriode.getÅrsak()));
+                    .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()));
 
         }
         if (periode instanceof GradertUttaksPeriode) {
             GradertUttaksPeriode uttaksPeriode = GradertUttaksPeriode.class.cast(periode);
             return new Gradering()
-                    .withType(uttaksperiodeTyperFra(uttaksPeriode.getUttaksperiodeType()))
+                    .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
                     .withFom(uttaksPeriode.getFom())
@@ -431,7 +446,7 @@ public class FPFordelSøknadGenerator {
         if (periode instanceof UttaksPeriode) {
             UttaksPeriode uttaksPeriode = UttaksPeriode.class.cast(periode);
             return new Uttaksperiode()
-                    .withType(uttaksperiodeTyperFra(uttaksPeriode.getUttaksperiodeType()))
+                    .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
                     .withFom(uttaksPeriode.getFom())
@@ -440,9 +455,9 @@ public class FPFordelSøknadGenerator {
         throw new IllegalArgumentException("Vil aldri skje");
     }
 
-    private static Uttaksperiodetyper uttaksperiodeTyperFra(StønadskontoType type) {
+    private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
         if (type == null) {
-            return null;
+            return uttaksperiodeTypeFra(UKJENT_KODEVERKSVERDI);
         }
         switch (type) {
         case FEDREKVOTE:
@@ -450,20 +465,20 @@ public class FPFordelSøknadGenerator {
         case FORELDREPENGER:
         case FORELDREPENGER_FØR_FØDSEL:
         case MØDREKVOTE:
-            return uttaksperiodeTypeMedKodeverk(type.name());
+            return uttaksperiodeTypeFra(type.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
     }
 
-    private static Uttaksperiodetyper uttaksperiodeTypeMedKodeverk(String type) {
+    private static Uttaksperiodetyper uttaksperiodeTypeFra(String type) {
         Uttaksperiodetyper periodeType = new Uttaksperiodetyper().withKode(type);
         return periodeType.withKodeverk(periodeType.getKodeverk());
     }
 
     private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet type) {
         if (type == null) {
-            return null;
+            morsAktivitetFra(UKJENT_KODEVERKSVERDI);
         }
         switch (type) {
         case SAMTIDIGUTTAK:
@@ -474,21 +489,21 @@ public class FPFordelSøknadGenerator {
         case KVALPROG:
         case TRENGER_HJELP:
         case UTDANNING:
-            return morsAktivitetMedKodeverk(type.name());
+            return morsAktivitetFra(type.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
 
     }
 
-    private static MorsAktivitetsTyper morsAktivitetMedKodeverk(String aktivitet) {
+    private static MorsAktivitetsTyper morsAktivitetFra(String aktivitet) {
         MorsAktivitetsTyper morsAktivitet = new MorsAktivitetsTyper().withKode(aktivitet);
         return morsAktivitet.withKodeverk(morsAktivitet.getKodeverk());
     }
 
-    private static Utsettelsesaarsaker utsettelsesårsakFra(UtsettelsesÅrsak årsak) {
+    private static Utsettelsesaarsaker utsettelsesÅrsakFra(UtsettelsesÅrsak årsak) {
         if (årsak == null) {
-            return null;
+            return utsettelsesÅrsakFra(UKJENT_KODEVERKSVERDI);
         }
         switch (årsak) {
         case ARBEID:
@@ -496,53 +511,52 @@ public class FPFordelSøknadGenerator {
         case INSTITUSJONSOPPHOLD_SØKER:
         case LOVBESTEMT_FERIE:
         case SYKDOM:
-            return utsettelsesÅrsakMedKodeverk(årsak.name());
+            return utsettelsesÅrsakFra(årsak.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
     }
 
-    private static Utsettelsesaarsaker utsettelsesÅrsakMedKodeverk(String årsak) {
+    private static Utsettelsesaarsaker utsettelsesÅrsakFra(String årsak) {
         Utsettelsesaarsaker utsettelsesÅrsak = new Utsettelsesaarsaker().withKode(årsak);
         return utsettelsesÅrsak.withKodeverk(utsettelsesÅrsak.getKodeverk());
     }
 
-    private static Oppholdsaarsaker oppholdsårsakerFra(Oppholdsårsak årsak) {
+    private static Oppholdsaarsaker oppholdsÅrsakFra(Oppholdsårsak årsak) {
         if (årsak == null) {
-            return null;
+            return oppholdsÅrsakFra(UKJENT_KODEVERKSVERDI);
         }
         switch (årsak) {
         case INGEN:
         case UTTAK_FELLSP_ANNEN_FORLDER:
         case UTTAK_KVOTE_ANNEN_FORLDER:
-            return oppholdsÅrsakMedKodeverk(årsak.name());
+            return oppholdsÅrsakFra(årsak.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
     }
 
-    private static Oppholdsaarsaker oppholdsÅrsakMedKodeverk(String årsak) {
+    private static Oppholdsaarsaker oppholdsÅrsakFra(String årsak) {
         Oppholdsaarsaker oppholdsÅrsak = new Oppholdsaarsaker().withKode(årsak);
         return oppholdsÅrsak.withKodeverk(oppholdsÅrsak.getKodeverk());
     }
 
     private static Overfoeringsaarsaker overføringsÅrsakFra(Overføringsårsak årsak) {
         if (årsak == null) {
-            return null;
+            return overføringsÅrsakFra(UKJENT_KODEVERKSVERDI);
         }
         switch (årsak) {
         case ALENEOMSORG:
         case IKKE_RETT_ANNEN_FORELDER:
         case INSTITUSJONSOPPHOLD_ANNEN_FORELDER:
         case SYKDOM_ANNEN_FORELDER:
-            return overføringsÅrsakMedKodeverk(årsak.name());
+            return overføringsÅrsakFra(årsak.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
-
     }
 
-    private static Overfoeringsaarsaker overføringsÅrsakMedKodeverk(String årsak) {
+    private static Overfoeringsaarsaker overføringsÅrsakFra(String årsak) {
         Overfoeringsaarsaker overføringsÅrsak = new Overfoeringsaarsaker().withKode(årsak);
         return overføringsÅrsak.withKodeverk(overføringsÅrsak.getKodeverk());
     }
@@ -569,7 +583,7 @@ public class FPFordelSøknadGenerator {
     private static AnnenForelder annenForelderFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
 
-        if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder) {
+        if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder) {
             return ukjentForelder(
                     no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder.class.cast(annenForelder));
         }
@@ -621,27 +635,23 @@ public class FPFordelSøknadGenerator {
     private static Bruker søkerFra(AktorId aktørId, Søker søker) {
         return new Bruker()
                 .withAktoerId(aktørId.getId())
-                .withSoeknadsrolle(rolleFra(søker.getSøknadsRolle()));
+                .withSoeknadsrolle(brukerRolleFra(søker.getSøknadsRolle()));
     }
 
-    private static Brukerroller rolleFra(BrukerRolle søknadsRolle) {
+    private static Brukerroller brukerRolleFra(BrukerRolle søknadsRolle) {
         switch (søknadsRolle) {
         case MOR:
         case FAR:
         case MEDMOR:
-            return brukerrolleMedKodeverk(søknadsRolle.name());
+            return brukerRolleFra(søknadsRolle.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
         }
     }
 
-    private static Brukerroller brukerrolleMedKodeverk(String rolle) {
+    private static Brukerroller brukerRolleFra(String rolle) {
         Brukerroller brukerRolle = new Brukerroller().withKode(rolle);
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
-    }
-
-    public String toXML(Soeknad model) {
-        return marshall(CONTEXT, model, false);
     }
 
 }
