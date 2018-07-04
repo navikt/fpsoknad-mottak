@@ -9,12 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 @Validated
-public class Fodselsnummer {
+public class Fødselsnummer {
 
     @Size(min = 11, max = 11)
     private final String fnr;
 
-    public Fodselsnummer(String fnr) {
+    public Fødselsnummer(String fnr) {
         this.fnr = Objects.requireNonNull(fnr);
     }
 
@@ -36,7 +36,7 @@ public class Fodselsnummer {
         if ((o == null) || (getClass() != o.getClass())) {
             return false;
         }
-        Fodselsnummer that = (Fodselsnummer) o;
+        Fødselsnummer that = (Fødselsnummer) o;
         return Objects.equals(fnr, that.fnr);
     }
 

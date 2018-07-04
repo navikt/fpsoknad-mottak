@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.infotrygd.InfotrygdClient;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class InfotrygdClientStub implements InfotrygdClient {
     }
 
     @Override
-    public List<Ytelse> casesFor(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    public List<Ytelse> casesFor(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         return new ArrayList<>();
     }
 }

@@ -23,7 +23,7 @@ public class RequestUtils {
 
     }
 
-    static HentPersonRequest request(Fodselsnummer fnr, Informasjonsbehov... behov) {
+    static HentPersonRequest request(Fødselsnummer fnr, Informasjonsbehov... behov) {
         return request(fnr.getFnr(), behov);
     }
 

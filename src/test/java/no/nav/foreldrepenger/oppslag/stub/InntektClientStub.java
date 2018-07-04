@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.inntekt.Inntekt;
 import no.nav.foreldrepenger.oppslag.lookup.ws.inntekt.InntektClient;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class InntektClientStub implements InntektClient {
     }
 
     @Override
-    public List<Inntekt> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    public List<Inntekt> incomeForPeriod(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         return new ArrayList<>();
     }
 }

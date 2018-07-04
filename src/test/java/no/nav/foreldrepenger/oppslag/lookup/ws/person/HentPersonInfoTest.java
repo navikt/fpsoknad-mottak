@@ -70,7 +70,7 @@ public class HentPersonInfoTest {
     }
 
     private ID id() {
-        Fodselsnummer fnr = new Fodselsnummer("fnr");
+        Fødselsnummer fnr = new Fødselsnummer("fnr");
         AktorId aktorId = new AktorId("aktør");
         return new ID(aktorId, fnr);
     }

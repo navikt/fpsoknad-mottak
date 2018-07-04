@@ -38,7 +38,7 @@ public class PersonController {
             return ResponseEntity.badRequest().build();
         }
 
-        Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
+        Fødselsnummer fnr = new Fødselsnummer(fnrFromClaims);
         return ok(personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr)));
     }
 

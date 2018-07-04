@@ -7,9 +7,9 @@ import java.util.Objects;
 public class ID {
 
     private final AktorId aktorId;
-    private final Fodselsnummer fnr;
+    private final Fødselsnummer fnr;
 
-    public ID(AktorId aktorId, Fodselsnummer fnr) {
+    public ID(AktorId aktorId, Fødselsnummer fnr) {
         this.aktorId = aktorId;
         this.fnr = fnr;
     }
@@ -18,7 +18,7 @@ public class ID {
         return aktorId;
     }
 
-    public Fodselsnummer getFnr() {
+    public Fødselsnummer getFnr() {
         return fnr;
     }
 

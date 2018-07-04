@@ -8,10 +8,10 @@ import java.util.Objects;
 public class AnnenForelder {
 
     private final Navn navn;
-    private final Fodselsnummer fnr;
+    private final Fødselsnummer fnr;
     private final LocalDate fødselsdato;
 
-    public AnnenForelder(Navn navn, Fodselsnummer fnr, LocalDate fødselsdato) {
+    public AnnenForelder(Navn navn, Fødselsnummer fnr, LocalDate fødselsdato) {
         this.navn = navn;
         this.fnr = fnr;
         this.fødselsdato = fødselsdato;
@@ -23,7 +23,7 @@ public class AnnenForelder {
     }
 
     @JsonUnwrapped
-    public Fodselsnummer getFnr() {
+    public Fødselsnummer getFnr() {
         return fnr;
     }
 

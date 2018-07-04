@@ -12,7 +12,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.IncompleteRequestException;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeSikkerhetsbegrensning;
@@ -48,7 +48,7 @@ public class InntektClientWs implements InntektClient {
         }
     }
 
-    public List<Inntekt> incomeForPeriod(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    public List<Inntekt> incomeForPeriod(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         HentInntektListeRequest req = request(fnr, from, to);
         try {
             HentInntektListeResponse res = inntektV3.hentInntektListe(req);
@@ -67,7 +67,7 @@ public class InntektClientWs implements InntektClient {
         }
     }
 
-    private HentInntektListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    private HentInntektListeRequest request(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         HentInntektListeRequest req = new HentInntektListeRequest();
 
         PersonIdent person = new PersonIdent();

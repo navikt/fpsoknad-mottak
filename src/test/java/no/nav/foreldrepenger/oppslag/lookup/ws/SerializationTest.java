@@ -118,8 +118,8 @@ public class SerializationTest {
         return LocalDate.now().minusMonths(2);
     }
 
-    private static Fodselsnummer fnr() {
-        return new Fodselsnummer("03016536325");
+    private static Fødselsnummer fnr() {
+        return new Fødselsnummer("03016536325");
     }
 
     private static AktorId aktoer() {

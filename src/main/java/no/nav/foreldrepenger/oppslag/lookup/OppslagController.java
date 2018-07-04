@@ -23,7 +23,7 @@ import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClie
 import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.ID;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Person;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.PersonClient;
@@ -81,7 +81,7 @@ public class OppslagController {
 
     @GetMapping
     public ResponseEntity<Søkerinfo> essensiellSøkerinfo() {
-        Fodselsnummer fnr = fnrFromClaims();
+        Fødselsnummer fnr = fnrFromClaims();
         Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
         List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
         return ok(new Søkerinfo(person, arbeidsforhold));
@@ -92,12 +92,12 @@ public class OppslagController {
         return aktorClient.aktorIdForFnr(fnrFromClaims());
     }
 
-    private Fodselsnummer fnrFromClaims() {
+    private Fødselsnummer fnrFromClaims() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().isEmpty()) {
             throw new ForbiddenException("Fant ikke FNR i token");
         }
-        return new Fodselsnummer(fnrFromClaims);
+        return new Fødselsnummer(fnrFromClaims);
     }
 
     private static String registerNavn(Pingable register) {

@@ -11,7 +11,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.MedlemskapV2;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.PersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.Sikkerhetsbegrensning;
@@ -42,7 +42,7 @@ public class MedlClientWs implements MedlClient {
         }
     }
 
-    public List<MedlPeriode> medlInfo(Fodselsnummer fnr) {
+    public List<MedlPeriode> medlInfo(Fødselsnummer fnr) {
         HentPeriodeListeRequest req = new HentPeriodeListeRequest();
         Personidentifikator ident = new Foedselsnummer();
         ident.setValue(fnr.getFnr());

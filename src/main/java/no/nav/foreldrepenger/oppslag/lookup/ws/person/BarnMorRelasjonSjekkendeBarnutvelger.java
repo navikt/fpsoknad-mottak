@@ -11,7 +11,7 @@ public class BarnMorRelasjonSjekkendeBarnutvelger implements Barnutvelger {
     }
 
     @Override
-    public boolean erStonadsberettigetBarn(Fodselsnummer fnrSøker, Barn barn) {
+    public boolean erStonadsberettigetBarn(Fødselsnummer fnrSøker, Barn barn) {
         return fnrSøker.equals(barn.getFnrSøker()) && barn.getFødselsdato().isAfter(now().minusMonths(monthsBack));
     }
 }

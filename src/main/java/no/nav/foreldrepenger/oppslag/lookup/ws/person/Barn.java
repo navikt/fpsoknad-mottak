@@ -9,14 +9,14 @@ import static java.util.Objects.requireNonNull;
 
 public class Barn {
 
-    private final Fodselsnummer fnr;
-    private final Fodselsnummer fnrSøker;
+    private final Fødselsnummer fnr;
+    private final Fødselsnummer fnrSøker;
     private final LocalDate fødselsdato;
     private final Navn navn;
     private final Kjønn kjønn;
     private final AnnenForelder annenForelder;
 
-    public Barn(Fodselsnummer fnrSøker, Fodselsnummer fnr, LocalDate fødselsdato, Navn navn, Kjønn kjønn, AnnenForelder annenForelder) {
+    public Barn(Fødselsnummer fnrSøker, Fødselsnummer fnr, LocalDate fødselsdato, Navn navn, Kjønn kjønn, AnnenForelder annenForelder) {
         this.fnr = fnr;
         this.fnrSøker = fnrSøker;
         this.fødselsdato = requireNonNull(fødselsdato);
@@ -26,12 +26,12 @@ public class Barn {
     }
 
     @JsonUnwrapped
-    public Fodselsnummer getFnr() {
+    public Fødselsnummer getFnr() {
         return fnr;
     }
 
     @JsonUnwrapped
-    public Fodselsnummer getFnrSøker() {
+    public Fødselsnummer getFnrSøker() {
         return fnrSøker;
     }
 

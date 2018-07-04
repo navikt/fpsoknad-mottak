@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.oppslag.stub;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class ArbeidsforholdClientStub implements ArbeidsforholdClient {
     }
 
     @Override
-    public List<Arbeidsforhold> arbeidsforhold(Fodselsnummer fnr) {
+    public List<Arbeidsforhold> arbeidsforhold(Fødselsnummer fnr) {
         Arbeidsforhold arbeidsforhold1 = new Arbeidsforhold("0123456789", "orgnummer",
             69d, now().minusYears(1), empty());
         Arbeidsforhold arbeidsforhold2 = new Arbeidsforhold("999999999", "orgnummer",

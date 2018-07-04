@@ -29,13 +29,13 @@ public class PersonClientStub implements PersonClient {
 
     }
 
-    private List<Barn> barn(Fodselsnummer fnrMor) {
+    private List<Barn> barn(Fødselsnummer fnrMor) {
         Barn barn = new Barn(fnrMor,
-            new Fodselsnummer("01011812345"),
+            new Fødselsnummer("01011812345"),
             now().minusYears(1),
             new Navn("Mo", null, "Sveen"),
             M,
-            new AnnenForelder(new Navn("Anne", "N", "Forelder"), new Fodselsnummer("01019012345"), now().minusYears(25)));
+            new AnnenForelder(new Navn("Anne", "N", "Forelder"), new Fødselsnummer("01019012345"), now().minusYears(25)));
 
         return singletonList(barn);
     }

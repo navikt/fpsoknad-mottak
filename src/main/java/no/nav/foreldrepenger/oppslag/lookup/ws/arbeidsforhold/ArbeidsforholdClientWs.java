@@ -11,7 +11,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.IncompleteRequestException;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.FinnArbeidsforholdPrArbeidstakerUgyldigInput;
@@ -48,7 +48,7 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     }
 
     @Override
-    public List<Arbeidsforhold> arbeidsforhold(Fodselsnummer fnr) {
+    public List<Arbeidsforhold> arbeidsforhold(Fødselsnummer fnr) {
         try {
             FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3
                     .finnArbeidsforholdPrArbeidstaker(request(fnr));
@@ -68,7 +68,7 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
         }
     }
 
-    private FinnArbeidsforholdPrArbeidstakerRequest request(Fodselsnummer fnr) {
+    private FinnArbeidsforholdPrArbeidstakerRequest request(Fødselsnummer fnr) {
         FinnArbeidsforholdPrArbeidstakerRequest request = new FinnArbeidsforholdPrArbeidstakerRequest();
 
         NorskIdent ident = new NorskIdent();

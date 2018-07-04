@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.oppslag.lookup.FnrExtractor;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
@@ -36,7 +36,7 @@ class ArenaController {
             return badRequest().build();
         }
 
-        Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
+        Fødselsnummer fnr = new Fødselsnummer(fnrFromClaims);
         return ok(arenaClient.ytelser(fnr, LocalDate.now().minusMonths(12), LocalDate.now()));
     }
 

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.HentYtelseskontraktListeSikkerhetsbegrensning;
@@ -45,7 +45,7 @@ public class ArenaClientWs implements ArenaClient {
         }
     }
 
-    public List<Ytelse> ytelser(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    public List<Ytelse> ytelser(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         try {
             return ytelser.hentYtelseskontraktListe(request(fnr, from, to)).getYtelseskontraktListe().stream()
                     .map(YtelseskontraktMapper::map)
@@ -59,7 +59,7 @@ public class ArenaClientWs implements ArenaClient {
         }
     }
 
-    private HentYtelseskontraktListeRequest request(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    private HentYtelseskontraktListeRequest request(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         HentYtelseskontraktListeRequest req = new HentYtelseskontraktListeRequest();
         Periode periode = new Periode();
         periode.setFom(DateUtil.toXMLGregorianCalendar(from));

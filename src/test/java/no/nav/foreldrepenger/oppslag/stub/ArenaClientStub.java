@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.arena.ArenaClient;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class ArenaClientStub implements ArenaClient {
     }
 
     @Override
-    public List<Ytelse> ytelser(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    public List<Ytelse> ytelser(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         return new ArrayList<>();
     }
 }

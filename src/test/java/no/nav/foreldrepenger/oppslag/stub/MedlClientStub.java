@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.oppslag.stub;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlPeriode;
 import no.nav.foreldrepenger.oppslag.lookup.ws.medl.MedlClient;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ public class MedlClientStub implements MedlClient {
     }
 
     @Override
-    public List<MedlPeriode> medlInfo(Fodselsnummer fnr) {
+    public List<MedlPeriode> medlInfo(Fødselsnummer fnr) {
         return new ArrayList<>();
     }
 }

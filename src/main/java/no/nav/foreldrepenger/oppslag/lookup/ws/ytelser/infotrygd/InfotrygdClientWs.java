@@ -14,7 +14,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.oppslag.time.DateUtil;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.FinnSakListePersonIkkeFunnet;
@@ -49,7 +49,7 @@ public class InfotrygdClientWs implements InfotrygdClient {
         }
     }
 
-    public List<Ytelse> casesFor(Fodselsnummer fnr, LocalDate from, LocalDate to) {
+    public List<Ytelse> casesFor(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         FinnSakListeRequest req = new FinnSakListeRequest();
         Periode periode = new Periode();
         periode.setFom(DateUtil.toXMLGregorianCalendar(from));

@@ -28,10 +28,10 @@ final class PersonMapper {
         );
     }
 
-    public static Barn barn(NorskIdent id, Fodselsnummer fnrMor, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person barn, AnnenForelder annenForelder) {
+    public static Barn barn(NorskIdent id, Fødselsnummer fnrMor, no.nav.tjeneste.virksomhet.person.v3.informasjon.Person barn, AnnenForelder annenForelder) {
         return new Barn(
             fnrMor,
-            new Fodselsnummer(id.getIdent()),
+            new Fødselsnummer(id.getIdent()),
             birthDate(barn),
             name(barn.getPersonnavn()),
             Kjønn.valueOf(barn.getKjoenn().getKjoenn().getValue()),
@@ -42,7 +42,7 @@ final class PersonMapper {
     public static AnnenForelder annenForelder(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person annenForelder) {
         return new AnnenForelder(
             name(annenForelder.getPersonnavn()),
-            new Fodselsnummer(PersonIdent.class.cast(annenForelder.getAktoer()).getIdent().getIdent()),
+            new Fødselsnummer(PersonIdent.class.cast(annenForelder.getAktoer()).getIdent().getIdent()),
             birthDate(annenForelder)
         );
     }

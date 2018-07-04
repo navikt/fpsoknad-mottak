@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fodselsnummer;
+import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.FnrExtractor;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
@@ -31,7 +31,7 @@ class ArbeidsforholdController {
             return ResponseEntity.badRequest().build();
         }
 
-        Fodselsnummer fnr = new Fodselsnummer(fnrFromClaims);
+        Fødselsnummer fnr = new Fødselsnummer(fnrFromClaims);
         List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
         return ResponseEntity.ok(arbeidsforhold);
     }
