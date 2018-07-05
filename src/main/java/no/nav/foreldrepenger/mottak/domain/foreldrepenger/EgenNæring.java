@@ -30,7 +30,7 @@ public abstract class EgenNæring {
     private final List<Virksomhetstype> virksomhetsTyper;
     private final ÅpenPeriode periode;
     private final boolean nærRelasjon;
-    private final Regnskapsfører regnskapsfører;
+    private final List<Regnskapsfører> regnskapsførere;
     private final boolean erNyOpprettet;
     private final boolean erVarigEndring;
     private final long næringsinntektBrutto;
@@ -43,7 +43,7 @@ public abstract class EgenNæring {
             @JsonProperty("virksomhetsType") List<Virksomhetstype> virksomhetsTyper,
             @JsonProperty("periode") ÅpenPeriode periode,
             @JsonProperty("nærRelasjon") boolean nærRelasjon,
-            @JsonProperty("regnskapsfører") Regnskapsfører regnskapsfører,
+            @JsonProperty("regnskapsførere") List<Regnskapsfører> regnskapsførere,
             @JsonProperty("erNyOpprettet") boolean erNyOpprettet,
             @JsonProperty("erVarigEndring") boolean erVarigEndring,
             @JsonProperty("næringsinntektBrutto") long næringsinntektBrutto,
@@ -54,7 +54,7 @@ public abstract class EgenNæring {
         this.virksomhetsTyper = virksomhetsTyper;
         this.periode = periode;
         this.nærRelasjon = nærRelasjon;
-        this.regnskapsfører = regnskapsfører;
+        this.regnskapsførere = regnskapsførere;
         this.erNyOpprettet = erNyOpprettet;
         this.erVarigEndring = erVarigEndring;
         this.næringsinntektBrutto = næringsinntektBrutto;

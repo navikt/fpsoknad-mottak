@@ -215,7 +215,7 @@ public class FPFordelSøknadGenerator {
                     .withNavn(norskOrg.getOrgName())
                     .withOrganisasjonsnummer(norskOrg.getOrgNummer())
                     .withPeriode(periodeFra(norskOrg.getPeriode()))
-                    .withRegnskapsfoerer(regnskapsFørerFra(norskOrg.getRegnskapsfører()))
+                    .withRegnskapsfoerer(regnskapsFørerFra(norskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(norskOrg.getVirksomhetsTyper()))
                     .withArbeidsland(landFra(norskOrg.getArbeidsland()));
         }
@@ -231,7 +231,7 @@ public class FPFordelSøknadGenerator {
                     .withNaeringsinntektBrutto(BigInteger.valueOf(utenlandskOrg.getNæringsinntektBrutto()))
                     .withNavn(utenlandskOrg.getOrgName())
                     .withPeriode(periodeFra(utenlandskOrg.getPeriode()))
-                    .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsfører()))
+                    .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()))
                     .withArbeidsland(landFra(utenlandskOrg.getArbeidsland()));
         }
@@ -268,11 +268,17 @@ public class FPFordelSøknadGenerator {
         return vt;
     }
 
-    private static Regnskapsfoerer regnskapsFørerFra(Regnskapsfører regnskapsfører) {
-        return regnskapsfører == null ? null
-                : new Regnskapsfoerer()
-                        .withTelefon(regnskapsfører.getTelefon())
-                        .withNavn(navnFra(regnskapsfører.getNavn()));
+    private static Regnskapsfoerer regnskapsFørerFra(List<Regnskapsfører> regnskapsførere) {
+        if (regnskapsførere == null || regnskapsførere.isEmpty()) {
+            return null;
+        }
+        if (regnskapsførere.size() > 1) {
+            LOG.warn("Flere regnskapsførere ikke støttet");
+        }
+        Regnskapsfører regnskapsfører = regnskapsførere.get(0);
+        return new Regnskapsfoerer()
+                .withTelefon(regnskapsfører.getTelefon())
+                .withNavn(navnFra(regnskapsfører.getNavn()));
     }
 
     private static String navnFra(Navn navn) {

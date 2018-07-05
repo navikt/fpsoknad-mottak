@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -27,6 +28,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
 
 public abstract class AbstractPDFGenerator {
 
@@ -98,6 +100,13 @@ public abstract class AbstractPDFGenerator {
         bulletedList.setSymbolIndent(12);
         elements.stream().forEach(s -> bulletedList.add(s));
         return bulletedList;
+    }
+
+    protected static String navnToString(List<Regnskapsfører> regnskapsførere) {
+        return regnskapsførere.stream()
+                .map(s -> s.getNavn())
+                .map(AbstractPDFGenerator::navnToString)
+                .collect(Collectors.joining(","));
     }
 
     protected static String navnToString(Navn navn) {

@@ -87,7 +87,7 @@ public class ForeldrepengerTestUtils {
     static UtenlandskOrganisasjon utenlandskEgenNæring() {
         return UtenlandskOrganisasjon.builder()
                 .periode(åpenPeriode())
-                .regnskapsfører(new Regnskapsfører(navnUtenMellomnavn(), "+4746929061"))
+                .regnskapsførere(Collections.singletonList(new Regnskapsfører(navnUtenMellomnavn(), "+4746929061")))
                 .erNyOpprettet(true)
                 .erVarigEndring(true)
                 .næringsinntektBrutto(100_000)
@@ -101,7 +101,7 @@ public class ForeldrepengerTestUtils {
     static NorskOrganisasjon norskEgenNæring() {
         return NorskOrganisasjon.builder()
                 .periode(åpenPeriode())
-                .regnskapsfører(new Regnskapsfører(navnUtenMellomnavn(), "+4746929061"))
+                .regnskapsførere(Collections.singletonList(new Regnskapsfører(navnUtenMellomnavn(), "+4746929061")))
                 .erNyOpprettet(true)
                 .erVarigEndring(true)
                 .næringsinntektBrutto(100_000)

@@ -188,7 +188,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         return type.name() + " (" + countryName(næring.getArbeidsland().getAlpha2()) + ")" + "\n" +
                 dato(næring.getPeriode().getFom()) + "\n" +
                 næring.isNærRelasjon() + "\n" +
-                navnToString(næring.getRegnskapsfører().getNavn());
+                navnToString(næring.getRegnskapsførere());
     }
 
     private Paragraph dekningsgrad(Dekningsgrad dekningsgrad) {
