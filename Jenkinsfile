@@ -20,13 +20,13 @@ node {
 
     stage("Checkout") {
         cleanWs()
-       echo 'Checking out..'
+        echo 'Checking out..'
         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-           withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088']) {
-            sh(script: "git clone https://${token}:x-oauth-basic@github.com/${repo}/${application}.git .")
-           }
-         }
-       echo 'Getting git statuses..'
+            withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088']) {
+                sh(script: "git clone https://${token}:x-oauth-basic@github.com/${repo}/${application}.git .")
+            }
+        }
+        echo 'Getting git statuses..'
         commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
         commitHashShort = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         commitUrl = "https://github.com/${repo}/${application}/commit/${commitHash}"
@@ -36,80 +36,107 @@ node {
         releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
         echo 'Notifying github..'
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
-       echo 'Notofied github OK..'
+        echo 'Notofied github OK..'
         currentBuild.displayName = "${releaseVersion}"
     }
 
     stage("OWASP CVE check") {
-      //  sh "${mvn} -Powasp dependency-check:check"
+        //  sh "${mvn} -Powasp dependency-check:check"
     }
 
     stage("Build & publish") {
-       try {
-         sh "${mvn} versions:set -B -DnewVersion=${releaseVersion}"
-         sh "mkdir -p /tmp/${application}"
-         sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
-          slackSend([
-               color: 'good',
-               message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed  (${changelog})"
-           ])
-       }
-       catch (Exception e) {
-           currentBuild.result = 'FAILURE'
-           slackSend([
-               color: 'danger',
-               message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} failed (${changelog})"
-           ])
+        try {
+            sh "${mvn} versions:set -B -DnewVersion=${releaseVersion}"
+            sh "mkdir -p /tmp/${application}"
+            sh "${mvn} clean install -Djava.io.tmpdir=/tmp/${application} -B -e"
+            slackSend([
+                color  : 'good',
+                message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} passed  (${changelog})"
+            ])
+        }
+        catch (Exception e) {
+            currentBuild.result = 'FAILURE'
+            slackSend([
+                color  : 'danger',
+                message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> (<${commitUrl}|${commitHashShort}>) of ${repo}/${application}@master by ${committer} failed (${changelog})"
+            ])
         }
         finally {
             junit '**/target/surefire-reports/*.xml'
         }
         sh "docker build --build-arg version=${releaseVersion} --build-arg app_name=${application} -t ${dockerRepo}/${application}:${releaseVersion} ."
-           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-              sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${groupId}/${application}/${releaseVersion}/nais.yaml"
-              sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
-           }
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexusUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            sh "curl --fail -v -u ${env.USERNAME}:${env.PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/${groupId}/${application}/${releaseVersion}/nais.yaml"
+            sh "docker login -u ${env.USERNAME} -p ${env.PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
+        }
         sh "${mvn} versions:revert"
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
-  }
-
-    stage("Deploy to preprod") {
-      withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088',
-               'NO_PROXY=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no',
-               'no_proxy=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no'
-              ]) {
-         System.setProperty("java.net.useSystemProxies", "true")
-         System.setProperty("http.nonProxyHosts", "*.adeo.no")
-         callback = "${env.BUILD_URL}input/Deploy/"
-         def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
-         echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
-         try {
-            timeout(time: 15, unit: 'MINUTES') {
-               input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
-            }
-            slackSend([
-                    color: 'good',
-                    message: "${application} version ${releaseVersion} has been deployed to pre-prod."
-            ])
-         } catch (Exception ex) {
-              slackSend([
-                    color: 'warning',
-                    message: "Build ${releaseVersion} of ${application} could not be deployed to pre-prod"
-            ])
-            throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", ex)
-         }
-      }
     }
 
+    stage("Deploy to preprod") {
+        withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088',
+                 'NO_PROXY=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no',
+                 'no_proxy=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no'
+        ]) {
+            System.setProperty("java.net.useSystemProxies", "true")
+            System.setProperty("http.nonProxyHosts", "*.adeo.no")
+            callback = "${env.BUILD_URL}input/Deploy/"
+            def deploy = deployLib.deployNaisApp(application, releaseVersion, environment, zone, namespace, callback, committer).key
+            echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
+            try {
+                timeout(time: 15, unit: 'MINUTES') {
+                    input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
+                }
+                slackSend([
+                    color  : 'good',
+                    message: "${application} version ${releaseVersion} has been deployed to pre-prod."
+                ])
+            } catch (Exception ex) {
+                slackSend([
+                    color  : 'warning',
+                    message: "Unable to deploy ${application} version ${releaseVersion} to preprod. See https://jira.adeo.no/browse/${deploy} for details"
+                ])
+                throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", ex)
+            }
+        }
+    }
+
+    stage("Deploy to preprod") {
+        withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088',
+                 'NO_PROXY=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no',
+                 'no_proxy=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no'
+        ]) {
+            System.setProperty("java.net.useSystemProxies", "true")
+            System.setProperty("http.nonProxyHosts", "*.adeo.no")
+            callback = "${env.BUILD_URL}input/Deploy/"
+            def deploy = deployLib.deployNaisApp(application, releaseVersion, 't10', zone, 't10', callback, committer).key
+            echo "Check status here:  https://jira.adeo.no/browse/${deploy}"
+            try {
+                timeout(time: 15, unit: 'MINUTES') {
+                    input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
+                }
+                slackSend([
+                    color  : 'good',
+                    message: "${application} version ${releaseVersion} has been deployed to T10."
+                ])
+            } catch (Exception ex) {
+                slackSend([
+                    color  : 'warning',
+                    message: "Unable to deploy ${application} version ${releaseVersion} to T10. See https://jira.adeo.no/browse/${deploy} for details"
+                ])
+                throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", ex)
+            }
+        }
+    }
 
     stage("Tag") {
         withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088']) {
-         withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-            sh ("git tag -a ${releaseVersion} -m ${releaseVersion}")
-            sh ("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
-         }
-      }
-      notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
+            withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+                sh("git tag -a ${releaseVersion} -m ${releaseVersion}")
+                sh("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
+            }
+        }
+        notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
     }
 
     stage('Deploy to Prod') {
@@ -130,12 +157,12 @@ node {
                 input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
             }
             slackSend([
-                color: 'good',
+                color  : 'good',
                 message: "${application} version ${releaseVersion} has been deployed to production."
             ])
         } catch (Exception e) {
             slackSend([
-                color: 'danger',
+                color  : 'danger',
                 message: "Unable to deploy ${application} version ${releaseVersion} to production. See https://jira.adeo.no/browse/${deploy} for details"
             ])
             throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", e)
@@ -145,23 +172,23 @@ node {
 }
 
 def notifyGithub(owner, repo, context, sha, state, description) {
-   def postBody = [
-      state: "${state}",
-      context: "${context}",
-      description: "${description}",
-      target_url: "${env.BUILD_URL}"
-   ]
-   def postBodyString = groovy.json.JsonOutput.toJson(postBody)
+    def postBody = [
+        state      : "${state}",
+        context    : "${context}",
+        description: "${description}",
+        target_url : "${env.BUILD_URL}"
+    ]
+    def postBodyString = groovy.json.JsonOutput.toJson(postBody)
 
-   withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088']) {
-      withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-         sh """
+    withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088']) {
+        withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+            sh """
                 curl -H 'Authorization: token ${token}' \
                     -H 'Content-Type: application/json' \
                     -X POST \
                     -d '${postBodyString}' \
                     'https://api.github.com/repos/${owner}/${repo}/statuses/${sha}'
             """
-      }
-   }
+        }
+    }
 }
