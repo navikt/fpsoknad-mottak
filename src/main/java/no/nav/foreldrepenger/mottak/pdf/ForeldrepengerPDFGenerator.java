@@ -174,8 +174,7 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
     private String format(UtenlandskArbeidsforhold arbeidsforhold) {
         UtenlandskArbeidsforhold ua = UtenlandskArbeidsforhold.class.cast(arbeidsforhold);
         return ua.getArbeidsgiverNavn() + " (" + countryName(ua.getLand().getAlpha2()) + ")" + "\n" +
-                dato(ua.getPeriode().getFom()) + "\n" +
-                ua.isNærRelasjon();
+                dato(ua.getPeriode().getFom()) + "\n";
     }
 
     private String formatEgenNæring(EgenNæring næring) {

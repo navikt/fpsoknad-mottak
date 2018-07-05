@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public class Frilans {
 
-    private final ÅpenPeriode periode; // TODO kanskje
+    private final ÅpenPeriode periode;
     private final boolean harInntektFraFosterhjem;
     private final boolean nyOppstartet;
     private final boolean nærRelasjon;

@@ -121,8 +121,6 @@ public class ForeldrepengerTestUtils {
         return UtenlandskArbeidsforhold.builder()
                 .vedlegg(ETT_VEDLEGG_REF)
                 .arbeidsgiverNavn("boss")
-                .nærRelasjon(true)
-                .harHattArbeidIPerioden(true)
                 .land(CountryCode.PL)
                 .periode(åpenPeriode()).build();
     }

@@ -18,27 +18,21 @@ import lombok.Data;
 public class UtenlandskArbeidsforhold {
 
     private final CountryCode land;
-    private final boolean harHattArbeidIPerioden;
     @Length(max = 50)
     private final String arbeidsgiverNavn;
-    private final boolean nærRelasjon;
     private final ÅpenPeriode periode;
     private final List<String> vedlegg;
 
     @Builder
     @JsonCreator
     public UtenlandskArbeidsforhold(@JsonProperty("arbeidsgiverNavn") String arbeidsgiverNavn,
-            @JsonProperty("nærRelasjon") boolean nærRelasjon,
             @JsonProperty("periode") ÅpenPeriode periode,
             @JsonProperty("vedlegg") List<String> vedlegg,
-            @JsonProperty("land") CountryCode land,
-            @JsonProperty("harHattArbeidIPerioden") boolean harHattArbeidIPerioden) {
+            @JsonProperty("land") CountryCode land) {
         this.arbeidsgiverNavn = arbeidsgiverNavn;
-        this.nærRelasjon = nærRelasjon;
         this.periode = periode;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
         this.land = land;
-        this.harHattArbeidIPerioden = harHattArbeidIPerioden;
     }
 
 }
