@@ -10,6 +10,7 @@
                     <xsd:enumeration value="MOR"/>
                     <xsd:enumeration value="FAR"/>
                     <xsd:enumeration value="MEDMOR"/>
+                    <xsd:enumeration value="IKKE_RELEVANT"/>
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>

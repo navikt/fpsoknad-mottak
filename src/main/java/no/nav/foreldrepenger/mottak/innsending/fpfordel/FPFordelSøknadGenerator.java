@@ -693,6 +693,7 @@ public class FPFordelSøknadGenerator {
         case MOR:
         case FAR:
         case MEDMOR:
+        case IKKE_RELEVANT:
             return brukerRolleFra(søknadsRolle.name());
         default:
             throw new IllegalArgumentException("Vil aldri skje");
