@@ -114,7 +114,7 @@ public class FPFordelSøknadGenerator {
     }
 
     public Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
-        LOG.info("Genererer søknad modell fra {}", søknad);
+        LOG.debug("Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
@@ -147,7 +147,7 @@ public class FPFordelSøknadGenerator {
     private static Ytelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
-        LOG.info("Genererer ytelse modell fra {}", ytelse);
+        LOG.debug("Genererer ytelse XML fra {}", ytelse);
         return new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
@@ -176,7 +176,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Opptjening opptjeningFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening opptjening) {
-        LOG.info("Genererer opptjening modell fra {}", opptjening);
+        LOG.debug("Genererer opptjening XML fra {}", opptjening);
 
         return opptjening == null ? null
                 : new Opptjening()
@@ -188,6 +188,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans frilans) {
+        LOG.debug("Genererer frilans XML fra {}", frilans);
         return new Frilans()
                 .withErNyoppstartet(frilans.isNyOppstartet())
                 .withHarInntektFraFosterhjem(frilans.isHarInntektFraFosterhjem())
@@ -233,7 +234,7 @@ public class FPFordelSøknadGenerator {
 
     private static EgenNaering egenNæringFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring egenNæring) {
-        LOG.info("Genererer egenNæring modell fra {}", egenNæring);
+        LOG.debug("Genererer egenNæring XML fra {}", egenNæring);
 
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon) {
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon norskOrg = no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.class
@@ -327,7 +328,7 @@ public class FPFordelSøknadGenerator {
 
     private static AnnenOpptjening annenOpptjeningFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening annenOpptjening) {
-        LOG.info("Genererer anen opptjening modell fra {}", annenOpptjening);
+        LOG.debug("Genererer anen opptjening XML fra {}", annenOpptjening);
 
         return new AnnenOpptjening()
                 .withType(annenOpptjeningTypeFra(annenOpptjening.getType()))
@@ -342,7 +343,7 @@ public class FPFordelSøknadGenerator {
 
     private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold utenlandskArbeidsforhold(
             UtenlandskArbeidsforhold arbeidsForhold) {
-        LOG.info("Genererer utenlands arbeidsforhold modell fra {}", arbeidsForhold);
+        LOG.debug("Genererer utenlands arbeidsforhold XML fra {}", arbeidsForhold);
         return new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold()
                 .withArbeidsgiversnavn(arbeidsForhold.getArbeidsgiverNavn())
                 .withArbeidsland(landFra(arbeidsForhold.getLand()))
@@ -376,7 +377,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Medlemskap medlemsskapFra(Medlemsskap ms) {
-        LOG.info("Genererer medlemsskap modell fra {}", ms);
+        LOG.debug("Genererer medlemsskap XML fra {}", ms);
         Medlemskap medlemsskap = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
                 .withINorgeVedFoedselstidspunkt(true);
@@ -434,7 +435,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling fordeling) {
-        LOG.info("Genererer fordeling modell fra {}", fordeling);
+        LOG.debug("Genererer fordeling XML fra {}", fordeling);
         if (fordeling == null) {
             return null;
         }
@@ -450,7 +451,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static LukketPeriode lukkerPeriodeFra(LukketPeriodeMedVedlegg periode) {
-        LOG.info("Genererer periode modell fra {}", periode);
+        LOG.debug("Genererer periode XML fra {}", periode);
         if (periode instanceof OverføringsPeriode) {
             OverføringsPeriode overføringsPeriode = OverføringsPeriode.class.cast(periode);
             return new Overfoeringsperiode()
@@ -609,10 +610,10 @@ public class FPFordelSøknadGenerator {
     private static Rettigheter rettighetrFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
 
-        LOG.info("Genererer rettigheter modell fra {}", rettigheter);
+        LOG.debug("Genererer rettigheter XML fra {}", rettigheter);
 
         if (ukjentForelder) {
-            LOG.info("Annen forelder er ukjent, avleder verdier for  rettigheter");
+            LOG.debug("Annen forelder er ukjent, avleder verdier for rettigheter");
             return new Rettigheter()
                     .withHarOmsorgForBarnetIPeriodene(true)
                     .withHarAnnenForelderRett(false)
@@ -700,5 +701,4 @@ public class FPFordelSøknadGenerator {
         Brukerroller brukerRolle = new Brukerroller().withKode(rolle);
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
-
 }
