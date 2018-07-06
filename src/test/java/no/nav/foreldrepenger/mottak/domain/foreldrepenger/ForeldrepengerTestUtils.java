@@ -53,7 +53,8 @@ public class ForeldrepengerTestUtils {
     }
 
     private static Frilans frilans() {
-        return new Frilans(åpenPeriode(), false, false, false, Collections.emptyList());
+        return new Frilans(åpenPeriode(true), false, false, false,
+                Collections.singletonList(new FrilansOppdrag("bror min", åpenPeriode(true))));
     }
 
     static List<AnnenOpptjening> andreOpptjeninger() {
@@ -77,7 +78,13 @@ public class ForeldrepengerTestUtils {
     }
 
     static ÅpenPeriode åpenPeriode() {
-        return new ÅpenPeriode(LocalDate.now());
+        return åpenPeriode(false);
+    }
+
+    static ÅpenPeriode åpenPeriode(boolean end) {
+
+        return end ? new ÅpenPeriode(LocalDate.now().minusMonths(5), LocalDate.now())
+                : new ÅpenPeriode(LocalDate.now().minusMonths(5));
     }
 
     static Omsorgsovertakelse omsorgsovertakelse() {

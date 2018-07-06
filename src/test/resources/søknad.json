@@ -1,12 +1,7 @@
 {
-  "mottattdato" : "2018-05-31T13:36:22.695",
+  "mottattdato" : "2018-07-06T11:17:42.685",
   "søker" : {
-    "aktør" : "11111111111111111",
-    "fnr" : "01010133333",
-    "søknadsRolle" : "MOR",
-    "fornavn" : "Mor",
-    "mellomnavn" : "Godhjerta",
-    "etternavn" : "Morsen"
+    "søknadsRolle" : "MOR"
   },
   "ytelse" : {
     "type" : "foreldrepenger",
@@ -19,8 +14,9 @@
     "relasjonTilBarn" : {
       "type" : "termin",
       "antallBarn" : 1,
-      "terminDato" : "2018-05-31",
-      "utstedtDato" : "2018-05-31"
+      "terminDato" : "2018-07-06",
+      "utstedtDato" : "2018-07-06",
+      "vedlegg" : [ ]
     },
     "rettigheter" : {
       "harAnnenForelderRett" : true,
@@ -29,36 +25,23 @@
     },
     "dekningsgrad" : "GRAD100",
     "opptjening" : {
-      "arbeidsforhold" : [ {
-        "type" : "norsk",
+      "arbeidsforhold" : {
         "arbeidsgiverNavn" : "boss",
-        "beskrivelseRelasjon" : "relasjon",
         "periode" : {
-          "fom" : "2018-05-31"
+          "fom" : "2018-02-06"
         },
-        "vedlegg" : [ "42" ],
-        "orgNummer" : "222222222",
-        "type" : "ORDINÆRT"
-      }, {
-        "type" : "utenlandsk",
-        "arbeidsgiverNavn" : "boss",
-        "beskrivelseRelasjon" : "relasjon",
-        "periode" : {
-          "fom" : "2018-05-31"
-        },
-        "vedlegg" : [ "42" ],
-        "land" : "PL",
-        "harHattArbeidIPerioden" : true
-      } ],
+        "vedlegg" : "42",
+        "land" : "PL"
+      },
       "egenNæring" : [ {
         "type" : "utenlandsk",
         "arbeidsland" : "SE",
-        "virksomhetsType" : "FISKE",
+        "virksomhetsTyper" : "FISKE",
         "periode" : {
-          "fom" : "2018-05-31"
+          "fom" : "2018-02-06"
         },
-        "beskrivelseRelasjon" : "relasjon",
-        "regnskapsfører" : {
+        "nærRelasjon" : true,
+        "regnskapsførere" : {
           "navn" : {
             "fornavn" : "Mor",
             "etternavn" : "Monsen"
@@ -68,20 +51,19 @@
         "erNyOpprettet" : true,
         "erVarigEndring" : true,
         "næringsinntektBrutto" : 100000,
-        "endringsDato" : "2018-05-31",
+        "endringsDato" : "2018-07-06",
         "beskrivelseEndring" : "Stor endring",
-        "orgName" : "My org",
-        "registrertLand" : "SE",
-        "stillingsprosent" : 42
+        "vedlegg" : [ ],
+        "orgName" : "My org"
       }, {
         "type" : "norsk",
         "arbeidsland" : "SE",
-        "virksomhetsType" : "FISKE",
+        "virksomhetsTyper" : "FISKE",
         "periode" : {
-          "fom" : "2018-05-31"
+          "fom" : "2018-02-06"
         },
-        "beskrivelseRelasjon" : "relasjon",
-        "regnskapsfører" : {
+        "nærRelasjon" : true,
+        "regnskapsførere" : {
           "navn" : {
             "fornavn" : "Mor",
             "etternavn" : "Monsen"
@@ -91,44 +73,61 @@
         "erNyOpprettet" : true,
         "erVarigEndring" : true,
         "næringsinntektBrutto" : 100000,
-        "endringsDato" : "2018-05-31",
+        "endringsDato" : "2018-07-06",
         "beskrivelseEndring" : "Stor endring",
+        "vedlegg" : [ ],
         "orgNummer" : "82828282",
         "orgName" : "My org"
       } ],
-      "annenOpptjening" : [ {
-        "type" : "SLUTTPAKKE",
+      "annenOpptjening" : {
+        "type" : "LØNN_UNDER_UTDANNING",
         "periode" : {
-          "fom" : "2018-05-31"
+          "fom" : "2018-02-06"
+        },
+        "vedlegg" : [ ]
+      },
+      "frilans" : {
+        "periode" : {
+          "fom" : "2018-02-06",
+          "tom" : "2018-07-06"
+        },
+        "harInntektFraFosterhjem" : false,
+        "nyOppstartet" : false,
+        "nærRelasjon" : false,
+        "frilansOppdrag" : {
+          "oppdragsgiver" : "bror min",
+          "periode" : {
+            "fom" : "2018-02-06",
+            "tom" : "2018-07-06"
+          }
         }
-      } ]
+      }
     },
     "fordeling" : {
       "erAnnenForelderInformert" : true,
-      "ønskerKvoteOverført" : "IKKE_RETT_ANNEN_FORELDER",
       "perioder" : [ {
         "type" : "opphold",
-        "fom" : "2018-04-30",
-        "tom" : "2018-05-30",
-        "vedlegg" : [ "42" ],
+        "fom" : "2018-06-06",
+        "tom" : "2018-07-06",
+        "vedlegg" : "42",
         "årsak" : "UTTAK_FELLSP_ANNEN_FORLDER"
       }, {
         "type" : "overføring",
-        "fom" : "2018-06-30",
-        "tom" : "2018-07-30",
-        "vedlegg" : [ "42" ],
+        "fom" : "2018-06-06",
+        "tom" : "2018-07-06",
+        "vedlegg" : "42",
         "årsak" : "ALENEOMSORG"
       }, {
         "type" : "utsettelse",
-        "fom" : "2018-08-30",
-        "tom" : "2018-09-30",
-        "vedlegg" : [ "42" ],
-        "årsak" : "INSTITUSJONSOPPHOLD_BARN"
+        "fom" : "2018-06-06",
+        "tom" : "2018-07-06",
+        "vedlegg" : "42",
+        "årsak" : "INSTITUSJONSOPPHOLD_BARNET"
       }, {
         "type" : "gradert",
-        "fom" : "2018-10-30",
-        "tom" : "2018-11-30",
-        "vedlegg" : [ "42" ],
+        "fom" : "2018-06-06",
+        "tom" : "2018-07-06",
+        "vedlegg" : "42",
         "UttaksperiodeType" : "FEDREKVOTE",
         "ønskerSamtidigUttak" : true,
         "morsAktivitetsType" : "ARBEID_OG_UTDANNING",
@@ -136,39 +135,22 @@
         "erArbeidstaker" : true,
         "virksomhetsNummer" : "222222",
         "arbeidsForholdSomskalGraderes" : true
-      } ]
+      } ],
+      "ønskerKvoteOverført" : "IKKE_RETT_ANNEN_FORELDER"
     },
     "medlemsskap" : {
-      "norgeSiste12" : false,
-      "arbeidSiste12" : "ARBEIDET_I_UTLANDET",
-      "utenlandsopphold" : [ {
-        "land" : "SE",
-        "varighet" : {
-          "fom" : "2017-06-30",
-          "tom" : "2017-08-30"
-        }
-      }, {
-        "land" : "FI",
-        "varighet" : {
-          "fom" : "2017-11-30",
-          "tom" : "2018-06-30"
-        }
-      } ],
+      "norgeSiste12" : true,
+      "arbeidSiste12" : "ARBEIDET_I_NORGE",
       "fødselNorge" : true,
-      "norgeNeste12" : false,
-      "framtidigUtenlandsopphold" : [ {
-        "land" : "GR",
-        "varighet" : {
-          "fom" : "2018-06-30",
-          "tom" : "2018-11-30"
-        }
-      }, {
-        "land" : "DE",
-        "varighet" : {
-          "fom" : "2018-12-30",
-          "tom" : "2019-06-30"
-        }
-      } ]
+      "norgeNeste12" : true
     }
-  }
+  },
+  "vedlegg" : {
+    "type" : "valgfritt",
+    "metadata" : {
+      "beskrivelse" : "I000062",
+      "skjemanummer" : "TERMINBEKREFTELSE"
+    },
+    "vedlegg" : "blob" 
+   }
 }
