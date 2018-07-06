@@ -127,7 +127,7 @@ public class FPFordelSøknadGenerator {
 
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
-        return vedlegg.stream()
+        return safeStream(vedlegg)
                 .map(FPFordelSøknadGenerator::vedleggFra)
                 .collect(toList());
     }
@@ -188,6 +188,10 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans frilans) {
+        if (frilans == null) {
+            LOG.info("Ingen frilanser dette her");
+            return null;
+        }
         LOG.debug("Genererer frilans XML fra {}", frilans);
         return new Frilans()
                 .withErNyoppstartet(frilans.isNyOppstartet())
@@ -198,10 +202,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
-        if (CollectionUtils.isEmpty(frilansOppdrag)) {
-            return null;
-        }
-        return frilansOppdrag.stream()
+        return safeStream(frilansOppdrag)
                 .map(FPFordelSøknadGenerator::frilansOppdragFra)
                 .collect(toList());
     }
@@ -213,21 +214,21 @@ public class FPFordelSøknadGenerator {
     }
 
     private static List<EgenNaering> egenNæringFra(List<EgenNæring> egenNæring) {
-        return egenNæring.stream()
+        return safeStream(egenNæring)
                 .map(FPFordelSøknadGenerator::egenNæringFra)
                 .collect(toList());
     }
 
     private static List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforholdFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
-        return utenlandskArbeidsforhold.stream()
+        return safeStream(utenlandskArbeidsforhold)
                 .map(FPFordelSøknadGenerator::utenlandskArbeidsforholdFra)
                 .collect(toList());
     }
 
     private static List<AnnenOpptjening> annenOpptjeningFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> annenOpptjening) {
-        return annenOpptjening.stream()
+        return safeStream(annenOpptjening)
                 .map(FPFordelSøknadGenerator::annenOpptjeningFra)
                 .collect(toList());
     }
@@ -275,7 +276,7 @@ public class FPFordelSøknadGenerator {
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype> typer) {
-        return typer.stream()
+        return safeStream(typer)
                 .map(FPFordelSøknadGenerator::virksomhetsTypeFra)
                 .collect(toList());
     }
@@ -386,7 +387,6 @@ public class FPFordelSøknadGenerator {
                         ? medlemsskap.withOppholdNorge(kunOppholdNorge())
                         : medlemsskap;
 
-        // TODO sette norske perioder for de periodene man ikke er i utlandet?
     }
 
     private static List<OppholdNorge> kunOppholdNorge() {
@@ -412,8 +412,8 @@ public class FPFordelSøknadGenerator {
 
     }
 
-    private static Stream<Utenlandsopphold> safeStream(List<Utenlandsopphold> opphold) {
-        return opphold == null ? Stream.empty() : opphold.stream();
+    private static <T> Stream<T> safeStream(List<T> list) {
+        return Optional.ofNullable(list).orElse(Collections.emptyList()).stream();
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
@@ -446,7 +446,9 @@ public class FPFordelSøknadGenerator {
     }
 
     private static List<LukketPeriode> perioderFra(List<LukketPeriodeMedVedlegg> perioder) {
-        return perioder.stream().map(FPFordelSøknadGenerator::lukkerPeriodeFra).collect(toList());
+        return safeStream(perioder)
+                .map(FPFordelSøknadGenerator::lukkerPeriodeFra)
+                .collect(toList());
 
     }
 
