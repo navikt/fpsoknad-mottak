@@ -94,13 +94,19 @@
         "harInntektFraFosterhjem" : false,
         "nyOppstartet" : false,
         "nærRelasjon" : false,
-        "frilansOppdrag" : {
+         "frilansOppdrag" : [ {
           "oppdragsgiver" : "bror min",
           "periode" : {
             "fom" : "2018-02-06",
             "tom" : "2018-07-06"
           }
-        }
+        }, {
+          "oppdragsgiver" : "far min",
+          "periode" : {
+            "fom" : "2018-02-06",
+            "tom" : "2018-07-06"
+          }
+        } ]
       }
     },
     "fordeling" : {

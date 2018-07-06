@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.inject.internal.util.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -54,7 +55,8 @@ public class ForeldrepengerTestUtils {
 
     private static Frilans frilans() {
         return new Frilans(åpenPeriode(true), false, false,
-                Collections.singletonList(new FrilansOppdrag("bror min", åpenPeriode(true))));
+                Lists.newArrayList(new FrilansOppdrag("bror min", åpenPeriode(true)),
+                        new FrilansOppdrag("far min", åpenPeriode(true))));
     }
 
     static List<AnnenOpptjening> andreOpptjeninger() {
