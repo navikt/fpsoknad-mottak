@@ -161,7 +161,8 @@ public class FPFordelSøknadGenerator {
 
     private static boolean erAnnenForelderUkjent(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
-        return annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder;
+        return annenForelder == null
+                || annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder;
     }
 
     private static Dekningsgrad dekningsgradFra(
@@ -633,26 +634,24 @@ public class FPFordelSøknadGenerator {
     private static AnnenForelder annenForelderFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
 
-        if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder) {
-            return ukjentForelder(
-                    no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder.class.cast(annenForelder));
+        if (erAnnenForelderUkjent(annenForelder)) {
+            return ukjentForelder();
         }
         if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder) {
-            return utenlandsForelder(UtenlandskForelder.class.cast(annenForelder));
+            return utenlandskForelder(UtenlandskForelder.class.cast(annenForelder));
         }
         if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder) {
             return norskForelder(NorskForelder.class.cast(annenForelder));
         }
         throw new IllegalArgumentException(
-                "Annen forelder " + annenForelder.getClass().getSimpleName() + " er ikke støttet");
+                "Annen forelder av type " + annenForelder.getClass().getSimpleName() + " er ikke støttet");
     }
 
-    private static UkjentForelder ukjentForelder(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
+    private static UkjentForelder ukjentForelder() {
         return new no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder();
     }
 
-    private static AnnenForelderUtenNorskIdent utenlandsForelder(UtenlandskForelder utenlandskForelder) {
+    private static AnnenForelderUtenNorskIdent utenlandskForelder(UtenlandskForelder utenlandskForelder) {
         return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent()
                 .withUtenlandskPersonidentifikator(utenlandskForelder.getId())
                 .withLand(landFra(utenlandskForelder.getLand()));
