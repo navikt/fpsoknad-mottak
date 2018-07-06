@@ -53,7 +53,7 @@ public class ForeldrepengerTestUtils {
     }
 
     private static Frilans frilans() {
-        return new Frilans(åpenPeriode(true), false, false, false,
+        return new Frilans(åpenPeriode(true), false, false,
                 Collections.singletonList(new FrilansOppdrag("bror min", åpenPeriode(true))));
     }
 
