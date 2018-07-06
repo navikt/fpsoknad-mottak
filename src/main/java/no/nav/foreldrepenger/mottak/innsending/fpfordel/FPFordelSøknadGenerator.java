@@ -284,18 +284,7 @@ public class FPFordelSøknadGenerator {
 
     private static Virksomhetstyper virksomhetsTypeFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype type) {
-        if (type == null) {
-            return null;
-        }
-        switch (type) {
-        case ANNEN:
-        case DAGMAMMA:
-        case FISKE:
-        case JORDBRUK_SKOGBRUK:
-            return virksomhetsTypeFra(type.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
+        return type == null ? null : virksomhetsTypeFra(type.name());
     }
 
     private static Virksomhetstyper virksomhetsTypeFra(String type) {
@@ -353,19 +342,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
-        if (type == null) {
-            return null;
-        }
-        switch (type) {
-        case VARTPENGER:
-        case ETTERLØNN_ARBEIDSGIVER:
-        case LØNN_UNDER_UTDANNING:
-        case MILITÆR_ELLER_SIVILTJENESTE:
-        case VENTELØNN:
-            return annenOpptjeningTypeFra(type.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
+        return type == null ? null : annenOpptjeningTypeFra(type.name());
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {
@@ -505,19 +482,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
-        if (type == null) {
-            return uttaksperiodeTypeFra(UKJENT_KODEVERKSVERDI);
-        }
-        switch (type) {
-        case FEDREKVOTE:
-        case FELLESPERIODE:
-        case FORELDREPENGER:
-        case FORELDREPENGER_FØR_FØDSEL:
-        case MØDREKVOTE:
-            return uttaksperiodeTypeFra(type.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
+        return type == null ? uttaksperiodeTypeFra(UKJENT_KODEVERKSVERDI) : uttaksperiodeTypeFra(type.name());
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(String type) {
@@ -525,24 +490,8 @@ public class FPFordelSøknadGenerator {
         return periodeType.withKodeverk(periodeType.getKodeverk());
     }
 
-    private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet type) {
-        if (type == null) {
-            morsAktivitetFra(UKJENT_KODEVERKSVERDI);
-        }
-        switch (type) {
-        case SAMTIDIGUTTAK:
-        case ARBEID:
-        case ARBEID_OG_UTDANNING:
-        case INNLAGT:
-        case INTROPROG:
-        case KVALPROG:
-        case TRENGER_HJELP:
-        case UTDANNING:
-            return morsAktivitetFra(type.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
-
+    private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet aktivitet) {
+        return aktivitet == null ? morsAktivitetFra(UKJENT_KODEVERKSVERDI) : morsAktivitetFra(aktivitet.name());
     }
 
     private static MorsAktivitetsTyper morsAktivitetFra(String aktivitet) {
@@ -551,19 +500,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(UtsettelsesÅrsak årsak) {
-        if (årsak == null) {
-            return utsettelsesÅrsakFra(UKJENT_KODEVERKSVERDI);
-        }
-        switch (årsak) {
-        case ARBEID:
-        case INSTITUSJONSOPPHOLD_BARNET:
-        case INSTITUSJONSOPPHOLD_SØKER:
-        case LOVBESTEMT_FERIE:
-        case SYKDOM:
-            return utsettelsesÅrsakFra(årsak.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
+        return årsak == null ? utsettelsesÅrsakFra(UKJENT_KODEVERKSVERDI) : utsettelsesÅrsakFra(årsak.name());
     }
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(String årsak) {
@@ -572,17 +509,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Oppholdsaarsaker oppholdsÅrsakFra(Oppholdsårsak årsak) {
-        if (årsak == null) {
-            return oppholdsÅrsakFra(UKJENT_KODEVERKSVERDI);
-        }
-        switch (årsak) {
-        case INGEN:
-        case UTTAK_FELLSP_ANNEN_FORLDER:
-        case UTTAK_KVOTE_ANNEN_FORLDER:
-            return oppholdsÅrsakFra(årsak.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
+        return årsak == null ? oppholdsÅrsakFra(UKJENT_KODEVERKSVERDI) : oppholdsÅrsakFra(årsak.name());
     }
 
     private static Oppholdsaarsaker oppholdsÅrsakFra(String årsak) {
@@ -591,18 +518,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Overfoeringsaarsaker overføringsÅrsakFra(Overføringsårsak årsak) {
-        if (årsak == null) {
-            return overføringsÅrsakFra(UKJENT_KODEVERKSVERDI);
-        }
-        switch (årsak) {
-        case ALENEOMSORG:
-        case IKKE_RETT_ANNEN_FORELDER:
-        case INSTITUSJONSOPPHOLD_ANNEN_FORELDER:
-        case SYKDOM_ANNEN_FORELDER:
-            return overføringsÅrsakFra(årsak.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
+        return årsak == null ? overføringsÅrsakFra(UKJENT_KODEVERKSVERDI) : overføringsÅrsakFra(årsak.name());
     }
 
     private static Overfoeringsaarsaker overføringsÅrsakFra(String årsak) {
@@ -688,15 +604,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Brukerroller brukerRolleFra(BrukerRolle søknadsRolle) {
-        switch (søknadsRolle) {
-        case MOR:
-        case FAR:
-        case MEDMOR:
-        case IKKE_RELEVANT:
-            return brukerRolleFra(søknadsRolle.name());
-        default:
-            throw new IllegalArgumentException("Vil aldri skje");
-        }
+        return brukerRolleFra(søknadsRolle.name());
     }
 
     private static Brukerroller brukerRolleFra(String rolle) {
