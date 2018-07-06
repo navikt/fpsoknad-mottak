@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
@@ -31,6 +32,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FrilansOppdrag;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.GradertUttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
@@ -70,6 +72,8 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Dekningsgrad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.EgenNaering;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilans;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilansoppdrag;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Regnskapsfoerer;
@@ -176,10 +180,35 @@ public class FPFordelSøknadGenerator {
 
         return opptjening == null ? null
                 : new Opptjening()
+                        .withFrilans(frilansFra(opptjening.getFrilans()))
                         .withEgenNaering(egenNæringFra(opptjening.getEgenNæring()))
                         .withUtenlandskArbeidsforhold(
                                 utenlandskArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
                         .withAnnenOpptjening(annenOpptjeningFra(opptjening.getAnnenOpptjening()));
+    }
+
+    private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans frilans) {
+        return new Frilans()
+                .withErNyoppstartet(frilans.isNyOppstartet())
+                .withHarInntektFraFosterhjem(frilans.isHarInntektFraFosterhjem())
+                .withNaerRelasjon(!CollectionUtils.isEmpty(frilans.getFrilansOppdrag()))
+                .withPeriode(periodeFra(frilans.getPeriode()))
+                .withFrilansoppdrag(frilansOppdragFra(frilans.getFrilansOppdrag()));
+    }
+
+    private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
+        if (CollectionUtils.isEmpty(frilansOppdrag)) {
+            return null;
+        }
+        return frilansOppdrag.stream()
+                .map(FPFordelSøknadGenerator::frilansOppdragFra)
+                .collect(toList());
+    }
+
+    private static Frilansoppdrag frilansOppdragFra(FrilansOppdrag frilansOppdrag) {
+        return new Frilansoppdrag()
+                .withOppdragsgiver(frilansOppdrag.getOppdragsgiver())
+                .withPeriode(periodeFra(frilansOppdrag.getPeriode()));
     }
 
     private static List<EgenNaering> egenNæringFra(List<EgenNæring> egenNæring) {
@@ -273,7 +302,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Regnskapsfoerer regnskapsFørerFra(List<Regnskapsfører> regnskapsførere) {
-        if (regnskapsførere == null || regnskapsførere.isEmpty()) {
+        if (CollectionUtils.isEmpty(regnskapsførere)) {
             return null;
         }
         if (regnskapsførere.size() > 1) {
@@ -325,6 +354,7 @@ public class FPFordelSøknadGenerator {
             return null;
         }
         switch (type) {
+        case VARTPENGER:
         case ETTERLØNN_ARBEIDSGIVER:
         case LØNN_UNDER_UTDANNING:
         case MILITÆR_ELLER_SIVILTJENESTE:
@@ -350,8 +380,8 @@ public class FPFordelSøknadGenerator {
         Medlemskap medlemsskap = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
                 .withINorgeVedFoedselstidspunkt(true);
-        return (ms.getTidligereOppholdsInfo().isBoddINorge()
-                && ms.getFramtidigOppholdsInfo().isNorgeNeste12())
+        return ms.getTidligereOppholdsInfo().isBoddINorge()
+                && ms.getFramtidigOppholdsInfo().isNorgeNeste12()
                         ? medlemsskap.withOppholdNorge(kunOppholdNorge())
                         : medlemsskap;
 
