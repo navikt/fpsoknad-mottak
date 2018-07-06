@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.validation.BarnOgFødselsdatoer;
 import no.nav.foreldrepenger.mottak.domain.validation.PastOrToday;
 
@@ -34,7 +33,7 @@ public class Fødsel extends RelasjonTilBarnMedVedlegg {
 
     @JsonCreator
     public Fødsel(@JsonProperty("antallBarn") int antallBarn,
-            @JsonProperty("fødselsdato") List<LocalDate> fødselsdato, List<Vedlegg> vedlegg) {
+            @JsonProperty("fødselsdato") List<LocalDate> fødselsdato, List<String> vedlegg) {
         super(antallBarn, vedlegg);
         this.fødselsdato = fødselsdato;
     }

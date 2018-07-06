@@ -12,7 +12,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -33,7 +32,7 @@ public class Omsorgsovertakelse extends RelasjonTilBarnMedVedlegg {
     public Omsorgsovertakelse(int antallBarn,
             LocalDate omsorgsovertakelsesdato,
             OmsorgsOvertakelsesÅrsak årsak,
-            List<LocalDate> fødselsdatoer, List<Vedlegg> vedlegg) {
+            List<LocalDate> fødselsdatoer, List<String> vedlegg) {
         super(antallBarn, vedlegg);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.årsak = årsak;

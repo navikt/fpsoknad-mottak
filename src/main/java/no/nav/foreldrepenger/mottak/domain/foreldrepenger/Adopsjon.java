@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.validation.PastOrToday;
 
 @Data
@@ -34,7 +33,7 @@ public class Adopsjon extends RelasjonTilBarnMedVedlegg {
     @JsonCreator
     public Adopsjon(LocalDate omsorgsovertakelsesdato,
             boolean ektefellesBarn,
-            int antallBarn, List<Vedlegg> vedlegg, LocalDate ankomstDato, LocalDate... fødselsdatoer) {
+            int antallBarn, List<String> vedlegg, LocalDate ankomstDato, LocalDate... fødselsdatoer) {
         super(antallBarn, vedlegg);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.ektefellesBarn = ektefellesBarn;

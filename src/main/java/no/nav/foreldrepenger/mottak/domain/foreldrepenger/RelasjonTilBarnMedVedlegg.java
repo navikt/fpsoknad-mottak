@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @Valid
@@ -28,11 +27,11 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 })
 public abstract class RelasjonTilBarnMedVedlegg {
 
-    private final List<Vedlegg> vedlegg;
+    private final List<String> vedlegg;
     @Positive
     private final int antallBarn;
 
-    public RelasjonTilBarnMedVedlegg(int antallBarn, List<Vedlegg> vedlegg) {
+    public RelasjonTilBarnMedVedlegg(int antallBarn, List<String> vedlegg) {
         this.antallBarn = antallBarn;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }
