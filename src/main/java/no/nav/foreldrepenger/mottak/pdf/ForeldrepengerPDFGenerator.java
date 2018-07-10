@@ -1,241 +1,227 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import static java.util.stream.Collectors.toList;
-
-import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Component;
-
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.neovisionaries.i18n.CountryCode;
-
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
-public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
+public class ForeldrepengerPDFGenerator {
 
+    private static final String logoPath = EngangsstønadPDFGenerator.class
+        .getClassLoader().getResource("pdf/nav-logo.png").getPath();
+
+    private SøknadInfoFormatter infoFormatter;
+
+    private PdfGenerator pdfGen;
+
+    @Inject
     public ForeldrepengerPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster) {
-        super(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
+        pdfGen = new PdfGenerator();
+        infoFormatter = new SøknadInfoFormatter(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
 
     public byte[] generate(Søknad søknad, Person søker) {
-        try {
-            Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
-            Document document = new Document();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PdfWriter.getInstance(document, baos);
-            document.open();
-            logo(document);
+        Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
+        byte[] pdf;
+        final PDPage page = pdfGen.newPage();
+        try (PDDocument doc = new PDDocument();
+             PDPageContentStream cos = new PDPageContentStream(doc, page);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            float y = PdfGenerator.calculateStartY();
 
-            document.add(center(heading(fromMessageSource("søknad_fp"))));
-            document.add(søker(søker));
-            if (stønad.getOpptjening() != null) {
-                document.add(arbeidsforhold(stønad.getOpptjening().getUtenlandskArbeidsforhold()));
-                document.add(blankLine());
-                document.add(egenNæring(stønad.getOpptjening().getEgenNæring()));
+            y -= header(søker, doc, cos, y);
+            y -= pdfGen.addBlankLine();
+
+            AnnenForelder annenForelder = stønad.getAnnenForelder();
+            if (annenForelder != null) {
+                y -= annenForelder(annenForelder, cos, y);
+                y -= pdfGen.addBlankLine();
             }
-            if (stønad.getRelasjonTilBarn() != null) {
-                document.add(blankLine());
-                document.add(barn(stønad.getRelasjonTilBarn()));
-                document.add(blankLine());
+
+            y -= dekningsgrad(stønad.getDekningsgrad(), cos, y);
+            y -= pdfGen.addBlankLine();
+
+            Opptjening opptjening = stønad.getOpptjening();
+            if (opptjening != null) {
+                y -= opptjening(opptjening, cos, y);
+                y -= pdfGen.addBlankLine();
             }
-            document.add(annenForelder(stønad));
-            document.add(blankLine());
-            document.add(dekningsgrad(stønad.getDekningsgrad()));
-            if (stønad.getFordeling() != null) {
-                document.add(blankLine());
-                document.add(perioder(stønad.getFordeling().getPerioder()));
-                document.add(blankLine());
+
+            RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
+            if (relasjon != null) {
+                y -= relasjonTilBarn(relasjon, cos, y);
+                y -= pdfGen.addBlankLine();
             }
-            document.add(vedlegg(søknad.getVedlegg()));
-            document.close();
-            return baos.toByteArray();
-        } catch (Exception e) {
-            LOG.warn("Noe gikk feil, gitt", e);
-            throw new IllegalArgumentException(e);
+
+            Fordeling fordeling = stønad.getFordeling();
+            if (fordeling != null) {
+                y -= fordeling(fordeling, cos, y);
+                y -= pdfGen.addBlankLine();
+            }
+
+            y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("vedlegg"), cos, y);
+            pdfGen.addBulletList(vedlegg(søknad.getVedlegg()), cos, y);
+
+            doc.addPage(page);
+            cos.close();
+            doc.save(baos);
+            pdf = baos.toByteArray();
+            return pdf;
+        } catch (IOException ex) {
+            throw new RuntimeException("Error while creating pdf", ex);
         }
     }
 
-    private static Element søker(Person søker) {
-        Paragraph p = new Paragraph();
-
-        p.add(center(regularParagraph(søker.fnr.getFnr())));
-        String navn = navn(søker);
-        if (navn != null &&
-                !navn.isEmpty()) {
-            p.add(center(regularParagraph(navn)));
-        }
-
-        p.add(separator());
-        p.add(blankLine());
-        return p;
+    private float header(Person søker, PDDocument doc, PDPageContentStream cos, float y) throws IOException {
+        float startY = y;
+        y -= pdfGen.addLogo(logoPath, doc, cos, y);
+        y -= pdfGen.addCenteredHeading(infoFormatter.fromMessageSource("søknad_fp"), cos, y);
+        y -= pdfGen.addCenteredHeadings(søker(søker), cos, y);
+        y -= pdfGen.addDividerLine(cos, y);
+        return startY - y;
     }
 
-    private static String navn(Person søker) {
-        if (søker == null) {
-            return null;
-        }
-        return (Optional.ofNullable(søker.fornavn).orElse("") + " "
-                + Optional.ofNullable(søker.mellomnavn).orElse("") + " "
-                + Optional.ofNullable(søker.etternavn).orElse("")).trim();
+    private List<String> søker(Person søker) {
+        String fnr = søker.fnr.getFnr();
+        String navn = infoFormatter.navn(søker);
+        return Arrays.asList(fnr,
+            navn != null ? navn : "ukjent");
     }
 
-    private Paragraph annenForelder(Foreldrepenger stønad) {
-        AnnenForelder annenForelder = stønad.getAnnenForelder();
-        Paragraph paragraph = new Paragraph();
-
-        if (annenForelder != null) {
-            paragraph.add(heading(fromMessageSource("omfar")));
-
-            if (annenForelder instanceof NorskForelder) {
-                paragraph.add(norskForelder(annenForelder));
-            }
-            else if (annenForelder instanceof UtenlandskForelder) {
-                paragraph.add(utenlandskForelder(annenForelder));
-            }
-            else {
-                paragraph.add(regularParagraph("Ukjent"));
-            }
+    private float annenForelder(AnnenForelder annenForelder, PDPageContentStream cos, float y) throws IOException {
+        float startY = y;
+        y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("omfar"), cos, y);
+        if (annenForelder instanceof NorskForelder) {
+            y -= pdfGen.addLinesOfRegularText(norskForelder(annenForelder), cos, y);
+        } else if (annenForelder instanceof UtenlandskForelder) {
+            y -= pdfGen.addLinesOfRegularText(utenlandskForelder(annenForelder), cos, y);
+        } else {
+            y -= pdfGen.addLineOfRegularText("Ukjent", cos, y);
         }
 
-        return paragraph;
+        return startY - y;
     }
 
-    private Paragraph utenlandskForelder(AnnenForelder annenForelder) {
+    private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(regularParagraph(fromMessageSource("nasjonalitet",
-                countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName()))));
+        List<String> lines = Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet",
+            infoFormatter.countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName())));
         if (utenlandsForelder.getId() != null) {
-            paragraph.add(regularParagraph(fromMessageSource("utenlandskid", utenlandsForelder.getId())));
+            lines.add(infoFormatter.fromMessageSource("utenlandskid", utenlandsForelder.getId()));
         }
-        return paragraph;
+        return lines;
     }
 
-    private Paragraph norskForelder(AnnenForelder annenForelder) {
+    private List<String> norskForelder(AnnenForelder annenForelder) {
         NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(regularParagraph(fromMessageSource("nasjonalitet", "Norsk")));
-        paragraph.add(regularParagraph(fromMessageSource("aktør", norskForelder.getAktørId().getId())));
-        return paragraph;
+        return Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet", "Norsk"),
+            infoFormatter.fromMessageSource("aktør", norskForelder.getAktørId().getId()));
     }
 
-    private Paragraph arbeidsforhold(List<UtenlandskArbeidsforhold> arbeidsforhold) {
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(heading(fromMessageSource("arbeidsforhold")));
-        final List<String> formatted = arbeidsforhold.stream()
-                .map(this::format)
-                .collect(toList());
-        paragraph.add(bulletedList(formatted));
-        return paragraph;
+    private float dekningsgrad(Dekningsgrad dekningsgrad, PDPageContentStream cos, float y) throws IOException {
+        float startY = y;
+        y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("dekningsgrad"), cos, y);
+        y -= pdfGen.addLineOfRegularText(dekningsgrad.kode() + "%", cos, y);
+        return startY - y;
     }
 
-    private Paragraph egenNæring(List<EgenNæring> egenNæring) {
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(heading(fromMessageSource("egennæring")));
-        final List<String> formatted = egenNæring.stream()
-                .map(this::formatEgenNæring)
-                .collect(toList());
-        paragraph.add(bulletedList(formatted));
-        return paragraph;
+    private float opptjening(Opptjening opptjening, PDPageContentStream cos, float y) throws IOException {
+        float startY = y;
+        y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("arbeidsforhold"), cos, y);
+        y -= pdfGen.addBulletList(utenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()), cos, y);
+        y -= pdfGen.addBlankLine();
+        y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("egennæring"), cos, y);
+        y -= pdfGen.addBulletList(egenNæring(opptjening.getEgenNæring()), cos, y);
+        return startY - y;
+    }
+
+    private float relasjonTilBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y) throws IOException {
+        float startY = y;
+        y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("barn"), cos, y);
+        y -= pdfGen.addLineOfRegularText(barn(relasjon), cos, y);
+        return startY - y;
+    }
+
+    private float fordeling(Fordeling fordeling, PDPageContentStream cos, float y) throws IOException {
+        float startY = y;
+        y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("perioder"), cos, y);
+        y -= pdfGen.addBulletList(perioder(fordeling.getPerioder()), cos, y);
+        return startY - y;
+    }
+
+    private List<String> utenlandskeArbeidsforhold(List<UtenlandskArbeidsforhold> arbeidsforhold) {
+        return arbeidsforhold.stream()
+            .map(this::format)
+            .collect(toList());
     }
 
     private String format(UtenlandskArbeidsforhold arbeidsforhold) {
         UtenlandskArbeidsforhold ua = UtenlandskArbeidsforhold.class.cast(arbeidsforhold);
-        return ua.getArbeidsgiverNavn() + " (" + countryName(ua.getLand().getAlpha2()) + ")" + "\n" +
-                dato(ua.getPeriode().getFom()) + "\n";
+        return ua.getArbeidsgiverNavn() + " (" + infoFormatter.countryName(ua.getLand().getAlpha2()) + ")" + " - " +
+                "fom. " + infoFormatter.dato(ua.getPeriode().getFom());
     }
+
+    private List<String> egenNæring(List<EgenNæring> egenNæring) {
+        return egenNæring.stream()
+            .map(this::formatEgenNæring)
+            .collect(toList());
+    }
+
 
     private String formatEgenNæring(EgenNæring næring) {
         return næring.getVirksomhetsTyper().stream()
                 .map(s -> formatVirksomhetsType(s, næring))
-                .collect(Collectors.joining("\n\n"));
+                .collect(Collectors.joining(" - "));
     }
 
     private String formatVirksomhetsType(Virksomhetstype type, EgenNæring næring) {
-        return type.name() + " (" + countryName(næring.getArbeidsland().getAlpha2()) + ")" + "\n" +
-                dato(næring.getPeriode().getFom()) + "\n" +
-                næring.isNærRelasjon() + "\n" +
-                navnToString(næring.getRegnskapsførere());
+        return type.name() + " (" + infoFormatter.countryName(næring.getArbeidsland().getAlpha2()) + ")" + " - " +
+           "fom." +  infoFormatter.dato(næring.getPeriode().getFom()) + " - " +
+            "regnskapsfører " + infoFormatter.navnToString(næring.getRegnskapsførere());
     }
 
-    private Paragraph dekningsgrad(Dekningsgrad dekningsgrad) {
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(heading(fromMessageSource("dekningsgrad")));
-        paragraph.add(regularParagraph(dekningsgrad.kode() + "%"));
-        return paragraph;
-    }
-
-    private Paragraph perioder(List<LukketPeriodeMedVedlegg> perioder) {
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(heading(fromMessageSource("perioder")));
-        final List<String> formatted = perioder.stream()
+    private List<String> perioder(List<LukketPeriodeMedVedlegg> perioder) {
+        return perioder.stream()
                 .map(this::format)
                 .collect(toList());
-        paragraph.add(bulletedList(formatted));
-        return paragraph;
     }
 
-    private Paragraph barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
+    private String barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
         if (relasjonTilBarn instanceof Fødsel) {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
-            return barn("Fødselsdato: " + dato(fødsel.getFødselsdato()));
-        }
-        if (relasjonTilBarn instanceof Adopsjon) {
+            return "Fødselsdato: " + infoFormatter.dato(fødsel.getFødselsdato());
+        } else if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
-            return barn("Adopsjon: " + adopsjon.toString());
-        }
-        if (relasjonTilBarn instanceof FremtidigFødsel) {
+            return "Adopsjon: " + adopsjon.toString();
+        } else if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
-            return barn("Fødsel med termin: " + dato(fødsel.getTerminDato()));
+            return "Fødsel med termin: " + infoFormatter.dato(fødsel.getTerminDato());
+        } else {
+            Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
+            return "Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
+                ", " + omsorgsovertakelse.getÅrsak();
         }
 
-        Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
-        return barn("Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
-                ", " + omsorgsovertakelse.getÅrsak());
-
-    }
-
-    private Paragraph barn(String txt) {
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(heading(fromMessageSource("barn")));
-        paragraph.add(regularParagraph(txt));
-        return paragraph;
     }
 
     private String format(LukketPeriodeMedVedlegg periode) {
-        String tid = dato(periode.getFom()) + " - " + dato(periode.getTom());
+        String tid = infoFormatter.dato(periode.getFom()) + " - " + infoFormatter.dato(periode.getTom());
         if (periode instanceof OverføringsPeriode) {
             OverføringsPeriode op = OverføringsPeriode.class.cast(periode);
             return "Overføring: " + tid + ", " + op.getÅrsak();
@@ -254,14 +240,10 @@ public class ForeldrepengerPDFGenerator extends AbstractPDFGenerator {
         }
     }
 
-    private Paragraph vedlegg(List<Vedlegg> vedlegg) {
-        Paragraph paragraph = new Paragraph();
-        paragraph.add(heading(fromMessageSource("vedlegg")));
-        final List<String> formatted = vedlegg.stream()
-                .map(this::format)
-                .collect(toList());
-        paragraph.add(bulletedList(formatted));
-        return paragraph;
+    private List<String> vedlegg(List<Vedlegg> vedlegg) {
+        return vedlegg.stream()
+            .map(this::format)
+            .collect(toList());
     }
 
     private String format(Vedlegg vedlegg) {
