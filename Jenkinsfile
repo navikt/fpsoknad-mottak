@@ -101,7 +101,7 @@ node {
         }
     }
 
-    stage("Deploy to preprod") {
+    stage("Deploy to t10") {
         withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088',
                  'NO_PROXY=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no',
                  'no_proxy=localhost,127.0.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no'
