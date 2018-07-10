@@ -18,7 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.PastOrToday;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@BarnOgFødselsdatoer
+//@BarnOgFødselsdatoer TODO: Denne funker ikke med foreldrepenger.Fødsel, kun med felles.Fødsel. Må ryddes opp i.
 public class Fødsel extends RelasjonTilBarnMedVedlegg {
 
     private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") LocalDate> fødselsdato;
