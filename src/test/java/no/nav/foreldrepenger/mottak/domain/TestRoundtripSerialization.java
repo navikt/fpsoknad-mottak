@@ -30,6 +30,8 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
@@ -53,6 +55,9 @@ public class TestRoundtripSerialization {
 
     @Autowired
     FPFordelConnection connection;
+
+    @Autowired
+    ObjectMapper mapper;
 
     @Autowired
     CallIdGenerator refGenerator;
@@ -87,6 +92,7 @@ public class TestRoundtripSerialization {
     @Test
     public void testForeldrepengerSøknadXML() throws IOException {
         Søknad foreldrepenger = foreldrepenger();
+        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(foreldrepenger));
         Soeknad søknad = unmarshal(template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class),
                 Soeknad.class);
         assertEquals(søknad.getMottattDato(), foreldrepenger.getMottattdato().toLocalDate());
