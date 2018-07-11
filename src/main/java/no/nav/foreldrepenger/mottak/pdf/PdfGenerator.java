@@ -7,11 +7,15 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class PdfGenerator {
+
+    private static final Logger log = LoggerFactory.getLogger(PdfGenerator.class);
 
     private static final String logoPath = PdfGenerator.class
         .getClassLoader().getResource("pdf/nav-logo.png").getFile();
@@ -105,6 +109,7 @@ public class PdfGenerator {
     }
 
     public float addLogo(PDDocument doc, PDPageContentStream cos, float startY) throws IOException {
+        log.debug("Attempting to read logo from " + logoPath);
         PDImageXObject ximage = PDImageXObject.createFromFile(logoPath, doc);
         float startX = (mediaBox.getWidth() - ximage.getWidth()) / 2;
         float offsetTop = 40;
