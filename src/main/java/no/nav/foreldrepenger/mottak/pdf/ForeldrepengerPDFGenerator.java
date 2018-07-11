@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -188,7 +189,8 @@ public class ForeldrepengerPDFGenerator {
     }
 
     private String formatVirksomhetsType(Virksomhetstype type, EgenNæring næring) {
-        return type.name() + " (" + infoFormatter.countryName(næring.getArbeidsland().getAlpha2()) + ")" + " - " +
+        CountryCode arbeidsland = Optional.ofNullable(næring.getArbeidsland()).orElse(CountryCode.NO);
+        return type.name() + " (" + infoFormatter.countryName(arbeidsland.getAlpha2()) + ")" + " - " +
            "fom." +  infoFormatter.dato(næring.getPeriode().getFom()) + " - " +
             "regnskapsfører " + infoFormatter.navnToString(næring.getRegnskapsførere());
     }

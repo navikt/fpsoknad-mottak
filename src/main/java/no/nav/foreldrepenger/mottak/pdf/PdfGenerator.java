@@ -10,7 +10,6 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -122,6 +121,7 @@ public class PdfGenerator {
     }
 
     private byte[] logoFromInputStream() {
+        log.debug("Reading logo image");
         try (InputStream is = PdfGenerator.class.getResourceAsStream("/pdf/nav-logo.png");
              ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
