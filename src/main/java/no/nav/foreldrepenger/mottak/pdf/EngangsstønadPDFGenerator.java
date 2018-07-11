@@ -20,9 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class EngangsstønadPDFGenerator {
 
-    private static final String logoPath = EngangsstønadPDFGenerator.class
-        .getClassLoader().getResource("pdf/nav-logo.png").getPath();
-
     private SøknadInfoFormatter infoFormatter;
 
     private PdfGenerator pdfGen;
@@ -79,7 +76,7 @@ public class EngangsstønadPDFGenerator {
 
     private float header(Person søker, Engangsstønad stønad, PDDocument doc, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= pdfGen.addLogo(logoPath, doc, cos, y);
+        y -= pdfGen.addLogo(doc, cos, y);
         y -= pdfGen.addCenteredHeading(infoFormatter.fromMessageSource("søknad_engang"), cos, y);
         y -= pdfGen.addCenteredHeadings(søker(søker), cos, y);
         y -= pdfGen.addDividerLine(cos, y);

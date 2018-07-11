@@ -13,6 +13,9 @@ import java.util.List;
 
 public class PdfGenerator {
 
+    private static final String logoPath = PdfGenerator.class
+        .getClassLoader().getResource("pdf/nav-logo.png").getPath();
+
     private static final int margin = 40;
 
     private static final PDFont fontPlain = PDType1Font.HELVETICA;
@@ -101,8 +104,8 @@ public class PdfGenerator {
         return 20;
     }
 
-    public float addLogo(String pathToImage, PDDocument doc, PDPageContentStream cos, float startY) throws IOException {
-        PDImageXObject ximage = PDImageXObject.createFromFile(pathToImage, doc);
+    public float addLogo(PDDocument doc, PDPageContentStream cos, float startY) throws IOException {
+        PDImageXObject ximage = PDImageXObject.createFromFile(logoPath, doc);
         float startX = (mediaBox.getWidth() - ximage.getWidth()) / 2;
         float offsetTop = 40;
         startY -= ximage.getHeight() / 2 + offsetTop;
