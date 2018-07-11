@@ -14,7 +14,7 @@ import java.util.List;
 public class PdfGenerator {
 
     private static final String logoPath = PdfGenerator.class
-        .getClassLoader().getResource("pdf/nav-logo.png").getPath();
+        .getClassLoader().getResource("pdf/nav-logo.png").getFile();
 
     private static final int margin = 40;
 
