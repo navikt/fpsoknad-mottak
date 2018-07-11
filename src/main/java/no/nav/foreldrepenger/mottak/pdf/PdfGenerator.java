@@ -10,15 +10,15 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class PdfGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(PdfGenerator.class);
-
-    private static final String logoPath = PdfGenerator.class
-        .getClassLoader().getResource("pdf/nav-logo.png").getFile();
 
     private static final int margin = 40;
 
@@ -109,8 +109,7 @@ public class PdfGenerator {
     }
 
     public float addLogo(PDDocument doc, PDPageContentStream cos, float startY) throws IOException {
-        log.debug("Attempting to read logo from " + logoPath);
-        PDImageXObject ximage = PDImageXObject.createFromFile(logoPath, doc);
+        PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, logoFromInputStream(), "logo");
         float startX = (mediaBox.getWidth() - ximage.getWidth()) / 2;
         float offsetTop = 40;
         startY -= ximage.getHeight() / 2 + offsetTop;
@@ -120,6 +119,20 @@ public class PdfGenerator {
 
     public float addBlankLine() {
         return 20;
+    }
+
+    private byte[] logoFromInputStream() {
+        try (InputStream is = PdfGenerator.class.getResourceAsStream("/pdf/nav-logo.png");
+             ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
+                os.write(buffer, 0, len);
+            }
+            return os.toByteArray();
+        } catch (IOException ex) {
+            throw new RuntimeException("Error while reading image", ex);
+        }
+
     }
 
 }
