@@ -1,19 +1,17 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static java.util.Collections.emptyList;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.PastOrToday;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -24,7 +22,7 @@ public class Adopsjon extends RelasjonTilBarnMedVedlegg {
     private final LocalDate omsorgsovertakelsesdato;
     private final boolean ektefellesBarn;
     private final LocalDate ankomstDato;
-    private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.adopsjon.fødselssdato.framtid}") LocalDate> fødselsdatoer;
+    private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.adopsjon.fødselssdato.framtid}") LocalDate> fødselsdato;
 
     public Adopsjon(LocalDate omsorgsovertakelsesdato, boolean ektefellesBarn, LocalDate fødselsdato) {
         this(omsorgsovertakelsesdato, ektefellesBarn, 1, emptyList(), null, fødselsdato);
@@ -33,11 +31,11 @@ public class Adopsjon extends RelasjonTilBarnMedVedlegg {
     @JsonCreator
     public Adopsjon(LocalDate omsorgsovertakelsesdato,
             boolean ektefellesBarn,
-            int antallBarn, List<String> vedlegg, LocalDate ankomstDato, LocalDate... fødselsdatoer) {
+            int antallBarn, List<String> vedlegg, LocalDate ankomstDato, LocalDate... fødselsdato) {
         super(antallBarn, vedlegg);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.ektefellesBarn = ektefellesBarn;
         this.ankomstDato = ankomstDato;
-        this.fødselsdatoer = Arrays.asList(fødselsdatoer);
+        this.fødselsdato = asList(fødselsdato);
     }
 }
