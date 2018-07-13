@@ -352,7 +352,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Periode periodeFra(ÅpenPeriode periode) {
-        return periode == null ? null : new Periode().withFom(periode.getFom());
+        return periode == null ? null : new Periode().withFom(periode.getFom()).withTom(periode.getTom());
     }
 
     private static Medlemskap medlemsskapFra(Medlemsskap ms) {
