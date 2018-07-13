@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,28 +30,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FrilansOppdrag;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.GradertUttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.MorsAktivitet;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Oppholdsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -591,6 +570,20 @@ public class FPFordelSøknadGenerator {
                     .withAntallBarn(termin.getAntallBarn())
                     .withTermindato(termin.getTerminDato())
                     .withUtstedtdato(termin.getUtstedtDato());
+        }
+        if (relasjonTilBarn instanceof Adopsjon) {
+            Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
+            return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon()
+                .withAntallBarn(adopsjon.getAntallBarn())
+                .withFoedselsdato(adopsjon.getFødselsdato())
+                .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato());
+        }
+        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
+            Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
+            return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Omsorgsovertakelse()
+                .withAntallBarn(omsorgsovertakelse.getAntallBarn())
+                .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
+                .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato());
         }
 
         throw new IllegalArgumentException(
