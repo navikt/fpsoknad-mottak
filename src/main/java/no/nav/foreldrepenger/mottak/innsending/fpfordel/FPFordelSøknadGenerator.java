@@ -582,7 +582,7 @@ public class FPFordelSøknadGenerator {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
             return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Omsorgsovertakelse()
                 .withAntallBarn(omsorgsovertakelse.getAntallBarn())
-                .withFoedselsdato(omsorgsovertakelse.getFødselsdatoer())
+                .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
                 .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato());
         }
 
