@@ -543,7 +543,8 @@ public class FPFordelSøknadGenerator {
             return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Omsorgsovertakelse()
                 .withAntallBarn(omsorgsovertakelse.getAntallBarn())
                 .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
-                .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato());
+                .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato())
+                .withBeskrivelse("Omsorgsovertakelse");
         }
 
         throw new IllegalArgumentException(
