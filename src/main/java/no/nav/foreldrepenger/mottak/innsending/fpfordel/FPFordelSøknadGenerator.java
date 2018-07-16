@@ -1,8 +1,42 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
+import com.google.common.collect.Lists;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.util.Jaxb;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Rettigheter;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Dekningsgrad;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilans;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Fordeling;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import javax.xml.bind.JAXBContext;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -10,71 +44,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.xml.bind.JAXBContext;
-
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import com.google.common.collect.Lists;
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.LukketPeriode;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.OppholdNorge;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.OppholdUtlandet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Periode;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Rettigheter;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.SoekersRelasjonTilBarnet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Termin;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.Ytelse;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Dekningsgrad;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.EgenNaering;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilans;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilansoppdrag;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Regnskapsfoerer;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.AnnenOpptjeningTyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Brukerroller;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Dekningsgrader;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Innsendingstype;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Land;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.MorsAktivitetsTyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Oppholdsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Overfoeringsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Utsettelsesaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Uttaksperiodetyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Virksomhetstyper;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Fordeling;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Gradering;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Oppholdsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Overfoeringsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Utsettelsesperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Uttaksperiode;
-import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
 
 @Component
 public class FPFordelSøknadGenerator {
@@ -88,11 +59,11 @@ public class FPFordelSøknadGenerator {
         return toXML(toFPFordelModel(søknad, aktørId));
     }
 
-    public String toXML(Soeknad model) {
+    private String toXML(Soeknad model) {
         return marshall(CONTEXT, model, false);
     }
 
-    public Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
+    private Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
         LOG.debug("Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
@@ -282,18 +253,7 @@ public class FPFordelSøknadGenerator {
         Regnskapsfører regnskapsfører = regnskapsførere.get(0);
         return new Regnskapsfoerer()
                 .withTelefon(regnskapsfører.getTelefon())
-                .withNavn(navnFra(regnskapsfører.getNavn()));
-    }
-
-    private static String navnFra(Navn navn) {
-        return navn == null ? null
-                : (formatNavn(navn.getFornavn()) + " "
-                        + formatNavn(navn.getMellomnavn()) + " "
-                        + formatNavn(navn.getEtternavn()) + " ").trim();
-    }
-
-    private static String formatNavn(String navn) {
-        return Optional.ofNullable(navn).orElse("");
+                .withNavn(regnskapsfører.getNavn());
     }
 
     private static AnnenOpptjening annenOpptjeningFra(
@@ -382,11 +342,11 @@ public class FPFordelSøknadGenerator {
                         .withLand(landFra(opphold.getLand()));
     }
 
-    private static final Land landFra(CountryCode land) {
+    private static Land landFra(CountryCode land) {
         return land == null ? null : landFra(land.getAlpha3());
     }
 
-    private static final Land landFra(String alphq3) {
+    private static Land landFra(String alphq3) {
         Land land = new Land().withKode(alphq3);
         return land.withKodeverk(land.getKodeverk());
     }

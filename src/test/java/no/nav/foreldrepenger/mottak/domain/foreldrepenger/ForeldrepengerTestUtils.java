@@ -1,30 +1,28 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static com.google.inject.internal.util.Lists.newArrayList;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.medlemsskap;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.navnUtenMellomnavn;
-import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.inject.internal.util.Lists;
 import com.neovisionaries.i18n.CountryCode;
-
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+
+import static com.google.inject.internal.util.Lists.newArrayList;
+import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.mottak.domain.TestUtils.medlemsskap;
+import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
+
 public class ForeldrepengerTestUtils {
 
     public static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.valgfrittVedlegg());
-    public static final List<String> ETT_VEDLEGG_REF = Collections.singletonList("42");
+    private static final List<String> ETT_VEDLEGG_REF = Collections.singletonList("42");
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 
@@ -33,7 +31,7 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Søknad søknad(Vedlegg... vedlegg) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), Arrays.<Vedlegg>asList(vedlegg));
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), asList(vedlegg));
     }
 
     static Foreldrepenger foreldrePenger() {
@@ -49,8 +47,7 @@ public class ForeldrepengerTestUtils {
     }
 
     static Opptjening opptjening() {
-        return new Opptjening(Collections.singletonList(utenlandskArbeidsforhold()), egneNæringer(),
-                andreOpptjeninger(), frilans());
+        return new Opptjening(Collections.singletonList(utenlandskArbeidsforhold()), egneNæringer(), andreOpptjeninger(), frilans());
     }
 
     private static Frilans frilans() {
@@ -59,11 +56,11 @@ public class ForeldrepengerTestUtils {
                         new FrilansOppdrag("far min", åpenPeriode(true))));
     }
 
-    static List<AnnenOpptjening> andreOpptjeninger() {
+    private static List<AnnenOpptjening> andreOpptjeninger() {
         return newArrayList(annenOpptjening());
     }
 
-    static List<EgenNæring> egneNæringer() {
+    private static List<EgenNæring> egneNæringer() {
         return newArrayList(utenlandskEgenNæring(), norskEgenNæring());
     }
 
@@ -96,7 +93,7 @@ public class ForeldrepengerTestUtils {
     static UtenlandskOrganisasjon utenlandskEgenNæring() {
         return UtenlandskOrganisasjon.builder()
                 .periode(åpenPeriode())
-                .regnskapsførere(Collections.singletonList(new Regnskapsfører(navnUtenMellomnavn(), "+4746929061")))
+                .regnskapsførere(Collections.singletonList(new Regnskapsfører("Rein S. Kapsfører", "+4746929061")))
                 .erNyOpprettet(true)
                 .erVarigEndring(true)
                 .næringsinntektBrutto(100_000)
@@ -110,7 +107,7 @@ public class ForeldrepengerTestUtils {
     static NorskOrganisasjon norskEgenNæring() {
         return NorskOrganisasjon.builder()
                 .periode(åpenPeriode())
-                .regnskapsførere(Collections.singletonList(new Regnskapsfører(navnUtenMellomnavn(), "+4746929061")))
+                .regnskapsførere(Collections.singletonList(new Regnskapsfører("Rein S. Kapsfører", "+4746929061")))
                 .erNyOpprettet(true)
                 .erVarigEndring(true)
                 .næringsinntektBrutto(100_000)
@@ -134,7 +131,7 @@ public class ForeldrepengerTestUtils {
                 .periode(åpenPeriode()).build();
     }
 
-    static List<LukketPeriodeMedVedlegg> perioder() {
+    private static List<LukketPeriodeMedVedlegg> perioder() {
         return newArrayList(oppholdsPeriode(), overføringsPeriode(), utsettelsesPeriode(), gradertPeriode());
     }
 

@@ -1,9 +1,7 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -11,13 +9,11 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 public class SøknadInfoFormatter {
 
@@ -45,8 +41,7 @@ public class SøknadInfoFormatter {
 
     public String navnToString(List<Regnskapsfører> regnskapsførere) {
         return regnskapsførere == null ? "ukjent" : regnskapsførere.stream()
-            .map(s -> s.getNavn())
-            .map(this::navnToString)
+            .map(Regnskapsfører::getNavn)
             .collect(joining(","));
     }
 
@@ -56,7 +51,7 @@ public class SøknadInfoFormatter {
             + formatNavn(navn.getEtternavn()) + " ").trim();
     }
 
-    public String formatNavn(String navn) {
+    private String formatNavn(String navn) {
         return Optional.ofNullable(navn).orElse("");
     }
 
@@ -66,10 +61,9 @@ public class SøknadInfoFormatter {
 
     public String dato(List<LocalDate> dates) {
         return dates.stream()
-            .map(d -> dato(d))
+            .map(this::dato)
             .collect(joining(", "));
     }
-
 
     public String countryName(Boolean b) {
         return b ? "Norge" : "utlandet";

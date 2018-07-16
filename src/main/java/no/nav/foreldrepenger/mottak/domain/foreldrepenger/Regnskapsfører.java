@@ -5,6 +5,6 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 
 @Data
 public class Regnskapsfører {
-    private final Navn navn;
+    private final String navn;
     private final String telefon;
 }
