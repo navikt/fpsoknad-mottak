@@ -544,6 +544,7 @@ public class FPFordelSøknadGenerator {
                 .withAntallBarn(omsorgsovertakelse.getAntallBarn())
                 .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
                 .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato())
+                .withOmsorgsovertakelseaarsak(new Omsorgsovertakelseaarsaker().withKode("OVERTATT_OMSORG"))
                 .withBeskrivelse("Omsorgsovertakelse");
         }
 
