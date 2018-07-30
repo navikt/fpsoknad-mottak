@@ -103,9 +103,10 @@ public class EngangsstønadPDFGenerator {
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
-        List<String> lines = Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet",
+        List<String> lines = new ArrayList<>(Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet",
             infoFormatter.countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName())),
-            infoFormatter.navn(utenlandsForelder.getNavn()));
+            infoFormatter.navn(utenlandsForelder.getNavn())));
+
         if (utenlandsForelder.getId() != null) {
             lines.add(infoFormatter.fromMessageSource("utenlandskid", utenlandsForelder.getId()));
         }
@@ -146,7 +147,8 @@ public class EngangsstønadPDFGenerator {
 
     private List<String> fødsel(Søknad søknad, Engangsstønad stønad) {
         FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
-        List<String> texts = Arrays.asList(infoFormatter.fromMessageSource("termindato", infoFormatter.dato(ff.getTerminDato())));
+        List<String> texts = new ArrayList<>();
+        texts.add(infoFormatter.fromMessageSource("termindato", infoFormatter.dato(ff.getTerminDato())));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
             texts.add(infoFormatter.fromMessageSource("termindatotekst", infoFormatter.dato(ff.getUtstedtDato())));
         }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +119,8 @@ public class ForeldrepengerPDFGenerator {
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
-        List<String> lines = Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet",
+        List<String> lines = new ArrayList<>();
+        lines.add(infoFormatter.fromMessageSource("nasjonalitet",
             infoFormatter.countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName())));
         if (utenlandsForelder.getId() != null) {
             lines.add(infoFormatter.fromMessageSource("utenlandskid", utenlandsForelder.getId()));
