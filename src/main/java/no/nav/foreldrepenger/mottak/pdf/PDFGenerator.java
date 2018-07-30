@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -10,14 +15,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+class PDFGenerator {
 
-public class PdfGenerator {
-
-    private static final Logger log = LoggerFactory.getLogger(PdfGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(PDFGenerator.class);
 
     private static final int margin = 40;
 
@@ -26,12 +26,18 @@ public class PdfGenerator {
 
     private static final int fontPLainSize = 12;
     private static final int fontHeadingSize = 16;
-    private static final int fontPLainHeight =
-        Math.round(fontPlain.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontPLainSize);
-    private static final int fontHeadingHeight =
-        Math.round(fontPlain.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontHeadingSize);
+    private static final int fontPLainHeight = Math
+            .round(fontPlain.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontPLainSize);
+    private static final int fontHeadingHeight = Math
+            .round(fontPlain.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontHeadingSize);
 
     private static final PDRectangle mediaBox = new PDPage(PDRectangle.A4).getMediaBox();
+
+    protected final SøknadInfoFormatter infoFormatter;
+
+    public PDFGenerator(SøknadInfoFormatter infoFormatter) {
+        this.infoFormatter = infoFormatter;
+    }
 
     public PDPage newPage() {
         return new PDPage(PDRectangle.A4);
@@ -120,10 +126,10 @@ public class PdfGenerator {
         return 20;
     }
 
-    private byte[] logoFromInputStream() {
+    private static byte[] logoFromInputStream() {
         log.debug("Reading logo image");
-        try (InputStream is = PdfGenerator.class.getResourceAsStream("/pdf/nav-logo.png");
-             ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+        try (InputStream is = PDFGenerator.class.getResourceAsStream("/pdf/nav-logo.png");
+                ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
             for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
                 os.write(buffer, 0, len);

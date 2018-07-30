@@ -1,11 +1,6 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import static java.util.stream.Collectors.joining;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,19 +8,26 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.joining;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
-public class SøknadInfoFormatter {
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
+
+class SøknadInfoFormatter {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
-    private MessageSource landkoder;
-    private MessageSource kvitteringstekster;
-    private Locale locale;
+    private final MessageSource landkoder;
+
+    private final MessageSource kvitteringstekster;
+    private final Locale locale;
 
     public SøknadInfoFormatter(@Qualifier("landkoder") MessageSource landkoder,
-                               @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
-                               Locale locale) {
+            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
+            Locale locale) {
         this.landkoder = landkoder;
         this.kvitteringstekster = kvitteringstekster;
         this.locale = locale;
@@ -40,18 +42,19 @@ public class SøknadInfoFormatter {
     }
 
     public String navnToString(List<Regnskapsfører> regnskapsførere) {
-        return regnskapsførere == null ? "ukjent" : regnskapsførere.stream()
-            .map(Regnskapsfører::getNavn)
-            .collect(joining(","));
+        return regnskapsførere == null ? "ukjent"
+                : regnskapsførere.stream()
+                        .map(Regnskapsfører::getNavn)
+                        .collect(joining(","));
     }
 
     public String navnToString(Navn navn) {
         return (formatNavn(navn.getFornavn()) + " "
-            + formatNavn(navn.getMellomnavn()) + " "
-            + formatNavn(navn.getEtternavn()) + " ").trim();
+                + formatNavn(navn.getMellomnavn()) + " "
+                + formatNavn(navn.getEtternavn()) + " ").trim();
     }
 
-    private String formatNavn(String navn) {
+    private static String formatNavn(String navn) {
         return Optional.ofNullable(navn).orElse("");
     }
 
@@ -61,8 +64,8 @@ public class SøknadInfoFormatter {
 
     public String dato(List<LocalDate> dates) {
         return dates.stream()
-            .map(this::dato)
-            .collect(joining(", "));
+                .map(this::dato)
+                .collect(joining(", "));
     }
 
     public String countryName(Boolean b) {
@@ -79,8 +82,8 @@ public class SøknadInfoFormatter {
             return null;
         }
         return (Optional.ofNullable(søker.fornavn).orElse("ukjent") + " "
-            + Optional.ofNullable(søker.mellomnavn).orElse("u") + " "
-            + Optional.ofNullable(søker.etternavn).orElse("ukjentsen")).trim();
+                + Optional.ofNullable(søker.mellomnavn).orElse("u") + " "
+                + Optional.ofNullable(søker.etternavn).orElse("ukjentsen")).trim();
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {
@@ -90,5 +93,11 @@ public class SøknadInfoFormatter {
     private String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
         ((ResourceBundleMessageSource) messages).setDefaultEncoding("utf-8");
         return messages.getMessage(key, values, defaultValue, locale);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [landkoder=" + landkoder + ", kvitteringstekster=" + kvitteringstekster
+                + ", locale=" + locale + "]";
     }
 }

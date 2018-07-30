@@ -1,87 +1,103 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.*;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.util.Pair;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.KjentForelder;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Service
-public class EngangsstønadPDFGenerator {
-
-    private SøknadInfoFormatter infoFormatter;
-
-    private PdfGenerator pdfGen;
+public class EngangsstønadPDFGenerator extends PDFGenerator {
 
     @Inject
     public EngangsstønadPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster) {
-        pdfGen = new PdfGenerator();
-        infoFormatter = new SøknadInfoFormatter(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
+        this(new SøknadInfoFormatter(landkoder, kvitteringstekster, CountryCode.NO.toLocale()));
+    }
+
+    private EngangsstønadPDFGenerator(SøknadInfoFormatter infoFormatter) {
+        super(infoFormatter);
     }
 
     public byte[] generate(Søknad søknad, Person søker) {
         Engangsstønad stønad = Engangsstønad.class.cast(søknad.getYtelse());
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
-        byte[] pdf;
-        final PDPage page = pdfGen.newPage();
+        final PDPage page = newPage();
         try (PDDocument doc = new PDDocument();
-             PDPageContentStream cos = new PDPageContentStream(doc, page);
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            float y = PdfGenerator.calculateStartY();
+                PDPageContentStream cos = new PDPageContentStream(doc, page);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            float y = PDFGenerator.calculateStartY();
 
             y -= header(søker, stønad, doc, cos, y);
 
             if (erFremtidigFødsel(stønad)) {
-                y -= pdfGen.addLinesOfRegularText(fødsel(søknad, stønad), cos, y);
+                y -= addLinesOfRegularText(fødsel(søknad, stønad), cos, y);
             }
 
             if (erFødt(stønad)) {
-                y -= pdfGen.addLineOfRegularText(født(søknad, stønad), cos, y);
+                y -= addLineOfRegularText(født(søknad, stønad), cos, y);
             }
 
-            y -= pdfGen.addBlankLine();
+            y -= addBlankLine();
 
             y -= tilknytning(medlemsskap, cos, y);
 
-            y -= pdfGen.addBlankLine();
-            y -= pdfGen.addLineOfRegularText(fødselssted(medlemsskap, stønad), cos, y);
-            y -= pdfGen.addBlankLine();
+            y -= addBlankLine();
+            y -= addLineOfRegularText(fødselssted(medlemsskap, stønad), cos, y);
+            y -= addBlankLine();
 
             AnnenForelder annenForelder = stønad.getAnnenForelder();
-            if (annenForelder != null && annenForelder instanceof KjentForelder && ((KjentForelder) annenForelder).hasId()) {
-                y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("omfar"), cos, y);
-                pdfGen.addLinesOfRegularText(omFar(stønad), cos, y);
+            if (annenForelder != null && annenForelder instanceof KjentForelder
+                    && ((KjentForelder) annenForelder).hasId()) {
+                y -= addLeftHeading(infoFormatter.fromMessageSource("omfar"), cos, y);
+                addLinesOfRegularText(omFar(stønad), cos, y);
             }
 
             doc.addPage(page);
             cos.close();
             doc.save(baos);
-            pdf = baos.toByteArray();
-            return pdf;
+            return baos.toByteArray();
         } catch (IOException ex) {
             throw new RuntimeException("Error while creating pdf", ex);
         }
     }
 
-    private float header(Person søker, Engangsstønad stønad, PDDocument doc, PDPageContentStream cos, float y) throws IOException {
+    private float header(Person søker, Engangsstønad stønad, PDDocument doc, PDPageContentStream cos, float y)
+            throws IOException {
         float startY = y;
-        y -= pdfGen.addLogo(doc, cos, y);
-        y -= pdfGen.addCenteredHeading(infoFormatter.fromMessageSource("søknad_engang"), cos, y);
-        y -= pdfGen.addCenteredHeadings(søker(søker), cos, y);
-        y -= pdfGen.addDividerLine(cos, y);
-        y -= pdfGen.addBlankLine();
-        y -= pdfGen.addLineOfRegularText(infoFormatter.fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn()), cos, y);
+        y -= addLogo(doc, cos, y);
+        y -= addCenteredHeading(infoFormatter.fromMessageSource("søknad_engang"), cos, y);
+        y -= addCenteredHeadings(søker(søker), cos, y);
+        y -= addDividerLine(cos, y);
+        y -= addBlankLine();
+        y -= addLineOfRegularText(
+                infoFormatter.fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn()), cos, y);
         return startY - y;
     }
 
@@ -104,8 +120,9 @@ public class EngangsstønadPDFGenerator {
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> lines = new ArrayList<>(Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet",
-            infoFormatter.countryName(utenlandsForelder.getLand().getAlpha2(), utenlandsForelder.getLand().getName())),
-            infoFormatter.navn(utenlandsForelder.getNavn())));
+                infoFormatter.countryName(utenlandsForelder.getLand().getAlpha2(),
+                        utenlandsForelder.getLand().getName())),
+                infoFormatter.navn(utenlandsForelder.getNavn())));
 
         if (utenlandsForelder.getId() != null) {
             lines.add(infoFormatter.fromMessageSource("utenlandskid", utenlandsForelder.getId()));
@@ -125,7 +142,7 @@ public class EngangsstønadPDFGenerator {
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
         if (erFremtidigFødsel(stønad)) {
             return infoFormatter.fromMessageSource("føderi",
-                infoFormatter.countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()));
+                    infoFormatter.countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()));
         }
         else {
             Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
@@ -137,12 +154,12 @@ public class EngangsstønadPDFGenerator {
 
     private Pair<List<String>, List<String>> medlemsskap(Medlemsskap medlemsskap) {
         return Pair.of(utenlandsOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()),
-            utenlandsOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold()));
+                utenlandsOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold()));
     }
 
     private List<String> søker(Person søker) {
         return Arrays.asList(søker.fnr.getFnr(),
-            infoFormatter.navnToString(new Navn(søker.fornavn, søker.mellomnavn, søker.etternavn)));
+                infoFormatter.navnToString(new Navn(søker.fornavn, søker.mellomnavn, søker.etternavn)));
     }
 
     private List<String> fødsel(Søknad søknad, Engangsstønad stønad) {
@@ -170,13 +187,13 @@ public class EngangsstønadPDFGenerator {
 
     private float tilknytning(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= pdfGen.addLeftHeading(infoFormatter.fromMessageSource("tilknytning"), cos, y);
-        y -= pdfGen.addLineOfRegularText(infoFormatter.fromMessageSource("siste12"), cos, y);
+        y -= addLeftHeading(infoFormatter.fromMessageSource("tilknytning"), cos, y);
+        y -= addLineOfRegularText(infoFormatter.fromMessageSource("siste12"), cos, y);
         final Pair<List<String>, List<String>> medlemsPerioder = medlemsskap(medlemsskap);
-        y -= pdfGen.addBulletList(medlemsPerioder.getFirst(), cos, y);
-        y -= pdfGen.addBlankLine();
-        y -= pdfGen.addLineOfRegularText(infoFormatter.fromMessageSource("neste12"), cos, y);
-        y -= pdfGen.addBulletList(medlemsPerioder.getSecond(), cos, y);
+        y -= addBulletList(medlemsPerioder.getFirst(), cos, y);
+        y -= addBlankLine();
+        y -= addLineOfRegularText(infoFormatter.fromMessageSource("neste12"), cos, y);
+        y -= addBulletList(medlemsPerioder.getSecond(), cos, y);
         return startY - y;
     }
 
