@@ -24,10 +24,10 @@
         <xsd:complexContent>
             <xsd:extension base="felles:SoekersRelasjonTilBarnet">
                 <xsd:sequence>
-                    <xsd:element name="omsorgsovertakelsesdato" type="xsd:date"/>
+                    <xsd:element name="omsorgsovertakelsesdato" type="xsd:date" minOccurs="0"/>
                     <xsd:element name="ankomstdato" type="xsd:date" minOccurs="0"/>
                     <xsd:element name="foedselsdato" type="xsd:date" minOccurs="0" maxOccurs="unbounded"/>
-                    <xsd:element name="adopsjonAvEktefellesBarn" type="xsd:boolean"/>
+                    <xsd:element name="adopsjonAvEktefellesBarn" type="xsd:boolean" minOccurs="0"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -137,7 +137,7 @@
             <xsd:element name="id" type="xsd:ID"/>
             <xsd:element name="innsendingstype" type="kv:Innsendingstype"/>
             <xsd:element name="skjemanummer" type="xsd:string" minOccurs="0"/>
-            <xsd:element name="tilleggsinformasjon" type="xsd:string"/>
+            <xsd:element name="tilleggsinformasjon" minOccurs="0" type="xsd:string"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="Ytelse" abstract="true"/>

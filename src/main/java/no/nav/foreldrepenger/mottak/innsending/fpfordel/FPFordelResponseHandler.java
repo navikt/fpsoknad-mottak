@@ -29,7 +29,7 @@ public class FPFordelResponseHandler {
     private final RestTemplate template;
     private final int maxAntallForsøk;
 
-    public FPFordelResponseHandler(RestTemplate template, @Value("${fpfordel.max:3}") int maxAntallForsøk) {
+    public FPFordelResponseHandler(RestTemplate template, @Value("${fpfordel.max:5}") int maxAntallForsøk) {
         this.template = template;
         this.maxAntallForsøk = maxAntallForsøk;
     }
@@ -143,8 +143,8 @@ public class FPFordelResponseHandler {
     }
 
     private static Kvittering påVentKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
-        LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}", gosysKvittering.getJounalId());
-        return kvitteringMedType(PÅ_VENT, ref, gosysKvittering.getJounalId(), null);
+        LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}", gosysKvittering.getJournalId());
+        return kvitteringMedType(PÅ_VENT, ref, gosysKvittering.getJournalId(), null);
     }
 
     private static Kvittering sendtOgForsøktBehandletKvittering(String ref, String journalId, String saksnr) {

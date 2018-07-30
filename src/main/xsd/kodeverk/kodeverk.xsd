@@ -59,6 +59,7 @@
                     <xsd:enumeration value="ARBEID"/>
                     <xsd:enumeration value="ARBEID_OG_UTDANNING"/>
                     <xsd:enumeration value="SAMTIDIGUTTAK"/>
+                    <xsd:enumeration value="UFØRE"/>
                     <xsd:enumeration value="-"/>
                 </xsd:restriction>
             </xsd:simpleType>
@@ -119,6 +120,7 @@
                     <xsd:enumeration value="FISKE"/>
                     <xsd:enumeration value="JORDBRUK_SKOGBRUK"/>
                     <xsd:enumeration value="ANNEN"/>
+                    <xsd:enumeration value="-"/>
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
@@ -129,11 +131,12 @@
         <xsd:attribute name="kode">
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
-                    <xsd:enumeration value="VARTPENGER"/>
                     <xsd:enumeration value="LØNN_UNDER_UTDANNING"/>
                     <xsd:enumeration value="ETTERLØNN_ARBEIDSGIVER"/>
                     <xsd:enumeration value="MILITÆR_ELLER_SIVILTJENESTE"/>
                     <xsd:enumeration value="VENTELØNN"/>
+                    <xsd:enumeration value="VARTPENGER"/>
+                    <xsd:enumeration value="SLUTTPAKKE"/>
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
