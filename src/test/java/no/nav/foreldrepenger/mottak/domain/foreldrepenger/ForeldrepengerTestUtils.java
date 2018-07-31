@@ -1,23 +1,24 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import com.google.inject.internal.util.Lists;
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.TestUtils;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-
 import static com.google.inject.internal.util.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.medlemsskap;
 import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.inject.internal.util.Lists;
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class ForeldrepengerTestUtils {
 
@@ -47,13 +48,16 @@ public class ForeldrepengerTestUtils {
     }
 
     static Opptjening opptjening() {
-        return new Opptjening(Collections.singletonList(utenlandskArbeidsforhold()), egneNæringer(), andreOpptjeninger(), frilans());
+        return new Opptjening(Collections.singletonList(utenlandskArbeidsforhold()), egneNæringer(),
+                andreOpptjeninger(), frilans());
     }
 
     private static Frilans frilans() {
         return new Frilans(åpenPeriode(true), false, false,
                 Lists.newArrayList(new FrilansOppdrag("bror min", åpenPeriode(true)),
-                        new FrilansOppdrag("far min", åpenPeriode(true))));
+                        new FrilansOppdrag("far min", åpenPeriode(true))),
+                Lists.newArrayList("42", "43"));
+
     }
 
     private static List<AnnenOpptjening> andreOpptjeninger() {

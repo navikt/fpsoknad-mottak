@@ -6,6 +6,10 @@ public enum VedleggSkjemanummer {
     public final String id;
     public final String beskrivelse;
 
+    VedleggSkjemanummer(String id) {
+        this(id, null);
+    }
+
     VedleggSkjemanummer(String id, String beskrivelse) {
         this.id = id;
         this.beskrivelse = beskrivelse;

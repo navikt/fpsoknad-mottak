@@ -1,7 +1,26 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
+
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
 import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
+
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
@@ -11,45 +30,80 @@ import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FrilansOppdrag;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.GradertUttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.MorsAktivitet;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Oppholdsårsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Bruker;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Foedsel;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.LukketPeriode;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Medlemskap;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.OppholdNorge;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.OppholdUtlandet;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Rettigheter;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.SoekersRelasjonTilBarnet;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Termin;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Ytelse;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Dekningsgrad;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.EgenNaering;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilans;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilansoppdrag;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Regnskapsfoerer;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.AnnenOpptjeningTyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Brukerroller;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Dekningsgrader;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Innsendingstype;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Land;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.MorsAktivitetsTyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Omsorgsovertakelseaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Oppholdsaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Overfoeringsaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Utsettelsesaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Uttaksperiodetyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Virksomhetstyper;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Fordeling;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v1.*;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Gradering;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Oppholdsperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Overfoeringsperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Utsettelsesperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Uttaksperiode;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import javax.xml.bind.JAXBContext;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
 
 @Component
 public class FPFordelSøknadGenerator {
-
+    private static final ObjectFactory foreldrepengerObjectFactory = new ObjectFactory();
     private static final String UKJENT_KODEVERKSVERDI = "-";
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadGenerator.class);
     private static final String LASTET_OPP = "LASTET_OPP";
@@ -84,6 +138,7 @@ public class FPFordelSøknadGenerator {
 
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
+                .withId(vedlegg.getMetadata().getSkjemanummer().id)
                 .withTilleggsinformasjon(vedlegg.getMetadata().getBeskrivelse())
                 .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().id)
                 .withInnsendingstype(opplastetInnsendingsType());
@@ -144,12 +199,20 @@ public class FPFordelSøknadGenerator {
             return null;
         }
         LOG.debug("Genererer frilans XML fra {}", frilans);
+
         return new Frilans()
+                .withVedlegg(frilansVedleggFraIDs(frilans.getVedlegg()))
                 .withErNyoppstartet(frilans.isNyOppstartet())
                 .withHarInntektFraFosterhjem(frilans.isHarInntektFraFosterhjem())
                 .withNaerRelasjon(!CollectionUtils.isEmpty(frilans.getFrilansOppdrag()))
                 .withPeriode(periodeFra(frilans.getPeriode()))
                 .withFrilansoppdrag(frilansOppdragFra(frilans.getFrilansOppdrag()));
+    }
+
+    private static List<JAXBElement<Object>> frilansVedleggFraIDs(List<String> vedlegg) {
+        return vedlegg.stream()
+                .map(s -> foreldrepengerObjectFactory.createFrilansVedlegg(new Vedlegg().withId(s)))
+                .collect(toList());
     }
 
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
@@ -534,18 +597,18 @@ public class FPFordelSøknadGenerator {
         if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
             return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon()
-                .withAntallBarn(adopsjon.getAntallBarn())
-                .withFoedselsdato(adopsjon.getFødselsdato())
-                .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato());
+                    .withAntallBarn(adopsjon.getAntallBarn())
+                    .withFoedselsdato(adopsjon.getFødselsdato())
+                    .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato());
         }
         if (relasjonTilBarn instanceof Omsorgsovertakelse) {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
             return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Omsorgsovertakelse()
-                .withAntallBarn(omsorgsovertakelse.getAntallBarn())
-                .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
-                .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato())
-                .withOmsorgsovertakelseaarsak(new Omsorgsovertakelseaarsaker().withKode("OVERTATT_OMSORG"))
-                .withBeskrivelse("Omsorgsovertakelse");
+                    .withAntallBarn(omsorgsovertakelse.getAntallBarn())
+                    .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
+                    .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato())
+                    .withOmsorgsovertakelseaarsak(new Omsorgsovertakelseaarsaker().withKode("OVERTATT_OMSORG"))
+                    .withBeskrivelse("Omsorgsovertakelse");
         }
 
         throw new IllegalArgumentException(
