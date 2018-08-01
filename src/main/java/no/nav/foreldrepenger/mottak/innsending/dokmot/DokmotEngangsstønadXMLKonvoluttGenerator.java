@@ -103,7 +103,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
         return new no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg()
                 .withBrukeroppgittTittel(vedlegg.getMetadata().getBeskrivelse())
-                .withDokumenttypeId(vedlegg.getMetadata().getSkjemanummer().id)
+                .withDokumenttypeId(vedlegg.getMetadata().getId())
                 .withDokumentinnholdListe(new Dokumentinnhold()
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))
                         .withArkivfiltype(new Arkivfiltyper().withValue(Filtype.PDF.name()))

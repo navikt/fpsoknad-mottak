@@ -273,7 +273,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     }
 
     private String format(Vedlegg vedlegg) {
-        return vedlegg.getMetadata().getSkjemanummer().beskrivelse;
+        return vedlegg.getMetadata().getBeskrivelse();
     }
 
 }

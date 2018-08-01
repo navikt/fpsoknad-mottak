@@ -120,7 +120,7 @@ public class TestUtils {
 
     public static PåkrevdVedlegg påkrevdVedlegg(String name) {
         try {
-            return new PåkrevdVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
+            return new PåkrevdVedlegg(TERMINBEKREFTELSE.skjemaNummer, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -128,7 +128,7 @@ public class TestUtils {
 
     static ValgfrittVedlegg valgfrittVedlegg(String name) {
         try {
-            return new ValgfrittVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
+            return new ValgfrittVedlegg(TERMINBEKREFTELSE.skjemaNummer, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

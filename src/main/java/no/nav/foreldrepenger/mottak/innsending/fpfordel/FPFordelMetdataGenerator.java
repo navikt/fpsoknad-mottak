@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.mottak.domain.felles.VedleggSkjemanummer;
-
 @Component
 public class FPFordelMetdataGenerator {
 
@@ -19,7 +17,7 @@ public class FPFordelMetdataGenerator {
     }
 
     public String generateMetadata(FPFordelMetadata metadata) {
-        return generateMetadata(metadata, false);
+        return generateMetadata(metadata, true);
     }
 
     String generateMetadata(FPFordelMetadata metadata, boolean pretty) {
@@ -37,7 +35,7 @@ public class FPFordelMetdataGenerator {
     }
 
     @JsonPropertyOrder({ "contentId", "dokumentTypeId" })
-    static class Files {
+    static class Filer {
 
         private final String dokumentTypeId;
         private final String contentId;
@@ -52,8 +50,8 @@ public class FPFordelMetdataGenerator {
             return dokumentTypeId;
         }
 
-        public Files(VedleggSkjemanummer skjemaNummer, int contentId) {
-            this.dokumentTypeId = skjemaNummer.id;
+        public Filer(String id, int contentId) {
+            this.dokumentTypeId = id;
             this.contentId = String.valueOf(contentId);
         }
 

@@ -140,9 +140,9 @@ public class FPFordelSøknadGenerator {
 
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
-                .withId(vedlegg.getMetadata().getSkjemanummer().id)
+                .withId(vedlegg.getMetadata().getId())
                 .withTilleggsinformasjon(vedlegg.getMetadata().getBeskrivelse())
-                .withSkjemanummer(vedlegg.getMetadata().getSkjemanummer().id)
+                .withSkjemanummer(vedlegg.getMetadata().getId())
                 .withInnsendingstype(opplastetInnsendingsType());
     }
 
