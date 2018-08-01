@@ -23,7 +23,7 @@ public class OrgnrValidator implements ConstraintValidator<Orgnr, String> {
         for (int i = 0; i < orgnr.length(); i++) {
             sumForMod += (orgnr.charAt(i) - 48) * weights[i];
         }
-        int result = (11 - sumForMod % 11);
+        int result = 11 - sumForMod % 11;
         return result == 11 ? 0 : result;
     };
 }

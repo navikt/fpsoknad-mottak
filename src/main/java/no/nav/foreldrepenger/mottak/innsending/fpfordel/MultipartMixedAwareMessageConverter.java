@@ -49,7 +49,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        LOG.info("Checking if we can write {} for media type {}", clazz, mediaType);
+        LOG.debug("Checking if we can write {} for media type {}", clazz, mediaType);
         return MultiValueMap.class.isAssignableFrom(clazz);
     }
 
@@ -71,11 +71,11 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         writeMultipart((MultiValueMap<String, Object>) map, outputMessage);
     }
 
-    private void writeMultipart(final MultiValueMap<String, Object> parts, HttpOutputMessage outputMessage)
+    private void writeMultipart(MultiValueMap<String, Object> parts, HttpOutputMessage outputMessage)
             throws IOException {
 
-        final byte[] boundary = generateMultipartBoundary();
-        LOG.info("Writing multipart ({} parts)", parts.size());
+        byte[] boundary = generateMultipartBoundary();
+        LOG.debug("Writing multipart ({} parts)", parts.size());
 
         Map<String, String> parameters = new HashMap<>(2);
         parameters.put("boundary", new String(boundary, "US-ASCII"));
@@ -101,7 +101,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
 
     private void writeParts(OutputStream os, MultiValueMap<String, Object> parts, byte[] boundary)
             throws IOException {
-        LOG.info("Writing {} parts", parts.size());
+        LOG.debug("Writing {} parts", parts.size());
         for (Map.Entry<String, List<Object>> entry : parts.entrySet()) {
             String name = entry.getKey();
             for (Object part : entry.getValue()) {
@@ -122,7 +122,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         Class<?> partType = partBody.getClass();
         HttpHeaders partHeaders = partEntity.getHeaders();
         MediaType partContentType = partHeaders.getContentType();
-        LOG.info("Trying to write part {} of type {}", name, partContentType);
+        LOG.debug("Trying to write part {} of type {}", name, partContentType);
         for (HttpMessageConverter<?> converter : partConverters) {
             if (converter.canWrite(partType, partContentType)) {
                 Charset charset = isFilenameCharsetSet() ? StandardCharsets.US_ASCII : this.charset;
@@ -196,7 +196,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
 
         @Override
         public HttpHeaders getHeaders() {
-            return (this.headersWritten ? HttpHeaders.readOnlyHttpHeaders(this.headers) : this.headers);
+            return this.headersWritten ? HttpHeaders.readOnlyHttpHeaders(this.headers) : this.headers;
         }
 
         @Override

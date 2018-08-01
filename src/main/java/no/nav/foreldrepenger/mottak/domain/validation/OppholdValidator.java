@@ -107,12 +107,12 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
 
     private static boolean isAfterNow(Utenlandsopphold opphold) {
         return opphold.getVarighet().getFom().isAfter(LocalDate.now()) ||
-                opphold.getVarighet().getTom().isAfter((LocalDate.now()));
+                opphold.getVarighet().getTom().isAfter(LocalDate.now());
     }
 
     private static boolean isBeforeNow(Utenlandsopphold opphold) {
         return opphold.getVarighet().getFom().isBefore(LocalDate.now()) ||
-                opphold.getVarighet().getTom().isBefore((LocalDate.now()));
+                opphold.getVarighet().getTom().isBefore(LocalDate.now());
     }
 
     @Override

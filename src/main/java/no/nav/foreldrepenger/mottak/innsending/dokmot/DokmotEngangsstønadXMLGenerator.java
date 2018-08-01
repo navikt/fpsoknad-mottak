@@ -80,8 +80,8 @@ public class DokmotEngangsstønadXMLGenerator {
                 .withBruker(brukerFra(søker.fnr))
                 .withOpplysningerOmBarn(barnFra(søknad, ytelse))
                 .withSoknadsvalg(søknadsvalgFra(søknad, ytelse))
-                .withTilknytningNorge((tilknytningFra(ytelse.getMedlemsskap(),
-                        ytelse.getRelasjonTilBarn() instanceof FremtidigFødsel)))
+                .withTilknytningNorge(tilknytningFra(ytelse.getMedlemsskap(),
+                        ytelse.getRelasjonTilBarn() instanceof FremtidigFødsel))
                 .withOpplysningerOmFar(farFra(ytelse.getAnnenForelder()))
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
                 .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));

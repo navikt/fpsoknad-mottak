@@ -1,17 +1,19 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.PastOrToday;
-
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

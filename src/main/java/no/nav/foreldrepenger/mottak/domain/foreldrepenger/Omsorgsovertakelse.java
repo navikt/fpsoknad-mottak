@@ -23,15 +23,16 @@ public class Omsorgsovertakelse extends RelasjonTilBarnMedVedlegg {
     private final List<LocalDate> fødselsdato;
     private String beskrivelse;
 
-    public Omsorgsovertakelse(LocalDate omsorgsovertakelsesdato, OmsorgsOvertakelsesÅrsak årsak, LocalDate fødselsdato) {
+    public Omsorgsovertakelse(LocalDate omsorgsovertakelsesdato, OmsorgsOvertakelsesÅrsak årsak,
+            LocalDate fødselsdato) {
         this(1, omsorgsovertakelsesdato, årsak, singletonList(fødselsdato), emptyList());
     }
 
     @JsonCreator
     public Omsorgsovertakelse(int antallBarn,
-                              LocalDate omsorgsovertakelsesdato,
-                              OmsorgsOvertakelsesÅrsak årsak,
-                              List<LocalDate> fødselsdato, List<String> vedlegg) {
+            LocalDate omsorgsovertakelsesdato,
+            OmsorgsOvertakelsesÅrsak årsak,
+            List<LocalDate> fødselsdato, List<String> vedlegg) {
         super(antallBarn, vedlegg);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.årsak = årsak;

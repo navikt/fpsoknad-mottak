@@ -83,13 +83,13 @@ public class FPFordelKonvoluttGenerator {
         return new HttpEntity<>(builder.build(), headers());
     }
 
-    private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger id) {
-        builder.part(VEDLEGG, encode(vedlegg.getVedlegg()), APPLICATION_PDF)
-                .headers(headers(vedlegg));
+    private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {
+        builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
+                .headers(headers(vedlegg, contentId));
     }
 
-    private static VedleggHeaderConsumer headers(Vedlegg vedlegg) {
-        return new VedleggHeaderConsumer(vedlegg.getMetadata().getBeskrivelse());
+    private static VedleggHeaderConsumer headers(Vedlegg vedlegg, AtomicInteger contentId) {
+        return new VedleggHeaderConsumer(vedlegg.getMetadata().getBeskrivelse(), id(contentId));
     }
 
     private static String id(AtomicInteger id) {
@@ -111,16 +111,11 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private byte[] pdfHovedDokument(Søknad søknad, Person søker) {
-        return encode(pdfGenerator.generate(søknad, søker));
+        return pdfGenerator.generate(søknad, søker);
     }
 
     private String xmlHovedDokument(Søknad søknad, AktorId aktørId) {
         return søknadGenerator.toXML(søknad, aktørId);
-    }
-
-    private static byte[] encode(byte[] bytes) {
-        // return Base64.getEncoder().encode(bytes);
-        return bytes;
     }
 
     @Override
@@ -131,14 +126,17 @@ public class FPFordelKonvoluttGenerator {
 
     private static final class VedleggHeaderConsumer implements Consumer<HttpHeaders> {
         private final String filNavn;
+        private final String contentId;
 
-        private VedleggHeaderConsumer(String filNavn) {
+        private VedleggHeaderConsumer(String filNavn, String contentId) {
             this.filNavn = filNavn;
+            this.contentId = contentId;
         }
 
         @Override
         public void accept(HttpHeaders headers) {
             headers.setContentDispositionFormData(VEDLEGG, filNavn);
+            headers.set(CONTENT_ID, contentId);
         }
     }
 
