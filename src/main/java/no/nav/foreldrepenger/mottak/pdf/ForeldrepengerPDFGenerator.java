@@ -153,7 +153,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     private List<String> norskForelder(AnnenForelder annenForelder) {
         NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
         return Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet", "Norsk"),
-                infoFormatter.fromMessageSource("aktør", norskForelder.getAktørId().getId()));
+                infoFormatter.fromMessageSource("aktør", norskForelder.getFnr().getFnr()));
     }
 
     private float dekningsgrad(Dekningsgrad dekningsgrad, PDPageContentStream cos, float y) throws IOException {

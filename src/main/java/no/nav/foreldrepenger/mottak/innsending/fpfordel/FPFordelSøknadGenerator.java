@@ -599,8 +599,8 @@ public class FPFordelSøknadGenerator {
     }
 
     private static AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
-        return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent()
-                .withAktoerId(norskForelder.getAktørId().getId());
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent();
+        // .withAktoerId(norskForelder.getAktørId().getId());
     }
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarnMedVedlegg relasjonTilBarn) {

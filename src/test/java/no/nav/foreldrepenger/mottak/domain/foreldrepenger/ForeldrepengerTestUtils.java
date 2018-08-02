@@ -15,7 +15,7 @@ import java.util.List;
 import com.google.inject.internal.util.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
@@ -73,7 +73,7 @@ public class ForeldrepengerTestUtils {
     }
 
     static NorskForelder norskForelder() {
-        return new NorskForelder(new AktorId("42"));
+        return new NorskForelder(new Fødselsnummer("01010111111"));
     }
 
     static Adopsjon adopsjon() {
