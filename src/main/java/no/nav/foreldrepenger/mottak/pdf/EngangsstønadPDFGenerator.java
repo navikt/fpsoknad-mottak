@@ -177,11 +177,11 @@ public class EngangsstønadPDFGenerator extends PDFGenerator {
         return infoFormatter.fromMessageSource("fødselsdato", infoFormatter.dato(ff.getFødselsdato()));
     }
 
-    private boolean erFremtidigFødsel(Engangsstønad stønad) {
+    private static boolean erFremtidigFødsel(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof FremtidigFødsel;
     }
 
-    private boolean erFødt(Engangsstønad stønad) {
+    private static boolean erFødt(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof Fødsel;
     }
 

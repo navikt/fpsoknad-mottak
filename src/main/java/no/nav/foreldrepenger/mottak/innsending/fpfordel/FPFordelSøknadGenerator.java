@@ -115,11 +115,11 @@ public class FPFordelSøknadGenerator {
         return toXML(toFPFordelModel(søknad, aktørId));
     }
 
-    private String toXML(Soeknad model) {
+    private static String toXML(Soeknad model) {
         return marshall(CONTEXT, model, false);
     }
 
-    private Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
+    private static Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
         LOG.debug("Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))

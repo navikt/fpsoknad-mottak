@@ -22,7 +22,9 @@ import no.nav.foreldrepenger.mottak.util.MDCUtil;
 @Order(1)
 public class CallAndConsumerIdFilter extends GenericFilterBean {
 
-    private static final String USER_ID = "userId";
+    private static final String FPSOKNAD_MOTTAK = "fpsoknad-mottak";
+
+    private static final String USER_ID = "Nav-User-Id";
 
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
 
@@ -45,7 +47,7 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
 
     private void propagateOrCreate(ServletRequest request) {
         HttpServletRequest req = HttpServletRequest.class.cast(request);
-        propagateOrCreate(NAV_CONSUMER_ID, req, "fpsoknad-mottak");
+        propagateOrCreate(NAV_CONSUMER_ID, req, FPSOKNAD_MOTTAK);
         propagateOrCreate(generator.getCallIdKey(), req, generator.create());
         MDC.put(USER_ID, extractor.fnrFromToken());
     }
@@ -56,6 +58,7 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [generator=" + generator + "]";
+        return getClass().getSimpleName() + " [generator=" + generator + ", extractor=" + extractor + "]";
     }
+
 }
