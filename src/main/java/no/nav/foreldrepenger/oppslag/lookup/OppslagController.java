@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.oppslag.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.oppslag.lookup.ws.Søkerinfo;
-import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
-import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.oppslag.lookup.ws.aktor.AktorIdClient;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.oppslag.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.ID;
 import no.nav.foreldrepenger.oppslag.lookup.ws.person.Person;
@@ -47,7 +47,8 @@ public class OppslagController {
     private final OIDCRequestContextHolder contextHolder;
 
     @Inject
-    public OppslagController(AktorIdClient aktorClient, PersonClient personClient, ArbeidsforholdClient arbeidsforholdClient,
+    public OppslagController(AktorIdClient aktorClient, PersonClient personClient,
+            ArbeidsforholdClient arbeidsforholdClient,
             OIDCRequestContextHolder contextHolder) {
         this.aktorClient = aktorClient;
         this.personClient = personClient;
@@ -89,7 +90,12 @@ public class OppslagController {
 
     @GetMapping(value = "/aktor")
     public AktorId getAktørId() {
-        return aktorClient.aktorIdForFnr(fnrFromClaims());
+        return getAktørIdForFNR(fnrFromClaims());
+    }
+
+    @GetMapping(value = "/aktorfnr")
+    public AktorId getAktørIdForFNR(@RequestParam(name = "fnr") Fødselsnummer fnr) {
+        return aktorClient.aktorIdForFnr(fnr);
     }
 
     private Fødselsnummer fnrFromClaims() {
