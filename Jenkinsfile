@@ -8,7 +8,7 @@ node {
    def repo = "navikt"
    def application = "fpsoknad-oppslag"
    def committer, committerEmail, changelog, releaseVersion
-   def mvnHome = tool "maven-3.5.2"
+   def mvnHome = tool "maven-3.3.9"
    def mvn = "${mvnHome}/bin/mvn"
    def appConfig = "nais.yaml"
    def dockerRepo = "repo.adeo.no:5443"
