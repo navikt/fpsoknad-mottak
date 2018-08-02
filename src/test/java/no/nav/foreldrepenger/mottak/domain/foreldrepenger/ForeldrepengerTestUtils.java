@@ -69,7 +69,7 @@ public class ForeldrepengerTestUtils {
     }
 
     static UtenlandskForelder utenlandskForelder() {
-        return new UtenlandskForelder("42", CountryCode.SE);
+        return new UtenlandskForelder("42", CountryCode.SE, "Pedro Bandolero");
     }
 
     static NorskForelder norskForelder() {
