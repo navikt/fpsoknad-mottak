@@ -53,6 +53,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -106,6 +107,8 @@ public class FPFordelSøknadGenerator {
     private static final ObjectFactory foreldrepengerObjectFactory = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory fellesObjectFactory = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
 
+    private final Oppslag oppslag;
+
     private static final String UKJENT_KODEVERKSVERDI = "-";
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadGenerator.class);
     private static final String LASTET_OPP = "LASTET_OPP";
@@ -115,11 +118,15 @@ public class FPFordelSøknadGenerator {
         return toXML(toFPFordelModel(søknad, aktørId));
     }
 
+    public FPFordelSøknadGenerator(Oppslag oppslag) {
+        this.oppslag = oppslag;
+    }
+
     private static String toXML(Soeknad model) {
         return marshall(CONTEXT, model, false);
     }
 
-    private static Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
+    private Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
         LOG.debug("Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
@@ -151,7 +158,7 @@ public class FPFordelSøknadGenerator {
         return type.withKodeverk(type.getKodeverk());
     }
 
-    private static Ytelse ytelseFra(Søknad søknad) {
+    private Ytelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug("Genererer ytelse XML fra {}", ytelse);
@@ -572,7 +579,7 @@ public class FPFordelSøknadGenerator {
                 .withHarAleneomsorgForBarnet(rettigheter.isHarAleneOmsorgForBarnet());
     }
 
-    private static AnnenForelder annenForelderFra(
+    private AnnenForelder annenForelderFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
 
         if (erAnnenForelderUkjent(annenForelder)) {
@@ -598,12 +605,14 @@ public class FPFordelSøknadGenerator {
                 .withLand(landFra(utenlandskForelder.getLand()));
     }
 
-    private static AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
-        return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent();
-        // .withAktoerId(norskForelder.getAktørId().getId());
+    private AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
+
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent()
+                .withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
     }
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
+
         if (relasjonTilBarn instanceof Fødsel) {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
             return new Foedsel()

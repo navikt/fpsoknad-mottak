@@ -10,6 +10,8 @@ import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvolutt
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.VEDLEGG;
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
@@ -18,8 +20,10 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import java.time.Duration;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.http.HttpEntity;
@@ -35,7 +39,9 @@ import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKvittering;
@@ -50,6 +56,11 @@ import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 public class TestFPFordelSerialization {
 
+    @Mock
+    private Oppslag oppslag;
+
+    private static final AktorId AKTØRID = new AktorId("1111111111");
+
     private static final ObjectMapper mapper = mapper();
 
     private static ObjectMapper mapper() {
@@ -61,6 +72,11 @@ public class TestFPFordelSerialization {
         mapper.setSerializationInclusion(NON_NULL);
         mapper.setSerializationInclusion(NON_EMPTY);
         return mapper;
+    }
+
+    @Before
+    public void before() {
+        when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
     }
 
     @Test
@@ -87,7 +103,7 @@ public class TestFPFordelSerialization {
     @Test
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
-        FPFordelSøknadGenerator fpFordelSøknadGenerator = new FPFordelSøknadGenerator();
+        FPFordelSøknadGenerator fpFordelSøknadGenerator = new FPFordelSøknadGenerator(oppslag);
         String xml = fpFordelSøknadGenerator.toXML(ForeldrepengerTestUtils.foreldrepenger(), aktørId);
         System.out.println(xml);
     }
@@ -97,7 +113,7 @@ public class TestFPFordelSerialization {
         MottakConfiguration mottakConfiguration = new MottakConfiguration();
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
-                new FPFordelSøknadGenerator(), new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
+                new FPFordelSøknadGenerator(oppslag), new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
                         mottakConfiguration.kvitteringstekster()));
         Søknad søknad = søknad(valgfrittVedlegg());
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),

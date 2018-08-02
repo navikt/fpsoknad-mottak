@@ -10,12 +10,14 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 
 @Service
 public class OppslagService implements Oppslag {
 
     private static final String AKTØR = "/oppslag/aktor";
+    private static final String AKTØRFNR = "/oppslag/aktorfnr";
     private static final String PERSON = "/person";
 
     private static final Logger LOG = LoggerFactory.getLogger(OppslagService.class);
@@ -44,6 +46,14 @@ public class OppslagService implements Oppslag {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [template=" + template + ", baseURI=" + baseURI + "]";
+    }
+
+    @Override
+    public AktorId getAktørId(Fødselsnummer fnr) {
+        URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(AKTØRFNR).queryParam("fnr", fnr.getFnr()).build()
+                .toUri();
+        LOG.info("Henter {} fra {}", AKTØRFNR.toLowerCase(), uri);
+        return template.getForObject(uri, AktorId.class);
     }
 
 }

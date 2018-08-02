@@ -26,6 +26,7 @@ import no.nav.security.oidc.api.Unprotected;
 
 @RestController
 @RequestMapping(path = MottakController.MOTTAK, produces = APPLICATION_JSON_VALUE)
+@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class MottakController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
@@ -43,7 +44,6 @@ public class MottakController {
     }
 
     @PostMapping(value = "/send")
-    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         if (isForeldrepenger(søknad)) {
             LOG.info("Sender foreldrepengesøknad til FPFordel");
@@ -54,7 +54,6 @@ public class MottakController {
     }
 
     @PostMapping(value = "/ettersend")
-    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Ettersending ettersending) {
         return ok(fpfordelSender.send(ettersending, oppslag.getSøker()));
     }
@@ -67,7 +66,6 @@ public class MottakController {
     }
 
     @GetMapping(value = "/ping1")
-    @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
     public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("Jeg ble pinget");
         return ok("Hallo " + navn + " fra beskyttet ressurs");

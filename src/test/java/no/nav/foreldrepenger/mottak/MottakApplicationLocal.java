@@ -10,6 +10,8 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
@@ -32,6 +34,11 @@ public class MottakApplicationLocal {
     @Primary
     public Oppslag aktørService() {
         return new Oppslag() {
+
+            @Override
+            public AktorId getAktørId(Fødselsnummer fnr) {
+                return new AktorId("1111111111");
+            }
 
             @Override
             public Person getSøker() {

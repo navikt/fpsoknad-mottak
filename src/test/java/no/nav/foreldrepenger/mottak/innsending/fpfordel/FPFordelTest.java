@@ -37,14 +37,18 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
+import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class FPFordelTest {
 
+    private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final String POLLURISTRING = "http://some.host.for.fpfordel/poll/id";
     private static final String FPSAKURISTRING = "http://some.host.for.fpsak/status";
 
@@ -55,6 +59,8 @@ public class FPFordelTest {
     private static final String SAKSNR = "666";
     @Mock
     private RestTemplate template;
+    @Mock
+    private Oppslag oppslag;
     @Mock
     private FPFordelConfig cfg;
 
@@ -67,6 +73,7 @@ public class FPFordelTest {
     @Before
     public void before() {
         when(cfg.isEnabled()).thenReturn(true);
+        when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
         when(cfg.getUri()).thenReturn("http://some.host.for.fpfordel");
 
         pollReceipt202 = pollReceipt(HttpStatus.ACCEPTED);
@@ -84,7 +91,7 @@ public class FPFordelTest {
         ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(mottakConfig.landkoder(),
                 mottakConfig.kvitteringstekster());
 
-        FPFordelSøknadGenerator søknadGenerator = new FPFordelSøknadGenerator();
+        FPFordelSøknadGenerator søknadGenerator = new FPFordelSøknadGenerator(oppslag);
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(new ObjectMapper()),
                 søknadGenerator,
