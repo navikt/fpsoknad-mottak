@@ -9,8 +9,11 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -36,6 +39,8 @@ public class FPFordelKonvoluttGenerator {
     private final FPFordelMetdataGenerator metadataGenerator;
     private final FPFordelSøknadGenerator søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;
+    @Inject
+    private Environment env;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
             FPFordelSøknadGenerator søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
@@ -48,20 +53,9 @@ public class FPFordelKonvoluttGenerator {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        if (søker.aktørId.equals(AktorId.valueOf("1000104925555"))) {
-            LOG.info("Så juksar me litt");
-            Person jukseSøker = new Person();
-            jukseSøker.bankkonto = søker.bankkonto;
-            jukseSøker.etternavn = søker.etternavn;
-            jukseSøker.fnr = søker.fnr;
-            jukseSøker.fornavn = søker.fornavn;
-            jukseSøker.ikkeNordiskEøsLand = søker.ikkeNordiskEøsLand;
-            jukseSøker.kjønn = søker.kjønn;
-            jukseSøker.land = søker.land;
-            jukseSøker.mellomnavn = søker.mellomnavn;
-            jukseSøker.målform = søker.målform;
-            jukseSøker.aktørId = new AktorId("1000104312026");
-            søker = jukseSøker;
+        if (isPreprod() && shouldRewrite(søker.aktørId)) {
+            LOG.info("Så juksar me litt (RIP Ingrid)");
+            søker.aktørId = new AktorId("1000104312026");
         }
 
         builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
@@ -74,6 +68,10 @@ public class FPFordelKonvoluttGenerator {
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
         return new HttpEntity<>(builder.build(), headers());
+    }
+
+    private static boolean shouldRewrite(AktorId aktørId) {
+        return aktørId.equals(AktorId.valueOf("1000104925555"));
     }
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, Person søker,
@@ -116,6 +114,10 @@ public class FPFordelKonvoluttGenerator {
 
     private String xmlHovedDokument(Søknad søknad, AktorId aktørId) {
         return søknadGenerator.toXML(søknad, aktørId);
+    }
+
+    private boolean isPreprod() {
+        return env.acceptsProfiles("preprod");
     }
 
     @Override
