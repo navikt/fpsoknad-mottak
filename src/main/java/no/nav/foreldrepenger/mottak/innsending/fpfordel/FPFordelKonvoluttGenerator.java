@@ -117,7 +117,7 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private boolean isPreprod() {
-        return env.acceptsProfiles("preprod");
+        return env == null || env.acceptsProfiles("preprod");
     }
 
     @Override
