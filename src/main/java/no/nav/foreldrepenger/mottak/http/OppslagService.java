@@ -44,11 +44,6 @@ public class OppslagService implements Oppslag {
     }
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", baseURI=" + baseURI + "]";
-    }
-
-    @Override
     public AktorId getAktørId(Fødselsnummer fnr) {
         URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(AKTØRFNR).queryParam("fnr", fnr.getFnr()).build()
                 .toUri();
@@ -56,4 +51,8 @@ public class OppslagService implements Oppslag {
         return template.getForObject(uri, AktorId.class);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [template=" + template + ", baseURI=" + baseURI + "]";
+    }
 }

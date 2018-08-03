@@ -20,7 +20,7 @@ public enum DokumentType {
     ETTERSENDELSE_ENGANGSSTØNAD_FØDSEL("I500003","Ettersendelse til søknad om engangsstønad ved fødsel"),
     ETTERSENDELSE_ENGANGSSTØNAD_ADOPSJON("I500004","Ettersendelse til søknad om engangsstønad ved adopsjon"),
     ETTERSENDELSE_FORELDREPEMGER_FØDSEL("I500005","Ettersendelse til søknad om foreldrepenger ved fødsel"),
-    ETTERSENDELSE_FORELDREPEMGER_FØDSqEL("I500006","Ettersendelse til utsettelse eller gradert uttak av foreldrepenger (fleksibelt uttak)"),
+    ETTERSENDELSE_UTTAK_ELLER_OVERFØRING_KVOTE("I500006","Ettersendelse til utsettelse eller gradert uttak av foreldrepenger (fleksibelt uttak)"),
     ETTERSENDELSE_ENDRING_UTTAK_ELLER_OVERFØRING_KVOTE("I500050","Ettersendelse til søknad om endring av uttak av foreldrepenger eller overføring av kvote");
 
 

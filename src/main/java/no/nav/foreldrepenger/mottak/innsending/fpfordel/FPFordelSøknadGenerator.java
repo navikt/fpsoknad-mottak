@@ -671,4 +671,9 @@ public class FPFordelSøknadGenerator {
         Brukerroller brukerRolle = new Brukerroller().withKode(rolle);
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + "]";
+    }
 }
