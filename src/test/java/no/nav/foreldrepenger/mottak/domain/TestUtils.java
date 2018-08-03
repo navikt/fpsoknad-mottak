@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.VedleggSkjemanummer.TERMINBEKREFTELSE;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.TERMINBEKREFTELSE;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -120,7 +120,7 @@ public class TestUtils {
 
     public static PåkrevdVedlegg påkrevdVedlegg(String name) {
         try {
-            return new PåkrevdVedlegg(TERMINBEKREFTELSE.skjemaNummer, new ClassPathResource(name));
+            return new PåkrevdVedlegg(TERMINBEKREFTELSE.dokumentTypeId, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -128,7 +128,7 @@ public class TestUtils {
 
     static ValgfrittVedlegg valgfrittVedlegg(String name) {
         try {
-            return new ValgfrittVedlegg(TERMINBEKREFTELSE.skjemaNummer, new ClassPathResource(name));
+            return new ValgfrittVedlegg(TERMINBEKREFTELSE.dokumentTypeId, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.dokmot;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
-import static no.nav.foreldrepenger.mottak.domain.HovedSkjemanummer.ENGANGSSTØNAD_FØDSEL;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.SØKNAD_ENGANGSSTØNAD_FØDSEL;
 import static no.nav.foreldrepenger.mottak.innsending.dokmot.ArkivVariant.ARKIV;
 import static no.nav.foreldrepenger.mottak.innsending.dokmot.ArkivVariant.ORIGINAL;
 
@@ -88,7 +88,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withArkivfiltype(new Arkivfiltyper().withValue(XML.name()))).stream();
 
         return new Hoveddokument()
-                .withDokumenttypeId(ENGANGSSTØNAD_FØDSEL.id)
+                .withDokumenttypeId(SØKNAD_ENGANGSSTØNAD_FØDSEL.dokumentTypeId)
                 .withDokumentinnholdListe(
                         Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
                                 .collect(toList()));

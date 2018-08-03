@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.domain.felles.VedleggSkjemanummer.SØKNAD_FOELDREPEMGER;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.SØKNAD_FORELDREPEMGER_FØDSEL;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -79,7 +79,7 @@ public class FPFordelMetadata {
     }
 
     private static Filer søknad(final AtomicInteger id) {
-        return new Filer(SØKNAD_FOELDREPEMGER.skjemaNummer, id.getAndIncrement());
+        return new Filer(SØKNAD_FORELDREPEMGER_FØDSEL.dokumentTypeId, id.getAndIncrement());
     }
 
     private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {
