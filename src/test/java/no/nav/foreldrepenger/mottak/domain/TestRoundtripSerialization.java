@@ -39,8 +39,6 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @RunWith(SpringRunner.class)
@@ -93,14 +91,10 @@ public class TestRoundtripSerialization {
     public void testForeldrepengerSøknadXML() throws IOException {
         Søknad foreldrepenger = foreldrepenger();
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(foreldrepenger));
-        Soeknad søknad = unmarshal(template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class),
-                Soeknad.class);
-        assertEquals(søknad.getMottattDato(), foreldrepenger.getMottattdato().toLocalDate());
-        assertEquals(søknad.getBegrunnelseForSenSoeknad(), foreldrepenger.getBegrunnelseForSenSøknad());
-        Foreldrepenger fpxml = Foreldrepenger.class.cast(søknad.getOmYtelse());
-        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger fpjson = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                .cast(foreldrepenger.getYtelse());
-        assertEquals(fpjson.getDekningsgrad().kode(), fpxml.getDekningsgrad().getDekningsgrad().getKode());
+        String xml = template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class);
+        Søknad søknad = søknadXMLGenerator.tilSøknad(xml);
+        assertEquals(foreldrepenger.getMottattdato().toLocalDate(), søknad.getMottattdato().toLocalDate());
+        assertEquals(foreldrepenger.getBegrunnelseForSenSøknad(), søknad.getBegrunnelseForSenSøknad());
     }
 
     @Test

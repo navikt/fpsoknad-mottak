@@ -89,15 +89,12 @@ public class TestFPFordelSerialization {
     public void testPollKvittering() throws Exception {
         FPFordelKvittering kvittering = new FPFordelPendingKvittering(Duration.ofSeconds(6));
         TestForeldrepengerSerialization.test(kvittering, true, mapper);
-
     }
 
     @Test
     public void testFordeltKvittering() throws Exception {
         FPFordelKvittering kvittering = new FPSakFordeltKvittering("123", "456");
-        TestForeldrepengerSerialization.test(kvittering, true,
-                mapper);
-
+        TestForeldrepengerSerialization.test(kvittering, true, mapper);
     }
 
     @Test
@@ -135,5 +132,4 @@ public class TestFPFordelSerialization {
     private static void assertMediaType(HttpEntity<?> entity, String type) {
         assertEquals(entity.getHeaders().get(CONTENT_TYPE).get(0), type);
     }
-
 }

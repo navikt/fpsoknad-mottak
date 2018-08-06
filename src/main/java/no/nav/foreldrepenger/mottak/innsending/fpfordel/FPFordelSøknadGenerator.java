@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -54,7 +56,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
@@ -112,7 +113,23 @@ public class FPFordelSøknadGenerator {
     private static final String UKJENT_KODEVERKSVERDI = "-";
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadGenerator.class);
     private static final String LASTET_OPP = "LASTET_OPP";
-    private static final JAXBContext CONTEXT = Jaxb.context(Soeknad.class);
+    private static final JAXBContext CONTEXT = context(Soeknad.class);
+
+    public Søknad tilSøknad(String søknadXml) {
+        Soeknad søknad = unmarshal(søknadXml, CONTEXT, Soeknad.class);
+        Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
+                tilYtelse(søknad.getOmYtelse()));
+        s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+        return s;
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(Ytelse ytelse) {
+        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder().build(); // TODO more fields
+    }
+
+    private static Søker tilSøker(Bruker søker) {
+        return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
+    }
 
     public String toXML(Søknad søknad, AktorId aktørId) {
         return toXML(toFPFordelModel(søknad, aktørId));
