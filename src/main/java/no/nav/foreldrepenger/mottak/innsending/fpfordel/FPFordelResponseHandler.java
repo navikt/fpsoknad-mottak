@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.AVSLÅTT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVLIGET;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
@@ -90,7 +90,7 @@ public class FPFordelResponseHandler {
             return kvitteringMedType(AVSLÅTT, ref, saksStatus.getJournalpostId(),
                     saksStatus.getSaksnummer());
         case INNVILGET:
-            return kvitteringMedType(INNVLIGET, ref, saksStatus.getJournalpostId(),
+            return kvitteringMedType(INNVILGET, ref, saksStatus.getJournalpostId(),
                     saksStatus.getSaksnummer());
         case PÅ_VENT:
             return kvitteringMedType(PÅ_VENT, ref, saksStatus.getJournalpostId(),
@@ -112,13 +112,13 @@ public class FPFordelResponseHandler {
 
     private FPSakKvittering forsendelsesStatus(URI uri, String ref) {
         try {
-            LOG.info("Sjekker forsendelsesstatus på {}", uri);
             /*
+             * LOG.info("Sjekker forsendelsesstatus på {}", uri);
+             * 
              * for (int i = 1; i <= maxAntallForsøk; i++) { FPSakFordeltKvittering
              * kvittering = template.getForEntity(uri,
-             * FPSakFordeltKvittering.class).getBody(); if (!kvittering.equals("PÅGÅR")) {
-             *
-             * } System.out.println("Kvittering er " + kvittering); }
+             * FPSakFordeltKvittering.class).getBody(); System.out.println("Kvittering er "
+             * + kvittering); }
              */
             return template.getForEntity(uri, FPSakKvittering.class).getBody();
         } catch (Exception e) {
