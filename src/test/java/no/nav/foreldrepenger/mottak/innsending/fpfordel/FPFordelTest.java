@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVLIGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
@@ -174,7 +174,7 @@ public class FPFordelTest {
                 fordeltReceipt);
         when(template.getForEntity(eq(FPSAKURI), eq(FPSakKvittering.class))).thenReturn(innvilget());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
-        assertThat(INNVILGET, is(kvittering.getLeveranseStatus()));
+        assertThat(INNVLIGET, is(kvittering.getLeveranseStatus()));
         assertThat(JOURNALID, is(kvittering.getJournalId()));
         assertThat(SAKSNR, is(kvittering.getSaksNr()));
     }

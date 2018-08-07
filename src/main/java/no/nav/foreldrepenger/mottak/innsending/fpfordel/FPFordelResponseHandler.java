@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.AVSLÅTT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVLIGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
@@ -66,14 +66,9 @@ public class FPFordelResponseHandler {
                         LOG.warn("Uventet kvittering {} for statuskode {}", kvittering, respons.getStatusCode());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
-                        FPSakKvittering saksStatus = sjekkStatus(locationFra(respons), ref);
-                        if (saksStatus != null) {
-                            return saksStatusKvittering(ref, saksStatus);
-                        }
-                        FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(kvittering);
-                        return sendtOgForsøktBehandletKvittering(ref, fordelt.getJournalpostId(),
-                                fordelt.getSaksnummer());
-
+                        FPSakKvittering forsendelsesStatus = forsendelsesStatus(locationFra(respons), ref);
+                        return forsendelsesStatus != null ? forsendelsesStatusKvittering(ref, forsendelsesStatus)
+                                : sendtOgForsøktBehandletKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad", respons.getStatusCode());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
@@ -88,13 +83,14 @@ public class FPFordelResponseHandler {
         }
     }
 
-    private static Kvittering saksStatusKvittering(String ref, FPSakKvittering saksStatus) {
+    private static Kvittering forsendelsesStatusKvittering(String ref, FPSakKvittering saksStatus) {
+
         switch (saksStatus.getForsendelseStatus()) {
         case AVSLÅTT:
             return kvitteringMedType(AVSLÅTT, ref, saksStatus.getJournalpostId(),
                     saksStatus.getSaksnummer());
         case INNVILGET:
-            return kvitteringMedType(INNVILGET, ref, saksStatus.getJournalpostId(),
+            return kvitteringMedType(INNVLIGET, ref, saksStatus.getJournalpostId(),
                     saksStatus.getSaksnummer());
         case PÅ_VENT:
             return kvitteringMedType(PÅ_VENT, ref, saksStatus.getJournalpostId(),
@@ -114,9 +110,16 @@ public class FPFordelResponseHandler {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private FPSakKvittering sjekkStatus(URI uri, String ref) {
+    private FPSakKvittering forsendelsesStatus(URI uri, String ref) {
         try {
             LOG.info("Sjekker forsendelsesstatus på {}", uri);
+            /*
+             * for (int i = 1; i <= maxAntallForsøk; i++) { FPSakFordeltKvittering
+             * kvittering = template.getForEntity(uri,
+             * FPSakFordeltKvittering.class).getBody(); if (!kvittering.equals("PÅGÅR")) {
+             *
+             * } System.out.println("Kvittering er " + kvittering); }
+             */
             return template.getForEntity(uri, FPSakKvittering.class).getBody();
         } catch (Exception e) {
             LOG.warn("Kunne ikke sjekke status for forsendelse på {}", uri, e);
@@ -143,14 +146,16 @@ public class FPFordelResponseHandler {
     }
 
     private static Kvittering påVentKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
-        LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}", gosysKvittering.getJournalId());
-        return kvitteringMedType(PÅ_VENT, ref, gosysKvittering.getJournalId(), null);
+        LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}",
+                gosysKvittering.getJournalpostId());
+        return kvitteringMedType(PÅ_VENT, ref, gosysKvittering.getJournalpostId(), null);
     }
 
-    private static Kvittering sendtOgForsøktBehandletKvittering(String ref, String journalId, String saksnr) {
+    private static Kvittering sendtOgForsøktBehandletKvittering(String ref, FPSakFordeltKvittering kvittering) {
         LOG.info("Søknaden er motatt og forsøkt behandlet av FPSak, journalId er {}, saksnummer er {}",
-                journalId, saksnr);
-        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref, journalId, saksnr);
+                kvittering.getJournalpostId(), kvittering.getSaksnummer());
+        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref, kvittering.getJournalpostId(),
+                kvittering.getSaksnummer());
     }
 
     @Override
