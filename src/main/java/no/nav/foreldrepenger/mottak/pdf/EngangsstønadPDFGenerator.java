@@ -55,20 +55,14 @@ public class EngangsstønadPDFGenerator extends PDFGenerator {
             float y = PDFGenerator.calculateStartY();
 
             y -= header(søker, stønad, doc, cos, y);
+            y -= addBlankLine();
 
-            if (erFremtidigFødsel(stønad)) {
-                y -= addLinesOfRegularText(fødsel(søknad, stønad), cos, y);
-            }
-
-            if (erFødt(stønad)) {
-                y -= addLineOfRegularText(født(søknad, stønad), cos, y);
-            }
-
+            y-= omBarn(søker, søknad, stønad, cos, y);
             y -= addBlankLine();
 
             y -= tilknytning(medlemsskap, cos, y);
-
             y -= addBlankLine();
+
             y -= addLineOfRegularText(fødselssted(medlemsskap, stønad), cos, y);
             y -= addBlankLine();
 
@@ -88,6 +82,22 @@ public class EngangsstønadPDFGenerator extends PDFGenerator {
         }
     }
 
+    private float omBarn(Person søker, Søknad søknad, Engangsstønad stønad, PDPageContentStream cos, float y) throws IOException  {
+        float startY = y;
+        y -= addLeftHeading(infoFormatter.fromMessageSource("ombarn"), cos, y);
+        y -= addLineOfRegularText(
+            infoFormatter.fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn()), cos, y);
+
+        if (erFremtidigFødsel(stønad)) {
+            y -= addLinesOfRegularText(fødsel(søknad, stønad), cos, y);
+        }
+
+        if (erFødt(stønad)) {
+            y -= addLineOfRegularText(født(søknad, stønad), cos, y);
+        }
+        return startY - y;
+    }
+
     private float header(Person søker, Engangsstønad stønad, PDDocument doc, PDPageContentStream cos, float y)
             throws IOException {
         float startY = y;
@@ -95,9 +105,6 @@ public class EngangsstønadPDFGenerator extends PDFGenerator {
         y -= addCenteredHeading(infoFormatter.fromMessageSource("søknad_engang"), cos, y);
         y -= addCenteredHeadings(søker(søker), cos, y);
         y -= addDividerLine(cos, y);
-        y -= addBlankLine();
-        y -= addLineOfRegularText(
-                infoFormatter.fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn()), cos, y);
         return startY - y;
     }
 
