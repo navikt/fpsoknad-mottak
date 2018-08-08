@@ -49,11 +49,16 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     }
 
     public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref) {
-        return Jaxb.marshall(CONTEXT, dokmotModelFra(søknad, søker, ref));
+        return toXML(søknad, søker, ref, true);
+    }
+
+    public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref,
+            boolean inkluderVedlegg) {
+        return Jaxb.marshall(CONTEXT, dokmotModelFra(søknad, søker, ref, inkluderVedlegg));
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
-            String ref) {
+            String ref, boolean inkluderVedlegg) {
         return dokumentForsendelseFra(søknad, søker, ref);
     }
 
