@@ -15,6 +15,7 @@
 	<root level="info">
 		<appender-ref ref="stdout" />
 	</root>
+    <logger name="org.apache.pdfbox.pdmodel.font.PDType1Font" level="none" />
      <springProfile name="dev,preprod">
         <logger name="org.springframework.web.client" level="trace" />
         <logger name="no.nav.foreldrepenger" level="trace" />
