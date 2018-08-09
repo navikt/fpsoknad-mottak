@@ -142,6 +142,10 @@ public class FPFordelTest {
         return new ResponseEntity<>(null, BAD_REQUEST);
     }
 
+    private static ResponseEntity<FPSakKvittering> fpinfoNull() {
+        return new ResponseEntity<>(null, OK);
+    }
+
     private static ResponseEntity<FPSakKvittering> okFPSakWith(FPSakStatus status) {
         return new ResponseEntity<>(new FPSakKvittering(status, JOURNALID, SAKSNR), OK);
     }
@@ -180,7 +184,8 @@ public class FPFordelTest {
     public void pollOnceThenOKAndFpInfoOK() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(template.getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class))).thenReturn(fpinfoPågår(), fpinfoPågår(), fpinfoInnvilget());
+        when(template.getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class))).thenReturn(fpinfoPågår(), fpinfoPågår(),
+                fpinfoInnvilget());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertThat(kvittering.getLeveranseStatus(), is(INNVILGET));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
@@ -191,12 +196,15 @@ public class FPFordelTest {
     public void pollOnceThenOkAndNoFpInfo() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
+        when(template.getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class))).thenReturn(fpinfoNull());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertThat(kvittering.getLeveranseStatus(), is(SENDT_OG_FORSØKT_BEHANDLET_FPSAK));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
         verify(template).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
         verify(template, times(2)).getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class));
+        verify(template).getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class));
+
     }
 
     @Test

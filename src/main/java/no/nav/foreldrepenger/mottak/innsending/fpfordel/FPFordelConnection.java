@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
 
 @Component
 public class FPFordelConnection {
@@ -46,7 +47,7 @@ public class FPFordelConnection {
             return response.getBody();
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke pinge FPFordel på {}", pingEndpoint, e);
-            throw new FPFordelUnavailableException(e);
+            throw new RemoteUnavailableException(e);
         }
     }
 
@@ -57,7 +58,7 @@ public class FPFordelConnection {
             return responseHandler.handle(template.postForEntity(postEndpoint, payload, FPFordelKvittering.class), ref);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
-            throw new FPFordelUnavailableException(e);
+            throw new RemoteUnavailableException(e);
         }
     }
 

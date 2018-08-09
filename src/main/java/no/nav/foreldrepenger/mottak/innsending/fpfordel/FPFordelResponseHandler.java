@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
+import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
 
 @Component
 public class FPFordelResponseHandler {
@@ -44,9 +45,7 @@ public class FPFordelResponseHandler {
             LOG.warn("Fikk ingen kvittering etter leveranse av søknad");
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
-
         FPFordelKvittering kvittering = FPFordelKvittering.class.cast(leveranseRespons.getBody());
-
         switch (leveranseRespons.getStatusCode()) {
         case ACCEPTED:
             if (kvittering instanceof FPFordelPendingKvittering) {
@@ -55,7 +54,7 @@ public class FPFordelResponseHandler {
                 URI pollURI = locationFra(leveranseRespons);
                 for (int i = 1; i <= maxAntallForsøk; i++) {
                     LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
-                    ResponseEntity<FPFordelKvittering> pollRespons = pollFPFordel(pollURI, "FPFordel", ref,
+                    ResponseEntity<FPFordelKvittering> pollRespons = pollFPFordel(pollURI,
                             pending.getPollInterval().toMillis());
                     kvittering = FPFordelKvittering.class.cast(pollRespons.getBody());
                     LOG.info("Behandler poll respons {} etter {}ms", pollRespons, timer.getTime());
@@ -135,38 +134,53 @@ public class FPFordelResponseHandler {
         FPSakKvittering kvittering = null;
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
-                waitFor(delayMillis);
                 LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
-                kvittering = template.getForEntity(pollURI, FPSakKvittering.class).getBody();
-                FPSakStatus status = kvittering.getForsendelseStatus();
-                switch (status) {
+                ResponseEntity<FPSakKvittering> respons = pollFPInfo(pollURI, delayMillis);
+                if (!respons.hasBody()) {
+                    LOG.warn("Fikk ingen kvittering etter polling av forsendelsesstatus");
+                    return null;
+                }
+                kvittering = respons.getBody();
+                switch (kvittering.getForsendelseStatus()) {
                 case AVSLÅTT:
                 case INNVILGET:
                 case PÅ_VENT:
                     stop(timer);
-                    LOG.info("Sak {} {} etter {}ms", kvittering.getSaksnummer(), status.name().toLowerCase(),
+                    LOG.info("Sak {} {} etter {}ms", kvittering.getSaksnummer(),
+                            kvittering.getForsendelseStatus().name().toLowerCase(),
                             timer.getTime());
                     return kvittering;
                 case PÅGÅR:
                     LOG.info("Sak {} pågår fremdeles etter {}ms", kvittering.getSaksnummer(), timer.getTime());
+                    continue;
+                default:
+                    LOG.info("Dette skal ikke skje");
                 }
             }
             stop(timer);
             return kvittering;
-        } catch (Exception e) {
+        } catch (RemoteUnavailableException e) {
             stop(timer);
             LOG.warn("Kunne ikke sjekke status for forsendelse på {}", pollURI, e);
             return null;
         }
     }
 
-    private ResponseEntity<FPFordelKvittering> pollFPFordel(URI uri, String name, String ref, long delayMillis) {
+    private ResponseEntity<FPSakKvittering> pollFPInfo(URI pollURI, long delayMillis) {
+        return poll(pollURI, delayMillis, FPSakKvittering.class);
+    }
+
+    private ResponseEntity<FPFordelKvittering> pollFPFordel(URI uri, long delayMillis) {
+        return poll(uri, delayMillis, FPFordelKvittering.class);
+    }
+
+    private <T> ResponseEntity<T> poll(URI uri, long delayMillis, Class<T> clazz) {
         try {
             waitFor(delayMillis);
-            return template.getForEntity(uri, FPFordelKvittering.class);
+            return template.getForEntity(uri, clazz);
         } catch (RestClientException | InterruptedException e) {
-            LOG.warn("Kunne ikke polle {} på {}", name, uri, e);
-            throw new FPFordelUnavailableException(e);
+            LOG.warn("Kunne ikke polle FPFordel på {}", uri, e);
+            throw new RemoteUnavailableException(uri, e);
         }
     }
 
