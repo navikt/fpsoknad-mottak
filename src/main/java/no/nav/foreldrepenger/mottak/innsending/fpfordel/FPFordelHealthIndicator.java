@@ -1,11 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.http.EnvironmentAwareHealthIndicator;
 
-@Component
+//@Component
 public class FPFordelHealthIndicator extends EnvironmentAwareHealthIndicator {
 
     private final FPFordelConnection connection;
