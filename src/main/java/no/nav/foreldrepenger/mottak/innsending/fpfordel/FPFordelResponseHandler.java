@@ -36,32 +36,34 @@ public class FPFordelResponseHandler {
         this.maxAntallForsøk = maxAntallForsøk;
     }
 
-    public Kvittering handle(ResponseEntity<FPFordelKvittering> respons, String ref) {
-        LOG.info("Behandler respons {}", respons);
+    public Kvittering handle(ResponseEntity<FPFordelKvittering> leveranseRespons, String ref) {
+        LOG.info("Behandler respons {}", leveranseRespons);
         StopWatch timer = new StopWatch();
         timer.start();
-        if (!respons.hasBody()) {
+        if (!leveranseRespons.hasBody()) {
             LOG.warn("Fikk ingen kvittering etter leveranse av søknad");
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
 
-        FPFordelKvittering kvittering = FPFordelKvittering.class.cast(respons.getBody());
-        switch (respons.getStatusCode()) {
+        FPFordelKvittering kvittering = FPFordelKvittering.class.cast(leveranseRespons.getBody());
+
+        switch (leveranseRespons.getStatusCode()) {
         case ACCEPTED:
             if (kvittering instanceof FPFordelPendingKvittering) {
                 LOG.info("Søknaden er mottatt, men ikke forsøkt behandlet i FPSak");
-                FPFordelPendingKvittering pendingKvittering = FPFordelPendingKvittering.class.cast(respons.getBody());
-                URI pollURI = locationFra(respons);
+                FPFordelPendingKvittering pending = FPFordelPendingKvittering.class.cast(leveranseRespons.getBody());
+                URI pollURI = locationFra(leveranseRespons);
                 for (int i = 1; i <= maxAntallForsøk; i++) {
                     LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
-                    respons = poll(pollURI, "FPFordel", ref, pendingKvittering.getPollInterval().toMillis());
-                    kvittering = FPFordelKvittering.class.cast(respons.getBody());
-                    LOG.info("Behandler respons {} etter {}ms", respons, timer.getTime());
-                    switch (respons.getStatusCode()) {
+                    ResponseEntity<FPFordelKvittering> pollRespons = pollFPFordel(pollURI, "FPFordel", ref,
+                            pending.getPollInterval().toMillis());
+                    kvittering = FPFordelKvittering.class.cast(pollRespons.getBody());
+                    LOG.info("Behandler poll respons {} etter {}ms", pollRespons, timer.getTime());
+                    switch (pollRespons.getStatusCode()) {
                     case OK:
                         if (kvittering instanceof FPFordelPendingKvittering) {
                             LOG.info("Fikk pending kvittering  på {}. forsøk", i);
-                            pendingKvittering = FPFordelPendingKvittering.class.cast(kvittering);
+                            pending = FPFordelPendingKvittering.class.cast(kvittering);
                             continue;
                         }
                         if (kvittering instanceof FPFordelGosysKvittering) {
@@ -69,18 +71,14 @@ public class FPFordelResponseHandler {
                             return påVentKvittering(ref, FPFordelGosysKvittering.class.cast(kvittering));
                         }
                         LOG.warn("Uventet kvittering {} for statuskode {}, gir opp (etter {}ms)", kvittering,
-                                respons.getStatusCode(), stop(timer));
+                                pollRespons.getStatusCode(), stop(timer));
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
-                        FPSakKvittering forsendelsesStatus = pollForsendelsesStatus(locationFra(respons),
-                                pendingKvittering.getPollInterval().toMillis(), ref, timer);
-                        Kvittering status = forsendelsesStatus != null
-                                ? forsendelsesStatusKvittering(ref, forsendelsesStatus)
-                                : sendtOgForsøktBehandletKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
-                        return status;
+                        return pollFPInfo(pollRespons, ref, timer, kvittering,
+                                pending.getPollInterval().toMillis());
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",
-                                respons.getStatusCode(),
+                                pollRespons.getStatusCode(),
                                 timer.getTime());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     }
@@ -90,10 +88,19 @@ public class FPFordelResponseHandler {
                 return new Kvittering(PÅ_VENT, ref);
             }
         default:
-            LOG.warn("Uventet responskode {} ved leveranse av søknad, gir opp (etter {}ms)", respons.getStatusCode(),
+            LOG.warn("Uventet responskode {} ved leveranse av søknad, gir opp (etter {}ms)",
+                    leveranseRespons.getStatusCode(),
                     stop(timer));
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
+    }
+
+    private Kvittering pollFPInfo(ResponseEntity<FPFordelKvittering> respons, String ref, StopWatch timer,
+            FPFordelKvittering kvittering, long delayMillis) {
+        FPSakKvittering forsendelsesStatus = pollForsendelsesStatus(locationFra(respons), delayMillis, ref, timer);
+        return forsendelsesStatus != null
+                ? forsendelsesStatusKvittering(forsendelsesStatus, ref)
+                : sendtOgForsøktBehandletKvittering(ref, FPSakFordeltKvittering.class.cast(kvittering));
     }
 
     private static long stop(StopWatch timer) {
@@ -101,7 +108,7 @@ public class FPFordelResponseHandler {
         return timer.getTime();
     }
 
-    private static Kvittering forsendelsesStatusKvittering(String ref, FPSakKvittering status) {
+    private static Kvittering forsendelsesStatusKvittering(FPSakKvittering status, String ref) {
 
         switch (status.getForsendelseStatus()) {
         case AVSLÅTT:
@@ -153,7 +160,7 @@ public class FPFordelResponseHandler {
         }
     }
 
-    private ResponseEntity<FPFordelKvittering> poll(URI uri, String name, String ref, long delayMillis) {
+    private ResponseEntity<FPFordelKvittering> pollFPFordel(URI uri, String name, String ref, long delayMillis) {
         try {
             waitFor(delayMillis);
             return template.getForEntity(uri, FPFordelKvittering.class);
@@ -164,7 +171,7 @@ public class FPFordelResponseHandler {
     }
 
     private static void waitFor(long delayMillis) throws InterruptedException {
-        LOG.info("Venter i {}ms", delayMillis);
+        LOG.trace("Venter i {}ms", delayMillis);
         Thread.sleep(delayMillis);
     }
 
