@@ -172,6 +172,9 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
+        if (innsendingsType == null) {
+            return opplastetInnsendingsType();
+        }
         switch (innsendingsType) {
         case LASTET_OPP:
             return opplastetInnsendingsType();
