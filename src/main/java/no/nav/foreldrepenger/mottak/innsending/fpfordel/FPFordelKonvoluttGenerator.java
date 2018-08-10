@@ -69,6 +69,8 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {
+        LOG.debug("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
+                vedlegg.getStørrelse());
         builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
                 .headers(headers(vedlegg, contentId));
     }

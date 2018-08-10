@@ -68,6 +68,16 @@ public abstract class Vedlegg {
         return metadata.getId();
     }
 
+    @JsonIgnore
+    public DokumentType getDokumentType() {
+        return metadata.getDokumentType();
+    }
+
+    @JsonIgnore
+    public long getStørrelse() {
+        return vedlegg.length;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + bytes();
