@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FPFordelConfig {
 
-    boolean enabled = false;
+    boolean enabled = true;
 
     String uri = "http://fpfordel";
     String fpinfo = "http://fpinfo";
