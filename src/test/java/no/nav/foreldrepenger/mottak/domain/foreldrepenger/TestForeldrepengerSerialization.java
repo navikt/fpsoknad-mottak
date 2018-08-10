@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.serialize;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.adopsjon;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.annenOpptjening;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.fordeling;
@@ -42,7 +42,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
-import no.nav.foreldrepenger.mottak.domain.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters
@@ -96,6 +98,11 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testUkjentForelder() {
         test(new UkjentForelder());
+    }
+
+    @Test
+    public void testVedleggMetadata() {
+        test(new VedleggMetaData("42", DokumentType.ETTERSENDELSE_ENGANGSSTØNAD_FØDSEL));
     }
 
     @Test

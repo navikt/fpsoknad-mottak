@@ -11,6 +11,7 @@ import java.util.Arrays;
 import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -50,6 +51,21 @@ public abstract class Vedlegg {
             return vedleggAsString.substring(0, 49) + ".... " + (vedleggAsString.length() - 50) + " more bytes";
         }
         return vedleggAsString;
+    }
+
+    @JsonIgnore
+    public String getBeskrivelse() {
+        return metadata.getBeskrivelse();
+    }
+
+    @JsonIgnore
+    public InnsendingsType getInnsendingsType() {
+        return metadata.getInnsendingsType();
+    }
+
+    @JsonIgnore
+    public String getId() {
+        return metadata.getId();
     }
 
     @Override

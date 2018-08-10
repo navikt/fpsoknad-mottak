@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.nesteMåned;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.norskForelder;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.påkrevdVedlegg;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.nesteMåned;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
 import static no.nav.foreldrepenger.mottak.http.MottakController.MOTTAK;
 import static no.nav.foreldrepenger.mottak.http.MottakPreprodController.INNSENDING_PREPROD;

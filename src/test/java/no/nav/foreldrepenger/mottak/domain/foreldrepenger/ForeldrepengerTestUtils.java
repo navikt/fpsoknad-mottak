@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static com.google.inject.internal.util.Lists.newArrayList;
 import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.medlemsskap;
 import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
 
@@ -17,7 +17,7 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class ForeldrepengerTestUtils {

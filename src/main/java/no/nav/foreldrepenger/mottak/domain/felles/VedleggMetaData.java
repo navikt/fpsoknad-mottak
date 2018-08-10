@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,14 +12,28 @@ public class VedleggMetaData {
 
     private final String beskrivelse;
     private final String id;
+    private final InnsendingsType innsendingsType;
+    private final DokumentType dokumentType;
 
-    public VedleggMetaData(String id) {
-        this(null, id);
+    public VedleggMetaData(String id, DokumentType dokumentType) {
+        this(null, id, dokumentType);
+    }
+
+    public VedleggMetaData(String beskrivelse, String id, DokumentType dokumentType) {
+        this(beskrivelse, id, LASTET_OPP, dokumentType);
+    }
+
+    public VedleggMetaData(String id, InnsendingsType type, DokumentType dokumentType) {
+        this(null, id, type, dokumentType);
     }
 
     @JsonCreator
-    public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("id") String id) {
+    public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("id") String id,
+            @JsonProperty("innsendingsType") InnsendingsType innsendingType,
+            @JsonProperty("dokumentTyoe") DokumentType dokumentType) {
         this.beskrivelse = beskrivelse;
         this.id = id;
+        this.innsendingsType = innsendingType;
+        this.dokumentType = dokumentType;
     }
 }

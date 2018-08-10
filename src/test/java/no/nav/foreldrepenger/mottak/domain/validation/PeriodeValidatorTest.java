@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon.ARBEIDET_I_UTLANDET;
+import static no.nav.foreldrepenger.mottak.domain.felles.ArbeidsInformasjon.ARBEIDET_I_UTLANDET;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

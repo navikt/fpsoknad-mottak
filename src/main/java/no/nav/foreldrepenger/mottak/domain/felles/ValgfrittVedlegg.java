@@ -17,19 +17,23 @@ import lombok.ToString;
 @Data
 public class ValgfrittVedlegg extends Vedlegg {
 
-    public ValgfrittVedlegg(String id, Resource vedlegg) throws IOException {
-        this(null, id, vedlegg);
+    ValgfrittVedlegg(DokumentType dokumentType, Resource vedlegg) throws IOException {
+        this(dokumentType.dokumentTypeId, dokumentType, vedlegg);
     }
 
-    public ValgfrittVedlegg(String beskrivelse, String id, Resource vedlegg) throws IOException {
-        this(new VedleggMetaData(beskrivelse, id), vedlegg);
+    ValgfrittVedlegg(String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
+        this(null, id, dokumentType, vedlegg);
     }
 
-    public ValgfrittVedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {
+    ValgfrittVedlegg(String beskrivelse, String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
+        this(new VedleggMetaData(beskrivelse, id, dokumentType), vedlegg);
+    }
+
+    ValgfrittVedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {
         super(metadata, vedlegg);
     }
 
-    public ValgfrittVedlegg(VedleggMetaData metadata, InputStream inputStream) throws IOException {
+    ValgfrittVedlegg(VedleggMetaData metadata, InputStream inputStream) throws IOException {
         super(metadata, inputStream);
     }
 

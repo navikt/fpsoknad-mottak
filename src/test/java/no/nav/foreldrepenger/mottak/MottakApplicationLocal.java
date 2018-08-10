@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Primary;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
 import no.nav.security.spring.oidc.test.TokenGeneratorConfiguration;

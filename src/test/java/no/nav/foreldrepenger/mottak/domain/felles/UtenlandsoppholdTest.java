@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon;
-
 public class UtenlandsoppholdTest {
 
     @Test

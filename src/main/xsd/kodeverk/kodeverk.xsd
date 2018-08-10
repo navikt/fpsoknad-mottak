@@ -164,7 +164,7 @@
                     <xsd:enumeration value="VOKSEN"/>
                 </xsd:restriction>
             </xsd:simpleType>
-        </xsd:attribute>
+        </xsd:attribute>x
     </xsd:complexType>
     <xsd:complexType name="Innsendingstype">
         <xsd:attribute name="kodeverk" type="xsd:string" default="INNSENDINGSVALG"/>

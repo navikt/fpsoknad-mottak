@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.mottak.domain.engangsstønad;
 
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.hasPdfSignature;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.norskForelder;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.serialize;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.termin;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.utenlandskForelder;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.valgfrittVedlegg;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.utenlandskForelder;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
 import static org.junit.Assert.assertEquals;

@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.hasPdfSignature;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;

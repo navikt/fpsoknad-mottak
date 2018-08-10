@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.valgfrittVedlegg;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.METADATA;

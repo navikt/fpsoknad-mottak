@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshall;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
@@ -28,6 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
@@ -112,7 +114,6 @@ public class FPFordelSøknadGenerator {
 
     private static final String UKJENT_KODEVERKSVERDI = "-";
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadGenerator.class);
-    private static final String LASTET_OPP = "LASTET_OPP";
     private static final JAXBContext CONTEXT = context(Soeknad.class);
 
     public Søknad tilSøknad(String søknadXml) {
@@ -164,14 +165,23 @@ public class FPFordelSøknadGenerator {
 
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
-                .withId(vedlegg.getMetadata().getId())
-                .withTilleggsinformasjon(vedlegg.getMetadata().getBeskrivelse())
-                .withSkjemanummer(vedlegg.getMetadata().getId())
-                .withInnsendingstype(opplastetInnsendingsType());
+                .withId(vedlegg.getId())
+                .withTilleggsinformasjon(vedlegg.getBeskrivelse())
+                .withSkjemanummer(vedlegg.getId())
+                .withInnsendingstype(innsendingstypeFra(vedlegg.getInnsendingsType()));
+    }
+
+    private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
+        switch (innsendingsType) {
+        case LASTET_OPP:
+            return opplastetInnsendingsType();
+        default:
+            throw new IllegalArgumentException("Innsendingstype " + innsendingsType + " foreløpig kke støttet");
+        }
     }
 
     private static Innsendingstype opplastetInnsendingsType() {
-        Innsendingstype type = new Innsendingstype().withKode(LASTET_OPP);
+        Innsendingstype type = new Innsendingstype().withKode(LASTET_OPP.name());
         return type.withKodeverk(type.getKodeverk());
     }
 

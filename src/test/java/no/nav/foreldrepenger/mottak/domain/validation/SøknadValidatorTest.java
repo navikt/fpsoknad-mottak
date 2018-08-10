@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.nå;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.nå;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;

@@ -5,7 +5,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;

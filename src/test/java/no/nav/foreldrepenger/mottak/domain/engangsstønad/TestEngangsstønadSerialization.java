@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.mottak.domain.engangsstønad;
 
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.engangstønad;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.fødsel;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.norskForelder;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.påkrevdVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.serialize;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.termin;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.ukjentForelder;
-import static no.nav.foreldrepenger.mottak.domain.TestUtils.utenlandskForelder;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangstønad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.ukjentForelder;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.utenlandskForelder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -36,7 +36,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters

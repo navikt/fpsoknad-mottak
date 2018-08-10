@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.TERMINBEKREFTELSE;
 
@@ -16,25 +16,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
-import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.felles.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsInformasjon;
 
 public class TestUtils {
 
@@ -120,7 +111,7 @@ public class TestUtils {
 
     public static PåkrevdVedlegg påkrevdVedlegg(String name) {
         try {
-            return new PåkrevdVedlegg(TERMINBEKREFTELSE.dokumentTypeId, new ClassPathResource(name));
+            return new PåkrevdVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -128,7 +119,7 @@ public class TestUtils {
 
     static ValgfrittVedlegg valgfrittVedlegg(String name) {
         try {
-            return new ValgfrittVedlegg(TERMINBEKREFTELSE.dokumentTypeId, new ClassPathResource(name));
+            return new ValgfrittVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
