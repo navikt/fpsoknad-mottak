@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,10 +7,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FPFordelConfig {
 
-    boolean enabled;
+    boolean enabled = false;
 
-    @NotNull
-    String uri;
+    String uri = "http://fpfordel";
+    String fpinfo = "http://fpinfo";
+
+    public String getFpinfo() {
+        return fpinfo;
+    }
+
+    public void setFpinfo(String fpinfo) {
+        this.fpinfo = fpinfo;
+    }
 
     public String getUri() {
         return uri;
