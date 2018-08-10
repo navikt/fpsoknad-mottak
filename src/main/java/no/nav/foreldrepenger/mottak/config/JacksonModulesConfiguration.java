@@ -20,11 +20,6 @@ public class JacksonModulesConfiguration {
         return new Jdk8Module();
     }
 
-    /*
-     * @Bean public Module parameterNamesModule() { return new
-     * ParameterNamesModule(PROPERTIES); }
-     */
-
     @Bean
     public Module customSerializers() {
         return new CustomSerializerModule();

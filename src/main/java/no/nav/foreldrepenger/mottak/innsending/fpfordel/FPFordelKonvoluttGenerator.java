@@ -9,11 +9,8 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -39,8 +36,6 @@ public class FPFordelKonvoluttGenerator {
     private final FPFordelMetdataGenerator metadataGenerator;
     private final FPFordelSøknadGenerator søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;
-    @Inject
-    private Environment env;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
             FPFordelSøknadGenerator søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
@@ -53,10 +48,6 @@ public class FPFordelKonvoluttGenerator {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        if (isPreprod() && shouldRewrite(søker.aktørId)) {
-            LOG.info("Så juksar me litt (RIP Ingrid)");
-            søker.aktørId = new AktorId("1000104312026");
-        }
 
         builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
@@ -68,10 +59,6 @@ public class FPFordelKonvoluttGenerator {
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
         return new HttpEntity<>(builder.build(), headers());
-    }
-
-    private static boolean shouldRewrite(AktorId aktørId) {
-        return aktørId.equals(AktorId.valueOf("1000104925555"));
     }
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, Person søker,
@@ -87,7 +74,7 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private static VedleggHeaderConsumer headers(Vedlegg vedlegg, AtomicInteger contentId) {
-        return new VedleggHeaderConsumer(vedlegg.getMetadata().getBeskrivelse(), id(contentId));
+        return new VedleggHeaderConsumer(vedlegg.getBeskrivelse(), id(contentId));
     }
 
     private static String id(AtomicInteger id) {
@@ -101,11 +88,16 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private String metadata(Søknad søknad, AktorId aktørId, String ref) {
-        return metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktørId, ref));
+        String metadata = metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktørId, ref));
+        LOG.debug("Metadata er {}", metadata);
+        return metadata;
+
     }
 
     private String metadata(Ettersending ettersending, AktorId aktørId, String ref) {
-        return metadataGenerator.generateMetadata(new FPFordelMetadata(ettersending, aktørId, ref));
+        String metadata = metadataGenerator.generateMetadata(new FPFordelMetadata(ettersending, aktørId, ref));
+        LOG.debug("Metadata er {}", metadata);
+        return metadata;
     }
 
     private byte[] pdfHovedDokument(Søknad søknad, Person søker) {
@@ -113,11 +105,9 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private String xmlHovedDokument(Søknad søknad, AktorId aktørId) {
-        return søknadGenerator.toXML(søknad, aktørId);
-    }
-
-    private boolean isPreprod() {
-        return env == null || env.acceptsProfiles("preprod");
+        String hovedDokument = søknadGenerator.toXML(søknad, aktørId);
+        LOG.debug("Hoveddokument er {}", hovedDokument);
+        return hovedDokument;
     }
 
     @Override
