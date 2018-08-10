@@ -23,6 +23,8 @@ server.servlet :
 spring :
     jackson :
       default-property-inclusion :  non_null 
+      mapper :
+         accept_case_insensitive_properties: true 
       deserialization :
          accept_single_value_as_array: true
          fail-on-unknown-properties: true
