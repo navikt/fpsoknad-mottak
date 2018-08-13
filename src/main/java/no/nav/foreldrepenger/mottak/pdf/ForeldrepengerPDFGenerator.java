@@ -1,8 +1,7 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import static com.google.common.base.CaseFormat.UPPER_CAMEL;
-import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,6 +19,8 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -269,7 +270,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     }
 
     private static String format(String name) {
-        return UPPER_UNDERSCORE.to(UPPER_CAMEL, name);
+        return name != null ? capitalize(Joiner.on(' ').join(Splitter.on("_").split(name))) : "";
     }
 
     private List<String> vedlegg(List<Vedlegg> vedlegg) {
