@@ -18,6 +18,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.CaseFormat;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -250,20 +251,24 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
         String tid = infoFormatter.dato(periode.getFom()) + " - " + infoFormatter.dato(periode.getTom());
         if (periode instanceof OverføringsPeriode) {
             OverføringsPeriode op = OverføringsPeriode.class.cast(periode);
-            return "Overføring: " + tid + ", " + op.getÅrsak();
+            return "Overføring: " + tid + ", " + format(op.getÅrsak().name());
         }
         else if (periode instanceof UttaksPeriode) {
             UttaksPeriode up = UttaksPeriode.class.cast(periode);
-            return "Uttak: " + tid + ", " + up.getUttaksperiodeType();
+            return "Uttak: " + tid + ", " + format(up.getUttaksperiodeType().name());
         }
         else if (periode instanceof OppholdsPeriode) {
             OppholdsPeriode op = OppholdsPeriode.class.cast(periode);
-            return "Opphold: " + tid + ", " + op.getÅrsak();
+            return "Opphold: " + tid + ", " + format(op.getÅrsak().name());
         }
         else {
             UtsettelsesPeriode up = UtsettelsesPeriode.class.cast(periode);
-            return "Utsettelse: " + tid + ", " + up.getÅrsak();
+            return "Utsettelse: " + tid + ", " + format(up.getÅrsak().name());
         }
+    }
+
+    private static String format(String name) {
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_UNDERSCORE, name);
     }
 
     private List<String> vedlegg(List<Vedlegg> vedlegg) {
