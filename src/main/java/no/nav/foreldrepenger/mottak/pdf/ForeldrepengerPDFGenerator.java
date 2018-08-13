@@ -270,7 +270,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     }
 
     private static String format(String name) {
-        return name != null ? capitalize(Joiner.on(' ').join(Splitter.on("_").split(name))) : "";
+        return name != null ? capitalize(Joiner.on(' ').join(Splitter.on("_").split(name)).toLowerCase()) : "";
     }
 
     private List<String> vedlegg(List<Vedlegg> vedlegg) {
