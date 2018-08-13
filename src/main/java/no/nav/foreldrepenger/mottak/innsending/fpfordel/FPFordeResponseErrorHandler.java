@@ -20,6 +20,8 @@ class FPFordeResponseErrorHandler extends DefaultResponseErrorHandler {
     @Override
     public void handleError(ClientHttpResponse response) throws IOException {
 
+        LOG.debug("Error response handler executing for response {}", response);
+
         if (response.getStatusCode() == FORBIDDEN) {
             LOG.warn(FORBIDDEN + ". Throwing ForbiddenException exception");
             throw new ForbiddenException(StreamUtils.copyToString(response.getBody(), Charset.defaultCharset()));
