@@ -167,7 +167,7 @@ public class FPFordelSøknadGenerator {
         return new Vedlegg()
                 .withId(vedlegg.getId())
                 .withTilleggsinformasjon(vedlegg.getBeskrivelse())
-                .withSkjemanummer(vedlegg.getId())
+                .withSkjemanummer(vedlegg.getDokumentType().name())
                 .withInnsendingstype(innsendingstypeFra(vedlegg.getInnsendingsType()));
     }
 
