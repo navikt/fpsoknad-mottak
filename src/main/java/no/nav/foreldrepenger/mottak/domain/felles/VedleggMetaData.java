@@ -23,16 +23,12 @@ public class VedleggMetaData {
         this(beskrivelse, id, LASTET_OPP, dokumentType);
     }
 
-    public VedleggMetaData(String id, InnsendingsType type, DokumentType dokumentType) {
-        this(null, id, type, dokumentType);
-    }
-
     @JsonCreator
     public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("id") String id,
             @JsonProperty("innsendingsType") InnsendingsType innsendingType,
             @JsonProperty("dokumentTyoe") DokumentType dokumentType) {
-        this.beskrivelse = beskrivelse;
         this.id = id;
+        this.beskrivelse = beskrivelse;
         this.innsendingsType = innsendingType;
         this.dokumentType = dokumentType;
     }

@@ -102,7 +102,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testVedleggMetadata() {
-        test(new VedleggMetaData("42", DokumentType.ETTERSENDELSE_ENGANGSSTØNAD_FØDSEL));
+        test(new VedleggMetaData("42", DokumentType.I000005));
     }
 
     @Test

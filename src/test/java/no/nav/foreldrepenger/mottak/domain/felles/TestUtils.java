@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.TERMINBEKREFTELSE;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -111,7 +109,7 @@ public class TestUtils {
 
     public static PåkrevdVedlegg påkrevdVedlegg(String name) {
         try {
-            return new PåkrevdVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
+            return new PåkrevdVedlegg(DokumentType.I000062, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -119,7 +117,7 @@ public class TestUtils {
 
     static ValgfrittVedlegg valgfrittVedlegg(String name) {
         try {
-            return new ValgfrittVedlegg(TERMINBEKREFTELSE, new ClassPathResource(name));
+            return new ValgfrittVedlegg(DokumentType.I000062, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

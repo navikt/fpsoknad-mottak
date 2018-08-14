@@ -21,6 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
@@ -30,7 +31,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
@@ -98,7 +98,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
-                .withSkjemanummer(DokumentType.TERMINBEKREFTELSE.dokumentTypeId)
+                .withSkjemanummer(DokumentType.I000062.name())
                 .withInnsendingsvalg(LASTET_OPP)
                 .withErPaakrevdISoeknadsdialog(vedlegg instanceof PåkrevdVedlegg);
     }
