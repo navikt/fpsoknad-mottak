@@ -83,7 +83,7 @@ public class FPFordelMetadata {
     }
 
     private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {
-        return new Filer(vedlegg.getMetadata().getId(), id.getAndIncrement());
+        return new Filer(vedlegg.getMetadata().getDokumentType().name(), id.getAndIncrement());
     }
 
     @Override
