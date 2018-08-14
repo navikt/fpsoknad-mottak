@@ -27,8 +27,8 @@ public class VedleggMetaData {
     public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("id") String id,
             @JsonProperty("innsendingsType") InnsendingsType innsendingType,
             @JsonProperty("dokumentTyoe") DokumentType dokumentType) {
-        this.id = id;
         this.beskrivelse = beskrivelse;
+        this.id = id;
         this.innsendingsType = innsendingType;
         this.dokumentType = dokumentType;
     }
