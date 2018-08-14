@@ -79,11 +79,11 @@ public class FPFordelMetadata {
     }
 
     private static Filer søknad(final AtomicInteger id) {
-        return new Filer(I000005.name(), id.getAndIncrement());
+        return new Filer(I000005, id.getAndIncrement());
     }
 
     private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {
-        return new Filer(vedlegg.getMetadata().getDokumentType().name(), id.getAndIncrement());
+        return new Filer(vedlegg.getDokumentType(), id.getAndIncrement());
     }
 
     @Override

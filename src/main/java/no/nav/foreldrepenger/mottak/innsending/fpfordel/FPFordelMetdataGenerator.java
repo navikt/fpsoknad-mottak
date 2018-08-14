@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+
 @Component
 public class FPFordelMetdataGenerator {
 
@@ -50,8 +52,8 @@ public class FPFordelMetdataGenerator {
             return dokumentTypeId;
         }
 
-        public Filer(String id, int contentId) {
-            this.dokumentTypeId = id;
+        public Filer(DokumentType dokumentType, int contentId) {
+            this.dokumentTypeId = dokumentType.name();
             this.contentId = String.valueOf(contentId);
         }
 
