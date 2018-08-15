@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
-import static no.nav.foreldrepenger.mottak.innsending.fpfordel.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
+import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;

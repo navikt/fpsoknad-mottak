@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.fpfordel;
+package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.http.MediaType.parseMediaType;
 

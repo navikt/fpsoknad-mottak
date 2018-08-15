@@ -44,6 +44,8 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoForsendelsesStatus;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -131,11 +133,11 @@ public class FPFordelTest {
     }
 
     private static ResponseEntity<FPInfoKvittering> fpinfoInnvilget() {
-        return okFPSakWith(FPSakStatus.INNVILGET);
+        return okFPSakWith(FPInfoForsendelsesStatus.INNVILGET);
     }
 
     private static ResponseEntity<FPInfoKvittering> fpinfoPågår() {
-        return okFPSakWith(FPSakStatus.PÅGÅR);
+        return okFPSakWith(FPInfoForsendelsesStatus.PÅGÅR);
     }
 
     private static ResponseEntity<FPInfoKvittering> fpinfoFailed() {
@@ -146,7 +148,7 @@ public class FPFordelTest {
         return new ResponseEntity<>(null, OK);
     }
 
-    private static ResponseEntity<FPInfoKvittering> okFPSakWith(FPSakStatus status) {
+    private static ResponseEntity<FPInfoKvittering> okFPSakWith(FPInfoForsendelsesStatus status) {
         return new ResponseEntity<>(new FPInfoKvittering(status), OK);
     }
 
