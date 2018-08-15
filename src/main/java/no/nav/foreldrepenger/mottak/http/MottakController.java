@@ -5,6 +5,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import javax.validation.Valid;
 
+import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,7 @@ public class MottakController {
     @PostMapping(value = "/send")
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
         Person søker = oppslag.getSøker();
+        MDC.put("Nav-Aktør-Id", søker.aktørId.getId());
         if (isForeldrepenger(søknad)) {
             return ok(fpfordelSender.send(søknad, søker));
         }

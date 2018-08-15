@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 
 import javax.jms.TextMessage;
 
-import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,6 @@ public class DokmotJMSSender implements SøknadSender {
             String ref = idGenerator.getOrCreate();
             dokmotConnection.send(session -> {
                 TextMessage msg = session.createTextMessage(generator.toXML(søknad, søker, ref));
-                MDC.put("Nav-Aktør-Id", søker.aktørId.getId());
                 LOG.info("Sender SøknadsXML til DOKMOT");
                 msg.setStringProperty("callId", ref);
                 return msg;
