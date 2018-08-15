@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotJMSSender;
@@ -45,12 +46,11 @@ public class MottakController {
 
     @PostMapping(value = "/send")
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Søknad søknad) {
+        Person søker = oppslag.getSøker();
         if (isForeldrepenger(søknad)) {
-            LOG.info("Sender foreldrepengesøknad til FPFordel");
-            return ok(fpfordelSender.send(søknad, oppslag.getSøker()));
+            return ok(fpfordelSender.send(søknad, søker));
         }
-        LOG.info("Sender engangsstønadssøknad til DOKMOT");
-        return ok(dokmotSender.send(søknad, oppslag.getSøker()));
+        return ok(dokmotSender.send(søknad, søker));
     }
 
     @PostMapping(value = "/ettersend")

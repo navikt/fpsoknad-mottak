@@ -24,9 +24,7 @@ public enum DokumentType {
     I500050("Ettersendelse til søknad om endring av uttak av foreldrepenger eller overføring av kvote");
 
 
-    public final String beskrivelse;
-
-    
+    public final String beskrivelse;  
 
     DokumentType(String beskrivelse) {
         this.beskrivelse = beskrivelse;
