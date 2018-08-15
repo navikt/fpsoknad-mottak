@@ -130,24 +130,24 @@ public class FPFordelTest {
         return new ResponseEntity<>(new FPFordelPendingKvittering(Duration.ofMillis(100)), headers, BAD_REQUEST);
     }
 
-    private static ResponseEntity<FPSakKvittering> fpinfoInnvilget() {
+    private static ResponseEntity<FPInfoKvittering> fpinfoInnvilget() {
         return okFPSakWith(FPSakStatus.INNVILGET);
     }
 
-    private static ResponseEntity<FPSakKvittering> fpinfoPågår() {
+    private static ResponseEntity<FPInfoKvittering> fpinfoPågår() {
         return okFPSakWith(FPSakStatus.PÅGÅR);
     }
 
-    private static ResponseEntity<FPSakKvittering> fpinfoFailed() {
+    private static ResponseEntity<FPInfoKvittering> fpinfoFailed() {
         return new ResponseEntity<>(null, BAD_REQUEST);
     }
 
-    private static ResponseEntity<FPSakKvittering> fpinfoNull() {
+    private static ResponseEntity<FPInfoKvittering> fpinfoNull() {
         return new ResponseEntity<>(null, OK);
     }
 
-    private static ResponseEntity<FPSakKvittering> okFPSakWith(FPSakStatus status) {
-        return new ResponseEntity<>(new FPSakKvittering(status, JOURNALID, SAKSNR), OK);
+    private static ResponseEntity<FPInfoKvittering> okFPSakWith(FPSakStatus status) {
+        return new ResponseEntity<>(new FPInfoKvittering(status), OK);
     }
 
     private static ResponseEntity<FPFordelKvittering> fordelt() {
@@ -184,7 +184,7 @@ public class FPFordelTest {
     public void pollOnceThenOKAndFpInfoOK() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(template.getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class))).thenReturn(fpinfoPågår(), fpinfoPågår(),
+        when(template.getForEntity(eq(FPINFOURI), eq(FPInfoKvittering.class))).thenReturn(fpinfoPågår(), fpinfoPågår(),
                 fpinfoInnvilget());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertThat(kvittering.getLeveranseStatus(), is(INNVILGET));
@@ -196,14 +196,14 @@ public class FPFordelTest {
     public void pollOnceThenOkAndNoFpInfo() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(template.getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class))).thenReturn(fpinfoNull());
+        when(template.getForEntity(eq(FPINFOURI), eq(FPInfoKvittering.class))).thenReturn(fpinfoNull());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertThat(kvittering.getLeveranseStatus(), is(SENDT_OG_FORSØKT_BEHANDLET_FPSAK));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
         verify(template).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
         verify(template, times(2)).getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class));
-        verify(template).getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class));
+        verify(template).getForEntity(eq(FPINFOURI), eq(FPInfoKvittering.class));
 
     }
 
@@ -211,13 +211,13 @@ public class FPFordelTest {
     public void pollOnceThenOkAndFpInfoOngoing() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(template.getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class))).thenReturn(fpinfoPågår());
+        when(template.getForEntity(eq(FPINFOURI), eq(FPInfoKvittering.class))).thenReturn(fpinfoPågår());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertThat(kvittering.getLeveranseStatus(), is(PÅGÅR));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
         verify(template).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
-        verify(template, times(3)).getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class));
+        verify(template, times(3)).getForEntity(eq(FPINFOURI), eq(FPInfoKvittering.class));
     }
 
     @Test
@@ -233,7 +233,7 @@ public class FPFordelTest {
     public void pollOnceThenOKFpInfoFail() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(template.getForEntity(eq(FPINFOURI), eq(FPSakKvittering.class))).thenReturn(fpinfoFailed());
+        when(template.getForEntity(eq(FPINFOURI), eq(FPInfoKvittering.class))).thenReturn(fpinfoFailed());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         assertThat(kvittering.getLeveranseStatus(), is(SENDT_OG_FORSØKT_BEHANDLET_FPSAK));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
