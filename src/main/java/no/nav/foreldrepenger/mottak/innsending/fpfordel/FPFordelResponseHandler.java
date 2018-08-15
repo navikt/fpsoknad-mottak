@@ -167,19 +167,19 @@ public class FPFordelResponseHandler {
     }
 
     private ResponseEntity<FPSakKvittering> pollFPInfo(URI pollURI, long delayMillis) {
-        return poll(pollURI, delayMillis, FPSakKvittering.class);
+        return poll(pollURI, "FPInfo", delayMillis, FPSakKvittering.class);
     }
 
     private ResponseEntity<FPFordelKvittering> pollFPFordel(URI uri, long delayMillis) {
-        return poll(uri, delayMillis, FPFordelKvittering.class);
+        return poll(uri, "FPFordel", delayMillis, FPFordelKvittering.class);
     }
 
-    private <T> ResponseEntity<T> poll(URI uri, long delayMillis, Class<T> clazz) {
+    private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {
         try {
             waitFor(delayMillis);
             return template.getForEntity(uri, clazz);
         } catch (RestClientException | InterruptedException e) {
-            LOG.warn("Kunne ikke polle FPFordel på {}", uri, e);
+            LOG.warn("Kunne ikke polle {} på {}", name, uri, e);
             throw new RemoteUnavailableException(uri, e);
         }
     }
