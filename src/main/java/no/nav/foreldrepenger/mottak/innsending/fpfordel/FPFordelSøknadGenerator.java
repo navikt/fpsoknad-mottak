@@ -424,9 +424,11 @@ public class FPFordelSøknadGenerator {
                 .withINorgeVedFoedselstidspunkt(true);
         if (ms.getTidligereOppholdsInfo().isBoddINorge()
                 && ms.getFramtidigOppholdsInfo().isNorgeNeste12()) {
-            medlemsskap.withOppholdNorge(kunOppholdNorge());
+            medlemsskap.withOppholdNorge(kunOppholdNorge())
+                    .withBoddINorgeSiste12Mnd(true)
+                    .withBorINorgeNeste12Mnd(true);
         }
-
+        return medlemsskap;
     }
 
     private static List<OppholdNorge> kunOppholdNorge() {
