@@ -6,6 +6,8 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.core.env.Environment;
 
+import no.nav.foreldrepenger.mottak.util.EnvUtil;
+
 public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator {
 
     private final URI serviceUrl;
@@ -14,7 +16,7 @@ public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator
     protected abstract void checkHealth();
 
     public EnvironmentAwareHealthIndicator(Environment env, URI serviceUrl) {
-        this.isPreprodOrDev = isPreprodOrDev(env);
+        this.isPreprodOrDev = EnvUtil.isDevOrPreprod(env);
         this.serviceUrl = serviceUrl;
     }
 
@@ -34,10 +36,6 @@ public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator
 
     private static Health downWithDetails(Exception e) {
         return Health.down().withException(e).build();
-    }
-
-    private static boolean isPreprodOrDev(Environment env) {
-        return env.acceptsProfiles("dev", "preprod");
     }
 
     private static Health up() {

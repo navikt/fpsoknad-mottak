@@ -9,15 +9,19 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORS�
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-//import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,9 +29,13 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
+import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 @Component
 public class FPFordelResponseHandler {
+
+    @Inject
+    private Environment env;
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final RestTemplate template;
@@ -139,6 +147,12 @@ public class FPFordelResponseHandler {
 
     private FPInfoKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref, StopWatch timer) {
         FPInfoKvittering kvittering = null;
+        // https://fpinfo-t10.nais.preprod.local/fpinfo/api/dokumentforsendelse/status?forsendelseId=5aaf77c8-ac56-429f-829a-08de7b060f5b
+        // https://app-t10.adeo.no/fpsak/api/dokumentforsendelse/status?forsendelseId=5aaf77c8-ac56-429f-829a-08de7b060f5
+        if (EnvUtil.isDevOrPreprod(env) && !pollURI.getHost().contains("fpinfo")) {
+            pollURI = rewriteURI(pollURI); // temporary hack until fpinfo behaves as expected
+        }
+
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
                 LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
@@ -170,6 +184,18 @@ public class FPFordelResponseHandler {
             LOG.warn("Kunne ikke sjekke status for forsendelse på {}", pollURI, e);
             return null;
         }
+    }
+
+    private static URI rewriteURI(URI pollURI) {
+        try {
+            URIBuilder builder = new URIBuilder(pollURI);
+            URI rewrittenURI = builder.setHost("fpinfo").build();
+            LOG.info("Rewriting pollURI from {} to {}", pollURI, rewrittenURI);
+            return rewrittenURI;
+        } catch (URISyntaxException e) {
+            return pollURI;
+        }
+
     }
 
     private ResponseEntity<FPInfoKvittering> pollFPInfo(URI pollURI, long delayMillis) {
