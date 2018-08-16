@@ -422,10 +422,10 @@ public class FPFordelSøknadGenerator {
         Medlemskap medlemsskap = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
                 .withINorgeVedFoedselstidspunkt(true);
-        return ms.getTidligereOppholdsInfo().isBoddINorge()
-                && ms.getFramtidigOppholdsInfo().isNorgeNeste12()
-                        ? medlemsskap.withOppholdNorge(kunOppholdNorge())
-                        : medlemsskap;
+        if (ms.getTidligereOppholdsInfo().isBoddINorge()
+                && ms.getFramtidigOppholdsInfo().isNorgeNeste12()) {
+            medlemsskap.withOppholdNorge(kunOppholdNorge());
+        }
 
     }
 
