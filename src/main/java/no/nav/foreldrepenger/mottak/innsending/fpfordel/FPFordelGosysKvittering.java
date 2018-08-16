@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FPFordelGosysKvittering extends FPFordelKvittering {
 
-    static final String STATUS = "Manuell journalføring";
+    static final String STATUS = "GOSYS";
 
     private final String journalpostId;
 
