@@ -664,7 +664,9 @@ public class FPFordelSøknadGenerator {
                     .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
                     .withAntallBarn(adopsjon.getAntallBarn())
                     .withFoedselsdato(adopsjon.getFødselsdato())
-                    .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato());
+                    .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato())
+                    .withAdopsjonAvEktefellesBarn(adopsjon.isEktefellesBarn())
+                    .withAnkomstdato(adopsjon.getAnkomstDato());
         }
         if (relasjonTilBarn instanceof Omsorgsovertakelse) {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
