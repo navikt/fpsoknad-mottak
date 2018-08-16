@@ -22,8 +22,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
@@ -189,7 +191,12 @@ public class FPFordelResponseHandler {
     private static URI rewriteURI(URI pollURI) {
         try {
             URIBuilder builder = new URIBuilder(pollURI);
-            URI rewrittenURI = builder.setHost("fpinfo").build();
+            builder.setHost("fpinfo");
+            builder.setScheme("http");
+            builder.setPath("/fpinfo/api/dokumentforsendelse/");
+            MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUri(pollURI).build().getQueryParams();
+            builder.setParameter("status", queryParams.getFirst("status"));
+            URI rewrittenURI = builder.build();
             LOG.info("Rewriting pollURI from {} to {}", pollURI, rewrittenURI);
             return rewrittenURI;
         } catch (URISyntaxException e) {
