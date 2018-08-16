@@ -149,8 +149,6 @@ public class FPFordelResponseHandler {
 
     private FPInfoKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref, StopWatch timer) {
         FPInfoKvittering kvittering = null;
-        // https://fpinfo-t10.nais.preprod.local/fpinfo/api/dokumentforsendelse/status?forsendelseId=5aaf77c8-ac56-429f-829a-08de7b060f5b
-        // https://app-t10.adeo.no/fpsak/api/dokumentforsendelse/status?forsendelseId=5aaf77c8-ac56-429f-829a-08de7b060f5
         if (EnvUtil.isDevOrPreprod(env) && !pollURI.getHost().contains("fpinfo")) {
             pollURI = rewriteURI(pollURI); // temporary hack until fpinfo behaves as expected
         }
@@ -191,11 +189,11 @@ public class FPFordelResponseHandler {
     private static URI rewriteURI(URI pollURI) {
         try {
             URIBuilder builder = new URIBuilder(pollURI);
+            MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUri(pollURI).build().getQueryParams();
             builder.setHost("fpinfo");
             builder.setScheme("http");
-            builder.setPath("/fpinfo/api/dokumentforsendelse/");
-            MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUri(pollURI).build().getQueryParams();
-            builder.setParameter("status", queryParams.getFirst("status"));
+            builder.setPath(
+                    "/fpinfo/api/dokumentforsendelse/status?forsendelseId=" + queryParams.getFirst("forsendelseId"));
             URI rewrittenURI = builder.build();
             LOG.info("Rewriting pollURI from {} to {}", pollURI, rewrittenURI);
             return rewrittenURI;
