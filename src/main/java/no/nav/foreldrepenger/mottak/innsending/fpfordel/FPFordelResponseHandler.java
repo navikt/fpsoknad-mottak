@@ -192,8 +192,8 @@ public class FPFordelResponseHandler {
             MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUri(pollURI).build().getQueryParams();
             builder.setHost("fpinfo");
             builder.setScheme("http");
-            builder.setPath(
-                    "/fpinfo/api/dokumentforsendelse/status?forsendelseId=" + queryParams.getFirst("forsendelseId"));
+            builder.setPath("/fpinfo/api/dokumentforsendelse/status");
+            builder.setParameter("forsendelseId", queryParams.getFirst("forsendelseId"));
             URI rewrittenURI = builder.build();
             LOG.info("Rewriting pollURI from {} to {}", pollURI, rewrittenURI);
             return rewrittenURI;
