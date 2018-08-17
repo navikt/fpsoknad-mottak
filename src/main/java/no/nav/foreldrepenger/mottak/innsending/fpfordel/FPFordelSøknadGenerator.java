@@ -424,15 +424,11 @@ public class FPFordelSøknadGenerator {
         LOG.debug("Genererer medlemsskap XML fra {}", ms);
         Medlemskap medlemsskap = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
-                .withINorgeVedFoedselstidspunkt(true);
+                .withINorgeVedFoedselstidspunkt(true)
+                .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
+                .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
         if (kunOppholdINorgeSisteOgNeste12(ms)) {
             medlemsskap.withOppholdNorge(kunOppholdINorgeSisteOgNeste12());
-        }
-        if (oppholdINorgeSiste12(ms)) {
-            medlemsskap.withBoddINorgeSiste12Mnd(true);
-        }
-        if (oppholdINorgeNeste12(ms)) {
-            medlemsskap.withBorINorgeNeste12Mnd(true);
         }
         return medlemsskap;
     }
