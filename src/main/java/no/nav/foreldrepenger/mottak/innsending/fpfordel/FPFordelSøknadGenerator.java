@@ -109,6 +109,7 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 public class FPFordelSøknadGenerator {
     private static final ObjectFactory foreldrepengerObjectFactory = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory fellesObjectFactory = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory søknadObjectFactory = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
 
@@ -133,15 +134,15 @@ public class FPFordelSøknadGenerator {
     }
 
     public String toXML(Søknad søknad, AktorId aktørId) {
-        return toXML(toFPFordelModel(søknad, aktørId));
+        return toXML(søknadObjectFactory.createSoeknad(toFPFordelModel(søknad, aktørId)));
     }
 
     public FPFordelSøknadGenerator(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
-    private static String toXML(Soeknad model) {
-        return Jaxb.marshal(CONTEXT, model, false);
+    private static String toXML(JAXBElement<Soeknad> jaxbElement) {
+        return Jaxb.marshal(CONTEXT, jaxbElement, false);
     }
 
     private Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
