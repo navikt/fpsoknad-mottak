@@ -91,7 +91,7 @@ public class DokmotEngangsstønadXMLGenerator {
     private static VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg,
             List<ValgfrittVedlegg> valgfrieVedlegg) {
         return new VedleggListe()
-                .withVedleggs(Stream.concat(påkrevdeVedlegg.stream(), valgfrieVedlegg.stream())
+                .withVedlegg(Stream.concat(påkrevdeVedlegg.stream(), valgfrieVedlegg.stream())
                         .map(DokmotEngangsstønadXMLGenerator::vedleggFra)
                         .collect(toList()));
     }
@@ -104,7 +104,8 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     private static Aktoer brukerFra(Fødselsnummer søker) {
-        return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker(søker.getFnr());
+        return new no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker()
+                .withPersonidentifikator(søker.getFnr());
     }
 
     private static Soknadsvalg søknadsvalgFra(Søknad søknad, Engangsstønad engangsstønad) {
@@ -129,17 +130,12 @@ public class DokmotEngangsstønadXMLGenerator {
                 .withFremtidigOppholdNorge(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
                 .withFremtidigOppholdUtenlands(framtidigOppholdUtenlandsFra(medlemsskap.getFramtidigOppholdsInfo()));
         return tilknytning.withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge());
-        /*
-         * return isTermin ?
-         * tilknytning.withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().
-         * isFødselNorge()) : tilknytning;
-         */
 
     }
 
     private static TidligereOppholdUtenlands tidligereOppholdUtenlandsFra(TidligereOppholdsInformasjon tidligere) {
         return new TidligereOppholdUtenlands()
-                .withUtenlandsoppholds(tidligere.getUtenlandsOpphold()
+                .withUtenlandsopphold(tidligere.getUtenlandsOpphold()
                         .stream()
                         .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
@@ -147,7 +143,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static FremtidigOppholdUtenlands framtidigOppholdUtenlandsFra(FramtidigOppholdsInformasjon framtid) {
         return new FremtidigOppholdUtenlands()
-                .withUtenlandsoppholds(framtid.getUtenlandsOpphold()
+                .withUtenlandsopphold(framtid.getUtenlandsOpphold()
                         .stream()
                         .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
@@ -177,7 +173,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static OpplysningerOmBarn fødselFra(Fødsel fødsel, String begrunnelse) {
         return barnFra(fødsel, begrunnelse)
-                .withFoedselsdatoes(fødsel.getFødselsdato());
+                .withFoedselsdato(fødsel.getFødselsdato());
     }
 
     private static OpplysningerOmBarn barnFra(RelasjonTilBarn relasjon, String begrunnelse) {

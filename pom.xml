@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
@@ -30,43 +31,56 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>1.5</version>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.14.0</version>
                 <executions>
                     <execution>
-                        <id>xjc</id>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
+                   <bindings>
+                        <binding>
+                            <fileset>
+                                <directory>src/main/xjb</directory>
+                                <includes>
+                                    <include>*.xjb</include>
+                                </includes>
+                            </fileset>
+                        </binding>
+                    </bindings>
                     <extension>true</extension>
-                    <arguments>-Xvalue-constructor -Xfluent-api -Xannotate</arguments>
+                    <args>
+                        <arg>-no-header</arg>
+                        <arg>-npa</arg>
+                        <arg>-Xfluent-api</arg>
+                        <arg>-Xannotate</arg>
+                    </args>
+                    <schemaDirectory>src/main/xsd</schemaDirectory>
+                    <schemaIncludes>
+                        <include>**/*.xsd</include>
+                    </schemaIncludes>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jvnet.jaxb2_commons</groupId>
+                            <artifactId>jaxb2-basics</artifactId>
+                            <version>1.11.1</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.jvnet.jaxb2_commons</groupId>
+                            <artifactId>jaxb2-basics-annotate</artifactId>
+                            <version>1.1.0</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>net.java.dev.jaxb2-commons</groupId>
+                            <artifactId>jaxb-fluent-api</artifactId>
+                            <version>2.1.8</version>
+                        </plugin>
+                    </plugins>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun.codemodel</groupId>
-                        <artifactId>codemodel</artifactId>
-                        <version>2.6</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jvnet.jaxb2_commons</groupId>
-                        <artifactId>jaxb2-basics-annotate</artifactId>
-                        <version>0.6.4</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jvnet.jaxb2_commons</groupId>
-                        <artifactId>jaxb2-value-constructor</artifactId>
-                        <version>3.0</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>net.java.dev.jaxb2-commons</groupId>
-                        <artifactId>jaxb-fluent-api</artifactId>
-                        <version>2.1.8</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -76,8 +90,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
-                <!-- dependencies> <dependency> <groupId>org.junit.platform</groupId>
-                    <artifactId>junit-platform-surefire-provider</artifactId> <version>1.0.2</version>
+                <!-- dependencies> <dependency> <groupId>org.junit.platform</groupId> 
+                    <artifactId>junit-platform-surefire-provider</artifactId> <version>1.0.2</version> 
                     </dependency> </dependencies> -->
             </plugin>
         </plugins>
@@ -227,10 +241,10 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-         <dependency>
-        <groupId>io.reactivex.rxjava2</groupId>
-        <artifactId>rxjava</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

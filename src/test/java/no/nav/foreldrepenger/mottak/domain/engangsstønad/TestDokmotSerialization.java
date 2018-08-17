@@ -71,9 +71,9 @@ public class TestDokmotSerialization {
         String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad, person(),
                 refGenerator.getOrCreate());
         Dokumentforsendelse unmarshalled = unmarshal(konvolutt, FORSENDELSECTX, Dokumentforsendelse.class);
-        Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListes().get(0);
+        Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
         assertTrue(hasPdfSignature(pdf.getDokument()));
-        Dokumentinnhold søknadsXML = unmarshalled.getHoveddokument().getDokumentinnholdListes().get(1);
+        Dokumentinnhold søknadsXML = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(1);
         SoeknadsskjemaEngangsstoenad deserializedSøknadModel = unmarshal(søknadsXML.getDokument(), SØKNADCTX,
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(deserializedSøknadModel.getOpplysningerOmBarn().getAntallBarn(), 1);
@@ -89,7 +89,7 @@ public class TestDokmotSerialization {
         Bruker bruker = Bruker.class.cast(dokmotModel.getBruker());
         assertEquals(søker.fnr.getFnr(), bruker.getPersonidentifikator());
         assertEquals(søknad.getBegrunnelseForSenSøknad(), dokmotModel.getOpplysningerOmBarn().getBegrunnelse());
-        assertEquals(dokmotModel.getVedleggListe().getVedleggs().size(), 1);
+        assertEquals(dokmotModel.getVedleggListe().getVedlegg().size(), 1);
         Engangsstønad ytelse = (Engangsstønad) søknad.getYtelse();
         assertEquals(ytelse.getRelasjonTilBarn().getAntallBarn(), dokmotModel.getOpplysningerOmBarn().getAntallBarn());
     }
@@ -115,9 +115,9 @@ public class TestDokmotSerialization {
                 unmarshalled.getTilknytningNorge().isTidligereOppholdNorge());
 
         Engangsstønad ytelse = (Engangsstønad) søknad.getYtelse();
-        assertEquals(unmarshalled.getTilknytningNorge().getFremtidigOppholdUtenlands().getUtenlandsoppholds().size(),
+        assertEquals(unmarshalled.getTilknytningNorge().getFremtidigOppholdUtenlands().getUtenlandsopphold().size(),
                 ytelse.getMedlemsskap().getFramtidigOppholdsInfo().getUtenlandsOpphold().size());
-        assertEquals(unmarshalled.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsoppholds().size(),
+        assertEquals(unmarshalled.getTilknytningNorge().getTidligereOppholdUtenlands().getUtenlandsopphold().size(),
                 ytelse.getMedlemsskap().getTidligereOppholdsInfo().getUtenlandsOpphold().size());
         assertEquals(unmarshalled.getOpplysningerOmBarn().getAntallBarn(),
                 ytelse.getRelasjonTilBarn().getAntallBarn());

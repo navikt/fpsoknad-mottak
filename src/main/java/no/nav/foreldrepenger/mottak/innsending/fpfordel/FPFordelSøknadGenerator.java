@@ -203,7 +203,7 @@ public class FPFordelSøknadGenerator {
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()));
 
-        return new OmYtelse().withAnies(marshalToElement(CONTEXT, foreldrepenger));
+        return new OmYtelse().withAny(marshalToElement(CONTEXT, foreldrepenger));
     }
 
     private static boolean erAnnenForelderUkjent(
@@ -243,7 +243,7 @@ public class FPFordelSøknadGenerator {
         LOG.debug("Genererer frilans XML fra {}", frilans);
 
         return new Frilans()
-                .withVedleggs(frilansVedleggFraIDs(frilans.getVedlegg()))
+                .withVedlegg(frilansVedleggFraIDs(frilans.getVedlegg()))
                 .withErNyoppstartet(frilans.isNyOppstartet())
                 .withHarInntektFraFosterhjem(frilans.isHarInntektFraFosterhjem())
                 .withNaerRelasjon(!CollectionUtils.isEmpty(frilans.getFrilansOppdrag()))
@@ -297,7 +297,7 @@ public class FPFordelSøknadGenerator {
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon norskOrg = no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.class
                     .cast(egenNæring);
             return new NorskOrganisasjon()
-                    .withVedleggs(egenNæringVedleggFraIDs(norskOrg.getVedlegg()))
+                    .withVedlegg(egenNæringVedleggFraIDs(norskOrg.getVedlegg()))
                     .withBeskrivelseAvEndring(norskOrg.getBeskrivelseEndring())
                     .withNaerRelasjon(norskOrg.isNærRelasjon())
                     .withEndringsDato(norskOrg.getEndringsDato())
@@ -315,7 +315,7 @@ public class FPFordelSøknadGenerator {
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon utenlandskOrg = no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon.class
                     .cast(egenNæring);
             return new UtenlandskOrganisasjon()
-                    .withVedleggs(egenNæringVedleggFraIDs(utenlandskOrg.getVedlegg()))
+                    .withVedlegg(egenNæringVedleggFraIDs(utenlandskOrg.getVedlegg()))
                     .withBeskrivelseAvEndring(utenlandskOrg.getBeskrivelseEndring())
                     .withNaerRelasjon(utenlandskOrg.isNærRelasjon())
                     .withEndringsDato(utenlandskOrg.getEndringsDato())
@@ -373,7 +373,7 @@ public class FPFordelSøknadGenerator {
         LOG.debug("Genererer anen opptjening XML fra {}", annenOpptjening);
 
         return new AnnenOpptjening()
-                .withVedleggs(annenOpptjeningVedleggFra(annenOpptjening.getVedlegg()))
+                .withVedlegg(annenOpptjeningVedleggFra(annenOpptjening.getVedlegg()))
                 .withType(annenOpptjeningTypeFra(annenOpptjening.getType()))
                 .withPeriode(periodeFra(annenOpptjening.getPeriode()));
     }
@@ -394,7 +394,7 @@ public class FPFordelSøknadGenerator {
             UtenlandskArbeidsforhold arbeidsForhold) {
         LOG.debug("Genererer utenlands arbeidsforhold XML fra {}", arbeidsForhold);
         return new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold()
-                .withVedleggs(utenlandsArbeidsforholdVedleggFra(arbeidsForhold.getVedlegg()))
+                .withVedlegg(utenlandsArbeidsforholdVedleggFra(arbeidsForhold.getVedlegg()))
                 .withArbeidsgiversnavn(arbeidsForhold.getArbeidsgiverNavn())
                 .withArbeidsland(landFra(arbeidsForhold.getLand()))
                 .withPeriode(periodeFra(arbeidsForhold.getPeriode()));
@@ -664,14 +664,14 @@ public class FPFordelSøknadGenerator {
         if (relasjonTilBarn instanceof Fødsel) {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
             return new Foedsel()
-                    .withVedleggs(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
+                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
                     .withFoedselsdato(fødsel.getFødselsdato().get(0))
                     .withAntallBarn(fødsel.getAntallBarn());
         }
         if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel termin = FremtidigFødsel.class.cast(relasjonTilBarn);
             return new Termin()
-                    .withVedleggs(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
+                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
                     .withAntallBarn(termin.getAntallBarn())
                     .withTermindato(termin.getTerminDato())
                     .withUtstedtdato(termin.getUtstedtDato());
@@ -679,7 +679,7 @@ public class FPFordelSøknadGenerator {
         if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
             return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon()
-                    .withVedleggs(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
+                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
                     .withAntallBarn(adopsjon.getAntallBarn())
                     .withFoedselsdato(adopsjon.getFødselsdato())
                     .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato())
@@ -689,7 +689,7 @@ public class FPFordelSøknadGenerator {
         if (relasjonTilBarn instanceof Omsorgsovertakelse) {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
             return new no.nav.vedtak.felles.xml.soeknad.felles.v1.Omsorgsovertakelse()
-                    .withVedleggs(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
+                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
                     .withAntallBarn(omsorgsovertakelse.getAntallBarn())
                     .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
                     .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato())

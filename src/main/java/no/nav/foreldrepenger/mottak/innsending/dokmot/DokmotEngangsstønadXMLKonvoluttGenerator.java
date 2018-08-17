@@ -79,7 +79,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                         .withAvsender(new Person().withIdent(søker.fnr.getFnr()))
                         .withBruker(new Person().withIdent(søker.fnr.getFnr())))
                 .withHoveddokument(hoveddokument(søknad, søker))
-                .withVedleggListes(dokmotVedleggListe(søknad));
+                .withVedleggListe(dokmotVedleggListe(søknad));
     }
 
     private Hoveddokument hoveddokument(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
@@ -94,7 +94,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
         return new Hoveddokument()
                 .withDokumenttypeId(I000003.name())
-                .withDokumentinnholdListes(
+                .withDokumentinnholdListe(
                         Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
                                 .collect(toList()));
     }
@@ -109,7 +109,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
         return new no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg()
                 .withBrukeroppgittTittel(vedlegg.getMetadata().getBeskrivelse())
                 .withDokumenttypeId(vedlegg.getMetadata().getId())
-                .withDokumentinnholdListes(new Dokumentinnhold()
+                .withDokumentinnholdListe(new Dokumentinnhold()
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))
                         .withArkivfiltype(new Arkivfiltyper().withValue(Filtype.PDF.name()))
                         .withDokument(vedlegg.getVedlegg()));
