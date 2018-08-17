@@ -69,7 +69,7 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     public String toXML(SoeknadsskjemaEngangsstoenad model) {
-        return Jaxb.marshall(CONTEXT, model);
+        return Jaxb.marshal(CONTEXT, model);
     }
 
     public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad, Person søker) {
@@ -91,7 +91,7 @@ public class DokmotEngangsstønadXMLGenerator {
     private static VedleggListe vedleggFra(List<PåkrevdVedlegg> påkrevdeVedlegg,
             List<ValgfrittVedlegg> valgfrieVedlegg) {
         return new VedleggListe()
-                .withVedlegg(Stream.concat(påkrevdeVedlegg.stream(), valgfrieVedlegg.stream())
+                .withVedleggs(Stream.concat(påkrevdeVedlegg.stream(), valgfrieVedlegg.stream())
                         .map(DokmotEngangsstønadXMLGenerator::vedleggFra)
                         .collect(toList()));
     }
@@ -139,7 +139,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static TidligereOppholdUtenlands tidligereOppholdUtenlandsFra(TidligereOppholdsInformasjon tidligere) {
         return new TidligereOppholdUtenlands()
-                .withUtenlandsopphold(tidligere.getUtenlandsOpphold()
+                .withUtenlandsoppholds(tidligere.getUtenlandsOpphold()
                         .stream()
                         .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
@@ -147,7 +147,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static FremtidigOppholdUtenlands framtidigOppholdUtenlandsFra(FramtidigOppholdsInformasjon framtid) {
         return new FremtidigOppholdUtenlands()
-                .withUtenlandsopphold(framtid.getUtenlandsOpphold()
+                .withUtenlandsoppholds(framtid.getUtenlandsOpphold()
                         .stream()
                         .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
                         .collect(toList()));
@@ -177,7 +177,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static OpplysningerOmBarn fødselFra(Fødsel fødsel, String begrunnelse) {
         return barnFra(fødsel, begrunnelse)
-                .withFoedselsdato(fødsel.getFødselsdato());
+                .withFoedselsdatoes(fødsel.getFødselsdato());
     }
 
     private static OpplysningerOmBarn barnFra(RelasjonTilBarn relasjon, String begrunnelse) {

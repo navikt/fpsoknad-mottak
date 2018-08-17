@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings version="2.1" 
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+ 
+ <jaxb:globalBindings optionalProperty="wrapper">
+        <xjc:simple />
+        <xjc:javaType adapter="no.nav.foreldrepenger.mottak.domain.serialization.LocalDateAdapter" name="java.time.LocalDate" xmlType="xsd:date"/>
+        <xjc:javaType adapter="no.nav.foreldrepenger.mottak.domain.serialization.LocalDateTimeAdapter" name="java.time.LocalDateTime" xmlType="xsd:dateTime"/>
+ </jaxb:globalBindings>
+    
+      
+  <jaxb:bindings schemaLocation="../xsd/soeknad.xsd" node="/xs:schema">
+        <jaxb:bindings node="//xs:complexType[@name='Soeknad']">
+            <jaxb:bindings node="//xs:element[@name='paakrevdeVedlegg']" multiple="true">
+                <jaxb:property name="paakrevdeVedlegg"/>
+            </jaxb:bindings>
+            <jaxb:bindings node="//xs:element[@name='andreVedlegg']" multiple="true">
+                <jaxb:property name="andreVedlegg"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="../xsd/felles/felles.xsd" node="/xs:schema">
+        <jaxb:bindings node="//xs:complexType[@name='Medlemskap']">
+            <jaxb:bindings node="//xs:element[@name='oppholdNorge']" multiple="true">
+                <jaxb:property name="oppholdNorge"/>
+            </jaxb:bindings>
+            <jaxb:bindings node="//xs:element[@name='oppholdUtlandet']" multiple="true">
+                <jaxb:property name="oppholdUtlandet"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xs:complexType[@name='Omsorgsovertakelse']">
+            <jaxb:bindings node="//xs:element[@name='foedselsdato']" multiple="true">
+                <jaxb:property name="foedselsdato"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="../xsd/uttak/uttak.xsd" node="/xs:schema">
+        <jaxb:bindings node="//xs:complexType[@name='Fordeling']">
+            <jaxb:bindings node="//xs:element[@name='perioder']" multiple="true">
+                <jaxb:property name="perioder"/>
+            </jaxb:bindings>
+        </jaxb:bindings>        
+    </jaxb:bindings>
+
+
+    <jaxb:bindings schemaLocation="../xsd/foreldrepenger/foreldrepenger.xsd" node="/xs:schema">   
+        <jaxb:bindings node="//xs:complexType[@name='Opptjening']">
+            <jaxb:bindings node="//xs:element[@name='annenOpptjening']">
+                <jaxb:property name="annenOpptjening"/>
+            </jaxb:bindings>
+            <jaxb:bindings node="//xs:element[@name='egenNaering']">
+                <jaxb:property name="egenNaering"/>
+            </jaxb:bindings>
+            <jaxb:bindings node="//xs:element[@name='utenlandskArbeidsforhold']">
+                <jaxb:property name="utenlandskArbeidsforhold"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xs:complexType[@name='Frilans']">
+            <jaxb:bindings node="//xs:element[@name='frilansoppdrag']">
+                <jaxb:property name="frilansoppdrag"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xs:complexType[@name='Frilansoppdrag']">
+            <jaxb:bindings node="//xs:element[@name='periode']" multiple="true">
+                <jaxb:property name="periode"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+        <jaxb:bindings node="//xs:complexType[@name='EgenNaering']">
+            <jaxb:bindings node="//xs:element[@name='virksomhetstype']" multiple="true">
+                <jaxb:property name="virksomhetstype"/>
+            </jaxb:bindings>
+        </jaxb:bindings>
+    </jaxb:bindings>
+</jaxb:bindings>

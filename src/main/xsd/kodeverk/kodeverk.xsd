@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" elementFormDefault="qualified">
     <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
     <xsd:complexType name="Brukerroller">
         <xsd:attribute name="kodeverk" type="xsd:string" default="FORELDRE_TYPE"/>
@@ -14,6 +14,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Spraakkode">
         <xsd:attribute name="kodeverk" type="xsd:string" default="SPRAAK_KODE"/>
@@ -28,6 +29,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>  
     <xsd:complexType name="Uttaksperiodetyper">
         <xsd:attribute name="kodeverk" type="xsd:string" default="UTTAK_PERIODE_TYPE"/>
@@ -44,6 +46,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="MorsAktivitetsTyper">    
         <xsd:attribute name="kodeverk" type="xsd:string" default="MORS_AKTIVITET"/>
@@ -64,6 +67,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Utsettelsesaarsaker">
         <xsd:attribute name="kodeverk" type="xsd:string" default="UTSETTELSE_AARSAK_TYPE"/>
@@ -80,6 +84,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Overfoeringsaarsaker">
         <xsd:attribute name="kodeverk" type="xsd:string" default="OVERFOERING_AARSAK_TYPE"/>
@@ -95,6 +100,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Oppholdsaarsaker">
         <xsd:attribute name="kodeverk" type="xsd:string" default="OPPHOLD_AARSAK_TYPE"/>
@@ -109,6 +115,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Virksomhetstyper">
         <xsd:attribute name="kodeverk" type="xsd:string" default="VIRKSOMHET_TYPE"/>
@@ -124,6 +131,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>  
     <xsd:complexType name="AnnenOpptjeningTyper">
         <xsd:attribute name="kodeverk" type="xsd:string" default="ARBEID_TYPE"/>
@@ -140,6 +148,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Dekningsgrader">
         <xsd:attribute name="kodeverk" type="xsd:string" default="IKKE_DEFINERT"/>
@@ -152,6 +161,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Vergetype">
         <xsd:attribute name="kodeverk" type="xsd:string" default="VERGE_TYPE"/>
@@ -165,6 +175,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Innsendingstype">
         <xsd:attribute name="kodeverk" type="xsd:string" default="INNSENDINGSVALG"/>
@@ -181,6 +192,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Omsorgsovertakelseaarsaker">
         <xsd:attribute name="kodeverk" type="xsd:string" default="FAR_SOEKER_TYPE"/>
@@ -194,7 +206,8 @@
                     <xsd:enumeration value="OVERTATT_OMSORG"/>
                 </xsd:restriction>
             </xsd:simpleType>
-        </xsd:attribute>    
+        </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Land">
         <xsd:attribute name="kodeverk" type="xsd:string" default="LANDKODER"/>
@@ -206,5 +219,6 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
 </xsd:schema>

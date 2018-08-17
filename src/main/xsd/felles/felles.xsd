@@ -2,7 +2,8 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             targetNamespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1"
             xmlns:felles="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1"
-            xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1">
+            xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1"
+            elementFormDefault="qualified">
     <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
     <xsd:complexType name="Verge">
         <xsd:complexContent>
@@ -11,6 +12,7 @@
                     <xsd:element name="vergetype" type="kv:Vergetype"/>
                     <xsd:element name="tvungenForvaltning" type="xsd:boolean"/>
                 </xsd:sequence>
+                <xsd:anyAttribute processContents="lax"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -19,6 +21,7 @@
             <xsd:element name="periode" type="felles:Periode"/>
             <xsd:element name="land" type="kv:Land"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Adopsjon">
         <xsd:complexContent>
@@ -29,6 +32,7 @@
                     <xsd:element name="foedselsdato" type="xsd:date" minOccurs="0" maxOccurs="unbounded"/>
                     <xsd:element name="adopsjonAvEktefellesBarn" type="xsd:boolean" minOccurs="0"/>
                 </xsd:sequence>
+                <xsd:anyAttribute processContents="lax"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -38,6 +42,7 @@
                 <xsd:sequence>
                     <xsd:element name="foedselsdato" type="xsd:date"/>
                 </xsd:sequence>
+                <xsd:anyAttribute processContents="lax"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -50,6 +55,7 @@
                     <xsd:element name="beskrivelse" type="xsd:string" minOccurs="0"/>
                     <xsd:element name="omsorgsovertakelseaarsak" type="kv:Omsorgsovertakelseaarsaker"/>
                 </xsd:sequence>
+                <xsd:anyAttribute processContents="lax"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -59,12 +65,14 @@
             <xsd:element name="harOmsorgForBarnetIPeriodene" type="xsd:boolean" minOccurs="0"/>
             <xsd:element name="harAleneomsorgForBarnet" type="xsd:boolean" minOccurs="0"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="SoekersRelasjonTilBarnet" abstract="true">
         <xsd:sequence>
             <xsd:element name="antallBarn" type="xsd:int"/>
             <xsd:element name="vedlegg" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Termin">
         <xsd:complexContent>
@@ -73,6 +81,7 @@
                     <xsd:element name="termindato" type="xsd:date"/>
                     <xsd:element name="utstedtdato" type="xsd:date" minOccurs="0"/>
                 </xsd:sequence>
+                <xsd:anyAttribute processContents="lax"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -84,11 +93,13 @@
             <xsd:element name="borINorgeNeste12Mnd" type="xsd:boolean" minOccurs="0"/>
             <xsd:element name="oppholdUtlandet" type="felles:OppholdUtlandet" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="OppholdNorge">
         <xsd:sequence>
             <xsd:element name="periode" type="felles:Periode"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Bruker">
         <xsd:sequence>
@@ -96,6 +107,7 @@
             <xsd:element name="soeknadsrolle" type="kv:Brukerroller"/>
             <xsd:element name="fullmektig" type="felles:Fullmektig" minOccurs="0"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Fullmektig">
         <xsd:sequence>
@@ -106,6 +118,7 @@
             <xsd:element name="periode" type="felles:Periode" minOccurs="0"/>
             <xsd:element name="beskrivelse" type="xsd:string" minOccurs="0"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="AnnenForelder" abstract="true"/>
     <xsd:complexType name="AnnenForelderMedNorskIdent">
@@ -114,6 +127,7 @@
                 <xsd:sequence>
                     <xsd:element name="aktoerId" type="xsd:string"/>
                 </xsd:sequence>
+                <xsd:anyAttribute processContents="lax"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -124,12 +138,15 @@
                     <xsd:element name="utenlandskPersonidentifikator" type="xsd:string"/>
                     <xsd:element name="land" type="kv:Land"/>
                 </xsd:sequence>
+                <xsd:anyAttribute processContents="lax"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
     <xsd:complexType name="UkjentForelder">
         <xsd:complexContent>
-            <xsd:extension base="felles:AnnenForelder"/>
+            <xsd:extension base="felles:AnnenForelder">
+                <xsd:anyAttribute processContents="lax"/>
+            </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
     <xsd:complexType name="Vedlegg">
@@ -139,19 +156,15 @@
             <xsd:element name="skjemanummer" type="xsd:string" minOccurs="0"/>
             <xsd:element name="tilleggsinformasjon" minOccurs="0" type="xsd:string"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
     <xsd:complexType name="Ytelse" abstract="true"/>
-    <xsd:complexType name="LukketPeriode" abstract="true">
-        <xsd:sequence>
-            <xsd:element name="fom" type="xsd:date"/>
-            <xsd:element name="tom" type="xsd:date"/>
-            <xsd:element name="vedlegg" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-        </xsd:sequence>
-    </xsd:complexType>
+    <xsd:complexType name="LukketPeriode" abstract="true" />
     <xsd:complexType name="Periode">
         <xsd:sequence>
             <xsd:element name="fom" type="xsd:date"/>
             <xsd:element name="tom" type="xsd:date" minOccurs="0"/>
         </xsd:sequence>
+        <xsd:anyAttribute processContents="lax"/>
     </xsd:complexType>
 </xsd:schema>
