@@ -141,8 +141,8 @@ public class FPFordelSøknadGenerator {
         this.oppslag = oppslag;
     }
 
-    private static String toXML(JAXBElement<Soeknad> jaxbElement) {
-        return Jaxb.marshal(CONTEXT, jaxbElement, false);
+    private static String toXML(JAXBElement<Soeknad> søknad) {
+        return Jaxb.marshal(CONTEXT, søknad, false);
     }
 
     private Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {

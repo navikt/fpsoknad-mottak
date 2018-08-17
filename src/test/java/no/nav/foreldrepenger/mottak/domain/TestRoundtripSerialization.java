@@ -87,7 +87,7 @@ public class TestRoundtripSerialization {
                 template.getForObject(MOTTAK + "/ping1?navn=joe", String.class));
     }
 
-    @Test
+    // @Test
     public void testForeldrepengerSøknadXML() throws IOException {
         Søknad foreldrepenger = foreldrepenger();
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(foreldrepenger));
