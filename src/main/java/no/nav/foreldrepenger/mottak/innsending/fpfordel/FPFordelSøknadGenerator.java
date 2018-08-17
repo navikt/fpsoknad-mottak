@@ -422,20 +422,31 @@ public class FPFordelSøknadGenerator {
         Medlemskap medlemsskap = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
                 .withINorgeVedFoedselstidspunkt(true);
-        if (kunOppholdINorge(ms)) {
-            medlemsskap.withOppholdNorge(kunOppholdNorge())
-                    .withBoddINorgeSiste12Mnd(true)
-                    .withBorINorgeNeste12Mnd(true);
+        if (kunOppholdINorgeSisteOgNeste12(ms)) {
+            medlemsskap.withOppholdNorge(kunOppholdINorgeSisteOgNeste12());
+        }
+        if (oppholdINorgeSiste12(ms)) {
+            medlemsskap.withBoddINorgeSiste12Mnd(true);
+        }
+        if (oppholdINorgeNeste12(ms)) {
+            medlemsskap.withBorINorgeNeste12Mnd(true);
         }
         return medlemsskap;
     }
 
-    private static boolean kunOppholdINorge(Medlemsskap ms) {
-        return ms.getTidligereOppholdsInfo().isBoddINorge()
-                && ms.getFramtidigOppholdsInfo().isNorgeNeste12();
+    private static boolean kunOppholdINorgeSisteOgNeste12(Medlemsskap ms) {
+        return oppholdINorgeSiste12(ms) && oppholdINorgeNeste12(ms);
     }
 
-    private static List<OppholdNorge> kunOppholdNorge() {
+    private static boolean oppholdINorgeSiste12(Medlemsskap ms) {
+        return ms.getTidligereOppholdsInfo().isBoddINorge();
+    }
+
+    private static boolean oppholdINorgeNeste12(Medlemsskap ms) {
+        return ms.getFramtidigOppholdsInfo().isNorgeNeste12();
+    }
+
+    private static List<OppholdNorge> kunOppholdINorgeSisteOgNeste12() {
         return Lists.newArrayList(new OppholdNorge()
                 .withPeriode(new Periode()
                         .withFom(LocalDate.now().minusYears(1))
