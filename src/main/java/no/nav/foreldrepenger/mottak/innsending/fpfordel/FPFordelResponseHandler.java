@@ -161,7 +161,9 @@ public class FPFordelResponseHandler {
                     LOG.warn("Fikk ingen kvittering etter polling av forsendelsesstatus");
                     return null;
                 }
+                LOG.info("Fikk respons status kode {}", respons.getStatusCode());
                 kvittering = respons.getBody();
+                LOG.info("Fikk respons kvittering {}", kvittering);
                 switch (kvittering.getForsendelseStatus()) {
                 case AVSLÅTT:
                 case INNVILGET:
@@ -179,7 +181,7 @@ public class FPFordelResponseHandler {
             }
             stop(timer);
             return kvittering;
-        } catch (RemoteUnavailableException e) {
+        } catch (Exception e) {
             stop(timer);
             LOG.warn("Kunne ikke sjekke status for forsendelse på {}", pollURI, e);
             return null;
