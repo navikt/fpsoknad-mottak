@@ -152,7 +152,7 @@ public class FPFordelResponseHandler {
         if (EnvUtil.isDevOrPreprod(env) && !pollURI.getHost().contains("fpinfo")) {
             pollURI = rewriteURI(pollURI); // temporary hack until fpinfo behaves as expected
         }
-
+        LOG.info("Poller etter status på {}", pollURI);
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
                 LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
