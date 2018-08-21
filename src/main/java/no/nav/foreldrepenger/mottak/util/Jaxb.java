@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -68,6 +69,14 @@ public final class Jaxb {
     public static <T> T unmarshal(String xml, JAXBContext context, Class<T> clazz) {
         try {
             return (T) unmarshaller(context).unmarshal(new StringReader(xml));
+        } catch (JAXBException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static <T> JAXBElement<T> unmarshalToElement(String xml, JAXBContext context, Class<T> clazz) {
+        try {
+            return (JAXBElement<T>) unmarshaller(context).unmarshal(new StringReader(xml));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }

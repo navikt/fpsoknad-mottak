@@ -77,7 +77,8 @@ public class ForeldrepengerTestUtils {
     }
 
     static Adopsjon adopsjon() {
-        return new Adopsjon(LocalDate.now(), true, LocalDate.now());
+        return new Adopsjon(0, LocalDate.now(), true, null, LocalDate.now(),
+                Collections.singletonList(LocalDate.now()));
     }
 
     static ÅpenPeriode åpenPeriode() {

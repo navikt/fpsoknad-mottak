@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -118,15 +117,89 @@ public class FPFordelSøknadGenerator {
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
 
     public Søknad tilSøknad(String søknadXml) {
-        Soeknad søknad = unmarshal(søknadXml, CONTEXT, Soeknad.class);
+        Soeknad søknad = Jaxb.unmarshalToElement(søknadXml, CONTEXT, Soeknad.class).getValue();
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
         s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
         return s;
     }
 
-    private static no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse ytelse) {
-        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder().build(); // TODO more fields
+    private static no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
+        if (omYtelse.getAny().isEmpty()) {
+            LOG.warn("Ingen ytelse i søknaden");
+            return null;
+        }
+        Object førsteYtelse = omYtelse.getAny().get(0);
+        if (!(førsteYtelse instanceof Foreldrepenger)) {
+            LOG.warn("Søknad av type {} er ikke støttet", førsteYtelse.getClass().getSimpleName());
+            return null;
+        }
+
+        Foreldrepenger foreldrepengeSøknad = Foreldrepenger.class.cast(førsteYtelse);
+        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
+                .annenForelder(tilAnnenForelder(foreldrepengeSøknad.getAnnenForelder()))
+                .dekningsgrad(tilDekningsgrad(foreldrepengeSøknad.getDekningsgrad()))
+                .fordeling(tilFordeling(foreldrepengeSøknad.getFordeling()))
+                .medlemsskap(tilMedlemsskap(foreldrepengeSøknad.getMedlemskap()))
+                .opptjening(tilOpptjening(foreldrepengeSøknad.getOpptjening()))
+                .relasjonTilBarn(tilRelasjonTilBarn(foreldrepengeSøknad.getRelasjonTilBarnet()))
+                .rettigheter(tilRettigheter(foreldrepengeSøknad.getRettigheter()))
+                .build();
+
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
+            Rettigheter rettigheter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
+        if (relasjonTilBarnet instanceof Foedsel) {
+            Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
+            return new Fødsel(fødsel.getAntallBarn(), fødsel.getFoedselsdato());
+        }
+        if (relasjonTilBarnet instanceof Termin) {
+            Termin termin = Termin.class.cast(relasjonTilBarnet);
+            return new FremtidigFødsel(termin.getAntallBarn(), termin.getTermindato(), termin.getUtstedtdato(),
+                    Collections.emptyList());
+
+        }
+        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon) {
+            no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon.class
+                    .cast(relasjonTilBarnet);
+            return new Adopsjon(adopsjon.getAntallBarn(), adopsjon.getOmsorgsovertakelsesdato(),
+                    adopsjon.isAdopsjonAvEktefellesBarn(), Collections.emptyList(), adopsjon.getAnkomstdato(),
+                    adopsjon.getFoedselsdato());
+        }
+        throw new IllegalArgumentException("Ikke støttet type " + relasjonTilBarnet.getClass().getSimpleName());
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening tilOpptjening(Opptjening opptjening) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad tilDekningsgrad(
+            Dekningsgrad dekningsgrad) {
+        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad
+                .fraKode(dekningsgrad.getDekningsgrad().getKode());
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
+            AnnenForelder annenForelder) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private static Søker tilSøker(Bruker søker) {

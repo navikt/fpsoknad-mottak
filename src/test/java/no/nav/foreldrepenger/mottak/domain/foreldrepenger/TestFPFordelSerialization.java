@@ -9,6 +9,7 @@ import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConver
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.VEDLEGG;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -101,8 +102,17 @@ public class TestFPFordelSerialization {
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
         FPFordelSøknadGenerator fpFordelSøknadGenerator = new FPFordelSøknadGenerator(oppslag);
-        String xml = fpFordelSøknadGenerator.toXML(ForeldrepengerTestUtils.foreldrepenger(), aktørId);
-        System.out.println(xml);
+        Søknad original = ForeldrepengerTestUtils.foreldrepenger();
+        String xml = fpFordelSøknadGenerator.toXML(original, aktørId);
+        Søknad rekonstruert = fpFordelSøknadGenerator.tilSøknad(xml);
+        assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());
+        assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());
+        assertThat(rekonstruert.getTilleggsopplysninger()).isEqualTo(original.getTilleggsopplysninger());
+        Foreldrepenger originalYtelse = Foreldrepenger.class.cast(original.getYtelse());
+        Foreldrepenger rekonstruertYtelse = Foreldrepenger.class.cast(rekonstruert.getYtelse());
+        assertThat(rekonstruertYtelse.getDekningsgrad()).isEqualTo(originalYtelse.getDekningsgrad());
+        assertThat(rekonstruertYtelse.getRelasjonTilBarn()).isEqualTo(originalYtelse.getRelasjonTilBarn());
+
     }
 
     @Test
