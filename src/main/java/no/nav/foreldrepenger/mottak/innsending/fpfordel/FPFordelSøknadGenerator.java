@@ -172,7 +172,8 @@ public class FPFordelSøknadGenerator {
                     adopsjon.isAdopsjonAvEktefellesBarn(), Collections.emptyList(), adopsjon.getAnkomstdato(),
                     adopsjon.getFoedselsdato());
         }
-        throw new IllegalArgumentException("Ikke støttet type " + relasjonTilBarnet.getClass().getSimpleName());
+        throw new IllegalArgumentException("Ikke"
+                + " støttet type " + relasjonTilBarnet.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening tilOpptjening(Opptjening opptjening) {
@@ -525,7 +526,7 @@ public class FPFordelSøknadGenerator {
                         .withFom(LocalDate.now().minusYears(1))
                         .withTom(LocalDate.now())),
                 new OppholdNorge().withPeriode(new Periode()
-                        .withFom(LocalDate.now().plusDays(1))
+                        .withFom(LocalDate.now())
                         .withTom(LocalDate.now().plusYears(1))));
     }
 
