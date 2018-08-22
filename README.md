@@ -7,7 +7,7 @@ Slår opp info fra diverse interne registre for å assistere selvbetjent søknad
 
 ### For å kjøre lokalt:
 
-Start no.nav.foreldrepenger.oppslag.OppslagApplication
+Start no.nav.foreldrepenger.oppslag.OppslagApplicationLocal
 
 Default konfigurasjon er lagt i application.yaml.
 
