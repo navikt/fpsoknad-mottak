@@ -20,11 +20,11 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.BehandlingsStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoSakStatus;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoService;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoSaksStatusService;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.Vedtak;
 
 @Service
-public class SaksStatusService implements FPInfoService {
+public class SaksStatusService implements FPInfoSaksStatusService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SaksStatusService.class);
 

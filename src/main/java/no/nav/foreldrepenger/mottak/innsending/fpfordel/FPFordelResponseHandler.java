@@ -10,6 +10,7 @@ import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +29,13 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
+import no.nav.foreldrepenger.mottak.http.SaksStatusService;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoSakStatus;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 @Component
@@ -38,6 +43,8 @@ public class FPFordelResponseHandler {
 
     @Inject
     private Environment env;
+    @Inject
+    private SaksStatusService saksStatus;
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final RestTemplate template;
@@ -119,7 +126,7 @@ public class FPFordelResponseHandler {
         return timer.getTime();
     }
 
-    private static Kvittering forsendelsesStatusKvittering(FPInfoKvittering forsendelsesStatus,
+    private Kvittering forsendelsesStatusKvittering(FPInfoKvittering forsendelsesStatus,
             FPSakFordeltKvittering fordeltKvittering, String ref) {
 
         switch (forsendelsesStatus.getForsendelseStatus()) {
@@ -130,6 +137,14 @@ public class FPFordelResponseHandler {
             return kvitteringMedType(INNVILGET, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅ_VENT:
+            if (EnvUtil.isDevOrPreprod(env)) {
+                if (saksStatus != null) {
+                    AktorId aktør = AktorId.valueOf(MDC.get("Nav-Aktør-Id"));
+                    LOG.debug("Henter saker for {}", aktør);
+                    List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
+                    LOG.debug("Fikk {}", saker);
+                }
+            }
             return kvitteringMedType(PÅ_VENT, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅGÅR:
@@ -169,7 +184,7 @@ public class FPFordelResponseHandler {
                 case INNVILGET:
                 case PÅ_VENT:
                     stop(timer);
-                    LOG.info("Sak har status {} etter {}ms", kvittering.getForsendelseStatus().name().toLowerCase(),
+                    LOG.info("Sak har status {} etter {}ms", kvittering.getForsendelseStatus().name(),
                             timer.getTime());
                     return kvittering;
                 case PÅGÅR:
