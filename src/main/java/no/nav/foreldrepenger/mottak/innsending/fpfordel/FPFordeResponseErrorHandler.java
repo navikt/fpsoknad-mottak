@@ -23,7 +23,7 @@ class FPFordeResponseErrorHandler extends DefaultResponseErrorHandler {
         LOG.debug("Error response handler executing for response {}", response);
 
         if (response.getStatusCode() == FORBIDDEN) {
-            LOG.warn(FORBIDDEN + ". Throwing ForbiddenException exception");
+            LOG.warn(FORBIDDEN + ". Throwing ForbiddenException");
             throw new ForbiddenException(StreamUtils.copyToString(response.getBody(), Charset.defaultCharset()));
         }
         super.handleError(response);
