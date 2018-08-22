@@ -102,7 +102,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testVedleggMetadata() {
-        test(new VedleggMetaData("42", DokumentType.I000005));
+        test(new VedleggMetaData("42", DokumentType.I000002));
     }
 
     @Test
@@ -194,18 +194,19 @@ public class TestForeldrepengerSerialization {
 
     }
 
-    static void test(Object object, boolean log, ObjectMapper mapper) {
+    static void test(Object expected, boolean log, ObjectMapper mapper) {
         try {
-            String serialized = serialize(object, log, mapper);
-            Object deserialized = mapper.readValue(serialized, object.getClass());
+            String serialized = serialize(expected, log, mapper);
+            Object deserialized = mapper.readValue(serialized, expected.getClass());
             if (log) {
+                LOG.info("{}", expected);
                 LOG.info("{}", serialized);
                 LOG.info("{}", deserialized);
             }
-            assertEquals(object, deserialized);
+            assertEquals(expected, deserialized);
         } catch (IOException e) {
             LOG.error("{}", e);
-            fail(object.getClass().getSimpleName() + " failed");
+            fail(expected.getClass().getSimpleName() + " failed");
         }
     }
 

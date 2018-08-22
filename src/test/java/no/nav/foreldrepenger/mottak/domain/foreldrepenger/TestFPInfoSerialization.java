@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +14,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.BehandlingsStatus;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoBehandling;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoBehandlingsTema;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoBehandlingsType;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoBehandlingsÅrsaakType;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakYtelseType;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakÅrsak;
@@ -34,16 +37,32 @@ public class TestFPInfoSerialization {
         mapper.registerModule(new JavaTimeModule());
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
-        mapper.setSerializationInclusion(NON_NULL);
-        mapper.setSerializationInclusion(NON_EMPTY);
+        // mapper.setSerializationInclusion(NON_NULL);
+        // mapper.setSerializationInclusion(NON_EMPTY);
         return mapper;
     }
 
     @Test
     public void testFPInfoKvittering() throws Exception {
         FPInfoSakStatus status = new FPInfoSakStatus("42", FPInfoFagsakStatus.LOP, FPInfoFagsakÅrsak.TERM,
-                FPInfoFagsakYtelseType.FP, AktorId.valueOf("1"), AktorId.valueOf("2"), AktorId.valueOf("3"));
+                FPInfoFagsakYtelseType.FP, "1", "2", "3");
         TestForeldrepengerSerialization.test(status, true, mapper);
+    }
+
+    @Test
+    public void testBehandlingsStatus() throws Exception {
+        FPInfoBehandling behandling = new FPInfoBehandling(BehandlingsStatus.AVSLU, FPInfoBehandlingsType.BT002,
+                FPInfoBehandlingsTema.ENGST,
+                FPInfoBehandlingsÅrsaakType.RE_OPPLYSNINGER_OM_BEREGNINGSGRUNNLAG, "402", "NAV",
+                Collections.emptyList());
+        TestForeldrepengerSerialization.test(behandling, true, mapper);
+    }
+
+    @Test
+    public void testBehandlingsType() throws Exception {
+        TestForeldrepengerSerialization.test(FPInfoBehandlingsÅrsaakType.BERØRT_BEHANDLING, true, mapper);
+        TestForeldrepengerSerialization.test(FPInfoBehandlingsType.BT002, true, mapper);
+
     }
 
 }

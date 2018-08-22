@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum FPInfoBehandlingsÅrsaakType {
     RE_MANGLER_FØDSEL("RE-MF"),
     RE_MANGLER_FØDSEL_I_PERIODE("RE-MFIP"),
@@ -9,7 +12,7 @@ public enum FPInfoBehandlingsÅrsaakType {
     RE_FEIL_ELLER_ENDRET_FAKTA("RE-FEFAKTA"),
     RE_FEIL_PROSESSUELL("RE-PRSSL"),
     RE_ENDRING_FRA_BRUKER("RE-END-FRA-BRUKER"),
-    RE_ENDRET_INNTEKTSMELDING("RE-END-INNTEKTSMELD"),
+    RE_ENDRET_INNTEKTSMELDING("RE-END-INNTEKTSMELD"), 
     BERØRT_BEHANDLING("BERØRT-BEHANDLING"),
     KØET_BEHANDLING("KØET-BEHANDLING"),
     RE_ANNET("RE-ANNET"),
@@ -32,8 +35,9 @@ public enum FPInfoBehandlingsÅrsaakType {
 
 
 
+    @JsonValue
     private final String beskrivelse;
-
+    
     FPInfoBehandlingsÅrsaakType(String beskrivelse) {
         this.beskrivelse = beskrivelse;
     }

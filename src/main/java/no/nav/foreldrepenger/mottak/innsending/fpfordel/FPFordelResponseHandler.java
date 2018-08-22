@@ -9,14 +9,12 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORS�
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -24,10 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
@@ -126,7 +122,7 @@ public class FPFordelResponseHandler {
         return timer.getTime();
     }
 
-    private Kvittering forsendelsesStatusKvittering(FPInfoKvittering forsendelsesStatus,
+    private static Kvittering forsendelsesStatusKvittering(FPInfoKvittering forsendelsesStatus,
             FPSakFordeltKvittering fordeltKvittering, String ref) {
 
         switch (forsendelsesStatus.getForsendelseStatus()) {
@@ -137,14 +133,6 @@ public class FPFordelResponseHandler {
             return kvitteringMedType(INNVILGET, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅ_VENT:
-            if (EnvUtil.isDevOrPreprod(env)) {
-                if (saksStatus != null) {
-                    AktorId aktør = AktorId.valueOf(MDC.get("Nav-Aktør-Id"));
-                    LOG.debug("Henter saker for {}", aktør);
-                    List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
-                    LOG.debug("Fikk {}", saker);
-                }
-            }
             return kvitteringMedType(PÅ_VENT, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅGÅR:
@@ -164,10 +152,7 @@ public class FPFordelResponseHandler {
 
     private FPInfoKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref, StopWatch timer) {
         FPInfoKvittering kvittering = null;
-        if (EnvUtil.isDevOrPreprod(env) && !pollURI.getHost().contains("fpinfo")) {
-            pollURI = rewriteURI(pollURI); // temporary hack until fpinfo behaves as expected
-        }
-        LOG.info("Poller etter status på {}", pollURI);
+        LOG.info("Poller forsendelsesstatus på {}", pollURI);
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
                 LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
@@ -186,6 +171,16 @@ public class FPFordelResponseHandler {
                     stop(timer);
                     LOG.info("Sak har status {} etter {}ms", kvittering.getForsendelseStatus().name(),
                             timer.getTime());
+
+                    if (EnvUtil.isDevOrPreprod(env)) {
+                        if (saksStatus != null) {
+                            AktorId aktør = AktorId.valueOf(MDC.get("Nav-Aktør-Id"));
+                            LOG.debug("Henter saker for {}", aktør);
+                            List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
+                            LOG.debug("Fikk {}", saker);
+                        }
+                    }
+
                     return kvittering;
                 case PÅGÅR:
                     LOG.info("Sak pågår fremdeles etter {}ms", timer.getTime());
@@ -201,23 +196,6 @@ public class FPFordelResponseHandler {
             LOG.warn("Kunne ikke sjekke status for forsendelse på {}", pollURI, e);
             return null;
         }
-    }
-
-    private static URI rewriteURI(URI pollURI) {
-        try {
-            URIBuilder builder = new URIBuilder(pollURI);
-            MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUri(pollURI).build().getQueryParams();
-            builder.setHost("fpinfo");
-            builder.setScheme("http");
-            builder.setPath("/fpinfo/api/dokumentforsendelse/status");
-            builder.setParameter("forsendelseId", queryParams.getFirst("forsendelseId"));
-            URI rewrittenURI = builder.build();
-            LOG.info("Rewriting pollURI from {} to {}", pollURI, rewrittenURI);
-            return rewrittenURI;
-        } catch (URISyntaxException e) {
-            return pollURI;
-        }
-
     }
 
     private ResponseEntity<FPInfoKvittering> pollFPInfo(URI pollURI, long delayMillis) {
