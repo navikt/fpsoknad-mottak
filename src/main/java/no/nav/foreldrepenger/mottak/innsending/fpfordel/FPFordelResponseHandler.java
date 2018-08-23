@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -98,7 +97,15 @@ public class FPFordelResponseHandler {
                 }
                 LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp (etter {}ms)", maxAntallForsøk,
                         stop(timer));
-                return new Kvittering(PÅ_VENT, ref);
+                if (EnvUtil.isDevOrPreprod(env)) {
+                    if (saksStatus != null) {
+                        AktorId aktør = AktorId.valueOf("1000104312026");
+                        LOG.debug("Henter saker for {}", aktør);
+                        List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
+                        LOG.debug("Fikk {}", saker);
+                    }
+                }
+                return new Kvittering(FP_FORDEL_MESSED_UP, ref);
             }
         default:
             LOG.warn("Uventet responskode {} ved leveranse av søknad, gir opp (etter {}ms)",
@@ -152,14 +159,7 @@ public class FPFordelResponseHandler {
 
     private FPInfoKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref, StopWatch timer) {
         FPInfoKvittering kvittering = null;
-        if (EnvUtil.isDevOrPreprod(env)) {
-            if (saksStatus != null) {
-                AktorId aktør = AktorId.valueOf(MDC.get("Nav-Aktør-Id"));
-                LOG.debug("Henter saker for {}", aktør);
-                List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
-                LOG.debug("Fikk {}", saker);
-            }
-        }
+
         LOG.info("Poller forsendelsesstatus på {}", pollURI);
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
