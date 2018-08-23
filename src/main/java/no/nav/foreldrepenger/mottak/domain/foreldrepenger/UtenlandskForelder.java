@@ -13,5 +13,5 @@ public class UtenlandskForelder extends AnnenForelder {
 
     private final String id;
     private final CountryCode land;
-    private final String fornavn;
+    private final String navn;
 }

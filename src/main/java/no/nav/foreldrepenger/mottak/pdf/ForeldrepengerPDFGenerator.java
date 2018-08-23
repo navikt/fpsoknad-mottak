@@ -73,6 +73,9 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
                 y -= annenForelder(annenForelder, cos, y);
+                String harRett = infoFormatter.fromMessageSource("harrett") +
+                    (stønad.getRettigheter().isHarAnnenForelderRett() ? "Ja" : "Nei");
+                y -= addLineOfRegularText(harRett, cos, y);
                 y -= addBlankLine();
             }
 
@@ -87,7 +90,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
 
             RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
             if (relasjon != null) {
-                y -= relasjonTilBarn(relasjon, cos, y);
+                y -= omBarn(relasjon, cos, y);
                 y -= addBlankLine();
             }
 
@@ -144,6 +147,9 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> lines = new ArrayList<>();
+        lines.add(Optional.ofNullable(utenlandsForelder.getNavn())
+            .map(n -> infoFormatter.fromMessageSource("navn", n))
+            .orElse("Ukjent"));
         lines.add(infoFormatter.fromMessageSource("nasjonalitet",
                 infoFormatter.countryName(utenlandsForelder.getLand().getAlpha2(),
                         utenlandsForelder.getLand().getName())));
@@ -155,8 +161,13 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
 
     private List<String> norskForelder(AnnenForelder annenForelder) {
         NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
-        return Arrays.asList(infoFormatter.fromMessageSource("nasjonalitet", "Norsk"),
-                infoFormatter.fromMessageSource("aktør", norskForelder.getFnr().getFnr()));
+        return Arrays.asList(
+            Optional.ofNullable(norskForelder.getNavn())
+                .map(n -> infoFormatter.fromMessageSource("navn", n))
+                .orElse("Ukjent"),
+            infoFormatter.fromMessageSource("nasjonalitet", "Norsk"),
+            infoFormatter.fromMessageSource("aktør", norskForelder.getFnr().getFnr())
+        );
     }
 
     private float dekningsgrad(Dekningsgrad dekningsgrad, PDPageContentStream cos, float y) throws IOException {
@@ -176,7 +187,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
         return startY - y;
     }
 
-    private float relasjonTilBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
+    private float omBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
             throws IOException {
         float startY = y;
         y -= addLeftHeading(infoFormatter.fromMessageSource("barn"), cos, y);
@@ -239,7 +250,8 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
         }
         else if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
-            return "Fødsel med termin: " + infoFormatter.dato(fødsel.getTerminDato());
+            return "Fødsel med termin: " + infoFormatter.dato(fødsel.getTerminDato()) +
+                " (bekreftelse utstedt " + infoFormatter.dato(fødsel.getUtstedtDato()) + ")";
         }
         else {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
@@ -280,7 +292,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     }
 
     private String format(Vedlegg vedlegg) {
-        return vedlegg.getMetadata().getBeskrivelse();
+        return Optional.ofNullable(vedlegg.getMetadata().getBeskrivelse()).orElse(vedlegg.getDokumentType().beskrivelse);
     }
 
 }
