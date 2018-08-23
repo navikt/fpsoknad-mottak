@@ -152,6 +152,14 @@ public class FPFordelResponseHandler {
 
     private FPInfoKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref, StopWatch timer) {
         FPInfoKvittering kvittering = null;
+        if (EnvUtil.isDevOrPreprod(env)) {
+            if (saksStatus != null) {
+                AktorId aktør = AktorId.valueOf(MDC.get("Nav-Aktør-Id"));
+                LOG.debug("Henter saker for {}", aktør);
+                List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
+                LOG.debug("Fikk {}", saker);
+            }
+        }
         LOG.info("Poller forsendelsesstatus på {}", pollURI);
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
@@ -171,16 +179,6 @@ public class FPFordelResponseHandler {
                     stop(timer);
                     LOG.info("Sak har status {} etter {}ms", kvittering.getForsendelseStatus().name(),
                             timer.getTime());
-
-                    if (EnvUtil.isDevOrPreprod(env)) {
-                        if (saksStatus != null) {
-                            AktorId aktør = AktorId.valueOf(MDC.get("Nav-Aktør-Id"));
-                            LOG.debug("Henter saker for {}", aktør);
-                            List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
-                            LOG.debug("Fikk {}", saker);
-                        }
-                    }
-
                     return kvittering;
                 case PÅGÅR:
                     LOG.info("Sak pågår fremdeles etter {}ms", timer.getTime());
