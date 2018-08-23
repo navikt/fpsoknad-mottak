@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.oppslag.config;
 
-import java.util.HashSet;
+import static java.util.stream.Collectors.toSet;
+
+import java.util.Arrays;
 import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
@@ -23,11 +25,6 @@ public class SwaggerConfiguration {
     }
 
     private static Set<String> protocols(String... schemes) {
-        Set<String> supportedSchemes = new HashSet<>();
-        for (String scheme : schemes) {
-            supportedSchemes.add(scheme);
-        }
-        return supportedSchemes;
+        return Arrays.stream(schemes).collect(toSet());
     }
-
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.nav.foreldrepenger</groupId>
     <artifactId>fpsoknad-oppslag</artifactId>
@@ -9,8 +10,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.3.RELEASE</version>
-        <relativePath/>
+        <version>2.0.4.RELEASE</version>
+        <relativePath />
     </parent>
 
     <properties>
@@ -26,7 +27,6 @@
         <springfox.swagger.version>2.7.0</springfox.swagger.version>
         <junit.platform.version>1.0.1</junit.platform.version>
         <junit.jupiter.version>5.1.0</junit.jupiter.version>
-        <jackson.version>2.9.4</jackson.version>
         <oidc-spring-support.version>0.2.4</oidc-spring-support.version>
         <tests>fast</tests>
     </properties>
@@ -268,6 +268,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
