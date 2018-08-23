@@ -175,7 +175,7 @@ public class FPFordelTest {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 pollReceipt200, pollReceipt200);
         Kvittering kvittering = sender.send(foreldrepenger(), person());
-        assertThat(kvittering.getLeveranseStatus(), is(PÅ_VENT));
+        assertThat(kvittering.getLeveranseStatus(), is(FP_FORDEL_MESSED_UP));
         assertThat(kvittering.getJournalId(), is(nullValue()));
         assertThat(kvittering.getSaksNr(), is(nullValue()));
         verify(template).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
