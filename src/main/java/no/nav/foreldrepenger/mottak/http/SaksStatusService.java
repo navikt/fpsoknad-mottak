@@ -39,7 +39,7 @@ public class SaksStatusService implements FPInfoSaksStatusService {
 
     @Override
     public List<FPInfoSakStatus> hentSaker(AktorId id) {
-        return queryForList("(/sak", httpHeaders("aktorId", id.getId()), FPInfoSakStatus.class);
+        return queryForList("/sak", httpHeaders("aktorId", id.getId()), FPInfoSakStatus.class);
     }
 
     @Override

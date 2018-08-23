@@ -17,7 +17,7 @@
 	</root>
     <logger name="org.apache.pdfbox.pdmodel.font.PDType1Font" level="error" />
      <springProfile name="dev,preprod">
-        <logger name="org.springframework.web.client" level="trace" />
+        <logger name="org.springframework.web.client" level="info" />
         <logger name="no.nav.foreldrepenger" level="trace" />
     </springProfile>
 </configuration>

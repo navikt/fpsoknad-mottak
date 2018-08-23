@@ -1,0 +1,19 @@
+[
+  {
+    "saksnummer": "130160636",
+    "fagsakStatus": "UBEH",
+    "fagsakÅrsak": "TERM",
+    "fagsakYtelseType": "FP",
+    "aktørId": "1000104312089",
+    "aktørIdAnnenPart": null,
+    "aktørIdBarn": null,
+    "lenker": [
+      {
+        "href": "/fpinfo/api/dokumentforsendelse/behandling?behandlingId=1011510",
+        "rel": "behandlinger",
+        "type": "GET",
+        "requestPayload": null
+      }
+    ]
+  }
+]
