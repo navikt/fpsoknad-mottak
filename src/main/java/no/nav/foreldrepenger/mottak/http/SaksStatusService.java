@@ -31,7 +31,7 @@ public class SaksStatusService implements FPInfoSaksStatusService {
     private final URI baseURI;
     private final RestTemplate template;
 
-    public SaksStatusService(@Value("${fpinfo.baseuri:http://fpinfo/fpinfo/api/dokumentforsendelse}") URI baseURI,
+    public SaksStatusService(@Value("${fpinfo.baseuri:http://fpinfo/fpinfo/api/dokumentforsendelse") URI baseURI,
             RestTemplate template) {
         this.baseURI = baseURI;
         this.template = template;
@@ -39,7 +39,7 @@ public class SaksStatusService implements FPInfoSaksStatusService {
 
     @Override
     public List<FPInfoSakStatus> hentSaker(AktorId id) {
-        return queryForList("/sak", httpHeaders("aktorId", id.getId()), FPInfoSakStatus.class);
+        return queryForList("sak", httpHeaders("aktorId", id.getId()), FPInfoSakStatus.class);
     }
 
     @Override
