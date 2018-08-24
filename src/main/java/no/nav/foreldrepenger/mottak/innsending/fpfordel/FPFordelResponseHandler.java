@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.AVSLÅTT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
@@ -80,7 +81,15 @@ public class FPFordelResponseHandler {
                         }
                         if (fpFordelKvittering instanceof FPFordelGosysKvittering) {
                             LOG.info("Fikk Gosys kvittering  på {}. forsøk, returnerer etter {}ms", i, stop(timer));
-                            return påVentKvittering(ref, FPFordelGosysKvittering.class.cast(fpFordelKvittering));
+                            if (EnvUtil.isDevOrPreprod(env)) {
+                                if (saksStatus != null) {
+                                    AktorId aktør = AktorId.valueOf("1000104312026");
+                                    LOG.debug("Henter saker for {}", aktør);
+                                    List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
+                                    LOG.debug("Fikk {}", saker);
+                                }
+                            }
+                            return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(fpFordelKvittering));
                         }
                         LOG.warn("Uventet kvittering {} for statuskode {}, gir opp (etter {}ms)", fpFordelKvittering,
                                 fpInfoRespons.getStatusCode(), stop(timer));
@@ -97,14 +106,7 @@ public class FPFordelResponseHandler {
                 }
                 LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp (etter {}ms)", maxAntallForsøk,
                         stop(timer));
-                if (EnvUtil.isDevOrPreprod(env)) {
-                    if (saksStatus != null) {
-                        AktorId aktør = AktorId.valueOf("1000104312026");
-                        LOG.debug("Henter saker for {}", aktør);
-                        List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
-                        LOG.debug("Fikk {}", saker);
-                    }
-                }
+
                 return new Kvittering(FP_FORDEL_MESSED_UP, ref);
             }
         default:
@@ -226,10 +228,10 @@ public class FPFordelResponseHandler {
         return kvittering;
     }
 
-    private static Kvittering påVentKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
+    private static Kvittering gosysKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
         LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}",
                 gosysKvittering.getJournalpostId());
-        return kvitteringMedType(PÅ_VENT, ref, gosysKvittering.getJournalpostId(), null);
+        return kvitteringMedType(GOSYS, ref, gosysKvittering.getJournalpostId(), null);
     }
 
     private static Kvittering sendtOgForsøktBehandletKvittering(String ref, FPSakFordeltKvittering kvittering) {
