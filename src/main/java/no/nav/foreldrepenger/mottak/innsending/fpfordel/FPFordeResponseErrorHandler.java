@@ -23,7 +23,6 @@ class FPFordeResponseErrorHandler extends DefaultResponseErrorHandler {
         LOG.debug("Håndterer feilrespons med returkode {}", response.getStatusCode());
         String bodyText = StreamUtils.copyToString(response.getBody(), StandardCharsets.UTF_8);
         LOG.debug("Respons body: {}", bodyText);
-
         if (response.getStatusCode() == FORBIDDEN) {
             LOG.warn(FORBIDDEN + ". Throwing ForbiddenException");
             throw new ForbiddenException(bodyText);
