@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
-import lombok.Data;
-
-@Data
 public class FPInfoSakStatus {
     private final String saksnummer;
     private final FPInfoFagsakStatus fagsakStatus;
@@ -21,6 +18,42 @@ public class FPInfoSakStatus {
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = aktørIdBarn;
+    }
+
+    public String getSaksnummer() {
+        return saksnummer;
+    }
+
+    public FPInfoFagsakStatus getFagsakStatus() {
+        return fagsakStatus;
+    }
+
+    public FPInfoFagsakÅrsak getFagsakÅrsak() {
+        return fagsakÅrsak;
+    }
+
+    public FPInfoFagsakYtelseType getFagsakYtelseType() {
+        return fagsakYtelseType;
+    }
+
+    public String getAktørId() {
+        return aktørId;
+    }
+
+    public String getAktørIdAnnenPart() {
+        return aktørIdAnnenPart;
+    }
+
+    public String getAktørIdBarn() {
+        return aktørIdBarn;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
+                + ", fagsakÅrsak="
+                + fagsakÅrsak + ", fagsakYtelseType=" + fagsakYtelseType + ", aktørId=" + aktørId
+                + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn=" + aktørIdBarn + "]";
     }
 
 }
