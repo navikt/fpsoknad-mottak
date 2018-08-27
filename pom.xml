@@ -379,13 +379,4 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>alltests</id>
-            <properties>
-                <tests>fast,slow</tests>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>

@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.lookup.ws.ytelser.arena;
 
 import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt.Ytelseskontrakt;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -14,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class YtelseskontraktMapperTest {
 
     @Test
-    @Tag("fast")
     public void mapValues() throws Exception {
         Ytelseskontrakt kontrakt = new Ytelseskontrakt();
         kontrakt.setFomGyldighetsperiode(DatatypeFactory.newInstance().newXMLGregorianCalendar("2017-12-12"));

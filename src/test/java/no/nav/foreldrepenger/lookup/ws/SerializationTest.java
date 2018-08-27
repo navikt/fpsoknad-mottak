@@ -9,7 +9,6 @@ import no.nav.foreldrepenger.lookup.ws.medl.MedlPeriode;
 import no.nav.foreldrepenger.lookup.ws.person.*;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.Arbeidsforhold;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -25,7 +24,6 @@ import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@Tag("fast")
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
 public class SerializationTest {

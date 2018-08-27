@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.time;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -9,7 +8,6 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Tag("fast")
 public class CalendarConverterTest {
 
 	@Test

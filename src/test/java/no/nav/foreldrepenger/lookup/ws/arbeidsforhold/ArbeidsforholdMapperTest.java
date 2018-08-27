@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.*;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -35,7 +34,6 @@ public class ArbeidsforholdMapperTest {
 
     @ParameterizedTest
     @MethodSource("valueProvider")
-    @Tag("fast")
     public void mapValues(String arbeidsgiverId, String arbeidsgiverIdType, Aktoer aktoer) {
         no.nav.tjeneste.virksomhet.arbeidsforhold.v3.informasjon.arbeidsforhold.Arbeidsforhold forhold = TestdataProvider.forhold(aktoer);
 

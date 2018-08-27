@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.lookup.ws.person;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.time.DateUtil;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.*;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -12,7 +11,6 @@ import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Tag("fast")
 public class PersonMapperTest {
 
     @Test

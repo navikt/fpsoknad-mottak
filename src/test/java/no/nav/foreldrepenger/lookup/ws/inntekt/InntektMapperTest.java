@@ -5,7 +5,6 @@ import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.AktoerId;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Organisasjon;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Periode;
 import no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.PersonIdent;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -62,7 +61,6 @@ class InntektMapperTest {
 
     @ParameterizedTest
     @MethodSource("valueProvider")
-    @Tag("fast")
     public void allValuesSet(
         String virksomhetId,
         no.nav.tjeneste.virksomhet.inntekt.v3.informasjon.inntekt.Inntekt inntekt) {

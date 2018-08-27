@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.time;
 
 import org.junit.Test;
-import org.junit.jupiter.api.Tag;
 
 import java.time.LocalDate;
 
@@ -9,7 +8,6 @@ import static java.time.LocalDate.of;
 import static no.nav.foreldrepenger.time.DateUtil.dateWithinPeriod;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Tag("fast")
 public class DateUtilTest {
 
     @Test

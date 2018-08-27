@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.format.DateTimeFormatter;
@@ -8,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Tag("fast")
 public class BarnutvelgerTest {
 
     private static final Fødselsnummer MOR = new Fødselsnummer("28016432662");
