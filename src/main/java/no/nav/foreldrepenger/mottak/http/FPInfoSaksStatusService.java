@@ -53,11 +53,12 @@ public class FPInfoSaksStatusService implements SaksStatusService {
             LOG.info("Henter fra {}", uri);
             ResponseEntity<String> respons = template.exchange(uri, HttpMethod.GET, null, String.class);
             String body = respons.getBody();
-            Map<String, Object> map = mapper.readValue(body, new TypeReference<Map<String, Object>>() {
+            List<Map<String, Object>> list = mapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
             });
-            Object lenker = map.get("lenker");
-            LOG.info("Lenker er {} {}", lenker, lenker.getClass().getSimpleName());
-            // mapper.readValue(lenker, Benahandlinger[].class);
+            for (Map<String, Object> map : list) {
+                Object lenker = map.get("lenker");
+                LOG.info("Lenker er {} {}", lenker, lenker.getClass().getSimpleName());
+            }
             return Arrays.asList(mapper.readValue(body, FPInfoSakStatus[].class));
             // return Arrays.asList(template.getForObject(uri, FPInfoSakStatus[].class));
         } catch (Exception e) {
@@ -98,10 +99,6 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [baseURI=" + baseURI + ", template=" + template + "]";
-    }
-
-    private static class Benahandlinger {
-
     }
 
 }
