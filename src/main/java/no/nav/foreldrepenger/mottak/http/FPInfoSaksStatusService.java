@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakStatus.AVSLU;
+
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.slf4j.Logger;
@@ -16,11 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.BehandlingsStatus;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakYtelseType;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoSakStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.SaksStatusService;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.Vedtak;
@@ -29,9 +30,6 @@ import no.nav.foreldrepenger.mottak.innsending.fpinfo.Vedtak;
 public class FPInfoSaksStatusService implements SaksStatusService {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoSaksStatusService.class);
-
-    @Inject
-    private ObjectMapper mapper;
 
     private final URI baseURI;
     private final RestTemplate template;
@@ -43,20 +41,15 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     }
 
     @Override
-    public List<FPInfoSakStatus> hentSaker(AktorId id) {
+    public List<FPInfoSakStatus> hentSaker(AktorId id, FPInfoFagsakYtelseType... typer) {
         URI uri = uri("sak", httpHeaders("aktorId", id.getId()));
         try {
-            LOG.info("Henter fra {}", uri);
-            /*
-             * ResponseEntity<String> respons = template.exchange(uri, HttpMethod.GET, null,
-             * String.class); String body = respons.getBody(); LOG.info("Body er {}", body);
-             * /* List<Map<String, Object>> list = mapper.readValue(body, new
-             * TypeReference<List<Map<String, Object>>>() { }); for (Map<String, Object> map
-             * : list) { Object lenker = map.get("lenker"); LOG.info("Lenker er {} {}",
-             * lenker); }
-             */
-            // return Arrays.asList(mapper.readValue(body, FPInfoSakStatus[].class));
-            return Arrays.asList(template.getForObject(uri, FPInfoSakStatus[].class));
+            LOG.info("Henter ikke-avsluttede saker med type{} {} fra {}", typer.length == 0 ? "" : "r",
+                    Arrays.stream(typer).map(s -> s.name()).collect(joining(",")), uri);
+            return Arrays.stream(template.getForObject(uri, FPInfoSakStatus[].class))
+                    .filter(s -> s.getFagsakYtelseType().equals(FPInfoFagsakYtelseType.FP))
+                    .filter(s -> !s.getFagsakStatus().equals(AVSLU))
+                    .collect(toList());
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente saker fra {}", uri, e);
             return Collections.emptyList();

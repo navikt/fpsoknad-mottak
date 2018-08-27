@@ -6,11 +6,12 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
 public interface SaksStatusService {
-    List<FPInfoSakStatus> hentSaker(AktorId id);
 
     Vedtak hentVedtak(String behandlingsId);
 
     Søknad hentSøknad(String behandlingsId);
 
     BehandlingsStatus hentBehandlingsStatus(String behandlingsId);
+
+    List<FPInfoSakStatus> hentSaker(AktorId id, FPInfoFagsakYtelseType... typer);
 }

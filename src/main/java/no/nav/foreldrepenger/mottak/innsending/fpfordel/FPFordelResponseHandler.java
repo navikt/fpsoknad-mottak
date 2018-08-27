@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
+import static no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakYtelseType.FP;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
@@ -28,8 +29,8 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.http.FPInfoSaksStatusService;
+import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoSakStatus;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
@@ -85,7 +86,7 @@ public class FPFordelResponseHandler {
                                 if (saksStatus != null) {
                                     AktorId aktør = AktorId.valueOf("1000104312026");
                                     LOG.debug("Henter saker for {}", aktør);
-                                    List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
+                                    List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør, FP);
                                     LOG.debug("Fikk {} saker ({})", saker.size(), saker);
                                 }
                             }
