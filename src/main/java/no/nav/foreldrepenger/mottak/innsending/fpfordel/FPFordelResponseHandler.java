@@ -7,41 +7,27 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
-import static no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakYtelseType.FP;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
-
-import javax.inject.Inject;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.http.FPInfoSaksStatusService;
 import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoSakStatus;
-import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 @Component
 public class FPFordelResponseHandler {
-
-    @Inject
-    private Environment env;
-    @Inject
-    private FPInfoSaksStatusService saksStatus;
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final RestTemplate template;
@@ -82,14 +68,6 @@ public class FPFordelResponseHandler {
                         }
                         if (fpFordelKvittering instanceof FPFordelGosysKvittering) {
                             LOG.info("Fikk Gosys kvittering  på {}. forsøk, returnerer etter {}ms", i, stop(timer));
-                            if (EnvUtil.isDevOrPreprod(env)) {
-                                if (saksStatus != null) {
-                                    AktorId aktør = AktorId.valueOf("1000104312026");
-                                    LOG.debug("Henter saker for {}", aktør);
-                                    List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør, FP);
-                                    LOG.debug("Fikk {} saker ({})", saker.size(), saker);
-                                }
-                            }
                             return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(fpFordelKvittering));
                         }
                         LOG.warn("Uventet kvittering {} for statuskode {}, gir opp (etter {}ms)", fpFordelKvittering,
