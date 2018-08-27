@@ -29,7 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
-import no.nav.foreldrepenger.mottak.http.SaksStatusService;
+import no.nav.foreldrepenger.mottak.http.FPInfoSaksStatusService;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoSakStatus;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
@@ -40,7 +40,7 @@ public class FPFordelResponseHandler {
     @Inject
     private Environment env;
     @Inject
-    private SaksStatusService saksStatus;
+    private FPInfoSaksStatusService saksStatus;
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final RestTemplate template;
@@ -87,8 +87,6 @@ public class FPFordelResponseHandler {
                                     LOG.debug("Henter saker for {}", aktør);
                                     List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
                                     LOG.debug("Fikk {} saker ({})", saker.size(), saker);
-                                    LOG.debug("Sak 0 {}", saker.get(0).getSaksnummer());
-                                    LOG.debug("Sak 1 {}", saker.get(1).getAktørId());
                                 }
                             }
                             return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(fpFordelKvittering));
