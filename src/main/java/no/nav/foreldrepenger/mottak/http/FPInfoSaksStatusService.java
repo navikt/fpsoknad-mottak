@@ -53,7 +53,7 @@ public class FPInfoSaksStatusService implements SaksStatusService {
             LOG.info("Henter fra {}", uri);
             ResponseEntity<String> respons = template.exchange(uri, HttpMethod.GET, null, String.class);
             String body = respons.getBody();
-            Map<String, Object> map = mapper.readValue(body, new TypeReference<Map<String, String>>() {
+            Map<String, Object> map = mapper.readValue(body, new TypeReference<Map<String, Object>>() {
             });
             Object lenker = map.get("lenker");
             LOG.info("Lenker er {} {}", lenker, lenker.getClass().getSimpleName());
@@ -61,7 +61,7 @@ public class FPInfoSaksStatusService implements SaksStatusService {
             return Arrays.asList(mapper.readValue(body, FPInfoSakStatus[].class));
             // return Arrays.asList(template.getForObject(uri, FPInfoSakStatus[].class));
         } catch (Exception e) {
-            LOG.warn("Kunne ikke hente saker fra {}", uri);
+            LOG.warn("Kunne ikke hente saker fra {}", uri, e);
             return Collections.emptyList();
         }
     }
