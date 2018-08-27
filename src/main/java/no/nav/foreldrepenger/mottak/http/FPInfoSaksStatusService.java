@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -51,6 +53,11 @@ public class FPInfoSaksStatusService implements SaksStatusService {
             LOG.info("Henter fra {}", uri);
             ResponseEntity<String> respons = template.exchange(uri, HttpMethod.GET, null, String.class);
             String body = respons.getBody();
+            Map<String, Object> map = mapper.readValue(body, new TypeReference<Map<String, String>>() {
+            });
+            Object lenker = map.get("lenker");
+            LOG.info("Lenker er {} {}", lenker, lenker.getClass().getSimpleName());
+            // mapper.readValue(lenker, Benahandlinger[].class);
             return Arrays.asList(mapper.readValue(body, FPInfoSakStatus[].class));
             // return Arrays.asList(template.getForObject(uri, FPInfoSakStatus[].class));
         } catch (Exception e) {
@@ -91,6 +98,10 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [baseURI=" + baseURI + ", template=" + template + "]";
+    }
+
+    private static class Benahandlinger {
+
     }
 
 }
