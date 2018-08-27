@@ -2,6 +2,9 @@ package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FPInfoSakStatus {
     private final String saksnummer;
     private final FPInfoFagsakStatus fagsakStatus;
@@ -11,8 +14,14 @@ public class FPInfoSakStatus {
     private final String aktørIdAnnenPart;
     private final String aktørIdBarn;
 
-    public FPInfoSakStatus(String saksnummer, FPInfoFagsakStatus fagsakStatus, FPInfoFagsakÅrsak fagsakÅrsak,
-            FPInfoFagsakYtelseType fagsakYtelseType, String aktørId, String aktørIdAnnenPart, String aktørIdBarn) {
+    @JsonCreator
+    public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
+            @JsonProperty("fagsakStatus") FPInfoFagsakStatus fagsakStatus,
+            @JsonProperty("fagsakÅrsak") FPInfoFagsakÅrsak fagsakÅrsak,
+            @JsonProperty("fagsakYtelseType") FPInfoFagsakYtelseType fagsakYtelseType,
+            @JsonProperty("aktørId") String aktørId,
+            @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
+            @JsonProperty("aktørIdBarn") String aktørIdBarn) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.fagsakÅrsak = fagsakÅrsak;

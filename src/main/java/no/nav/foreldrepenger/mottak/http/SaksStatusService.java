@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -57,22 +58,26 @@ public class SaksStatusService implements FPInfoSaksStatusService {
         throw new NotImplementedException("behandlingsstatus");
     }
 
-    private <T> List<T> queryForList(String pathSegment, HttpHeaders params, Class<T> clazz) {
-        URI uri = uri(pathSegment, params);
+    private <T> List<T> queryForList(String pathSegment, HttpHeaders queryParams, Class<T> clazz) {
+        URI uri = uri(pathSegment, queryParams);
         try {
             LOG.info("Henter fra {}", uri);
-            return template.exchange(uri, GET, null, new ParameterizedTypeReference<List<T>>() {
-            }).getBody();
+            // template.get
+            ResponseEntity<List<T>> respons = template.exchange(uri, GET, null,
+                    new ParameterizedTypeReference<List<T>>() {
+                    });
+            LOG.info("fikk respons body {}", respons.getBody());
+            return respons.getBody();
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente liste fra {}", uri);
             return Collections.emptyList();
         }
     }
 
-    private URI uri(String pathSegment, HttpHeaders params) {
+    private URI uri(String pathSegment, HttpHeaders queryParams) {
         return UriComponentsBuilder.fromUri(baseURI)
                 .pathSegment(pathSegment)
-                .queryParams(params)
+                .queryParams(queryParams)
                 .build()
                 .toUri();
     }
