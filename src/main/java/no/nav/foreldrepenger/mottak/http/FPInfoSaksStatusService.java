@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -13,13 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -51,16 +47,16 @@ public class FPInfoSaksStatusService implements SaksStatusService {
         URI uri = uri("sak", httpHeaders("aktorId", id.getId()));
         try {
             LOG.info("Henter fra {}", uri);
-            ResponseEntity<String> respons = template.exchange(uri, HttpMethod.GET, null, String.class);
-            String body = respons.getBody();
-            List<Map<String, Object>> list = mapper.readValue(body, new TypeReference<List<Map<String, Object>>>() {
-            });
-            for (Map<String, Object> map : list) {
-                Object lenker = map.get("lenker");
-                LOG.info("Lenker er {} {}", lenker, lenker.getClass().getSimpleName());
-            }
-            return Arrays.asList(mapper.readValue(body, FPInfoSakStatus[].class));
-            // return Arrays.asList(template.getForObject(uri, FPInfoSakStatus[].class));
+            /*
+             * ResponseEntity<String> respons = template.exchange(uri, HttpMethod.GET, null,
+             * String.class); String body = respons.getBody(); LOG.info("Body er {}", body);
+             * /* List<Map<String, Object>> list = mapper.readValue(body, new
+             * TypeReference<List<Map<String, Object>>>() { }); for (Map<String, Object> map
+             * : list) { Object lenker = map.get("lenker"); LOG.info("Lenker er {} {}",
+             * lenker); }
+             */
+            // return Arrays.asList(mapper.readValue(body, FPInfoSakStatus[].class));
+            return Arrays.asList(template.getForObject(uri, FPInfoSakStatus[].class));
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente saker fra {}", uri, e);
             return Collections.emptyList();
