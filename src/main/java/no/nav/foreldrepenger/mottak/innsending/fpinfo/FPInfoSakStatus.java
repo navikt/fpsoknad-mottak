@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
+import java.util.Objects;
+
 public class FPInfoSakStatus {
     private final String saksnummer;
     private final FPInfoFagsakStatus fagsakStatus;
@@ -46,16 +48,8 @@ public class FPInfoSakStatus {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((aktørId == null) ? 0 : aktørId.hashCode());
-        result = prime * result + ((aktørIdAnnenPart == null) ? 0 : aktørIdAnnenPart.hashCode());
-        result = prime * result + ((aktørIdBarn == null) ? 0 : aktørIdBarn.hashCode());
-        result = prime * result + ((fagsakStatus == null) ? 0 : fagsakStatus.hashCode());
-        result = prime * result + ((fagsakYtelseType == null) ? 0 : fagsakYtelseType.hashCode());
-        result = prime * result + ((fagsakÅrsak == null) ? 0 : fagsakÅrsak.hashCode());
-        result = prime * result + ((saksnummer == null) ? 0 : saksnummer.hashCode());
-        return result;
+        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, fagsakYtelseType, fagsakÅrsak,
+                saksnummer);
     }
 
     @Override
@@ -106,7 +100,7 @@ public class FPInfoSakStatus {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
+        return getClass().getSimpleName() + " [saksnummeret=" + saksnummer + ", fagsakStatus=" + fagsakStatus
                 + ", fagsakÅrsak="
                 + fagsakÅrsak + ", fagsakYtelseType=" + fagsakYtelseType + ", aktørId=" + aktørId
                 + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn=" + aktørIdBarn + "]";

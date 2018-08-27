@@ -87,6 +87,8 @@ public class FPFordelResponseHandler {
                                     LOG.debug("Henter saker for {}", aktør);
                                     List<FPInfoSakStatus> saker = saksStatus.hentSaker(aktør);
                                     LOG.debug("Fikk {} saker ({})", saker.size(), saker);
+                                    LOG.debug("Sak 0 {}", saker.get(0));
+                                    LOG.debug("Sak 1 {}", saker.get(1));
                                 }
                             }
                             return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(fpFordelKvittering));

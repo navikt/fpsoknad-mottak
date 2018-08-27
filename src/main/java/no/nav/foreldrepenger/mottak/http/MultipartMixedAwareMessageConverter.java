@@ -49,7 +49,6 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        LOG.debug("Checking if we can write {} for media type {}", clazz, mediaType);
         return MultiValueMap.class.isAssignableFrom(clazz);
     }
 
