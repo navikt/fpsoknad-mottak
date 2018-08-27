@@ -13,13 +13,13 @@ public class FPInfoBehandling {
     private final BehandlingsStatus status;
     private final FPInfoBehandlingsType type;
     private final FPInfoBehandlingsTema tema;
-    private final FPInfoBehandlingsÅrsaakType årsak;
+    private final FPInfoBehandlingsÅrsakType årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
     private final List<String> inntektsmeldinger;
 
     public FPInfoBehandling(BehandlingsStatus status, FPInfoBehandlingsType type, FPInfoBehandlingsTema tema,
-            FPInfoBehandlingsÅrsaakType årsak, String behandlendeEnhet, String behandlendeEnhetNavn,
+            FPInfoBehandlingsÅrsakType årsak, String behandlendeEnhet, String behandlendeEnhetNavn,
             List<String> inntektsmeldinger) {
         this.status = status;
         this.type = type;

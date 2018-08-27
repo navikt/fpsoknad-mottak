@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.lookup.rest.fpinfo;
 
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FPInfoSakStatus {
     private final String saksnummer;
     private final FPInfoFagsakStatus fagsakStatus;
@@ -9,8 +14,14 @@ public class FPInfoSakStatus {
     private final String aktørIdAnnenPart;
     private final String aktørIdBarn;
 
-    public FPInfoSakStatus(String saksnummer, FPInfoFagsakStatus fagsakStatus, FPInfoFagsakÅrsak fagsakÅrsak,
-            FPInfoFagsakYtelseType fagsakYtelseType, String aktørId, String aktørIdAnnenPart, String aktørIdBarn) {
+    @JsonCreator
+    public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
+            @JsonProperty("fagsakStatus") FPInfoFagsakStatus fagsakStatus,
+            @JsonProperty("fagsakÅrsak") FPInfoFagsakÅrsak fagsakÅrsak,
+            @JsonProperty("fagsakYtelseType") FPInfoFagsakYtelseType fagsakYtelseType,
+            @JsonProperty("aktørId") String aktørId,
+            @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
+            @JsonProperty("aktørIdBarn") String aktørIdBarn) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.fagsakÅrsak = fagsakÅrsak;
@@ -46,16 +57,8 @@ public class FPInfoSakStatus {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((aktørId == null) ? 0 : aktørId.hashCode());
-        result = prime * result + ((aktørIdAnnenPart == null) ? 0 : aktørIdAnnenPart.hashCode());
-        result = prime * result + ((aktørIdBarn == null) ? 0 : aktørIdBarn.hashCode());
-        result = prime * result + ((fagsakStatus == null) ? 0 : fagsakStatus.hashCode());
-        result = prime * result + ((fagsakYtelseType == null) ? 0 : fagsakYtelseType.hashCode());
-        result = prime * result + ((fagsakÅrsak == null) ? 0 : fagsakÅrsak.hashCode());
-        result = prime * result + ((saksnummer == null) ? 0 : saksnummer.hashCode());
-        return result;
+        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, fagsakYtelseType, fagsakÅrsak,
+                saksnummer);
     }
 
     @Override
@@ -106,7 +109,7 @@ public class FPInfoSakStatus {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
+        return getClass().getSimpleName() + " [saksnummeret=" + saksnummer + ", fagsakStatus=" + fagsakStatus
                 + ", fagsakÅrsak="
                 + fagsakÅrsak + ", fagsakYtelseType=" + fagsakYtelseType + ", aktørId=" + aktørId
                 + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn=" + aktørIdBarn + "]";
