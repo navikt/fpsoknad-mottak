@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoResponseErrorHandler;
 import no.nav.security.spring.oidc.validation.api.EnableOIDCTokenValidation;
 
 @SpringBootApplication
-@EnableOIDCTokenValidation(ignore = "org.springframework")
+@EnableOIDCTokenValidation(ignore = { "org.springframework", "springfox.documentation" })
 public class OppslagApplication {
 
     public static void main(String[] args) {
