@@ -1,19 +1,16 @@
 package no.nav.foreldrepenger.mottak.config;
 
 import static java.util.stream.Collectors.toSet;
-import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 
+import java.util.Arrays;
 import java.util.Set;
-import java.util.stream.Stream;
-
-import javax.servlet.ServletContext;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.swagger.models.Scheme;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -22,18 +19,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfiguration {
 
     @Bean
-    public Docket docket(ServletContext context) {
-        return new Docket(SWAGGER_2)
-                // .protocols(protocols(HTTPS, HTTP))
-                .select()
-                .paths(PathSelectors.any())
-                .apis(RequestHandlerSelectors.any())
-                .build();
+    public Docket productApi() {
+        return new Docket(DocumentationType.SWAGGER_2).protocols(protocols("http", "https")).select()
+                .apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
     }
 
-    private static Set<String> protocols(Scheme... schemes) {
-        return Stream.of(schemes)
-                .map(s -> s.toValue())
-                .collect(toSet());
+    private static Set<String> protocols(String... schemes) {
+        return Arrays.stream(schemes).collect(toSet());
     }
 }
