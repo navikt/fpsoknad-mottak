@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import static io.swagger.models.Scheme.HTTP;
-import static io.swagger.models.Scheme.HTTPS;
 import static java.util.stream.Collectors.toSet;
 import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 
@@ -26,7 +24,7 @@ public class SwaggerConfiguration {
     @Bean
     public Docket docket(ServletContext context) {
         return new Docket(SWAGGER_2)
-                .protocols(protocols(HTTPS, HTTP))
+                // .protocols(protocols(HTTPS, HTTP))
                 .select()
                 .paths(PathSelectors.any())
                 .apis(RequestHandlerSelectors.any())
