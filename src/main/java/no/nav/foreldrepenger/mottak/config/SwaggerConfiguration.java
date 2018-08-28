@@ -24,7 +24,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfiguration {
 
     @Bean
-    public Docket preprodDocket(ServletContext context) {
+    public Docket docket(ServletContext context) {
         return new Docket(SWAGGER_2)
                 .protocols(protocols(HTTPS, HTTP))
                 .select()
