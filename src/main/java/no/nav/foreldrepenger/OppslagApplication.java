@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoConfig;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoResponseErrorHandler;
-import no.nav.security.spring.oidc.validation.api.EnableOIDCTokenValidation;
+import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
 
 @SpringBootApplication
 @EnableOIDCTokenValidation(ignore = { "org.springframework", "springfox.documentation" })

@@ -4,12 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-import no.nav.security.spring.oidc.test.TokenGeneratorConfiguration;
-import no.nav.security.spring.oidc.validation.api.EnableOIDCTokenValidation;
+import no.nav.security.oidc.test.support.spring.TokenGeneratorController;
 
 @SpringBootApplication
-@EnableOIDCTokenValidation(ignore = "org.springframework")
-@Import(value = TokenGeneratorConfiguration.class)
+@no.nav.security.spring.oidc.api.EnableOIDCTokenValidation(ignore = "org.springframework")
+@Import(value = TokenGeneratorController.class)
 public class OppslagApplicationLocal {
 
     public static void main(String[] args) {

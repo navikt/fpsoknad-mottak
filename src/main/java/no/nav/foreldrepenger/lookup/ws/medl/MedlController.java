@@ -5,17 +5,16 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.lookup.FnrExtractor;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.spring.oidc.validation.api.ProtectedWithClaims;
 
 @RestController
-@ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@no.nav.security.oidc.api.ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 class MedlController {
 
     private final MedlClient medlClient;
