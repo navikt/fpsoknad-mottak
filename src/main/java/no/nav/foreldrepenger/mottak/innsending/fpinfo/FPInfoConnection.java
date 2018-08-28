@@ -10,7 +10,7 @@ import no.nav.foreldrepenger.mottak.innsending.AbstractFPConnection;
 @Component
 public class FPInfoConnection extends AbstractFPConnection {
 
-    private static final String PING_PATH = "/fpinfo/internal/isReady";
+    private static final String PING_PATH = "fpinfo/internal/isReady";
 
     private final FPInfoConfig config;
 

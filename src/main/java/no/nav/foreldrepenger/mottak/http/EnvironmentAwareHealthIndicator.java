@@ -35,8 +35,8 @@ public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator
         return Health.down().build();
     }
 
-    private static Health downWithDetails(Exception e) {
-        return Health.down().withException(e).build();
+    private Health downWithDetails(Exception e) {
+        return Health.down().withDetail("url", connection.pingEndpoint()).withException(e).build();
     }
 
     private static Health up() {

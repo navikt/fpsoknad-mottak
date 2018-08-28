@@ -18,6 +18,3 @@ no.nav.security.oidc:
     selvbetjening.discoveryurl: http://metadata
     selvbetjening.accepted_audience: aud-localhost
     selvbetjening.cookie_name: localhost-idtoken
-
-requests.level : TRACE
-fpfordel.uri: http://localhost:8080
