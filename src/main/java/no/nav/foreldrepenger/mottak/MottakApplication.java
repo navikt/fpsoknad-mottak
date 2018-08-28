@@ -3,7 +3,9 @@ package no.nav.foreldrepenger.mottak;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@no.nav.security.spring.oidc.api.EnableOIDCTokenValidation(ignore = "org.springframework")
+import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
+
+@EnableOIDCTokenValidation(ignore = { "org.springframework", "springfox.documentation" })
 @SpringBootApplication
 public class MottakApplication {
 

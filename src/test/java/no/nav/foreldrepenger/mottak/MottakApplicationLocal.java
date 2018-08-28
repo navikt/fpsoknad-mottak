@@ -15,8 +15,8 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration;
 import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
-import no.nav.security.spring.oidc.test.TokenGeneratorConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableOIDCTokenValidation(ignore = { "org.springframework" })

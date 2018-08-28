@@ -9,7 +9,6 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.http.MottakController.MOTTAK;
 import static no.nav.foreldrepenger.mottak.http.MottakPreprodController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
-import static no.nav.security.spring.oidc.test.JwtTokenGenerator.createSignedJWT;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -38,6 +37,7 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator
 import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
+import no.nav.security.oidc.test.support.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @RunWith(SpringRunner.class)
@@ -68,7 +68,7 @@ public class TestFPFordelRoundtripSerialization {
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
                 execution) -> {
             request.getHeaders().add(AUTHORIZATION, "Bearer " +
-                    createSignedJWT("12345678910").serialize());
+                    JwtTokenGenerator.createSignedJWT("12345678910").serialize());
             return execution.execute(request, body);
         }));
     }
