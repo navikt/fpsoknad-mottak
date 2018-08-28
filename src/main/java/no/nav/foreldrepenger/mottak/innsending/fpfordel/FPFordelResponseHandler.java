@@ -74,8 +74,13 @@ public class FPFordelResponseHandler {
                                 fpInfoRespons.getStatusCode(), stop(timer));
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
-                        return pollFPInfo(fpInfoRespons, ref, timer, fpFordelKvittering,
-                                pending.getPollInterval().toMillis());
+                        FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
+                        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref, fordelt.getJournalpostId(),
+                                fordelt.getSaksnummer());
+                    /*
+                     * return pollFPInfo(fpInfoRespons, ref, timer, fpFordelKvittering,
+                     * pending.getPollInterval().toMillis());
+                     */
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",
                                 fpInfoRespons.getStatusCode(),
