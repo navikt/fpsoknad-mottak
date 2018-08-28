@@ -5,18 +5,17 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
+import no.nav.foreldrepenger.mottak.innsending.AbstractFPConnection;
 
 @Component
-public class FPFordelConnection {
+public class FPFordelConnection extends AbstractFPConnection {
 
     private static final String PING_PATH = "fpfordel/internal/isReady";
 
@@ -24,12 +23,11 @@ public class FPFordelConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
 
-    private final RestTemplate template;
     private final FPFordelConfig config;
     private final FPFordelResponseHandler responseHandler;
 
     public FPFordelConnection(RestTemplate template, FPFordelConfig config, FPFordelResponseHandler responseHandler) {
-        this.template = template;
+        super(template);
         this.config = config;
         this.responseHandler = responseHandler;
     }
@@ -38,21 +36,8 @@ public class FPFordelConnection {
         return config.isEnabled();
     }
 
-    public String ping() {
-        URI pingEndpoint = endpointFor(PING_PATH);
-        LOG.info("Pinger {}", pingEndpoint);
-        try {
-            ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
-            LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
-            return response.getBody();
-        } catch (RestClientException e) {
-            LOG.warn("Kunne ikke pinge FPFordel på {}", pingEndpoint, e);
-            throw new RemoteUnavailableException(e);
-        }
-    }
-
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        URI postEndpoint = endpointFor(FPFORDEL_PATH);
+        URI postEndpoint = endpointFor(config.getUri(), FPFORDEL_PATH);
         try {
             LOG.info("Sender søknad til {}", postEndpoint);
             return responseHandler.handle(template.postForEntity(postEndpoint, payload, FPFordelKvittering.class), ref);
@@ -62,16 +47,9 @@ public class FPFordelConnection {
         }
     }
 
-    URI pingEndpoint() {
-        return endpointFor(PING_PATH);
-    }
-
-    private URI endpointFor(String path) {
-        return UriComponentsBuilder
-                .fromUriString(config.getUri())
-                .pathSegment(path)
-                .build().toUri();
-
+    @Override
+    public URI pingEndpoint() {
+        return endpointFor(config.getUri(), PING_PATH);
     }
 
     @Override

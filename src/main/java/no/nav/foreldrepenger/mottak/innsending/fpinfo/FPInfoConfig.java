@@ -8,14 +8,14 @@ import org.springframework.context.annotation.Configuration;
 public class FPInfoConfig {
 
     boolean enabled;
-    String fpinfo;
+    String url;
 
-    public String getFpinfo() {
-        return fpinfo != null ? fpinfo : "http://fpinfo";
+    public String getUrl() {
+        return url != null ? url : "http://fpinfo";
     }
 
-    public void setFpinfo(String fpinfo) {
-        this.fpinfo = fpinfo;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public boolean isEnabled() {
@@ -28,6 +28,6 @@ public class FPInfoConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [enabled=" + enabled + ", fpinfo=" + fpinfo + "]";
+        return getClass().getSimpleName() + " [enabled=" + enabled + ", fpinfo=" + url + "]";
     }
 }

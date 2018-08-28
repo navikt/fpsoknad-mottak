@@ -8,17 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class FPFordelConfig {
 
     boolean enabled;
-
     String uri;
-    String fpinfo;
-
-    public String getFpinfo() {
-        return fpinfo != null ? fpinfo : "http://fpinfo";
-    }
-
-    public void setFpinfo(String fpinfo) {
-        this.fpinfo = fpinfo;
-    }
 
     public String getUri() {
         return uri != null ? uri : "http://fpfordel";
@@ -38,7 +28,7 @@ public class FPFordelConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [enabled=" + enabled + ", uri=" + uri + ", fpinfo=" + fpinfo + "]";
+        return getClass().getSimpleName() + " [enabled=" + enabled + ", uri=" + uri + "]";
     }
 
 }

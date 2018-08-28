@@ -1,23 +1,24 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import java.net.URI;
-
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.core.env.Environment;
 
+import no.nav.foreldrepenger.mottak.innsending.AbstractFPConnection;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator {
 
-    private final URI serviceUrl;
+    private final AbstractFPConnection connection;
     private boolean isPreprodOrDev;
 
-    protected abstract void checkHealth();
-
-    public EnvironmentAwareHealthIndicator(Environment env, URI serviceUrl) {
+    public EnvironmentAwareHealthIndicator(Environment env, AbstractFPConnection connection) {
         this.isPreprodOrDev = EnvUtil.isDevOrPreprod(env);
-        this.serviceUrl = serviceUrl;
+        this.connection = connection;
+    }
+
+    protected void checkHealth() {
+        connection.ping();
     }
 
     @Override
@@ -43,12 +44,12 @@ public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator
     }
 
     private Health upWithDetails() {
-        return Health.up().withDetail("url", serviceUrl).build();
+        return Health.up().withDetail("url", connection.pingEndpoint()).build();
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [url=" + serviceUrl + "isPreprodOrDev "
+        return getClass().getSimpleName() + " [connection=" + connection + "isPreprodOrDev "
                 + isPreprodOrDev + "]";
     }
 }
