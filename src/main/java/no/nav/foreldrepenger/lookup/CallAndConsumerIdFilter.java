@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.lookup;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -11,7 +9,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -22,8 +19,6 @@ import org.springframework.web.filter.GenericFilterBean;
 public class CallAndConsumerIdFilter extends GenericFilterBean {
 
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
-
-    private static final Logger LOG = getLogger(CallAndConsumerIdFilter.class);
 
     private final UUIDCallIdGenerator generator;
 
@@ -47,13 +42,10 @@ public class CallAndConsumerIdFilter extends GenericFilterBean {
             MDC.put(NAV_CONSUMER_ID, consumerId);
         }
         if (callId != null) {
-            LOG.trace("{} is already set in request {}", generator.getCallIdKey(), callId);
             MDC.put(generator.getCallIdKey(), callId);
         }
         else {
             MDC.put(generator.getCallIdKey(), generator.create());
-            LOG.trace("{} was not set in request, now set in MDC to {}", generator.getCallIdKey(),
-                    MDC.get(generator.getCallIdKey()));
         }
     }
 }
