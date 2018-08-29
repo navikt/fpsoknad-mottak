@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.lookup.ws.ytelser.fpsak;
 
-import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-
 import java.util.List;
 
-public interface FpsakClient {
+import no.nav.foreldrepenger.lookup.Pingable;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
+import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
 
-    void ping();
+public interface FpsakClient extends Pingable {
 
     List<Ytelse> casesFor(AktorId aktor);
 

@@ -1,12 +1,11 @@
 package no.nav.foreldrepenger.lookup.ws.medl;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-
 import java.util.List;
 
-public interface MedlClient {
+import no.nav.foreldrepenger.lookup.Pingable;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 
-    void ping();
+public interface MedlClient extends Pingable {
 
     List<MedlPeriode> medlInfo(Fødselsnummer fnr);
 }

@@ -1,12 +1,11 @@
 package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-
 import java.util.List;
 
-public interface ArbeidsforholdClient {
+import no.nav.foreldrepenger.lookup.Pingable;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 
-    void ping();
+public interface ArbeidsforholdClient extends Pingable {
 
     List<Arbeidsforhold> arbeidsforhold(Fødselsnummer fnr);
 }

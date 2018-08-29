@@ -9,9 +9,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.lookup.Pingable;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.RemoteUnavailableException;
 
-public abstract class AbstractPingableRestConnection {
+public abstract class AbstractPingableRestConnection implements Pingable {
 
     private final RestTemplate template;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPingableRestConnection.class);
@@ -22,13 +23,13 @@ public abstract class AbstractPingableRestConnection {
         this.template = template;
     }
 
-    public String ping() {
+    @Override
+    public void ping() {
         URI pingEndpoint = pingEndpoint();
         try {
             LOG.info("Pinger {}", pingEndpoint);
             ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
             LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
-            return response.getBody();
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke pinge {}", pingEndpoint, e);
             throw new RemoteUnavailableException(pingEndpoint, e);

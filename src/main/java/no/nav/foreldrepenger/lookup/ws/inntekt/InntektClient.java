@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.lookup.ws.inntekt;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-
 import java.time.LocalDate;
 import java.util.List;
 
-public interface InntektClient {
+import no.nav.foreldrepenger.lookup.Pingable;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 
-    void ping();
+public interface InntektClient extends Pingable {
 
     List<Inntekt> incomeForPeriod(Fødselsnummer fnr, LocalDate from, LocalDate to);
 }

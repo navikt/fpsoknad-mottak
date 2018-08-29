@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
-public interface PersonClient {
+import no.nav.foreldrepenger.lookup.Pingable;
+
+public interface PersonClient extends Pingable {
 
     Person hentPersonInfo(ID id);
-
-    void ping();
 
 }
