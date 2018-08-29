@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,11 @@ import no.nav.security.oidc.context.OIDCRequestContextHolder;
 @RequestMapping("/oppslag")
 public class OppslagController {
 
+    @Inject
+    SaksStatusService saksClient;
+
+    @Inject
+    Environment env;
     private static final Logger LOG = getLogger(OppslagController.class);
 
     private final AktorIdClient aktorClient;
@@ -87,9 +93,25 @@ public class OppslagController {
     @GetMapping
     public ResponseEntity<Søkerinfo> essensiellSøkerinfo() {
         Fødselsnummer fnr = fnrFromClaims();
-        Person person = personClient.hentPersonInfo(new ID(aktorClient.aktorIdForFnr(fnr), fnr));
+        AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
+        if (EnvUtil.isDevOrPreprod(env)) {
+            hentSaker(aktorId);
+        }
+        else {
+            LOG.info("Henter ikke saker for {}", aktorId);
+        }
+        Person person = personClient.hentPersonInfo(new ID(aktorId, fnr));
         List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
         return ok(new Søkerinfo(person, arbeidsforhold));
+    }
+
+    private void hentSaker(AktorId aktorId) {
+        try {
+            LOG.info("Henter saker for {}", aktorId);
+            saksClient.hentSaker(aktorId);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke hente saker for {}", aktorId, e);
+        }
     }
 
     @GetMapping(value = "/saker", produces = APPLICATION_JSON_VALUE)
