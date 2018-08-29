@@ -33,7 +33,7 @@ public abstract class EnvironmentAwareServiceHealthIndicator implements HealthIn
     }
 
     private Health downWithDetails(Exception e) {
-        return Health.down().withException(e).build();
+        return Health.down().withDetail("url", serviceUrl).withException(e).build();
     }
 
     private boolean isPreprodOrDev(Environment env) {
