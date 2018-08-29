@@ -4,15 +4,15 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.core.env.Environment;
 
-import no.nav.foreldrepenger.mottak.innsending.AbstractFPConnection;
+import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator {
 
-    private final AbstractFPConnection connection;
+    private final AbstractRestConnection connection;
     private boolean isPreprodOrDev;
 
-    public EnvironmentAwareHealthIndicator(Environment env, AbstractFPConnection connection) {
+    public EnvironmentAwareHealthIndicator(Environment env, AbstractRestConnection connection) {
         this.isPreprodOrDev = EnvUtil.isDevOrPreprod(env);
         this.connection = connection;
     }

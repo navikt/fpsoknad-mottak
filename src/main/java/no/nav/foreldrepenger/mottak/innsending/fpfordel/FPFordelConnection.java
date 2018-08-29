@@ -12,10 +12,10 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
-import no.nav.foreldrepenger.mottak.innsending.AbstractFPConnection;
+import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 
 @Component
-public class FPFordelConnection extends AbstractFPConnection {
+public class FPFordelConnection extends AbstractRestConnection {
 
     private static final String PING_PATH = "fpfordel/internal/isReady";
 
@@ -43,7 +43,7 @@ public class FPFordelConnection extends AbstractFPConnection {
             return responseHandler.handle(template.postForEntity(postEndpoint, payload, FPFordelKvittering.class), ref);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
-            throw new RemoteUnavailableException(e);
+            throw new RemoteUnavailableException(postEndpoint, e);
         }
     }
 

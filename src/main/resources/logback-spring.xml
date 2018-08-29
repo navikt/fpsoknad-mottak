@@ -19,6 +19,6 @@
      <springProfile name="dev,preprod">
         <logger name="org.springframework.web.client" level="info" />
         <logger name="no.nav.foreldrepenger" level="trace" />
-        <logger name="no.nav.security" level="trace" />
+        <logger name="no.nav.security" level="info" />
     </springProfile>
 </configuration>

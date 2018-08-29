@@ -5,10 +5,10 @@ import java.net.URI;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.foreldrepenger.mottak.innsending.AbstractFPConnection;
+import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 
 @Component
-public class FPInfoConnection extends AbstractFPConnection {
+public class FPInfoConnection extends AbstractRestConnection {
 
     private static final String PING_PATH = "fpinfo/internal/isReady";
 

@@ -11,14 +11,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
 
-public abstract class AbstractFPConnection {
+public abstract class AbstractRestConnection {
 
     protected final RestTemplate template;
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractFPConnection.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
     public abstract URI pingEndpoint();
 
-    public AbstractFPConnection(RestTemplate template) {
+    public AbstractRestConnection(RestTemplate template) {
         this.template = template;
     }
 
