@@ -1,0 +1,28 @@
+management :
+   endpoints.web.exposure.include:  '*'
+   endpoint: 
+     health.show-details : always
+     security.enabled : false
+                
+no.nav.security.oidc:
+  issuers: selvbetjening
+  issuer:
+    selvbetjening.discoveryurl: http://metadata
+    selvbetjening.accepted_audience: aud-localhost
+    selvbetjening.cookie_name: localhost-idtoken
+
+securitytokenservice.uri:  http://localhost
+fpselvbetjening:
+    username: something
+    password: bogus
+virksomhet:
+    inntekt.v3.endpointurl:  http://localhost
+    foreldrepengesak.v1.endpointurl:  http://localhost
+    infotrygdsak.v1.endpointurl: http://localhost
+    person.v3.endpointurl: http://localhost
+    ytelseskontrakt.v3.endpointurl: http://localhost
+    arbeidsforhold.v34.endpointurl:  http://localhost
+    medlemskap.v2.endpointurl: http://localhost
+    organisasjon.v5.endpointurl: http://localhost
+    
+aktoer.v2.endpointurl: http://localhost
