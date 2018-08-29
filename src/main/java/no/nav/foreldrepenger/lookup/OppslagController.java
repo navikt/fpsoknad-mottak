@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,7 +96,7 @@ public class OppslagController {
         Fødselsnummer fnr = fnrFromClaims();
         AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
         if (EnvUtil.isDevOrPreprod(env)) {
-            hentSaker(aktorId);
+            LOG.debug("Fikk saker {}", hentSaker(aktorId));
         }
         else {
             LOG.info("Henter ikke saker for {}", aktorId);
@@ -105,12 +106,13 @@ public class OppslagController {
         return ok(new Søkerinfo(person, arbeidsforhold));
     }
 
-    private void hentSaker(AktorId aktorId) {
+    private List<FPInfoSakStatus> hentSaker(AktorId aktorId) {
         try {
             LOG.info("Henter saker for {}", aktorId);
-            saksClient.hentSaker(aktorId);
+            return saksClient.hentSaker(aktorId);
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente saker for {}", aktorId, e);
+            return Collections.emptyList();
         }
     }
 
