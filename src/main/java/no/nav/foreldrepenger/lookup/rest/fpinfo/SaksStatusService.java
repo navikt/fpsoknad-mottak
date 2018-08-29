@@ -8,5 +8,5 @@ public interface SaksStatusService {
 
     BehandlingsStatus hentBehandlingsStatus(String behandlingsId);
 
-    List<FPInfoSakStatus> hentSaker(String id, FPInfoFagsakYtelseType... typer);
+    List<FPInfoSakStatus> hentSaker(String id, String... behandlingstemaer);
 }

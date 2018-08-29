@@ -26,8 +26,6 @@ import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoBehandlingsTema;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoBehandlingsType;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoBehandlingsÅrsakType;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoFagsakStatus;
-import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoFagsakYtelseType;
-import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoFagsakÅrsak;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoSakStatus;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -49,8 +47,7 @@ public class TestFPInfoSerialization {
 
     @Test
     public void testFPInfoKvittering() throws Exception {
-        FPInfoSakStatus status = new FPInfoSakStatus("42", FPInfoFagsakStatus.LOP, FPInfoFagsakÅrsak.TERM,
-                FPInfoFagsakYtelseType.FP, "1", "2", "3");
+        FPInfoSakStatus status = new FPInfoSakStatus("42", FPInfoFagsakStatus.LOP, "Tema", "1", "2", null);
         test(status, true, mapper);
     }
 
@@ -67,7 +64,6 @@ public class TestFPInfoSerialization {
     public void testBehandlingsType() throws Exception {
         test(FPInfoBehandlingsÅrsakType.BERØRT_BEHANDLING, true, mapper);
         test(FPInfoBehandlingsType.BT002, true, mapper);
-
     }
 
     private void test(Object object, boolean print) {

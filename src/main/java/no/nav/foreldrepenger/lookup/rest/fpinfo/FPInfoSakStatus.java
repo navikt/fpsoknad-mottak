@@ -1,6 +1,10 @@
 package no.nav.foreldrepenger.lookup.rest.fpinfo;
 
+import static java.util.Collections.emptyList;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,27 +12,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FPInfoSakStatus {
     private final String saksnummer;
     private final FPInfoFagsakStatus fagsakStatus;
-    private final FPInfoFagsakÅrsak fagsakÅrsak;
-    private final FPInfoFagsakYtelseType fagsakYtelseType;
+    private final String behandlingsTema;
     private final String aktørId;
     private final String aktørIdAnnenPart;
-    private final String aktørIdBarn;
+    private final List<String> aktørIdBarn;
 
     @JsonCreator
     public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("fagsakStatus") FPInfoFagsakStatus fagsakStatus,
-            @JsonProperty("fagsakÅrsak") FPInfoFagsakÅrsak fagsakÅrsak,
-            @JsonProperty("fagsakYtelseType") FPInfoFagsakYtelseType fagsakYtelseType,
+            @JsonProperty("behandlingsTema") String behandlingsTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
-            @JsonProperty("aktørIdBarn") String aktørIdBarn) {
+            @JsonProperty("aktørIdBarn") List<String> aktørIdBarn) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
-        this.fagsakÅrsak = fagsakÅrsak;
-        this.fagsakYtelseType = fagsakYtelseType;
+        this.behandlingsTema = behandlingsTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
-        this.aktørIdBarn = aktørIdBarn;
+        this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
     }
 
     public String getSaksnummer() {
@@ -37,14 +38,6 @@ public class FPInfoSakStatus {
 
     public FPInfoFagsakStatus getFagsakStatus() {
         return fagsakStatus;
-    }
-
-    public FPInfoFagsakÅrsak getFagsakÅrsak() {
-        return fagsakÅrsak;
-    }
-
-    public FPInfoFagsakYtelseType getFagsakYtelseType() {
-        return fagsakYtelseType;
     }
 
     public String getAktørId() {
@@ -57,7 +50,7 @@ public class FPInfoSakStatus {
 
     @Override
     public int hashCode() {
-        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, fagsakYtelseType, fagsakÅrsak,
+        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, behandlingsTema,
                 saksnummer);
     }
 
@@ -90,10 +83,9 @@ public class FPInfoSakStatus {
             return false;
         if (fagsakStatus != other.fagsakStatus)
             return false;
-        if (fagsakYtelseType != other.fagsakYtelseType)
+        if (behandlingsTema != other.behandlingsTema)
             return false;
-        if (fagsakÅrsak != other.fagsakÅrsak)
-            return false;
+
         if (saksnummer == null) {
             if (other.saksnummer != null)
                 return false;
@@ -103,16 +95,15 @@ public class FPInfoSakStatus {
         return true;
     }
 
-    public String getAktørIdBarn() {
+    public List<String> getAktørIdBarn() {
         return aktørIdBarn;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [saksnummeret=" + saksnummer + ", fagsakStatus=" + fagsakStatus
-                + ", fagsakÅrsak="
-                + fagsakÅrsak + ", fagsakYtelseType=" + fagsakYtelseType + ", aktørId=" + aktørId
-                + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn=" + aktørIdBarn + "]";
+        return "FPInfoSakStatus [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus + ", behandlingsTema="
+                + behandlingsTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn="
+                + aktørIdBarn + "]";
     }
 
 }

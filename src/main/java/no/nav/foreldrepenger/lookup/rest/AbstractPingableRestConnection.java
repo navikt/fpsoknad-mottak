@@ -31,7 +31,7 @@ public abstract class AbstractPingableRestConnection {
             return response.getBody();
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke pinge {}", pingEndpoint, e);
-            throw new RemoteUnavailableException(e);
+            throw new RemoteUnavailableException(pingEndpoint, e);
         }
     }
 

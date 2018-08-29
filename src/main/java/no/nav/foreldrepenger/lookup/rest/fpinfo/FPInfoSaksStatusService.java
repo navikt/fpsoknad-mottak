@@ -32,13 +32,12 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     }
 
     @Override
-    public List<FPInfoSakStatus> hentSaker(String id, FPInfoFagsakYtelseType... typer) {
+    public List<FPInfoSakStatus> hentSaker(String id, String... behandlingstemaer) {
         URI uri = uri("sak", httpHeaders("aktorId", id));
         try {
-            LOG.info("Henter ikke-avsluttede saker med type{} {} fra {}", typer.length == 0 ? "" : "r",
-                    Arrays.stream(typer).map(s -> s.name()).collect(joining(",")), uri);
+            LOG.info("Henter ikke-avsluttede saker med tema{} {} fra {}", behandlingstemaer.length == 0 ? "" : "er",
+                    Arrays.stream(behandlingstemaer).collect(joining(",")), uri);
             return Arrays.stream(template.getForObject(uri, FPInfoSakStatus[].class))
-                    .filter(s -> s.getFagsakYtelseType().equals(FPInfoFagsakYtelseType.FP))
                     .filter(s -> !s.getFagsakStatus().equals(FPInfoFagsakStatus.AVSLU))
                     .collect(toList());
         } catch (Exception e) {

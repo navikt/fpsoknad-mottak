@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoFagsakYtelseType;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoSakStatus;
 import no.nav.foreldrepenger.lookup.rest.fpinfo.SaksStatusService;
 import no.nav.foreldrepenger.lookup.ws.Søkerinfo;
@@ -95,11 +94,7 @@ public class OppslagController {
 
     @GetMapping(value = "/saker", produces = APPLICATION_JSON_VALUE)
     public List<FPInfoSakStatus> saker() {
-        return saksStatusService.hentSaker(id(), FPInfoFagsakYtelseType.FP);
-    }
-
-    private String id() {
-        return aktorClient.aktorIdForFnr(fnrFromClaims()).getAktør();
+        return saksStatusService.hentSaker(id());
     }
 
     @GetMapping(value = "/aktor")
@@ -118,6 +113,10 @@ public class OppslagController {
             throw new ForbiddenException("Fant ikke FNR i token");
         }
         return new Fødselsnummer(fnrFromClaims);
+    }
+
+    private String id() {
+        return aktorClient.aktorIdForFnr(fnrFromClaims()).getAktør();
     }
 
     private static String registerNavn(Pingable register) {
