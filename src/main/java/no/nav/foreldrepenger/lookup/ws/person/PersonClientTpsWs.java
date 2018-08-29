@@ -1,5 +1,18 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
@@ -12,16 +25,6 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 public class PersonClientTpsWs implements PersonClient {
 
@@ -53,10 +56,22 @@ public class PersonClientTpsWs implements PersonClient {
     @Override
     public Person hentPersonInfo(ID id) {
         try {
-            LOG.info("Doing person lookup");
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Slår opp person fra {}", id);
+            }
+            else {
+                LOG.info("Slår opp person");
+            }
             HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(request).getPerson();
-            return person(id, tpsPerson, barnFor(tpsPerson));
+            Person p = person(id, tpsPerson, barnFor(tpsPerson));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Fant person {}", p);
+            }
+            else {
+                LOG.info("Fant en person OK");
+            }
+            return p;
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
             throw new RuntimeException(ex);
@@ -95,17 +110,18 @@ public class PersonClientTpsWs implements PersonClient {
         NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
         if (RequestUtils.isFnr(id)) {
             Fødselsnummer fnrBarn = new Fødselsnummer(id.getIdent());
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsBarn = hentPerson(RequestUtils.request(fnrBarn, FAMILIERELASJONER)).getPerson();
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsBarn = hentPerson(
+                    RequestUtils.request(fnrBarn, FAMILIERELASJONER)).getPerson();
 
             AnnenForelder annenForelder = tpsBarn.getHarFraRolleI().stream()
-                .filter(this::isForelder)
-                .map(this::toFødselsnummer)
-                .filter(Objects::nonNull)
-                .filter(fnr -> !fnr.equals(fnrSøker))
-                .map(fnr -> hentPerson(RequestUtils.request(fnr)).getPerson())
-                .map(PersonMapper::annenForelder)
-                .findFirst()
-                .orElse(null);
+                    .filter(this::isForelder)
+                    .map(this::toFødselsnummer)
+                    .filter(Objects::nonNull)
+                    .filter(fnr -> !fnr.equals(fnrSøker))
+                    .map(fnr -> hentPerson(RequestUtils.request(fnr)).getPerson())
+                    .map(PersonMapper::annenForelder)
+                    .findFirst()
+                    .orElse(null);
 
             return barn(id, fnrSøker, tpsBarn, annenForelder);
         }
@@ -116,7 +132,8 @@ public class PersonClientTpsWs implements PersonClient {
         NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
         if (RequestUtils.isFnr(id)) {
             return new Fødselsnummer(id.getIdent());
-        } else {
+        }
+        else {
             return null;
         }
     }

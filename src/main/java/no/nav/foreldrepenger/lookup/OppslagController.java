@@ -131,7 +131,7 @@ public class OppslagController {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [aktorClient=" + aktorClient + ", personClient=" + personClient
-                + ", aaregClient=" + arbeidsforholdClient + ", contextHolder=" + contextHolder + "]";
+                + ", aaregClient=" + arbeidsforholdClient + "]";
     }
 
 }

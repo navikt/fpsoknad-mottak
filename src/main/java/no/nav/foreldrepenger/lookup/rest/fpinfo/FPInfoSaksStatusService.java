@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,16 +43,6 @@ public class FPInfoSaksStatusService implements SaksStatusService {
             LOG.warn("Kunne ikke hente saker fra {}", uri, e);
             return Collections.emptyList();
         }
-    }
-
-    @Override
-    public Vedtak hentVedtak(String behandlingsId) {
-        throw new NotImplementedException("vedtak");
-    }
-
-    @Override
-    public BehandlingsStatus hentBehandlingsStatus(String behandlingsId) {
-        throw new NotImplementedException("behandlingsstatus");
     }
 
     private URI uri(String pathSegment, HttpHeaders queryParams) {
