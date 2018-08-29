@@ -5,10 +5,10 @@ import java.net.URI;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.foreldrepenger.lookup.rest.AbstractRestConnection;
+import no.nav.foreldrepenger.lookup.rest.AbstractPingableRestConnection;
 
 @Component
-public class FPInfoConnection extends AbstractRestConnection {
+public class FPInfoConnection extends AbstractPingableRestConnection {
 
     private static final String PING_PATH = "fpinfo/internal/isReady";
 
@@ -30,7 +30,7 @@ public class FPInfoConnection extends AbstractRestConnection {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", config=" + config + "]";
+        return getClass().getSimpleName() + "config=" + config + "]";
     }
 
 }

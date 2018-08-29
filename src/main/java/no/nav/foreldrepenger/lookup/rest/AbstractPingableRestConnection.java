@@ -11,14 +11,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.lookup.rest.fpinfo.RemoteUnavailableException;
 
-public abstract class AbstractRestConnection {
+public abstract class AbstractPingableRestConnection {
 
-    protected final RestTemplate template;
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
+    private final RestTemplate template;
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPingableRestConnection.class);
 
-    public abstract URI pingEndpoint();
+    protected abstract URI pingEndpoint();
 
-    public AbstractRestConnection(RestTemplate template) {
+    public AbstractPingableRestConnection(RestTemplate template) {
         this.template = template;
     }
 
@@ -30,7 +30,7 @@ public abstract class AbstractRestConnection {
             LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
             return response.getBody();
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke pinge FPInfo på {}", pingEndpoint, e);
+            LOG.warn("Kunne ikke pinge {}", pingEndpoint, e);
             throw new RemoteUnavailableException(e);
         }
     }
