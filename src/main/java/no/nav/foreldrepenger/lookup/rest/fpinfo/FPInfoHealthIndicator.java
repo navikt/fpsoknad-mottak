@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.lookup.EnvironmentAwareServiceHealthIndicator;
 
 @Component
-public class FPFordelHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
+public class FPInfoHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
     private final FPInfoConnection connection;
 
-    public FPFordelHealthIndicator(Environment env, FPInfoConnection connection) {
+    public FPInfoHealthIndicator(Environment env, FPInfoConnection connection) {
         super(env, connection.pingEndpoint());
         this.connection = connection;
     }
