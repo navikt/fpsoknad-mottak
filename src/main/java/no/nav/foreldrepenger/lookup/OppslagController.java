@@ -63,7 +63,7 @@ public class OppslagController {
     @Unprotected
     @GetMapping(value = "/ping", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping(
-            @RequestParam(name = "register", defaultValue = "all", required = false) Pingable register) {
+            @RequestParam(name = "register", defaultValue = "all", required = false) PingableRegisters register) {
         LOG.info("Vil pinge register {}", register);
         switch (register) {
         case aareg:
@@ -119,10 +119,10 @@ public class OppslagController {
         return aktorClient.aktorIdForFnr(fnrFromClaims()).getAktør();
     }
 
-    private static String registerNavn(Pingable register) {
-        return register.equals(Pingable.all)
-                ? Arrays.stream(Pingable.values())
-                        .map(Pingable::name)
+    private static String registerNavn(PingableRegisters register) {
+        return register.equals(PingableRegisters.all)
+                ? Arrays.stream(PingableRegisters.values())
+                        .map(PingableRegisters::name)
                         .filter(s -> s != "all")
                         .collect(Collectors.joining(","))
                 : register.name();

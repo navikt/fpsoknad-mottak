@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.lookup.rest.fpinfo;
 
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoFagsakStatus.AVSLU;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -15,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
 @Service
 public class FPInfoSaksStatusService implements SaksStatusService {
@@ -31,13 +33,17 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     }
 
     @Override
-    public List<FPInfoSakStatus> hentSaker(String id, String... behandlingstemaer) {
+    public List<FPInfoSakStatus> hentSaker(AktorId id) {
+        return hentSaker(id.getAktør());
+    }
+
+    @Override
+    public List<FPInfoSakStatus> hentSaker(String id) {
         URI uri = uri("sak", httpHeaders("aktorId", id));
         try {
-            LOG.info("Henter ikke-avsluttede saker med tema{} {} fra {}", behandlingstemaer.length == 0 ? "" : "er",
-                    Arrays.stream(behandlingstemaer).collect(joining(",")), uri);
+            LOG.info("Henter ikke-avsluttede saker fra {}", uri);
             return Arrays.stream(template.getForObject(uri, FPInfoSakStatus[].class))
-                    .filter(s -> !s.getFagsakStatus().equals(FPInfoFagsakStatus.AVSLU))
+                    .filter(s -> !s.getFagsakStatus().equals(AVSLU))
                     .collect(toList());
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente saker fra {}", uri, e);
@@ -63,4 +69,5 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     public String toString() {
         return getClass().getSimpleName() + " [baseURI=" + baseURI + ", template=" + template + "]";
     }
+
 }

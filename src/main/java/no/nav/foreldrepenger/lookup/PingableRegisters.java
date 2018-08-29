@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.lookup;
 
-public enum Pingable {
+public enum PingableRegisters {
     aareg, aktør, tps, all
 
 }
