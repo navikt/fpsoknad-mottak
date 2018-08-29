@@ -25,7 +25,7 @@ public class FPInfoConnection extends AbstractRestConnection {
 
     @Override
     public URI pingEndpoint() {
-        return endpointFor(config.getFpinfo(), PING_PATH);
+        return endpointFor(config.getBaseURL(), PING_PATH);
     }
 
     @Override

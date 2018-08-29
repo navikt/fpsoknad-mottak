@@ -12,7 +12,7 @@ public class FPInfoConfiguration {
     public RestTemplate restTemplate(FPInfoConfig cfg, ClientHttpRequestInterceptor... interceptors) {
 
         RestTemplate template = new RestTemplateBuilder()
-                .rootUri(cfg.getFpinfo())
+                .rootUri(cfg.getBaseURL())
                 .interceptors(interceptors)
                 .errorHandler(new FPInfoResponseErrorHandler())
                 .build();
