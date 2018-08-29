@@ -55,6 +55,9 @@ public class PersonController {
         if (EnvUtil.isDevOrPreprod(env)) {
             hentSaker(aktorId);
         }
+        else {
+            LOG.info("Henter ikke saker for {}", aktorId);
+        }
         return ok(personClient.hentPersonInfo(new ID(aktorId, fnr)));
     }
 
