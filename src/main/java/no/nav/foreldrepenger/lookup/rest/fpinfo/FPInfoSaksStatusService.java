@@ -64,7 +64,7 @@ public class FPInfoSaksStatusService implements SaksStatusService {
                 .pathSegment(behandlingsLink.getHref())
                 .build()
                 .toUri();
-        URi uri = URI.create(baseURI + behandlingsLink.getHref());
+        URI uri = URI.create(baseURI + behandlingsLink.getHref());
         try {
             LOG.info("Henter behandlinger for sak {} fra {}  generert fra {}", saksnr, uri, behandlingsLink.getHref());
             Behandling behandling = template.getForObject(uri, Behandling.class);
