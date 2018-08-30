@@ -14,13 +14,13 @@ public class PersonConfiguration extends WsClient<PersonV3> {
     @Bean
     @Qualifier("personV3")
     public PersonV3 personV3(@Value("${VIRKSOMHET_PERSON_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPort(serviceUrl, PersonV3.class);
+        return createPortForExternalUser(serviceUrl, PersonV3.class);
     }
 
     @Bean
     @Qualifier("healthIndicatorPerson")
     public PersonV3 healthIndicatorPerson(@Value("${VIRKSOMHET_PERSON_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, PersonV3.class);
+        return createPortForSystemUser(serviceUrl, PersonV3.class);
     }
 
     @Bean

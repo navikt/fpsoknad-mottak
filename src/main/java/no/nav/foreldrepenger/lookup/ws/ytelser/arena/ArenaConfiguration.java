@@ -17,14 +17,14 @@ public class ArenaConfiguration extends WsClient<YtelseskontraktV3> {
     @Qualifier("YtelseskontraktV3")
     public YtelseskontraktV3 YtelseskontraktV3(
             @Value("${VIRKSOMHET_YTELSESKONTRAKT_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPort(serviceUrl, YtelseskontraktV3.class);
+        return createPortForExternalUser(serviceUrl, YtelseskontraktV3.class);
     }
 
     @Bean
     @Qualifier("healthIndicatorArena")
     public YtelseskontraktV3 healthIndicatorArena(
             @Value("${VIRKSOMHET_YTELSESKONTRAKT_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, YtelseskontraktV3.class);
+        return createPortForSystemUser(serviceUrl, YtelseskontraktV3.class);
     }
 
     @Bean

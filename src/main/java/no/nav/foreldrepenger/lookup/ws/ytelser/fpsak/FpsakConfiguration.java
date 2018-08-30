@@ -14,14 +14,14 @@ public class FpsakConfiguration extends WsClient<ForeldrepengesakV1> {
     @Bean
     @Qualifier("fpsakV1")
     public ForeldrepengesakV1 fpsakV1(@Value("${VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL}") String serviceUrl) {
-        return createPort(serviceUrl, ForeldrepengesakV1.class);
+        return createPortForExternalUser(serviceUrl, ForeldrepengesakV1.class);
     }
 
     @Bean
     @Qualifier("healthIndicatorFpsak")
     public ForeldrepengesakV1 healthIndicatorFpsak(
             @Value("${VIRKSOMHET_FORELDREPENGESAK_V1_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, ForeldrepengesakV1.class);
+        return createPortForSystemUser(serviceUrl, ForeldrepengesakV1.class);
     }
 
     @Bean

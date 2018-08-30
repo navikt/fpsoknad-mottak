@@ -21,13 +21,13 @@ public class WsClient<T> {
     @Inject
     private OnBehalfOfOutInterceptor onBehalfOfOutInterceptor;
     
-    public T createPort(String serviceUrl, Class<?> portType) {
+    public T createPortForExternalUser(String serviceUrl, Class<?> portType) {
         T port  = createAndConfigurePort(serviceUrl, portType);
         endpointStsClientConfig.configureRequestSamlTokenOnBehalfOfOidc(port, onBehalfOfOutInterceptor);
         return port;
     }
     
-    public T createPortForHealthIndicator(String serviceUrl, Class<?> portType) {
+    public T createPortForSystemUser(String serviceUrl, Class<?> portType) {
         T port  = createAndConfigurePort(serviceUrl, portType);
         endpointStsClientConfig.configureRequestSamlToken(port);
         return port;

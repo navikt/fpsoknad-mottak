@@ -14,14 +14,14 @@ public class InfotrygdConfiguration extends WsClient<InfotrygdSakV1> {
     @Bean
     @Qualifier("infotrygdSakV1")
     public InfotrygdSakV1 infotrygdSakV1(@Value("${VIRKSOMHET_INFOTRYGDSAK_V1_ENDPOINTURL}") String serviceUrl) {
-        return createPort(serviceUrl, InfotrygdSakV1.class);
+        return createPortForSystemUser(serviceUrl, InfotrygdSakV1.class);
     }
 
     @Bean
     @Qualifier("healthIndicatorInfotrygd")
     public InfotrygdSakV1 healthIndicatorInfotrygd(
             @Value("${VIRKSOMHET_INFOTRYGDSAK_V1_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, InfotrygdSakV1.class);
+        return createPortForSystemUser(serviceUrl, InfotrygdSakV1.class);
     }
 
     @Bean
