@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,8 @@ public class TestFPInfoSerialization {
 
     @Test
     public void testFPInfoKvittering() throws Exception {
-        FPInfoSakStatus status = new FPInfoSakStatus("42", FPInfoFagsakStatus.LOP, "Tema", "1", "2", null);
+        FPInfoSakStatus status = new FPInfoSakStatus("42", FPInfoFagsakStatus.LOP, "Tema", "1", "2",
+                Collections.emptyList(), Collections.emptyList());
         test(status, true, mapper);
     }
 
