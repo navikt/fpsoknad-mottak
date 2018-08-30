@@ -45,6 +45,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoForsendelsesStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.SaksStatusPoller;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -68,6 +69,9 @@ public class FPFordelTest {
     private Oppslag oppslag;
     @Mock
     private FPFordelConfig cfg;
+
+    @Mock
+    private SaksStatusPoller poller;
 
     private ResponseEntity<FPFordelKvittering> pollReceipt202, pollReceipt200;
     private ResponseEntity<FPFordelKvittering> goysReceipt;
@@ -102,7 +106,7 @@ public class FPFordelTest {
                 søknadGenerator,
                 pdfGenerator);
         return new FPFordelSøknadSender(
-                new FPFordelConnection(template, cfg, new FPFordelResponseHandler(template, 3)),
+                new FPFordelConnection(template, cfg, new FPFordelResponseHandler(template, 3, poller)),
                 konvoluttGenerator,
                 new CallIdGenerator("Nav-CallId"));
     }
