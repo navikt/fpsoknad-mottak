@@ -28,7 +28,7 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     private final URI baseURI;
     private final RestTemplate template;
 
-    public FPInfoSaksStatusService(@Value("${fpinfo.baseuri:http://fpinfo/fpinfo}") URI baseURI,
+    public FPInfoSaksStatusService(@Value("${fpinfo.baseuri:http://fpinfo}") URI baseURI,
             RestTemplate template) {
         this.baseURI = baseURI;
         this.template = template;
