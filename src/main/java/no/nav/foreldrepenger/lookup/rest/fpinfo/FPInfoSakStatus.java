@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FPInfoSakStatus {
     private final String saksnummer;
     private final FPInfoFagsakStatus fagsakStatus;
-    private final String behandlingsTema;
+    private final String behandlingTema;
     private final String aktørId;
     private final String aktørIdAnnenPart;
     private final List<String> aktørIdBarn;
@@ -20,13 +20,13 @@ public class FPInfoSakStatus {
     @JsonCreator
     public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("fagsakStatus") FPInfoFagsakStatus fagsakStatus,
-            @JsonProperty("behandlingsTema") String behandlingsTema,
+            @JsonProperty("behandlingTema") String behandlingsTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
-        this.behandlingsTema = behandlingsTema;
+        this.behandlingTema = behandlingsTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
@@ -50,7 +50,7 @@ public class FPInfoSakStatus {
 
     @Override
     public int hashCode() {
-        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, behandlingsTema,
+        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, behandlingTema,
                 saksnummer);
     }
 
@@ -83,7 +83,7 @@ public class FPInfoSakStatus {
             return false;
         if (fagsakStatus != other.fagsakStatus)
             return false;
-        if (behandlingsTema != other.behandlingsTema)
+        if (behandlingTema != other.behandlingTema)
             return false;
 
         if (saksnummer == null) {
@@ -101,9 +101,13 @@ public class FPInfoSakStatus {
 
     @Override
     public String toString() {
-        return "FPInfoSakStatus [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus + ", behandlingsTema="
-                + behandlingsTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn="
+        return "FPInfoSakStatus [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus + ", behandlingTema="
+                + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn="
                 + aktørIdBarn + "]";
+    }
+
+    public String getBehandlingTema() {
+        return behandlingTema;
     }
 
 }
