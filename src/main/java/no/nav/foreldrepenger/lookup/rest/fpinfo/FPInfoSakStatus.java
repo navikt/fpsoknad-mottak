@@ -16,6 +16,7 @@ public class FPInfoSakStatus {
     private final String aktørId;
     private final String aktørIdAnnenPart;
     private final List<String> aktørIdBarn;
+    private final List<BehandlingsLinker> lenker;
 
     @JsonCreator
     public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
@@ -23,13 +24,19 @@ public class FPInfoSakStatus {
             @JsonProperty("behandlingTema") String behandlingsTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
-            @JsonProperty("aktørIdBarn") List<String> aktørIdBarn) {
+            @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
+            @JsonProperty("lenker") List<BehandlingsLinker> lenker) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingsTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
+        this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
+    }
+
+    public List<BehandlingsLinker> getLenker() {
+        return lenker;
     }
 
     public String getSaksnummer() {
@@ -99,15 +106,16 @@ public class FPInfoSakStatus {
         return aktørIdBarn;
     }
 
-    @Override
-    public String toString() {
-        return "FPInfoSakStatus [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus + ", behandlingTema="
-                + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn="
-                + aktørIdBarn + "]";
-    }
-
     public String getBehandlingTema() {
         return behandlingTema;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
+                + ", behandlingTema="
+                + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn="
+                + aktørIdBarn + ", lenker=" + lenker + "]";
     }
 
 }

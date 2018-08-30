@@ -5,7 +5,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +95,8 @@ public class OppslagController {
         Fødselsnummer fnr = fnrFromClaims();
         AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
         if (EnvUtil.isDevOrPreprod(env)) {
-            LOG.debug("Fikk saker {}", hentSaker(aktorId));
+            LOG.info("Henter saker for {}", aktorId);
+            LOG.debug("Fikk saker {}", saksStatusService.hentSaker(aktorId));
         }
         else {
             LOG.info("Henter ikke saker for {}", aktorId);
@@ -104,16 +104,6 @@ public class OppslagController {
         Person person = personClient.hentPersonInfo(new ID(aktorId, fnr));
         List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
         return ok(new Søkerinfo(person, arbeidsforhold));
-    }
-
-    private List<FPInfoSakStatus> hentSaker(AktorId aktorId) {
-        try {
-            LOG.info("Henter saker for {}", aktorId);
-            return saksClient.hentSaker(aktorId);
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke hente saker for {}", aktorId, e);
-            return Collections.emptyList();
-        }
     }
 
     @GetMapping(value = "/saker", produces = APPLICATION_JSON_VALUE)
