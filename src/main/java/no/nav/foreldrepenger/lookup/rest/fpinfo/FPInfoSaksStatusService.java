@@ -60,12 +60,13 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     }
 
     private Behandling behandling(String saksnr, BehandlingsLenke behandlingsLink) {
-        URI uri = UriComponentsBuilder.fromUri(baseURI)
+        URI uri1 = UriComponentsBuilder.fromUri(baseURI)
                 .pathSegment(behandlingsLink.getHref())
                 .build()
                 .toUri();
+        URi uri = URI.create(baseURI + behandlingsLink.getHref());
         try {
-            LOG.info("Henter behandlinger for sak {} fra {}", saksnr, uri);
+            LOG.info("Henter behandlinger for sak {} fra {}  generert fra {}", saksnr, uri, behandlingsLink.getHref());
             Behandling behandling = template.getForObject(uri, Behandling.class);
             LOG.info("Fant behandling {}", behandling);
             return behandling;
