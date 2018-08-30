@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,12 @@ import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 public class FPInfoSaksStatusService implements SaksStatusService {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoSaksStatusService.class);
+    private static final String PATH = "fpinfo/api/dokumentforsendelse/";
 
     private final URI baseURI;
     private final RestTemplate template;
 
-    public FPInfoSaksStatusService(@Value("${fpinfo.baseuri:http://fpinfo/fpinfo/api/dokumentforsendelse}") URI baseURI,
+    public FPInfoSaksStatusService(@Value("${fpinfo.baseuri:http://fpinfo/fpinfo}") URI baseURI,
             RestTemplate template) {
         this.baseURI = baseURI;
         this.template = template;
@@ -39,15 +41,37 @@ public class FPInfoSaksStatusService implements SaksStatusService {
 
     @Override
     public List<FPInfoSakStatus> hentSaker(String id) {
-        URI uri = uri("sak", httpHeaders("aktorId", id));
+        URI uri = uri(PATH + "sak", httpHeaders("aktorId", id));
         try {
             LOG.info("Henter ikke-avsluttede saker fra {}", uri);
-            return Arrays.stream(template.getForObject(uri, FPInfoSakStatus[].class))
+            List<FPInfoSakStatus> saker = Arrays.stream(template.getForObject(uri, FPInfoSakStatus[].class))
                     .filter(s -> !s.getFagsakStatus().equals(AVSLU))
                     .collect(toList());
+            saker.stream().forEach(this::behandlinger);
+            return saker;
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente saker fra {}", uri, e);
             return Collections.emptyList();
+        }
+    }
+
+    private List<Behandling> behandlinger(FPInfoSakStatus sak) {
+        return sak.getLenker().stream().map(s -> behandling(sak.getSaksnummer(), s)).collect(Collectors.toList());
+    }
+
+    private Behandling behandling(String saksnr, BehandlingsLenke behandlingsLink) {
+        URI uri = UriComponentsBuilder.fromUri(baseURI)
+                .pathSegment(behandlingsLink.getHref())
+                .build()
+                .toUri();
+        try {
+            LOG.info("Henter behandlinger for sak {} fra {}", saksnr, uri);
+            Behandling behandling = template.getForObject(uri, Behandling.class);
+            LOG.info("Fant behandling {}", behandling);
+            return behandling;
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke hente behandling fra {}", uri, e);
+            return null;
         }
     }
 
