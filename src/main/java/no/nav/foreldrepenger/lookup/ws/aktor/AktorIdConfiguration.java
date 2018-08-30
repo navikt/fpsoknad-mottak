@@ -14,13 +14,13 @@ public class AktorIdConfiguration extends WsClient<AktoerV2> {
     @Bean
     @Qualifier("aktoerV2")
     public AktoerV2 aktoerV2(@Value("${AKTOER_V2_ENDPOINTURL}") String serviceUrl) {
-        return createPort(serviceUrl, AktoerV2.class);
+        return createPortForExternalUser(serviceUrl, AktoerV2.class);
     }
 
     @Bean
     @Qualifier("healthIndicatorAktør")
     public AktoerV2 healthIndicatorAktør(@Value("${AKTOER_V2_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, AktoerV2.class);
+        return createPortForSystemUser(serviceUrl, AktoerV2.class);
     }
 
     @Bean

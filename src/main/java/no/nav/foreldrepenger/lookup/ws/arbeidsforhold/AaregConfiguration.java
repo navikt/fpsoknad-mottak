@@ -15,14 +15,14 @@ public class AaregConfiguration extends WsClient<ArbeidsforholdV3> {
     @Qualifier("arbeidsforholdV3")
     public ArbeidsforholdV3 arbeidsforholdV3(
             @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPort(serviceUrl, ArbeidsforholdV3.class);
+        return createPortForExternalUser(serviceUrl, ArbeidsforholdV3.class);
     }
 
     @Bean
     @Qualifier("healthIndicatorAareg")
     public ArbeidsforholdV3 healthIndicatorAareg(
             @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, ArbeidsforholdV3.class);
+        return createPortForSystemUser(serviceUrl, ArbeidsforholdV3.class);
     }
 
     @Bean

@@ -14,14 +14,14 @@ public class OrganisasjonConfiguration extends WsClient<OrganisasjonV5> {
     @Qualifier("organisasjonV5")
     public OrganisasjonV5 organisasjonV5(
             @Value("${VIRKSOMHET_ORGANISASJON_V5_ENDPOINTURL}") String serviceUrl) {
-        return createPort(serviceUrl, OrganisasjonV5.class);
+        return createPortForExternalUser(serviceUrl, OrganisasjonV5.class);
     }
 
     @Bean
     @Qualifier("healthIndicatorOrganisasjon")
     public OrganisasjonV5 healthIndicatorOrganissjon(
             @Value("${VIRKSOMHET_ORGANISASJON_V5_ENDPOINTURL}") String serviceUrl) {
-        return createPortForHealthIndicator(serviceUrl, OrganisasjonV5.class);
+        return createPortForSystemUser(serviceUrl, OrganisasjonV5.class);
     }
 
     @Bean
