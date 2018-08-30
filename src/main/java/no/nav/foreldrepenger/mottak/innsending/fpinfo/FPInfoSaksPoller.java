@@ -8,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 
 import java.net.URI;
+import java.time.Duration;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -37,9 +38,9 @@ public class FPInfoSaksPoller implements SaksStatusPoller {
     }
 
     @Override
-    public Kvittering poll(URI uri, String ref, StopWatch timer, long delayMillis,
+    public Kvittering poll(URI uri, String ref, StopWatch timer, Duration delay,
             FPSakFordeltKvittering fordeltKvittering) {
-        FPInfoKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delayMillis, ref, timer);
+        FPInfoKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delay.toMillis(), ref, timer);
         return forsendelsesStatus != null
                 ? forsendelsesStatusKvittering(forsendelsesStatus, fordeltKvittering, ref)
                 : sendtOgForsøktBehandletKvittering(ref, fordeltKvittering);

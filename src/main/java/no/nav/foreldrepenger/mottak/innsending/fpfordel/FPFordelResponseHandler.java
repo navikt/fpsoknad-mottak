@@ -77,11 +77,9 @@ public class FPFordelResponseHandler {
                         return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref,
                                 fordelt.getJournalpostId(),
                                 fordelt.getSaksnummer());
-                    /*
-                     * return poller.poll(locationFra(fpInfoRespons), ref, timer,
-                     * pending.getPollInterval().toMillis(),
-                     * FPSakFordeltKvittering.class.cast(fpFordelKvittering));
-                     */
+
+                    // return poller.poll(locationFra(fpInfoRespons), ref, timer,
+                    // pending.getPollInterval(), fordelt);
 
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",
