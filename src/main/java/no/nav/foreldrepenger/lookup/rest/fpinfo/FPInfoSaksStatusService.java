@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.lookup.rest.fpinfo;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoFagsakStatus.AVSLU;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,44 +36,52 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     }
 
     @Override
-    public List<FPInfoSakStatus> hentSaker(AktorId id) {
-        return hentSaker(id.getAktør());
+    public List<FPInfoSakStatus> hentSaker(AktorId aktørId) {
+        return hentSaker(aktørId.getAktør());
     }
 
     @Override
-    public List<FPInfoSakStatus> hentSaker(String id) {
-        URI uri = uri(PATH + "sak", httpHeaders("aktorId", id));
-        try {
-            LOG.info("Henter ikke-avsluttede saker fra {}", uri);
-            List<FPInfoSakStatus> saker = Arrays.stream(template.getForObject(uri, FPInfoSakStatus[].class))
-                    .filter(s -> !s.getFagsakStatus().equals(AVSLU))
-                    .collect(toList());
-            saker.stream().forEach(this::behandlinger);
-            return saker;
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke hente saker fra {}", uri, e);
+    public List<FPInfoSakStatus> hentSaker(String aktørId) {
+        Optional<FPInfoSakStatus[]> saker = hentObjekt(uri(PATH + "sak", headers("aktorId", aktørId)),
+                FPInfoSakStatus[].class);
+
+        if (!saker.isPresent()) {
             return Collections.emptyList();
         }
+        List<FPInfoSakStatus> filtrerteSaker = Arrays.stream(saker.get())
+                .filter(s -> !s.getFagsakStatus().equals(FPInfoFagsakStatus.AVSLU))
+                .collect(toList());
+        filtrerteSaker.stream().forEach(this::behandlinger);
+        return filtrerteSaker;
+    }
+
+    @Override
+    public Behandling hentBehandling(String behandlingId) {
+        return hentBehandling(uri(PATH + "behandling", headers("behandlingId", behandlingId)));
+    }
+
+    private Behandling hentBehandling(URI uri) {
+        Optional<Behandling> behandling = hentObjekt(uri, Behandling.class);
+        return behandling.isPresent() ? behandling.get() : null;
     }
 
     private List<Behandling> behandlinger(FPInfoSakStatus sak) {
-        return sak.getLenker().stream().map(s -> behandling(sak.getSaksnummer(), s)).collect(Collectors.toList());
+        return sak.getLenker().stream().map(s -> hentBehandling(sak.getSaksnummer(), s)).collect(Collectors.toList());
     }
 
-    private Behandling behandling(String saksnr, BehandlingsLenke behandlingsLink) {
-        URI uri1 = UriComponentsBuilder.fromUri(baseURI)
-                .pathSegment(behandlingsLink.getHref())
-                .build()
-                .toUri();
-        URI uri = URI.create(baseURI + behandlingsLink.getHref());
+    private Behandling hentBehandling(String saksnr, BehandlingsLenke behandlingsLink) {
+        return hentBehandling(URI.create(baseURI + behandlingsLink.getHref()));
+    }
+
+    private <T> Optional<T> hentObjekt(URI uri, Class<T> clazz) {
         try {
-            LOG.info("Henter behandlinger for sak {} fra {}  generert fra {}", saksnr, uri, behandlingsLink.getHref());
-            Behandling behandling = template.getForObject(uri, Behandling.class);
-            LOG.info("Fant behandling {}", behandling);
-            return behandling;
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke hente behandling fra {}", uri, e);
-            return null;
+            LOG.info("Henter {} fra {}", clazz.getClass().getSimpleName(), uri);
+            T respons = template.getForObject(uri, clazz);
+            LOG.info("Fikk objekt {}", respons);
+            return Optional.of(respons);
+        } catch (RestClientException e) {
+            LOG.warn("Kunne ikke hente {} fra {}", clazz.getClass().getSimpleName(), uri, e);
+            return Optional.empty();
         }
     }
 
@@ -84,7 +93,7 @@ public class FPInfoSaksStatusService implements SaksStatusService {
                 .toUri();
     }
 
-    private static HttpHeaders httpHeaders(String key, String value) {
+    private static HttpHeaders headers(String key, String value) {
         HttpHeaders params = new HttpHeaders();
         params.add(key, value);
         return params;
