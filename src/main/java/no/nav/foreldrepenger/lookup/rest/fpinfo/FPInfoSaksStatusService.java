@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -43,7 +42,7 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     @Override
     public List<FPInfoSakStatus> hentSaker(String aktørId) {
         Optional<FPInfoSakStatus[]> saker = hentObjekt(uri(PATH + "sak", headers("aktorId", aktørId)),
-                FPInfoSakStatus[].class);
+                FPInfoSakStatus[].class, "FPInfoSakStatus[]");
 
         if (!saker.isPresent()) {
             return Collections.emptyList();
@@ -61,7 +60,7 @@ public class FPInfoSaksStatusService implements SaksStatusService {
     }
 
     private Behandling hentBehandling(URI uri) {
-        Optional<Behandling> behandling = hentObjekt(uri, Behandling.class);
+        Optional<Behandling> behandling = hentObjekt(uri, Behandling.class, "behandling");
         return behandling.isPresent() ? behandling.get() : null;
     }
 
@@ -73,13 +72,13 @@ public class FPInfoSaksStatusService implements SaksStatusService {
         return hentBehandling(URI.create(baseURI + behandlingsLink.getHref()));
     }
 
-    private <T> Optional<T> hentObjekt(URI uri, Class<T> clazz) {
+    private <T> Optional<T> hentObjekt(URI uri, Class<T> clazz, String type) {
         try {
-            LOG.info("Henter {} fra {}", clazz.getClass().getSimpleName(), uri);
+            LOG.info("Henter {} fra {}", type, uri);
             T respons = template.getForObject(uri, clazz);
             LOG.info("Fikk objekt {}", respons);
             return Optional.of(respons);
-        } catch (RestClientException e) {
+        } catch (Exception e) {
             LOG.warn("Kunne ikke hente {} fra {}", clazz.getClass().getSimpleName(), uri, e);
             return Optional.empty();
         }
