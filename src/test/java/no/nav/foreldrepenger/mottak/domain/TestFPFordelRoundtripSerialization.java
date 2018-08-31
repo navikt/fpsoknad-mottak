@@ -6,7 +6,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.nesteMåned;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
-import static no.nav.foreldrepenger.mottak.http.MottakController.MOTTAK;
+import static no.nav.foreldrepenger.mottak.http.SøknadController.MOTTAK;
 import static no.nav.foreldrepenger.mottak.http.MottakPreprodController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;

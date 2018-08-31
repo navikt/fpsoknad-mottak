@@ -23,26 +23,30 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadSender;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.SøknadsTjeneste;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 
 @RestController
-@RequestMapping(path = MottakController.MOTTAK, produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = SøknadController.MOTTAK, produces = APPLICATION_JSON_VALUE)
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-public class MottakController {
+public class SøknadController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SøknadController.class);
 
     public static final String MOTTAK = "/mottak";
 
     private final FPFordelSøknadSender fpfordelSender;
+    private final SøknadsTjeneste søknadsTjeneste;
     private final Oppslag oppslag;
     private final DokmotJMSSender dokmotSender;
 
-    public MottakController(FPFordelSøknadSender sender, DokmotJMSSender dokmotSender, Oppslag oppslag) {
+    public SøknadController(FPFordelSøknadSender sender, DokmotJMSSender dokmotSender, Oppslag oppslag,
+            SøknadsTjeneste søknadsTjeneste) {
         this.fpfordelSender = sender;
         this.dokmotSender = dokmotSender;
         this.oppslag = oppslag;
+        this.søknadsTjeneste = søknadsTjeneste;
     }
 
     @PostMapping(value = "/send")
@@ -58,6 +62,12 @@ public class MottakController {
     @PostMapping(value = "/ettersend")
     public ResponseEntity<Kvittering> send(@Valid @RequestBody Ettersending ettersending) {
         return ok(fpfordelSender.send(ettersending, oppslag.getSøker()));
+    }
+
+    @GetMapping(value = "/soknad")
+    @Unprotected
+    public ResponseEntity<Søknad> søknad(@RequestParam(name = "behandlingId") String behandlingId) {
+        return ok(søknadsTjeneste.hentSøknad(behandlingId));
     }
 
     @GetMapping(value = "/ping")
