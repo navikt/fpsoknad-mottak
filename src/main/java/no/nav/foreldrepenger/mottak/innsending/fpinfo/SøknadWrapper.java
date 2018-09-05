@@ -6,5 +6,4 @@ import lombok.Data;
 public class SøknadWrapper {
     private final String xml;
     private final String journalpostId;
-
 }

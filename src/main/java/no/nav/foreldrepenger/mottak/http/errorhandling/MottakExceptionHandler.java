@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
@@ -33,6 +34,11 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = { RemoteUnavailableException.class })
+    protected ResponseEntity<Object> handleNotFound(RemoteUnavailableException e, WebRequest request) {
+        return logAndHandle(NOT_FOUND, e, request, getRootCauseMessage(e));
+    }
+
+    @ExceptionHandler(value = { NotFoundException.class })
     protected ResponseEntity<Object> handleConflict(RemoteUnavailableException e, WebRequest request) {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
     }

@@ -79,15 +79,15 @@ public class SøknadController {
 
     @GetMapping(value = "/ping")
     @Unprotected
-    public ResponseEntity<String> ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
+    public String ping(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("Jeg ble pinget");
-        return ok("Hallo " + navn + " fra ubeskyttet ressurs");
+        return "Hallo " + navn + " fra ubeskyttet ressurs";
     }
 
     @GetMapping(value = "/ping1")
-    public ResponseEntity<String> ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
+    public String ping1(@RequestParam(name = "navn", defaultValue = "earthling") String navn) {
         LOG.info("Jeg ble pinget");
-        return ok("Hallo " + navn + " fra beskyttet ressurs");
+        return "Hallo " + navn + " fra beskyttet ressurs";
     }
 
     @GetMapping(value = "/saker")
