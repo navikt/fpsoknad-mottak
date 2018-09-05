@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoSakStatus;
-import no.nav.foreldrepenger.lookup.rest.fpinfo.SaksStatusService;
 import no.nav.foreldrepenger.lookup.ws.Søkerinfo;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
@@ -39,9 +37,6 @@ import no.nav.security.oidc.context.OIDCRequestContextHolder;
 public class OppslagController {
 
     @Inject
-    SaksStatusService saksClient;
-
-    @Inject
     Environment env;
     private static final Logger LOG = getLogger(OppslagController.class);
 
@@ -51,18 +46,15 @@ public class OppslagController {
 
     private final ArbeidsforholdClient arbeidsforholdClient;
 
-    private final SaksStatusService saksStatusService;
-
     private final OIDCRequestContextHolder contextHolder;
 
     @Inject
     public OppslagController(AktorIdClient aktorClient, PersonClient personClient,
-            ArbeidsforholdClient arbeidsforholdClient, SaksStatusService saksStatusService,
+            ArbeidsforholdClient arbeidsforholdClient,
             OIDCRequestContextHolder contextHolder) {
         this.aktorClient = aktorClient;
         this.personClient = personClient;
         this.arbeidsforholdClient = arbeidsforholdClient;
-        this.saksStatusService = saksStatusService;
         this.contextHolder = contextHolder;
     }
 
@@ -94,21 +86,9 @@ public class OppslagController {
     public ResponseEntity<Søkerinfo> essensiellSøkerinfo() {
         Fødselsnummer fnr = fnrFromClaims();
         AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
-        if (EnvUtil.isDevOrPreprod(env)) {
-            LOG.info("Henter saker for {}", aktorId);
-            LOG.debug("Fikk saker {}", saksStatusService.hentSaker(aktorId));
-        }
-        else {
-            LOG.info("Henter ikke saker for {}", aktorId);
-        }
         Person person = personClient.hentPersonInfo(new ID(aktorId, fnr));
         List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
         return ok(new Søkerinfo(person, arbeidsforhold));
-    }
-
-    @GetMapping(value = "/saker", produces = APPLICATION_JSON_VALUE)
-    public List<FPInfoSakStatus> saker() {
-        return saksStatusService.hentSaker(id());
     }
 
     @GetMapping(value = "/aktor")
@@ -127,10 +107,6 @@ public class OppslagController {
             throw new ForbiddenException("Fant ikke FNR i token");
         }
         return new Fødselsnummer(fnrFromClaims);
-    }
-
-    private String id() {
-        return aktorClient.aktorIdForFnr(fnrFromClaims()).getAktør();
     }
 
     private static String registerNavn(PingableRegisters register) {

@@ -9,8 +9,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.lookup.Pingable;
-import no.nav.foreldrepenger.lookup.rest.fpinfo.RemoteUnavailableException;
 
 public abstract class AbstractPingableRestConnection implements Pingable {
 

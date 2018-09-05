@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.lookup.rest.fpinfo;
+package no.nav.foreldrepenger.errorhandling;
 
 import java.net.URI;
 

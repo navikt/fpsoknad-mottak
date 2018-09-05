@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.Collections;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
@@ -19,9 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-
-import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoFagsakStatus;
-import no.nav.foreldrepenger.lookup.rest.fpinfo.FPInfoSakStatus;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureJsonTesters
@@ -38,13 +33,6 @@ public class TestFPInfoSerialization {
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
         return mapper;
-    }
-
-    @Test
-    public void testFPInfoKvittering() throws Exception {
-        FPInfoSakStatus status = new FPInfoSakStatus("42", FPInfoFagsakStatus.LOP, "Tema", "1", "2",
-                Collections.emptyList(), Collections.emptyList());
-        test(status, true, mapper);
     }
 
     private void test(Object object, boolean print) {
