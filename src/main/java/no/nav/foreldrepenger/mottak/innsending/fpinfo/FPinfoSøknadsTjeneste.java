@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 import java.net.URI;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,14 +14,17 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
 
 @Service
 public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FPinfoSøknadsTjeneste.class);
-
     private static final String PATH = "fpinfo/api/dokumentforsendelse/";
 
+    private static final Logger LOG = LoggerFactory.getLogger(FPinfoSøknadsTjeneste.class);
+
+    @Inject
+    private FPFordelSøknadGenerator generator;
     private final URI baseURI;
     private final RestTemplate template;
 
@@ -33,7 +38,13 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
         Optional<SøknadWrapper> wrapper = hentObjekt(uri(PATH + "soknad", headers("behandlingId", behandlingId)),
                 SøknadWrapper.class,
                 "søknad");
-        return null; // TODO
+        if (wrapper.isPresent()) {
+            Søknad søknad = generator.tilSøknad(wrapper.get().getXml());
+            LOG.info("Fant søknad {}", søknad);
+            return søknad;
+        }
+        LOG.info("Fant ingen søknad {}");
+        return null;
     }
 
     private <T> Optional<T> hentObjekt(URI uri, Class<T> clazz, String type) {
