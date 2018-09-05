@@ -7,9 +7,10 @@ Mottar søknader om foreldrepenger og engangsstønad fra frontend og sender dem 
 
 ### For å kjøre lokalt:
 
-Start no.nav.foreldrepenger.mottak.MottakApplicationLocal
+Sett ekstraparameter `-parameters` til javac (I IntelliJ: Settings > Build, Execution, Deployment > Compiler > Java Compiler > Additional command line parameters).
+Dette for at man skal slippe å annotere alle constructor-parametre med @JsonProperty("xyz").
 
-Default konfigurasjon er lagt i application.yaml.
+Start no.nav.foreldrepenger.mottak.MottakApplicationLocal med profil `dev`
 
 ### For å kjøre i et internt testmiljø med registre tilgjengelig: 
  

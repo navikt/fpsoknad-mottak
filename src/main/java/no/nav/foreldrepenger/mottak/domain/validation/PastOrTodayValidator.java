@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
-import java.time.LocalDate;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.time.LocalDate;
+
+import static java.time.LocalDate.now;
 
 public class PastOrTodayValidator implements ConstraintValidator<PastOrToday, LocalDate> {
 
@@ -14,7 +15,7 @@ public class PastOrTodayValidator implements ConstraintValidator<PastOrToday, Lo
         if (dato == null && nullable) {
             return true;
         }
-        return dato.equals(LocalDate.now()) || dato.isBefore(LocalDate.now());
+        return dato != null && (dato.equals(now()) || dato.isBefore(now()));
     }
 
     @Override

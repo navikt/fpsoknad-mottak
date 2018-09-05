@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.Termindato;
 public class FremtidigFødsel extends RelasjonTilBarnMedVedlegg {
     @Termindato
     private final LocalDate terminDato;
-    @PastOrToday
+    @PastOrToday(nullable = true)
     private final LocalDate utstedtDato;
 
     public FremtidigFødsel(LocalDate terminDato, LocalDate utstedtDato) {
