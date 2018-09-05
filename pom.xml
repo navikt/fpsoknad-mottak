@@ -23,7 +23,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.jaxb-plugin.version>0.13.3</maven.jaxb-plugin.version>
-        <cxf.version>3.2.0</cxf.version>
+        <cxf.version>3.2.6</cxf.version>
         <springfox.swagger.version>2.9.2</springfox.swagger.version>
         <junit.platform.version>1.0.1</junit.platform.version>
         <junit.jupiter.version>5.1.0</junit.jupiter.version>
