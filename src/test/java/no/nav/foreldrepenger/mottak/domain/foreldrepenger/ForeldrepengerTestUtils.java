@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static com.google.inject.internal.util.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.inject.internal.util.Lists;
+import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
@@ -61,11 +60,11 @@ public class ForeldrepengerTestUtils {
     }
 
     private static List<AnnenOpptjening> andreOpptjeninger() {
-        return newArrayList(annenOpptjening());
+        return Lists.newArrayList(annenOpptjening());
     }
 
     private static List<EgenNæring> egneNæringer() {
-        return newArrayList(utenlandskEgenNæring(), norskEgenNæring());
+        return Lists.newArrayList(utenlandskEgenNæring(), norskEgenNæring());
     }
 
     static UtenlandskForelder utenlandskForelder() {
@@ -137,7 +136,7 @@ public class ForeldrepengerTestUtils {
     }
 
     private static List<LukketPeriodeMedVedlegg> perioder() {
-        return newArrayList(oppholdsPeriode(), overføringsPeriode(), utsettelsesPeriode(), gradertPeriode());
+        return Lists.newArrayList(oppholdsPeriode(), overføringsPeriode(), utsettelsesPeriode(), gradertPeriode());
     }
 
     static UttaksPeriode uttaksPeriode() {
