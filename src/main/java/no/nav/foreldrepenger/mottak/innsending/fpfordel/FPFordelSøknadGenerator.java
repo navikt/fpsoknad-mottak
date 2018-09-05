@@ -55,6 +55,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
@@ -120,6 +121,7 @@ public class FPFordelSøknadGenerator {
         Soeknad søknad = Jaxb.unmarshalToElement(søknadXml, CONTEXT, Soeknad.class).getValue();
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
+        s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
         s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
         return s;
     }
@@ -150,8 +152,8 @@ public class FPFordelSøknadGenerator {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
             Rettigheter rettigheter) {
-        // TODO Auto-generated method stub
-        return null;
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(rettigheter.isHarAnnenForelderRett(),
+                rettigheter.isHarOmsorgForBarnetIPeriodene(), rettigheter.isHarAleneomsorgForBarnet());
     }
 
     private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
@@ -177,6 +179,104 @@ public class FPFordelSøknadGenerator {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening tilOpptjening(Opptjening opptjening) {
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening(
+                tilUtenlandsArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
+                tilEgenNæring(opptjening.getEgenNaering()), tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
+                tilFrilans(opptjening.getFrilans()));
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans tilFrilans(Frilans frilans) {
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans(tilÅpenPeriode(frilans.getPeriode()),
+                frilans.isHarInntektFraFosterhjem(),
+                frilans.isErNyoppstartet(),
+                tilFrilansOppdrag(frilans.getFrilansoppdrag()),
+                Collections.emptyList());
+    }
+
+    private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
+        return tilÅpenPeriode(periode.get(0)); // TODO ?
+    }
+
+    private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
+        return frilansoppdrag.stream().map(FPFordelSøknadGenerator::tilFrilansOppdrag).collect(toList());
+    }
+
+    private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
+        return new FrilansOppdrag(frilansoppdrag.getOppdragsgiver(), tilÅpenPeriode(frilansoppdrag.getPeriode()));
+    }
+
+    private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
+        return new ÅpenPeriode(periode.getFom(), periode.getTom());
+    }
+
+    private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
+            List<AnnenOpptjening> annenOpptjening) {
+        return annenOpptjening.stream().map(FPFordelSøknadGenerator::tilAnnenOpptjening).collect(toList());
+    }
+
+    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
+            AnnenOpptjening annenOpptjening) {
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening(
+                AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
+                tilÅpenPeriode(annenOpptjening.getPeriode()), Collections.emptyList());
+    }
+
+    private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
+        return egenNaering.stream().map(FPFordelSøknadGenerator::tilEgenNæring).collect(toList());
+    }
+
+    private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
+
+        if (egenNæring instanceof NorskOrganisasjon) {
+            NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
+            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.builder()
+                    .arbeidsland(CountryCode.getByCode(norskOrg.getArbeidsland().getKode()))
+                    .beskrivelseEndring(norskOrg.getBeskrivelseAvEndring())
+                    .endringsDato(norskOrg.getEndringsDato())
+                    .erNyOpprettet(norskOrg.isErNyoppstartet())
+                    .erVarigEndring(norskOrg.isErVarigEndring())
+                    .næringsinntektBrutto(norskOrg.getNaeringsinntektBrutto().longValue())
+                    .nærRelasjon(norskOrg.isNaerRelasjon())
+                    .orgName(norskOrg.getOrganisasjonsnummer())
+                    .orgNummer(norskOrg.getOrganisasjonsnummer())
+                    .periode(tilÅpenPeriode(norskOrg.getPeriode()))
+                    .regnskapsførere(tilRegnskapsFørere(norskOrg.getRegnskapsfoerer()))
+                    .virksomhetsTyper(tilVirksomhetsTyper(norskOrg.getVirksomhetstype()))
+                    .build();
+        }
+        if (egenNæring instanceof UtenlandskOrganisasjon) {
+            UtenlandskOrganisasjon utenlandskOrg = UtenlandskOrganisasjon.class.cast(egenNæring);
+            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon.builder()
+                    .arbeidsland(CountryCode.getByCode(utenlandskOrg.getArbeidsland().getKode()))
+                    .beskrivelseEndring(utenlandskOrg.getBeskrivelseAvEndring())
+                    .endringsDato(utenlandskOrg.getEndringsDato())
+                    .erNyOpprettet(utenlandskOrg.isErNyoppstartet())
+                    .erVarigEndring(utenlandskOrg.isErVarigEndring())
+                    .næringsinntektBrutto(utenlandskOrg.getNaeringsinntektBrutto().longValue())
+                    .nærRelasjon(utenlandskOrg.isNaerRelasjon())
+                    .periode(tilÅpenPeriode(utenlandskOrg.getPeriode()))
+                    .regnskapsførere(tilRegnskapsFørere(utenlandskOrg.getRegnskapsfoerer()))
+                    .virksomhetsTyper(tilVirksomhetsTyper(utenlandskOrg.getVirksomhetstype()))
+                    .build();
+        }
+        throw new IllegalArgumentException("Ikke"
+                + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
+    }
+
+    private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
+        return virksomhetstype.stream().map(FPFordelSøknadGenerator::tilVirksomhetsType).collect(toList());
+    }
+
+    private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
+        return Virksomhetstype.valueOf(type.getKode());
+    }
+
+    private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
+        return Collections.singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
+    }
+
+    private static List<UtenlandskArbeidsforhold> tilUtenlandsArbeidsforhold(
+            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         // TODO Auto-generated method stub
         return null;
     }
