@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 
 @Service
 public class OppslagService implements Oppslag {
@@ -23,11 +24,13 @@ public class OppslagService implements Oppslag {
     private static final Logger LOG = LoggerFactory.getLogger(OppslagService.class);
     private final RestTemplate template;
     private final URI baseURI;
+    private final FnrExtractor extractor;
 
     public OppslagService(@Value("${oppslag.baseuri:http://fpsoknad-oppslag/api}") URI baseURI,
-            RestTemplate template) {
+            RestTemplate template, FnrExtractor extractor) {
         this.template = template;
         this.baseURI = baseURI;
+        this.extractor = extractor;
     }
 
     @Override
@@ -41,6 +44,11 @@ public class OppslagService implements Oppslag {
         URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(pathSegment).build().toUri();
         LOG.info("Henter {} fra {}", pathSegment.toLowerCase(), uri);
         return template.getForObject(uri, clazz);
+    }
+
+    @Override
+    public AktorId getAktørId() {
+        return getAktørId(new Fødselsnummer(extractor.fnrFromToken()));
     }
 
     @Override

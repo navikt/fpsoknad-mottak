@@ -44,6 +44,11 @@ public class MottakApplicationLocal {
             public Person getSøker() {
                 return TestUtils.person();
             }
+
+            @Override
+            public AktorId getAktørId() {
+                return new AktorId("1111111111");
+            }
         };
     }
 }

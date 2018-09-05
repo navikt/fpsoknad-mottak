@@ -8,6 +8,8 @@ public interface Oppslag {
 
     Person getSøker();
 
+    AktorId getAktørId();
+
     AktorId getAktørId(Fødselsnummer fnr);
 
 }

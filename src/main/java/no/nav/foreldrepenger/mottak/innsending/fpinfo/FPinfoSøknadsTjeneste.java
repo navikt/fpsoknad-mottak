@@ -1,7 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
+import static java.util.stream.Collectors.toList;
+
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -13,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
 
@@ -35,7 +42,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
 
     @Override
     public Søknad hentSøknad(String behandlingId) {
-        Optional<SøknadWrapper> wrapper = get(uri(PATH + "soknad", headers("behandlingId", behandlingId)),
+        Optional<SøknadWrapper> wrapper = hentObjekt(uri(PATH + "soknad", headers("behandlingId", behandlingId)),
                 SøknadWrapper.class,
                 "søknad");
         if (wrapper.isPresent()) {
@@ -47,7 +54,32 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
         return null;
     }
 
-    private <T> Optional<T> get(URI uri, Class<T> clazz, String type) {
+    @Override
+    public List<FPInfoSakStatus> hentSaker(AktorId aktørId) {
+        return hentSaker(aktørId.getId());
+    }
+
+    @Override
+    public List<FPInfoSakStatus> hentSaker(String aktørId) {
+        Optional<FPInfoSakStatus[]> saker = hentObjekt(uri(PATH + "sak", headers("aktorId", aktørId)),
+                FPInfoSakStatus[].class, "FPInfoSakStatus[]");
+
+        if (!saker.isPresent()) {
+            return Collections.emptyList();
+        }
+        List<FPInfoSakStatus> filtrerteSaker = Arrays.stream(saker.get())
+                .filter(s -> !s.getFagsakStatus().equals(FPInfoFagsakStatus.AVSLU))
+                .collect(toList());
+        filtrerteSaker.stream().forEach(this::behandlinger);
+        return filtrerteSaker;
+    }
+
+    @Override
+    public Behandling hentBehandling(String behandlingId) {
+        return hentBehandling(uri(PATH + "behandling", headers("behandlingId", behandlingId)));
+    }
+
+    private <T> Optional<T> hentObjekt(URI uri, Class<T> clazz, String type) {
         try {
             LOG.info("Henter {} fra {}", type, uri);
             T respons = template.getForObject(uri, clazz);
@@ -65,6 +97,19 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
                 .queryParams(queryParams)
                 .build()
                 .toUri();
+    }
+
+    private Behandling hentBehandling(URI uri) {
+        Optional<Behandling> behandling = hentObjekt(uri, Behandling.class, "behandling");
+        return behandling.isPresent() ? behandling.get() : null;
+    }
+
+    private List<Behandling> behandlinger(FPInfoSakStatus sak) {
+        return sak.getLenker().stream().map(s -> hentBehandling(sak.getSaksnummer(), s)).collect(Collectors.toList());
+    }
+
+    private Behandling hentBehandling(String saksnr, BehandlingsLenke behandlingsLink) {
+        return hentBehandling(URI.create(baseURI + behandlingsLink.getHref()));
     }
 
     private static HttpHeaders headers(String key, String value) {
