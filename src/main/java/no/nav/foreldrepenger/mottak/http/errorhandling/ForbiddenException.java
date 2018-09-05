@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 public class ForbiddenException extends RuntimeException {
 

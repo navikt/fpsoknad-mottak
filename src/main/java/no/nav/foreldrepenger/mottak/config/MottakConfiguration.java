@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import no.nav.foreldrepenger.mottak.http.FnrExtractor;
+import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 
 @Configuration

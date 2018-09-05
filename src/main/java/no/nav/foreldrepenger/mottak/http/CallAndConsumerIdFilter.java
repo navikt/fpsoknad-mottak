@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
+import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 import no.nav.foreldrepenger.mottak.util.MDCUtil;
 
 @Component

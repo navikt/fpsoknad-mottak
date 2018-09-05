@@ -35,7 +35,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
 
     @Override
     public Søknad hentSøknad(String behandlingId) {
-        Optional<SøknadWrapper> wrapper = hentObjekt(uri(PATH + "soknad", headers("behandlingId", behandlingId)),
+        Optional<SøknadWrapper> wrapper = get(uri(PATH + "soknad", headers("behandlingId", behandlingId)),
                 SøknadWrapper.class,
                 "søknad");
         if (wrapper.isPresent()) {
@@ -47,7 +47,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
         return null;
     }
 
-    private <T> Optional<T> hentObjekt(URI uri, Class<T> clazz, String type) {
+    private <T> Optional<T> get(URI uri, Class<T> clazz, String type) {
         try {
             LOG.info("Henter {} fra {}", type, uri);
             T respons = template.getForObject(uri, clazz);

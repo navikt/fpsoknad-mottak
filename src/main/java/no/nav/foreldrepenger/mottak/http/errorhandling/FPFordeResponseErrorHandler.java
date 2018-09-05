@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.fpfordel;
+package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
@@ -11,9 +11,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 
-import no.nav.foreldrepenger.mottak.http.ForbiddenException;
-
-class FPFordeResponseErrorHandler extends DefaultResponseErrorHandler {
+public class FPFordeResponseErrorHandler extends DefaultResponseErrorHandler {
 
     private final Logger LOG = LoggerFactory.getLogger(FPFordeResponseErrorHandler.class);
 

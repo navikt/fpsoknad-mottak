@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.util;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 

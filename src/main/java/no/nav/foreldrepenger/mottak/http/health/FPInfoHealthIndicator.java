@@ -1,9 +1,9 @@
-package no.nav.foreldrepenger.mottak.innsending.fpinfo;
+package no.nav.foreldrepenger.mottak.http.health;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.http.EnvironmentAwareHealthIndicator;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoConnection;
 
 @Component
 public class FPInfoHealthIndicator extends EnvironmentAwareHealthIndicator {

@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.dokmot;
 
-import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
+import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 
 public class DokmotQueueUnavailableException extends RemoteUnavailableException {
 

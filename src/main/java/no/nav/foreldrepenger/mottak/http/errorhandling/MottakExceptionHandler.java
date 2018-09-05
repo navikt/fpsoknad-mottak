@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;

@@ -11,7 +11,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.http.RemoteUnavailableException;
+import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 
 @Component

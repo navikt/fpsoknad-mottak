@@ -9,6 +9,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter;
+import no.nav.foreldrepenger.mottak.http.errorhandling.FPFordeResponseErrorHandler;
 
 @Configuration
 public class FPFordelConfiguration {
