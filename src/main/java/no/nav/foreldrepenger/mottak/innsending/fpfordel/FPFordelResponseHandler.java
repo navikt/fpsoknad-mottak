@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
@@ -74,12 +73,8 @@ public class FPFordelResponseHandler {
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
                         FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
-                        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref,
-                                fordelt.getJournalpostId(),
-                                fordelt.getSaksnummer());
-
-                    // return poller.poll(locationFra(fpInfoRespons), ref, timer,
-                    // pending.getPollInterval(), fordelt);
+                        return poller.poll(locationFra(fpInfoRespons), ref, timer,
+                                pending.getPollInterval(), fordelt);
 
                     default:
                         LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",

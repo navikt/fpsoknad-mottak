@@ -11,21 +11,22 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 
-public class FPFordeResponseErrorHandler extends DefaultResponseErrorHandler {
+public class RestClientResponseErrorHandler extends DefaultResponseErrorHandler {
 
-    private final Logger LOG = LoggerFactory.getLogger(FPFordeResponseErrorHandler.class);
+    private final Logger LOG = LoggerFactory.getLogger(RestClientResponseErrorHandler.class);
 
     @Override
     public void handleError(ClientHttpResponse response) throws IOException {
 
-        LOG.debug("Håndterer feilrespons med returkode {}", response.getStatusCode());
+        LOG.debug("Håndterer feilrespons med kode {}", response.getStatusCode());
         String bodyText = StreamUtils.copyToString(response.getBody(), StandardCharsets.UTF_8);
         LOG.debug("Respons body: {}", bodyText);
-        if (response.getStatusCode() == FORBIDDEN) {
+        switch (response.getStatusCode()) {
+        case FORBIDDEN:
             LOG.warn(FORBIDDEN + ". Throwing ForbiddenException");
             throw new ForbiddenException(bodyText);
+        default:
+            super.handleError(response);
         }
-
-        super.handleError(response);
     }
 }
