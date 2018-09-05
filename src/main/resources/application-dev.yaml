@@ -1,20 +1,22 @@
 management :
    endpoints.web.exposure.include:  '*'
-   endpoint: 
+   endpoint:
      health.show-details : always
      security.enabled : false
-     
+
 dokmot :
-   queuename : ueue  
+   queuename : ueue
    hostname : hostname
    port : 2412
    name : name
    usrname : user
    channelname : channel
-               
+
 no.nav.security.oidc:
   issuers: selvbetjening
   issuer:
     selvbetjening.discoveryurl: http://metadata
     selvbetjening.accepted_audience: aud-localhost
     selvbetjening.cookie_name: localhost-idtoken
+
+server.port: 9001

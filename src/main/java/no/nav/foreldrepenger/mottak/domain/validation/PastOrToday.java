@@ -11,7 +11,6 @@ import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.NotNull;
 
-@NotNull
 @Target({ ElementType.FIELD, ElementType.TYPE_USE })
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PastOrTodayValidator.class)
