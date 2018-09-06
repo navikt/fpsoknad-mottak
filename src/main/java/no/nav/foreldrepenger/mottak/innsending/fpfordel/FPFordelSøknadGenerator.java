@@ -373,8 +373,7 @@ public class FPFordelSøknadGenerator {
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
-                .withRettigheter(
-                        rettighetrFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
+                .withRettigheter(rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()));
 
@@ -781,7 +780,7 @@ public class FPFordelSøknadGenerator {
         return overføringsÅrsak.withKodeverk(overføringsÅrsak.getKodeverk());
     }
 
-    private static Rettigheter rettighetrFra(
+    private static Rettigheter rettigheterFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
 
         LOG.debug("Genererer rettigheter XML fra {}", rettigheter);
@@ -797,7 +796,7 @@ public class FPFordelSøknadGenerator {
             return null;
         }
         return new Rettigheter()
-                .withHarOmsorgForBarnetIPeriodene(rettigheter.isHarOmsorgForBarnetIPeriodene())
+                .withHarOmsorgForBarnetIPeriodene(true) // Hardkodet til true, siden dette er implisitt og vi ikke spør brukeren eksplisitt
                 .withHarAnnenForelderRett(rettigheter.isHarAnnenForelderRett())
                 .withHarAleneomsorgForBarnet(rettigheter.isHarAleneOmsorgForBarnet());
     }
