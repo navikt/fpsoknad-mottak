@@ -24,10 +24,10 @@ public class UtenlandskOrganisasjon extends EgenNæring {
     @Builder
     private UtenlandskOrganisasjon(CountryCode arbeidsland, List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
-            long næringsinntektBrutto, LocalDate endringsDato, String beskrivelseEndring, List<String> vedlegg,
-            String orgName) {
+            boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, String beskrivelseEndring,
+            List<String> vedlegg, String orgName) {
         super(arbeidsland, virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,
-                erVarigEndring,
+                erVarigEndring, erNyIArbeidslivet,
                 næringsinntektBrutto, endringsDato, beskrivelseEndring, vedlegg);
         this.orgName = orgName;
     }

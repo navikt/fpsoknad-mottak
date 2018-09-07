@@ -68,6 +68,14 @@ class PDFGenerator {
         return addLineOfRegularText("\u2022 " + line, cos, startY);
     }
 
+    public float addLMultilineBulletpoint(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
+        float yTotal = addBulletPoint(lines.get(0), cos, startY);
+        for (String line : lines.subList(1, lines.size())) {
+            yTotal += addLineOfRegularText("  " + line, cos, startY - yTotal);
+        }
+        return yTotal;
+    }
+
     public float addBulletList(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
         float yTotal = 0;
         for (String line : lines) {

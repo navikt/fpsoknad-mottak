@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.StringUtils.capitalize;
 
 import java.io.ByteArrayOutputStream;
@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -26,26 +26,6 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 
 @Component
 public class ForeldrepengerPDFGenerator extends PDFGenerator {
@@ -74,7 +54,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
             if (annenForelder != null) {
                 y -= annenForelder(annenForelder, cos, y);
                 String harRett = infoFormatter.fromMessageSource("harrett") +
-                    (stønad.getRettigheter().isHarAnnenForelderRett() ? "Ja" : "Nei");
+                    infoFormatter.yesNo(stønad.getRettigheter().isHarAnnenForelderRett());
                 y -= addLineOfRegularText(harRett, cos, y);
                 y -= addBlankLine();
             }
@@ -184,7 +164,10 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
         if (!opptjening.getEgenNæring().isEmpty()) {
             y -= addBlankLine();
             y -= addLeftHeading(infoFormatter.fromMessageSource("egennæring"), cos, y);
-            y -= addBulletList(egenNæring(opptjening.getEgenNæring()), cos, y);
+            final List<List<String>> egneNæringer = egenNæring(opptjening.getEgenNæring());
+            for (List<String> næring : egneNæringer) {
+                y -= addLMultilineBulletpoint(næring, cos, y);
+            }
         }
         return startY - y;
     }
@@ -203,7 +186,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
         y -= addBulletList(perioder(fordeling.getPerioder()), cos, y);
         y -= addBlankLine();
         String informert = infoFormatter.fromMessageSource("informert") +
-            (fordeling.isErAnnenForelderInformert() ? "Ja" : "Nei");
+            infoFormatter.yesNo(fordeling.isErAnnenForelderInformert());
         y -= addLineOfRegularText(informert, cos, y);
         return startY - y;
     }
@@ -220,28 +203,46 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
                 "fom. " + infoFormatter.dato(ua.getPeriode().getFom());
     }
 
-    private List<String> egenNæring(List<EgenNæring> egenNæring) {
+    private List<List<String>> egenNæring(List<EgenNæring> egenNæring) {
         return egenNæring.stream()
                 .map(this::formatEgenNæring)
                 .collect(toList());
     }
 
-    private String formatEgenNæring(EgenNæring næring) {
-        return næring.getVirksomhetsTyper().stream()
-                .map(s -> formatVirksomhetsType(s, næring))
-                .collect(Collectors.joining(" - "));
-    }
-
-    private String formatVirksomhetsType(Virksomhetstype type, EgenNæring næring) {
+    private List<String> formatEgenNæring(EgenNæring næring) {
         CountryCode arbeidsland = Optional.ofNullable(næring.getArbeidsland()).orElse(CountryCode.NO);
-        // varig endring, nyoppstartet, ny i arbeidslivet, næringsinntekt begrunnelse (på begge foregående)
-        // revisor hvis ikke regnskapsfører, kan vi hente info fra revisor
-        return type.name() + " (" + infoFormatter.countryName(arbeidsland.getAlpha2()) + ")" + " - " +
-                "fom." + infoFormatter.dato(næring.getPeriode().getFom()) + " - " +
-                infoFormatter.navnToString(næring.getRegnskapsførere()) +
-            (næring.isErVarigEndring() ? " - " + infoFormatter.fromMessageSource("varigendring") : "") +
-            (næring.isErNyOpprettet() ? " - " + infoFormatter.fromMessageSource("nyopprettet") : "") +
-            " - " + næring.getBeskrivelseEndring();
+        String typer = næring.getVirksomhetsTyper().stream()
+            .map(Object::toString)
+            .collect(joining(","));
+        StringBuilder sb = new StringBuilder(typer + " i " + infoFormatter.countryName(arbeidsland.getAlpha2()));
+        sb.append(" hos ");
+        if (næring instanceof NorskOrganisasjon) {
+            NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
+            sb.append(org.getOrgName());
+            sb.append(" (" + org.getOrgNummer() + ")");
+        } else {
+            UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
+            sb.append(org.getOrgName());
+        }
+        sb.append(" fom. " + infoFormatter.dato(næring.getPeriode().getFom()));
+        if (næring.isErVarigEndring()) {
+            sb.append(", " + infoFormatter.fromMessageSource("varigendring"));
+        }
+        if (næring.isErNyOpprettet()) {
+            sb.append(", " + infoFormatter.fromMessageSource("nyopprettet"));
+        }
+        if (næring.isErNyIArbeidslivet()) {
+            sb.append(", " + infoFormatter.fromMessageSource("nyiarbeidslivet"));
+        }
+        sb.append("\n");
+
+        sb.append("Brutto inntekt: " + næring.getNæringsinntektBrutto());
+        sb.append(", regnskap: " + infoFormatter.navnToString(næring.getRegnskapsførere()));
+        sb.append("\n");
+
+        sb.append(næring.getBeskrivelseEndring());
+
+        return Arrays.asList(sb.toString().split("\n"));
     }
 
     private List<String> perioder(List<LukketPeriodeMedVedlegg> perioder) {

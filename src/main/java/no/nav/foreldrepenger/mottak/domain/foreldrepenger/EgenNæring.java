@@ -33,6 +33,7 @@ public abstract class EgenNæring {
     private final List<Regnskapsfører> regnskapsførere;
     private final boolean erNyOpprettet;
     private final boolean erVarigEndring;
+    private final boolean erNyIArbeidslivet;
     private final long næringsinntektBrutto;
     private final LocalDate endringsDato;
     private final String beskrivelseEndring;
@@ -46,6 +47,7 @@ public abstract class EgenNæring {
             @JsonProperty("regnskapsførere") List<Regnskapsfører> regnskapsførere,
             @JsonProperty("erNyOpprettet") boolean erNyOpprettet,
             @JsonProperty("erVarigEndring") boolean erVarigEndring,
+            @JsonProperty("erNyIArbeidslivet") boolean erNyIArbeidslivet,
             @JsonProperty("næringsinntektBrutto") long næringsinntektBrutto,
             @JsonProperty("endringsDato") LocalDate endringsDato,
             @JsonProperty("beskrivelseEndring") String beskrivelseEndring,
@@ -56,6 +58,7 @@ public abstract class EgenNæring {
         this.nærRelasjon = nærRelasjon;
         this.regnskapsførere = regnskapsførere;
         this.erNyOpprettet = erNyOpprettet;
+        this.erNyIArbeidslivet = erNyIArbeidslivet;
         this.erVarigEndring = erVarigEndring;
         this.næringsinntektBrutto = næringsinntektBrutto;
         this.endringsDato = endringsDato;
