@@ -106,7 +106,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
         try {
             LOG.info("Henter {} fra {}", type, uri);
             T respons = template.getForObject(uri, clazz);
-            LOG.info("Fikk objekt {}", respons);
+            LOG.trace("Fikk objekt {}", respons);
             return Optional.of(respons);
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente {} fra {}", clazz.getClass().getSimpleName(), uri, e);

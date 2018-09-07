@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -118,7 +119,14 @@ public class FPFordelSøknadGenerator {
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
 
     public Søknad tilSøknad(String søknadXml) {
-        Soeknad søknad = Jaxb.unmarshalToElement(søknadXml, CONTEXT, Soeknad.class).getValue();
+        String xml = StringEscapeUtils.unescapeHtml4(søknadXml);
+        LOG.info("XML etter unescape er nå {}", xml);
+        Soeknad søknad = Jaxb.unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
+        LOG.trace("Regenererer søknad fra {}", søknad);
+        LOG.trace("Regenererer dato fra {}", søknad.getMottattDato());
+        LOG.trace("Regenererer søker fra {}", søknad.getSoeker());
+        LOG.trace("Regenererer ytelse fra {}", søknad.getOmYtelse());
+
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
         s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
@@ -127,7 +135,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
-        if (omYtelse.getAny().isEmpty()) {
+        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
         }
@@ -152,11 +160,13 @@ public class FPFordelSøknadGenerator {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
             Rettigheter rettigheter) {
+        LOG.debug("Genererer rettigheter modell fra {}", rettigheter);
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(rettigheter.isHarAnnenForelderRett(),
                 rettigheter.isHarOmsorgForBarnetIPeriodene(), rettigheter.isHarAleneomsorgForBarnet());
     }
 
     private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
+        LOG.debug("Genererer relasjon til barn  modell fra {}", relasjonTilBarnet);
         if (relasjonTilBarnet instanceof Foedsel) {
             Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
             return new Fødsel(fødsel.getAntallBarn(), fødsel.getFoedselsdato());
@@ -179,6 +189,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening tilOpptjening(Opptjening opptjening) {
+        LOG.debug("Genererer opptjening  modell fra {}", opptjening);
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening(
                 tilUtenlandsArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
                 tilEgenNæring(opptjening.getEgenNaering()), tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
@@ -186,6 +197,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans tilFrilans(Frilans frilans) {
+        LOG.debug("Genererer frilans  modell fra {}", frilans);
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans(tilÅpenPeriode(frilans.getPeriode()),
                 frilans.isHarInntektFraFosterhjem(),
                 frilans.isErNyoppstartet(),
@@ -194,6 +206,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
+        LOG.debug("Genererer åpen periode  modell fra {}", periode);
         return tilÅpenPeriode(periode.get(0)); // TODO ?
     }
 
@@ -206,6 +219,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
+        LOG.debug("Genererer åpen  periode  modell fra {}", periode);
         return new ÅpenPeriode(periode.getFom(), periode.getTom());
     }
 
@@ -216,6 +230,7 @@ public class FPFordelSøknadGenerator {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
             AnnenOpptjening annenOpptjening) {
+        LOG.debug("Genererer annen opptjening  modell fra {}", annenOpptjening);
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening(
                 AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
                 tilÅpenPeriode(annenOpptjening.getPeriode()), Collections.emptyList());
@@ -226,6 +241,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
+        LOG.debug("Genererer egen næring  modell fra {}", egenNæring);
 
         if (egenNæring instanceof NorskOrganisasjon) {
             NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
@@ -282,28 +298,30 @@ public class FPFordelSøknadGenerator {
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
-        // TODO Auto-generated method stub
+        LOG.debug("Genererer medlemsskap  modell fra {}", medlemskap);
         return null;
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
-        // TODO Auto-generated method stub
+        LOG.debug("Genererer fordeling  modell fra {}", fordeling);
         return null;
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad tilDekningsgrad(
             Dekningsgrad dekningsgrad) {
+        LOG.debug("Genererer dekningsgrad  modell fra {}", dekningsgrad);
         return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad
                 .fraKode(dekningsgrad.getDekningsgrad().getKode());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
             AnnenForelder annenForelder) {
-        // TODO Auto-generated method stub
+        LOG.debug("Genererer annen forelder  modell fra {}", annenForelder);
         return null;
     }
 
     private static Søker tilSøker(Bruker søker) {
+        LOG.debug("Genererer søker  modell fra {}", søker);
         return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
     }
 
@@ -373,7 +391,8 @@ public class FPFordelSøknadGenerator {
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
-                .withRettigheter(rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
+                .withRettigheter(
+                        rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()));
 
@@ -796,7 +815,8 @@ public class FPFordelSøknadGenerator {
             return null;
         }
         return new Rettigheter()
-                .withHarOmsorgForBarnetIPeriodene(true) // Hardkodet til true, siden dette er implisitt og vi ikke spør brukeren eksplisitt
+                .withHarOmsorgForBarnetIPeriodene(true) // Hardkodet til true, siden dette er implisitt og vi ikke spør
+                                                        // brukeren eksplisitt
                 .withHarAnnenForelderRett(rettigheter.isHarAnnenForelderRett())
                 .withHarAleneomsorgForBarnet(rettigheter.isHarAleneOmsorgForBarnet());
     }
