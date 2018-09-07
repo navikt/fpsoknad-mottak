@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +48,9 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
                 SøknadWrapper.class,
                 "søknad");
         if (wrapper.isPresent()) {
-            Søknad søknad = generator.tilSøknad(wrapper.get().getXml());
+            String xml = StringEscapeUtils.unescapeHtml4(wrapper.get().getXml());
+            LOG.info("XML er nå {}", xml);
+            Søknad søknad = generator.tilSøknad(xml);
             LOG.info("Fant søknad {}", søknad);
             return søknad;
         }
@@ -106,7 +109,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
         try {
             LOG.info("Henter {} fra {}", type, uri);
             T respons = template.getForObject(uri, clazz);
-            LOG.info("Fikk objekt {}", respons);
+            LOG.trace("Fikk objekt {}", respons);
             return Optional.of(respons);
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente {} fra {}", clazz.getClass().getSimpleName(), uri, e);
