@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
 
 import java.time.LocalDateTime;
@@ -14,8 +15,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator.Filer;
 
 @JsonPropertyOrder({ "forsendelsesId", "brukerId", "forsendelseMottatt", "filer" })
@@ -65,7 +72,7 @@ public class FPFordelMetadata {
 
     private static List<Filer> files(Søknad søknad) {
         final AtomicInteger id = new AtomicInteger(1);
-        List<Filer> dokumenter = newArrayList(søknad(id), søknad(id));
+        List<Filer> dokumenter = newArrayList(søknad(id, søknad), søknad(id, søknad));
         dokumenter.addAll(søknad.getVedlegg().stream()
                 .map(s -> vedlegg(s, id))
                 .collect(toList()));
@@ -78,12 +85,30 @@ public class FPFordelMetadata {
 
     }
 
-    private static Filer søknad(final AtomicInteger id) {
-        return new Filer(I000005, id.getAndIncrement());
+    private static Filer søknad(final AtomicInteger id, Søknad søknad) {
+        return new Filer(dokumentTypeFra(søknad), id.getAndIncrement());
     }
 
     private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {
         return new Filer(vedlegg.getDokumentType(), id.getAndIncrement());
+    }
+
+    private static DokumentType dokumentTypeFra(Søknad søknad) {
+        RelasjonTilBarnMedVedlegg relasjon = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(søknad.getYtelse()).getRelasjonTilBarn();
+        if (relasjon instanceof Fødsel) {
+            return I000005;
+        }
+        if (relasjon instanceof FremtidigFødsel) {
+            return I000005;
+        }
+        if (relasjon instanceof Adopsjon) {
+            return I000002;
+        }
+        if (relasjon instanceof Omsorgsovertakelse) {
+            return I000002;
+        }
+        throw new IllegalArgumentException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
     }
 
     @Override
