@@ -246,7 +246,7 @@ public class FPFordelSøknadGenerator {
         if (egenNæring instanceof NorskOrganisasjon) {
             NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.builder()
-                    .arbeidsland(CountryCode.getByCode(norskOrg.getArbeidsland().getKode()))
+                    .arbeidsland(tilLand(norskOrg.getArbeidsland()))
                     .beskrivelseEndring(norskOrg.getBeskrivelseAvEndring())
                     .endringsDato(norskOrg.getEndringsDato())
                     .erNyOpprettet(norskOrg.isErNyoppstartet())
@@ -279,6 +279,10 @@ public class FPFordelSøknadGenerator {
         }
         throw new IllegalArgumentException("Ikke"
                 + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
+    }
+
+    private static CountryCode tilLand(Land land) {
+        return land == null ? CountryCode.NO : CountryCode.getByCode(land.getKode());
     }
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {

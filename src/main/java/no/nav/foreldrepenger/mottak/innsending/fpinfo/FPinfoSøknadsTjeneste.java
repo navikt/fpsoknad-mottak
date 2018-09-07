@@ -67,20 +67,22 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
         if (!saker.isPresent()) {
             return Collections.emptyList();
         }
-        return Arrays.stream(saker.get())
+        List<FPInfoSakStatus> fagSaker = Arrays.stream(saker.get())
                 .filter(s -> !s.getFagsakStatus().equals(AVSLU))
                 .map(s -> new FPInfoSakStatus(s.getSaksnummer(), s.getFagsakStatus(), s.getBehandlingTema(),
                         s.getAktørId(),
                         s.getAktørIdAnnenPart(), s.getAktørIdBarn(),
                         behandlingerFra(s)))
                 .collect(toList());
+        LOG.info("Henter fagsaker {}", fagSaker);
+        return fagSaker;
     }
 
     @Override
     public Behandling hentBehandling(String behandlingId) {
-        Optional<Behandling> behandling = get(uriFra(PATH + "behandling", headers("behandlingId", behandlingId)),
-                Behandling.class, "behandling");
-        return behandling.isPresent() ? behandling.get() : null;
+        URI uri = uriFra(PATH + "behandling", headers("behandlingId", behandlingId));
+        Optional<Behandling> behandling = get(uri, Behandling.class, "behandling");
+        return behandling.isPresent() ? withID(behandling.get(), uri) : null;
     }
 
     private List<Behandling> behandlingerFra(FPInfoSakStatusWrapper sak) {
@@ -93,7 +95,14 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
 
     private Behandling hentBehandling(URI uri) {
         Optional<Behandling> behandling = get(uri, Behandling.class, "behandling");
-        return behandling.isPresent() ? behandling.get() : null;
+        return behandling.isPresent() ? withID(behandling.get(), uri) : null;
+    }
+
+    private static Behandling withID(Behandling behandling, URI uri) {
+        UriComponentsBuilder.fromUri(uri).build().getQueryParams().getFirst("behandlingId");
+        behandling.setId(UriComponentsBuilder.fromUri(uri).build().getQueryParams().getFirst("behandlingId"));
+        LOG.info("behandling er {}", behandling);
+        return behandling;
     }
 
     private static HttpHeaders headers(String key, String value) {

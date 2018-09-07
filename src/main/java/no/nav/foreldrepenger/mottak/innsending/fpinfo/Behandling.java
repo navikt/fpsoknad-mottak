@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Behandling {
-
+    private String id;
     private final String status;
     private final String type;
     private final String tema;
