@@ -80,9 +80,9 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
 
     @Override
     public Behandling hentBehandling(String behandlingId) {
-        Optional<Behandling> behandling = get(uriFra(PATH + "behandling", headers("behandlingId", behandlingId)),
-                Behandling.class, "behandling");
-        return behandling.isPresent() ? behandling.get() : null;
+        URI uri = uriFra(PATH + "behandling", headers("behandlingId", behandlingId));
+        Optional<Behandling> behandling = get(uri, Behandling.class, "behandling");
+        return behandling.isPresent() ? withID(behandling.get(), uri) : null;
     }
 
     private List<Behandling> behandlingerFra(FPInfoSakStatusWrapper sak) {
@@ -95,7 +95,12 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
 
     private Behandling hentBehandling(URI uri) {
         Optional<Behandling> behandling = get(uri, Behandling.class, "behandling");
-        return behandling.isPresent() ? behandling.get() : null;
+        return behandling.isPresent() ? withID(behandling.get(), uri) : null;
+    }
+
+    private static Behandling withID(Behandling behandling, URI uri) {
+        behandling.setId(uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1));
+        return behandling;
     }
 
     private static HttpHeaders headers(String key, String value) {
