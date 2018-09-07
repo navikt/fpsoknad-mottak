@@ -100,6 +100,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
 
     private static Behandling withID(Behandling behandling, URI uri) {
         behandling.setId(uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1));
+        LOG.info("behandling er {}", behandling);
         return behandling;
     }
 
