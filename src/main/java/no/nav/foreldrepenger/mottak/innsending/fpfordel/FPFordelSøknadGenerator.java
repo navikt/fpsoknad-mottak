@@ -121,17 +121,11 @@ public class FPFordelSøknadGenerator {
     public Søknad tilSøknad(String søknadXml) {
         String xml = StringEscapeUtils.unescapeHtml4(søknadXml);
         LOG.info("XML etter unescape er nå {}", xml);
-        Soeknad søknad = Jaxb.unmarshal(xml, CONTEXT, Soeknad.class);
-        Soeknad søknad1 = Jaxb.unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
+        Soeknad søknad = Jaxb.unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
         LOG.trace("Regenererer søknad fra {}", søknad);
         LOG.trace("Regenererer dato fra {}", søknad.getMottattDato());
         LOG.trace("Regenererer søker fra {}", søknad.getSoeker());
         LOG.trace("Regenererer ytelse fra {}", søknad.getOmYtelse());
-
-        LOG.trace("Regenererer søknad fra {}", søknad1);
-        LOG.trace("Regenererer dato fra {}", søknad1.getMottattDato());
-        LOG.trace("Regenererer søker fra {}", søknad1.getSoeker());
-        LOG.trace("Regenererer ytelse fra {}", søknad1.getOmYtelse());
 
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
