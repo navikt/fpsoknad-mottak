@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,9 +47,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
                 SøknadWrapper.class,
                 "søknad");
         if (wrapper.isPresent()) {
-            String xml = StringEscapeUtils.unescapeHtml4(wrapper.get().getXml());
-            LOG.info("XML er nå {}", xml);
-            Søknad søknad = generator.tilSøknad(xml);
+            Søknad søknad = generator.tilSøknad(wrapper.get().getXml());
             LOG.info("Fant søknad {}", søknad);
             return søknad;
         }

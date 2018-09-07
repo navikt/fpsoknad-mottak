@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -118,11 +119,19 @@ public class FPFordelSøknadGenerator {
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
 
     public Søknad tilSøknad(String søknadXml) {
-        Soeknad søknad = Jaxb.unmarshalToElement(søknadXml, CONTEXT, Soeknad.class).getValue();
-        LOG.trace("Regenererer fra {}", søknad);
-        LOG.trace("Regenererer fra {}", søknad.getMottattDato());
-        LOG.trace("Regenererer fra {}", søknad.getSoeker());
-        LOG.trace("Regenererer fra {}", søknad.getOmYtelse());
+        String xml = StringEscapeUtils.unescapeHtml4(søknadXml);
+        LOG.info("XML etter unescape er nå {}", xml);
+        Soeknad søknad = Jaxb.unmarshal(xml, CONTEXT, Soeknad.class);
+        Soeknad søknad1 = Jaxb.unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
+        LOG.trace("Regenererer søknad fra {}", søknad);
+        LOG.trace("Regenererer dato fra {}", søknad.getMottattDato());
+        LOG.trace("Regenererer søker fra {}", søknad.getSoeker());
+        LOG.trace("Regenererer ytelse fra {}", søknad.getOmYtelse());
+
+        LOG.trace("Regenererer søknad fra {}", søknad1);
+        LOG.trace("Regenererer dato fra {}", søknad1.getMottattDato());
+        LOG.trace("Regenererer søker fra {}", søknad1.getSoeker());
+        LOG.trace("Regenererer ytelse fra {}", søknad1.getOmYtelse());
 
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
