@@ -104,6 +104,7 @@ public class TestFPFordelSerialization {
         FPFordelSøknadGenerator fpFordelSøknadGenerator = new FPFordelSøknadGenerator(oppslag);
         Søknad original = ForeldrepengerTestUtils.foreldrepenger();
         String xml = fpFordelSøknadGenerator.toXML(original, aktørId);
+        System.out.println(xml);
         Søknad rekonstruert = fpFordelSøknadGenerator.tilSøknad(xml);
         assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());
         assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());

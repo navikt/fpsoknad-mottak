@@ -67,13 +67,15 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
         if (!saker.isPresent()) {
             return Collections.emptyList();
         }
-        return Arrays.stream(saker.get())
+        List<FPInfoSakStatus> fagSaker = Arrays.stream(saker.get())
                 .filter(s -> !s.getFagsakStatus().equals(AVSLU))
                 .map(s -> new FPInfoSakStatus(s.getSaksnummer(), s.getFagsakStatus(), s.getBehandlingTema(),
                         s.getAktørId(),
                         s.getAktørIdAnnenPart(), s.getAktørIdBarn(),
                         behandlingerFra(s)))
                 .collect(toList());
+        LOG.info("Henter fagsaker {}", fagSaker);
+        return fagSaker;
     }
 
     @Override
