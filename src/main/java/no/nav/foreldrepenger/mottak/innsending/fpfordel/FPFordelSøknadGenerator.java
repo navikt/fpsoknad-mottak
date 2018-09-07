@@ -119,6 +119,11 @@ public class FPFordelSøknadGenerator {
 
     public Søknad tilSøknad(String søknadXml) {
         Soeknad søknad = Jaxb.unmarshalToElement(søknadXml, CONTEXT, Soeknad.class).getValue();
+        LOG.trace("Regenererer fra {}", søknad);
+        LOG.trace("Regenererer fra {}", søknad.getMottattDato());
+        LOG.trace("Regenererer fra {}", søknad.getSoeker());
+        LOG.trace("Regenererer fra {}", søknad.getOmYtelse());
+
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
         s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
@@ -127,7 +132,7 @@ public class FPFordelSøknadGenerator {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
-        if (omYtelse.getAny().isEmpty()) {
+        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
         }
