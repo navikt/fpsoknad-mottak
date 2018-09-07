@@ -179,11 +179,13 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
 
     private float opptjening(Opptjening opptjening, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= addLeftHeading(infoFormatter.fromMessageSource("arbeidsforhold"), cos, y);
+        y -= addLeftHeading(infoFormatter.fromMessageSource("infoominntekt"), cos, y);
         y -= addBulletList(utenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()), cos, y);
-        y -= addBlankLine();
-        y -= addLeftHeading(infoFormatter.fromMessageSource("egennæring"), cos, y);
-        y -= addBulletList(egenNæring(opptjening.getEgenNæring()), cos, y);
+        if (!opptjening.getEgenNæring().isEmpty()) {
+            y -= addBlankLine();
+            y -= addLeftHeading(infoFormatter.fromMessageSource("egennæring"), cos, y);
+            y -= addBulletList(egenNæring(opptjening.getEgenNæring()), cos, y);
+        }
         return startY - y;
     }
 
@@ -199,6 +201,10 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
         float startY = y;
         y -= addLeftHeading(infoFormatter.fromMessageSource("perioder"), cos, y);
         y -= addBulletList(perioder(fordeling.getPerioder()), cos, y);
+        y -= addBlankLine();
+        String informert = infoFormatter.fromMessageSource("informert") +
+            (fordeling.isErAnnenForelderInformert() ? "Ja" : "Nei");
+        y -= addLineOfRegularText(informert, cos, y);
         return startY - y;
     }
 
@@ -228,9 +234,14 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
 
     private String formatVirksomhetsType(Virksomhetstype type, EgenNæring næring) {
         CountryCode arbeidsland = Optional.ofNullable(næring.getArbeidsland()).orElse(CountryCode.NO);
+        // varig endring, nyoppstartet, ny i arbeidslivet, næringsinntekt begrunnelse (på begge foregående)
+        // revisor hvis ikke regnskapsfører, kan vi hente info fra revisor
         return type.name() + " (" + infoFormatter.countryName(arbeidsland.getAlpha2()) + ")" + " - " +
                 "fom." + infoFormatter.dato(næring.getPeriode().getFom()) + " - " +
-                "regnskapsfører " + infoFormatter.navnToString(næring.getRegnskapsførere());
+                infoFormatter.navnToString(næring.getRegnskapsførere()) +
+            (næring.isErVarigEndring() ? " - " + infoFormatter.fromMessageSource("varigendring") : "") +
+            (næring.isErNyOpprettet() ? " - " + infoFormatter.fromMessageSource("nyopprettet") : "") +
+            " - " + næring.getBeskrivelseEndring();
     }
 
     private List<String> perioder(List<LukketPeriodeMedVedlegg> perioder) {
