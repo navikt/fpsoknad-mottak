@@ -19,6 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
@@ -94,18 +95,12 @@ public class FPFordelMetadata {
     }
 
     private static DokumentType dokumentTypeFra(Søknad søknad) {
-        RelasjonTilBarnMedVedlegg relasjon = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                .cast(søknad.getYtelse()).getRelasjonTilBarn();
-        if (relasjon instanceof Fødsel) {
+        RelasjonTilBarnMedVedlegg relasjon = Foreldrepenger.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
+        if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;
         }
-        if (relasjon instanceof FremtidigFødsel) {
-            return I000005;
-        }
-        if (relasjon instanceof Adopsjon) {
-            return I000002;
-        }
-        if (relasjon instanceof Omsorgsovertakelse) {
+
+        if (relasjon instanceof Adopsjon || relasjon instanceof Omsorgsovertakelse) {
             return I000002;
         }
         throw new IllegalArgumentException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
