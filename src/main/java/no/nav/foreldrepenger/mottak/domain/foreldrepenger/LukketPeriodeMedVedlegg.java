@@ -30,9 +30,9 @@ import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 })
 public abstract class LukketPeriodeMedVedlegg {
 
-    private final LocalDate fom;
-    private final LocalDate tom;
-    private final List<String> vedlegg;
+    protected final LocalDate fom;
+    protected final LocalDate tom;
+    protected final List<String> vedlegg;
 
     @JsonCreator
     public LukketPeriodeMedVedlegg(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,

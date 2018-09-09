@@ -119,13 +119,8 @@ public class FPFordelSøknadGenerator {
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
 
     public Søknad tilSøknad(String søknadXml) {
-        String xml = StringEscapeUtils.unescapeHtml4(søknadXml);
-        LOG.info("XML etter unescape er nå {}", xml);
-        Soeknad søknad = Jaxb.unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-        LOG.trace("Regenererer søknad fra {}", søknad);
-        LOG.trace("Regenererer dato fra {}", søknad.getMottattDato());
-        LOG.trace("Regenererer søker fra {}", søknad.getSoeker());
-        LOG.trace("Regenererer ytelse fra {}", søknad.getOmYtelse());
+        Soeknad søknad = Jaxb.unmarshalToElement(StringEscapeUtils.unescapeHtml4(søknadXml), CONTEXT, Soeknad.class)
+                .getValue();
 
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
@@ -134,7 +129,7 @@ public class FPFordelSøknadGenerator {
         return s;
     }
 
-    private static no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
+    private no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
         if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
@@ -246,7 +241,6 @@ public class FPFordelSøknadGenerator {
         if (egenNæring instanceof NorskOrganisasjon) {
             NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.builder()
-                    .arbeidsland(tilLand(norskOrg.getArbeidsland()))
                     .beskrivelseEndring(norskOrg.getBeskrivelseAvEndring())
                     .endringsDato(norskOrg.getEndringsDato())
                     .erNyOpprettet(norskOrg.isErNyoppstartet())
@@ -280,7 +274,11 @@ public class FPFordelSøknadGenerator {
     }
 
     private static CountryCode tilLand(Land land) {
-        return land == null ? CountryCode.NO : CountryCode.getByCode(land.getKode());
+        return tilLand(land, null);
+    }
+
+    private static CountryCode tilLand(Land land, CountryCode defaultLand) {
+        return land == null ? defaultLand : CountryCode.getByCode(land.getKode());
     }
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
@@ -308,7 +306,72 @@ public class FPFordelSøknadGenerator {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
         LOG.debug("Genererer fordeling  modell fra {}", fordeling);
-        return null;
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling(fordeling.isAnnenForelderErInformert(),
+                tilÅrsak(fordeling.getOenskerKvoteOverfoert()), tilPerioder(fordeling.getPerioder()));
+    }
+
+    private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
+        return Overføringsårsak.valueOf(årsak.getKode());
+    }
+
+    private static List<LukketPeriodeMedVedlegg> tilPerioder(
+            List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioder) {
+        return perioder.stream().map(FPFordelSøknadGenerator::tilLukketPeriode).collect(toList());
+    }
+
+    private static LukketPeriodeMedVedlegg tilLukketPeriode(
+            no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg periode) {
+
+        if (periode instanceof Overfoeringsperiode) {
+            Overfoeringsperiode overføringsPeriode = Overfoeringsperiode.class.cast(periode);
+            return new OverføringsPeriode(overføringsPeriode.getFom(), overføringsPeriode.getTom(),
+                    Collections.emptyList(),
+                    tilÅrsak(overføringsPeriode.getAarsak()));
+        }
+        if (periode instanceof Oppholdsperiode) {
+            Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
+            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(), Collections.emptyList(),
+                    tilÅrsak(oppholdsPeriode.getAarsak()));
+        }
+        if (periode instanceof Utsettelsesperiode) {
+            Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
+            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), Collections.emptyList(),
+                    tilÅrsak(utsettelse.getAarsak()));
+        }
+
+        if (periode instanceof Gradering) {
+            Gradering gradering = Gradering.class.cast(periode);
+            return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(), Collections.emptyList(),
+                    tilStønadKontoType(gradering.getType()),
+                    gradering.isOenskerSamtidigUttak(),
+                    tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()));
+        }
+
+        if (periode instanceof Uttaksperiode) {
+            Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
+            return new UttaksPeriode(uttaksperiode.getFom(), uttaksperiode.getTom(), Collections.emptyList(),
+                    tilStønadKontoType(uttaksperiode.getType()), uttaksperiode.isOenskerSamtidigUttak(),
+                    tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()));
+        }
+
+        throw new IllegalArgumentException();
+
+    }
+
+    private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
+        return MorsAktivitet.valueOf(morsAktivitetIPerioden.getKode());
+    }
+
+    private static StønadskontoType tilStønadKontoType(Uttaksperiodetyper type) {
+        return StønadskontoType.valueOf(type.getKode());
+    }
+
+    private static UtsettelsesÅrsak tilÅrsak(Utsettelsesaarsaker aarsak) {
+        return UtsettelsesÅrsak.valueOf(aarsak.getKode());
+    }
+
+    private static Oppholdsårsak tilÅrsak(Oppholdsaarsaker aarsak) {
+        return Oppholdsårsak.valueOf(aarsak.getKode());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad tilDekningsgrad(
@@ -318,10 +381,22 @@ public class FPFordelSøknadGenerator {
                 .fraKode(dekningsgrad.getDekningsgrad().getKode());
     }
 
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
+    private no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
             AnnenForelder annenForelder) {
         LOG.debug("Genererer annen forelder  modell fra {}", annenForelder);
-        return null;
+        if (annenForelder instanceof UkjentForelder) {
+            return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder();
+        }
+        if (annenForelder instanceof AnnenForelderMedNorskIdent) {
+            AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
+            return new NorskForelder(oppslag.getFnr(new AktorId(norskForelder.getAktoerId())), null);
+        }
+        if (annenForelder instanceof AnnenForelderUtenNorskIdent) {
+            AnnenForelderUtenNorskIdent utenlandsForelder = AnnenForelderUtenNorskIdent.class.cast(annenForelder);
+            return new UtenlandskForelder(utenlandsForelder.getUtenlandskPersonidentifikator(),
+                    tilLand(utenlandsForelder.getLand()), null);
+        }
+        throw new IllegalArgumentException();
     }
 
     private static Søker tilSøker(Bruker søker) {

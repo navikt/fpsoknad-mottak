@@ -19,6 +19,7 @@ public class OppslagService implements Oppslag {
 
     private static final String AKTØR = "/oppslag/aktor";
     private static final String AKTØRFNR = "/oppslag/aktorfnr";
+    private static final String FNR = "/oppslag/fnr";
     private static final String PERSON = "/person";
 
     private static final Logger LOG = LoggerFactory.getLogger(OppslagService.class);
@@ -60,7 +61,16 @@ public class OppslagService implements Oppslag {
     }
 
     @Override
+    public Fødselsnummer getFnr(AktorId aktørId) {
+        URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(FNR).queryParam("aktorId", aktørId.getId()).build()
+                .toUri();
+        LOG.info("Henter {} fra {}", FNR.toLowerCase(), uri);
+        return template.getForObject(uri, Fødselsnummer.class);
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + " [template=" + template + ", baseURI=" + baseURI + "]";
     }
+
 }

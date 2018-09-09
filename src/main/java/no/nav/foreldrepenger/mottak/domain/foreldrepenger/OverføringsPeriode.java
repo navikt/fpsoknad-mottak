@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "vedlegg" })
 @ToString(callSuper = true)
 public class OverføringsPeriode extends LukketPeriodeMedVedlegg {
 

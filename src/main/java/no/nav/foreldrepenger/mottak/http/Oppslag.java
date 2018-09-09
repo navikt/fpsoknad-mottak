@@ -12,4 +12,6 @@ public interface Oppslag {
 
     AktorId getAktørId(Fødselsnummer fnr);
 
+    Fødselsnummer getFnr(AktorId aktørId);
+
 }

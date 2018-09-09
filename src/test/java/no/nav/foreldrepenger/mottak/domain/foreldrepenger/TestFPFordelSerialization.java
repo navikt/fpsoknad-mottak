@@ -113,6 +113,10 @@ public class TestFPFordelSerialization {
         Foreldrepenger rekonstruertYtelse = Foreldrepenger.class.cast(rekonstruert.getYtelse());
         assertThat(rekonstruertYtelse.getDekningsgrad()).isEqualTo(originalYtelse.getDekningsgrad());
         assertThat(rekonstruertYtelse.getRelasjonTilBarn()).isEqualTo(originalYtelse.getRelasjonTilBarn());
+        assertThat(rekonstruertYtelse.getAnnenForelder()).isEqualTo(originalYtelse.getAnnenForelder());
+
+        // assertThat(rekonstruertYtelse.getFordeling()).isEqualTo(originalYtelse.getFordeling());
+
         // assertEquals(original, rekonstruert);
     }
 
