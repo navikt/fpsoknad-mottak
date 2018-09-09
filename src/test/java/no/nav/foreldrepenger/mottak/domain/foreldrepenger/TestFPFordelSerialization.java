@@ -11,7 +11,7 @@ import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvolutt
 import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.VEDLEGG;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -61,6 +61,7 @@ public class TestFPFordelSerialization {
     private Oppslag oppslag;
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
+    private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
 
     private static final ObjectMapper mapper = mapper();
 
@@ -77,7 +78,9 @@ public class TestFPFordelSerialization {
 
     @Before
     public void before() {
-        when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
+        when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
+        when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
+
     }
 
     @Test
