@@ -97,8 +97,7 @@ public class FPFordelTest {
         ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(mottakConfig.landkoder(),
                 mottakConfig.kvitteringstekster());
 
-        FPFordelSøknadGenerator søknadGenerator = new FPFordelSøknadGenerator(new XMLToDomainMapper(oppslag),
-                new DomainToXMLMapper(oppslag));
+        FPFordelSøknadMapper søknadGenerator = new FPFordelSøknadMapper(oppslag);
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(new ObjectMapper()),
                 søknadGenerator,

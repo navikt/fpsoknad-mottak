@@ -27,7 +27,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadMapper;
 import no.nav.security.oidc.api.Unprotected;
 
 @Unprotected
@@ -40,12 +40,12 @@ public class MottakPreprodController {
 
     private final DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator;
     private final DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator;
-    private final FPFordelSøknadGenerator fpfordelSøknadGenerator;
+    private final FPFordelSøknadMapper fpfordelSøknadGenerator;
     private final FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator;
 
     public MottakPreprodController(DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator,
             DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator,
-            FPFordelSøknadGenerator fpfordelSøknadGenerator, FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator) {
+            FPFordelSøknadMapper fpfordelSøknadGenerator, FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator) {
         this.dokmotSøknadGenerator = dokmotSøknadGenerator;
         this.dokmotKonvoluttGenerator = dokmotKonvoluttGenerator;
         this.fpfordelSøknadGenerator = fpfordelSøknadGenerator;

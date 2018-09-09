@@ -1,17 +1,25 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.http.Oppslag;
 
 @Component
-public class FPFordelSøknadGenerator {
+public class FPFordelSøknadMapper {
 
     private final XMLToDomainMapper xmlMapper;
     private final DomainToXMLMapper domainMapper;
 
-    public FPFordelSøknadGenerator(XMLToDomainMapper xmlMapper, DomainToXMLMapper domainMapper) {
+    @Inject
+    public FPFordelSøknadMapper(Oppslag oppslag) {
+        this(new XMLToDomainMapper(oppslag), new DomainToXMLMapper(oppslag));
+    }
+
+    private FPFordelSøknadMapper(XMLToDomainMapper xmlMapper, DomainToXMLMapper domainMapper) {
         this.xmlMapper = xmlMapper;
         this.domainMapper = domainMapper;
     }

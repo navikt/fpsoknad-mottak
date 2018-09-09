@@ -123,14 +123,14 @@ public class DomainToXMLMapper {
     }
 
     public String tilXML(Søknad søknad, AktorId aktørId) {
-        return toXML(søknadObjectFactory.createSoeknad(toFPFordelModel(søknad, aktørId)));
+        return tilXML(søknadObjectFactory.createSoeknad(tilModell(søknad, aktørId)));
     }
 
-    private static String toXML(JAXBElement<Soeknad> søknad) {
+    private static String tilXML(JAXBElement<Soeknad> søknad) {
         return Jaxb.marshal(CONTEXT, søknad, false);
     }
 
-    private Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
+    private Soeknad tilModell(Søknad søknad, AktorId aktørId) {
         LOG.debug("Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))

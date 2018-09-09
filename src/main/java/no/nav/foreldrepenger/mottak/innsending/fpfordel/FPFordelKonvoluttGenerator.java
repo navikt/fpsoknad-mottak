@@ -34,11 +34,11 @@ public class FPFordelKonvoluttGenerator {
     public static final String CONTENT_ID = "Content-ID";
     public static final String HOVEDDOKUMENT = "hoveddokument";
     private final FPFordelMetdataGenerator metadataGenerator;
-    private final FPFordelSøknadGenerator søknadGenerator;
+    private final FPFordelSøknadMapper søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            FPFordelSøknadGenerator søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
+            FPFordelSøknadMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.søknadGenerator = søknadGenerator;
         this.pdfGenerator = pdfGenerator;
