@@ -71,7 +71,7 @@ public class MottakPreprodController {
     }
 
     private String fpSøknad(Søknad søknad) {
-        return fpfordelSøknadGenerator.toXML(søknad, new AktorId("42"));
+        return fpfordelSøknadGenerator.tilXML(søknad, new AktorId("42"));
     }
 
     private String esKonvolutt(Søknad søknad, Person søker) {

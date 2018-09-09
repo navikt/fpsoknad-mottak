@@ -107,7 +107,7 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private String xmlHovedDokument(Søknad søknad, AktorId aktørId) {
-        String hovedDokument = søknadGenerator.toXML(søknad, aktørId);
+        String hovedDokument = søknadGenerator.tilXML(søknad, aktørId);
         LOG.debug("Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }

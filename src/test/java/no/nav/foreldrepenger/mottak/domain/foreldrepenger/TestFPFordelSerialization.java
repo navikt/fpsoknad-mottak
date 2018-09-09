@@ -43,6 +43,7 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.DomainToXMLMapper;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKvittering;
@@ -50,6 +51,7 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.XMLToDomainMapper;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -104,9 +106,10 @@ public class TestFPFordelSerialization {
     @Test
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
-        FPFordelSøknadGenerator fpFordelSøknadGenerator = new FPFordelSøknadGenerator(oppslag);
+        FPFordelSøknadGenerator fpFordelSøknadGenerator = new FPFordelSøknadGenerator(new XMLToDomainMapper(oppslag),
+                new DomainToXMLMapper(oppslag));
         Søknad original = ForeldrepengerTestUtils.foreldrepenger();
-        String xml = fpFordelSøknadGenerator.toXML(original, aktørId);
+        String xml = fpFordelSøknadGenerator.tilXML(original, aktørId);
         System.out.println(xml);
         Søknad rekonstruert = fpFordelSøknadGenerator.tilSøknad(xml);
         assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());
@@ -128,7 +131,8 @@ public class TestFPFordelSerialization {
         MottakConfiguration mottakConfiguration = new MottakConfiguration();
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
-                new FPFordelSøknadGenerator(oppslag), new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
+                new FPFordelSøknadGenerator(new XMLToDomainMapper(oppslag), new DomainToXMLMapper(oppslag)),
+                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
                         mottakConfiguration.kvitteringstekster()));
         Søknad søknad = søknad(valgfrittVedlegg());
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
