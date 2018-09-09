@@ -7,4 +7,6 @@ public interface AktorIdClient extends Pingable {
 
     AktorId aktorIdForFnr(Fødselsnummer fnr);
 
+    Fødselsnummer fnrForAktørId(AktorId fnr);
+
 }

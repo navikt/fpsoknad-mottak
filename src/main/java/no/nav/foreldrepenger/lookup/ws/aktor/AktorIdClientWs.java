@@ -2,16 +2,18 @@ package no.nav.foreldrepenger.lookup.ws.aktor;
 
 import java.util.Objects;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentIdentForAktoerIdPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
+import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentIdentForAktoerIdRequest;
 
 public class AktorIdClientWs implements AktorIdClient {
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientWs.class);
@@ -19,7 +21,8 @@ public class AktorIdClientWs implements AktorIdClient {
     private final AktoerV2 aktoerV2;
     private final AktoerV2 healthIndicator;
 
-    private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.aktorid");
+    private static final Counter ERROR_COUNTER_AKTOR = Metrics.counter("errors.lookup.aktorid");
+    private static final Counter ERROR_COUNTER_FNR = Metrics.counter("errors.lookup.fnr");
 
     public AktorIdClientWs(AktoerV2 aktoerV2, AktoerV2 healthIndicator) {
         this.aktoerV2 = Objects.requireNonNull(aktoerV2);
@@ -34,7 +37,20 @@ public class AktorIdClientWs implements AktorIdClient {
             LOG.warn("Henting av aktørid har feilet", e);
             throw new NotFoundException(e.getMessage());
         } catch (Exception ex) {
-            ERROR_COUNTER.increment();
+            ERROR_COUNTER_AKTOR.increment();
+            throw ex;
+        }
+    }
+
+    @Override
+    public Fødselsnummer fnrForAktørId(AktorId aktørId) {
+        try {
+            return new Fødselsnummer(aktoerV2.hentIdentForAktoerId(request(aktørId)).getIdent());
+        } catch (HentIdentForAktoerIdPersonIkkeFunnet e) {
+            LOG.warn("Henting av fnr har feilet", e);
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception ex) {
+            ERROR_COUNTER_FNR.increment();
             throw ex;
         }
     }
@@ -45,9 +61,14 @@ public class AktorIdClientWs implements AktorIdClient {
             LOG.info("Pinger Aktørregisteret");
             healthIndicator.ping();
         } catch (Exception ex) {
-            ERROR_COUNTER.increment();
             throw ex;
         }
+    }
+
+    private static HentIdentForAktoerIdRequest request(AktorId aktørId) {
+        HentIdentForAktoerIdRequest req = new HentIdentForAktoerIdRequest();
+        req.setAktoerId(aktørId.getAktør());
+        return req;
     }
 
     private static HentAktoerIdForIdentRequest request(Fødselsnummer fnr) {
