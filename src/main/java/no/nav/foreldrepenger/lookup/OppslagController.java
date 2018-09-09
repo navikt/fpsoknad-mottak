@@ -101,6 +101,11 @@ public class OppslagController {
         return aktorClient.aktorIdForFnr(fnr);
     }
 
+    @GetMapping(value = "/fnr")
+    public Fødselsnummer getFNRforAktørIdR(@RequestParam(name = "aktorId") AktorId aktorId) {
+        return aktorClient.fnrForAktørId(aktorId);
+    }
+
     private Fødselsnummer fnrFromClaims() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().isEmpty()) {

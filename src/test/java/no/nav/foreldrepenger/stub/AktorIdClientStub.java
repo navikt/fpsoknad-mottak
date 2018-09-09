@@ -1,10 +1,11 @@
 package no.nav.foreldrepenger.stub;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AktorIdClientStub implements AktorIdClient {
 
@@ -17,6 +18,11 @@ public class AktorIdClientStub implements AktorIdClient {
     @Override
     public void ping() {
         LOG.debug("PONG");
+    }
+
+    @Override
+    public Fødselsnummer fnrForAktørId(AktorId fnr) {
+        return new Fødselsnummer("01010100000");
     }
 
 }
