@@ -86,6 +86,10 @@ class SøknadInfoFormatter {
                 + Optional.ofNullable(søker.etternavn).orElse("ukjentsen")).trim();
     }
 
+    public String yesNo(boolean b) {
+        return b ? "Ja" : "Nei";
+    }
+
     private String getMessage(String key, MessageSource messages, Object... values) {
         return getMessage(key, null, messages, values);
     }
