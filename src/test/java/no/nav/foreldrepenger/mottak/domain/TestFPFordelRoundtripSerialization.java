@@ -6,8 +6,8 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.nesteMåned;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
-import static no.nav.foreldrepenger.mottak.http.SøknadController.MOTTAK;
 import static no.nav.foreldrepenger.mottak.http.MottakPreprodController.INNSENDING_PREPROD;
+import static no.nav.foreldrepenger.mottak.http.SøknadController.MOTTAK;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.Assert.assertEquals;
@@ -77,12 +77,6 @@ public class TestFPFordelRoundtripSerialization {
     public void testPing() {
         assertEquals("Hallo joe fra ubeskyttet ressurs",
                 template.getForObject(MOTTAK + "/ping?navn=joe", String.class));
-    }
-
-    @Test
-    public void testPing1() {
-        assertEquals("Hallo joe fra beskyttet ressurs",
-                template.getForObject(MOTTAK + "/ping1?navn=joe", String.class));
     }
 
     // @Test
