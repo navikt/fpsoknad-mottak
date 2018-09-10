@@ -169,6 +169,11 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
                 y -= addLMultilineBulletpoint(næring, cos, y);
             }
         }
+        if (!opptjening.getAnnenOpptjening().isEmpty()) {
+            y -= addBlankLine();
+            y -= addLeftHeading(infoFormatter.fromMessageSource("annenopptjening"), cos, y);
+            y -= addBulletList(annenOpptjening(opptjening.getAnnenOpptjening()), cos, y);
+        }
         return startY - y;
     }
 
@@ -200,7 +205,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     private String format(UtenlandskArbeidsforhold arbeidsforhold) {
         UtenlandskArbeidsforhold ua = UtenlandskArbeidsforhold.class.cast(arbeidsforhold);
         return ua.getArbeidsgiverNavn() + " (" + infoFormatter.countryName(ua.getLand().getAlpha2()) + ")" + " - " +
-                "fom. " + infoFormatter.dato(ua.getPeriode().getFom());
+                infoFormatter.periode(ua.getPeriode());
     }
 
     private List<List<String>> egenNæring(List<EgenNæring> egenNæring) {
@@ -212,7 +217,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     private List<String> formatEgenNæring(EgenNæring næring) {
         CountryCode arbeidsland = Optional.ofNullable(næring.getArbeidsland()).orElse(CountryCode.NO);
         String typer = næring.getVirksomhetsTyper().stream()
-            .map(Object::toString)
+            .map(v -> infoFormatter.capitalize(v.toString()))
             .collect(joining(","));
         StringBuilder sb = new StringBuilder(typer + " i " + infoFormatter.countryName(arbeidsland.getAlpha2()));
         sb.append(" hos ");
@@ -224,7 +229,7 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
             UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
             sb.append(org.getOrgName());
         }
-        sb.append(" fom. " + infoFormatter.dato(næring.getPeriode().getFom()));
+        sb.append(" " + infoFormatter.periode(næring.getPeriode()));
         if (næring.isErVarigEndring()) {
             sb.append(", " + infoFormatter.fromMessageSource("varigendring"));
         }
@@ -243,6 +248,22 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
         sb.append(næring.getBeskrivelseEndring());
 
         return Arrays.asList(sb.toString().split("\n"));
+    }
+
+    private List<String> annenOpptjening(List<AnnenOpptjening> annenOpptjening) {
+        return annenOpptjening.stream()
+            .map(this::formatAnnenOpptjening)
+            .collect(toList());
+    }
+
+    private String formatAnnenOpptjening(AnnenOpptjening annenOpptjening) {
+        annenOpptjening.
+        StringBuilder sb = new StringBuilder(infoFormatter.capitalize(annenOpptjening.getType().toString()));
+        sb.append(" " + infoFormatter.periode(annenOpptjening.getPeriode()));
+        if (annenOpptjening.getVedlegg().size() != 0) {
+            sb.append(", vedlegg: " + annenOpptjening.getVedlegg().stream().collect(joining(", ")));
+        }
+        return sb.toString();
     }
 
     private List<String> perioder(List<LukketPeriodeMedVedlegg> perioder) {

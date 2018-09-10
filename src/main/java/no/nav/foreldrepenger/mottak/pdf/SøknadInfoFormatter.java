@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -88,6 +89,19 @@ class SøknadInfoFormatter {
 
     public String yesNo(boolean b) {
         return b ? "Ja" : "Nei";
+    }
+
+    public String periode(ÅpenPeriode periode) {
+        StringBuilder sb = new StringBuilder("fom " + dato(periode.getFom()));
+        if (periode.getTom() != null) {
+            sb.append(" tom " + dato(periode.getTom()));
+        }
+        return sb.toString();
+    }
+
+    public String capitalize(String orig) {
+        String lowerWithSpace = orig.toString().replaceAll("_", " ").toLowerCase();
+        return lowerWithSpace.substring(0, 1).toUpperCase() + lowerWithSpace.substring(1);
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {

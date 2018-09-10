@@ -25,7 +25,7 @@ class PDFGenerator {
     private static final PDFont fontBold = PDType1Font.HELVETICA_BOLD;
 
     private static final int fontPLainSize = 12;
-    private static final int fontHeadingSize = 16;
+    private static final int fontHeadingSize = 13;
     private static final int fontPLainHeight = Math
             .round(fontPlain.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontPLainSize);
     private static final int fontHeadingHeight = Math

@@ -17,4 +17,12 @@ public class SøknadInfoFormatterTest {
         assertEquals("ukjent", name);
     }
 
+
+    @Test
+    public void capitalize() {
+        String orig = "ENUM_TO_STRING";
+        SøknadInfoFormatter formatter = new SøknadInfoFormatter(null, null, null);
+        assertEquals("Enum to string", formatter.capitalize(orig));
+    }
+
 }
