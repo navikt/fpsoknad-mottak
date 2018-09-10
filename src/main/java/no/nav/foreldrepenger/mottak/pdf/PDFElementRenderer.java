@@ -15,9 +15,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class PDFGenerator {
+public class PDFElementRenderer {
 
-    private static final Logger log = LoggerFactory.getLogger(PDFGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(PDFElementRenderer.class);
 
     private static final int margin = 40;
 
@@ -33,12 +33,6 @@ class PDFGenerator {
 
     private static final PDRectangle mediaBox = new PDPage(PDRectangle.A4).getMediaBox();
 
-    protected final SøknadInfoFormatter infoFormatter;
-
-    public PDFGenerator(SøknadInfoFormatter infoFormatter) {
-        this.infoFormatter = infoFormatter;
-    }
-
     public PDPage newPage() {
         return new PDPage(PDRectangle.A4);
     }
@@ -47,7 +41,7 @@ class PDFGenerator {
         return mediaBox.getUpperRightY() - margin;
     }
 
-    public float addLineOfRegularText(String line, PDPageContentStream cos, float startY) throws IOException {
+    public float addLineOfRegularText(  String line, PDPageContentStream cos, float startY) throws IOException {
         cos.beginText();
         cos.setFont(fontPlain, fontPLainSize);
         cos.newLineAtOffset(margin, startY);
@@ -136,8 +130,8 @@ class PDFGenerator {
 
     private static byte[] logoFromInputStream() {
         log.debug("Reading logo image");
-        try (InputStream is = PDFGenerator.class.getResourceAsStream("/pdf/nav-logo.png");
-                ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+        try (InputStream is = PDFElementRenderer.class.getResourceAsStream("/pdf/nav-logo.png");
+             ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
             for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
                 os.write(buffer, 0, len);

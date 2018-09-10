@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -17,7 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
 
-class SøknadInfoFormatter {
+public class SøknadTextFormatter {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
@@ -26,9 +27,9 @@ class SøknadInfoFormatter {
     private final MessageSource kvitteringstekster;
     private final Locale locale;
 
-    public SøknadInfoFormatter(@Qualifier("landkoder") MessageSource landkoder,
-            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
-            Locale locale) {
+    public SøknadTextFormatter(@Qualifier("landkoder") MessageSource landkoder,
+                               @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
+                               Locale locale) {
         this.landkoder = landkoder;
         this.kvitteringstekster = kvitteringstekster;
         this.locale = locale;
@@ -42,40 +43,32 @@ class SøknadInfoFormatter {
         return getMessage(key, kvitteringstekster, values);
     }
 
-    public String navnToString(List<Regnskapsfører> regnskapsførere) {
+    public String regnskapsførere(List<Regnskapsfører> regnskapsførere) {
         return regnskapsførere == null ? "ukjent"
                 : regnskapsførere.stream()
                         .map(Regnskapsfører::getNavn)
                         .collect(joining(","));
     }
 
-    public String navnToString(Navn navn) {
-        return (formatNavn(navn.getFornavn()) + " "
-                + formatNavn(navn.getMellomnavn()) + " "
-                + formatNavn(navn.getEtternavn()) + " ").trim();
+    public String navn(Navn navn) {
+        String sammensattNavn = (Optional.ofNullable(navn.getFornavn()).orElse("") + " "
+                + Optional.ofNullable(navn.getMellomnavn()).orElse("") + " "
+                + Optional.ofNullable(navn.getEtternavn()).orElse("")).trim();
+        return sammensattNavn.isEmpty() ? "" : fromMessageSource("navn", sammensattNavn);
     }
 
-    private static String formatNavn(String navn) {
-        return Optional.ofNullable(navn).orElse("");
-    }
-
-    public String dato(LocalDate localDate) {
+    public String date(LocalDate localDate) {
         return localDate != null ? localDate.format(DATE_FMT) : "?";
     }
 
-    public String dato(List<LocalDate> dates) {
+    public String dates(List<LocalDate> dates) {
         return dates.stream()
-                .map(this::dato)
+                .map(this::date)
                 .collect(joining(", "));
     }
 
     public String countryName(Boolean b) {
         return b ? "Norge" : "utlandet";
-    }
-
-    public String navn(Navn navn) {
-        String n = navnToString(navn);
-        return n.isEmpty() ? "" : fromMessageSource("navn", n);
     }
 
     public String navn(Person søker) {
@@ -92,16 +85,21 @@ class SøknadInfoFormatter {
     }
 
     public String periode(ÅpenPeriode periode) {
-        StringBuilder sb = new StringBuilder("fom " + dato(periode.getFom()));
+        StringBuilder sb = new StringBuilder("fom " + date(periode.getFom()));
         if (periode.getTom() != null) {
-            sb.append(" tom " + dato(periode.getTom()));
+            sb.append(" tom " + date(periode.getTom()));
         }
         return sb.toString();
     }
 
     public String capitalize(String orig) {
-        String lowerWithSpace = orig.toString().replaceAll("_", " ").toLowerCase();
+        String lowerWithSpace = orig.replaceAll("_", " ").toLowerCase();
         return lowerWithSpace.substring(0, 1).toUpperCase() + lowerWithSpace.substring(1);
+    }
+
+    public String vedlegg(Vedlegg vedlegg) {
+        return Optional.ofNullable(vedlegg.getMetadata().getBeskrivelse())
+            .orElse(vedlegg.getDokumentType().beskrivelse);
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {

@@ -12,8 +12,8 @@ public class SøknadInfoFormatterTest {
     @Test
     public void regnskapsførerListMayBeNull() {
         List<Regnskapsfører> regnskapsførerList = null;
-        SøknadInfoFormatter formatter = new SøknadInfoFormatter(null, null, null);
-        String name = formatter.navnToString(regnskapsførerList);
+        SøknadTextFormatter formatter = new SøknadTextFormatter(null, null, null);
+        String name = formatter.regnskapsførere(regnskapsførerList);
         assertEquals("ukjent", name);
     }
 
@@ -21,7 +21,7 @@ public class SøknadInfoFormatterTest {
     @Test
     public void capitalize() {
         String orig = "ENUM_TO_STRING";
-        SøknadInfoFormatter formatter = new SøknadInfoFormatter(null, null, null);
+        SøknadTextFormatter formatter = new SøknadTextFormatter(null, null, null);
         assertEquals("Enum to string", formatter.capitalize(orig));
     }
 

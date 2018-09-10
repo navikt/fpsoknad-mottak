@@ -24,6 +24,7 @@ import static org.springframework.http.HttpStatus.SEE_OTHER;
 import java.net.URI;
 import java.time.Duration;
 
+import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +47,6 @@ import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoForsendelsesStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.NonPollingSaksPoller;
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class FPFordelTest {

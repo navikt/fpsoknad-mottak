@@ -21,6 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import java.time.Duration;
 import java.util.List;
 
+import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +51,6 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureJsonTesters
