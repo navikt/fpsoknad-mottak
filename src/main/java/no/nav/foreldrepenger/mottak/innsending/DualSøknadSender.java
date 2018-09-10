@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
@@ -12,6 +13,7 @@ import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotJMSSender;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadSender;
 
 @Service
+@Qualifier("dual")
 public class DualSøknadSender implements SøknadSender {
 
     private final DokmotJMSSender dokmotSender;

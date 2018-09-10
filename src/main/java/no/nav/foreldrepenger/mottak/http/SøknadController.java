@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EndringsSøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
@@ -38,10 +40,10 @@ public class SøknadController {
 
     private final SøknadsTjeneste søknadsTjeneste;
     private final Oppslag oppslag;
-    private final DualSøknadSender sender;
+    private final SøknadSender sender;
     private final SøknadsTjeneste saksClient;
 
-    public SøknadController(DualSøknadSender sender, Oppslag oppslag, SøknadsTjeneste søknadsTjeneste,
+    public SøknadController(@Qualifier("dual") SøknadSender sender, Oppslag oppslag, SøknadsTjeneste søknadsTjeneste,
             SøknadsTjeneste saksClient) {
         this.sender = sender;
         this.oppslag = oppslag;
