@@ -138,12 +138,18 @@ public class XMLToDomainMapper {
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
             Rettigheter rettigheter) {
         LOG.debug("Genererer rettigheter modell fra {}", rettigheter);
+        if (rettigheter == null) {
+            return null;
+        }
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(rettigheter.isHarAnnenForelderRett(),
                 rettigheter.isHarOmsorgForBarnetIPeriodene(), rettigheter.isHarAleneomsorgForBarnet());
     }
 
     private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
         LOG.debug("Genererer relasjon til barn  modell fra {}", relasjonTilBarnet);
+        if (relasjonTilBarnet == null) {
+            return null;
+        }
         if (relasjonTilBarnet instanceof Foedsel) {
             Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
             return new Fødsel(fødsel.getAntallBarn(), fødsel.getFoedselsdato());
@@ -167,6 +173,9 @@ public class XMLToDomainMapper {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening tilOpptjening(Opptjening opptjening) {
         LOG.debug("Genererer opptjening  modell fra {}", opptjening);
+        if (opptjening == null) {
+            return null;
+        }
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening(
                 tilUtenlandsArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
                 tilEgenNæring(opptjening.getEgenNaering()), tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
@@ -175,6 +184,9 @@ public class XMLToDomainMapper {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans tilFrilans(Frilans frilans) {
         LOG.debug("Genererer frilans  modell fra {}", frilans);
+        if (frilans == null) {
+            return null;
+        }
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans(tilÅpenPeriode(frilans.getPeriode()),
                 frilans.isHarInntektFraFosterhjem(),
                 frilans.isErNyoppstartet(),
@@ -184,7 +196,7 @@ public class XMLToDomainMapper {
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
         LOG.debug("Genererer åpen periode  modell fra {}", periode);
-        return tilÅpenPeriode(periode.get(0)); // TODO ?
+        return periode == null || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
     }
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
@@ -192,11 +204,17 @@ public class XMLToDomainMapper {
     }
 
     private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
+        if (frilansoppdrag == null) {
+            return null;
+        }
         return new FrilansOppdrag(frilansoppdrag.getOppdragsgiver(), tilÅpenPeriode(frilansoppdrag.getPeriode()));
     }
 
     private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
         LOG.debug("Genererer åpen  periode  modell fra {}", periode);
+        if (periode == null) {
+            return null;
+        }
         return new ÅpenPeriode(periode.getFom(), periode.getTom());
     }
 
@@ -208,6 +226,9 @@ public class XMLToDomainMapper {
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
             AnnenOpptjening annenOpptjening) {
         LOG.debug("Genererer annen opptjening  modell fra {}", annenOpptjening);
+        if (annenOpptjening == null) {
+            return null;
+        }
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening(
                 AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
                 tilÅpenPeriode(annenOpptjening.getPeriode()), emptyList());
@@ -219,7 +240,9 @@ public class XMLToDomainMapper {
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
         LOG.debug("Genererer egen næring  modell fra {}", egenNæring);
-
+        if (egenNæring == null) {
+            return null;
+        }
         if (egenNæring instanceof NorskOrganisasjon) {
             NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.builder()
@@ -277,13 +300,16 @@ public class XMLToDomainMapper {
     }
 
     private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
+        if (regnskapsfoerer == null) {
+            return emptyList();
+        }
         return singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
     }
 
     private static List<UtenlandskArbeidsforhold> tilUtenlandsArbeidsforhold(
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         // TODO Auto-generated method stub
-        return null;
+        return emptyList();
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
@@ -301,6 +327,9 @@ public class XMLToDomainMapper {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
         LOG.debug("Genererer fordeling  modell fra {}", fordeling);
+        if (fordeling == null) {
+            return null;
+        }
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling(fordeling.isAnnenForelderErInformert(),
                 tilÅrsak(fordeling.getOenskerKvoteOverfoert()), tilPerioder(fordeling.getPerioder()));
     }
@@ -314,11 +343,15 @@ public class XMLToDomainMapper {
 
     private static List<LukketPeriodeMedVedlegg> tilPerioder(
             List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioder) {
-        return perioder.stream().map(XMLToDomainMapper::tilLukketPeriode).collect(toList());
+        return safeStream(perioder).map(XMLToDomainMapper::tilLukketPeriode).collect(toList());
     }
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(
             no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg periode) {
+
+        if (periode == null) {
+            return null;
+        }
 
         if (periode instanceof Overfoeringsperiode) {
             Overfoeringsperiode overføringsPeriode = Overfoeringsperiode.class.cast(periode);
@@ -387,6 +420,9 @@ public class XMLToDomainMapper {
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad tilDekningsgrad(
             Dekningsgrad dekningsgrad) {
         LOG.debug("Genererer dekningsgrad  modell fra {}", dekningsgrad);
+        if (dekningsgrad == null) {
+            return null;
+        }
         return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad
                 .fraKode(dekningsgrad.getDekningsgrad().getKode());
     }
@@ -394,6 +430,9 @@ public class XMLToDomainMapper {
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
             AnnenForelder annenForelder) {
         LOG.debug("Genererer annen forelder  modell fra {}", annenForelder);
+        if (annenForelder == null) {
+            return null;
+        }
         if (annenForelder instanceof UkjentForelder) {
             return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder();
         }
@@ -411,6 +450,7 @@ public class XMLToDomainMapper {
 
     private static Søker tilSøker(Bruker søker) {
         LOG.debug("Genererer søker  modell fra {}", søker);
+
         return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
     }
 
