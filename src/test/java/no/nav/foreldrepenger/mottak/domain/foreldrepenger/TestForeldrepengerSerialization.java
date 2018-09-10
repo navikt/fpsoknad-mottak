@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.adopsjon;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.annenOpptjening;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.fordeling;
@@ -24,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -76,8 +78,9 @@ public class TestForeldrepengerSerialization {
     }
 
     @Test
-    public void testSøknad() {
-        test(ForeldrepengerTestUtils.foreldrepenger(), true);
+    public void testEndringsSøknad() throws Exception {
+        test(new EndringsSøknad(LocalDateTime.now(), søker(), fordeling(), "42",
+                null));
     }
 
     @Test

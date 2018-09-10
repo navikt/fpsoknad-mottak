@@ -89,6 +89,8 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 @Component
 public class XMLToDomainMapper {
 
+    private static final String UKJENT_KODEVERKSVERDI = "-";
+
     private static final Logger LOG = LoggerFactory.getLogger(XMLToDomainMapper.class);
 
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
@@ -301,6 +303,9 @@ public class XMLToDomainMapper {
     }
 
     private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
+        if (årsak == null || årsak.equals(UKJENT_KODEVERKSVERDI)) {
+            return null;
+        }
         return Overføringsårsak.valueOf(årsak.getKode());
     }
 
