@@ -257,7 +257,6 @@ public class ForeldrepengerPDFGenerator extends PDFGenerator {
     }
 
     private String formatAnnenOpptjening(AnnenOpptjening annenOpptjening) {
-        annenOpptjening.
         StringBuilder sb = new StringBuilder(infoFormatter.capitalize(annenOpptjening.getType().toString()));
         sb.append(" " + infoFormatter.periode(annenOpptjening.getPeriode()));
         if (annenOpptjening.getVedlegg().size() != 0) {
