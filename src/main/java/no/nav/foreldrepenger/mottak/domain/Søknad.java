@@ -1,11 +1,12 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -47,7 +48,7 @@ public class Søknad {
         this.mottattdato = mottattdato;
         this.søker = søker;
         this.ytelse = ytelse;
-        this.vedlegg = vedlegg == null ? Collections.emptyList() : vedlegg;
+        this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }
 
     @JsonIgnore

@@ -21,6 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
@@ -308,7 +309,7 @@ public class XMLToDomainMapper {
 
     private static List<UtenlandskArbeidsforhold> tilUtenlandsArbeidsforhold(
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
-        // TODO Auto-generated method stub
+        // TODO
         return emptyList();
     }
 
@@ -318,11 +319,11 @@ public class XMLToDomainMapper {
     }
 
     private static TidligereOppholdsInformasjon tilTidligereOpphold(Medlemskap medlemskap) {
-        return null;
+        return new TidligereOppholdsInformasjon(true, ArbeidsInformasjon.ARBEIDET_I_NORGE, emptyList()); // TODO
     }
 
     private static FramtidigOppholdsInformasjon tilFremtidigOpphold(Medlemskap medlemskap) {
-        return null;
+        return new FramtidigOppholdsInformasjon(true, true, emptyList()); // TODO
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
