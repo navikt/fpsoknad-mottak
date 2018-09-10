@@ -9,7 +9,7 @@ http.proxy : http://webproxy-nais.nav.no:8088
 info.app:
     version: '@project.version@'
     build.time:  '@timestamp@'
-      
+
 management:
     endpoints.web.exposure.include:  info, health, metrics, prometheus
     health :
@@ -18,18 +18,17 @@ management:
 
 server.servlet :
     context-path :  /api
-    use-forward-headers: true                        
+    use-forward-headers: true
 
 spring :
     jackson :
-      default-property-inclusion :  non_null 
+      default-property-inclusion :  non_null
       mapper :
-         accept_case_insensitive_properties: true 
+         accept_case_insensitive_properties: true
       deserialization :
          accept_single_value_as_array: true
          fail-on-unknown-properties: true
       serialization :
-         write_single_elem_arrays_unwrapped : true
          fail-on-empty-beans: false
     main.banner-mode : 'off'
-    metrics.web.server.auto-time-requests: true                  
+    metrics.web.server.auto-time-requests: true

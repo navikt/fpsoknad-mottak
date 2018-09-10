@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class Søknad {
     private final List<Vedlegg> vedlegg;
 
     public Søknad(LocalDateTime mottattdato, Søker søker, Ytelse ytelse, Vedlegg... vedlegg) {
-        this(mottattdato, søker, ytelse, Arrays.asList(vedlegg));
+        this(mottattdato, søker, ytelse, asList(vedlegg));
     }
 
     @JsonCreator

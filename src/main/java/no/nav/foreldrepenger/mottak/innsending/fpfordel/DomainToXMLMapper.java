@@ -1,21 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -56,10 +56,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
@@ -107,248 +105,33 @@ import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class FPFordelSøknadGenerator {
-    private static final ObjectFactory foreldrepengerObjectFactory = new ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory fellesObjectFactory = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory søknadObjectFactory = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
+public class DomainToXMLMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DomainToXMLMapper.class);
+    private static final String UKJENT_KODEVERKSVERDI = "-";
+
+    private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
+
+    private static final ObjectFactory FP_FACTORY = new ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
 
-    private static final String UKJENT_KODEVERKSVERDI = "-";
-    private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadGenerator.class);
-    private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
-
-    public Søknad tilSøknad(String søknadXml) {
-        String xml = StringEscapeUtils.unescapeHtml4(søknadXml);
-        LOG.info("XML etter unescape er nå {}", xml);
-        Soeknad søknad = Jaxb.unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-        LOG.trace("Regenererer søknad fra {}", søknad);
-        LOG.trace("Regenererer dato fra {}", søknad.getMottattDato());
-        LOG.trace("Regenererer søker fra {}", søknad.getSoeker());
-        LOG.trace("Regenererer ytelse fra {}", søknad.getOmYtelse());
-
-        Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
-                tilYtelse(søknad.getOmYtelse()));
-        s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-        s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-        return s;
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
-        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
-            LOG.warn("Ingen ytelse i søknaden");
-            return null;
-        }
-        Object førsteYtelse = omYtelse.getAny().get(0);
-        if (!(førsteYtelse instanceof Foreldrepenger)) {
-            LOG.warn("Søknad av type {} er ikke støttet", førsteYtelse.getClass().getSimpleName());
-            return null;
-        }
-
-        Foreldrepenger foreldrepengeSøknad = Foreldrepenger.class.cast(førsteYtelse);
-        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                .annenForelder(tilAnnenForelder(foreldrepengeSøknad.getAnnenForelder()))
-                .dekningsgrad(tilDekningsgrad(foreldrepengeSøknad.getDekningsgrad()))
-                .fordeling(tilFordeling(foreldrepengeSøknad.getFordeling()))
-                .medlemsskap(tilMedlemsskap(foreldrepengeSøknad.getMedlemskap()))
-                .opptjening(tilOpptjening(foreldrepengeSøknad.getOpptjening()))
-                .relasjonTilBarn(tilRelasjonTilBarn(foreldrepengeSøknad.getRelasjonTilBarnet()))
-                .rettigheter(tilRettigheter(foreldrepengeSøknad.getRettigheter()))
-                .build();
-
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
-            Rettigheter rettigheter) {
-        LOG.debug("Genererer rettigheter modell fra {}", rettigheter);
-        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(rettigheter.isHarAnnenForelderRett(),
-                rettigheter.isHarOmsorgForBarnetIPeriodene(), rettigheter.isHarAleneomsorgForBarnet());
-    }
-
-    private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
-        LOG.debug("Genererer relasjon til barn  modell fra {}", relasjonTilBarnet);
-        if (relasjonTilBarnet instanceof Foedsel) {
-            Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
-            return new Fødsel(fødsel.getAntallBarn(), fødsel.getFoedselsdato());
-        }
-        if (relasjonTilBarnet instanceof Termin) {
-            Termin termin = Termin.class.cast(relasjonTilBarnet);
-            return new FremtidigFødsel(termin.getAntallBarn(), termin.getTermindato(), termin.getUtstedtdato(),
-                    Collections.emptyList());
-
-        }
-        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon) {
-            no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon.class
-                    .cast(relasjonTilBarnet);
-            return new Adopsjon(adopsjon.getAntallBarn(), adopsjon.getOmsorgsovertakelsesdato(),
-                    adopsjon.isAdopsjonAvEktefellesBarn(), Collections.emptyList(), adopsjon.getAnkomstdato(),
-                    adopsjon.getFoedselsdato());
-        }
-        throw new IllegalArgumentException("Ikke"
-                + " støttet type " + relasjonTilBarnet.getClass().getSimpleName());
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening tilOpptjening(Opptjening opptjening) {
-        LOG.debug("Genererer opptjening  modell fra {}", opptjening);
-        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening(
-                tilUtenlandsArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
-                tilEgenNæring(opptjening.getEgenNaering()), tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
-                tilFrilans(opptjening.getFrilans()));
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans tilFrilans(Frilans frilans) {
-        LOG.debug("Genererer frilans  modell fra {}", frilans);
-        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans(tilÅpenPeriode(frilans.getPeriode()),
-                frilans.isHarInntektFraFosterhjem(),
-                frilans.isErNyoppstartet(),
-                tilFrilansOppdrag(frilans.getFrilansoppdrag()),
-                Collections.emptyList());
-    }
-
-    private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
-        LOG.debug("Genererer åpen periode  modell fra {}", periode);
-        return tilÅpenPeriode(periode.get(0)); // TODO ?
-    }
-
-    private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
-        return frilansoppdrag.stream().map(FPFordelSøknadGenerator::tilFrilansOppdrag).collect(toList());
-    }
-
-    private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
-        return new FrilansOppdrag(frilansoppdrag.getOppdragsgiver(), tilÅpenPeriode(frilansoppdrag.getPeriode()));
-    }
-
-    private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
-        LOG.debug("Genererer åpen  periode  modell fra {}", periode);
-        return new ÅpenPeriode(periode.getFom(), periode.getTom());
-    }
-
-    private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
-            List<AnnenOpptjening> annenOpptjening) {
-        return annenOpptjening.stream().map(FPFordelSøknadGenerator::tilAnnenOpptjening).collect(toList());
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
-            AnnenOpptjening annenOpptjening) {
-        LOG.debug("Genererer annen opptjening  modell fra {}", annenOpptjening);
-        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening(
-                AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
-                tilÅpenPeriode(annenOpptjening.getPeriode()), Collections.emptyList());
-    }
-
-    private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
-        return egenNaering.stream().map(FPFordelSøknadGenerator::tilEgenNæring).collect(toList());
-    }
-
-    private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
-        LOG.debug("Genererer egen næring  modell fra {}", egenNæring);
-
-        if (egenNæring instanceof NorskOrganisasjon) {
-            NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
-            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.builder()
-                    .arbeidsland(tilLand(norskOrg.getArbeidsland()))
-                    .beskrivelseEndring(norskOrg.getBeskrivelseAvEndring())
-                    .endringsDato(norskOrg.getEndringsDato())
-                    .erNyOpprettet(norskOrg.isErNyoppstartet())
-                    .erVarigEndring(norskOrg.isErVarigEndring())
-                    .erNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
-                    .næringsinntektBrutto(norskOrg.getNaeringsinntektBrutto().longValue())
-                    .nærRelasjon(norskOrg.isNaerRelasjon())
-                    .orgName(norskOrg.getOrganisasjonsnummer())
-                    .orgNummer(norskOrg.getOrganisasjonsnummer())
-                    .periode(tilÅpenPeriode(norskOrg.getPeriode()))
-                    .regnskapsførere(tilRegnskapsFørere(norskOrg.getRegnskapsfoerer()))
-                    .virksomhetsTyper(tilVirksomhetsTyper(norskOrg.getVirksomhetstype()))
-                    .build();
-        }
-        if (egenNæring instanceof UtenlandskOrganisasjon) {
-            UtenlandskOrganisasjon utenlandskOrg = UtenlandskOrganisasjon.class.cast(egenNæring);
-            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon.builder()
-                    .arbeidsland(CountryCode.getByCode(utenlandskOrg.getArbeidsland().getKode()))
-                    .beskrivelseEndring(utenlandskOrg.getBeskrivelseAvEndring())
-                    .endringsDato(utenlandskOrg.getEndringsDato())
-                    .erNyOpprettet(utenlandskOrg.isErNyoppstartet())
-                    .erVarigEndring(utenlandskOrg.isErVarigEndring())
-                    .erNyIArbeidslivet(utenlandskOrg.isErNyIArbeidslivet())
-                    .næringsinntektBrutto(utenlandskOrg.getNaeringsinntektBrutto().longValue())
-                    .nærRelasjon(utenlandskOrg.isNaerRelasjon())
-                    .periode(tilÅpenPeriode(utenlandskOrg.getPeriode()))
-                    .regnskapsførere(tilRegnskapsFørere(utenlandskOrg.getRegnskapsfoerer()))
-                    .virksomhetsTyper(tilVirksomhetsTyper(utenlandskOrg.getVirksomhetstype()))
-                    .build();
-        }
-        throw new IllegalArgumentException("Ikke"
-                + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
-    }
-
-    private static CountryCode tilLand(Land land) {
-        return land == null ? CountryCode.NO : CountryCode.getByCode(land.getKode());
-    }
-
-    private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
-        return virksomhetstype.stream().map(FPFordelSøknadGenerator::tilVirksomhetsType).collect(toList());
-    }
-
-    private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
-        return Virksomhetstype.valueOf(type.getKode());
-    }
-
-    private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
-        return Collections.singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
-    }
-
-    private static List<UtenlandskArbeidsforhold> tilUtenlandsArbeidsforhold(
-            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
-        LOG.debug("Genererer medlemsskap  modell fra {}", medlemskap);
-        return null;
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
-        LOG.debug("Genererer fordeling  modell fra {}", fordeling);
-        return null;
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad tilDekningsgrad(
-            Dekningsgrad dekningsgrad) {
-        LOG.debug("Genererer dekningsgrad  modell fra {}", dekningsgrad);
-        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad
-                .fraKode(dekningsgrad.getDekningsgrad().getKode());
-    }
-
-    private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
-            AnnenForelder annenForelder) {
-        LOG.debug("Genererer annen forelder  modell fra {}", annenForelder);
-        return null;
-    }
-
-    private static Søker tilSøker(Bruker søker) {
-        LOG.debug("Genererer søker  modell fra {}", søker);
-        return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
-    }
-
-    public String toXML(Søknad søknad, AktorId aktørId) {
-        return toXML(søknadObjectFactory.createSoeknad(toFPFordelModel(søknad, aktørId)));
-    }
-
-    public FPFordelSøknadGenerator(Oppslag oppslag) {
+    public DomainToXMLMapper(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
-    private static String toXML(JAXBElement<Soeknad> søknad) {
-        return Jaxb.marshal(CONTEXT, søknad, false);
+    public String tilXML(Søknad søknad, AktorId søker) {
+        return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), false);
     }
 
-    private Soeknad toFPFordelModel(Søknad søknad, AktorId aktørId) {
+    private Soeknad tilModell(Søknad søknad, AktorId søker) {
         LOG.debug("Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
-                .withSoeker(søkerFra(aktørId, søknad.getSøker()))
+                .withSoeker(søkerFra(søker, søknad.getSøker()))
                 .withOmYtelse(ytelseFra(søknad))
                 .withMottattDato(søknad.getMottattdato().toLocalDate())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
@@ -358,7 +141,7 @@ public class FPFordelSøknadGenerator {
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
-                .map(FPFordelSøknadGenerator::vedleggFra)
+                .map(DomainToXMLMapper::vedleggFra)
                 .collect(toList());
     }
 
@@ -452,13 +235,13 @@ public class FPFordelSøknadGenerator {
 
     private static List<JAXBElement<Object>> frilansVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createFrilansVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createFrilansVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
         return safeStream(frilansOppdrag)
-                .map(FPFordelSøknadGenerator::frilansOppdragFra)
+                .map(DomainToXMLMapper::frilansOppdragFra)
                 .collect(toList());
     }
 
@@ -470,21 +253,21 @@ public class FPFordelSøknadGenerator {
 
     private static List<EgenNaering> egenNæringFra(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
-                .map(FPFordelSøknadGenerator::egenNæringFra)
+                .map(DomainToXMLMapper::egenNæringFra)
                 .collect(toList());
     }
 
     private static List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforholdFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         return safeStream(utenlandskArbeidsforhold)
-                .map(FPFordelSøknadGenerator::utenlandskArbeidsforholdFra)
+                .map(DomainToXMLMapper::utenlandskArbeidsforholdFra)
                 .collect(toList());
     }
 
     private static List<AnnenOpptjening> annenOpptjeningFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
-                .map(FPFordelSøknadGenerator::annenOpptjeningFra)
+                .map(DomainToXMLMapper::annenOpptjeningFra)
                 .collect(toList());
     }
 
@@ -532,14 +315,14 @@ public class FPFordelSøknadGenerator {
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype> typer) {
         return safeStream(typer)
-                .map(FPFordelSøknadGenerator::virksomhetsTypeFra)
+                .map(DomainToXMLMapper::virksomhetsTypeFra)
                 .collect(toList());
     }
 
@@ -569,7 +352,7 @@ public class FPFordelSøknadGenerator {
 
     private static AnnenOpptjening annenOpptjeningFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening annenOpptjening) {
-        LOG.debug("Genererer anen opptjening XML fra {}", annenOpptjening);
+        LOG.debug("Genererer annen opptjening XML fra {}", annenOpptjening);
 
         return new AnnenOpptjening()
                 .withVedlegg(annenOpptjeningVedleggFra(annenOpptjening.getVedlegg()))
@@ -579,7 +362,7 @@ public class FPFordelSøknadGenerator {
 
     private static List<JAXBElement<Object>> annenOpptjeningVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -601,7 +384,7 @@ public class FPFordelSøknadGenerator {
 
     private static List<JAXBElement<Object>> utenlandsArbeidsforholdVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -657,18 +440,14 @@ public class FPFordelSøknadGenerator {
     private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
             FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
         if (tidligereOppholdsInfo.isBoddINorge() && framtidigOppholdsInfo.isNorgeNeste12()) {
-            return Collections.emptyList();
+            return emptyList();
         }
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
                         safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
-                .map(FPFordelSøknadGenerator::utenlandOppholdFra)
+                .map(DomainToXMLMapper::utenlandOppholdFra)
                 .collect(toList());
 
-    }
-
-    private static <T> Stream<T> safeStream(List<T> list) {
-        return Optional.ofNullable(list).orElse(Collections.emptyList()).stream();
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
@@ -703,7 +482,7 @@ public class FPFordelSøknadGenerator {
     private static List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioderFra(
             List<LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
-                .map(FPFordelSøknadGenerator::lukkerPeriodeFra)
+                .map(DomainToXMLMapper::lukkerPeriodeFra)
                 .collect(toList());
 
     }
@@ -903,7 +682,7 @@ public class FPFordelSøknadGenerator {
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> fellesObjectFactory.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FELLES_FACTORY.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -926,4 +705,5 @@ public class FPFordelSøknadGenerator {
     public String toString() {
         return getClass().getSimpleName() + " [oppslag=" + oppslag + "]";
     }
+
 }

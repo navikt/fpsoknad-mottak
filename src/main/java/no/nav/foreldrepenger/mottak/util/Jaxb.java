@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static javax.xml.bind.Marshaller.JAXB_FRAGMENT;
+import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -68,7 +69,7 @@ public final class Jaxb {
 
     public static <T> T unmarshal(String xml, JAXBContext context, Class<T> clazz) {
         try {
-            return (T) unmarshaller(context).unmarshal(new StringReader(xml));
+            return (T) unmarshaller(context).unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
@@ -76,8 +77,11 @@ public final class Jaxb {
 
     public static <T> JAXBElement<T> unmarshalToElement(String xml, JAXBContext context, Class<T> clazz) {
         try {
-            return (JAXBElement<T>) unmarshaller(context).unmarshal(new StringReader(xml));
+
+            Unmarshaller unmarshaller = unmarshaller(context);
+            return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e);
         }
     }

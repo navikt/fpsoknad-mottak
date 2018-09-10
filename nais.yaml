@@ -1,4 +1,5 @@
 name: fpsoknad-mottak
+team: nais
 image: repo.adeo.no:5443/fpsoknad-mottak
 replicas:
     min: 2

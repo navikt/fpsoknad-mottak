@@ -11,7 +11,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
 @Data
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "navn" })
 public class NorskForelder extends AnnenForelder {
 
     private final Fødselsnummer fnr;

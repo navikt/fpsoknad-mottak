@@ -18,6 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EndringsSøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
@@ -39,12 +40,13 @@ public class FPFordelMetadata {
         this(files(ettersending), aktorId, ref, ettersending.getSaksnr());
     }
 
-    public String getSaksNr() {
-        return saksNr;
+    public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref) {
+        this(søknad, aktorId, ref,
+                søknad instanceof EndringsSøknad ? EndringsSøknad.class.cast(søknad).getSaksnr() : null);
     }
 
-    public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref) {
-        this(files(søknad), aktorId, ref, null);
+    public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref, String saksnr) {
+        this(files(søknad), aktorId, ref, saksnr);
     }
 
     public FPFordelMetadata(List<Filer> filer, AktorId aktorId, String ref, String saksnr) {
@@ -53,6 +55,10 @@ public class FPFordelMetadata {
         this.forsendelseMottatt = LocalDateTime.now();
         this.filer = filer;
         this.saksNr = saksnr;
+    }
+
+    public String getSaksNr() {
+        return saksNr;
     }
 
     public List<Filer> getFiler() {
@@ -87,14 +93,14 @@ public class FPFordelMetadata {
     }
 
     private static Filer søknad(final AtomicInteger id, Søknad søknad) {
-        return new Filer(dokumentTypeFra(søknad), id.getAndIncrement());
+        return new Filer(dokumentTypeFraRelasjon(søknad), id.getAndIncrement());
     }
 
     private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {
         return new Filer(vedlegg.getDokumentType(), id.getAndIncrement());
     }
 
-    private static DokumentType dokumentTypeFra(Søknad søknad) {
+    private static DokumentType dokumentTypeFraRelasjon(Søknad søknad) {
         RelasjonTilBarnMedVedlegg relasjon = Foreldrepenger.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;

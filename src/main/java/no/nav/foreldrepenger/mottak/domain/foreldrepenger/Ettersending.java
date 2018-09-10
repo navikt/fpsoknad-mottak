@@ -24,4 +24,9 @@ public class Ettersending {
     public List<Vedlegg> getVedlegg() {
         return vedlegg;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [saksnr=" + saksnr + ", vedlegg=" + vedlegg + "]";
+    }
 }

@@ -49,6 +49,11 @@ public class MottakApplicationLocal {
             public AktorId getAktørId() {
                 return new AktorId("1111111111");
             }
+
+            @Override
+            public Fødselsnummer getFnr(AktorId aktørId) {
+                return new Fødselsnummer("01010111111");
+            }
         };
     }
 }

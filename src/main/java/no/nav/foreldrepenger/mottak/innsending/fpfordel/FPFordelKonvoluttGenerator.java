@@ -34,11 +34,11 @@ public class FPFordelKonvoluttGenerator {
     public static final String CONTENT_ID = "Content-ID";
     public static final String HOVEDDOKUMENT = "hoveddokument";
     private final FPFordelMetdataGenerator metadataGenerator;
-    private final FPFordelSøknadGenerator søknadGenerator;
+    private final ForeldrepengerSøknadMapper søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            FPFordelSøknadGenerator søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
+            ForeldrepengerSøknadMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.søknadGenerator = søknadGenerator;
         this.pdfGenerator = pdfGenerator;
@@ -106,8 +106,8 @@ public class FPFordelKonvoluttGenerator {
         return pdfGenerator.generate(søknad, søker);
     }
 
-    private String xmlHovedDokument(Søknad søknad, AktorId aktørId) {
-        String hovedDokument = søknadGenerator.toXML(søknad, aktørId);
+    private String xmlHovedDokument(Søknad søknad, AktorId søker) {
+        String hovedDokument = søknadGenerator.tilXML(søknad, søker);
         LOG.debug("Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }
@@ -133,5 +133,4 @@ public class FPFordelKonvoluttGenerator {
             headers.set(CONTENT_ID, contentId);
         }
     }
-
 }
