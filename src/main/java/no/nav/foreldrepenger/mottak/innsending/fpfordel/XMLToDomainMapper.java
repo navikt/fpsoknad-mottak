@@ -303,7 +303,7 @@ public class XMLToDomainMapper {
     }
 
     private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
-        if (årsak == null || årsak.equals(UKJENT_KODEVERKSVERDI)) {
+        if (årsak == null || årsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Overføringsårsak.valueOf(årsak.getKode());
