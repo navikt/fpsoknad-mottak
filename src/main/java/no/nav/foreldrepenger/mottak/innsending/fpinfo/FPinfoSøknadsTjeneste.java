@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
 
 @Service
 public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
@@ -32,7 +32,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
     private static final Logger LOG = LoggerFactory.getLogger(FPinfoSøknadsTjeneste.class);
 
     @Inject
-    private FPFordelSøknadMapper generator;
+    private ForeldrepengerSøknadMapper generator;
     private final URI baseURI;
     private final RestTemplate template;
 

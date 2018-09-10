@@ -9,17 +9,17 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 
 @Component
-public class FPFordelSøknadMapper {
+public class ForeldrepengerSøknadMapper {
 
     private final XMLToDomainMapper xmlMapper;
     private final DomainToXMLMapper domainMapper;
 
     @Inject
-    public FPFordelSøknadMapper(Oppslag oppslag) {
+    public ForeldrepengerSøknadMapper(Oppslag oppslag) {
         this(new XMLToDomainMapper(oppslag), new DomainToXMLMapper(oppslag));
     }
 
-    private FPFordelSøknadMapper(XMLToDomainMapper xmlMapper, DomainToXMLMapper domainMapper) {
+    private ForeldrepengerSøknadMapper(XMLToDomainMapper xmlMapper, DomainToXMLMapper domainMapper) {
         this.xmlMapper = xmlMapper;
         this.domainMapper = domainMapper;
     }

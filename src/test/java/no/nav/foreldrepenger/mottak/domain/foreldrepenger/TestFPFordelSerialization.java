@@ -48,7 +48,7 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerat
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
@@ -104,7 +104,7 @@ public class TestFPFordelSerialization {
     @Test
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
-        FPFordelSøknadMapper fpFordelSøknadGenerator = new FPFordelSøknadMapper(oppslag);
+        ForeldrepengerSøknadMapper fpFordelSøknadGenerator = new ForeldrepengerSøknadMapper(oppslag);
         Søknad original = ForeldrepengerTestUtils.foreldrepenger();
         String xml = fpFordelSøknadGenerator.tilXML(original, aktørId);
         System.out.println(xml);
@@ -128,7 +128,7 @@ public class TestFPFordelSerialization {
         MottakConfiguration mottakConfiguration = new MottakConfiguration();
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
-                new FPFordelSøknadMapper(oppslag),
+                new ForeldrepengerSøknadMapper(oppslag),
                 new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
                         mottakConfiguration.kvitteringstekster()));
         Søknad søknad = søknad(valgfrittVedlegg());

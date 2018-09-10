@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static javax.xml.bind.Marshaller.JAXB_FRAGMENT;
+import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -13,14 +13,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.validation.SchemaFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public final class Jaxb {
-
-    private static final SchemaFactory SF = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
     private Jaxb() {
 
@@ -72,7 +69,7 @@ public final class Jaxb {
 
     public static <T> T unmarshal(String xml, JAXBContext context, Class<T> clazz) {
         try {
-            return (T) unmarshaller(context).unmarshal(new StringReader(xml));
+            return (T) unmarshaller(context).unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
@@ -82,8 +79,7 @@ public final class Jaxb {
         try {
 
             Unmarshaller unmarshaller = unmarshaller(context);
-            // unmarshaller.setSchema((SF.newSchema(sources)));
-            return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(xml));
+            return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e);

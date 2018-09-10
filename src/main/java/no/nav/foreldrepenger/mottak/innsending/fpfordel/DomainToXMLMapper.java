@@ -1,15 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
@@ -57,7 +58,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
@@ -112,9 +112,9 @@ public class DomainToXMLMapper {
 
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
 
-    private static final ObjectFactory foreldrepengerObjectFactory = new ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory fellesObjectFactory = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory søknadObjectFactory = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
+    private static final ObjectFactory FP_FACTORY = new ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
 
@@ -122,20 +122,16 @@ public class DomainToXMLMapper {
         this.oppslag = oppslag;
     }
 
-    public String tilXML(Søknad søknad, AktorId aktørId) {
-        return tilXML(søknadObjectFactory.createSoeknad(tilModell(søknad, aktørId)));
+    public String tilXML(Søknad søknad, AktorId søker) {
+        return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), false);
     }
 
-    private static String tilXML(JAXBElement<Soeknad> søknad) {
-        return Jaxb.marshal(CONTEXT, søknad, false);
-    }
-
-    private Soeknad tilModell(Søknad søknad, AktorId aktørId) {
+    private Soeknad tilModell(Søknad søknad, AktorId søker) {
         LOG.debug("Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
-                .withSoeker(søkerFra(aktørId, søknad.getSøker()))
+                .withSoeker(søkerFra(søker, søknad.getSøker()))
                 .withOmYtelse(ytelseFra(søknad))
                 .withMottattDato(søknad.getMottattdato().toLocalDate())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
@@ -239,7 +235,7 @@ public class DomainToXMLMapper {
 
     private static List<JAXBElement<Object>> frilansVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createFrilansVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createFrilansVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -319,7 +315,7 @@ public class DomainToXMLMapper {
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -356,7 +352,7 @@ public class DomainToXMLMapper {
 
     private static AnnenOpptjening annenOpptjeningFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening annenOpptjening) {
-        LOG.debug("Genererer anen opptjening XML fra {}", annenOpptjening);
+        LOG.debug("Genererer annen opptjening XML fra {}", annenOpptjening);
 
         return new AnnenOpptjening()
                 .withVedlegg(annenOpptjeningVedleggFra(annenOpptjening.getVedlegg()))
@@ -366,7 +362,7 @@ public class DomainToXMLMapper {
 
     private static List<JAXBElement<Object>> annenOpptjeningVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -388,7 +384,7 @@ public class DomainToXMLMapper {
 
     private static List<JAXBElement<Object>> utenlandsArbeidsforholdVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> foreldrepengerObjectFactory.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -444,7 +440,7 @@ public class DomainToXMLMapper {
     private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
             FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
         if (tidligereOppholdsInfo.isBoddINorge() && framtidigOppholdsInfo.isNorgeNeste12()) {
-            return Collections.emptyList();
+            return emptyList();
         }
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
@@ -452,10 +448,6 @@ public class DomainToXMLMapper {
                 .map(DomainToXMLMapper::utenlandOppholdFra)
                 .collect(toList());
 
-    }
-
-    private static <T> Stream<T> safeStream(List<T> list) {
-        return Optional.ofNullable(list).orElse(Collections.emptyList()).stream();
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
@@ -690,7 +682,7 @@ public class DomainToXMLMapper {
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> fellesObjectFactory.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FELLES_FACTORY.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 

@@ -1,14 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,7 +21,9 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
@@ -45,7 +49,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
@@ -96,9 +99,8 @@ public class XMLToDomainMapper {
         this.oppslag = oppslag;
     }
 
-    public Søknad tilSøknad(String søknadXml) {
-        Soeknad søknad = Jaxb.unmarshalToElement(StringEscapeUtils.unescapeHtml4(søknadXml), CONTEXT, Soeknad.class)
-                .getValue();
+    public Søknad tilSøknad(String xml) {
+        Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
 
         Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
                 tilYtelse(søknad.getOmYtelse()));
@@ -147,14 +149,14 @@ public class XMLToDomainMapper {
         if (relasjonTilBarnet instanceof Termin) {
             Termin termin = Termin.class.cast(relasjonTilBarnet);
             return new FremtidigFødsel(termin.getAntallBarn(), termin.getTermindato(), termin.getUtstedtdato(),
-                    Collections.emptyList());
+                    emptyList());
 
         }
         if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon) {
             no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon.class
                     .cast(relasjonTilBarnet);
             return new Adopsjon(adopsjon.getAntallBarn(), adopsjon.getOmsorgsovertakelsesdato(),
-                    adopsjon.isAdopsjonAvEktefellesBarn(), Collections.emptyList(), adopsjon.getAnkomstdato(),
+                    adopsjon.isAdopsjonAvEktefellesBarn(), emptyList(), adopsjon.getAnkomstdato(),
                     adopsjon.getFoedselsdato());
         }
         throw new IllegalArgumentException("Ikke"
@@ -175,7 +177,7 @@ public class XMLToDomainMapper {
                 frilans.isHarInntektFraFosterhjem(),
                 frilans.isErNyoppstartet(),
                 tilFrilansOppdrag(frilans.getFrilansoppdrag()),
-                Collections.emptyList());
+                emptyList());
     }
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
@@ -184,7 +186,7 @@ public class XMLToDomainMapper {
     }
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
-        return frilansoppdrag.stream().map(XMLToDomainMapper::tilFrilansOppdrag).collect(toList());
+        return safeStream(frilansoppdrag).map(XMLToDomainMapper::tilFrilansOppdrag).collect(toList());
     }
 
     private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
@@ -198,7 +200,7 @@ public class XMLToDomainMapper {
 
     private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
             List<AnnenOpptjening> annenOpptjening) {
-        return annenOpptjening.stream().map(XMLToDomainMapper::tilAnnenOpptjening).collect(toList());
+        return safeStream(annenOpptjening).map(XMLToDomainMapper::tilAnnenOpptjening).collect(toList());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
@@ -206,11 +208,11 @@ public class XMLToDomainMapper {
         LOG.debug("Genererer annen opptjening  modell fra {}", annenOpptjening);
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening(
                 AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
-                tilÅpenPeriode(annenOpptjening.getPeriode()), Collections.emptyList());
+                tilÅpenPeriode(annenOpptjening.getPeriode()), emptyList());
     }
 
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
-        return egenNaering.stream().map(XMLToDomainMapper::tilEgenNæring).collect(toList());
+        return safeStream(egenNaering).map(XMLToDomainMapper::tilEgenNæring).collect(toList());
     }
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
@@ -270,7 +272,7 @@ public class XMLToDomainMapper {
     }
 
     private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
-        return Collections.singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
+        return singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
     }
 
     private static List<UtenlandskArbeidsforhold> tilUtenlandsArbeidsforhold(
@@ -281,6 +283,14 @@ public class XMLToDomainMapper {
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
         LOG.debug("Genererer medlemsskap  modell fra {}", medlemskap);
+        return new Medlemsskap(tilTidligereOpphold(medlemskap), tilFremtidigOpphold(medlemskap));
+    }
+
+    private static TidligereOppholdsInformasjon tilTidligereOpphold(Medlemskap medlemskap) {
+        return null;
+    }
+
+    private static FramtidigOppholdsInformasjon tilFremtidigOpphold(Medlemskap medlemskap) {
         return null;
     }
 
@@ -305,23 +315,23 @@ public class XMLToDomainMapper {
         if (periode instanceof Overfoeringsperiode) {
             Overfoeringsperiode overføringsPeriode = Overfoeringsperiode.class.cast(periode);
             return new OverføringsPeriode(overføringsPeriode.getFom(), overføringsPeriode.getTom(),
-                    Collections.emptyList(),
+                    emptyList(),
                     tilÅrsak(overføringsPeriode.getAarsak()));
         }
         if (periode instanceof Oppholdsperiode) {
             Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
-            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(), Collections.emptyList(),
+            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(), emptyList(),
                     tilÅrsak(oppholdsPeriode.getAarsak()));
         }
         if (periode instanceof Utsettelsesperiode) {
             Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
-            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), Collections.emptyList(),
+            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), emptyList(),
                     tilÅrsak(utsettelse.getAarsak()));
         }
 
         if (periode instanceof Gradering) {
             Gradering gradering = Gradering.class.cast(periode);
-            return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(), Collections.emptyList(),
+            return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(), emptyList(),
                     tilStønadKontoType(gradering.getType()),
                     gradering.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()));
@@ -329,7 +339,7 @@ public class XMLToDomainMapper {
 
         if (periode instanceof Uttaksperiode) {
             Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
-            return new UttaksPeriode(uttaksperiode.getFom(), uttaksperiode.getTom(), Collections.emptyList(),
+            return new UttaksPeriode(uttaksperiode.getFom(), uttaksperiode.getTom(), emptyList(),
                     tilStønadKontoType(uttaksperiode.getType()), uttaksperiode.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()));
         }
