@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -47,6 +50,8 @@ public class SøknadController {
     private final DokmotJMSSender dokmotSender;
     @Inject
     SøknadsTjeneste saksClient;
+    @Inject
+    ObjectMapper mapper;
 
     public SøknadController(FPFordelSøknadSender sender, DokmotJMSSender dokmotSender, Oppslag oppslag,
             SøknadsTjeneste søknadsTjeneste, SøknadsTjeneste saksClient) {
@@ -79,8 +84,10 @@ public class SøknadController {
 
     @GetMapping(value = "/soknad")
     @Unprotected
-    public ResponseEntity<Søknad> søknad(@RequestParam(name = "behandlingId") String behandlingId) {
-        return ok(søknadsTjeneste.hentSøknad(behandlingId));
+    public Søknad søknad(@RequestParam(name = "behandlingId") String behandlingId) throws JsonProcessingException {
+        Søknad søknad = søknadsTjeneste.hentSøknad(behandlingId);
+        LOG.info("Konvertert søknad er {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(søknad));
+        return søknad;
     }
 
     @GetMapping(value = "/ping")
