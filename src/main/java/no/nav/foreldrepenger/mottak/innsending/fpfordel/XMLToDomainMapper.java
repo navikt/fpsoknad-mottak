@@ -270,6 +270,9 @@ public class XMLToDomainMapper {
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
+        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+            return null;
+        }
         return Virksomhetstype.valueOf(type.getKode());
     }
 
@@ -354,18 +357,30 @@ public class XMLToDomainMapper {
     }
 
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
+        if (morsAktivitetIPerioden == null || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+            return null;
+        }
         return MorsAktivitet.valueOf(morsAktivitetIPerioden.getKode());
     }
 
     private static StønadskontoType tilStønadKontoType(Uttaksperiodetyper type) {
+        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+            return null;
+        }
         return StønadskontoType.valueOf(type.getKode());
     }
 
     private static UtsettelsesÅrsak tilÅrsak(Utsettelsesaarsaker aarsak) {
+        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+            return null;
+        }
         return UtsettelsesÅrsak.valueOf(aarsak.getKode());
     }
 
     private static Oppholdsårsak tilÅrsak(Oppholdsaarsaker aarsak) {
+        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+            return null;
+        }
         return Oppholdsårsak.valueOf(aarsak.getKode());
     }
 
