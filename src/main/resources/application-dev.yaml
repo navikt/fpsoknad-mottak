@@ -24,5 +24,6 @@ virksomhet:
     arbeidsforhold.v34.endpointurl:  http://localhost
     medlemskap.v2.endpointurl: http://localhost
     organisasjon.v5.endpointurl: http://localhost
+    sak.v2.endpointurl: http://localhost
     
 aktoer.v2.endpointurl: http://localhost

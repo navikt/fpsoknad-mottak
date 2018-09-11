@@ -8,6 +8,7 @@ import no.nav.foreldrepenger.lookup.ws.medl.MedlClient;
 import no.nav.foreldrepenger.lookup.ws.person.PersonClient;
 import no.nav.foreldrepenger.lookup.ws.ytelser.arena.ArenaClient;
 import no.nav.foreldrepenger.lookup.ws.ytelser.fpsak.FpsakClient;
+import no.nav.foreldrepenger.lookup.ws.ytelser.gsak.GsakClient;
 import no.nav.foreldrepenger.lookup.ws.ytelser.infotrygd.InfotrygdClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,5 +71,11 @@ public class StubConfiguration {
     @Primary
     public OrganisasjonClient organisasjonClientStub() {
         return new OrganisasjonClientStub();
+    }
+
+    @Bean
+    @Primary
+    public GsakClient gsakClientStub() {
+        return new GsakClientStub();
     }
 }

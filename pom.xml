@@ -181,6 +181,19 @@
                             <sourceDestDir>target/generated-sources</sourceDestDir>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>WsdlGsak</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>SakV2.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <wsdlDirectory>src/main/resources/wsdl/gsak</wsdlDirectory>
+                            <sourceDestDir>target/generated-sources</sourceDestDir>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
