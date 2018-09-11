@@ -26,6 +26,5 @@ public class ForeldrepengerPDFGeneratorTest {
     @Test
     public void signature() {
         assertTrue(hasPdfSignature(gen.generate(foreldrepenger(), person())));
-
     }
 }

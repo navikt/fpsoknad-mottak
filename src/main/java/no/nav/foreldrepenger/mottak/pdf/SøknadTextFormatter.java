@@ -4,10 +4,14 @@ import static java.util.stream.Collectors.joining;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -100,6 +104,22 @@ public class SøknadTextFormatter {
     public String vedlegg(Vedlegg vedlegg) {
         return Optional.ofNullable(vedlegg.getMetadata().getBeskrivelse())
             .orElse(vedlegg.getDokumentType().beskrivelse);
+    }
+
+    public List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {
+        if (opphold.isEmpty()) {
+            return Collections.singletonList(countryName(CountryCode.NO.getAlpha2()));
+        }
+        return opphold.stream()
+            .map(this::formatOpphold)
+            .collect(Collectors.toList());
+    }
+
+    private String formatOpphold(Utenlandsopphold opphold) {
+        return countryName(opphold.getLand().getAlpha2(), opphold.getLand().getName())
+            + ": "
+            + date(opphold.getVarighet().getFom()) + " - "
+            + date(opphold.getVarighet().getTom());
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {

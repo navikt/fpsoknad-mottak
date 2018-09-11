@@ -163,8 +163,8 @@ public class EngangsstønadPDFGenerator {
     }
 
     private Pair<List<String>, List<String>> medlemsskap(Medlemsskap medlemsskap) {
-        return Pair.of(utenlandsOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()),
-                utenlandsOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold()));
+        return Pair.of(textFormatter.utenlandsOpphold(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold()),
+                textFormatter.utenlandsOpphold(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold()));
     }
 
     private List<String> søker(Person søker) {
@@ -205,22 +205,6 @@ public class EngangsstønadPDFGenerator {
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("neste12"), cos, y);
         y -= renderer.addBulletList(medlemsPerioder.getSecond(), cos, y);
         return startY - y;
-    }
-
-    private List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {
-        if (opphold.isEmpty()) {
-            return Collections.singletonList(textFormatter.countryName(CountryCode.NO.getAlpha2()));
-        }
-        return opphold.stream()
-                .map(this::formatOpphold)
-                .collect(Collectors.toList());
-    }
-
-    private String formatOpphold(Utenlandsopphold opphold) {
-        return textFormatter.countryName(opphold.getLand().getAlpha2(), opphold.getLand().getName())
-                + ": "
-                + textFormatter.date(opphold.getVarighet().getFom()) + " - "
-                + textFormatter.date(opphold.getVarighet().getTom());
     }
 
 }

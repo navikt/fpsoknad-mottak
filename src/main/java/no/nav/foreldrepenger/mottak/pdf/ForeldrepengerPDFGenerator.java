@@ -11,7 +11,13 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.mottak.domain.felles.*;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -21,8 +27,6 @@ import org.springframework.stereotype.Component;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Component
 public class ForeldrepengerPDFGenerator {
@@ -59,12 +63,11 @@ public class ForeldrepengerPDFGenerator {
                 }
 
                 y -= dekningsgrad(stønad.getDekningsgrad(), cos, y);
-                y -= renderer.addBlankLine();
+
 
                 Opptjening opptjening = stønad.getOpptjening();
                 if (opptjening != null) {
                     opptjening(opptjening, cos, y);
-                    renderer.addBlankLine();
                 }
 
                 doc.addPage(page1);
@@ -78,8 +81,11 @@ public class ForeldrepengerPDFGenerator {
                 y -= header(søker, doc, cos, y);
                 y -= renderer.addBlankLine();
 
+                y -= medlemsskap(stønad.getMedlemsskap(), cos, y);
+
                 RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
                 if (relasjon != null) {
+                    y -= renderer.addBlankLine();
                     y -= omBarn(relasjon, cos, y);
                     y -= renderer.addBlankLine();
                 }
@@ -178,6 +184,7 @@ public class ForeldrepengerPDFGenerator {
 
     private float opptjening(Opptjening opptjening, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
+        y -= renderer.addBlankLine();
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("infoominntekt"), cos, y);
         y -= renderer.addBulletList(utenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()), cos, y);
         if (!opptjening.getEgenNæring().isEmpty()) {
@@ -218,6 +225,28 @@ public class ForeldrepengerPDFGenerator {
             .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
             .collect(toList());
         y -= renderer.addBulletList(oppdrag, cos, y);
+        return startY - y;
+    }
+
+    private float medlemsskap(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
+        float startY = y;
+        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("medlemsskap"), cos, y);
+        TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
+        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("siste12") + " " +
+            (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
+        if (tidligereOpphold.getUtenlandsOpphold().size() != 0) {
+            y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tidligereopphold"), cos, y);
+            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()), cos, y);
+        }
+        FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
+        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("neste12") + " " +
+            (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
+        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("føderi",
+            (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
+        if (framtidigeOpphold.getUtenlandsOpphold().size() != 0) {
+            y -= renderer.addLeftHeading(textFormatter.fromMessageSource("framtidigeopphold"), cos, y);
+            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()), cos, y);
+        }
         return startY - y;
     }
 
@@ -274,14 +303,22 @@ public class ForeldrepengerPDFGenerator {
             sb.append(org.getOrgName());
         }
         sb.append(" " + textFormatter.periode(næring.getPeriode()));
+
+        sb.append("\n");
         if (næring.isErVarigEndring()) {
-            sb.append(", " + textFormatter.fromMessageSource("varigendring"));
+            sb.append(textFormatter.fromMessageSource("varigendring"));
         }
+
         if (næring.isErNyOpprettet()) {
             sb.append(", " + textFormatter.fromMessageSource("nyopprettet"));
         }
+
         if (næring.isErNyIArbeidslivet()) {
             sb.append(", " + textFormatter.fromMessageSource("nyiarbeidslivet"));
+        }
+
+        if (næring.isNærRelasjon()) {
+            sb.append(", " + textFormatter.fromMessageSource("nærrelasjon"));
         }
         sb.append("\n");
 
@@ -340,20 +377,20 @@ public class ForeldrepengerPDFGenerator {
     private String format(LukketPeriodeMedVedlegg periode) {
         String tid = textFormatter.date(periode.getFom()) + " - " + textFormatter.date(periode.getTom());
         if (periode instanceof OverføringsPeriode) {
-            OverføringsPeriode op = OverføringsPeriode.class.cast(periode);
-            return "Overføring: " + tid + ", " + textFormatter.capitalize(op.getÅrsak().name());
+            OverføringsPeriode overføring = OverføringsPeriode.class.cast(periode);
+            return "Overføring: " + tid + ", " + textFormatter.capitalize(overføring.getÅrsak().name());
         }
         else if (periode instanceof UttaksPeriode) {
-            UttaksPeriode up = UttaksPeriode.class.cast(periode);
-            return "Uttak: " + tid + ", " + textFormatter.capitalize(up.getUttaksperiodeType().name());
+            UttaksPeriode uttak = UttaksPeriode.class.cast(periode);
+            return "Uttak: " + tid + ", " + textFormatter.capitalize(uttak.getUttaksperiodeType().name());
         }
         else if (periode instanceof OppholdsPeriode) {
-            OppholdsPeriode op = OppholdsPeriode.class.cast(periode);
-            return "Opphold: " + tid + ", " + textFormatter.capitalize(op.getÅrsak().name());
+            OppholdsPeriode opphold = OppholdsPeriode.class.cast(periode);
+            return "Opphold: " + tid + ", " + textFormatter.capitalize(opphold.getÅrsak().name());
         }
         else {
-            UtsettelsesPeriode up = UtsettelsesPeriode.class.cast(periode);
-            return "Utsettelse: " + tid + ", " + textFormatter.capitalize(up.getÅrsak().name());
+            UtsettelsesPeriode utsettelse = UtsettelsesPeriode.class.cast(periode);
+            return "Utsettelse: " + tid + ", " + textFormatter.capitalize(utsettelse.getÅrsak().name());
         }
     }
 
