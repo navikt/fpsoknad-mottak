@@ -20,8 +20,8 @@ public class FPInfoSakStatus {
 
     @JsonCreator
     public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
-            @JsonProperty("fagsakStatus") FPInfoFagsakStatus fagsakStatus,
-            @JsonProperty("behandlingTema") String behandlingsTema,
+            @JsonProperty("status") FPInfoFagsakStatus fagsakStatus,
+            @JsonProperty("behandlingstema") String behandlingsTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
