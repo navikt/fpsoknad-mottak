@@ -9,7 +9,7 @@ import java.util.Optional;
 class GsakMapper {
 
     static Ytelse map(WSSak sak) {
-        return new Ytelse(sak.getSakstype(), "ukjent",
+        return new Ytelse(sak.getFagomrade() + "/" + sak.getSakstype(), "ukjent",
                 DateUtil.toLocalDate(sak.getOpprettelsetidspunkt()), Optional.empty());
     }
 

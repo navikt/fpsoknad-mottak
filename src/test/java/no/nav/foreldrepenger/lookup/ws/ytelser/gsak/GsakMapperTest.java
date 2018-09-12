@@ -16,9 +16,10 @@ public class GsakMapperTest {
     public void mapValues() {
         WSSak sak = new WSSak();
         sak.setSakstype("typen");
+        sak.setFagomrade("omr");
         sak.setOpprettelsetidspunkt(DateUtil.toXMLGregorianCalendar(LocalDate.of(2017, 12, 13)));
         LocalDate date = LocalDate.of(2017, 12, 13);
-        Ytelse expected = new Ytelse("typen", "ukjent", date, Optional.empty());
+        Ytelse expected = new Ytelse("omr/typen", "ukjent", date, Optional.empty());
         Ytelse actual = GsakMapper.map(sak);
         assertEquals(expected, actual);
     }
