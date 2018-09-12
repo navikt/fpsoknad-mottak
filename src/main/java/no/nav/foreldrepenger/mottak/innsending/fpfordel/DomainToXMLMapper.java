@@ -291,6 +291,7 @@ public class DomainToXMLMapper {
                     .withPeriode(periodeFra(norskOrg.getPeriode()))
                     .withRegnskapsfoerer(regnskapsFørerFra(norskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(norskOrg.getVirksomhetsTyper()))
+                    .withErNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
                     .withArbeidsland(landFra(norskOrg.getArbeidsland()));
         }
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon) {
