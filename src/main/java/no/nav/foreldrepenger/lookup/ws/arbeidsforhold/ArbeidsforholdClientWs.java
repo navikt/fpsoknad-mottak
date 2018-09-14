@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 
 import static java.util.stream.Collectors.toList;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
@@ -48,13 +49,14 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     }
 
     @Override
-    public List<Arbeidsforhold> arbeidsforhold(Fødselsnummer fnr) {
+    public List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr) {
         try {
             FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3
                     .finnArbeidsforholdPrArbeidstaker(request(fnr));
 
             return response.getArbeidsforhold().stream()
                     .map(ArbeidsforholdMapper::map)
+                    .filter(this::isOngoing)
                     .map(this::addArbeidsgiverNavn)
                     .collect(toList());
         } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning ex) {
@@ -92,5 +94,12 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
         return "AaregClient{" +
                 "arbeidsforholdV3=" + arbeidsforholdV3 +
                 '}';
+    }
+
+    protected boolean isOngoing(Arbeidsforhold arbeidsforhold) {
+        LocalDate today = LocalDate.now();
+        return arbeidsforhold.getTom()
+            .map(t -> t.isAfter(today) || t.equals(today))
+            .orElse(true);
     }
 }

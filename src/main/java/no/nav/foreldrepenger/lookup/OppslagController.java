@@ -87,7 +87,7 @@ public class OppslagController {
         Fødselsnummer fnr = fnrFromClaims();
         AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
         Person person = personClient.hentPersonInfo(new ID(aktorId, fnr));
-        List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
+        List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.aktiveArbeidsforhold(fnr);
         return ok(new Søkerinfo(person, arbeidsforhold));
     }
 

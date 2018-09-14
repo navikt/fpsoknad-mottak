@@ -31,7 +31,7 @@ class ArbeidsforholdController {
         }
 
         Fødselsnummer fnr = new Fødselsnummer(fnrFromClaims);
-        List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.arbeidsforhold(fnr);
+        List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.aktiveArbeidsforhold(fnr);
         return ResponseEntity.ok(arbeidsforhold);
     }
 }

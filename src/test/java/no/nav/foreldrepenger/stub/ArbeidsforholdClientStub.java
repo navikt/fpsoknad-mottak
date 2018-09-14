@@ -23,7 +23,7 @@ public class ArbeidsforholdClientStub implements ArbeidsforholdClient {
     }
 
     @Override
-    public List<Arbeidsforhold> arbeidsforhold(Fødselsnummer fnr) {
+    public List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr) {
         Arbeidsforhold arbeidsforhold1 = new Arbeidsforhold("0123456789", "orgnummer",
             69d, now().minusYears(1), empty());
         Arbeidsforhold arbeidsforhold2 = new Arbeidsforhold("999999999", "orgnummer",

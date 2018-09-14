@@ -7,5 +7,5 @@ import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 
 public interface ArbeidsforholdClient extends Pingable {
 
-    List<Arbeidsforhold> arbeidsforhold(Fødselsnummer fnr);
+    List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr);
 }
