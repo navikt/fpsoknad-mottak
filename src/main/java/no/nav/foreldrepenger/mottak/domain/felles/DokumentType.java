@@ -2,11 +2,12 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 
 public enum DokumentType {
     I000002("Søknad om foreldrepenger ved adopsjon"),
-    I000003("Søknad om engangsstønad ved fødsel"), 
+    I000003("Søknad om engangsstønad ved fødsel"),
     I000005("Søknad om foreldrepenger ved fødsel"),
     I000006("Utsettelse eller gradert uttak av foreldrepenger (fleksibelt uttak)"),
     I000007("Inntektsopplysninger om selvstendig næringsdrivende og/eller frilansere som skal ha foreldrepenger eller svangerskapspenger"),
     I000026("Inntektsopplysninger for arbeidstaker som skal ha sykepenger, foreldrepenger, svangerskapspenger, pleie-/opplæringspenger"),
+    I000039("Tjenestebevis"),
     I000041("Dokumentasjon av termindato (lev. kun av mor), fødsel eller dato for omsorgsovertakelse"),
     I000042("Dokumentasjon av overtakelse av omsorg"),
     I000043("Dokumentasjon av arbeidsforhold"),
@@ -24,7 +25,7 @@ public enum DokumentType {
     I500050("Ettersendelse til søknad om endring av uttak av foreldrepenger eller overføring av kvote");
 
 
-    public final String beskrivelse;  
+    public final String beskrivelse;
 
     DokumentType(String beskrivelse) {
         this.beskrivelse = beskrivelse;
