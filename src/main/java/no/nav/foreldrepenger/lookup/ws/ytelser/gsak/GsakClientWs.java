@@ -16,7 +16,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class GsakClientWs implements GsakClient {
-    private static final Logger log = LoggerFactory.getLogger(GsakClientWs.class);
 
     private final SakV2 gsak;
     private final SakV2 healthIndicator;
