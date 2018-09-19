@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.errorhandling.IncompleteRequestException;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
+import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import no.nav.tjeneste.virksomhet.sak.v2.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class GsakClientWs implements GsakClient {
     }
 
     @Override
-    public List<Ytelse> casesFor(Fødselsnummer fnr) {
+    public List<Sak> casesFor(Fødselsnummer fnr) {
         WSFinnSakerForBrukerRequest request = new WSFinnSakerForBrukerRequest();
         request.setBrukerId(fnr.getFnr());
         try {

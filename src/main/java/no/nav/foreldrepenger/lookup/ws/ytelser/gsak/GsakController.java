@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.lookup.ws.ytelser.gsak;
 
 import no.nav.foreldrepenger.lookup.FnrExtractor;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
+import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ class GsakController {
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/gsak")
-    public ResponseEntity<List<Ytelse>> cases() {
+    public ResponseEntity<List<Sak>> cases() {
         String fnrFromClaims = FnrExtractor.extract(contextHolder);
         if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
             return badRequest().build();

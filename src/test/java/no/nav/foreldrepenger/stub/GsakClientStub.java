@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.stub;
 
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
+import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import no.nav.foreldrepenger.lookup.ws.ytelser.gsak.GsakClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +21,14 @@ public class GsakClientStub implements GsakClient {
 
 
     @Override
-    public List<Ytelse> casesFor(Fødselsnummer fnr) {
+    public List<Sak> casesFor(Fødselsnummer fnr) {
         return Arrays.asList(
-            new Ytelse("foreldrepenger", "ukjent", LocalDate.of(2018, 7, 21)),
-            new Ytelse("sykepenger", "ukjent", LocalDate.of(2017, 4, 22))
+            new Sak("sak1", "typen", "fagomr", "systemet",
+                "fsid1", LocalDate.of(2018,9,19)),
+            new Sak("sak2", "typen", "fagomr", "systemet",
+                "fsid2", LocalDate.of(2018,9,18)),
+            new Sak("sak3", "typen", "fagomr", "systemet",
+                "fsid3", LocalDate.of(2018,9,17))
         );
     }
 }
