@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsending.fpinfo.FagsakStatus.AVSLU;
 import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 import java.net.URI;
@@ -65,7 +64,7 @@ public class FPInfoInnsynTjeneste implements InnsynTjeneste {
             return emptyList();
         }
         List<SakStatus> fagSaker = Arrays.stream(saker.get())
-                .filter(s -> !s.getFagsakStatus().equals(AVSLU))
+                // .filter(s -> !s.getFagsakStatus().equals(AVSLU))
                 .map(s -> new SakStatus(s.getSaksnummer(), s.getFagsakStatus(), s.getBehandlingTema(),
                         s.getAktørId(),
                         s.getAktørIdAnnenPart(), s.getAktørIdBarn(),
