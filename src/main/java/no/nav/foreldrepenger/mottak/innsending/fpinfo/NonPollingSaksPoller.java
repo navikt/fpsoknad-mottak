@@ -24,7 +24,8 @@ public class NonPollingSaksPoller implements SaksStatusPoller {
             FPSakFordeltKvittering fordeltKvittering) {
         LOG.debug("This poller does not poll");
         FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fordeltKvittering);
-        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref,
+        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK,
+                ref,
                 fordelt.getJournalpostId(),
                 fordelt.getSaksnummer());
     }

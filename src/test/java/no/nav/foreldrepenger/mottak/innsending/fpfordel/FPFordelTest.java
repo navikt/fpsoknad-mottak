@@ -24,7 +24,6 @@ import static org.springframework.http.HttpStatus.SEE_OTHER;
 import java.net.URI;
 import java.time.Duration;
 
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +46,7 @@ import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.NonPollingSaksPoller;
+import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class FPFordelTest {
@@ -67,7 +67,6 @@ public class FPFordelTest {
     private RestTemplate template;
     @Mock
     private Oppslag oppslag;
-    @Mock
     private FPFordelConfig cfg;
 
     private ResponseEntity<FPFordelKvittering> pollReceipt202, pollReceipt200;
@@ -78,10 +77,11 @@ public class FPFordelTest {
 
     @Before
     public void before() {
-        when(cfg.isEnabled()).thenReturn(true);
-        when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
-        when(cfg.getUri()).thenReturn(FPFORDELURIBASE);
+        cfg = new FPFordelConfig();
+        cfg.setEnabled(true);
+        cfg.setUri(URI.create(FPFORDELURIBASE));
 
+        when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
         pollReceipt202 = pollReceipt(HttpStatus.ACCEPTED);
         pollReceipt200 = pollReceipt(HttpStatus.OK);
 
@@ -187,7 +187,8 @@ public class FPFordelTest {
     public void pollOnceThenOKAndFpInfoOK() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår(), fpinfoPågår(),
+        when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår(),
+                fpinfoPågår(),
                 fpinfoInnvilget());
         Kvittering kvittering = sender.send(foreldrepenger(), person());
         // assertThat(kvittering.getLeveranseStatus(), is(INNVILGET));

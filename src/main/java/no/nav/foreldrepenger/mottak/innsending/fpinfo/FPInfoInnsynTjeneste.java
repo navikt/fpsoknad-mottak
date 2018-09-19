@@ -12,7 +12,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,24 +24,23 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.XMLToDomainMapper;
 @Service
 public class FPInfoInnsynTjeneste implements InnsynTjeneste {
 
-    private static final String PATH = "fpinfo/api/dokumentforsendelse/";
-
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoInnsynTjeneste.class);
 
     private final XMLToDomainMapper mapper;
-    private final URI baseURI;
+    private final FPInfoConfig config;
     private final RestTemplate template;
 
-    public FPInfoInnsynTjeneste(@Value("${fpinfo.baseuri:http://fpinfo}") URI baseURI, RestTemplate template,
+    public FPInfoInnsynTjeneste(FPInfoConfig config, RestTemplate template,
             XMLToDomainMapper mapper) {
-        this.baseURI = baseURI;
+        this.config = config;
         this.template = template;
         this.mapper = mapper;
     }
 
     @Override
     public Søknad hentSøknad(String behandlingId) {
-        Optional<SøknadWrapper> wrapper = get(uriFra(PATH + "soknad", headers("behandlingId", behandlingId)),
+        Optional<SøknadWrapper> wrapper = get(uriFra(config.getBasePath() + "soknad",
+                headers("behandlingId", behandlingId)),
                 SøknadWrapper.class,
                 "søknad");
         if (wrapper.isPresent()) {
@@ -60,7 +58,7 @@ public class FPInfoInnsynTjeneste implements InnsynTjeneste {
 
     @Override
     public List<SakStatus> hentSaker(String aktørId) {
-        Optional<SakStatusWrapper[]> saker = get(uriFra(PATH + "sak", headers("aktorId", aktørId)),
+        Optional<SakStatusWrapper[]> saker = get(uriFra(config.getBasePath() + "sak", headers("aktorId", aktørId)),
                 SakStatusWrapper[].class, "FPInfoSakStatusWrapper[]");
 
         if (!saker.isPresent()) {
@@ -79,7 +77,7 @@ public class FPInfoInnsynTjeneste implements InnsynTjeneste {
 
     @Override
     public Behandling hentBehandling(String behandlingId) {
-        URI uri = uriFra(PATH + "behandling", headers("behandlingId", behandlingId));
+        URI uri = uriFra(config.getBasePath() + "behandling", headers("behandlingId", behandlingId));
         Optional<Behandling> behandling = get(uri, Behandling.class, "behandling");
         return behandling.isPresent() ? withID(behandling.get(), uri) : null;
     }
@@ -89,7 +87,7 @@ public class FPInfoInnsynTjeneste implements InnsynTjeneste {
     }
 
     private Behandling behandlingFra(String saksnr, BehandlingsLenke behandlingsLink) {
-        return hentBehandling(URI.create(baseURI + behandlingsLink.getHref()));
+        return hentBehandling(URI.create(config.getUrl() + behandlingsLink.getHref()));
     }
 
     private Behandling hentBehandling(URI uri) {
@@ -122,7 +120,7 @@ public class FPInfoInnsynTjeneste implements InnsynTjeneste {
     }
 
     private URI uriFra(String pathSegment, HttpHeaders queryParams) {
-        return fromUri(baseURI)
+        return fromUri(config.getUrl())
                 .pathSegment(pathSegment)
                 .queryParams(queryParams)
                 .build()
@@ -131,7 +129,7 @@ public class FPInfoInnsynTjeneste implements InnsynTjeneste {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mapper=" + mapper + ", baseURI=" + baseURI + ", template=" + template
+        return getClass().getSimpleName() + " [mapper=" + mapper + ", config=" + config + ", template=" + template
                 + "]";
     }
 
