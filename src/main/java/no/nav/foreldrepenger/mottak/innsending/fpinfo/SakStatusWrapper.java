@@ -9,41 +9,41 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FPInfoSakStatus {
+public class SakStatusWrapper {
     private final String saksnummer;
-    private final FPInfoFagsakStatus fagsakStatus;
+    private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
     private final String aktørId;
     private final String aktørIdAnnenPart;
     private final List<String> aktørIdBarn;
-    private final List<Behandling> behandlinger;
+    private final List<BehandlingsLenke> lenker;
 
     @JsonCreator
-    public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
-            @JsonProperty("status") FPInfoFagsakStatus fagsakStatus,
-            @JsonProperty("behandlingstema") String behandlingsTema,
+    public SakStatusWrapper(@JsonProperty("saksnummer") String saksnummer,
+            @JsonProperty("fagsakStatus") FagsakStatus fagsakStatus,
+            @JsonProperty("behandlingTema") String behandlingsTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
-            @JsonProperty("behandlinger") List<Behandling> behandlinger) {
+            @JsonProperty("lenker") List<BehandlingsLenke> lenker) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingsTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
-        this.behandlinger = Optional.ofNullable(behandlinger).orElse(emptyList());
+        this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
     }
 
-    public List<Behandling> getBehandlinger() {
-        return behandlinger;
+    public List<BehandlingsLenke> getLenker() {
+        return lenker;
     }
 
     public String getSaksnummer() {
         return saksnummer;
     }
 
-    public FPInfoFagsakStatus getFagsakStatus() {
+    public FagsakStatus getFagsakStatus() {
         return fagsakStatus;
     }
 
@@ -58,7 +58,7 @@ public class FPInfoSakStatus {
     @Override
     public int hashCode() {
         return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, behandlingTema,
-                saksnummer, behandlinger);
+                saksnummer, lenker);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class FPInfoSakStatus {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        FPInfoSakStatus other = (FPInfoSakStatus) obj;
+        SakStatusWrapper other = (SakStatusWrapper) obj;
         if (aktørId == null) {
             if (other.aktørId != null)
                 return false;
@@ -115,7 +115,7 @@ public class FPInfoSakStatus {
         return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
                 + ", behandlingTema="
                 + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn="
-                + aktørIdBarn + ", behandlinger=" + behandlinger + "]";
+                + aktørIdBarn + ", lenker=" + lenker + "]";
     }
 
 }

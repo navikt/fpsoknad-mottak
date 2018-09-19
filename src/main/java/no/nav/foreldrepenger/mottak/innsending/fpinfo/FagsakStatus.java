@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
-public enum FPInfoFagsakStatus {
+public enum FagsakStatus {
     OPPR, UBEH, LOP, AVSLU
 }

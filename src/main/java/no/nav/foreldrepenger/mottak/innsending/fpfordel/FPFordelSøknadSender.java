@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPS
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -16,6 +17,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
+@Qualifier("fpfordel")
 public class FPFordelSøknadSender implements SøknadSender {
 
     private static final String VEDLEGG = "vedlegg";

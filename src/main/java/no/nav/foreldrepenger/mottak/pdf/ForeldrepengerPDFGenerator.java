@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,13 +12,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -27,6 +21,34 @@ import org.springframework.stereotype.Component;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 
 @Component
 public class ForeldrepengerPDFGenerator {
@@ -35,7 +57,7 @@ public class ForeldrepengerPDFGenerator {
 
     @Inject
     public ForeldrepengerPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster) {
-        this(new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO.toLocale()));
+        this(new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO));
     }
 
     private ForeldrepengerPDFGenerator(SøknadTextFormatter textFormatter) {
@@ -49,7 +71,7 @@ public class ForeldrepengerPDFGenerator {
         float yTop = PDFElementRenderer.calculateStartY();
 
         try (PDDocument doc = new PDDocument();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page1 = renderer.newPage();
             try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
                 float y = yTop;
@@ -63,7 +85,6 @@ public class ForeldrepengerPDFGenerator {
                 }
 
                 y -= dekningsgrad(stønad.getDekningsgrad(), cos, y);
-
 
                 Opptjening opptjening = stønad.getOpptjening();
                 if (opptjening != null) {
@@ -129,7 +150,7 @@ public class ForeldrepengerPDFGenerator {
     }
 
     private float annenForelder(AnnenForelder annenForelder, boolean harAnnenForelderRett,
-                                PDPageContentStream cos, float y) throws IOException {
+            PDPageContentStream cos, float y) throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
@@ -143,7 +164,7 @@ public class ForeldrepengerPDFGenerator {
         }
 
         String harRett = textFormatter.fromMessageSource("harrett") +
-            textFormatter.yesNo(harAnnenForelderRett);
+                textFormatter.yesNo(harAnnenForelderRett);
         y -= renderer.addLineOfRegularText(harRett, cos, y);
 
         return startY - y;
@@ -153,8 +174,8 @@ public class ForeldrepengerPDFGenerator {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> lines = new ArrayList<>();
         lines.add(Optional.ofNullable(utenlandsForelder.getNavn())
-            .map(n -> textFormatter.fromMessageSource("navn", n))
-            .orElse("Ukjent"));
+                .map(n -> textFormatter.fromMessageSource("navn", n))
+                .orElse("Ukjent"));
         lines.add(textFormatter.fromMessageSource("nasjonalitet",
                 textFormatter.countryName(utenlandsForelder.getLand().getAlpha2(),
                         utenlandsForelder.getLand().getName())));
@@ -167,12 +188,11 @@ public class ForeldrepengerPDFGenerator {
     private List<String> norskForelder(AnnenForelder annenForelder) {
         NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
         return Arrays.asList(
-            Optional.ofNullable(norskForelder.getNavn())
-                .map(n -> textFormatter.fromMessageSource("navn", n))
-                .orElse("Ukjent"),
-            textFormatter.fromMessageSource("nasjonalitet", "Norsk"),
-            textFormatter.fromMessageSource("aktør", norskForelder.getFnr().getFnr())
-        );
+                Optional.ofNullable(norskForelder.getNavn())
+                        .map(n -> textFormatter.fromMessageSource("navn", n))
+                        .orElse("Ukjent"),
+                textFormatter.fromMessageSource("nasjonalitet", "Norsk"),
+                textFormatter.fromMessageSource("aktør", norskForelder.getFnr().getFnr()));
     }
 
     private float dekningsgrad(Dekningsgrad dekningsgrad, PDPageContentStream cos, float y) throws IOException {
@@ -222,8 +242,8 @@ public class ForeldrepengerPDFGenerator {
         }
         y -= renderer.addLineOfRegularText(sb.toString(), cos, y);
         List<String> oppdrag = frilans.getFrilansOppdrag().stream()
-            .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
-            .collect(toList());
+                .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
+                .collect(toList());
         y -= renderer.addBulletList(oppdrag, cos, y);
         return startY - y;
     }
@@ -233,19 +253,20 @@ public class ForeldrepengerPDFGenerator {
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("siste12") + " " +
-            (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
+                (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
         if (tidligereOpphold.getUtenlandsOpphold().size() != 0) {
             y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tidligereopphold"), cos, y);
             y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()), cos, y);
         }
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("neste12") + " " +
-            (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
+                (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("føderi",
-            (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
+                (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
         if (framtidigeOpphold.getUtenlandsOpphold().size() != 0) {
             y -= renderer.addLeftHeading(textFormatter.fromMessageSource("framtidigeopphold"), cos, y);
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()), cos, y);
+            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()), cos,
+                    y);
         }
         return startY - y;
     }
@@ -253,7 +274,7 @@ public class ForeldrepengerPDFGenerator {
     private float omBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
             throws IOException {
         float startY = y;
-        y -=  renderer.addLeftHeading(textFormatter.fromMessageSource("barn"), cos, y);
+        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("barn"), cos, y);
         y -= renderer.addLineOfRegularText(barn(relasjon), cos, y);
         return startY - y;
     }
@@ -264,7 +285,7 @@ public class ForeldrepengerPDFGenerator {
         y -= renderer.addBulletList(perioder(fordeling.getPerioder()), cos, y);
         y -= renderer.addBlankLine();
         String informert = textFormatter.fromMessageSource("informert") +
-            textFormatter.yesNo(fordeling.isErAnnenForelderInformert());
+                textFormatter.yesNo(fordeling.isErAnnenForelderInformert());
         y -= renderer.addLineOfRegularText(informert, cos, y);
         return startY - y;
     }
@@ -290,15 +311,16 @@ public class ForeldrepengerPDFGenerator {
     private List<String> formatEgenNæring(EgenNæring næring) {
         CountryCode arbeidsland = Optional.ofNullable(næring.getArbeidsland()).orElse(CountryCode.NO);
         String typer = næring.getVirksomhetsTyper().stream()
-            .map(v -> textFormatter.capitalize(v.toString()))
-            .collect(joining(","));
+                .map(v -> textFormatter.capitalize(v.toString()))
+                .collect(joining(","));
         StringBuilder sb = new StringBuilder(typer + " i " + textFormatter.countryName(arbeidsland.getAlpha2()));
         sb.append(" hos ");
         if (næring instanceof NorskOrganisasjon) {
             NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
             sb.append(org.getOrgName());
             sb.append(" (" + org.getOrgNummer() + ")");
-        } else {
+        }
+        else {
             UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
             sb.append(org.getOrgName());
         }
@@ -333,8 +355,8 @@ public class ForeldrepengerPDFGenerator {
 
     private List<String> annenOpptjening(List<AnnenOpptjening> annenOpptjening) {
         return annenOpptjening.stream()
-            .map(this::formatAnnenOpptjening)
-            .collect(toList());
+                .map(this::formatAnnenOpptjening)
+                .collect(toList());
     }
 
     private String formatAnnenOpptjening(AnnenOpptjening annenOpptjening) {
@@ -364,7 +386,7 @@ public class ForeldrepengerPDFGenerator {
         else if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
             return "Fødsel med termin: " + textFormatter.date(fødsel.getTerminDato()) +
-                " (bekreftelse utstedt " + textFormatter.date(fødsel.getUtstedtDato()) + ")";
+                    " (bekreftelse utstedt " + textFormatter.date(fødsel.getUtstedtDato()) + ")";
         }
         else {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);

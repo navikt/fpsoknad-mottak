@@ -10,17 +10,18 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.neovisionaries.i18n.CountryCode;
+
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 
 public class SøknadTextFormatter {
 
@@ -32,11 +33,11 @@ public class SøknadTextFormatter {
     private final Locale locale;
 
     public SøknadTextFormatter(@Qualifier("landkoder") MessageSource landkoder,
-                               @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
-                               Locale locale) {
+            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
+            CountryCode countryCode) {
         this.landkoder = landkoder;
         this.kvitteringstekster = kvitteringstekster;
-        this.locale = locale;
+        this.locale = countryCode.toLocale();
     }
 
     public String countryName(String isoCode, Object... values) {
@@ -103,7 +104,7 @@ public class SøknadTextFormatter {
 
     public String vedlegg(Vedlegg vedlegg) {
         return Optional.ofNullable(vedlegg.getMetadata().getBeskrivelse())
-            .orElse(vedlegg.getDokumentType().beskrivelse);
+                .orElse(vedlegg.getDokumentType().beskrivelse);
     }
 
     public List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {
@@ -111,15 +112,15 @@ public class SøknadTextFormatter {
             return Collections.singletonList(countryName(CountryCode.NO.getAlpha2()));
         }
         return opphold.stream()
-            .map(this::formatOpphold)
-            .collect(Collectors.toList());
+                .map(this::formatOpphold)
+                .collect(Collectors.toList());
     }
 
     private String formatOpphold(Utenlandsopphold opphold) {
         return countryName(opphold.getLand().getAlpha2(), opphold.getLand().getName())
-            + ": "
-            + date(opphold.getVarighet().getFom()) + " - "
-            + date(opphold.getVarighet().getTom());
+                + ": "
+                + date(opphold.getVarighet().getFom()) + " - "
+                + date(opphold.getVarighet().getTom());
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {

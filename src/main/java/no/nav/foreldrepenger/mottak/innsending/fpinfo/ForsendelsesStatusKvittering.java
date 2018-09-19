@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class FPInfoKvittering {
+public class ForsendelsesStatusKvittering {
 
-    private final FPInfoForsendelsesStatus forsendelseStatus;
+    private final ForsendelseStatus forsendelseStatus;
 
     @JsonCreator
-    public FPInfoKvittering(@JsonProperty("forsendelseStatus") FPInfoForsendelsesStatus forsendelseStatus) {
+    public ForsendelsesStatusKvittering(@JsonProperty("forsendelseStatus") ForsendelseStatus forsendelseStatus) {
         this.forsendelseStatus = forsendelseStatus;
     }
 }

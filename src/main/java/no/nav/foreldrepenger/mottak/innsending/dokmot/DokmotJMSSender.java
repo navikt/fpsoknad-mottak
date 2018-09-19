@@ -7,6 +7,7 @@ import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
@@ -17,6 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
+@Qualifier("dokmot")
 public class DokmotJMSSender implements SøknadSender {
 
     private final DokmotConnection dokmotConnection;
