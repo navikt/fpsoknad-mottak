@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 @Qualifier("fpfordel")
 public class FPFordelSøknadSender implements SøknadSender {
 
-    private static final String VEDLEGG = "vedlegg";
+    private static final String ETTERSENDING = "ettersending";
 
     private static final String SØKNAD = "søknad";
 
@@ -49,9 +49,9 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering send(Ettersending ettersending, Person person) {
+    public Kvittering send(Ettersending ettersending, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        return send(VEDLEGG, ref, konvoluttGenerator.payload(ettersending, person, ref));
+        return send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
     }
 
     private Kvittering send(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
