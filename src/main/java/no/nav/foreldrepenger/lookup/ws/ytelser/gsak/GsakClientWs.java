@@ -45,6 +45,7 @@ public class GsakClientWs implements GsakClient {
         request.setBrukerId(fnr.getFnr());
         try {
             WSFinnSakerForBrukerResponse response = gsak.finnSakerForBruker(request);
+            LOG.info("Fant " + response.getSaker().size() + " saker i gsak");
             return response.getSaker().stream().map(GsakMapper::map).collect(toList());
         } catch (WSSikkerhetsbegrensningException ex) {
             ERROR_COUNTER.increment();
