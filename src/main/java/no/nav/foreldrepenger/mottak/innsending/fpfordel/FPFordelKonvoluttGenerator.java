@@ -9,7 +9,6 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -23,6 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @Component
 public class FPFordelKonvoluttGenerator {
@@ -38,7 +38,7 @@ public class FPFordelKonvoluttGenerator {
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-                                      ForeldrepengerSøknadMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
+            ForeldrepengerSøknadMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.søknadGenerator = søknadGenerator;
         this.pdfGenerator = pdfGenerator;
@@ -64,7 +64,11 @@ public class FPFordelKonvoluttGenerator {
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, Person søker,
             String ref) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        AtomicInteger id = new AtomicInteger(1);
         builder.part(METADATA, metadata(ettersending, søker.aktørId, ref), APPLICATION_JSON_UTF8);
+        ettersending.getVedlegg().stream()
+                .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
+
         return new HttpEntity<>(builder.build(), headers());
     }
 

@@ -21,14 +21,14 @@ public class SakStatusWrapper {
     @JsonCreator
     public SakStatusWrapper(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("fagsakStatus") FagsakStatus fagsakStatus,
-            @JsonProperty("behandlingTema") String behandlingsTema,
+            @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
             @JsonProperty("lenker") List<BehandlingsLenke> lenker) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
-        this.behandlingTema = behandlingsTema;
+        this.behandlingTema = behandlingTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());

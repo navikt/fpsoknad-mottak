@@ -12,8 +12,6 @@ import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetadata;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TestMetadata {
@@ -22,7 +20,8 @@ public class TestMetadata {
 
     @Test
     public void testMetadataSøknad() throws Exception {
-        FPFordelMetadata metadata = new FPFordelMetadata(ForeldrepengerTestUtils.foreldrepenger(), new AktorId("42"), "42");
+        FPFordelMetadata metadata = new FPFordelMetadata(ForeldrepengerTestUtils.foreldrepenger(), new AktorId("42"),
+                "42");
         String json = new FPFordelMetdataGenerator(mapper).generateMetadata(metadata, true);
         System.out.println(json);
     }
@@ -33,6 +32,7 @@ public class TestMetadata {
                 new AktorId("42"), "42");
         String json = new FPFordelMetdataGenerator(mapper).generateMetadata(metadata, true);
         System.out.println(json);
+
     }
 
     private static ObjectMapper mapper() {

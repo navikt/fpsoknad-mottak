@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EndringsSøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.SakStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynTjeneste;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.SakStatus;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 
@@ -78,6 +81,15 @@ public class SøknadController {
 
     @GetMapping(value = "/saker")
     public List<SakStatus> saker() {
+
+        try {
+            ValgfrittVedlegg vedlegg = new ValgfrittVedlegg(DokumentType.I500002, null);
+            Ettersending es = new Ettersending("42", vedlegg);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return søknadsTjeneste.hentSaker(oppslag.getAktørId());
     }
 

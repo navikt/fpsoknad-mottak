@@ -21,14 +21,14 @@ public class SakStatus {
     @JsonCreator
     public SakStatus(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("status") FagsakStatus fagsakStatus,
-            @JsonProperty("behandlingstema") String behandlingsTema,
+            @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
             @JsonProperty("behandlinger") List<Behandling> behandlinger) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
-        this.behandlingTema = behandlingsTema;
+        this.behandlingTema = behandlingTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());

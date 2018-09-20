@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
@@ -11,6 +12,10 @@ public class Ettersending {
     private final String saksnr;
 
     private final List<Vedlegg> vedlegg;
+
+    public Ettersending(String saksnr, Vedlegg... vedlegg) {
+        this(saksnr, Arrays.asList(vedlegg));
+    }
 
     public Ettersending(String saksnr, List<Vedlegg> vedlegg) {
         this.saksnr = saksnr;
