@@ -34,7 +34,7 @@ public class FPFordelMetadata {
     private final LocalDateTime forsendelseMottatt;
     private final String brukerId;
     private final List<Filer> filer;
-    private final String saksNr;
+    private final String saksnummer;
 
     public FPFordelMetadata(Ettersending ettersending, AktorId aktorId, String ref) {
         this(files(ettersending), aktorId, ref, ettersending.getSaksnr());
@@ -54,11 +54,11 @@ public class FPFordelMetadata {
         this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();
         this.filer = filer;
-        this.saksNr = saksnr;
+        this.saksnummer = saksnr;
     }
 
-    public String getSaksNr() {
-        return saksNr;
+    public String getSaksnummer() {
+        return saksnummer;
     }
 
     public List<Filer> getFiler() {
@@ -115,6 +115,8 @@ public class FPFordelMetadata {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [forsendelsesId=" + forsendelsesId + ", forsendelseMottatt="
-                + forsendelseMottatt + ", brukerId=" + brukerId + ", filer=" + filer + "]";
+                + forsendelseMottatt + ", brukerId=" + brukerId + ", filer=" + filer + ", saksnummer=" + saksnummer
+                + "]";
     }
+
 }
