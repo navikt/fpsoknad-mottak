@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,7 +24,7 @@ import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
 
-//@Service
+@Service
 public class FPInfoSaksPoller implements SaksStatusPoller {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoSaksPoller.class);
@@ -45,7 +46,8 @@ public class FPInfoSaksPoller implements SaksStatusPoller {
                 : sendtOgForsøktBehandletKvittering(ref, fordeltKvittering);
     }
 
-    private ForsendelsesStatusKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref, StopWatch timer) {
+    private ForsendelsesStatusKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref,
+            StopWatch timer) {
         ForsendelsesStatusKvittering kvittering = null;
 
         LOG.info("Poller forsendelsesstatus på {}", pollURI);

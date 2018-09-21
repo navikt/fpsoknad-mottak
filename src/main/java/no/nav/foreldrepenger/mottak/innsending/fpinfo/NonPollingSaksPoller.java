@@ -8,13 +8,12 @@ import java.time.Duration;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
 
-@Service
+//@Service
 public class NonPollingSaksPoller implements SaksStatusPoller {
 
     private static final Logger LOG = LoggerFactory.getLogger(NonPollingSaksPoller.class);

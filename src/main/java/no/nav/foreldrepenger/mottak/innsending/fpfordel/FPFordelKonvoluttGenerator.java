@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
@@ -112,7 +113,7 @@ public class FPFordelKonvoluttGenerator {
 
     private String xmlHovedDokument(Søknad søknad, AktorId søker) {
         String hovedDokument = søknadGenerator.tilXML(søknad, søker);
-        LOG.debug("Hoveddokument er {}", hovedDokument);
+        LOG.debug(CONFIDENTIAL, "Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }
 
