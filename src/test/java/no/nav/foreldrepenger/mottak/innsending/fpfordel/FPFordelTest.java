@@ -23,7 +23,11 @@ import static org.springframework.http.HttpStatus.SEE_OTHER;
 
 import java.net.URI;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
+import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +67,11 @@ public class FPFordelTest {
 
     private static final String JOURNALID = "999";
     private static final String SAKSNR = "666";
+
+    private static final List<Arbeidsforhold> ARB_FORHOLD =
+        Arrays.asList(new Arbeidsforhold("El Bedrifto", LocalDate.now().minusDays(200),
+            LocalDate.now(), 90));
+
     @Mock
     private RestTemplate template;
     @Mock
@@ -80,6 +89,7 @@ public class FPFordelTest {
     public void before() {
         when(cfg.isEnabled()).thenReturn(true);
         when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
+        when(oppslag.getArbeidsforhold()).thenReturn(ARB_FORHOLD);
         when(cfg.getUri()).thenReturn(FPFORDELURIBASE);
 
         pollReceipt202 = pollReceipt(HttpStatus.ACCEPTED);
@@ -95,7 +105,7 @@ public class FPFordelTest {
     private FPFordelSøknadSender sender() {
         MottakConfiguration mottakConfig = new MottakConfiguration();
         ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(mottakConfig.landkoder(),
-                mottakConfig.kvitteringstekster());
+                mottakConfig.kvitteringstekster(), oppslag);
 
         ForeldrepengerSøknadMapper søknadGenerator = new ForeldrepengerSøknadMapper(oppslag);
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(

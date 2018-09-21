@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
 import static org.junit.Assert.assertTrue;
 
+import no.nav.foreldrepenger.mottak.TestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, ForeldrepengerPDFGenerator.class,
-        SpringOIDCRequestContextHolder.class })
+        SpringOIDCRequestContextHolder.class, TestConfig.class })
 
 public class ForeldrepengerPDFGeneratorTest {
 

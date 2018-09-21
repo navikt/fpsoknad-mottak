@@ -19,8 +19,11 @@ import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
+import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +65,9 @@ public class TestFPFordelSerialization {
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
+    private static final List<Arbeidsforhold> ARB_FORHOLD =
+        Arrays.asList(new Arbeidsforhold("El Bedrifto", LocalDate.now().minusDays(200),
+            LocalDate.now(), 90));
 
     private static final ObjectMapper mapper = mapper();
 
@@ -80,6 +86,7 @@ public class TestFPFordelSerialization {
     public void before() {
         when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
+        when(oppslag.getArbeidsforhold()).thenReturn(ARB_FORHOLD);
 
     }
 
@@ -130,7 +137,7 @@ public class TestFPFordelSerialization {
                 new FPFordelMetdataGenerator(mapper),
                 new ForeldrepengerSøknadMapper(oppslag),
                 new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
-                        mottakConfiguration.kvitteringstekster()));
+                        mottakConfiguration.kvitteringstekster(), oppslag));
         Søknad søknad = søknad(valgfrittVedlegg());
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
                 new CallIdGenerator("jalla").create());

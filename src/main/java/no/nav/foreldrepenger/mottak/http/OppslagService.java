@@ -1,18 +1,21 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import java.net.URI;
-
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.util.FnrExtractor;
+import java.net.URI;
+import java.util.List;
 
 @Service
 public class OppslagService implements Oppslag {
@@ -21,6 +24,7 @@ public class OppslagService implements Oppslag {
     private static final String AKTØRFNR = "/oppslag/aktorfnr";
     private static final String FNR = "/oppslag/fnr";
     private static final String PERSON = "/person";
+    private static final String ARBEID = "/arbeidsforhold";
 
     private static final Logger LOG = LoggerFactory.getLogger(OppslagService.class);
     private final RestTemplate template;
@@ -66,6 +70,18 @@ public class OppslagService implements Oppslag {
                 .toUri();
         LOG.info("Henter {} fra {}", FNR.toLowerCase(), uri);
         return template.getForObject(uri, Fødselsnummer.class);
+    }
+
+    @Override
+    public List<Arbeidsforhold> getArbeidsforhold() {
+        URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(ARBEID).build().toUri();
+        LOG.info("Henter arbeidsforhold fra {}", uri);
+        return template.exchange(
+            uri,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<List<Arbeidsforhold>>(){}
+            ).getBody();
     }
 
     @Override
