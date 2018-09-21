@@ -35,7 +35,6 @@ public class FPFordelConnection extends AbstractRestConnection {
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
         URI sendEndpoint = config.getSendEndpoint();
         try {
-            LOG.info("Sender søknad til {}", sendEndpoint);
             return responseHandler.handle(template.postForEntity(sendEndpoint, payload, FPFordelKvittering.class), ref);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke poste til FPFordel på {}", sendEndpoint, e);

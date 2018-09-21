@@ -47,14 +47,14 @@ public class SøknadController {
 
     public static final String MOTTAK = "/mottak";
 
-    private final InnsynTjeneste søknadsTjeneste;
+    private final InnsynTjeneste innsynTjeneste;
     private final Oppslag oppslag;
     private final SøknadSender sender;
 
-    public SøknadController(@Qualifier("dual") SøknadSender sender, Oppslag oppslag, InnsynTjeneste søknadsTjeneste) {
+    public SøknadController(@Qualifier("dual") SøknadSender sender, Oppslag oppslag, InnsynTjeneste innsynTjeneste) {
         this.sender = sender;
         this.oppslag = oppslag;
-        this.søknadsTjeneste = søknadsTjeneste;
+        this.innsynTjeneste = innsynTjeneste;
     }
 
     @PostMapping(value = "/send")
@@ -76,7 +76,7 @@ public class SøknadController {
 
     @GetMapping(value = "/soknad")
     public Søknad søknad(@RequestParam(name = "behandlingId") String behandlingId) {
-        return søknadsTjeneste.hentSøknad(behandlingId);
+        return innsynTjeneste.hentSøknad(behandlingId);
     }
 
     @GetMapping(value = "/ping")
@@ -88,12 +88,12 @@ public class SøknadController {
 
     @GetMapping(value = "/saker")
     public List<SakStatus> saker() {
-        List<SakStatus> saker = søknadsTjeneste.hentSaker(oppslag.getAktørId());
+        List<SakStatus> saker = innsynTjeneste.hentSaker(oppslag.getAktørId());
         if (EnvUtil.isDevOrPreprod(env)) {
             try {
                 if (!saker.isEmpty()) {
                     String saksnummer = saker.get(0).getSaksnummer();
-                    LOG.trace("Tester ettersending mot sak {}", saksnummer);
+                    LOG.trace(EnvUtil.CONFIDENTIAL, "Tester ettersending mot sak {}", saksnummer);
                     ValgfrittVedlegg vedlegg = new ValgfrittVedlegg(DokumentType.I500002,
                             new ClassPathResource("sykkel.pdf"));
                     Ettersending es = new Ettersending(saksnummer, vedlegg);
@@ -113,7 +113,7 @@ public class SøknadController {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [sender=" + sender + ", søknadsTjeneste=" + søknadsTjeneste + ", oppslag=" + oppslag + "]";
+                " [sender=" + sender + ", innsynTjeneste=" + innsynTjeneste + ", oppslag=" + oppslag + "]";
     }
 
 }
