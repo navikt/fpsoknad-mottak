@@ -9,29 +9,27 @@ import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotJMSSender;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelSøknadSender;
 
 @Service
 @Qualifier("dual")
 public class DualSøknadSender implements SøknadSender {
 
-    private final DokmotJMSSender dokmotSender;
-    private final FPFordelSøknadSender fpfordelSender;
+    private final SøknadSender dokmot;
+    private final SøknadSender fpfordel;
 
-    public DualSøknadSender(DokmotJMSSender dokmotSender, FPFordelSøknadSender fpfordelSender) {
-        this.dokmotSender = dokmotSender;
-        this.fpfordelSender = fpfordelSender;
+    public DualSøknadSender(@Qualifier("dokmot") SøknadSender dokmot, @Qualifier("fpfordel") SøknadSender fpfordel) {
+        this.dokmot = dokmot;
+        this.fpfordel = fpfordel;
     }
 
     @Override
     public Kvittering send(Søknad søknad, Person søker) {
-        return isForeldrepenger(søknad) ? fpfordelSender.send(søknad, søker) : dokmotSender.send(søknad, søker);
+        return isForeldrepenger(søknad) ? fpfordel.send(søknad, søker) : dokmot.send(søknad, søker);
     }
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
-        return fpfordelSender.send(ettersending, søker);
+        return fpfordel.send(ettersending, søker);
     }
 
     private static boolean isForeldrepenger(Søknad søknad) {
@@ -40,7 +38,6 @@ public class DualSøknadSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [dokmotSender=" + dokmotSender + ", fpfordelSender=" + fpfordelSender
-                + "]";
+        return getClass().getSimpleName() + " [dokmot=" + dokmot + ", fpfordel=" + fpfordel + "]";
     }
 }

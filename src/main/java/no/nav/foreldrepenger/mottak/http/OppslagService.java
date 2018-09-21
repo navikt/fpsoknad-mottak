@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.http;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 @Service
-public class OppslagService implements Oppslag {
+public class OppslagService extends AbstractRestConnection implements Oppslag {
 
     private static final String AKTØR = "/oppslag/aktor";
     private static final String AKTØRFNR = "/oppslag/aktorfnr";
@@ -27,13 +28,12 @@ public class OppslagService implements Oppslag {
     private static final String ARBEID = "/arbeidsforhold";
 
     private static final Logger LOG = LoggerFactory.getLogger(OppslagService.class);
-    private final RestTemplate template;
     private final URI baseURI;
     private final FnrExtractor extractor;
 
     public OppslagService(@Value("${oppslag.baseuri:http://fpsoknad-oppslag/api}") URI baseURI,
             RestTemplate template, FnrExtractor extractor) {
-        this.template = template;
+        super(template);
         this.baseURI = baseURI;
         this.extractor = extractor;
     }
@@ -87,6 +87,11 @@ public class OppslagService implements Oppslag {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [template=" + template + ", baseURI=" + baseURI + "]";
+    }
+
+    @Override
+    public URI pingEndpoint() {
+        return UriComponentsBuilder.fromUri(baseURI).pathSegment("/oppslag/ping").build().toUri();
     }
 
 }

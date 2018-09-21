@@ -10,8 +10,6 @@ import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 @Component
 public class FPInfoConnection extends AbstractRestConnection {
 
-    private static final String PING_PATH = "fpinfo/internal/isReady";
-
     private final FPInfoConfig config;
 
     public FPInfoConnection(RestTemplate template, FPInfoConfig config) {
@@ -25,7 +23,7 @@ public class FPInfoConnection extends AbstractRestConnection {
 
     @Override
     public URI pingEndpoint() {
-        return endpointFor(config.getUrl(), PING_PATH);
+        return config.pingEndpoint();
     }
 
     @Override

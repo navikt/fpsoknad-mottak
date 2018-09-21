@@ -17,10 +17,6 @@ import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 @Component
 public class FPFordelConnection extends AbstractRestConnection {
 
-    private static final String PING_PATH = "fpfordel/internal/isReady";
-
-    private static final String FPFORDEL_PATH = "fpfordel/api/dokumentforsendelse";
-
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
 
     private final FPFordelConfig config;
@@ -37,19 +33,18 @@ public class FPFordelConnection extends AbstractRestConnection {
     }
 
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        URI postEndpoint = endpointFor(config.getUri(), FPFORDEL_PATH);
+        URI sendEndpoint = config.getSendEndpoint();
         try {
-            LOG.info("Sender søknad til {}", postEndpoint);
-            return responseHandler.handle(template.postForEntity(postEndpoint, payload, FPFordelKvittering.class), ref);
+            return responseHandler.handle(template.postForEntity(sendEndpoint, payload, FPFordelKvittering.class), ref);
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke poste til FPFordel på {}", postEndpoint, e);
-            throw new RemoteUnavailableException(postEndpoint, e);
+            LOG.warn("Kunne ikke poste til FPFordel på {}", sendEndpoint, e);
+            throw new RemoteUnavailableException(sendEndpoint, e);
         }
     }
 
     @Override
     public URI pingEndpoint() {
-        return endpointFor(config.getUri(), PING_PATH);
+        return config.getPingEndpoint();
     }
 
     @Override

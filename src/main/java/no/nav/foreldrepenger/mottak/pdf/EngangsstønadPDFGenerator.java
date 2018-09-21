@@ -4,9 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -30,22 +28,25 @@ import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Service
 public class EngangsstønadPDFGenerator {
-    private SøknadTextFormatter textFormatter;
-    private PDFElementRenderer renderer;
+    private final SøknadTextFormatter textFormatter;
+    private final PDFElementRenderer renderer;
 
     @Inject
     public EngangsstønadPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster) {
-        this(new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO.toLocale()));
+        this(new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO));
     }
 
     private EngangsstønadPDFGenerator(SøknadTextFormatter textFormatter) {
+        this(textFormatter, new PDFElementRenderer());
+    }
+
+    private EngangsstønadPDFGenerator(SøknadTextFormatter textFormatter, PDFElementRenderer renderer) {
         this.textFormatter = textFormatter;
-        this.renderer = new PDFElementRenderer();
+        this.renderer = renderer;
     }
 
     public byte[] generate(Søknad søknad, Person søker) {
@@ -60,7 +61,7 @@ public class EngangsstønadPDFGenerator {
             y -= header(søker, stønad, doc, cos, y);
             y -= renderer.addBlankLine();
 
-            y-= omBarn(søker, søknad, stønad, cos, y);
+            y -= omBarn(søker, søknad, stønad, cos, y);
             y -= renderer.addBlankLine();
 
             y -= tilknytning(medlemsskap, cos, y);
@@ -85,11 +86,12 @@ public class EngangsstønadPDFGenerator {
         }
     }
 
-    private float omBarn(Person søker, Søknad søknad, Engangsstønad stønad, PDPageContentStream cos, float y) throws IOException  {
+    private float omBarn(Person søker, Søknad søknad, Engangsstønad stønad, PDPageContentStream cos, float y)
+            throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("ombarn"), cos, y);
         y -= renderer.addLineOfRegularText(
-            textFormatter.fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn()), cos, y);
+                textFormatter.fromMessageSource("gjelder", stønad.getRelasjonTilBarn().getAntallBarn()), cos, y);
 
         if (erFremtidigFødsel(stønad)) {
             y -= renderer.addLinesOfRegularText(fødsel(søknad, stønad), cos, y);
@@ -205,6 +207,11 @@ public class EngangsstønadPDFGenerator {
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("neste12"), cos, y);
         y -= renderer.addBulletList(medlemsPerioder.getSecond(), cos, y);
         return startY - y;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [textFormatter=" + textFormatter + ", renderer=" + renderer + "]";
     }
 
 }

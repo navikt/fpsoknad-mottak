@@ -25,12 +25,14 @@ import java.util.List;
 
 import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
@@ -46,14 +48,17 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureJsonTesters
@@ -152,6 +157,31 @@ public class TestFPFordelSerialization {
         assertMediaType(metadata.get(0), APPLICATION_JSON_UTF8_VALUE);
         assertMediaType(hoveddokumenter.get(0), APPLICATION_XML_VALUE);
         assertMediaType(hoveddokumenter.get(1), APPLICATION_PDF_VALUE);
+        assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
+
+    }
+
+    @Test
+    public void testKonvoluttEttersending() throws Exception {
+        MottakConfiguration mottakConfiguration = new MottakConfiguration();
+        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
+                new FPFordelMetdataGenerator(mapper),
+                new ForeldrepengerSøknadMapper(oppslag),
+                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
+                        mottakConfiguration.kvitteringstekster(), oppslag));
+        ValgfrittVedlegg v1 = new ValgfrittVedlegg(DokumentType.I500002,
+                new ClassPathResource("terminbekreftelse.pdf"));
+        ValgfrittVedlegg v2 = new ValgfrittVedlegg(DokumentType.I500005,
+                new ClassPathResource("terminbekreftelse.pdf"));
+        Ettersending es = new Ettersending("42", v1, v2);
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
+                new CallIdGenerator("jalla").create());
+        List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
+        assertEquals(1, metadata.size());
+        List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
+        assertEquals(2, vedlegg.size());
+        assertEquals(null, konvolutt.getBody().get(HOVEDDOKUMENT));
+        assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
     }
 

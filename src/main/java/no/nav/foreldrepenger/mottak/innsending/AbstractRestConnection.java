@@ -35,9 +35,9 @@ public abstract class AbstractRestConnection {
         }
     }
 
-    protected static URI endpointFor(String base, String path) {
+    protected static URI endpointFor(URI base, String path) {
         return UriComponentsBuilder
-                .fromUriString(base)
+                .fromUri(base)
                 .pathSegment(path)
                 .build().toUri();
 

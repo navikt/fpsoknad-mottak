@@ -1,53 +1,49 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsending.fpinfo.FPInfoFagsakStatus.AVSLU;
+import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.XMLToDomainMapper;
 
 @Service
-public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
+public class FPInfoInnsynTjeneste implements InnsynTjeneste {
 
-    private static final String PATH = "fpinfo/api/dokumentforsendelse/";
+    private static final Logger LOG = LoggerFactory.getLogger(FPInfoInnsynTjeneste.class);
 
-    private static final Logger LOG = LoggerFactory.getLogger(FPinfoSøknadsTjeneste.class);
-
-    @Inject
-    private ForeldrepengerSøknadMapper generator;
-    private final URI baseURI;
+    private final XMLToDomainMapper mapper;
+    private final FPInfoConfig config;
     private final RestTemplate template;
 
-    public FPinfoSøknadsTjeneste(@Value("${fpinfo.baseuri:http://fpinfo}") URI baseURI, RestTemplate template) {
-        this.baseURI = baseURI;
+    public FPInfoInnsynTjeneste(FPInfoConfig config, RestTemplate template,
+            XMLToDomainMapper mapper) {
+        this.config = config;
         this.template = template;
+        this.mapper = mapper;
     }
 
     @Override
     public Søknad hentSøknad(String behandlingId) {
-        Optional<SøknadWrapper> wrapper = get(uriFra(PATH + "soknad", headers("behandlingId", behandlingId)),
+        Optional<SøknadWrapper> wrapper = get(uriFra(config.getBasePath() + "soknad",
+                headers("behandlingId", behandlingId)),
                 SøknadWrapper.class,
                 "søknad");
         if (wrapper.isPresent()) {
-            Søknad søknad = generator.tilSøknad(wrapper.get().getXml());
+            Søknad søknad = mapper.tilSøknad(wrapper.get().getXml());
             LOG.info("Fant søknad {}", søknad);
             return søknad;
         }
@@ -55,42 +51,42 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
     }
 
     @Override
-    public List<FPInfoSakStatus> hentSaker(AktorId aktørId) {
+    public List<SakStatus> hentSaker(AktorId aktørId) {
         return hentSaker(aktørId.getId());
     }
 
     @Override
-    public List<FPInfoSakStatus> hentSaker(String aktørId) {
-        Optional<FPInfoSakStatusWrapper[]> saker = get(uriFra(PATH + "sak", headers("aktorId", aktørId)),
-                FPInfoSakStatusWrapper[].class, "FPInfoSakStatusWrapper[]");
+    public List<SakStatus> hentSaker(String aktørId) {
+        Optional<SakStatusWrapper[]> saker = get(uriFra(config.getBasePath() + "sak", headers("aktorId", aktørId)),
+                SakStatusWrapper[].class, "FPInfoSakStatusWrapper[]");
 
         if (!saker.isPresent()) {
-            return Collections.emptyList();
+            return emptyList();
         }
-        List<FPInfoSakStatus> fagSaker = Arrays.stream(saker.get())
-                .filter(s -> !s.getFagsakStatus().equals(AVSLU))
-                .map(s -> new FPInfoSakStatus(s.getSaksnummer(), s.getFagsakStatus(), s.getBehandlingTema(),
+        List<SakStatus> fagSaker = Arrays.stream(saker.get())
+                // .filter(s -> !s.getFagsakStatus().equals(AVSLU))
+                .map(s -> new SakStatus(s.getSaksnummer(), s.getFagsakStatus(), s.getBehandlingTema(),
                         s.getAktørId(),
                         s.getAktørIdAnnenPart(), s.getAktørIdBarn(),
                         behandlingerFra(s)))
                 .collect(toList());
-        LOG.info("Henter fagsaker {}", fagSaker);
+        LOG.info("Hentet fagsaker {}", fagSaker);
         return fagSaker;
     }
 
     @Override
     public Behandling hentBehandling(String behandlingId) {
-        URI uri = uriFra(PATH + "behandling", headers("behandlingId", behandlingId));
+        URI uri = uriFra(config.getBasePath() + "behandling", headers("behandlingId", behandlingId));
         Optional<Behandling> behandling = get(uri, Behandling.class, "behandling");
         return behandling.isPresent() ? withID(behandling.get(), uri) : null;
     }
 
-    private List<Behandling> behandlingerFra(FPInfoSakStatusWrapper sak) {
+    private List<Behandling> behandlingerFra(SakStatusWrapper sak) {
         return sak.getLenker().stream().map(s -> behandlingFra(sak.getSaksnummer(), s)).collect(toList());
     }
 
     private Behandling behandlingFra(String saksnr, BehandlingsLenke behandlingsLink) {
-        return hentBehandling(URI.create(baseURI + behandlingsLink.getHref()));
+        return hentBehandling(URI.create(config.getUrl() + behandlingsLink.getHref()));
     }
 
     private Behandling hentBehandling(URI uri) {
@@ -99,8 +95,7 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
     }
 
     private static Behandling withID(Behandling behandling, URI uri) {
-        UriComponentsBuilder.fromUri(uri).build().getQueryParams().getFirst("behandlingId");
-        behandling.setId(UriComponentsBuilder.fromUri(uri).build().getQueryParams().getFirst("behandlingId"));
+        behandling.setId(fromUri(uri).build().getQueryParams().getFirst("behandlingId"));
         LOG.info("behandling er {}", behandling);
         return behandling;
     }
@@ -124,10 +119,17 @@ public class FPinfoSøknadsTjeneste implements SøknadsTjeneste {
     }
 
     private URI uriFra(String pathSegment, HttpHeaders queryParams) {
-        return UriComponentsBuilder.fromUri(baseURI)
+        return fromUri(config.getUrl())
                 .pathSegment(pathSegment)
                 .queryParams(queryParams)
                 .build()
                 .toUri();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [mapper=" + mapper + ", config=" + config + ", template=" + template
+                + "]";
+    }
+
 }

@@ -17,7 +17,7 @@ import lombok.ToString;
 @Data
 public class ValgfrittVedlegg extends Vedlegg {
 
-    ValgfrittVedlegg(DokumentType dokumentType, Resource vedlegg) throws IOException {
+    public ValgfrittVedlegg(DokumentType dokumentType, Resource vedlegg) throws IOException {
         this(dokumentType.name(), dokumentType, vedlegg);
     }
 

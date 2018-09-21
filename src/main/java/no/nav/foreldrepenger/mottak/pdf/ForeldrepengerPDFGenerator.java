@@ -5,9 +5,11 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,9 @@ public class ForeldrepengerPDFGenerator {
     private PDFElementRenderer pdfRenderer;
 
     @Inject
-    public ForeldrepengerPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster, Oppslag oppslag) {
+    public ForeldrepengerPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
+                                      @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
+                                      Oppslag oppslag) {
         this.oppslag = oppslag;
         this.pdfRenderer = new PDFElementRenderer();
         this.fpRenderer = new ForeldrepengeInfoRenderer(landkoder, kvitteringstekster);
@@ -93,7 +97,5 @@ public class ForeldrepengerPDFGenerator {
         }
 
     }
-
-
 
 }

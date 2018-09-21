@@ -5,10 +5,10 @@ import java.util.List;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
-public interface SøknadsTjeneste {
-    List<FPInfoSakStatus> hentSaker(AktorId aktørId);
+public interface InnsynTjeneste {
+    List<SakStatus> hentSaker(AktorId aktørId);
 
-    List<FPInfoSakStatus> hentSaker(String aktørId);
+    List<SakStatus> hentSaker(String aktørId);
 
     Behandling hentBehandling(String behandlingId);
 

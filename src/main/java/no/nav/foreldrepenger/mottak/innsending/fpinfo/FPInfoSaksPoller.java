@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,7 +24,7 @@ import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
 
-//@Service
+@Service
 public class FPInfoSaksPoller implements SaksStatusPoller {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoSaksPoller.class);
@@ -39,20 +40,21 @@ public class FPInfoSaksPoller implements SaksStatusPoller {
     @Override
     public Kvittering poll(URI uri, String ref, StopWatch timer, Duration delay,
             FPSakFordeltKvittering fordeltKvittering) {
-        FPInfoKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delay.toMillis(), ref, timer);
+        ForsendelsesStatusKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delay.toMillis(), ref, timer);
         return forsendelsesStatus != null
                 ? forsendelsesStatusKvittering(forsendelsesStatus, fordeltKvittering, ref)
                 : sendtOgForsøktBehandletKvittering(ref, fordeltKvittering);
     }
 
-    private FPInfoKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref, StopWatch timer) {
-        FPInfoKvittering kvittering = null;
+    private ForsendelsesStatusKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref,
+            StopWatch timer) {
+        ForsendelsesStatusKvittering kvittering = null;
 
         LOG.info("Poller forsendelsesstatus på {}", pollURI);
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
                 LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
-                ResponseEntity<FPInfoKvittering> respons = pollFPInfo(pollURI, delayMillis);
+                ResponseEntity<ForsendelsesStatusKvittering> respons = pollFPInfo(pollURI, delayMillis);
                 if (!respons.hasBody()) {
                     LOG.warn("Fikk ingen kvittering etter polling av forsendelsesstatus");
                     return null;
@@ -84,8 +86,8 @@ public class FPInfoSaksPoller implements SaksStatusPoller {
         }
     }
 
-    private ResponseEntity<FPInfoKvittering> pollFPInfo(URI pollURI, long delayMillis) {
-        return poll(pollURI, "FPInfo", delayMillis, FPInfoKvittering.class);
+    private ResponseEntity<ForsendelsesStatusKvittering> pollFPInfo(URI pollURI, long delayMillis) {
+        return poll(pollURI, "FPInfo", delayMillis, ForsendelsesStatusKvittering.class);
     }
 
     private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {
@@ -108,7 +110,7 @@ public class FPInfoSaksPoller implements SaksStatusPoller {
         return timer.getTime();
     }
 
-    private static Kvittering forsendelsesStatusKvittering(FPInfoKvittering forsendelsesStatus,
+    private static Kvittering forsendelsesStatusKvittering(ForsendelsesStatusKvittering forsendelsesStatus,
             FPSakFordeltKvittering fordeltKvittering, String ref) {
 
         switch (forsendelsesStatus.getForsendelseStatus()) {

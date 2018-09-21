@@ -25,7 +25,7 @@ public class FPFordelConfiguration {
     public RestTemplate restTemplate(FPFordelConfig cfg, ClientHttpRequestInterceptor... interceptors) {
 
         RestTemplate template = new RestTemplateBuilder()
-                .rootUri(cfg.getUri())
+                .rootUri(cfg.getUri().toString())
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
                 .errorHandler(new RestClientResponseErrorHandler())

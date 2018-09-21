@@ -27,7 +27,7 @@ public class ForeldrepengeInfoRenderer {
 
     public ForeldrepengeInfoRenderer(MessageSource landkoder, MessageSource kvitteringstekster) {
         renderer = new PDFElementRenderer();
-        textFormatter = new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
+        textFormatter = new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO);
     }
 
     public float header(Person søker, PDDocument doc, PDPageContentStream cos, float y) throws IOException {

@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPS
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -16,9 +17,10 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
+@Qualifier("fpfordel")
 public class FPFordelSøknadSender implements SøknadSender {
 
-    private static final String VEDLEGG = "vedlegg";
+    private static final String ETTERSENDING = "ettersending";
 
     private static final String SØKNAD = "søknad";
 
@@ -47,9 +49,9 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering send(Ettersending ettersending, Person person) {
+    public Kvittering send(Ettersending ettersending, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        return send(VEDLEGG, ref, konvoluttGenerator.payload(ettersending, person, ref));
+        return send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
     }
 
     private Kvittering send(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.validation.Periode;
@@ -17,7 +18,7 @@ public class ÅpenPeriode {
     private final LocalDate tom;
 
     @JsonCreator
-    public ÅpenPeriode(@NotNull LocalDate fom, LocalDate tom) {
+    public ÅpenPeriode(@NotNull @JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom) {
         this.fom = fom;
         this.tom = tom;
     }

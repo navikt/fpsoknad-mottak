@@ -9,9 +9,9 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FPInfoSakStatusWrapper {
+public class SakStatusWrapper {
     private final String saksnummer;
-    private final FPInfoFagsakStatus fagsakStatus;
+    private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
     private final String aktørId;
     private final String aktørIdAnnenPart;
@@ -19,16 +19,16 @@ public class FPInfoSakStatusWrapper {
     private final List<BehandlingsLenke> lenker;
 
     @JsonCreator
-    public FPInfoSakStatusWrapper(@JsonProperty("saksnummer") String saksnummer,
-            @JsonProperty("fagsakStatus") FPInfoFagsakStatus fagsakStatus,
-            @JsonProperty("behandlingTema") String behandlingsTema,
+    public SakStatusWrapper(@JsonProperty("saksnummer") String saksnummer,
+            @JsonProperty("fagsakStatus") FagsakStatus fagsakStatus,
+            @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
             @JsonProperty("lenker") List<BehandlingsLenke> lenker) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
-        this.behandlingTema = behandlingsTema;
+        this.behandlingTema = behandlingTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
@@ -43,7 +43,7 @@ public class FPInfoSakStatusWrapper {
         return saksnummer;
     }
 
-    public FPInfoFagsakStatus getFagsakStatus() {
+    public FagsakStatus getFagsakStatus() {
         return fagsakStatus;
     }
 
@@ -69,7 +69,7 @@ public class FPInfoSakStatusWrapper {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        FPInfoSakStatusWrapper other = (FPInfoSakStatusWrapper) obj;
+        SakStatusWrapper other = (SakStatusWrapper) obj;
         if (aktørId == null) {
             if (other.aktørId != null)
                 return false;

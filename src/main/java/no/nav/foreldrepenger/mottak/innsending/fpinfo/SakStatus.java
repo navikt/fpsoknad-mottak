@@ -9,9 +9,9 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FPInfoSakStatus {
+public class SakStatus {
     private final String saksnummer;
-    private final FPInfoFagsakStatus fagsakStatus;
+    private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
     private final String aktørId;
     private final String aktørIdAnnenPart;
@@ -19,16 +19,16 @@ public class FPInfoSakStatus {
     private final List<Behandling> behandlinger;
 
     @JsonCreator
-    public FPInfoSakStatus(@JsonProperty("saksnummer") String saksnummer,
-            @JsonProperty("fagsakStatus") FPInfoFagsakStatus fagsakStatus,
-            @JsonProperty("behandlingTema") String behandlingsTema,
+    public SakStatus(@JsonProperty("saksnummer") String saksnummer,
+            @JsonProperty("status") FagsakStatus fagsakStatus,
+            @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
             @JsonProperty("behandlinger") List<Behandling> behandlinger) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
-        this.behandlingTema = behandlingsTema;
+        this.behandlingTema = behandlingTema;
         this.aktørId = aktørId;
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
@@ -43,7 +43,7 @@ public class FPInfoSakStatus {
         return saksnummer;
     }
 
-    public FPInfoFagsakStatus getFagsakStatus() {
+    public FagsakStatus getFagsakStatus() {
         return fagsakStatus;
     }
 
@@ -69,7 +69,7 @@ public class FPInfoSakStatus {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        FPInfoSakStatus other = (FPInfoSakStatus) obj;
+        SakStatus other = (SakStatus) obj;
         if (aktørId == null) {
             if (other.aktørId != null)
                 return false;
