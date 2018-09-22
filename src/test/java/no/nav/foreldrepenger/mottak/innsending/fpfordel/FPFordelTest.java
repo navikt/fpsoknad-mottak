@@ -70,8 +70,8 @@ public class FPFordelTest {
     private static final String SAKSNR = "666";
 
     private static final List<Arbeidsforhold> ARB_FORHOLD =
-        Arrays.asList(new Arbeidsforhold("El Bedrifto", LocalDate.now().minusDays(200),
-            LocalDate.now(), 90));
+        Arrays.asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+            LocalDate.now(), 90.0, "El Bedrifto"));
 
     @Mock
     private RestTemplate template;

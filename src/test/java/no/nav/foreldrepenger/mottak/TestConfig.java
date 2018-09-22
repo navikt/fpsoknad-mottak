@@ -45,8 +45,10 @@ public class TestConfig {
             @Override
             public List<Arbeidsforhold> getArbeidsforhold() {
                 return Arrays.asList(
-                    new Arbeidsforhold("El Bedrifto", LocalDate.now().minusDays(200), LocalDate.now(), 90),
-                    new Arbeidsforhold("Bedriftolainen", LocalDate.now().minusDays(300), LocalDate.now(), 60)
+                    new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                        LocalDate.now(), 90.0, "El Bedrifto"),
+                    new Arbeidsforhold("2345", "", LocalDate.now().minusDays(300),
+                        LocalDate.now().minusDays(240), 55.0, "Bedriftolainen")
                 );
             }
         };

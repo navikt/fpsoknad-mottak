@@ -58,7 +58,6 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureJsonTesters
@@ -71,8 +70,8 @@ public class TestFPFordelSerialization {
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
     private static final List<Arbeidsforhold> ARB_FORHOLD =
-        Arrays.asList(new Arbeidsforhold("El Bedrifto", LocalDate.now().minusDays(200),
-            LocalDate.now(), 90));
+        Arrays.asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+            LocalDate.now(), 90.0, "El Bedrifto"));
 
     private static final ObjectMapper mapper = mapper();
 
