@@ -12,11 +12,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+
+import static java.util.Collections.*;
 
 @Service
 public class OppslagService extends AbstractRestConnection implements Oppslag {
@@ -76,12 +79,18 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
     public List<Arbeidsforhold> getArbeidsforhold() {
         URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(ARBEID).build().toUri();
         LOG.info("Henter arbeidsforhold fra {}", uri);
-        return template.exchange(
-            uri,
-            HttpMethod.GET,
-            null,
-            new ParameterizedTypeReference<List<Arbeidsforhold>>(){}
+        try {
+            return template.exchange(
+                uri,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Arbeidsforhold>>() {
+                }
             ).getBody();
+        } catch (RestClientException ex) {
+            LOG.warn("Error while looking up arbeidsforhold", ex);
+            return emptyList();
+        }
     }
 
     @Override
