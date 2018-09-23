@@ -80,13 +80,15 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
         URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(ARBEID).build().toUri();
         LOG.info("Henter arbeidsforhold fra {}", uri);
         try {
-            return template.exchange(
+            List<Arbeidsforhold> arbeidsforhold = template.exchange(
                 uri,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<Arbeidsforhold>>() {
                 }
             ).getBody();
+            LOG.info("Found {} arbeidsforhold", arbeidsforhold.size());
+            return arbeidsforhold;
         } catch (RestClientException ex) {
             LOG.warn("Error while looking up arbeidsforhold", ex);
             return emptyList();
