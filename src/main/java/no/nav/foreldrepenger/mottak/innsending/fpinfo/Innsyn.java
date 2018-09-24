@@ -5,7 +5,7 @@ import java.util.List;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
-public interface InnsynTjeneste {
+public interface Innsyn {
     List<SakStatus> hentSaker(AktorId aktørId);
 
     List<SakStatus> hentSaker(String aktørId);

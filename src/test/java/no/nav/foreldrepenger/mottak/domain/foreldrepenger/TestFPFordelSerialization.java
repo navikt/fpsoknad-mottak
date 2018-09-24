@@ -20,12 +20,10 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +48,7 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
@@ -59,6 +58,8 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureJsonTesters
@@ -70,9 +71,9 @@ public class TestFPFordelSerialization {
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
-    private static final List<Arbeidsforhold> ARB_FORHOLD =
-        Arrays.asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-            Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
+    private static final List<Arbeidsforhold> ARB_FORHOLD = Arrays
+            .asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                    Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
 
     private static final ObjectMapper mapper = mapper();
 
@@ -180,6 +181,30 @@ public class TestFPFordelSerialization {
         List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
         assertEquals(2, vedlegg.size());
         assertEquals(null, konvolutt.getBody().get(HOVEDDOKUMENT));
+        assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
+        assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
+    }
+
+    @Test
+    public void testKonvoluttEndring() throws Exception {
+        MottakConfiguration mottakConfiguration = new MottakConfiguration();
+        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
+                new FPFordelMetdataGenerator(mapper),
+                new ForeldrepengerSøknadMapper(oppslag),
+                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
+                        mottakConfiguration.kvitteringstekster(), oppslag));
+        ValgfrittVedlegg v1 = new ValgfrittVedlegg(DokumentType.I500002,
+                new ClassPathResource("terminbekreftelse.pdf"));
+        ValgfrittVedlegg v2 = new ValgfrittVedlegg(DokumentType.I500005,
+                new ClassPathResource("terminbekreftelse.pdf"));
+        EndringsSøknad es = new EndringsSøknad(LocalDateTime.now(), TestUtils.søker(),
+                ForeldrepengerTestUtils.fordeling(), "42", v1, v2);
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
+                new CallIdGenerator("jalla").create());
+        List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
+        assertEquals(1, metadata.size());
+        List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
+        assertEquals(2, vedlegg.size());
         assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
     }

@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.XMLToDomainMapper;
 
 @Service
-public class FPInfoInnsynTjeneste implements InnsynTjeneste {
+public class FPInfoInnsynTjeneste implements Innsyn {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoInnsynTjeneste.class);
 

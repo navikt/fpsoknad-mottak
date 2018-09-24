@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
-import no.nav.foreldrepenger.mottak.http.Oppslag;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -13,10 +13,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.http.Oppslag;
 
 @Component
 public class ForeldrepengerPDFGenerator {
@@ -26,8 +32,8 @@ public class ForeldrepengerPDFGenerator {
 
     @Inject
     public ForeldrepengerPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
-                                      @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
-                                      Oppslag oppslag) {
+            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
+            Oppslag oppslag) {
         this.oppslag = oppslag;
         this.pdfRenderer = new PDFElementRenderer();
         this.fpRenderer = new ForeldrepengeInfoRenderer(landkoder, kvitteringstekster);
@@ -39,7 +45,7 @@ public class ForeldrepengerPDFGenerator {
         float yTop = PDFElementRenderer.calculateStartY();
 
         try (PDDocument doc = new PDDocument();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page1 = pdfRenderer.newPage();
             try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
                 float y = yTop;
@@ -47,11 +53,13 @@ public class ForeldrepengerPDFGenerator {
 
                 AnnenForelder annenForelder = stønad.getAnnenForelder();
                 if (annenForelder != null) {
-                    y -= fpRenderer.annenForelder(annenForelder, stønad.getRettigheter().isHarAnnenForelderRett(), cos, y);
+                    y -= fpRenderer.annenForelder(annenForelder, stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                            y);
                 }
 
-                y -= fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
-
+                if (stønad.getDekningsgrad() != null) {
+                    y -= fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
+                }
                 Opptjening opptjening = stønad.getOpptjening();
                 if (opptjening != null) {
                     List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
@@ -68,8 +76,10 @@ public class ForeldrepengerPDFGenerator {
                 float y = yTop;
                 y -= fpRenderer.header(søker, doc, cos, y);
 
-                y -= fpRenderer.medlemsskap(stønad.getMedlemsskap(), cos, y);
-
+                Medlemsskap medlemsskap = stønad.getMedlemsskap();
+                if (medlemsskap != null) {
+                    y -= fpRenderer.medlemsskap(medlemsskap, cos, y);
+                }
                 RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
                 if (relasjon != null) {
                     y -= fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), cos, y);

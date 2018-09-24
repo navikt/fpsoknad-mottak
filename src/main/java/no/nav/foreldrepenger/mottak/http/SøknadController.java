@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.http;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
@@ -29,7 +33,10 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EndringsSøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynTjeneste;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.Innsyn;
 import no.nav.foreldrepenger.mottak.innsending.fpinfo.SakStatus;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -47,14 +54,14 @@ public class SøknadController {
 
     public static final String MOTTAK = "/mottak";
 
-    private final InnsynTjeneste innsynTjeneste;
+    private final Innsyn innsyn;
     private final Oppslag oppslag;
     private final SøknadSender sender;
 
-    public SøknadController(@Qualifier("dual") SøknadSender sender, Oppslag oppslag, InnsynTjeneste innsynTjeneste) {
+    public SøknadController(@Qualifier("dual") SøknadSender sender, Oppslag oppslag, Innsyn innsyn) {
         this.sender = sender;
         this.oppslag = oppslag;
-        this.innsynTjeneste = innsynTjeneste;
+        this.innsyn = innsyn;
     }
 
     @PostMapping(value = "/send")
@@ -76,7 +83,7 @@ public class SøknadController {
 
     @GetMapping(value = "/soknad")
     public Søknad søknad(@RequestParam(name = "behandlingId") String behandlingId) {
-        return innsynTjeneste.hentSøknad(behandlingId);
+        return innsyn.hentSøknad(behandlingId);
     }
 
     @GetMapping(value = "/ping")
@@ -88,15 +95,16 @@ public class SøknadController {
 
     @GetMapping(value = "/saker")
     public List<SakStatus> saker() {
-        List<SakStatus> saker = innsynTjeneste.hentSaker(oppslag.getAktørId());
+        List<SakStatus> saker = innsyn.hentSaker(oppslag.getAktørId());
         if (EnvUtil.isDevOrPreprod(env)) {
             try {
                 if (!saker.isEmpty()) {
                     String saksnummer = saker.get(0).getSaksnummer();
                     LOG.trace(EnvUtil.CONFIDENTIAL, "Tester ettersending mot sak {}", saksnummer);
-                    ValgfrittVedlegg vedlegg = new ValgfrittVedlegg(DokumentType.I500002,
+                    ValgfrittVedlegg vedlegg = new ValgfrittVedlegg(DokumentType.I500005,
                             new ClassPathResource("sykkel.pdf"));
-                    Ettersending es = new Ettersending(saksnummer, vedlegg);
+                    EndringsSøknad es = new EndringsSøknad(LocalDateTime.now(), søker(), fordeling(), saksnummer,
+                            vedlegg);
                     sender.send(es, oppslag.getSøker());
                 }
                 else {
@@ -110,10 +118,22 @@ public class SøknadController {
 
     }
 
+    private static Søker søker() {
+        return new Søker(BrukerRolle.MOR);
+    }
+
+    private Fordeling fordeling() {
+        return new Fordeling(true, Overføringsårsak.ALENEOMSORG, perioder());
+    }
+
+    private List<LukketPeriodeMedVedlegg> perioder() {
+        return Collections.emptyList();
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [sender=" + sender + ", innsynTjeneste=" + innsynTjeneste + ", oppslag=" + oppslag + "]";
+                " [sender=" + sender + ", innsynTjeneste=" + innsyn + ", oppslag=" + oppslag + "]";
     }
 
 }

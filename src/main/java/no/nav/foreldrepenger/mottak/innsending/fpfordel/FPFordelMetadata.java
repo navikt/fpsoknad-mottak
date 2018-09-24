@@ -41,8 +41,11 @@ public class FPFordelMetadata {
     }
 
     public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref) {
-        this(søknad, aktorId, ref,
-                søknad instanceof EndringsSøknad ? EndringsSøknad.class.cast(søknad).getSaksnr() : null);
+        this(søknad, aktorId, ref, null);
+    }
+
+    public FPFordelMetadata(EndringsSøknad endring, AktorId aktorId, String ref) {
+        this(files(endring), aktorId, ref, endring.getSaksnr());
     }
 
     public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref, String saksnr) {
@@ -86,6 +89,15 @@ public class FPFordelMetadata {
         return dokumenter;
     }
 
+    private static List<Filer> files(EndringsSøknad endring) {
+        final AtomicInteger id = new AtomicInteger(1);
+        List<Filer> dokumenter = newArrayList(søknad(id, endring), søknad(id, endring));
+        dokumenter.addAll(endring.getVedlegg().stream()
+                .map(s -> vedlegg(s, id))
+                .collect(toList()));
+        return dokumenter;
+    }
+
     private static List<Filer> files(Ettersending ettersending) {
         AtomicInteger id = new AtomicInteger(1);
         return ettersending.getVedlegg().stream().map(s -> vedlegg(s, id)).collect(toList());
@@ -94,6 +106,10 @@ public class FPFordelMetadata {
 
     private static Filer søknad(final AtomicInteger id, Søknad søknad) {
         return new Filer(dokumentTypeFraRelasjon(søknad), id.getAndIncrement());
+    }
+
+    private static Filer søknad(final AtomicInteger id, EndringsSøknad søknad) {
+        return new Filer(DokumentType.I000050, id.getAndIncrement());
     }
 
     private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {

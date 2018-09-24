@@ -191,14 +191,14 @@ public class DomainToXMLMapper {
 
     private static boolean erAnnenForelderUkjent(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
-        return annenForelder == null
-                || annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder;
+        return annenForelder != null
+                && annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder;
     }
 
     private static Dekningsgrad dekningsgradFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad dekningsgrad) {
-        return new Dekningsgrad()
-                .withDekningsgrad(dekningsgradFra(dekningsgrad.kode()));
+        return dekningsgrad != null ? new Dekningsgrad()
+                .withDekningsgrad(dekningsgradFra(dekningsgrad.kode())) : null;
     }
 
     private static Dekningsgrader dekningsgradFra(String kode) {
@@ -207,20 +207,20 @@ public class DomainToXMLMapper {
     }
 
     private static Opptjening opptjeningFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening opptjening) {
+        if (opptjening == null) {
+            return null;
+        }
         LOG.debug(CONFIDENTIAL, "Genererer opptjening XML fra {}", opptjening);
-
-        return opptjening == null ? null
-                : new Opptjening()
-                        .withFrilans(frilansFra(opptjening.getFrilans()))
-                        .withEgenNaering(egenNæringFra(opptjening.getEgenNæring()))
-                        .withUtenlandskArbeidsforhold(
-                                utenlandskArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
-                        .withAnnenOpptjening(annenOpptjeningFra(opptjening.getAnnenOpptjening()));
+        return new Opptjening()
+                .withFrilans(frilansFra(opptjening.getFrilans()))
+                .withEgenNaering(egenNæringFra(opptjening.getEgenNæring()))
+                .withUtenlandskArbeidsforhold(
+                        utenlandskArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
+                .withAnnenOpptjening(annenOpptjeningFra(opptjening.getAnnenOpptjening()));
     }
 
     private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans frilans) {
         if (frilans == null) {
-            LOG.info("Ingen frilanser dette her");
             return null;
         }
         LOG.debug(CONFIDENTIAL, "Genererer frilans XML fra {}", frilans);
@@ -405,16 +405,20 @@ public class DomainToXMLMapper {
     }
 
     private static Medlemskap medlemsskapFra(Medlemsskap ms) {
-        LOG.debug(CONFIDENTIAL, "Genererer medlemsskap XML fra {}", ms);
-        Medlemskap medlemsskap = new Medlemskap()
-                .withOppholdUtlandet(oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
-                .withINorgeVedFoedselstidspunkt(true)
-                .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
-                .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
-        if (kunOppholdINorgeSisteOgNeste12(ms)) {
-            medlemsskap.withOppholdNorge(kunOppholdINorgeSisteOgNeste12());
+        if (ms != null) {
+            LOG.debug(CONFIDENTIAL, "Genererer medlemsskap XML fra {}", ms);
+            Medlemskap medlemsskap = new Medlemskap()
+                    .withOppholdUtlandet(
+                            oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
+                    .withINorgeVedFoedselstidspunkt(true)
+                    .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
+                    .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
+            if (kunOppholdINorgeSisteOgNeste12(ms)) {
+                medlemsskap.withOppholdNorge(kunOppholdINorgeSisteOgNeste12());
+            }
+            return medlemsskap;
         }
-        return medlemsskap;
+        return null;
     }
 
     private static boolean kunOppholdINorgeSisteOgNeste12(Medlemsskap ms) {
@@ -589,8 +593,6 @@ public class DomainToXMLMapper {
     private static Rettigheter rettigheterFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
 
-        LOG.debug(CONFIDENTIAL, "Genererer rettigheter XML fra {}", rettigheter);
-
         if (ukjentForelder) {
             LOG.debug("Annen forelder er ukjent, avleder verdier for rettigheter");
             return new Rettigheter()
@@ -601,6 +603,7 @@ public class DomainToXMLMapper {
         if (rettigheter == null) {
             return null;
         }
+        LOG.debug(CONFIDENTIAL, "Genererer rettigheter XML fra {}", rettigheter);
         return new Rettigheter()
                 .withHarOmsorgForBarnetIPeriodene(true) // Hardkodet til true, siden dette er implisitt og vi ikke spør
                                                         // brukeren eksplisitt
@@ -620,8 +623,7 @@ public class DomainToXMLMapper {
         if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder) {
             return norskForelder(NorskForelder.class.cast(annenForelder));
         }
-        throw new IllegalArgumentException(
-                "Annen forelder av type " + annenForelder.getClass().getSimpleName() + " er ikke støttet");
+        return null;
     }
 
     private static UkjentForelder ukjentForelder() {
@@ -641,6 +643,10 @@ public class DomainToXMLMapper {
     }
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
+
+        if (relasjonTilBarn == null) {
+            return null;
+        }
 
         if (relasjonTilBarn instanceof Fødsel) {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);

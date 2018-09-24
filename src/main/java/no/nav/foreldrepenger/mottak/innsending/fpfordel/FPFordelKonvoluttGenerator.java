@@ -22,6 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EndringsSøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
@@ -50,7 +51,14 @@ public class FPFordelKonvoluttGenerator {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
 
-        builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
+        if (søknad instanceof EndringsSøknad) {
+            builder.part(METADATA, metadata(EndringsSøknad.class.cast(søknad),
+                    søker.aktørId, ref),
+                    APPLICATION_JSON_UTF8);
+        }
+        else {
+            builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
+        }
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
                 id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker), APPLICATION_PDF)
@@ -96,14 +104,20 @@ public class FPFordelKonvoluttGenerator {
 
     private String metadata(Søknad søknad, AktorId aktørId, String ref) {
         String metadata = metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktørId, ref));
-        LOG.debug("Metadata er {}", metadata);
+        LOG.debug("Metadata for førstegangssøknad er {}", metadata);
         return metadata;
 
     }
 
     private String metadata(Ettersending ettersending, AktorId aktørId, String ref) {
         String metadata = metadataGenerator.generateMetadata(new FPFordelMetadata(ettersending, aktørId, ref));
-        LOG.debug("Metadata er {}", metadata);
+        LOG.debug("Metadata for ettersending er {}", metadata);
+        return metadata;
+    }
+
+    private String metadata(EndringsSøknad endring, AktorId aktørId, String ref) {
+        String metadata = metadataGenerator.generateMetadata(new FPFordelMetadata(endring, aktørId, ref));
+        LOG.debug("Metadata for endringssøknad er {}", metadata);
         return metadata;
     }
 

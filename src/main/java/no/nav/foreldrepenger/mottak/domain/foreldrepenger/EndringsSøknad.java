@@ -1,7 +1,12 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static java.util.Arrays.asList;
+
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -12,7 +17,15 @@ public class EndringsSøknad extends Søknad {
     private final String saksnr;
 
     public EndringsSøknad(LocalDateTime mottattDato, Søker søker, Fordeling fordeling, String saksnr,
-            List<Vedlegg> vedlegg) {
+            Vedlegg... vedlegg) {
+        this(mottattDato, søker, fordeling, saksnr, asList(vedlegg));
+    }
+
+    @JsonCreator
+    public EndringsSøknad(@JsonProperty("mottattDato") LocalDateTime mottattDato, @JsonProperty("søker") Søker søker,
+            @JsonProperty("fordeling") Fordeling fordeling,
+            @JsonProperty("saksnr") String saksnr,
+            @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {
         super(mottattDato, søker, new Foreldrepenger(null, null, null, null, null, fordeling, null), vedlegg);
         this.saksnr = saksnr;
     }

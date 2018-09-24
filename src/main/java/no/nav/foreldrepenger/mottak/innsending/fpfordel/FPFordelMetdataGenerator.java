@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,7 +53,9 @@ public class FPFordelMetdataGenerator {
             return dokumentTypeId;
         }
 
-        public Filer(DokumentType dokumentType, int contentId) {
+        @JsonCreator
+        public Filer(@JsonProperty("dokumentType") DokumentType dokumentType,
+                @JsonProperty("contentId") int contentId) {
             this.dokumentTypeId = dokumentType.name();
             this.contentId = String.valueOf(contentId);
         }
