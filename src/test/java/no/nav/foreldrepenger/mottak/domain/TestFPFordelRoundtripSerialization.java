@@ -79,7 +79,7 @@ public class TestFPFordelRoundtripSerialization {
                 template.getForObject(MOTTAK + "/ping?navn=joe", String.class));
     }
 
-    // @Test
+    @Test
     public void testForeldrepengerSøknadXML() throws IOException {
         Søknad foreldrepenger = foreldrepenger();
         String xml = template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class);
