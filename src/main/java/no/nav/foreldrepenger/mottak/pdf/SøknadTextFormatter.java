@@ -5,7 +5,6 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -41,13 +40,6 @@ public class SøknadTextFormatter {
 
     public String fromMessageSource(String key, Object... values) {
         return getMessage(key, kvitteringstekster, values);
-    }
-
-    public String regnskapsførere(List<Regnskapsfører> regnskapsførere) {
-        return regnskapsførere == null ? "ukjent"
-                : regnskapsførere.stream()
-                        .map(Regnskapsfører::getNavn)
-                        .collect(joining(","));
     }
 
     public String navn(Navn navn) {
@@ -87,7 +79,7 @@ public class SøknadTextFormatter {
     public String periode(ÅpenPeriode periode) {
         StringBuilder sb = new StringBuilder("fom " + date(periode.getFom()));
         if (periode.getTom() != null) {
-            sb.append(" tom " + date(periode.getTom()));
+            sb.append(periode.getTom() != null ? " tom " + date(periode.getTom()) : " pågående");
         }
         return sb.toString();
     }

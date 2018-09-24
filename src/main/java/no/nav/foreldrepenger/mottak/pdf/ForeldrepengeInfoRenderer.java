@@ -185,6 +185,18 @@ public class ForeldrepengeInfoRenderer {
         return startY - y;
     }
 
+    public String regnskapsførere(List<Regnskapsfører> regnskapsførere) {
+        return regnskapsførere == null ? "ukjent"
+            : regnskapsførere.stream()
+            .map(this::format)
+            .collect(joining(","));
+    }
+
+    private String format(Regnskapsfører regnskapsfører) {
+        return regnskapsfører.getNavn() + " (" +
+            Optional.ofNullable(regnskapsfører.getTelefon()).orElse("ukjent tlfnr") + ")";
+    }
+
     private List<String> søker(Person søker) {
         String fnr = søker.fnr.getFnr();
         String navn = textFormatter.navn(søker);
@@ -243,11 +255,11 @@ public class ForeldrepengeInfoRenderer {
 
     private List<List<String>> egenNæring(List<EgenNæring> egenNæring) {
         return egenNæring.stream()
-            .map(this::formatEgenNæring)
+            .map(this::format)
             .collect(toList());
     }
 
-    private List<String> formatEgenNæring(EgenNæring næring) {
+    private List<String> format(EgenNæring næring) {
         CountryCode arbeidsland = Optional.ofNullable(næring.getArbeidsland()).orElse(CountryCode.NO);
         String typer = næring.getVirksomhetsTyper().stream()
             .map(v -> textFormatter.capitalize(v.toString()))
@@ -283,7 +295,7 @@ public class ForeldrepengeInfoRenderer {
         sb.append("\n");
 
         sb.append("Brutto inntekt: " + næring.getNæringsinntektBrutto());
-        sb.append(", regnskap: " + textFormatter.regnskapsførere(næring.getRegnskapsførere()));
+        sb.append(", regnskap: " + regnskapsførere(næring.getRegnskapsførere()));
         sb.append("\n");
 
         sb.append(næring.getBeskrivelseEndring());
