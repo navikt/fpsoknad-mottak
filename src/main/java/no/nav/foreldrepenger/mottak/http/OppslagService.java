@@ -50,7 +50,7 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
 
     private <T> T oppslag(String pathSegment, Class<T> clazz) {
         URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(pathSegment).build().toUri();
-        LOG.info("Henter {} fra {}", pathSegment.toLowerCase(), uri);
+        LOG.info("Slår opp {} fra {}", pathSegment.toLowerCase(), uri);
         return template.getForObject(uri, clazz);
     }
 
@@ -63,7 +63,7 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
     public AktorId getAktørId(Fødselsnummer fnr) {
         URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(AKTØRFNR).queryParam("fnr", fnr.getFnr()).build()
                 .toUri();
-        LOG.info("Henter {} fra {}", AKTØRFNR.toLowerCase(), uri);
+        LOG.info("Slår opp {} fra {}", AKTØRFNR.toLowerCase(), uri);
         return template.getForObject(uri, AktorId.class);
     }
 
@@ -71,7 +71,7 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
     public Fødselsnummer getFnr(AktorId aktørId) {
         URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(FNR).queryParam("aktorId", aktørId.getId()).build()
                 .toUri();
-        LOG.info("Henter {} fra {}", FNR.toLowerCase(), uri);
+        LOG.info("Slår opp {} fra {}", FNR.toLowerCase(), uri);
         return template.getForObject(uri, Fødselsnummer.class);
     }
 
@@ -87,7 +87,7 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
                 new ParameterizedTypeReference<List<Arbeidsforhold>>() {
                 }
             ).getBody();
-            LOG.info("Found {} arbeidsforhold", arbeidsforhold.size());
+            LOG.info("Fant {} arbeidsforhold", arbeidsforhold.size());
             return arbeidsforhold;
         } catch (RestClientException ex) {
             LOG.warn("Error while looking up arbeidsforhold", ex);
