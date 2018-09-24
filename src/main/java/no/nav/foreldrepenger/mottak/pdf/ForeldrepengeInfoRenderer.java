@@ -117,6 +117,9 @@ public class ForeldrepengeInfoRenderer {
         if (frilans.getVedlegg().size() != 0) {
             sb.append(", vedlegg: " + frilans.getVedlegg().stream().collect(joining(", ")));
         }
+        if (frilans.getFrilansOppdrag().size() != 0) {
+            sb.append(", " + textFormatter.fromMessageSource("nærrelasjon"));
+        }
         y -= renderer.addLineOfRegularText(sb.toString(), cos, y);
         List<String> oppdrag = frilans.getFrilansOppdrag().stream()
             .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
