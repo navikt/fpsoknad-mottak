@@ -13,7 +13,7 @@ public class GsakConfiguration extends WsClient<SakV2> {
     @Bean
     @Qualifier("SakV2")
     public SakV2 sakV2(@Value("${VIRKSOMHET_SAK_V2_ENDPOINTURL}") String serviceUrl) {
-        return createPortForExternalUser(serviceUrl, SakV2.class);
+        return createPortForSystemUser(serviceUrl, SakV2.class);
     }
 
     @Bean
