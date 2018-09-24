@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
@@ -71,7 +72,7 @@ public class TestFPFordelSerialization {
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
     private static final List<Arbeidsforhold> ARB_FORHOLD =
         Arrays.asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-            LocalDate.now(), 90.0, "El Bedrifto"));
+            Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
 
     private static final ObjectMapper mapper = mapper();
 

@@ -226,7 +226,7 @@ public class ForeldrepengeInfoRenderer {
 
     private String format(Arbeidsforhold arbeidsforhold) {
         return arbeidsforhold.getArbeidsgiverNavn() + ", fom " + textFormatter.date(arbeidsforhold.getFrom()) +
-            " tom " + textFormatter.date(arbeidsforhold.getTo()) + ", " + arbeidsforhold.getStillingsprosent() + "%";
+            " tom " + textFormatter.date(arbeidsforhold.getTo().orElse(null)) + ", " + arbeidsforhold.getStillingsprosent() + "%";
     }
 
     private List<String> utenlandskeArbeidsforhold(List<UtenlandskArbeidsforhold> arbeidsforhold) {

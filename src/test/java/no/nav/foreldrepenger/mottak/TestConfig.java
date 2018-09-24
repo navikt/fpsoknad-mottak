@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Primary;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Configuration
 public class TestConfig {
@@ -46,9 +47,9 @@ public class TestConfig {
             public List<Arbeidsforhold> getArbeidsforhold() {
                 return Arrays.asList(
                     new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                        LocalDate.now(), 90.0, "El Bedrifto"),
+                        Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
                     new Arbeidsforhold("2345", "", LocalDate.now().minusDays(300),
-                        LocalDate.now().minusDays(240), 55.0, "Bedriftolainen")
+                        Optional.of(LocalDate.now().minusDays(240)), 55.0, "Bedriftolainen")
                 );
             }
         };

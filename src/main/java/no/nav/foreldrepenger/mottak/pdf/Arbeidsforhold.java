@@ -1,18 +1,27 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Arbeidsforhold {
     private String arbeidsgiverId;
     private String arbeidsgiverIdType;
     private LocalDate from;
-    private LocalDate to;
+    private Optional<LocalDate> to;
     private Double stillingsprosent;
     private String arbeidsgiverNavn;
 
-    public Arbeidsforhold(String arbeidsgiverId, String arbeidsgiverIdType, LocalDate from,
-                          LocalDate to, Double stillingsprosent, String arbeidsgiverNavn) {
+    @JsonCreator
+    public Arbeidsforhold(@JsonProperty("arbeidsgiverId") String arbeidsgiverId,
+                          @JsonProperty("arbeidsgiverIdType") String arbeidsgiverIdType,
+                          @JsonProperty("from") LocalDate from,
+                          @JsonProperty("to") Optional<LocalDate> to,
+                          @JsonProperty("stillingsprosent") Double stillingsprosent,
+                          @JsonProperty("arbeidsgiverNavn") String arbeidsgiverNavn) {
         this.arbeidsgiverId = arbeidsgiverId;
         this.arbeidsgiverIdType = arbeidsgiverIdType;
         this.from = from;
@@ -33,7 +42,7 @@ public class Arbeidsforhold {
         return from;
     }
 
-    public LocalDate getTo() {
+    public Optional<LocalDate> getTo() {
         return to;
     }
 
