@@ -81,7 +81,6 @@ public final class Jaxb {
             Unmarshaller unmarshaller = unmarshaller(context);
             return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e);
         }
     }

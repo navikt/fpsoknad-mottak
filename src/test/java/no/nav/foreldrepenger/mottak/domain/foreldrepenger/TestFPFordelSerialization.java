@@ -119,7 +119,6 @@ public class TestFPFordelSerialization {
         ForeldrepengerSøknadMapper fpFordelSøknadGenerator = new ForeldrepengerSøknadMapper(oppslag);
         Søknad original = ForeldrepengerTestUtils.foreldrepenger();
         String xml = fpFordelSøknadGenerator.tilXML(original, aktørId);
-        System.out.println(xml);
         Søknad rekonstruert = fpFordelSøknadGenerator.tilSøknad(xml);
         assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());
         assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());

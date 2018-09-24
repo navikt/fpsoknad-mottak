@@ -19,7 +19,7 @@ public class TestMetadata {
     private static final ObjectMapper mapper = mapper();
 
     @Test
-    public void testMetadataSøknad() throws Exception {
+    public void testMetadataSøknad() {
         FPFordelMetadata metadata = new FPFordelMetadata(ForeldrepengerTestUtils.foreldrepenger(), new AktorId("42"),
                 "42");
         String json = new FPFordelMetdataGenerator(mapper).generateMetadata(metadata, true);
@@ -27,7 +27,7 @@ public class TestMetadata {
     }
 
     @Test
-    public void testMetadataEttersending() throws Exception {
+    public void testMetadataEttersending() {
         FPFordelMetadata metadata = new FPFordelMetadata(new Ettersending("42", ForeldrepengerTestUtils.ETT_VEDLEGG),
                 new AktorId("42"), "42");
         String json = new FPFordelMetdataGenerator(mapper).generateMetadata(metadata, true);

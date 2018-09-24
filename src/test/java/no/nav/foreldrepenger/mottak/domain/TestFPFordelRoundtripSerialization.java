@@ -82,7 +82,6 @@ public class TestFPFordelRoundtripSerialization {
     // @Test
     public void testForeldrepengerSøknadXML() throws IOException {
         Søknad foreldrepenger = foreldrepenger();
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(foreldrepenger));
         String xml = template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class);
         Søknad søknad = søknadXMLGenerator.tilSøknad(xml);
         assertEquals(foreldrepenger.getMottattdato().toLocalDate(), søknad.getMottattdato().toLocalDate());

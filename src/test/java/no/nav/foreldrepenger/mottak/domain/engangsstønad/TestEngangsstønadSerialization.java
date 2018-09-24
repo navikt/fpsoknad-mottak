@@ -200,7 +200,6 @@ public class TestEngangsstønadSerialization {
             }
             assertEquals(object, deserialized);
         } catch (IOException e) {
-            e.printStackTrace();
             fail(object.getClass().getSimpleName() + " failed");
         }
     }

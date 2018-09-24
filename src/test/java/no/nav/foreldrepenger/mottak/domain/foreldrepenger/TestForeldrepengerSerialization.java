@@ -193,7 +193,7 @@ public class TestForeldrepengerSerialization {
     }
 
     void test(Object object) {
-        test(object, true);
+        test(object, false);
 
     }
 
