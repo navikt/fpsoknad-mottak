@@ -84,6 +84,7 @@ public class OppslagController {
             aktorClient.ping();
             personClient.ping();
             arbeidsforholdClient.ping();
+            gsakClient.ping();
             break;
         }
         return ok(registerNavn(register) + " er i toppform");
