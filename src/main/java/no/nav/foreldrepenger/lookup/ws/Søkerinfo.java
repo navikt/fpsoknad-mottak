@@ -15,6 +15,14 @@ public class Søkerinfo {
         this.arbeidsforhold = arbeidsforhold;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public List<Arbeidsforhold> getArbeidsforhold() {
+        return arbeidsforhold;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [person=" + person + ", arbeidsforhold=" + arbeidsforhold + "]";
