@@ -7,7 +7,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
 import static no.nav.foreldrepenger.mottak.http.MottakPreprodController.INNSENDING_PREPROD;
-import static no.nav.foreldrepenger.mottak.http.SøknadController.MOTTAK;
+import static no.nav.foreldrepenger.mottak.http.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.Assert.assertEquals;
@@ -76,7 +76,7 @@ public class TestFPFordelRoundtripSerialization {
     @Test
     public void testPing() {
         assertEquals("Hallo joe fra ubeskyttet ressurs",
-                template.getForObject(MOTTAK + "/ping?navn=joe", String.class));
+                template.getForObject(INNSENDING + "/ping?navn=joe", String.class));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class TestFPFordelRoundtripSerialization {
     @Test
     public void testForeldrepengerSøknadSend() throws IOException {
         assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK,
-                template.postForObject(MOTTAK + "/send", foreldrepenger(), Kvittering.class).getLeveranseStatus());
+                template.postForObject(INNSENDING + "/send", foreldrepenger(), Kvittering.class).getLeveranseStatus());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     public void testEngangsstønadSøknadSend() throws IOException {
-        assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK, template.postForObject(MOTTAK + "/send",
+        assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK, template.postForObject(INNSENDING + "/send",
                 engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class)
                 .getLeveranseStatus());
     }

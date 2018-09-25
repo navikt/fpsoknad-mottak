@@ -43,7 +43,7 @@ import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 
 @RestController
-@RequestMapping(path = SøknadController.MOTTAK, produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = SøknadController.INNSENDING, produces = APPLICATION_JSON_VALUE)
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 public class SøknadController {
 
@@ -52,7 +52,7 @@ public class SøknadController {
     @Inject
     Environment env;
 
-    public static final String MOTTAK = "/mottak";
+    public static final String INNSENDING = "/mottak";
 
     private final Innsyn innsyn;
     private final Oppslag oppslag;

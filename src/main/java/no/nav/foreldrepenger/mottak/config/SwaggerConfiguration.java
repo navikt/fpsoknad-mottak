@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.config;
 
+import static com.google.common.base.Predicates.or;
 import static java.util.stream.Collectors.toSet;
+import static springfox.documentation.builders.PathSelectors.regex;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -8,7 +10,9 @@ import java.util.Set;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import springfox.documentation.builders.PathSelectors;
+import no.nav.foreldrepenger.mottak.http.InnsynController;
+import no.nav.foreldrepenger.mottak.http.MottakPreprodController;
+import no.nav.foreldrepenger.mottak.http.SøknadController;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -20,8 +24,15 @@ public class SwaggerConfiguration {
 
     @Bean
     public Docket productApi() {
-        return new Docket(DocumentationType.SWAGGER_2).protocols(protocols("http", "https")).select()
-                .apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .protocols(protocols("http", "https"))
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(or(
+                        regex(MottakPreprodController.INNSENDING_PREPROD + ".*"),
+                        regex(InnsynController.INNSYN + ".*"),
+                        regex(SøknadController.INNSENDING + ".*")))
+                .build();
     }
 
     private static Set<String> protocols(String... schemes) {
