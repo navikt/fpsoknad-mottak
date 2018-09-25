@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EndringsSøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
@@ -77,7 +77,7 @@ public class SøknadController {
     }
 
     @PostMapping(value = "/endre")
-    public Kvittering send(@Valid @RequestBody EndringsSøknad endringsSøknad) {
+    public Kvittering send(@Valid @RequestBody Endringssøknad endringsSøknad) {
         return sender.send(endringsSøknad, oppslag.getSøker());
     }
 
@@ -103,7 +103,7 @@ public class SøknadController {
                     LOG.trace(EnvUtil.CONFIDENTIAL, "Tester ettersending mot sak {}", saksnummer);
                     ValgfrittVedlegg vedlegg = new ValgfrittVedlegg(DokumentType.I500005,
                             new ClassPathResource("sykkel.pdf"));
-                    EndringsSøknad es = new EndringsSøknad(LocalDateTime.now(), søker(), fordeling(), saksnummer,
+                    Endringssøknad es = new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), saksnummer,
                             vedlegg);
                     sender.send(es, oppslag.getSøker());
                 }
@@ -111,7 +111,7 @@ public class SøknadController {
                     LOG.trace("Ingen saker å ettersende til");
                 }
             } catch (IOException e) {
-                LOG.error("Funkade inte", e);
+                LOG.error("Funkade inte, men dette var bare en test", e);
             }
         }
         return saker;

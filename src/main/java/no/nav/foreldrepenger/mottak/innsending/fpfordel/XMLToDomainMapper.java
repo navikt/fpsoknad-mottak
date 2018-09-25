@@ -117,6 +117,9 @@ public class XMLToDomainMapper {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
         }
+        if (omYtelse.getAny().size() > 1) {
+            LOG.warn("Fikk {} ytelser i søknaden, forventet kun 1", omYtelse.getAny().size());
+        }
         Object førsteYtelse = omYtelse.getAny().get(0);
         if (!(førsteYtelse instanceof Foreldrepenger)) {
             LOG.warn("Søknad av type {} er ikke støttet", førsteYtelse.getClass().getSimpleName());
@@ -138,19 +141,21 @@ public class XMLToDomainMapper {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
             Rettigheter rettigheter) {
-        LOG.debug("Genererer rettigheter modell fra {}", rettigheter);
         if (rettigheter == null) {
             return null;
         }
+        LOG.debug("Genererer rettigheter modell");
+
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(rettigheter.isHarAnnenForelderRett(),
                 rettigheter.isHarOmsorgForBarnetIPeriodene(), rettigheter.isHarAleneomsorgForBarnet());
     }
 
     private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
-        LOG.debug("Genererer relasjon til barn  modell fra {}", relasjonTilBarnet);
         if (relasjonTilBarnet == null) {
             return null;
         }
+        LOG.debug("Genererer relasjon til barn modell");
+
         if (relasjonTilBarnet instanceof Foedsel) {
             Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
             return new Fødsel(fødsel.getAntallBarn(), fødsel.getFoedselsdato());
@@ -173,10 +178,11 @@ public class XMLToDomainMapper {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening tilOpptjening(Opptjening opptjening) {
-        LOG.debug("Genererer opptjening  modell fra {}", opptjening);
         if (opptjening == null) {
             return null;
         }
+        LOG.debug("Genererer opptjening modell");
+
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening(
                 tilUtenlandsArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
                 tilEgenNæring(opptjening.getEgenNaering()), tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
@@ -184,10 +190,10 @@ public class XMLToDomainMapper {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans tilFrilans(Frilans frilans) {
-        LOG.debug("Genererer frilans  modell fra {}", frilans);
         if (frilans == null) {
             return null;
         }
+        LOG.debug("Genererer frilans  modell");
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans(tilÅpenPeriode(frilans.getPeriode()),
                 frilans.isHarInntektFraFosterhjem(),
                 frilans.isErNyoppstartet(),
@@ -196,7 +202,6 @@ public class XMLToDomainMapper {
     }
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
-        LOG.debug("Genererer åpen periode  modell fra {}", periode);
         return periode == null || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
     }
 
@@ -212,10 +217,10 @@ public class XMLToDomainMapper {
     }
 
     private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
-        LOG.debug("Genererer åpen  periode  modell fra {}", periode);
         if (periode == null) {
             return null;
         }
+        LOG.debug("Genererer åpen periode modell");
         return new ÅpenPeriode(periode.getFom(), periode.getTom());
     }
 
@@ -226,10 +231,11 @@ public class XMLToDomainMapper {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
             AnnenOpptjening annenOpptjening) {
-        LOG.debug("Genererer annen opptjening  modell fra {}", annenOpptjening);
         if (annenOpptjening == null) {
             return null;
         }
+        LOG.debug("Genererer annen opptjening modell");
+
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening(
                 AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
                 tilÅpenPeriode(annenOpptjening.getPeriode()), emptyList());
@@ -240,10 +246,11 @@ public class XMLToDomainMapper {
     }
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
-        LOG.debug("Genererer egen næring  modell fra {}", egenNæring);
         if (egenNæring == null) {
             return null;
         }
+        LOG.debug("Genererer egen næring modell");
+
         if (egenNæring instanceof NorskOrganisasjon) {
             NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.builder()
@@ -420,20 +427,22 @@ public class XMLToDomainMapper {
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad tilDekningsgrad(
             Dekningsgrad dekningsgrad) {
-        LOG.debug("Genererer dekningsgrad  modell fra {}", dekningsgrad);
         if (dekningsgrad == null) {
             return null;
         }
+        LOG.debug("Genererer dekningsgrad modell");
+
         return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad
                 .fraKode(dekningsgrad.getDekningsgrad().getKode());
     }
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
             AnnenForelder annenForelder) {
-        LOG.debug("Genererer annen forelder  modell fra {}", annenForelder);
         if (annenForelder == null) {
             return null;
         }
+        LOG.debug("Genererer annen forelder modell");
+
         if (annenForelder instanceof UkjentForelder) {
             return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder();
         }
@@ -450,7 +459,7 @@ public class XMLToDomainMapper {
     }
 
     private static Søker tilSøker(Bruker søker) {
-        LOG.debug("Genererer søker  modell fra {}", søker);
+        LOG.debug("Genererer søker model");
 
         return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
     }

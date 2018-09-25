@@ -1,11 +1,12 @@
 package no.nav.foreldrepenger.mottak.http.health;
 
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
+
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.core.env.Environment;
 
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator {
 
@@ -13,7 +14,7 @@ public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator
     private boolean isPreprodOrDev;
 
     public EnvironmentAwareHealthIndicator(Environment env, AbstractRestConnection connection) {
-        this.isPreprodOrDev = EnvUtil.isDevOrPreprod(env);
+        this.isPreprodOrDev = isDevOrPreprod(env);
         this.connection = connection;
     }
 

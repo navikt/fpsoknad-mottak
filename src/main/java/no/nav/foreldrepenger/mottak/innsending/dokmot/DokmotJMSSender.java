@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
@@ -52,13 +53,18 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
-        throw new IllegalArgumentException("Ettersending for engangsstønad ikke implementert");
+        throw new IllegalArgumentException("Ettersending for engangsstønad via DOKMOT er ikke støttet");
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [dokmotTemplate=" + dokmotConnection + ", generator=" + generator
                 + ", callIdGenerator=" + idGenerator + "]";
+    }
+
+    @Override
+    public Kvittering send(Endringssøknad endringsøknad, Person søker) {
+        throw new IllegalArgumentException("Sending av endringssøknad via DOKMOT er ikke støttet");
     }
 
 }

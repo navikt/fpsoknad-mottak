@@ -29,10 +29,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -53,7 +53,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
@@ -61,13 +60,15 @@ import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMap
 import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @AutoConfigureJsonTesters
 
 public class TestFPFordelSerialization {
 
     @Mock
     private Oppslag oppslag;
+
+    private FPFordelKonvoluttGenerator konvoluttGenerator;
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
@@ -90,28 +91,25 @@ public class TestFPFordelSerialization {
 
     @Before
     public void before() {
+        konvoluttGenerator = konvoluttGenerator();
         when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
         when(oppslag.getArbeidsforhold()).thenReturn(ARB_FORHOLD);
-
     }
 
     @Test
     public void testGosysKvittering() throws Exception {
-        FPFordelKvittering kvittering = new FPFordelGosysKvittering("42");
-        TestForeldrepengerSerialization.test(kvittering, true, mapper);
+        TestForeldrepengerSerialization.test(new FPFordelGosysKvittering("42"), true, mapper);
     }
 
     @Test
     public void testPollKvittering() throws Exception {
-        FPFordelKvittering kvittering = new FPFordelPendingKvittering(Duration.ofSeconds(6));
-        TestForeldrepengerSerialization.test(kvittering, true, mapper);
+        TestForeldrepengerSerialization.test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), true, mapper);
     }
 
     @Test
     public void testFordeltKvittering() throws Exception {
-        FPFordelKvittering kvittering = new FPSakFordeltKvittering("123", "456");
-        TestForeldrepengerSerialization.test(kvittering, true, mapper);
+        TestForeldrepengerSerialization.test(new FPSakFordeltKvittering("123", "456"), true, mapper);
     }
 
     @Test
@@ -137,12 +135,6 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() throws Exception {
-        MottakConfiguration mottakConfiguration = new MottakConfiguration();
-        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
-                new FPFordelMetdataGenerator(mapper),
-                new ForeldrepengerSøknadMapper(oppslag),
-                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
-                        mottakConfiguration.kvitteringstekster(), oppslag));
         Søknad søknad = søknad(valgfrittVedlegg());
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
                 new CallIdGenerator("jalla").create());
@@ -158,17 +150,10 @@ public class TestFPFordelSerialization {
         assertMediaType(hoveddokumenter.get(0), APPLICATION_XML_VALUE);
         assertMediaType(hoveddokumenter.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
-
     }
 
     @Test
     public void testKonvoluttEttersending() throws Exception {
-        MottakConfiguration mottakConfiguration = new MottakConfiguration();
-        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
-                new FPFordelMetdataGenerator(mapper),
-                new ForeldrepengerSøknadMapper(oppslag),
-                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
-                        mottakConfiguration.kvitteringstekster(), oppslag));
         ValgfrittVedlegg v1 = new ValgfrittVedlegg(DokumentType.I500002,
                 new ClassPathResource("terminbekreftelse.pdf"));
         ValgfrittVedlegg v2 = new ValgfrittVedlegg(DokumentType.I500005,
@@ -187,17 +172,11 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEndring() throws Exception {
-        MottakConfiguration mottakConfiguration = new MottakConfiguration();
-        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
-                new FPFordelMetdataGenerator(mapper),
-                new ForeldrepengerSøknadMapper(oppslag),
-                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
-                        mottakConfiguration.kvitteringstekster(), oppslag));
         ValgfrittVedlegg v1 = new ValgfrittVedlegg(DokumentType.I500002,
                 new ClassPathResource("terminbekreftelse.pdf"));
         ValgfrittVedlegg v2 = new ValgfrittVedlegg(DokumentType.I500005,
                 new ClassPathResource("terminbekreftelse.pdf"));
-        EndringsSøknad es = new EndringsSøknad(LocalDateTime.now(), TestUtils.søker(),
+        Endringssøknad es = new Endringssøknad(LocalDateTime.now(), TestUtils.søker(),
                 ForeldrepengerTestUtils.fordeling(), "42", v1, v2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
                 new CallIdGenerator("jalla").create());
@@ -207,6 +186,16 @@ public class TestFPFordelSerialization {
         assertEquals(2, vedlegg.size());
         assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
+    }
+
+    private FPFordelKonvoluttGenerator konvoluttGenerator() {
+        MottakConfiguration mottakConfiguration = new MottakConfiguration();
+        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
+                new FPFordelMetdataGenerator(mapper),
+                new ForeldrepengerSøknadMapper(oppslag),
+                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
+                        mottakConfiguration.kvitteringstekster(), oppslag));
+        return konvoluttGenerator;
     }
 
     private static void assertMediaType(HttpEntity<?> entity, String type) {

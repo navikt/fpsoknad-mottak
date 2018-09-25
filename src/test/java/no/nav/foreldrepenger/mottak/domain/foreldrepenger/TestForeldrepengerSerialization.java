@@ -79,7 +79,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEndringsSøknad() throws Exception {
-        test(new EndringsSøknad(LocalDateTime.now(), søker(), fordeling(), "42"));
+        test(new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), "42"));
     }
 
     @Test

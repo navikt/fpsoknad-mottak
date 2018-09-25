@@ -14,6 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 @Service
@@ -40,6 +41,12 @@ public class FPFordelSøknadSender implements SøknadSender {
     public void ping() {
         LOG.info("Pinger");
         connection.ping();
+    }
+
+    @Override
+    public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
+        String ref = callIdGenerator.getOrCreate();
+        return send(SØKNAD, ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
     }
 
     @Override

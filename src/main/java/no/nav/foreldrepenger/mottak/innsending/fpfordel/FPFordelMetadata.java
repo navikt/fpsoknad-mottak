@@ -5,6 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EndringsSøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
@@ -44,8 +45,8 @@ public class FPFordelMetadata {
         this(søknad, aktorId, ref, null);
     }
 
-    public FPFordelMetadata(EndringsSøknad endring, AktorId aktorId, String ref) {
-        this(files(endring), aktorId, ref, endring.getSaksnr());
+    public FPFordelMetadata(Endringssøknad endringssøknad, AktorId aktorId, String ref) {
+        this(files(endringssøknad), aktorId, ref, endringssøknad.getSaksnr());
     }
 
     public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref, String saksnr) {
@@ -89,10 +90,10 @@ public class FPFordelMetadata {
         return dokumenter;
     }
 
-    private static List<Filer> files(EndringsSøknad endring) {
+    private static List<Filer> files(Endringssøknad endringssøknad) {
         final AtomicInteger id = new AtomicInteger(1);
-        List<Filer> dokumenter = newArrayList(søknad(id, endring), søknad(id, endring));
-        dokumenter.addAll(endring.getVedlegg().stream()
+        List<Filer> dokumenter = newArrayList(søknad(id, endringssøknad), søknad(id, endringssøknad));
+        dokumenter.addAll(endringssøknad.getVedlegg().stream()
                 .map(s -> vedlegg(s, id))
                 .collect(toList()));
         return dokumenter;
@@ -101,15 +102,14 @@ public class FPFordelMetadata {
     private static List<Filer> files(Ettersending ettersending) {
         AtomicInteger id = new AtomicInteger(1);
         return ettersending.getVedlegg().stream().map(s -> vedlegg(s, id)).collect(toList());
-
     }
 
     private static Filer søknad(final AtomicInteger id, Søknad søknad) {
         return new Filer(dokumentTypeFraRelasjon(søknad), id.getAndIncrement());
     }
 
-    private static Filer søknad(final AtomicInteger id, EndringsSøknad søknad) {
-        return new Filer(DokumentType.I000050, id.getAndIncrement());
+    private static Filer søknad(final AtomicInteger id, Endringssøknad søknad) {
+        return new Filer(I000050, id.getAndIncrement());
     }
 
     private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {

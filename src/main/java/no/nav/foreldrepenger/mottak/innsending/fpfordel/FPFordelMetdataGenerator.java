@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -40,6 +42,8 @@ public class FPFordelMetdataGenerator {
     @JsonPropertyOrder({ "contentId", "dokumentTypeId" })
     static class Filer {
 
+        private static final Logger LOG = LoggerFactory.getLogger(Filer.class);
+
         private final String dokumentTypeId;
         private final String contentId;
 
@@ -58,6 +62,7 @@ public class FPFordelMetdataGenerator {
                 @JsonProperty("contentId") int contentId) {
             this.dokumentTypeId = dokumentType.name();
             this.contentId = String.valueOf(contentId);
+            LOG.debug("La til dokument {} med id {} ({})", dokumentType.name(), contentId, dokumentType.beskrivelse);
         }
 
         @Override

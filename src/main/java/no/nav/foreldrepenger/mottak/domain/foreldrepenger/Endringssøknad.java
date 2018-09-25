@@ -12,17 +12,17 @@ import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
-public class EndringsSøknad extends Søknad {
+public class Endringssøknad extends Søknad {
 
     private final String saksnr;
 
-    public EndringsSøknad(LocalDateTime mottattDato, Søker søker, Fordeling fordeling, String saksnr,
+    public Endringssøknad(LocalDateTime mottattDato, Søker søker, Fordeling fordeling, String saksnr,
             Vedlegg... vedlegg) {
         this(mottattDato, søker, fordeling, saksnr, asList(vedlegg));
     }
 
     @JsonCreator
-    public EndringsSøknad(@JsonProperty("mottattDato") LocalDateTime mottattDato, @JsonProperty("søker") Søker søker,
+    public Endringssøknad(@JsonProperty("mottattDato") LocalDateTime mottattDato, @JsonProperty("søker") Søker søker,
             @JsonProperty("fordeling") Fordeling fordeling,
             @JsonProperty("saksnr") String saksnr,
             @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {

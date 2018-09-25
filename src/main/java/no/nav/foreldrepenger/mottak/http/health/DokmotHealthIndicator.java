@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.dokmot;
+package no.nav.foreldrepenger.mottak.http.health;
 
 import java.util.Arrays;
 
@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotQueuePinger;
+import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotQueueUnavailableException;
 
 @Component
 public class DokmotHealthIndicator implements HealthIndicator {

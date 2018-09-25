@@ -7,6 +7,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 
@@ -28,6 +29,12 @@ public class DualSøknadSender implements SøknadSender {
     }
 
     @Override
+    public Kvittering send(Endringssøknad endringsøknad, Person søker) {
+        return isForeldrepenger(endringsøknad) ? fpfordel.send(endringsøknad, søker)
+                : dokmot.send(endringsøknad, søker);
+    }
+
+    @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
         return fpfordel.send(ettersending, søker);
     }
@@ -40,4 +47,5 @@ public class DualSøknadSender implements SøknadSender {
     public String toString() {
         return getClass().getSimpleName() + " [dokmot=" + dokmot + ", fpfordel=" + fpfordel + "]";
     }
+
 }
