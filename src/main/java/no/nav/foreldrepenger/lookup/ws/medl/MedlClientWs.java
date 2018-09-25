@@ -4,14 +4,14 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.MedlemskapV2;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.PersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.medlemskap.v2.Sikkerhetsbegrensning;
@@ -32,6 +32,7 @@ public class MedlClientWs implements MedlClient {
         this.healthIndicator = healthIndicator;
     }
 
+    @Override
     public void ping() {
         try {
             LOG.info("Pinger MEDL");
@@ -42,6 +43,7 @@ public class MedlClientWs implements MedlClient {
         }
     }
 
+    @Override
     public List<MedlPeriode> medlInfo(Fødselsnummer fnr) {
         HentPeriodeListeRequest req = new HentPeriodeListeRequest();
         Personidentifikator ident = new Foedselsnummer();

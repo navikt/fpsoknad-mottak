@@ -62,7 +62,7 @@ public class CommonControllerErrorHandlers {
         return logAndRespond(ex, FORBIDDEN);
     }
 
-    private ResponseEntity logAndRespond(Exception ex, HttpStatus status) {
+    private ResponseEntity<String> logAndRespond(Exception ex, HttpStatus status) {
         log.warn("Caught error", ex);
         return new ResponseEntity<>(ex.getMessage(), status);
     }

@@ -7,15 +7,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.time.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
+import no.nav.foreldrepenger.time.DateUtil;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.HentYtelseskontraktListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.binding.YtelseskontraktV3;
 import no.nav.tjeneste.virksomhet.ytelseskontrakt.v3.informasjon.ytelseskontrakt.Periode;
@@ -35,6 +35,7 @@ public class ArenaClientWs implements ArenaClient {
         this.healthIndicator = healthIndicator;
     }
 
+    @Override
     public void ping() {
         try {
             LOG.info("Pinger Arena");
@@ -45,6 +46,7 @@ public class ArenaClientWs implements ArenaClient {
         }
     }
 
+    @Override
     public List<Ytelse> ytelser(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         try {
             return ytelser.hentYtelseskontraktListe(request(fnr, from, to)).getYtelseskontraktListe().stream()

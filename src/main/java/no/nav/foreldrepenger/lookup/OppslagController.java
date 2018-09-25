@@ -28,6 +28,7 @@ import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.lookup.ws.person.ID;
 import no.nav.foreldrepenger.lookup.ws.person.Person;
 import no.nav.foreldrepenger.lookup.ws.person.PersonClient;
+import no.nav.foreldrepenger.lookup.ws.ytelser.gsak.GsakClient;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 
@@ -42,6 +43,8 @@ public class OppslagController {
 
     private final AktorIdClient aktorClient;
 
+    private final GsakClient gsakClient;
+
     private final PersonClient personClient;
 
     private final ArbeidsforholdClient arbeidsforholdClient;
@@ -50,11 +53,12 @@ public class OppslagController {
 
     @Inject
     public OppslagController(AktorIdClient aktorClient, PersonClient personClient,
-            ArbeidsforholdClient arbeidsforholdClient,
+            ArbeidsforholdClient arbeidsforholdClient, GsakClient gsakClient,
             OIDCRequestContextHolder contextHolder) {
         this.aktorClient = aktorClient;
         this.personClient = personClient;
         this.arbeidsforholdClient = arbeidsforholdClient;
+        this.gsakClient = gsakClient;
         this.contextHolder = contextHolder;
     }
 
@@ -64,6 +68,9 @@ public class OppslagController {
             @RequestParam(name = "register", defaultValue = "all", required = false) PingableRegisters register) {
         LOG.info("Vil pinge register {}", register);
         switch (register) {
+        case gsak:
+            gsakClient.ping();
+            break;
         case aareg:
             arbeidsforholdClient.ping();
             break;
@@ -77,6 +84,7 @@ public class OppslagController {
             aktorClient.ping();
             personClient.ping();
             arbeidsforholdClient.ping();
+            gsakClient.ping();
             break;
         }
         return ok(registerNavn(register) + " er i toppform");

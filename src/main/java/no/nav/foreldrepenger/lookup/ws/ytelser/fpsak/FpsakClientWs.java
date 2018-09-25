@@ -32,6 +32,7 @@ public class FpsakClientWs implements FpsakClient {
         this.healthIndicator = Objects.requireNonNull(healthIndicator);
     }
 
+    @Override
     public void ping() {
         try {
             LOG.info("Pinger FPsak");
@@ -42,6 +43,7 @@ public class FpsakClientWs implements FpsakClient {
         }
     }
 
+    @Override
     public List<Ytelse> casesFor(AktorId aktor) {
         FinnSakListeRequest req = new FinnSakListeRequest();
         Aktoer a = new Aktoer();

@@ -7,16 +7,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
-import no.nav.foreldrepenger.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.time.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
+import no.nav.foreldrepenger.time.DateUtil;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.FinnSakListePersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.FinnSakListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.infotrygdsak.v1.binding.InfotrygdSakV1;
@@ -39,6 +39,7 @@ public class InfotrygdClientWs implements InfotrygdClient {
         this.healthIndicator = healthIdicator;
     }
 
+    @Override
     public void ping() {
         try {
             LOG.info("Pinger Infotrygd");
@@ -49,6 +50,7 @@ public class InfotrygdClientWs implements InfotrygdClient {
         }
     }
 
+    @Override
     public List<Ytelse> casesFor(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         FinnSakListeRequest req = new FinnSakListeRequest();
         Periode periode = new Periode();

@@ -1,19 +1,25 @@
 package no.nav.foreldrepenger.lookup.ws.ytelser.gsak;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.errorhandling.IncompleteRequestException;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
-import no.nav.tjeneste.virksomhet.sak.v2.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import no.nav.tjeneste.virksomhet.sak.v2.SakV2;
+import no.nav.tjeneste.virksomhet.sak.v2.WSFinnSakerForBrukerRequest;
+import no.nav.tjeneste.virksomhet.sak.v2.WSFinnSakerForBrukerResponse;
+import no.nav.tjeneste.virksomhet.sak.v2.WSSikkerhetsbegrensningException;
+import no.nav.tjeneste.virksomhet.sak.v2.WSUgyldigInputException;
 
 public class GsakClientWs implements GsakClient {
 
@@ -29,6 +35,7 @@ public class GsakClientWs implements GsakClient {
         this.healthIndicator = healthIdicator;
     }
 
+    @Override
     public void ping() {
         try {
             LOG.info("Pinger Gsak");
@@ -45,7 +52,7 @@ public class GsakClientWs implements GsakClient {
         request.setBrukerId(fnr.getFnr());
         try {
             WSFinnSakerForBrukerResponse response = gsak.finnSakerForBruker(request);
-            LOG.info("Fant " + response.getSaker().size() + " saker i gsak");
+            LOG.info("Fant {} saker i gsak", response.getSaker().size());
             return response.getSaker().stream().map(GsakMapper::map).collect(toList());
         } catch (WSSikkerhetsbegrensningException ex) {
             ERROR_COUNTER.increment();
@@ -58,5 +65,4 @@ public class GsakClientWs implements GsakClient {
             throw new RuntimeException("Error while reading from Gsak", ex);
         }
     }
-
 }

@@ -13,7 +13,7 @@ public class Sak {
     private LocalDate opprettet;
 
     public Sak(String sakId, String sakstype, String fagomrade, String fagsystem,
-               String fagsystemSakId, LocalDate opprettet) {
+            String fagsystemSakId, LocalDate opprettet) {
         this.sakId = sakId;
         this.sakstype = sakstype;
         this.fagomrade = fagomrade;
@@ -48,15 +48,17 @@ public class Sak {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Sak sak = (Sak) o;
         return Objects.equals(sakId, sak.sakId) &&
-            Objects.equals(sakstype, sak.sakstype) &&
-            Objects.equals(fagomrade, sak.fagomrade) &&
-            Objects.equals(fagsystem, sak.fagsystem) &&
-            Objects.equals(fagsystemSakId, sak.fagsystemSakId) &&
-            Objects.equals(opprettet, sak.opprettet);
+                Objects.equals(sakstype, sak.sakstype) &&
+                Objects.equals(fagomrade, sak.fagomrade) &&
+                Objects.equals(fagsystem, sak.fagsystem) &&
+                Objects.equals(fagsystemSakId, sak.fagsystemSakId) &&
+                Objects.equals(opprettet, sak.opprettet);
     }
 
     @Override
@@ -65,14 +67,8 @@ public class Sak {
     }
 
     @Override
-    public String   toString() {
-        return "Sak{" +
-            "sakId='" + sakId + '\'' +
-            ", sakstype='" + sakstype + '\'' +
-            ", fagomrade='" + fagomrade + '\'' +
-            ", fagsystem='" + fagsystem + '\'' +
-            ", fagsystemSakId='" + fagsystemSakId + '\'' +
-            ", opprettet=" + opprettet +
-            '}';
+    public String toString() {
+        return getClass().getSimpleName() + " [sakId=" + sakId + ", sakstype=" + sakstype + ", fagomrade=" + fagomrade
+                + ", fagsystem=" + fagsystem + ", fagsystemSakId=" + fagsystemSakId + ", opprettet=" + opprettet + "]";
     }
 }
