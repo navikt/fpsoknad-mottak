@@ -11,6 +11,7 @@ public class AktorIdClientStub implements AktorIdClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientStub.class);
 
+    @Override
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
         return new AktorId("Michael learns to rock");
     }

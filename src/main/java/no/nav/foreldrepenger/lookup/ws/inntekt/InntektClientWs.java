@@ -5,8 +5,6 @@ import static java.util.stream.Collectors.toList;
 import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.foreldrepenger.time.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +12,8 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.errorhandling.IncompleteRequestException;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import no.nav.foreldrepenger.time.DateUtil;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeHarIkkeTilgangTilOensketAInntektsfilter;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.inntekt.v3.binding.HentInntektListeUgyldigInput;
@@ -38,6 +38,7 @@ public class InntektClientWs implements InntektClient {
         this.healthIndicator = healthIndicator;
     }
 
+    @Override
     public void ping() {
         try {
             LOG.info("Pinger Inntekt");
@@ -48,6 +49,7 @@ public class InntektClientWs implements InntektClient {
         }
     }
 
+    @Override
     public List<Inntekt> incomeForPeriod(Fødselsnummer fnr, LocalDate from, LocalDate to) {
         HentInntektListeRequest req = request(fnr, from, to);
         try {
