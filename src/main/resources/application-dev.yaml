@@ -27,3 +27,5 @@ virksomhet:
     sak.v2.endpointurl: http://localhost
     
 aktoer.v2.endpointurl: http://localhost
+
+sak.saker.url: http://localhost
