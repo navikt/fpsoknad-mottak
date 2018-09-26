@@ -40,7 +40,8 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Endringssøknad endringssøknad() {
-        return new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), null, null, null, "42");
+        return new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), norskForelder(), fødsel(), rettigheter(),
+                "42");
     }
 
     public static Ettersending ettersending() {
@@ -175,6 +176,10 @@ public class ForeldrepengerTestUtils {
 
     static FremtidigFødsel termin() {
         return new FremtidigFødsel(LocalDate.now(), LocalDate.now());
+    }
+
+    static Fødsel fødsel() {
+        return new Fødsel(LocalDate.now().minusMonths(2));
     }
 
     static OverføringsPeriode overføringsPeriode() {

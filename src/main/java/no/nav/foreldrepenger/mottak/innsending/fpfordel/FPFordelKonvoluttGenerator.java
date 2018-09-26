@@ -137,6 +137,10 @@ public class FPFordelKonvoluttGenerator {
         return pdfGenerator.generate(søknad, søker);
     }
 
+    private byte[] pdfHovedDokument(Endringssøknad søknad, Person søker) {
+        return pdfGenerator.generate(søknad, søker);
+    }
+
     private String xmlHovedDokument(Søknad søknad, AktorId søker) {
         String hovedDokument = søknadGenerator.tilXML(søknad, søker);
         LOG.debug(CONFIDENTIAL, "Hoveddokument er {}", hovedDokument);
