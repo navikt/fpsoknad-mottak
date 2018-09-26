@@ -103,7 +103,8 @@ public class SøknadController {
                     LOG.trace(EnvUtil.CONFIDENTIAL, "Tester ettersending mot sak {}", saksnummer);
                     ValgfrittVedlegg vedlegg = new ValgfrittVedlegg(DokumentType.I500005,
                             new ClassPathResource("sykkel.pdf"));
-                    Endringssøknad es = new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), saksnummer,
+                    Endringssøknad es = new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), null, null, null,
+                            saksnummer,
                             vedlegg);
                     sender.send(es, oppslag.getSøker());
                 }

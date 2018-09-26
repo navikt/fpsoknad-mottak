@@ -176,8 +176,9 @@ public class TestFPFordelSerialization {
                 new ClassPathResource("terminbekreftelse.pdf"));
         ValgfrittVedlegg v2 = new ValgfrittVedlegg(DokumentType.I500005,
                 new ClassPathResource("terminbekreftelse.pdf"));
+
         Endringssøknad es = new Endringssøknad(LocalDateTime.now(), TestUtils.søker(),
-                ForeldrepengerTestUtils.fordeling(), "42", v1, v2);
+                ForeldrepengerTestUtils.fordeling(), null, null, null, "42", v1, v2);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(es));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
                 new CallIdGenerator("jalla").create());

@@ -40,7 +40,7 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Endringssøknad endringssøknad() {
-        return new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), "42");
+        return new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), null, null, null, "42");
     }
 
     public static Ettersending ettersending() {
