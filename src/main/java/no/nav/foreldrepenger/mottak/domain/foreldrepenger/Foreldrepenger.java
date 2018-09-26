@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +21,7 @@ public class Foreldrepenger extends Ytelse {
     private final RelasjonTilBarnMedVedlegg relasjonTilBarn;
     @Valid
     private final Rettigheter rettigheter;
-    @NotNull
+    // @NotNull
     private final Dekningsgrad dekningsgrad;
     @Valid
     private final Opptjening opptjening;

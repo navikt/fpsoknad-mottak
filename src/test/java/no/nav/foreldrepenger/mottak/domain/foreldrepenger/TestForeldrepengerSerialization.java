@@ -1,11 +1,14 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.adopsjon;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.adopsjon;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.annenOpptjening;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ettersending;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.fordeling;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrePenger;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.gradertPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.norskEgenNæring;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.norskForelder;
@@ -25,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +47,6 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -69,22 +70,27 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testPerson() {
-        test(TestUtils.person());
+        test(person());
     }
 
     @Test
     public void testEttersending() throws Exception {
-        test(new Ettersending("42", ForeldrepengerTestUtils.ETT_VEDLEGG));
+        test(ettersending());
     }
 
     @Test
-    public void testEndringsSøknad() throws Exception {
-        test(new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), "42"));
+    public void testEndringssøknad() {
+        test(endringssøknad(), true);
     }
 
     @Test
     public void testForeldrepenger() {
-        test(foreldrePenger());
+        test(foreldrePenger(), true);
+    }
+
+    @Test
+    public void testSøknad() {
+        test(foreldrepengeSøknad(), true);
     }
 
     @Test

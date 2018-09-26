@@ -68,7 +68,7 @@ public class TestDokmotSerialization {
     @Test
     public void testKonvoluttXML() throws Exception {
         Søknad engangssøknad = engangssøknad(true, fødsel(), norskForelder(), valgfrittVedlegg());
-        String konvolutt = søknadXMLKonvoluttGenerator.toXML(engangssøknad, person(),
+        String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person(),
                 refGenerator.getOrCreate());
         Dokumentforsendelse unmarshalled = unmarshal(konvolutt, FORSENDELSECTX, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
@@ -102,7 +102,7 @@ public class TestDokmotSerialization {
         serialize(søknad, true, mapper);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad, søker);
         Søknad søknad1 = engangssøknad(true, fødsel(), utenlandskForelder(), valgfrittVedlegg());
-        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.toXML(søknad, søker), SØKNADCTX,
+        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.tilXML(søknad, søker), SØKNADCTX,
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
         assertEquals(dokmotModel.getSoknadsvalg().getFoedselEllerAdopsjon(),

@@ -40,7 +40,7 @@ public class DokmotJMSSender implements SøknadSender {
         if (dokmotConnection.isEnabled()) {
             String ref = idGenerator.getOrCreate();
             dokmotConnection.send(session -> {
-                TextMessage msg = session.createTextMessage(generator.toXML(søknad, søker, ref));
+                TextMessage msg = session.createTextMessage(generator.tilXML(søknad, søker, ref));
                 LOG.info("Sender SøknadsXML til DOKMOT");
                 msg.setStringProperty("callId", ref);
                 return msg;

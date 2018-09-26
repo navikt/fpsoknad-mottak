@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
 
@@ -26,12 +27,20 @@ public class ForeldrepengerTestUtils {
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 
-    public static Søknad foreldrepenger() {
+    public static Søknad foreldrepengeSøknad() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
     }
 
     public static Søknad søknad(Vedlegg... vedlegg) {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), asList(vedlegg));
+    }
+
+    public static Endringssøknad endringssøknad() {
+        return new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), "42");
+    }
+
+    public static Ettersending ettersending() {
+        return new Ettersending("42", ETT_VEDLEGG);
     }
 
     static Foreldrepenger foreldrePenger() {

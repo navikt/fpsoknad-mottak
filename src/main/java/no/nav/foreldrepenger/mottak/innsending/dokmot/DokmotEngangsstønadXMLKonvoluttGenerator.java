@@ -48,7 +48,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
         this.søknadGenerator = Objects.requireNonNull(generator);
     }
 
-    public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref) {
+    public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref) {
         return toXML(søknad, søker, ref, true);
     }
 
@@ -63,7 +63,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     }
 
     public String toSøknadsXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
-        return søknadGenerator.toXML(søknad, søker);
+        return søknadGenerator.tilXML(søknad, søker);
     }
 
     private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad,
@@ -88,7 +88,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
                 .withArkivfiltype(new Arkivfiltyper().withValue(PDFA.name()))
                 .withVariantformat(new Variantformater().withValue(ARKIV.name()));
         Stream<Dokumentinnhold> alternativeRepresentasjonerInnhold = Collections.singletonList(new Dokumentinnhold()
-                .withDokument(søknadGenerator.toXML(søknad, søker).getBytes())
+                .withDokument(søknadGenerator.tilXML(søknad, søker).getBytes())
                 .withVariantformat(new Variantformater().withValue(ORIGINAL.name()))
                 .withArkivfiltype(new Arkivfiltyper().withValue(XML.name()))).stream();
 

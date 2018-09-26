@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 
 @Component
@@ -30,6 +31,10 @@ public class ForeldrepengerSøknadMapper {
 
     public String tilXML(Søknad søknad, AktorId søker) {
         return domainMapper.tilXML(søknad, søker);
+    }
+
+    public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
+        return domainMapper.tilXML(endringssøknad, søker);
     }
 
     @Override

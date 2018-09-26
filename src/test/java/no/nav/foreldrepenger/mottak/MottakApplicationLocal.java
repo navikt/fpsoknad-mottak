@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
 import org.springframework.boot.SpringApplication;
@@ -20,7 +21,7 @@ public class MottakApplicationLocal {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(MottakApplicationLocal.class);
-        app.setAdditionalProfiles(DEV);
+        app.setAdditionalProfiles(DEV, PREPROD);
         app.run(args);
     }
 

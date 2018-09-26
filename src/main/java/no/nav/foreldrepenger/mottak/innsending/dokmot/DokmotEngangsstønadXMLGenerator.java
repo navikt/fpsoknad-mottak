@@ -64,7 +64,7 @@ public class DokmotEngangsstønadXMLGenerator {
         return pdfGenerator.generate(søknad, søker);
     }
 
-    public String toXML(Søknad søknad, Person person) {
+    public String tilXML(Søknad søknad, Person person) {
         return toXML(toDokmotModel(søknad, person));
     }
 

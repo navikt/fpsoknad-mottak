@@ -5,7 +5,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -175,7 +175,7 @@ public class FPFordelTest {
     public void pollTwiceThenGosys() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 goysReceipt);
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(GOSYS));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(nullValue()));
@@ -187,7 +187,7 @@ public class FPFordelTest {
     public void poll3GivesUp() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 pollReceipt200, pollReceipt200);
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(FP_FORDEL_MESSED_UP));
         assertThat(kvittering.getJournalId(), is(nullValue()));
         assertThat(kvittering.getSaksNr(), is(nullValue()));
@@ -202,7 +202,7 @@ public class FPFordelTest {
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår(),
                 fpinfoPågår(),
                 fpinfoInnvilget());
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         // assertThat(kvittering.getLeveranseStatus(), is(INNVILGET));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
@@ -213,7 +213,7 @@ public class FPFordelTest {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoNull());
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(SENDT_OG_FORSØKT_BEHANDLET_FPSAK));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
@@ -228,7 +228,7 @@ public class FPFordelTest {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår());
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(PÅGÅR));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
@@ -240,7 +240,7 @@ public class FPFordelTest {
     public void pollNoLocation() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt202,
                 pollReceiptNoLocation());
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(FP_FORDEL_MESSED_UP));
         verify(template).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
     }
@@ -250,7 +250,7 @@ public class FPFordelTest {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoFailed());
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(SENDT_OG_FORSØKT_BEHANDLET_FPSAK));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
@@ -260,7 +260,7 @@ public class FPFordelTest {
     public void unexpectedStatusCode() throws Exception {
         when(template.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class)))
                 .thenReturn(fpfordelPollReceiptError());
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(FP_FORDEL_MESSED_UP));
         assertThat(kvittering.getJournalId(), is(nullValue()));
         assertThat(kvittering.getSaksNr(), is(nullValue()));
@@ -271,7 +271,7 @@ public class FPFordelTest {
     public void testNullBody() throws Exception {
         when(template.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class)))
                 .thenReturn(nullBody());
-        Kvittering kvittering = sender.send(foreldrepenger(), person());
+        Kvittering kvittering = sender.send(foreldrepengeSøknad(), person());
         assertThat(kvittering.getLeveranseStatus(), is(FP_FORDEL_MESSED_UP));
         assertThat(kvittering.getJournalId(), is(nullValue()));
         assertThat(kvittering.getSaksNr(), is(nullValue()));

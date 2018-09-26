@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.pdf;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static org.junit.Assert.assertTrue;
 
 import no.nav.foreldrepenger.mottak.TestConfig;
@@ -26,6 +26,6 @@ public class ForeldrepengerPDFGeneratorTest {
 
     @Test
     public void signature() {
-        assertTrue(hasPdfSignature(gen.generate(foreldrepenger(), person())));
+        assertTrue(hasPdfSignature(gen.generate(foreldrepengeSøknad(), person())));
     }
 }

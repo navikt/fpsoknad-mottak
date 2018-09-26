@@ -5,8 +5,8 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.nesteMåned;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepenger;
-import static no.nav.foreldrepenger.mottak.http.MottakPreprodController.INNSENDING_PREPROD;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
+import static no.nav.foreldrepenger.mottak.http.SøknadPreprodController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.http.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
@@ -81,7 +81,7 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     public void testForeldrepengerSøknadXML() throws IOException {
-        Søknad foreldrepenger = foreldrepenger();
+        Søknad foreldrepenger = foreldrepengeSøknad();
         String xml = template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class);
         Søknad søknad = søknadXMLGenerator.tilSøknad(xml);
         assertEquals(foreldrepenger.getMottattdato().toLocalDate(), søknad.getMottattdato().toLocalDate());
@@ -91,7 +91,7 @@ public class TestFPFordelRoundtripSerialization {
     @Test
     public void testForeldrepengerSøknadSend() throws IOException {
         assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK,
-                template.postForObject(INNSENDING + "/send", foreldrepenger(), Kvittering.class).getLeveranseStatus());
+                template.postForObject(INNSENDING + "/send", foreldrepengeSøknad(), Kvittering.class).getLeveranseStatus());
     }
 
     @Test

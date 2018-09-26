@@ -37,6 +37,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FrilansOppdrag;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
@@ -127,6 +128,20 @@ public class DomainToXMLMapper {
         return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), false);
     }
 
+    public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
+        return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), false);
+    }
+
+    private Soeknad tilModell(Endringssøknad søknad, AktorId søker) {
+        LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", søknad);
+        return new Soeknad()
+                .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
+                .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
+                .withSoeker(søkerFra(søker, søknad.getSøker()))
+                .withOmYtelse(ytelseFra(søknad))
+                .withMottattDato(søknad.getMottattdato().toLocalDate());
+    }
+
     private Soeknad tilModell(Søknad søknad, AktorId søker) {
         LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", søknad);
         return new Soeknad()
@@ -185,6 +200,17 @@ public class DomainToXMLMapper {
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()));
+
+        return new OmYtelse().withAny(marshalToElement(CONTEXT, foreldrepenger));
+    }
+
+    private OmYtelse ytelseFra(Endringssøknad søknad) {
+        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(søknad.getYtelse());
+        LOG.debug(CONFIDENTIAL, "Genererer ytelse endringssøknad XML fra {}", ytelse);
+
+        Foreldrepenger foreldrepenger = new Foreldrepenger()
+                .withFordeling(fordelingFra(ytelse.getFordeling()));
 
         return new OmYtelse().withAny(marshalToElement(CONTEXT, foreldrepenger));
     }

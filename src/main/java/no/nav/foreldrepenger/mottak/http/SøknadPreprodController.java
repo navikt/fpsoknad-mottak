@@ -1,12 +1,14 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
+import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.context.annotation.Profile;
@@ -23,18 +25,20 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.dokmot.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
 import no.nav.security.oidc.api.Unprotected;
 
 @Unprotected
 @RestController
-@RequestMapping(path = MottakPreprodController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
+@RequestMapping(path = SøknadPreprodController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
 @Profile("preprod")
-public class MottakPreprodController {
+public class SøknadPreprodController {
 
     public static final String INNSENDING_PREPROD = "/mottak/preprod";
 
@@ -42,8 +46,10 @@ public class MottakPreprodController {
     private final DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator;
     private final ForeldrepengerSøknadMapper fpfordelSøknadGenerator;
     private final FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator;
+    @Inject
+    ForeldrepengerPDFGenerator pdfGenerator;
 
-    public MottakPreprodController(DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator,
+    public SøknadPreprodController(DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator,
             DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator,
             ForeldrepengerSøknadMapper fpfordelSøknadGenerator, FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator) {
         this.dokmotSøknadGenerator = dokmotSøknadGenerator;
@@ -59,6 +65,35 @@ public class MottakPreprodController {
                 : ok().body(esSøknad(søknad, søker()));
     }
 
+    @PostMapping("/endringssøknad")
+    public ResponseEntity<String> endringssøknad(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return isForeldrepenger(endringssøknad)
+                ? ok().body(fpEndringsSøknad(endringssøknad))
+                : ok().body(esSøknad(endringssøknad, søker()));
+    }
+
+    @PostMapping(path = "/pdfEndring", produces = APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> pdfEndring(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return ok()
+                .header("Content-disposition", "attachment; filename=" + endringssøknad.getSaksnr())
+                .body(pdfForEndring(endringssøknad));
+    }
+
+    @PostMapping(path = "/pdfSøknad", produces = APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> pdfSøknad(@Valid @RequestBody Søknad søknad) {
+        return ok()
+                .header("Content-disposition", "attachment; filename=søknad")
+                .body(pdfForSøknad(søknad));
+    }
+
+    private byte[] pdfForEndring(Endringssøknad endringssøknad) {
+        return pdfGenerator.generate(endringssøknad, søker());
+    }
+
+    private byte[] pdfForSøknad(Søknad søknad) {
+        return pdfGenerator.generate(søknad, søker());
+    }
+
     @PostMapping(path = "/konvolutt", produces = { APPLICATION_XML_VALUE, APPLICATION_JSON_VALUE })
     public ResponseEntity<Object> konvolutt(@Valid @RequestBody Søknad søknad) {
         return isForeldrepenger(søknad)
@@ -67,19 +102,27 @@ public class MottakPreprodController {
     }
 
     private String esSøknad(Søknad søknad, Person søker) {
-        return dokmotSøknadGenerator.toXML(søknad, søker);
+        return dokmotSøknadGenerator.tilXML(søknad, søker);
     }
 
     private String fpSøknad(Søknad søknad) {
         return fpfordelSøknadGenerator.tilXML(søknad, new AktorId("42"));
     }
 
+    private String fpEndringsSøknad(Endringssøknad endringssøknad) {
+        return fpfordelSøknadGenerator.tilXML(endringssøknad, new AktorId("42"));
+    }
+
     private String esKonvolutt(Søknad søknad, Person søker) {
-        return dokmotKonvoluttGenerator.toXML(søknad, søker, UUID.randomUUID().toString());
+        return dokmotKonvoluttGenerator.tilXML(søknad, søker, UUID.randomUUID().toString());
     }
 
     private Object fpKonvolutt(Søknad søknad, Person søker) {
         return fpfordelKonvoluttGenerator.payload(søknad, søker, "999");
+    }
+
+    private Object fpEndringKonvolutt(Endringssøknad endringssøknad, Person søker) {
+        return fpfordelKonvoluttGenerator.payload(endringssøknad, søker, "999");
     }
 
     private static boolean isForeldrepenger(Søknad søknad) {

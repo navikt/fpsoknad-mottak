@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import no.nav.foreldrepenger.mottak.http.InnsynController;
-import no.nav.foreldrepenger.mottak.http.MottakPreprodController;
 import no.nav.foreldrepenger.mottak.http.SøknadController;
+import no.nav.foreldrepenger.mottak.http.SøknadPreprodController;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -29,7 +29,7 @@ public class SwaggerConfiguration {
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(or(
-                        regex(MottakPreprodController.INNSENDING_PREPROD + ".*"),
+                        regex(SøknadPreprodController.INNSENDING_PREPROD + ".*"),
                         regex(InnsynController.INNSYN + ".*"),
                         regex(SøknadController.INNSENDING + ".*")))
                 .build();

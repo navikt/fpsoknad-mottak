@@ -116,7 +116,7 @@ public class TestFPFordelSerialization {
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
         ForeldrepengerSøknadMapper fpFordelSøknadGenerator = new ForeldrepengerSøknadMapper(oppslag);
-        Søknad original = ForeldrepengerTestUtils.foreldrepenger();
+        Søknad original = ForeldrepengerTestUtils.foreldrepengeSøknad();
         String xml = fpFordelSøknadGenerator.tilXML(original, aktørId);
         Søknad rekonstruert = fpFordelSøknadGenerator.tilSøknad(xml);
         assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());
@@ -178,6 +178,7 @@ public class TestFPFordelSerialization {
                 new ClassPathResource("terminbekreftelse.pdf"));
         Endringssøknad es = new Endringssøknad(LocalDateTime.now(), TestUtils.søker(),
                 ForeldrepengerTestUtils.fordeling(), "42", v1, v2);
+        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(es));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
                 new CallIdGenerator("jalla").create());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
