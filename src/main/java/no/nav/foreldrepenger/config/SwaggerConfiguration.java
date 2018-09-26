@@ -20,8 +20,12 @@ public class SwaggerConfiguration {
 
     @Bean
     public Docket productApi() {
-        return new Docket(DocumentationType.SWAGGER_2).protocols(protocols("http", "https")).select()
-                .apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .protocols(protocols("http", "https"))
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
     }
 
     private static Set<String> protocols(String... schemes) {

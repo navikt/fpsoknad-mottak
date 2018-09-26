@@ -54,6 +54,8 @@ fasitResources:
       resourceType: webserviceendpoint
     - alias: virksomhet:Sak_v2
       resourceType: webserviceendpoint
+    - alias: sak.saker
+      resourceType: restservice
     - alias : securityTokenService
       resourceType: baseurl
     - alias : srvfpsoknad-oppslag

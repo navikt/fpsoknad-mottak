@@ -32,9 +32,10 @@ import no.nav.security.oidc.context.OIDCRequestContextHolder;
 
 @RestController
 @no.nav.security.oidc.api.ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-@RequestMapping("/oppslag")
+@RequestMapping(OppslagController.OPPSLAG)
 public class OppslagController {
 
+    public static final String OPPSLAG = "/oppslag";
     @Inject
     Environment env;
     private static final Logger LOG = getLogger(OppslagController.class);

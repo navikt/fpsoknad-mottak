@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.stub;
 
+import no.nav.foreldrepenger.lookup.rest.sak.SakClient;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.OrganisasjonClient;
@@ -77,5 +78,11 @@ public class StubConfiguration {
     @Primary
     public GsakClient gsakClientStub() {
         return new GsakClientStub();
+    }
+
+    @Bean
+    @Primary
+    public SakClient sakClientStub() {
+        return new SakClientStub();
     }
 }
