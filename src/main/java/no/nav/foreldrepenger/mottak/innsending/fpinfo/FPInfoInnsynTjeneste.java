@@ -18,19 +18,19 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.XMLToDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.fpfordel.XMLTilSøknadMapper;
 
 @Service
 public class FPInfoInnsynTjeneste implements Innsyn {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoInnsynTjeneste.class);
 
-    private final XMLToDomainMapper mapper;
+    private final XMLTilSøknadMapper mapper;
     private final FPInfoConfig config;
     private final RestTemplate template;
 
     public FPInfoInnsynTjeneste(FPInfoConfig config, RestTemplate template,
-            XMLToDomainMapper mapper) {
+            XMLTilSøknadMapper mapper) {
         this.config = config;
         this.template = template;
         this.mapper = mapper;

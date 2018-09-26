@@ -31,6 +31,10 @@ public class ForeldrepengerTestUtils {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
     }
 
+    public static Søknad foreldrepengeSøknadUtenVedlegg() {
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger());
+    }
+
     public static Søknad søknad(Vedlegg... vedlegg) {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), asList(vedlegg));
     }

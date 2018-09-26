@@ -88,17 +88,17 @@ import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class XMLToDomainMapper {
+public class XMLTilSøknadMapper {
 
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
-    private static final Logger LOG = LoggerFactory.getLogger(XMLToDomainMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XMLTilSøknadMapper.class);
 
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
 
     private final Oppslag oppslag;
 
-    public XMLToDomainMapper(Oppslag oppslag) {
+    public XMLTilSøknadMapper(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
@@ -206,7 +206,7 @@ public class XMLToDomainMapper {
     }
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
-        return safeStream(frilansoppdrag).map(XMLToDomainMapper::tilFrilansOppdrag).collect(toList());
+        return safeStream(frilansoppdrag).map(XMLTilSøknadMapper::tilFrilansOppdrag).collect(toList());
     }
 
     private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
@@ -226,7 +226,7 @@ public class XMLToDomainMapper {
 
     private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
             List<AnnenOpptjening> annenOpptjening) {
-        return safeStream(annenOpptjening).map(XMLToDomainMapper::tilAnnenOpptjening).collect(toList());
+        return safeStream(annenOpptjening).map(XMLTilSøknadMapper::tilAnnenOpptjening).collect(toList());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
@@ -242,7 +242,7 @@ public class XMLToDomainMapper {
     }
 
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
-        return safeStream(egenNaering).map(XMLToDomainMapper::tilEgenNæring).collect(toList());
+        return safeStream(egenNaering).map(XMLTilSøknadMapper::tilEgenNæring).collect(toList());
     }
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
@@ -297,7 +297,7 @@ public class XMLToDomainMapper {
     }
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
-        return virksomhetstype.stream().map(XMLToDomainMapper::tilVirksomhetsType).collect(toList());
+        return virksomhetstype.stream().map(XMLTilSøknadMapper::tilVirksomhetsType).collect(toList());
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
@@ -351,7 +351,7 @@ public class XMLToDomainMapper {
 
     private static List<LukketPeriodeMedVedlegg> tilPerioder(
             List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioder) {
-        return safeStream(perioder).map(XMLToDomainMapper::tilLukketPeriode).collect(toList());
+        return safeStream(perioder).map(XMLTilSøknadMapper::tilLukketPeriode).collect(toList());
     }
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(

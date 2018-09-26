@@ -107,9 +107,9 @@ import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class DomainToXMLMapper {
+public class SøknadTilXMLMapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DomainToXMLMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
     private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
@@ -120,7 +120,7 @@ public class DomainToXMLMapper {
 
     private final Oppslag oppslag;
 
-    public DomainToXMLMapper(Oppslag oppslag) {
+    public SøknadTilXMLMapper(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
@@ -132,14 +132,14 @@ public class DomainToXMLMapper {
         return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), false);
     }
 
-    private Soeknad tilModell(Endringssøknad søknad, AktorId søker) {
-        LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", søknad);
+    private Soeknad tilModell(Endringssøknad sendringsøknad, AktorId søker) {
+        LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", sendringsøknad);
         return new Soeknad()
-                .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
-                .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
-                .withSoeker(søkerFra(søker, søknad.getSøker()))
-                .withOmYtelse(ytelseFra(søknad))
-                .withMottattDato(søknad.getMottattdato().toLocalDate());
+                .withAndreVedlegg(vedleggFra(sendringsøknad.getFrivilligeVedlegg()))
+                .withPaakrevdeVedlegg(vedleggFra(sendringsøknad.getPåkrevdeVedlegg()))
+                .withSoeker(søkerFra(søker, sendringsøknad.getSøker()))
+                .withOmYtelse(ytelseFra(sendringsøknad))
+                .withMottattDato(sendringsøknad.getMottattdato().toLocalDate());
     }
 
     private Soeknad tilModell(Søknad søknad, AktorId søker) {
@@ -157,7 +157,7 @@ public class DomainToXMLMapper {
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
-                .map(DomainToXMLMapper::vedleggFra)
+                .map(SøknadTilXMLMapper::vedleggFra)
                 .collect(toList());
     }
 
@@ -268,7 +268,7 @@ public class DomainToXMLMapper {
 
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
         return safeStream(frilansOppdrag)
-                .map(DomainToXMLMapper::frilansOppdragFra)
+                .map(SøknadTilXMLMapper::frilansOppdragFra)
                 .collect(toList());
     }
 
@@ -280,21 +280,21 @@ public class DomainToXMLMapper {
 
     private static List<EgenNaering> egenNæringFra(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
-                .map(DomainToXMLMapper::egenNæringFra)
+                .map(SøknadTilXMLMapper::egenNæringFra)
                 .collect(toList());
     }
 
     private static List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforholdFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         return safeStream(utenlandskArbeidsforhold)
-                .map(DomainToXMLMapper::utenlandskArbeidsforholdFra)
+                .map(SøknadTilXMLMapper::utenlandskArbeidsforholdFra)
                 .collect(toList());
     }
 
     private static List<AnnenOpptjening> annenOpptjeningFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
-                .map(DomainToXMLMapper::annenOpptjeningFra)
+                .map(SøknadTilXMLMapper::annenOpptjeningFra)
                 .collect(toList());
     }
 
@@ -350,7 +350,7 @@ public class DomainToXMLMapper {
     private static List<Virksomhetstyper> virksomhetsTyperFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype> typer) {
         return safeStream(typer)
-                .map(DomainToXMLMapper::virksomhetsTypeFra)
+                .map(SøknadTilXMLMapper::virksomhetsTypeFra)
                 .collect(toList());
     }
 
@@ -477,7 +477,7 @@ public class DomainToXMLMapper {
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
                         safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
-                .map(DomainToXMLMapper::utenlandOppholdFra)
+                .map(SøknadTilXMLMapper::utenlandOppholdFra)
                 .collect(toList());
 
     }
@@ -514,7 +514,7 @@ public class DomainToXMLMapper {
     private static List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioderFra(
             List<LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
-                .map(DomainToXMLMapper::lukkerPeriodeFra)
+                .map(SøknadTilXMLMapper::lukkerPeriodeFra)
                 .collect(toList());
 
     }

@@ -12,15 +12,15 @@ import no.nav.foreldrepenger.mottak.http.Oppslag;
 @Component
 public class ForeldrepengerSøknadMapper {
 
-    private final XMLToDomainMapper xmlMapper;
-    private final DomainToXMLMapper domainMapper;
+    private final XMLTilSøknadMapper xmlMapper;
+    private final SøknadTilXMLMapper domainMapper;
 
     @Inject
     public ForeldrepengerSøknadMapper(Oppslag oppslag) {
-        this(new XMLToDomainMapper(oppslag), new DomainToXMLMapper(oppslag));
+        this(new XMLTilSøknadMapper(oppslag), new SøknadTilXMLMapper(oppslag));
     }
 
-    private ForeldrepengerSøknadMapper(XMLToDomainMapper xmlMapper, DomainToXMLMapper domainMapper) {
+    private ForeldrepengerSøknadMapper(XMLTilSøknadMapper xmlMapper, SøknadTilXMLMapper domainMapper) {
         this.xmlMapper = xmlMapper;
         this.domainMapper = domainMapper;
     }
