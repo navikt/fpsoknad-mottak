@@ -12,8 +12,6 @@ no.nav.security.oidc:
     selvbetjening.cookie_name: localhost-idtoken
 
 securitytokenservice.uri:  http://localhost
-
-
     
 AKTOER_V2_ENDPOINTURL: http://localhost
 VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL: http://localhost
