@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
 import java.util.List;
 
 public interface SakClient {
 
-    List<no.nav.foreldrepenger.lookup.ws.ytelser.Sak> sakerFor(Fødselsnummer fnr, String oidcToken);
+    List<no.nav.foreldrepenger.lookup.ws.ytelser.Sak> sakerFor(AktorId aktor, String oidcToken);
 
 }

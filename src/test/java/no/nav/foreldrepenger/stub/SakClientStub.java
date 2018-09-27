@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.stub;
 
 import no.nav.foreldrepenger.lookup.rest.sak.SakClient;
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SakClientStub implements SakClient {
     @Override
-    public List<Sak> sakerFor(Fødselsnummer fnr, String oidcToken) {
+    public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         return Arrays.asList(
             new Sak("sak1", "typen", "fagomr", "systemet",
                 "fsid1", LocalDate.of(2018,9,19)),

@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
 import no.nav.foreldrepenger.lookup.FnrExtractor;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import no.nav.security.oidc.OIDCConstants;
@@ -23,12 +25,14 @@ import static org.springframework.http.ResponseEntity.ok;
 class SakController {
 
     private final SakClient sakClient;
+    private final AktorIdClient aktorClient;
     private final OIDCRequestContextHolder contextHolder;
 
     @Inject
-    public SakController(SakClient sakClient, OIDCRequestContextHolder contextHolder) {
+    public SakController(SakClient sakClient, AktorIdClient aktorClient, OIDCRequestContextHolder contextHolder) {
         this.sakClient = sakClient;
         this.contextHolder = contextHolder;
+        this.aktorClient = aktorClient;
     }
 
     @RequestMapping(method = { RequestMethod.GET }, value = "/sak")
@@ -41,7 +45,8 @@ class SakController {
         }
 
         Fødselsnummer fnr = new Fødselsnummer(fnrFromClaims);
-        return ok(sakClient.sakerFor(fnr, oidcToken));
+        final AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
+        return ok(sakClient.sakerFor(aktorId, oidcToken));
 
     }
 

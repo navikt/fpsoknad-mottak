@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +11,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class SakClientHttp implements SakClient {
 
@@ -32,14 +32,14 @@ public class SakClientHttp implements SakClient {
     }
 
     @Override
-    public List<Sak> sakerFor(Fødselsnummer fnr, String oidcToken) {
+    public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         log.info("Querying Sak service at " + sakBaseUrl);
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Saml " + Base64.getEncoder().encodeToString(stripSpaces(samlToken).getBytes()));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
-            sakBaseUrl,
+            sakBaseUrl + "?aktoerId=" + aktor.getAktør(),
             HttpMethod.GET,
             requestEntity,
             new ParameterizedTypeReference<List<RemoteSak>>() {
