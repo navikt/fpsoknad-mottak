@@ -31,9 +31,9 @@ public class StsClient {
     }
 
     public String exchangeForSamlToken(String oidcToken) {
-        log.info("Attempting OIDC to SAML token exchange");
+        log.info("Attempting OIDC to SAML token exchange from " + stsUrl);
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "text/xml;charset=utf-8");
+        headers.set("Content-Type", "text/xml");
         headers.set("SOAPAction", "http://docs.oasis-open.org/ws-sx/ws-trust/200512/RST/Issue");
         String requestBody = replacePlaceholders(Base64.getEncoder().encodeToString(oidcToken.getBytes()));
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
