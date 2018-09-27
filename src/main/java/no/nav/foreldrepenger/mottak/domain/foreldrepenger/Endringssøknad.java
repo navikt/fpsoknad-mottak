@@ -30,8 +30,7 @@ public class Endringssøknad extends Søknad {
             @JsonProperty("rettigheter") Rettigheter rettigheter,
             @JsonProperty("saksnr") String saksnr,
             @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {
-        super(mottattDato, søker,
-                new Foreldrepenger(annenForelder, fødsel, rettigheter, null, null, fordeling, null),
+        super(mottattDato, søker, new Foreldrepenger(annenForelder, fødsel, rettigheter, null, null, fordeling, null),
                 vedlegg);
         this.saksnr = saksnr;
     }

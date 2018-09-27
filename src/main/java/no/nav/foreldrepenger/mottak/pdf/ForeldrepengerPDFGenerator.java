@@ -113,8 +113,8 @@ public class ForeldrepengerPDFGenerator {
         float yTop = PDFElementRenderer.calculateStartY();
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            PDPage page1 = pdfRenderer.newPage();
-            try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
+            PDPage page = pdfRenderer.newPage();
+            try (PDPageContentStream cos = new PDPageContentStream(doc, page)) {
                 float y = yTop;
                 y -= fpRenderer.header(søker, doc, cos, true, y);
 
@@ -143,12 +143,12 @@ public class ForeldrepengerPDFGenerator {
                 if (vedlegg != null) {
                     fpRenderer.vedlegg(søknad.getVedlegg(), cos, y);
                 }
-                doc.addPage(page1);
-                doc.save(baos);
-                return baos.toByteArray();
+                doc.addPage(page);
             } catch (IOException ex) {
                 throw new RuntimeException("Error while creating pdf", ex);
             }
+            doc.save(baos);
+            return baos.toByteArray();
         } catch (IOException ex) {
             throw new RuntimeException("Error while creating pdf", ex);
         }
