@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Base64;
 
 import static java.util.stream.Collectors.joining;
@@ -45,9 +45,9 @@ public class StsClient {
     }
 
     private String readTemplate() {
-        try {
-            final Path templatePath = Paths.get(StsClient.class.getResource("/template/stsenvelope.txt").toURI());
-            return Files.readAllLines(templatePath).stream().map(String::trim).collect(joining("\n"));
+        try (InputStream stream = StsClient.class.getResourceAsStream("/template/stsenvelope.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            return reader.lines().map(String::trim).collect(joining("\n"));
         } catch (Exception ex) {
             throw new RuntimeException("Error while reading SOAP request template", ex);
         }
