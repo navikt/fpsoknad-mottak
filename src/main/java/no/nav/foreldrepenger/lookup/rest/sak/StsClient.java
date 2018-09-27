@@ -35,8 +35,7 @@ public class StsClient {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "text/xml;charset=utf-8");
         headers.set("SOAPAction", "http://docs.oasis-open.org/ws-sx/ws-trust/200512/RST/Issue");
-        String requestBody = Base64.getEncoder().encodeToString(
-            replacePlaceholders(oidcToken).getBytes());
+        String requestBody = replacePlaceholders(Base64.getEncoder().encodeToString(oidcToken.getBytes()));
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> response = restTemplate.exchange(stsUrl, HttpMethod.POST, requestEntity, String.class);
         if (response.getStatusCode() != HttpStatus.OK) {
@@ -49,7 +48,7 @@ public class StsClient {
     private String readTemplate() {
         try (InputStream stream = StsClient.class.getResourceAsStream("/template/stsenvelope.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-            return reader.lines().map(String::trim).collect(joining("\n"));
+            return reader.lines().collect(joining("\n"));
         } catch (Exception ex) {
             throw new RuntimeException("Error while reading SOAP request template", ex);
         }
