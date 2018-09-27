@@ -73,7 +73,7 @@ public class ForeldrepengeInfoRenderer {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
-            y -= renderer.addLinesOfRegularText(norskForelder(annenForelder), cos, y);
+            y -= renderer.addLinesOfRegularText(norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
         }
         else if (annenForelder instanceof UtenlandskForelder) {
             y -= renderer.addLinesOfRegularText(utenlandskForelder(annenForelder), cos, y);
@@ -86,11 +86,9 @@ public class ForeldrepengeInfoRenderer {
             String harRett = textFormatter.fromMessageSource("harrett") +
                     textFormatter.yesNo(harAnnenForelderRett);
             y -= renderer.addLineOfRegularText(harRett, cos, y);
-            y -= renderer.addBlankLine();
             String informert = textFormatter.fromMessageSource("informert") +
                     textFormatter.yesNo(erAnnenForlderInformert);
             y -= renderer.addLineOfRegularText(informert, cos, y);
-            y -= renderer.addBlankLine();
         }
         return startY - y;
     }
@@ -265,14 +263,13 @@ public class ForeldrepengeInfoRenderer {
         return lines;
     }
 
-    private List<String> norskForelder(AnnenForelder annenForelder) {
-        NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
+    private List<String> norskForelder(NorskForelder norskForelder) {
         return Arrays.asList(
                 Optional.ofNullable(norskForelder.getNavn())
                         .map(n -> textFormatter.fromMessageSource("navn", n))
                         .orElse("Ukjent"),
                 textFormatter.fromMessageSource("nasjonalitet", "Norsk"),
-                textFormatter.fromMessageSource("aktør", norskForelder.getFnr().getFnr()));
+                textFormatter.fromMessageSource("fnr", norskForelder.getFnr().getFnr()));
     }
 
     private List<String> arbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
