@@ -37,6 +37,8 @@ public class SakClientHttp implements SakClient {
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Saml " + Base64.getEncoder().encodeToString(stripSpaces(samlToken).getBytes()));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
             sakBaseUrl + "?aktoerId=" + aktor.getAktør(),
