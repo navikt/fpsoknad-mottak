@@ -1,26 +1,29 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.util.FnrExtractor;
+import static java.util.Collections.emptyList;
+
+import java.net.URI;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.util.List;
-
-import static java.util.Collections.*;
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 
 @Service
+@ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagService extends AbstractRestConnection implements Oppslag {
 
     private static final String AKTØR = "/oppslag/aktor";
@@ -80,12 +83,11 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
         LOG.info("Henter arbeidsforhold fra {}", uri);
         try {
             List<Arbeidsforhold> arbeidsforhold = template.exchange(
-                uri,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Arbeidsforhold>>() {
-                }
-            ).getBody();
+                    uri,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<Arbeidsforhold>>() {
+                    }).getBody();
             LOG.info("Fant {} arbeidsforhold", arbeidsforhold.size());
             return arbeidsforhold;
         } catch (Exception ex) {
