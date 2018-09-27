@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 
 import java.net.URI;
 import java.util.List;
@@ -48,7 +49,9 @@ public class OppslagService implements Oppslag {
     private <T> T oppslag(String pathSegment, Class<T> clazz) {
         URI uri = UriComponentsBuilder.fromUri(connection.baseURI()).pathSegment(pathSegment).build().toUri();
         LOG.info("Slår opp {} fra {}", pathSegment.toLowerCase(), uri);
-        return connection.getTemplate().getForObject(uri, clazz);
+        T respons = connection.getTemplate().getForObject(uri, clazz);
+        LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
+        return respons;
     }
 
     @Override
@@ -62,7 +65,9 @@ public class OppslagService implements Oppslag {
                 .queryParam("fnr", fnr.getFnr()).build()
                 .toUri();
         LOG.info("Slår opp {} fra {}", AKTØRFNR.toLowerCase(), uri);
-        return connection.getTemplate().getForObject(uri, AktorId.class);
+        AktorId respons = connection.getTemplate().getForObject(uri, AktorId.class);
+        LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
+        return respons;
     }
 
     @Override
@@ -71,7 +76,9 @@ public class OppslagService implements Oppslag {
                 .queryParam("aktorId", aktørId.getId()).build()
                 .toUri();
         LOG.info("Slår opp {} fra {}", FNR.toLowerCase(), uri);
-        return connection.getTemplate().getForObject(uri, Fødselsnummer.class);
+        Fødselsnummer respons = connection.getTemplate().getForObject(uri, Fødselsnummer.class);
+        LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
+        return respons;
     }
 
     @Override
