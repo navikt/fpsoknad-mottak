@@ -1,9 +1,8 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.Files;
@@ -14,6 +13,8 @@ import java.util.Base64;
 import static java.util.stream.Collectors.joining;
 
 public class StsClient {
+
+    private static final Logger log = LoggerFactory.getLogger(StsClient.class);
 
     private RestTemplate restTemplate;
     private String stsUrl;
@@ -30,12 +31,17 @@ public class StsClient {
     }
 
     public String exchangeForSamlToken(String oidcToken) {
+        log.info("Exchanging OIDC token for SAML token");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_XML);
         String requestBody = Base64.getEncoder().encodeToString(
             replacePlaceholders(oidcToken).getBytes());
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-        return restTemplate.exchange(stsUrl, HttpMethod.POST, requestEntity, String.class).getBody();
+        ResponseEntity<String> response = restTemplate.exchange(stsUrl, HttpMethod.POST, requestEntity, String.class);
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new RuntimeException("Error while exchanging token, STS returned " + response.getStatusCode());
+        }
+        return response.getBody();
     }
 
     private String readTemplate() {
