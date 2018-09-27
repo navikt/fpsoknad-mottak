@@ -101,6 +101,13 @@ public class SøknadPreprodController {
                 : ok().body(esKonvolutt(søknad, søker()));
     }
 
+    @PostMapping(path = "/konvoluttEndring", produces = { APPLICATION_XML_VALUE, APPLICATION_JSON_VALUE })
+    public ResponseEntity<Object> konvoluttEndring(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return isForeldrepenger(endringssøknad)
+                ? ok().body(fpKonvolutt(endringssøknad, søker()))
+                : ok().body(esKonvolutt(endringssøknad, søker()));
+    }
+
     private String esSøknad(Søknad søknad, Person søker) {
         return dokmotSøknadGenerator.tilXML(søknad, søker);
     }
@@ -121,7 +128,7 @@ public class SøknadPreprodController {
         return fpfordelKonvoluttGenerator.payload(søknad, søker, "999");
     }
 
-    private Object fpEndringKonvolutt(Endringssøknad endringssøknad, Person søker) {
+    private Object fpKonvolutt(Endringssøknad endringssøknad, Person søker) {
         return fpfordelKonvoluttGenerator.payload(endringssøknad, søker, "999");
     }
 
