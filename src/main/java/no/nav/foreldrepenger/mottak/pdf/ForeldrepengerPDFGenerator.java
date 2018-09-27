@@ -90,6 +90,11 @@ public class ForeldrepengerPDFGenerator {
                     y -= fpRenderer.fordeling(fordeling, cos, y);
                 }
 
+                Rettigheter rettigheter = stønad.getRettigheter();
+                if (rettigheter != null) {
+                    y -= fpRenderer.rettigheter(rettigheter, cos, y);
+                }
+
                 final List<Vedlegg> vedlegg = søknad.getVedlegg();
                 if (vedlegg != null) {
                     fpRenderer.vedlegg(søknad.getVedlegg(), cos, y);
@@ -124,11 +129,6 @@ public class ForeldrepengerPDFGenerator {
                             y);
                 }
 
-                Rettigheter rettigheter = stønad.getRettigheter();
-                if (rettigheter != null) {
-                    y -= fpRenderer.rettigheter(rettigheter, cos, y);
-                }
-
                 RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
                 if (relasjon != null) {
                     y -= fpRenderer.relasjonTilBarn(relasjon, cos, y);
@@ -139,8 +139,12 @@ public class ForeldrepengerPDFGenerator {
                     y -= fpRenderer.fordeling(fordeling, cos, y);
                 }
 
+                Rettigheter rettigheter = stønad.getRettigheter();
+                if (rettigheter != null) {
+                    y -= fpRenderer.rettigheter(rettigheter, cos, y);
+                }
                 final List<Vedlegg> vedlegg = søknad.getVedlegg();
-                if (vedlegg != null) {
+                if (vedlegg != null && !vedlegg.isEmpty()) {
                     fpRenderer.vedlegg(søknad.getVedlegg(), cos, y);
                 }
                 doc.addPage(page);
