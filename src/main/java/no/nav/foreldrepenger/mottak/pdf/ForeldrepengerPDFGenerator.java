@@ -18,10 +18,12 @@ import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
 
 @Component
@@ -41,15 +43,13 @@ public class ForeldrepengerPDFGenerator {
 
     public byte[] generate(Søknad søknad, Person søker) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
-
         float yTop = PDFElementRenderer.calculateStartY();
 
-        try (PDDocument doc = new PDDocument();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page1 = pdfRenderer.newPage();
             try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
                 float y = yTop;
-                y -= fpRenderer.header(søker, doc, cos, y);
+                y -= fpRenderer.header(søker, doc, cos, false, y);
 
                 AnnenForelder annenForelder = stønad.getAnnenForelder();
                 if (annenForelder != null) {
@@ -74,7 +74,7 @@ public class ForeldrepengerPDFGenerator {
             PDPage page2 = pdfRenderer.newPage();
             try (PDPageContentStream cos = new PDPageContentStream(doc, page2)) {
                 float y = yTop;
-                y -= fpRenderer.header(søker, doc, cos, y);
+                y -= fpRenderer.header(søker, doc, cos, false, y);
 
                 Medlemsskap medlemsskap = stønad.getMedlemsskap();
                 if (medlemsskap != null) {
@@ -82,7 +82,7 @@ public class ForeldrepengerPDFGenerator {
                 }
                 RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
                 if (relasjon != null) {
-                    y -= fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), cos, y);
+                    y -= fpRenderer.relasjonTilBarn(relasjon, cos, y);
                 }
 
                 Fordeling fordeling = stønad.getFordeling();
@@ -108,4 +108,49 @@ public class ForeldrepengerPDFGenerator {
 
     }
 
+    public byte[] generate(Endringssøknad søknad, Person søker) {
+        Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
+        float yTop = PDFElementRenderer.calculateStartY();
+
+        try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            PDPage page1 = pdfRenderer.newPage();
+            try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
+                float y = yTop;
+                y -= fpRenderer.header(søker, doc, cos, true, y);
+
+                AnnenForelder annenForelder = stønad.getAnnenForelder();
+                if (annenForelder != null) {
+                    y -= fpRenderer.annenForelder(annenForelder, stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                            y);
+                }
+
+                Rettigheter rettigheter = stønad.getRettigheter();
+                if (rettigheter != null) {
+                    y -= fpRenderer.rettigheter(rettigheter, cos, y);
+                }
+
+                RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
+                if (relasjon != null) {
+                    y -= fpRenderer.relasjonTilBarn(relasjon, cos, y);
+                }
+
+                Fordeling fordeling = stønad.getFordeling();
+                if (fordeling != null) {
+                    y -= fpRenderer.fordeling(fordeling, cos, y);
+                }
+
+                final List<Vedlegg> vedlegg = søknad.getVedlegg();
+                if (vedlegg != null) {
+                    fpRenderer.vedlegg(søknad.getVedlegg(), cos, y);
+                }
+                doc.addPage(page1);
+                doc.save(baos);
+                return baos.toByteArray();
+            } catch (IOException ex) {
+                throw new RuntimeException("Error while creating pdf", ex);
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Error while creating pdf", ex);
+        }
+    }
 }

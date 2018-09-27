@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,35 +21,33 @@ public class PDFElementRenderer {
 
     private static final Logger log = LoggerFactory.getLogger(PDFElementRenderer.class);
 
-    private static final int margin = 40;
+    private static final int MARGIN = 40;
 
-    private static final PDFont fontPlain = PDType1Font.HELVETICA;
-    private static final PDFont fontBold = PDType1Font.HELVETICA_BOLD;
+    private static final PDFont FONTPLAIN = PDType1Font.HELVETICA;
+    private static final PDFont FONTBOLD = PDType1Font.HELVETICA_BOLD;
 
-    private static final int fontPLainSize = 12;
-    private static final int fontHeadingSize = 13;
-    private static final int fontPLainHeight = Math
-            .round(fontPlain.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontPLainSize);
-    private static final int fontHeadingHeight = Math
-            .round(fontPlain.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontHeadingSize);
+    private static final int FONTPLAINSIZE = 12;
+    private static final int FONTHEADINGSIZE = 13;
+    private static final int FONTPLAINHEIGHT = fontPlainHeight();
+    private static final int FONTHEADINGHEIGHT = fontHeadingHeight();
 
-    private static final PDRectangle mediaBox = new PDPage(PDRectangle.A4).getMediaBox();
+    private static final PDRectangle MEDIABOX = new PDPage(A4).getMediaBox();
 
     public PDPage newPage() {
-        return new PDPage(PDRectangle.A4);
+        return new PDPage(A4);
     }
 
     public static float calculateStartY() {
-        return mediaBox.getUpperRightY() - margin;
+        return MEDIABOX.getUpperRightY() - MARGIN;
     }
 
-    public float addLineOfRegularText(  String line, PDPageContentStream cos, float startY) throws IOException {
+    public float addLineOfRegularText(String line, PDPageContentStream cos, float startY) throws IOException {
         cos.beginText();
-        cos.setFont(fontPlain, fontPLainSize);
-        cos.newLineAtOffset(margin, startY);
+        cos.setFont(FONTPLAIN, FONTPLAINSIZE);
+        cos.newLineAtOffset(MARGIN, startY);
         cos.showText(line);
         cos.endText();
-        return fontPLainHeight;
+        return FONTPLAINHEIGHT;
     }
 
     public float addLinesOfRegularText(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
@@ -62,7 +62,8 @@ public class PDFElementRenderer {
         return addLineOfRegularText("\u2022 " + line, cos, startY);
     }
 
-    public float addLMultilineBulletpoint(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
+    public float addLMultilineBulletpoint(List<String> lines, PDPageContentStream cos, float startY)
+            throws IOException {
         float yTotal = addBulletPoint(lines.get(0), cos, startY);
         for (String line : lines.subList(1, lines.size())) {
             yTotal += addLineOfRegularText("  " + line, cos, startY - yTotal);
@@ -80,13 +81,13 @@ public class PDFElementRenderer {
 
     public float addCenteredHeading(String heading, PDPageContentStream cos, float startY) throws IOException {
         cos.beginText();
-        cos.setFont(fontBold, fontHeadingSize);
-        float titleWidth = fontBold.getStringWidth(heading) / 1000 * fontHeadingSize;
-        float startX = (mediaBox.getWidth() - titleWidth) / 2;
+        cos.setFont(FONTBOLD, FONTHEADINGSIZE);
+        float titleWidth = FONTBOLD.getStringWidth(heading) / 1000 * FONTHEADINGSIZE;
+        float startX = (MEDIABOX.getWidth() - titleWidth) / 2;
         cos.newLineAtOffset(startX, startY);
         cos.showText(heading);
         cos.endText();
-        return fontHeadingHeight;
+        return FONTHEADINGHEIGHT;
     }
 
     public float addCenteredHeadings(List<String> headings, PDPageContentStream cos, float startY) throws IOException {
@@ -99,25 +100,25 @@ public class PDFElementRenderer {
 
     public float addLeftHeading(String heading, PDPageContentStream cos, float startY) throws IOException {
         cos.beginText();
-        cos.setFont(fontBold, fontHeadingSize);
-        float startX = margin;
+        cos.setFont(FONTBOLD, FONTHEADINGSIZE);
+        float startX = MARGIN;
         cos.newLineAtOffset(startX, startY);
         cos.showText(heading);
         cos.endText();
-        return fontHeadingHeight;
+        return FONTHEADINGHEIGHT;
     }
 
     public float addDividerLine(PDPageContentStream cos, float startY) throws IOException {
         cos.setLineWidth(1);
-        cos.moveTo(margin, startY);
-        cos.lineTo(mediaBox.getWidth() - margin, startY);
+        cos.moveTo(MARGIN, startY);
+        cos.lineTo(MEDIABOX.getWidth() - MARGIN, startY);
         cos.closeAndStroke();
         return 20;
     }
 
     public float addLogo(PDDocument doc, PDPageContentStream cos, float startY) throws IOException {
         PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, logoFromInputStream(), "logo");
-        float startX = (mediaBox.getWidth() - ximage.getWidth()) / 2;
+        float startX = (MEDIABOX.getWidth() - ximage.getWidth()) / 2;
         float offsetTop = 40;
         startY -= ximage.getHeight() / 2 + offsetTop;
         cos.drawImage(ximage, startX, startY, ximage.getWidth(), ximage.getHeight());
@@ -131,7 +132,7 @@ public class PDFElementRenderer {
     private static byte[] logoFromInputStream() {
         log.debug("Reading logo image");
         try (InputStream is = PDFElementRenderer.class.getResourceAsStream("/pdf/nav-logo.png");
-             ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
             for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
                 os.write(buffer, 0, len);
@@ -143,4 +144,11 @@ public class PDFElementRenderer {
 
     }
 
+    private static int fontHeadingHeight() {
+        return Math.round(FONTPLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONTHEADINGSIZE);
+    }
+
+    private static int fontPlainHeight() {
+        return Math.round(FONTPLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONTPLAINSIZE);
+    }
 }

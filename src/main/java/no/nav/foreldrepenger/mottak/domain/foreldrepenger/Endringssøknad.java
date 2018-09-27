@@ -42,8 +42,7 @@ public class Endringssøknad extends Søknad {
 
     @Override
     public String toString() {
-        Foreldrepenger ytelse = Foreldrepenger.class.cast(getYtelse());
-        return getClass().getSimpleName() + " [saksnr=" + saksnr + ", fordeling=" + ytelse.getFordeling()
-                + ", fødsel=" + ytelse.getRelasjonTilBarn() + "]";
+        return getClass().getSimpleName() + " [saksnr=" + saksnr + ", getYtelse()=" + getYtelse() + "]";
     }
+
 }
