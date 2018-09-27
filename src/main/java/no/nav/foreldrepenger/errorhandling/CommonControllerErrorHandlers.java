@@ -1,9 +1,5 @@
 package no.nav.foreldrepenger.errorhandling;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
@@ -17,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
+
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class CommonControllerErrorHandlers {
@@ -60,6 +58,11 @@ public class CommonControllerErrorHandlers {
     public ResponseEntity<String> handleOIDCUnauthorizedException(OIDCUnauthorizedException ex) {
         forbiddenRequestsCounter.increment();
         return logAndRespond(ex, FORBIDDEN);
+    }
+
+    @ExceptionHandler({ Exception.class })
+    public ResponseEntity<String> catchAll(Exception ex) {
+        return logAndRespond(ex, INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<String> logAndRespond(Exception ex, HttpStatus status) {

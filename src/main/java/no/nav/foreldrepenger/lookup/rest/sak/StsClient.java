@@ -31,7 +31,7 @@ public class StsClient {
     }
 
     public String exchangeForSamlToken(String oidcToken) {
-        log.info("Exchanging OIDC token for SAML token");
+        log.info("Attempting OIDC to SAML token exchange");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_XML);
         String requestBody = Base64.getEncoder().encodeToString(
@@ -41,6 +41,7 @@ public class StsClient {
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while exchanging token, STS returned " + response.getStatusCode());
         }
+        log.info("Got SAMl token");
         return response.getBody();
     }
 
