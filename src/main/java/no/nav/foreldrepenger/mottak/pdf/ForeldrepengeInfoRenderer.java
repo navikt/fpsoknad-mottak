@@ -39,6 +39,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon;
@@ -66,7 +67,8 @@ public class ForeldrepengeInfoRenderer {
         return startY - y;
     }
 
-    public float annenForelder(AnnenForelder annenForelder, boolean harAnnenForelderRett,
+    public float annenForelder(AnnenForelder annenForelder, boolean erAnnenForlderInformert,
+            boolean harAnnenForelderRett,
             PDPageContentStream cos, float y) throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
@@ -80,11 +82,16 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText("Ukjent", cos, y);
         }
 
-        String harRett = textFormatter.fromMessageSource("harrett") +
-                textFormatter.yesNo(harAnnenForelderRett);
-        y -= renderer.addLineOfRegularText(harRett, cos, y);
-        y -= renderer.addBlankLine();
-
+        if (!(annenForelder instanceof UkjentForelder)) {
+            String harRett = textFormatter.fromMessageSource("harrett") +
+                    textFormatter.yesNo(harAnnenForelderRett);
+            y -= renderer.addLineOfRegularText(harRett, cos, y);
+            y -= renderer.addBlankLine();
+            String informert = textFormatter.fromMessageSource("informert") +
+                    textFormatter.yesNo(erAnnenForlderInformert);
+            y -= renderer.addLineOfRegularText(informert, cos, y);
+            y -= renderer.addBlankLine();
+        }
         return startY - y;
     }
 
@@ -201,10 +208,6 @@ public class ForeldrepengeInfoRenderer {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("perioder"), cos, y);
         y -= renderer.addBulletList(perioder(fordeling.getPerioder()), cos, y);
-        y -= renderer.addBlankLine();
-        String informert = textFormatter.fromMessageSource("informert") +
-                textFormatter.yesNo(fordeling.isErAnnenForelderInformert());
-        y -= renderer.addLineOfRegularText(informert, cos, y);
         y -= renderer.addBlankLine();
         return startY - y;
     }

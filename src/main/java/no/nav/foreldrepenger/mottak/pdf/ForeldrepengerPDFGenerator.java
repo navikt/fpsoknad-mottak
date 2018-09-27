@@ -125,7 +125,8 @@ public class ForeldrepengerPDFGenerator {
 
                 AnnenForelder annenForelder = stønad.getAnnenForelder();
                 if (annenForelder != null) {
-                    y -= fpRenderer.annenForelder(annenForelder, stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                    y -= fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
+                            stønad.getRettigheter().isHarAnnenForelderRett(), cos,
                             y);
                 }
 
