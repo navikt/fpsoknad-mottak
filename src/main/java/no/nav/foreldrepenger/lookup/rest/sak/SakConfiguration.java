@@ -13,7 +13,7 @@ import java.util.Arrays;
 @Configuration
 public class SakConfiguration {
 
-    @Value("${SAK_SAKER_URL")
+    @Value("${SAK_SAKER_URL}")
     private String sakBaseUrl;
 
     @Value("${SECURITYTOKENSERVICE_URL}")
