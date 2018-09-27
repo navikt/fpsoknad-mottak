@@ -7,24 +7,21 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
-public class OppslagService extends AbstractRestConnection implements Oppslag {
+public class OppslagService implements Oppslag {
 
     private static final String AKTØR = "/oppslag/aktor";
     private static final String AKTØRFNR = "/oppslag/aktorfnr";
@@ -33,13 +30,11 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
     private static final String ARBEID = "/arbeidsforhold";
 
     private static final Logger LOG = LoggerFactory.getLogger(OppslagService.class);
-    private final URI baseURI;
+    private final OppslagConnection connection;
     private final FnrExtractor extractor;
 
-    public OppslagService(@Value("${oppslag.baseuri:http://fpsoknad-oppslag/api}") URI baseURI,
-            RestTemplate template, FnrExtractor extractor) {
-        super(template);
-        this.baseURI = baseURI;
+    public OppslagService(OppslagConnection connection, FnrExtractor extractor) {
+        this.connection = connection;
         this.extractor = extractor;
     }
 
@@ -51,9 +46,9 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
     }
 
     private <T> T oppslag(String pathSegment, Class<T> clazz) {
-        URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(pathSegment).build().toUri();
+        URI uri = UriComponentsBuilder.fromUri(connection.baseURI()).pathSegment(pathSegment).build().toUri();
         LOG.info("Slår opp {} fra {}", pathSegment.toLowerCase(), uri);
-        return template.getForObject(uri, clazz);
+        return connection.getTemplate().getForObject(uri, clazz);
     }
 
     @Override
@@ -63,26 +58,28 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
 
     @Override
     public AktorId getAktørId(Fødselsnummer fnr) {
-        URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(AKTØRFNR).queryParam("fnr", fnr.getFnr()).build()
+        URI uri = UriComponentsBuilder.fromUri(connection.baseURI()).pathSegment(AKTØRFNR)
+                .queryParam("fnr", fnr.getFnr()).build()
                 .toUri();
         LOG.info("Slår opp {} fra {}", AKTØRFNR.toLowerCase(), uri);
-        return template.getForObject(uri, AktorId.class);
+        return connection.getTemplate().getForObject(uri, AktorId.class);
     }
 
     @Override
     public Fødselsnummer getFnr(AktorId aktørId) {
-        URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(FNR).queryParam("aktorId", aktørId.getId()).build()
+        URI uri = UriComponentsBuilder.fromUri(connection.baseURI()).pathSegment(FNR)
+                .queryParam("aktorId", aktørId.getId()).build()
                 .toUri();
         LOG.info("Slår opp {} fra {}", FNR.toLowerCase(), uri);
-        return template.getForObject(uri, Fødselsnummer.class);
+        return connection.getTemplate().getForObject(uri, Fødselsnummer.class);
     }
 
     @Override
     public List<Arbeidsforhold> getArbeidsforhold() {
-        URI uri = UriComponentsBuilder.fromUri(baseURI).pathSegment(ARBEID).build().toUri();
+        URI uri = UriComponentsBuilder.fromUri(connection.baseURI()).pathSegment(ARBEID).build().toUri();
         LOG.info("Henter arbeidsforhold fra {}", uri);
         try {
-            List<Arbeidsforhold> arbeidsforhold = template.exchange(
+            List<Arbeidsforhold> arbeidsforhold = connection.getTemplate().exchange(
                     uri,
                     HttpMethod.GET,
                     null,
@@ -98,12 +95,7 @@ public class OppslagService extends AbstractRestConnection implements Oppslag {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", baseURI=" + baseURI + "]";
-    }
-
-    @Override
-    public URI pingEndpoint() {
-        return UriComponentsBuilder.fromUri(baseURI).pathSegment("/oppslag/ping").build().toUri();
+        return getClass().getSimpleName() + " [connection=" + connection + ", extractor=" + extractor + "]";
     }
 
 }

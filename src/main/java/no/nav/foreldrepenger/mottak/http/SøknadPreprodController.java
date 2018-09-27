@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.METADATA;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -13,9 +12,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,14 +101,6 @@ public class SøknadPreprodController {
                 : ok().body(esKonvolutt(søknad, søker()));
     }
 
-    @PostMapping(path = "/konvoluttEndringMetadata", produces = { APPLICATION_JSON_VALUE })
-    public Object konvoluttEndringMetadata(@Valid @RequestBody Endringssøknad endringssøknad) {
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = fpKonvolutt(endringssøknad, søker());
-        HttpEntity<?> metadata = konvolutt.getBody().get(METADATA).get(0);
-        return metadata.getBody();
-
-    }
-
     private String esSøknad(Søknad søknad, Person søker) {
         return dokmotSøknadGenerator.tilXML(søknad, søker);
     }
@@ -130,10 +119,6 @@ public class SøknadPreprodController {
 
     private Object fpKonvolutt(Søknad søknad, Person søker) {
         return fpfordelKonvoluttGenerator.payload(søknad, søker, "999");
-    }
-
-    private HttpEntity<MultiValueMap<String, HttpEntity<?>>> fpKonvolutt(Endringssøknad endringssøknad, Person søker) {
-        return fpfordelKonvoluttGenerator.payload(endringssøknad, søker, "999");
     }
 
     private static boolean isForeldrepenger(Søknad søknad) {

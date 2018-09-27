@@ -35,6 +35,10 @@ public abstract class AbstractRestConnection {
         }
     }
 
+    public RestTemplate getTemplate() {
+        return template;
+    }
+
     protected static URI endpointFor(URI base, String path) {
         return UriComponentsBuilder
                 .fromUri(base)
