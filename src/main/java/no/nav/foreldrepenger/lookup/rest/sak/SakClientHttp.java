@@ -8,9 +8,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 public class SakClientHttp implements SakClient {
 
@@ -33,7 +36,7 @@ public class SakClientHttp implements SakClient {
         log.info("Querying Sak service at " + sakBaseUrl);
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Saml " + samlToken);
+        headers.set("Authorization", "Saml " + Base64.getEncoder().encodeToString(stripSpaces(samlToken).getBytes()));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
             sakBaseUrl,
@@ -52,6 +55,12 @@ public class SakClientHttp implements SakClient {
         return response.getBody().stream().
             map(RemoteSakMapper::map)
             .collect(toList());
+    }
+
+    private String stripSpaces(String samlAssertion) {
+        return Arrays.stream(samlAssertion.split("\n"))
+            .map(String::trim)
+            .collect(joining("\n"));
     }
 
 }
