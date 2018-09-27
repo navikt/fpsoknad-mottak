@@ -30,7 +30,7 @@ public class SakClientHttp implements SakClient {
 
     @Override
     public List<Sak> sakerFor(Fødselsnummer fnr, String oidcToken) {
-        log.info("Querying Sak service");
+        log.info("Querying Sak service at " + sakBaseUrl);
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Saml " + samlToken);
