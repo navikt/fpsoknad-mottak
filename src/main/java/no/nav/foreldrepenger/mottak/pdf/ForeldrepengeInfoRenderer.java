@@ -199,6 +199,8 @@ public class ForeldrepengeInfoRenderer {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("barn"), cos, y);
         y -= renderer.addLineOfRegularText(barn(relasjon), cos, y);
+        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("antallbarn", relasjon.getAntallBarn()), cos,
+                y);
         return startY - y;
     }
 
