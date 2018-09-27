@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SakClientStub implements SakClient {
     @Override
-    public List<Sak> sakerFor(Fødselsnummer fnr) {
+    public List<Sak> sakerFor(Fødselsnummer fnr, String oidcToken) {
         return Arrays.asList(
             new Sak("sak1", "typen", "fagomr", "systemet",
                 "fsid1", LocalDate.of(2018,9,19)),
