@@ -202,6 +202,6 @@ public class ForeldrepengerTestUtils {
     }
 
     static Rettigheter rettigheter() {
-        return new Rettigheter(true, true, true);
+        return new Rettigheter(true, true, true, LocalDate.now());
     }
 }

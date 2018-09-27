@@ -21,7 +21,6 @@ public class Foreldrepenger extends Ytelse {
     private final RelasjonTilBarnMedVedlegg relasjonTilBarn;
     @Valid
     private final Rettigheter rettigheter;
-    // @NotNull
     private final Dekningsgrad dekningsgrad;
     @Valid
     private final Opptjening opptjening;
