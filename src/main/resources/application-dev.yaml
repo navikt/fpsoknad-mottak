@@ -12,7 +12,6 @@ no.nav.security.oidc:
     selvbetjening.cookie_name: localhost-idtoken
 
 securitytokenservice.uri:  http://localhost
-
 http.proxy:
 
 AKTOER_V2_ENDPOINTURL: http://localhost
