@@ -118,7 +118,6 @@ public class SøknadTilXMLMapper {
     private static final ObjectFactory FP_FACTORY = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory ENDRING_FACTORY = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
 
@@ -131,14 +130,27 @@ public class SøknadTilXMLMapper {
     }
 
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(CONTEXT, ENDRING_FACTORY.createEndringssoeknad(tilModell(endringssøknad, søker)), false);
+        return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), false);
     }
 
-    private static Endringssoeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
+    private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
         LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
+        return new Soeknad()
+                .withMottattDato(LocalDate.now())
+                .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
+                .withAndreVedlegg(vedleggFra(endringsøknad.getFrivilligeVedlegg()))
+                .withPaakrevdeVedlegg(vedleggFra(endringsøknad.getPåkrevdeVedlegg()))
+                .withOmYtelse(ytelseFra(endringsøknad));
+    }
+
+    private static OmYtelse ytelseFra(Endringssøknad endringssøknad) {
+        return new OmYtelse().withAny(endringssøknadFra(endringssøknad));
+    }
+
+    private static Endringssoeknad endringssøknadFra(Endringssøknad endringssøknad) {
         return new Endringssoeknad()
-                .withFordeling(fordelingFra(endringsøknad))
-                .withSaksnummer(endringsøknad.getSaksnr());
+                .withFordeling(fordelingFra(endringssøknad))
+                .withSaksnummer(endringssøknad.getSaksnr());
     }
 
     private Soeknad tilModell(Søknad søknad, AktorId søker) {
