@@ -10,18 +10,63 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OppslagConfig {
 
-    static final String AKTØR = "/oppslag/aktor";
-    static final String AKTØRFNR = "/oppslag/aktorfnr";
-    static final String FNR = "/oppslag/fnr";
-    static final String PERSON = "/person";
-    static final String ARBEID = "/arbeidsforhold";
-
+    private static final String AKTØR = "/oppslag/aktor";
+    private static final String AKTØRFNR = "/oppslag/aktorfnr";
+    private static final String FNR = "/oppslag/fnr";
+    private static final String PERSON = "/person";
+    private static final String ARBEID = "/arbeidsforhold";
     private static final URI DEFAULT_BASE_URI = URI.create("http://fpsoknad-oppslag/api");
     private static final String DEFAULT_PING_PATH = "/actuator/info";
 
-    String pingPath;
-    boolean enabled;
-    URI baseURI;
+    private String pingPath;
+    private String aktørPath;
+    private String aktørFnrPath;
+    private String fnrPath;
+    private String personPath;
+    private String arbeidsforholdPath;
+
+    private boolean enabled;
+    private URI baseURI;
+
+    public String getArbeidsforholdPath() {
+        return Optional.ofNullable(arbeidsforholdPath).orElse(ARBEID);
+    }
+
+    public void setArbeidsforholdPath(String arbeidsforholdPath) {
+        this.arbeidsforholdPath = arbeidsforholdPath;
+    }
+
+    public String getPersonPath() {
+        return Optional.ofNullable(personPath).orElse(PERSON);
+    }
+
+    public void setPersonPath(String personPath) {
+        this.personPath = personPath;
+    }
+
+    public String getFnrPath() {
+        return Optional.ofNullable(fnrPath).orElse(FNR);
+    }
+
+    public void setFnrPath(String fnrPath) {
+        this.fnrPath = fnrPath;
+    }
+
+    public String getAktørPath() {
+        return Optional.ofNullable(aktørPath).orElse(AKTØR);
+    }
+
+    public void setAktørPath(String aktørPath) {
+        this.aktørPath = aktørPath;
+    }
+
+    public String getAktørFnrPath() {
+        return Optional.ofNullable(aktørFnrPath).orElse(AKTØRFNR);
+    }
+
+    public void setAktørFnrPath(String aktørFnrPath) {
+        this.aktørFnrPath = aktørFnrPath;
+    }
 
     public URI getBaseURI() {
         return Optional.ofNullable(baseURI).orElse(DEFAULT_BASE_URI);

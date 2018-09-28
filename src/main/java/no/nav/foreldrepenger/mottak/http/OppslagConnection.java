@@ -1,11 +1,5 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static no.nav.foreldrepenger.mottak.http.OppslagConfig.AKTØR;
-import static no.nav.foreldrepenger.mottak.http.OppslagConfig.AKTØRFNR;
-import static no.nav.foreldrepenger.mottak.http.OppslagConfig.ARBEID;
-import static no.nav.foreldrepenger.mottak.http.OppslagConfig.FNR;
-import static no.nav.foreldrepenger.mottak.http.OppslagConfig.PERSON;
-
 import java.net.URI;
 import java.util.List;
 
@@ -38,26 +32,25 @@ public class OppslagConnection extends AbstractRestConnection {
     }
 
     public Person getSøker() {
-        Person søker = getForObject(endpointFor(config.getBaseURI(), PERSON), Person.class);
-        søker.aktørId = getForObject(endpointFor(config.getBaseURI(), AKTØR), AktorId.class);
+        Person søker = getForObject(endpointFor(config.getBaseURI(), config.getPersonPath()), Person.class);
+        søker.aktørId = getForObject(endpointFor(config.getBaseURI(), config.getAktørPath()), AktorId.class);
         return søker;
     }
 
     public AktorId getAktørId(Fødselsnummer fnr) {
-        return getForObject(endpointFor(config.getBaseURI(), AKTØRFNR, queryParams("fnr", fnr.getFnr())),
+        return getForObject(
+                endpointFor(config.getBaseURI(), config.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())),
                 AktorId.class, true);
     }
 
     public Fødselsnummer getFnr(AktorId aktørId) {
-        return getForObject(endpointFor(config.getBaseURI(), FNR, queryParams("aktorId", aktørId.getId())),
+        return getForObject(
+                endpointFor(config.getBaseURI(), config.getFnrPath(), queryParams("aktorId", aktørId.getId())),
                 Fødselsnummer.class, true);
     }
 
     public List<Arbeidsforhold> getArbeidsforhold() {
-        List<Arbeidsforhold> arbeidsforhold = getForList(endpointFor(config.getBaseURI(), ARBEID),
-                Arbeidsforhold.class);
-        LOG.info("Fant {} arbeidsforhold", arbeidsforhold.size());
-        return arbeidsforhold;
+        return getForList(endpointFor(config.getBaseURI(), config.getArbeidsforholdPath()), Arbeidsforhold.class);
     }
 
     @Override

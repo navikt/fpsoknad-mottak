@@ -46,12 +46,13 @@ public abstract class AbstractRestConnection {
         ParameterizedTypeReference<List<T>> type = new ParameterizedTypeReference<List<T>>() {
         };
         try {
-
-            return template.exchange(
+            List<T> list = template.exchange(
                     uri,
                     HttpMethod.GET,
                     null,
                     type).getBody();
+            LOG.info("Fant {} {}", type.getType().getTypeName());
+            return list;
         } catch (Exception ex) {
             LOG.warn("Error while looking up {} ", type.getType().getTypeName(), ex);
             return emptyList();
