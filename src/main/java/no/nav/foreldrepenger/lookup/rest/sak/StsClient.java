@@ -42,7 +42,7 @@ public class StsClient {
             throw new RuntimeException("Error while exchanging token, STS returned " + response.getStatusCode());
         }
         log.info("Got SAMl token");
-        return response.getBody();
+        return extractSamlAssertionFrom(response.getBody());
     }
 
     private String readTemplate() {
@@ -59,4 +59,11 @@ public class StsClient {
             .replace("%THEPASSWORD%", servicePwd)
             .replace("%OIDCTOKEN%", oidcToken);
     }
+
+    protected String extractSamlAssertionFrom(String envelope) {
+        int startIdx = envelope.indexOf("<saml2:Assertion");
+        int endIdx = envelope.indexOf("</saml2:Assertion>") + 18;
+        return envelope.substring(startIdx, endIdx);
+    }
+
 }
