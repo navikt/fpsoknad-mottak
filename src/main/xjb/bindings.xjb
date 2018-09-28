@@ -22,7 +22,7 @@
         </jaxb:bindings>
     </jaxb:bindings>
     
-    <jaxb:bindings schemaLocation="../xsd/endringssøknad/endringssøknad.xsd" node="/xs:schema">
+    <jaxb:bindings schemaLocation="../xsd/endringssøknad.xsd" node="/xs:schema">
         <jaxb:bindings node="//xs:complexType[@name='Endringssoeknad']">
             <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement</annox:annotateClass>
         </jaxb:bindings>
