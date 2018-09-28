@@ -19,42 +19,41 @@ public class OppslagConnection extends AbstractRestConnection {
 
     public static final Logger LOG = LoggerFactory.getLogger(OppslagConnection.class);
 
-    private final OppslagConfig config;
+    private final OppslagConfig cfg;
 
     public OppslagConnection(RestTemplate template, OppslagConfig config) {
         super(template);
-        this.config = config;
+        this.cfg = config;
     }
 
     @Override
     public URI pingEndpoint() {
-        return uriFrom(config.getBaseURI(), config.getPingPath());
+        return uri(cfg.getBaseURI(), cfg.getPingPath());
     }
 
     public Person getSøker() {
-        Person søker = getForObject(uriFrom(config.getBaseURI(), config.getPersonPath()), Person.class);
-        søker.aktørId = getForObject(uriFrom(config.getBaseURI(), config.getAktørPath()), AktorId.class);
+        Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
+        søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktorId.class);
         return søker;
     }
 
     public AktorId getAktørId(Fødselsnummer fnr) {
         return getForObject(
-                uriFrom(config.getBaseURI(), config.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())),
-                AktorId.class, true);
+                uri(cfg.getBaseURI(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktorId.class, true);
     }
 
     public Fødselsnummer getFnr(AktorId aktørId) {
         return getForObject(
-                uriFrom(config.getBaseURI(), config.getFnrPath(), queryParams("aktorId", aktørId.getId())),
-                Fødselsnummer.class, true);
+                uri(cfg.getBaseURI(), cfg.getFnrPath(), queryParams("aktorId", aktørId.getId())), Fødselsnummer.class,
+                true);
     }
 
     public List<Arbeidsforhold> getArbeidsforhold() {
-        return getForList(uriFrom(config.getBaseURI(), config.getArbeidsforholdPath()), Arbeidsforhold.class);
+        return getForList(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()), Arbeidsforhold.class);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [config=" + config + "]";
+        return getClass().getSimpleName() + " [cfg=" + cfg + "]";
     }
 }

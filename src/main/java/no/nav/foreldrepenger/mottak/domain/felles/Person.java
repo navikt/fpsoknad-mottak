@@ -129,4 +129,13 @@ public class Person {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [fnr=" + fnr + ", fornavn=" + fornavn + ", mellomnavn=" + mellomnavn
+                + ", etternavn=" + etternavn
+                + ", kjønn=" + kjønn + ", fødselsdato=" + fødselsdato + ", målform=" + målform + ", land=" + land
+                + ", ikkeNordiskEøsLand=" + ikkeNordiskEøsLand + ", bankkonto=" + bankkonto + ", aktørId=" + aktørId
+                + "]";
+    }
 }

@@ -14,12 +14,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PDFElementRenderer {
-
-    private static final Logger log = LoggerFactory.getLogger(PDFElementRenderer.class);
 
     private static final int MARGIN = 40;
 
@@ -130,7 +126,6 @@ public class PDFElementRenderer {
     }
 
     private static byte[] logoFromInputStream() {
-        log.debug("Reading logo image");
         try (InputStream is = PDFElementRenderer.class.getResourceAsStream("/pdf/nav-logo.png");
                 ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[1024];
