@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import org.springframework.stereotype.Component;
+
 import com.nimbusds.jwt.JWTClaimsSet;
 
 import no.nav.security.oidc.OIDCConstants;
@@ -7,6 +9,7 @@ import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 
+@Component
 public final class FnrExtractor {
 
     private final OIDCRequestContextHolder ctxHolder;

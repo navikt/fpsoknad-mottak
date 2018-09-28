@@ -6,9 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import no.nav.foreldrepenger.mottak.util.FnrExtractor;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-
 @Configuration
 public class MottakConfiguration {
 
@@ -26,10 +23,5 @@ public class MottakConfiguration {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("kvitteringstekster");
         return messageSource;
-    }
-
-    @Bean
-    public FnrExtractor fnrExtractor(OIDCRequestContextHolder holder) {
-        return new FnrExtractor(holder);
     }
 }
