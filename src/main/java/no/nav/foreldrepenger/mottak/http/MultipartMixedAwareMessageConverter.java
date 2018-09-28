@@ -74,7 +74,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
             throws IOException {
 
         byte[] boundary = generateMultipartBoundary();
-        LOG.debug("Writing multipart ({} parts)", parts.size());
+        LOG.debug("Sender multipart ({} deler)", parts.size());
 
         Map<String, String> parameters = new HashMap<>(2);
         parameters.put("boundary", new String(boundary, "US-ASCII"));
@@ -100,7 +100,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
 
     private void writeParts(OutputStream os, MultiValueMap<String, Object> parts, byte[] boundary)
             throws IOException {
-        LOG.debug("Writing {} parts", parts.size());
+        LOG.debug("Sender {} deler", parts.size());
         for (Map.Entry<String, List<Object>> entry : parts.entrySet()) {
             String name = entry.getKey();
             for (Object part : entry.getValue()) {
@@ -116,16 +116,16 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
     private void writePart(String name, HttpEntity<?> partEntity, OutputStream os) throws IOException {
         Object partBody = partEntity.getBody();
         if (partBody == null) {
-            throw new IllegalStateException("Empty body for part '" + name + "': " + partEntity);
+            throw new IllegalStateException("Intet innhold for del '" + name + "': " + partEntity);
         }
         Class<?> partType = partBody.getClass();
         HttpHeaders partHeaders = partEntity.getHeaders();
         MediaType partContentType = partHeaders.getContentType();
-        LOG.debug("Trying to write part {} of type {}", name, partContentType);
+        LOG.debug("Skriver del {} med type {}", name, partContentType);
         for (HttpMessageConverter<?> converter : partConverters) {
             if (converter.canWrite(partType, partContentType)) {
                 Charset charset = isFilenameCharsetSet() ? StandardCharsets.US_ASCII : this.charset;
-                LOG.info("Writing part {} using {}", name, converter.getClass().getSimpleName());
+                LOG.info("Sender del {} med {}", name, converter.getClass().getSimpleName());
                 HttpOutputMessage multipartMessage = new MultipartHttpOutputMessage(os, charset);
                 multipartMessage.getHeaders().setContentDispositionFormData(name, getFilename(partBody));
                 if (!partHeaders.isEmpty()) {
