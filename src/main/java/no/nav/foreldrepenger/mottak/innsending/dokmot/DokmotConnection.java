@@ -29,11 +29,11 @@ public class DokmotConnection {
     }
 
     public void ping() {
-        LOG.info("Pinging DOKMOT {}", queueConfig.loggable());
+        LOG.info("Pinger {}", queueConfig.loggable());
         try {
             template.getConnectionFactory().createConnection().close();
         } catch (JMSException e) {
-            LOG.warn("Unable to send to DOKMOT queue at {}", queueConfig.loggable());
+            LOG.warn("Kunne ikke sende til DOKMOT kø {}", queueConfig.loggable());
             throw new DokmotQueueUnavailableException(e, queueConfig);
         }
     }
