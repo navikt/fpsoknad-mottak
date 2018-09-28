@@ -66,11 +66,11 @@ public abstract class AbstractRestConnection {
                 .pathSegment(path);
     }
 
-    protected static URI endpointFor(URI base, String path) {
-        return endpointFor(base, path, null);
+    protected static URI uriFrom(URI base, String path) {
+        return uriFrom(base, path, null);
     }
 
-    protected static URI endpointFor(URI base, String path, HttpHeaders queryParams) {
+    protected static URI uriFrom(URI base, String path, HttpHeaders queryParams) {
         URI uri = builder(base, path)
                 .queryParams(queryParams)
                 .build()

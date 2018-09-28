@@ -28,29 +28,29 @@ public class OppslagConnection extends AbstractRestConnection {
 
     @Override
     public URI pingEndpoint() {
-        return endpointFor(config.getBaseURI(), config.getPingPath());
+        return uriFrom(config.getBaseURI(), config.getPingPath());
     }
 
     public Person getSøker() {
-        Person søker = getForObject(endpointFor(config.getBaseURI(), config.getPersonPath()), Person.class);
-        søker.aktørId = getForObject(endpointFor(config.getBaseURI(), config.getAktørPath()), AktorId.class);
+        Person søker = getForObject(uriFrom(config.getBaseURI(), config.getPersonPath()), Person.class);
+        søker.aktørId = getForObject(uriFrom(config.getBaseURI(), config.getAktørPath()), AktorId.class);
         return søker;
     }
 
     public AktorId getAktørId(Fødselsnummer fnr) {
         return getForObject(
-                endpointFor(config.getBaseURI(), config.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())),
+                uriFrom(config.getBaseURI(), config.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())),
                 AktorId.class, true);
     }
 
     public Fødselsnummer getFnr(AktorId aktørId) {
         return getForObject(
-                endpointFor(config.getBaseURI(), config.getFnrPath(), queryParams("aktorId", aktørId.getId())),
+                uriFrom(config.getBaseURI(), config.getFnrPath(), queryParams("aktorId", aktørId.getId())),
                 Fødselsnummer.class, true);
     }
 
     public List<Arbeidsforhold> getArbeidsforhold() {
-        return getForList(endpointFor(config.getBaseURI(), config.getArbeidsforholdPath()), Arbeidsforhold.class);
+        return getForList(uriFrom(config.getBaseURI(), config.getArbeidsforholdPath()), Arbeidsforhold.class);
     }
 
     @Override
