@@ -16,6 +16,12 @@ public class Endringssøknad extends Søknad {
 
     private final String saksnr;
 
+    public Endringssøknad(Søker søker, Fordeling fordeling, AnnenForelder annenForelder,
+            Fødsel fødsel, Rettigheter rettigheter, String saksnr,
+            Vedlegg... vedlegg) {
+        this(LocalDateTime.now(), søker, fordeling, annenForelder, fødsel, rettigheter, saksnr, vedlegg);
+    }
+
     public Endringssøknad(LocalDateTime mottattDato, Søker søker, Fordeling fordeling, AnnenForelder annenForelder,
             Fødsel fødsel, Rettigheter rettigheter, String saksnr,
             Vedlegg... vedlegg) {

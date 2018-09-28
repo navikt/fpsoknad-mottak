@@ -3,14 +3,12 @@ package no.nav.foreldrepenger.mottak.http;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +27,6 @@ import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
@@ -66,9 +63,7 @@ public class SøknadController {
 
     @PostMapping(value = "/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
-        Person søker = oppslag.getSøker();
-        MDC.put("Nav-Aktør-Id", søker.aktørId.getId());
-        return sender.send(søknad, søker);
+        return sender.send(søknad, oppslag.getSøker());
     }
 
     @PostMapping(value = "/ettersend")
@@ -79,11 +74,6 @@ public class SøknadController {
     @PostMapping(value = "/endre")
     public Kvittering send(@Valid @RequestBody Endringssøknad endringsSøknad) {
         return sender.send(endringsSøknad, oppslag.getSøker());
-    }
-
-    @GetMapping(value = "/soknad")
-    public Søknad søknad(@RequestParam(name = "behandlingId") String behandlingId) {
-        return innsyn.hentSøknad(behandlingId);
     }
 
     @GetMapping(value = "/ping")
@@ -100,10 +90,10 @@ public class SøknadController {
             try {
                 if (!saker.isEmpty()) {
                     String saksnummer = saker.get(0).getSaksnummer();
-                    LOG.trace(EnvUtil.CONFIDENTIAL, "Tester ettersending mot sak {}", saksnummer);
+                    LOG.trace(EnvUtil.CONFIDENTIAL, "Tester endringssøknad mot sak {}", saksnummer);
                     ValgfrittVedlegg vedlegg = new ValgfrittVedlegg(DokumentType.I500005,
                             new ClassPathResource("sykkel.pdf"));
-                    Endringssøknad es = new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), null, null, null,
+                    Endringssøknad es = new Endringssøknad(søker(), fordeling(), null, null, null,
                             saksnummer,
                             vedlegg);
                     sender.send(es, oppslag.getSøker());

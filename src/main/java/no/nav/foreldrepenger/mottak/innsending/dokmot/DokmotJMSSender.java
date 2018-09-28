@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.dokmot;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 
 import javax.jms.TextMessage;
 
@@ -43,7 +42,6 @@ public class DokmotJMSSender implements SøknadSender {
             dokmotConnection.send(session -> {
                 TextMessage msg = session.createTextMessage(generator.tilXML(søknad, søker, ref));
                 LOG.info("Sender SøknadsXML til DOKMOT");
-                LOG.info(CONFIDENTIAL, "XML er {}", msg.getText());
                 msg.setStringProperty("callId", ref);
                 return msg;
             });

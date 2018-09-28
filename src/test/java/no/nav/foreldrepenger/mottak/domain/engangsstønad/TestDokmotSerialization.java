@@ -85,7 +85,7 @@ public class TestDokmotSerialization {
         ValgfrittVedlegg valgfrittVedlegg = valgfrittVedlegg();
         Søknad søknad = engangssøknad(true, termin(), norskForelder(), valgfrittVedlegg);
         Person søker = person();
-        SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad, søker);
+        SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         Bruker bruker = Bruker.class.cast(dokmotModel.getBruker());
         assertEquals(søker.fnr.getFnr(), bruker.getPersonidentifikator());
         assertEquals(søknad.getBegrunnelseForSenSøknad(), dokmotModel.getOpplysningerOmBarn().getBegrunnelse());
@@ -100,7 +100,7 @@ public class TestDokmotSerialization {
                 valgfrittVedlegg());
         Person søker = person();
         serialize(søknad, true, mapper);
-        SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.toDokmotModel(søknad, søker);
+        SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         Søknad søknad1 = engangssøknad(true, fødsel(), utenlandskForelder(), valgfrittVedlegg());
         SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.tilXML(søknad, søker), SØKNADCTX,
                 SoeknadsskjemaEngangsstoenad.class);

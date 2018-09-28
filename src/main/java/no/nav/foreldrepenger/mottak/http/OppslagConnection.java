@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.http;
 import java.net.URI;
 import java.util.List;
 
+import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,7 @@ public class OppslagConnection extends AbstractRestConnection {
     public Person getSøker() {
         Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
         søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktorId.class);
+        MDC.put("Nav-Aktør-Id", søker.aktørId.getId());
         return søker;
     }
 

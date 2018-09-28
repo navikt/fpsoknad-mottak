@@ -84,7 +84,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private Hoveddokument hoveddokument(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
         Dokumentinnhold hovedskjemaInnhold = new Dokumentinnhold()
-                .withDokument(søknadGenerator.toPdf(søknad, søker))
+                .withDokument(søknadGenerator.tilPdf(søknad, søker))
                 .withArkivfiltype(new Arkivfiltyper().withValue(PDFA.name()))
                 .withVariantformat(new Variantformater().withValue(ARKIV.name()));
         Stream<Dokumentinnhold> alternativeRepresentasjonerInnhold = Collections.singletonList(new Dokumentinnhold()

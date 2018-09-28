@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.dokmot;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg.LASTET_OPP;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
@@ -32,7 +34,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.pdf.EngangsstønadPDFGenerator;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
@@ -53,26 +54,26 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 @Service
 public class DokmotEngangsstønadXMLGenerator {
 
-    private static final JAXBContext CONTEXT = Jaxb.context(SoeknadsskjemaEngangsstoenad.class);
+    private static final JAXBContext CONTEXT = context(SoeknadsskjemaEngangsstoenad.class);
     private final EngangsstønadPDFGenerator pdfGenerator;
 
     public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator) {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public byte[] toPdf(Søknad søknad, Person søker) {
+    public byte[] tilPdf(Søknad søknad, Person søker) {
         return pdfGenerator.generate(søknad, søker);
     }
 
     public String tilXML(Søknad søknad, Person person) {
-        return toXML(toDokmotModel(søknad, person));
+        return tilXML(tilDokmotModel(søknad, person));
     }
 
-    public String toXML(SoeknadsskjemaEngangsstoenad model) {
-        return Jaxb.marshal(CONTEXT, model);
+    public String tilXML(SoeknadsskjemaEngangsstoenad model) {
+        return marshal(CONTEXT, model);
     }
 
-    public SoeknadsskjemaEngangsstoenad toDokmotModel(Søknad søknad, Person søker) {
+    public SoeknadsskjemaEngangsstoenad tilDokmotModel(Søknad søknad, Person søker) {
 
         // Mor er bruker i dette use-caset, derfor setter vi ikke opplysninger om mor,
         // samme som Team Søknad gjør
