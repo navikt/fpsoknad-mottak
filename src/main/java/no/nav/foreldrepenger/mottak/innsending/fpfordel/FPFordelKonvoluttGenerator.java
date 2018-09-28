@@ -147,6 +147,12 @@ public class FPFordelKonvoluttGenerator {
         return hovedDokument;
     }
 
+    private String xmlHovedDokument(Endringssøknad endringssøknad, AktorId søker) {
+        String hovedDokument = søknadGenerator.tilXML(endringssøknad, søker);
+        LOG.debug(CONFIDENTIAL, "Hoveddokument endringssøknad er {}", hovedDokument);
+        return hovedDokument;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [metadataGenerator=" + metadataGenerator + ", søknadGenerator="

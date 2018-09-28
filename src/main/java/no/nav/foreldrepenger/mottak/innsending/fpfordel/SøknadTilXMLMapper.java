@@ -60,6 +60,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
@@ -112,11 +113,12 @@ public class SøknadTilXMLMapper {
     private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
-    private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
+    private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class, Endringssoeknad.class);
 
     private static final ObjectFactory FP_FACTORY = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory ENDRING_FACTORY = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
 
@@ -129,17 +131,14 @@ public class SøknadTilXMLMapper {
     }
 
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), false);
+        return marshal(CONTEXT, ENDRING_FACTORY.createEndringssoeknad(tilModell(endringssøknad, søker)), false);
     }
 
-    private Soeknad tilModell(Endringssøknad sendringsøknad, AktorId søker) {
-        LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", sendringsøknad);
-        return new Soeknad()
-                .withAndreVedlegg(vedleggFra(sendringsøknad.getFrivilligeVedlegg()))
-                .withPaakrevdeVedlegg(vedleggFra(sendringsøknad.getPåkrevdeVedlegg()))
-                .withSoeker(søkerFra(søker, sendringsøknad.getSøker()))
-                .withOmYtelse(ytelseFra(sendringsøknad))
-                .withMottattDato(sendringsøknad.getMottattdato().toLocalDate());
+    private static Endringssoeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
+        LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
+        return new Endringssoeknad()
+                .withFordeling(fordelingFra(endringsøknad))
+                .withSaksnummer(endringsøknad.getSaksnr());
     }
 
     private Soeknad tilModell(Søknad søknad, AktorId søker) {
@@ -204,15 +203,12 @@ public class SøknadTilXMLMapper {
         return new OmYtelse().withAny(marshalToElement(CONTEXT, foreldrepenger));
     }
 
-    private OmYtelse ytelseFra(Endringssøknad søknad) {
+    private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                .cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer ytelse endringssøknad XML fra {}", ytelse);
+                .cast(endringssøknad.getYtelse());
+        LOG.debug(CONFIDENTIAL, "Genererer fordeling endringssøknad XML fra {}", ytelse.getFordeling());
+        return fordelingFra(ytelse.getFordeling());
 
-        Foreldrepenger foreldrepenger = new Foreldrepenger()
-                .withFordeling(fordelingFra(ytelse.getFordeling()));
-
-        return new OmYtelse().withAny(marshalToElement(CONTEXT, foreldrepenger));
     }
 
     private static boolean erAnnenForelderUkjent(
