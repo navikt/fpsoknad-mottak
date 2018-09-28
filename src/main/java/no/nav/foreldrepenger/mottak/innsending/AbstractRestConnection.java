@@ -1,9 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
+
 import java.net.URI;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -35,15 +42,60 @@ public abstract class AbstractRestConnection {
         }
     }
 
-    public RestTemplate getTemplate() {
-        return template;
+    protected <T> List<T> getForList(URI uri, Class<T> clazz) {
+        ParameterizedTypeReference<List<T>> type = new ParameterizedTypeReference<List<T>>() {
+        };
+        try {
+
+            return template.exchange(
+                    uri,
+                    HttpMethod.GET,
+                    null,
+                    type).getBody();
+        } catch (Exception ex) {
+            LOG.warn("Error while looking up {} ", type.getType().getTypeName(), ex);
+            return emptyList();
+        }
+
+    }
+
+    private static UriComponentsBuilder builder(URI base, String path) {
+        return UriComponentsBuilder
+                .fromUri(base)
+                .pathSegment(path);
     }
 
     protected static URI endpointFor(URI base, String path) {
-        return UriComponentsBuilder
-                .fromUri(base)
-                .pathSegment(path)
-                .build().toUri();
+        return endpointFor(base, path, null);
+    }
 
+    protected static URI endpointFor(URI base, String path, HttpHeaders queryParams) {
+        URI uri = builder(base, path)
+                .queryParams(queryParams)
+                .build()
+                .toUri();
+        LOG.info("Bruker URI  {}", uri);
+        return uri;
+    }
+
+    protected static HttpHeaders queryParams(String key, String value) {
+        HttpHeaders queryParams = new HttpHeaders();
+        queryParams.add(key, value);
+        return queryParams;
+    }
+
+    protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential) {
+        T respons = template.getForObject(uri, responseType);
+        if (isConfidential) {
+            LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
+        }
+        else {
+            LOG.info("Fikk respons {}", respons);
+        }
+        return respons;
+    }
+
+    protected <T> T getForObject(URI uri, Class<T> responseType) {
+        return getForObject(uri, responseType, false);
     }
 }

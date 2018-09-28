@@ -1,31 +1,34 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromUri;
-
 import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 
 @ConfigurationProperties(prefix = "oppslag")
 @Configuration
 public class OppslagConfig {
 
-    private static final URI DEFAULT_URL = URI.create("http://fpsoknad-oppslag/api");
+    static final String AKTØR = "/oppslag/aktor";
+    static final String AKTØRFNR = "/oppslag/aktorfnr";
+    static final String FNR = "/oppslag/fnr";
+    static final String PERSON = "/person";
+    static final String ARBEID = "/arbeidsforhold";
+
+    private static final URI DEFAULT_BASE_URI = URI.create("http://fpsoknad-oppslag/api");
     private static final String DEFAULT_PING_PATH = "/actuator/info";
 
     String pingPath;
     boolean enabled;
-    URI url;
+    URI baseURI;
 
-    public URI getUrl() {
-        return Optional.ofNullable(url).orElse(DEFAULT_URL);
+    public URI getBaseURI() {
+        return Optional.ofNullable(baseURI).orElse(DEFAULT_BASE_URI);
     }
 
-    public void setUrl(URI url) {
-        this.url = url;
+    public void setBaseURI(URI baseURI) {
+        this.baseURI = baseURI;
     }
 
     public boolean isEnabled() {
@@ -44,24 +47,9 @@ public class OppslagConfig {
         this.pingPath = pingPath;
     }
 
-    private URI uriFra(String pathSegment) {
-        return uriFra(pathSegment, new HttpHeaders());
-    }
-
-    private URI uriFra(String pathSegment, HttpHeaders queryParams) {
-        return fromUri(getUrl())
-                .pathSegment(pathSegment)
-                .queryParams(queryParams)
-                .build()
-                .toUri();
-    }
-
-    public URI pingEndpoint() {
-        return uriFra(getPingPath());
-    }
-
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", url=" + url + "]";
+        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", url=" + baseURI
+                + "]";
     }
 }
