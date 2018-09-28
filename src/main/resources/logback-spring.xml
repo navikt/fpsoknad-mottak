@@ -15,6 +15,13 @@
 	<root level="info">
 		<appender-ref ref="stdout" />
 	</root>
+    <springProfile name="prod">
+        <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+            <Name>CONFIDENTIAL_FILTER</Name>
+            <Marker>CONFIDENTIAL</Marker>
+            <OnMatch>DENY</OnMatch>
+        </turboFilter>
+    </springProfile>
      <springProfile name="dev,preprod">
         <logger name="no.nav.foreldrepenger" level="trace" />
     </springProfile>

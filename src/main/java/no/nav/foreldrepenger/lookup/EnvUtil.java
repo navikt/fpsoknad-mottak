@@ -1,8 +1,12 @@
 package no.nav.foreldrepenger.lookup;
 
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.springframework.core.env.Environment;
 
 public final class EnvUtil {
+
+    public static final Marker CONFIDENTIAL = MarkerFactory.getMarker("CONFIDENTIAL");
 
     public static final String PREPROD = "preprod";
     public static final String DEV = "dev";

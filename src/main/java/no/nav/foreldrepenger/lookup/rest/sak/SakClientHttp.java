@@ -1,13 +1,16 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
+import no.nav.foreldrepenger.lookup.EnvUtil;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -25,6 +28,9 @@ public class SakClientHttp implements SakClient {
 
     private StsClient stsClient;
 
+    @Inject
+    private Environment env;
+
     public SakClientHttp(String sakBaseUrl, RestTemplate restTemplate, StsClient stsClient) {
         this.sakBaseUrl = sakBaseUrl;
         this.restTemplate = restTemplate;
@@ -37,6 +43,9 @@ public class SakClientHttp implements SakClient {
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Saml " + Base64.getEncoder().encodeToString(stripSpaces(samlToken).getBytes()));
+        if (EnvUtil.isDevOrPreprod(env)) {
+            log.debug(EnvUtil.CONFIDENTIAL, headers.get("Authorization").toString());
+        }
         headers.set("X-Correlation-ID", "bogus");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
