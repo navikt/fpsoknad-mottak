@@ -56,7 +56,7 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public Behandling hentBehandling(Lenke lenke) {
-        URI uri = uri(config.getBaseUri(), lenke.getHref());
+        URI uri = URI.create(config.getBaseUri() + lenke.getHref());
         return withID(getForObject(uri, Behandling.class), uri);
     }
 
