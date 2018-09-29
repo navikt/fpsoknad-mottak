@@ -8,6 +8,8 @@ import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.SØKNA
 import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -40,8 +42,9 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public List<SakStatusWrapper> hentSaker(String aktørId) {
-        return getForList(uri(config.getBaseUri(), SAK_PATH,
-                queryParams(AKTOR_ID, aktørId)), SakStatusWrapper.class);
+        SakStatusWrapper[] saker = getForObject(uri(config.getBaseUri(), SAK_PATH,
+                queryParams(AKTOR_ID, aktørId)), SakStatusWrapper[].class);
+        return saker == null ? Collections.emptyList() : Arrays.asList(saker);
     }
 
     public Behandling hentBehandling(String behandlingId) {

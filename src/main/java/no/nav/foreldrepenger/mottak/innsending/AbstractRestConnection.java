@@ -91,14 +91,20 @@ public abstract class AbstractRestConnection {
     }
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential) {
-        T respons = template.getForObject(uri, responseType);
-        if (isConfidential) {
-            LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
+        try {
+            T respons = template.getForObject(uri, responseType);
+            if (isConfidential) {
+                LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
+            }
+            else {
+                LOG.info("Fikk respons {}", respons);
+            }
+            return respons;
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke hente respons", e);
+
+            return null;
         }
-        else {
-            LOG.info("Fikk respons {}", respons);
-        }
-        return respons;
     }
 
 }
