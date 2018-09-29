@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SakStatusWrapper {
+public class SakWrapper {
     private final String saksnummer;
     private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
@@ -21,7 +21,7 @@ public class SakStatusWrapper {
     private final List<Lenke> lenker;
 
     @JsonCreator
-    public SakStatusWrapper(@JsonProperty("saksnummer") String saksnummer,
+    public SakWrapper(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("fagsakStatus") FagsakStatus fagsakStatus,
             @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
@@ -43,7 +43,7 @@ public class SakStatusWrapper {
 
     @JsonIgnore
     public List<Lenke> getBehandlingsLenker() {
-        return lenker.stream().filter(s -> s.getRel().equals("behandlinger")).collect(toList());
+        return getLenker().stream().filter(s -> s.getRel().equals("behandlinger")).collect(toList());
     }
 
     public String getSaksnummer() {
@@ -76,7 +76,7 @@ public class SakStatusWrapper {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SakStatusWrapper other = (SakStatusWrapper) obj;
+        SakWrapper other = (SakWrapper) obj;
         if (aktørId == null) {
             if (other.aktørId != null)
                 return false;

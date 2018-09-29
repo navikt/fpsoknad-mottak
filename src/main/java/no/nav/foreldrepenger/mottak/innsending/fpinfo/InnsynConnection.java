@@ -1,19 +1,18 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
+import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.AKTOR_ID;
+import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.BEHANDLING;
 import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.BEHANDLING_ID;
-import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.BEHANDLING_PATH;
-import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.SAK_PATH;
-import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.SØKNAD_PATH;
+import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.SAK;
+import static no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConfig.SØKNAD;
 import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,7 +21,6 @@ import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 @Component
 public class InnsynConnection extends AbstractRestConnection {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
     private final InnsynConfig config;
 
     public InnsynConnection(RestTemplate template, InnsynConfig config) {
@@ -40,18 +38,18 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public SøknadWrapper hentSøknad(String behandlingId) {
-        return getForObject(uri(config.getBaseUri(), SØKNAD_PATH,
+        return getForObject(uri(config.getBaseUri(), SØKNAD,
                 queryParams(BEHANDLING_ID, behandlingId)), SøknadWrapper.class);
     }
 
-    public List<SakStatusWrapper> hentSaker(String aktørId) {
-        SakStatusWrapper[] saker = getForObject(uri(config.getBaseUri(), SAK_PATH,
-                queryParams(AKTOR_ID, aktørId)), SakStatusWrapper[].class);
-        return saker == null ? Collections.emptyList() : Arrays.asList(saker);
+    public List<SakWrapper> hentSaker(String aktørId) {
+        SakWrapper[] saker = getForObject(uri(config.getBaseUri(), SAK,
+                queryParams(AKTOR_ID, aktørId)), SakWrapper[].class);
+        return Optional.ofNullable(saker).map(Arrays::asList).orElse(emptyList());
     }
 
     public Behandling hentBehandling(String behandlingId) {
-        return withID(getForObject(uri(config.getBaseUri(), BEHANDLING_PATH,
+        return withID(getForObject(uri(config.getBaseUri(), BEHANDLING,
                 queryParams(BEHANDLING_ID, behandlingId)), Behandling.class), behandlingId);
     }
 
@@ -76,5 +74,4 @@ public class InnsynConnection extends AbstractRestConnection {
     public String toString() {
         return getClass().getSimpleName() + " [config=" + config + "]";
     }
-
 }
