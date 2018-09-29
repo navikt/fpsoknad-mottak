@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +22,7 @@ import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 @Component
 public class InnsynConnection extends AbstractRestConnection {
 
+    private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
     private final InnsynConfig config;
 
     public InnsynConnection(RestTemplate template, InnsynConfig config) {

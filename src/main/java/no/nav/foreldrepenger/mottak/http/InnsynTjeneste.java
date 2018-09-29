@@ -45,6 +45,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public List<Sak> hentSaker(String aktørId) {
+        LOG.info("Henter saker for {}", aktørId);
         List<Sak> saker = safeStream(connection.hentSaker(aktørId))
                 .map(s -> new Sak(s.getSaksnummer(), s.getFagsakStatus(), s.getBehandlingTema(),
                         s.getAktørId(), s.getAktørIdAnnenPart(), s.getAktørIdBarn(),
