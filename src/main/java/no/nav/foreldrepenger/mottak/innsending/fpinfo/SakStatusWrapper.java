@@ -43,7 +43,7 @@ public class SakStatusWrapper {
 
     @JsonIgnore
     public List<Lenke> getBehandlingsLenker() {
-        return lenker.stream().filter(s -> s.getType().equals("behandling")).collect(toList());
+        return lenker.stream().filter(s -> s.getType().equals("behandlinger")).collect(toList());
     }
 
     public String getSaksnummer() {

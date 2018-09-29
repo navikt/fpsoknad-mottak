@@ -46,15 +46,16 @@ public abstract class AbstractRestConnection {
         ParameterizedTypeReference<List<T>> type = new ParameterizedTypeReference<List<T>>() {
         };
         try {
+            LOG.info("Henter liste med type {}", type.getType());
             List<T> list = template.exchange(
                     uri,
                     HttpMethod.GET,
                     null,
                     type).getBody();
-            LOG.info("Fikk respons {} med type {}", list, type.getType().getTypeName());
+            LOG.info("Fikk respons liste {} med type {}", list, type.getType().getTypeName());
             return list;
         } catch (Exception ex) {
-            LOG.warn("Kunne ikke slå opp {}", type.getType().getTypeName(), ex);
+            LOG.warn("Kunne ikke hente liste {}", type.getType().getTypeName(), ex);
             return emptyList();
         }
 
