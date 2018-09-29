@@ -1,12 +1,14 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SakStatusWrapper {
@@ -16,7 +18,7 @@ public class SakStatusWrapper {
     private final String aktørId;
     private final String aktørIdAnnenPart;
     private final List<String> aktørIdBarn;
-    private final List<BehandlingsLenke> lenker;
+    private final List<Lenke> lenker;
 
     @JsonCreator
     public SakStatusWrapper(@JsonProperty("saksnummer") String saksnummer,
@@ -25,7 +27,7 @@ public class SakStatusWrapper {
             @JsonProperty("aktørId") String aktørId,
             @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
-            @JsonProperty("lenker") List<BehandlingsLenke> lenker) {
+            @JsonProperty("lenker") List<Lenke> lenker) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingTema;
@@ -35,8 +37,13 @@ public class SakStatusWrapper {
         this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
     }
 
-    public List<BehandlingsLenke> getLenker() {
+    public List<Lenke> getLenker() {
         return lenker;
+    }
+
+    @JsonIgnore
+    public List<Lenke> getBehandlingsLenker() {
+        return lenker.stream().filter(s -> s.getType().equals("behandling")).collect(toList());
     }
 
     public String getSaksnummer() {

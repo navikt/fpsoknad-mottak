@@ -1,25 +1,28 @@
 package no.nav.foreldrepenger.mottak.innsending.fpinfo;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromUri;
-
 import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 
-@ConfigurationProperties(prefix = "fpinfo")
+@ConfigurationProperties(prefix = "innsyn")
 @Configuration
-public class FPInfoConfig {
+public class InnsynConfig {
 
-    private static final URI DEFAULT_URL = URI.create("http://fpinfo");
+    private static final URI DEFAULT_BASE_URI = URI.create("http://fpinfo");
     private static final String DEFAULT_BASE_PATH = "fpinfo/api/dokumentforsendelse/";
     private static final String DEFAULT_PING_PATH = "fpinfo/internal/isReady";
 
+    static final String AKTOR_ID = "aktorId";
+    static final String BEHANDLING_ID = "behandlingId";
+    static final String SØKNAD_PATH = DEFAULT_BASE_PATH + "søknad";
+    static final String SAK_PATH = DEFAULT_BASE_PATH + "sak";
+    static final String BEHANDLING_PATH = DEFAULT_BASE_PATH + "behandling";
+
     String pingPath;
     boolean enabled;
-    URI url;
+    URI baseUri;
     String basePath;
 
     public String getBasePath() {
@@ -30,12 +33,12 @@ public class FPInfoConfig {
         this.basePath = basePath;
     }
 
-    public URI getUrl() {
-        return Optional.ofNullable(url).orElse(DEFAULT_URL);
+    public URI getBaseUri() {
+        return Optional.ofNullable(baseUri).orElse(DEFAULT_BASE_URI);
     }
 
-    public void setUrl(URI url) {
-        this.url = url;
+    public void setBaseUrl(URI baseUri) {
+        this.baseUri = baseUri;
     }
 
     public boolean isEnabled() {
@@ -54,25 +57,9 @@ public class FPInfoConfig {
         this.pingPath = pingPath;
     }
 
-    private URI uriFra(String pathSegment) {
-        return uriFra(pathSegment, new HttpHeaders());
-    }
-
-    private URI uriFra(String pathSegment, HttpHeaders queryParams) {
-        return fromUri(getUrl())
-                .pathSegment(pathSegment)
-                .queryParams(queryParams)
-                .build()
-                .toUri();
-    }
-
-    public URI pingEndpoint() {
-        return uriFra(getPingPath());
-    }
-
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", url=" + url
+        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", baseUri=" + baseUri
                 + ", basePath=" + basePath
                 + "]";
     }

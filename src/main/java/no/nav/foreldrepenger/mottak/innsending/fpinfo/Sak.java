@@ -9,7 +9,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SakStatus {
+public class Sak {
     private final String saksnummer;
     private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
@@ -19,7 +19,7 @@ public class SakStatus {
     private final List<Behandling> behandlinger;
 
     @JsonCreator
-    public SakStatus(@JsonProperty("saksnummer") String saksnummer,
+    public Sak(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("status") FagsakStatus fagsakStatus,
             @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
@@ -69,7 +69,7 @@ public class SakStatus {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SakStatus other = (SakStatus) obj;
+        Sak other = (Sak) obj;
         if (aktørId == null) {
             if (other.aktørId != null)
                 return false;

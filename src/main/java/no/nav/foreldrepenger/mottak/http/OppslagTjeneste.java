@@ -13,12 +13,12 @@ import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
-public class OppslagService implements Oppslag {
+public class OppslagTjeneste implements Oppslag {
 
     private final OppslagConnection connection;
     private final FnrExtractor extractor;
 
-    public OppslagService(OppslagConnection connection, FnrExtractor extractor) {
+    public OppslagTjeneste(OppslagConnection connection, FnrExtractor extractor) {
         this.connection = connection;
         this.extractor = extractor;
     }

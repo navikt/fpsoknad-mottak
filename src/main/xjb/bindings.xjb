@@ -16,13 +16,13 @@
         </jaxb:bindings>
     </jaxb:bindings>
      
-     <jaxb:bindings schemaLocation="../xsd/soeknad.xsd" node="/xs:schema">
+     <jaxb:bindings schemaLocation="../xsd/soeknad-fpfordel.xsd" node="/xs:schema">
         <jaxb:bindings node="//xs:complexType[@name='Soeknad']">
             <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement</annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
     
-    <jaxb:bindings schemaLocation="../xsd/endringssoeknad.xsd" node="/xs:schema">
+    <jaxb:bindings schemaLocation="../xsd/endringssoeknad-fpfordel.xsd" node="/xs:schema">
         <jaxb:bindings node="//xs:complexType[@name='Endringssoeknad']">
             <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement</annox:annotateClass>
         </jaxb:bindings>

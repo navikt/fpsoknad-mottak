@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.Innsyn;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.SakStatus;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.Sak;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 
 @RestController
@@ -39,7 +38,7 @@ public class InnsynController {
     }
 
     @GetMapping(value = "/saker")
-    public List<SakStatus> saker() {
+    public List<Sak> saker() {
         return innsyn.hentSaker(oppslag.getAktørId());
     }
 

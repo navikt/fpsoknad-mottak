@@ -33,8 +33,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.Innsyn;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.SakStatus;
+import no.nav.foreldrepenger.mottak.innsending.fpinfo.Sak;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
@@ -84,8 +83,8 @@ public class SøknadController {
     }
 
     @GetMapping(value = "/saker")
-    public List<SakStatus> saker() {
-        List<SakStatus> saker = innsyn.hentSaker(oppslag.getAktørId());
+    public List<Sak> saker() {
+        List<Sak> saker = innsyn.hentSaker(oppslag.getAktørId());
         if (EnvUtil.isDevOrPreprod(env)) {
             try {
                 if (!saker.isEmpty()) {

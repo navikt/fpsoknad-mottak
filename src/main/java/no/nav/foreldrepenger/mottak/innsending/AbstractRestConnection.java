@@ -51,10 +51,10 @@ public abstract class AbstractRestConnection {
                     HttpMethod.GET,
                     null,
                     type).getBody();
-            LOG.info("Fant {} {}", type.getType().getTypeName());
+            LOG.info("Fikk respons {} med type {}", list, type.getType().getTypeName());
             return list;
         } catch (Exception ex) {
-            LOG.warn("Error while looking up {} ", type.getType().getTypeName(), ex);
+            LOG.warn("Kunne ikke slå opp {}", type.getType().getTypeName(), ex);
             return emptyList();
         }
 
@@ -75,7 +75,7 @@ public abstract class AbstractRestConnection {
                 .queryParams(queryParams)
                 .build()
                 .toUri();
-        LOG.info("Bruker URI  {}", uri);
+        LOG.debug("Bruker URI  {}", uri);
         return uri;
     }
 
@@ -83,6 +83,10 @@ public abstract class AbstractRestConnection {
         HttpHeaders queryParams = new HttpHeaders();
         queryParams.add(key, value);
         return queryParams;
+    }
+
+    protected <T> T getForObject(URI uri, Class<T> responseType) {
+        return getForObject(uri, responseType, false);
     }
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential) {
@@ -96,7 +100,4 @@ public abstract class AbstractRestConnection {
         return respons;
     }
 
-    protected <T> T getForObject(URI uri, Class<T> responseType) {
-        return getForObject(uri, responseType, false);
-    }
 }
