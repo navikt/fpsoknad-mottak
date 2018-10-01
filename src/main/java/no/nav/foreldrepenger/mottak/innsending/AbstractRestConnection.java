@@ -75,6 +75,7 @@ public abstract class AbstractRestConnection {
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential, boolean doThrow) {
         try {
+            LOG.trace("Henter fra URI {}", uri);
             T respons = template.getForObject(uri, responseType);
             if (isConfidential) {
                 LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);

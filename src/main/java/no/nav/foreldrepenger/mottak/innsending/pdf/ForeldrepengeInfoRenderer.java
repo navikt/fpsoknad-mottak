@@ -116,11 +116,13 @@ public class ForeldrepengeInfoRenderer {
             float y) throws IOException {
         float startY = y;
 
-        if (!arbeidsforhold.isEmpty()) {
-            y -= renderer.addBlankLine();
-            y -= renderer.addLeftHeading(textFormatter.fromMessageSource("arbeidsforhold"), cos, y);
-            y -= renderer.addBulletList(arbeidsforhold(arbeidsforhold), cos, y);
+        if (arbeidsforhold.isEmpty()) {
+            return startY;
         }
+
+        y -= renderer.addBlankLine();
+        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("arbeidsforhold"), cos, y);
+        y -= renderer.addBulletList(arbeidsforhold(arbeidsforhold), cos, y);
 
         if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
             y -= renderer.addBlankLine();

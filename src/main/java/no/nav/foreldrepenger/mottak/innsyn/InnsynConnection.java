@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +22,7 @@ import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection {
+    private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
 
     private final InnsynConfig config;
 
@@ -38,11 +41,13 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public SøknadWrapper hentSøknad(String behandlingId) {
+        LOG.trace("Henter søknad for {}", behandlingId);
         return getForObject(uri(config.getBaseUri(), SØKNAD,
                 queryParams(BEHANDLING_ID, behandlingId)), SøknadWrapper.class);
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
+        LOG.trace("Henter saker for {}", aktørId);
         return Optional.ofNullable(getForObject(uri(config.getBaseUri(), SAK,
                 queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
                 .map(Arrays::asList)
@@ -55,6 +60,7 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public Behandling hentBehandling(Lenke lenke) {
+        LOG.trace("Henter behandling fra {}", lenke);
         URI uri = URI.create(config.getBaseUri() + lenke.getHref());
         return withId(getForObject(uri, Behandling.class, false, true), uri);
     }

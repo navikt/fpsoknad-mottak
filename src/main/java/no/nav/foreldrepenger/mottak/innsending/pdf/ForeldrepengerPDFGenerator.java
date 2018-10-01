@@ -64,8 +64,7 @@ public class ForeldrepengerPDFGenerator {
                 }
                 Opptjening opptjening = stønad.getOpptjening();
                 if (opptjening != null) {
-                    List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
-                    fpRenderer.opptjening(opptjening, arbeidsforhold, cos, y);
+                    fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), cos, y);
                 }
 
                 doc.addPage(page1);

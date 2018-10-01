@@ -37,6 +37,7 @@ public class OppslagConnection extends AbstractRestConnection {
     }
 
     public Person getSøker() {
+        LOG.trace("Henter søøker");
         Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
         søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktorId.class);
         MDC.put("Nav-Aktør-Id", søker.aktørId.getId());
@@ -55,6 +56,7 @@ public class OppslagConnection extends AbstractRestConnection {
     }
 
     public List<Arbeidsforhold> getArbeidsforhold() {
+        LOG.trace("Henter arbeidsforhold");
         return Optional.ofNullable(getForObject(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()),
                 Arbeidsforhold[].class))
                 .map(Arrays::asList)
