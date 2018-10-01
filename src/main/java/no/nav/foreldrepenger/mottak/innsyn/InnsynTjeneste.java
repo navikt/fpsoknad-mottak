@@ -63,6 +63,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> lenker) {
+        LOG.info("Henter {} behandling(er)", lenker.size());
         return lenker
                 .stream()
                 .map(this::hentBehandling)
