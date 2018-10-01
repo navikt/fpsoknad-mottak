@@ -47,8 +47,13 @@ public class InnsynTjeneste implements Innsyn {
         List<Sak> saker = safeStream(connection.hentSaker(aktørId))
                 .map(this::tilSak)
                 .collect(toList());
-        LOG.info("Hentet saker {}", saker);
+        LOG.info("Hentet {} saker {}", saker.size(), saker);
         return saker;
+    }
+
+    @Override
+    public Behandling hentBehandling(String behandlingId) {
+        return connection.hentBehandling(behandlingId);
     }
 
     private Sak tilSak(SakWrapper wrapper) {
@@ -57,17 +62,14 @@ public class InnsynTjeneste implements Innsyn {
                 hentBehandlinger(wrapper.getBehandlingsLenker()));
     }
 
-    @Override
-    public Behandling hentBehandling(String behandlingId) {
-        return connection.hentBehandling(behandlingId);
-    }
-
     private List<Behandling> hentBehandlinger(List<Lenke> lenker) {
         LOG.info("Henter {} behandling(er)", lenker.size());
-        return lenker
+        List<Behandling> behandlinger = lenker
                 .stream()
                 .map(this::hentBehandling)
                 .collect(toList());
+        LOG.info("Henter {} behandling(er)", behandlinger.size());
+        return behandlinger;
     }
 
     private Behandling hentBehandling(Lenke lenke) {

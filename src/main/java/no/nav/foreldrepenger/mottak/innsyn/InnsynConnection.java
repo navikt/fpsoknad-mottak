@@ -60,8 +60,8 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public Behandling hentBehandling(Lenke lenke) {
-        LOG.trace("Henter behandling fra {}", lenke);
         URI uri = URI.create(config.getBaseUri() + lenke.getHref());
+        LOG.trace("Henter behandling fra {}", uri);
         return withId(getForObject(uri, Behandling.class, false, true), uri);
     }
 
