@@ -1,16 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 
 import java.net.URI;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -41,25 +37,6 @@ public abstract class AbstractRestConnection {
             LOG.warn("Kunne ikke pinge FPInfo på {}", pingEndpoint, e);
             throw new RemoteUnavailableException(e);
         }
-    }
-
-    protected <T> List<T> getForList(URI uri, Class<T> clazz) {
-        ParameterizedTypeReference<List<T>> type = new ParameterizedTypeReference<List<T>>() {
-        };
-        try {
-            LOG.info("Henter liste med type {}", type.getType());
-            List<T> list = template.exchange(
-                    uri,
-                    HttpMethod.GET,
-                    null,
-                    type).getBody();
-            LOG.info("Fikk respons liste {} med type {}", list, type.getType().getTypeName());
-            return list;
-        } catch (Exception ex) {
-            LOG.warn("Kunne ikke hente liste {}", type.getType().getTypeName(), ex);
-            return emptyList();
-        }
-
     }
 
     private static UriComponentsBuilder builder(URI base, String path) {

@@ -1,7 +1,11 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static java.util.Collections.emptyList;
+
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.jboss.logging.MDC;
 import org.slf4j.Logger;
@@ -51,7 +55,10 @@ public class OppslagConnection extends AbstractRestConnection {
     }
 
     public List<Arbeidsforhold> getArbeidsforhold() {
-        return getForList(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()), Arbeidsforhold.class);
+        return Optional.ofNullable(getForObject(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()),
+                Arbeidsforhold[].class))
+                .map(Arrays::asList)
+                .orElse(emptyList());
     }
 
     @Override
