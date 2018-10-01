@@ -42,7 +42,7 @@ public class InnsynConnection extends AbstractRestConnection {
         URI uri = URI.create(config.getBaseUri() + href);
         // URI uri = URI.create(config.getBaseUri() + søknadsLenke.getHref());
         LOG.trace("Henter søknad fra {}", uri);
-        return getForObject(uri, SøknadWrapper.class, false, true);
+        return getForObject(uri, SøknadWrapper.class, false, false);
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
