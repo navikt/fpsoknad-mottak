@@ -2,10 +2,8 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.BEHANDLING;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.BEHANDLING_ID;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SØKNAD;
 import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 import java.net.URI;
@@ -40,10 +38,10 @@ public class InnsynConnection extends AbstractRestConnection {
         return uri(config.getBaseUri(), config.getPingPath());
     }
 
-    public SøknadWrapper hentSøknad(String behandlingId) {
-        LOG.trace("Henter søknad for {}", behandlingId);
-        return getForObject(uri(config.getBaseUri(), SØKNAD,
-                queryParams(BEHANDLING_ID, behandlingId)), SøknadWrapper.class);
+    public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
+        URI uri = URI.create(config.getBaseUri() + søknadsLenke.getHref());
+        LOG.trace("Henter søknad fra {}", uri);
+        return getForObject(uri, SøknadWrapper.class, false, true);
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
@@ -54,19 +52,10 @@ public class InnsynConnection extends AbstractRestConnection {
                 .orElse(emptyList());
     }
 
-    public Behandling hentBehandling(String behandlingId) {
-        return withId(getForObject(uri(config.getBaseUri(), BEHANDLING,
-                queryParams(BEHANDLING_ID, behandlingId)), Behandling.class, false, true), behandlingId);
-    }
-
-    public Behandling hentBehandling(Lenke lenke) {
-        URI uri = URI.create(config.getBaseUri() + lenke.getHref());
+    public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
+        URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
         LOG.trace("Henter behandling fra {}", uri);
-        return withId(getForObject(uri, Behandling.class, false, true), uri);
-    }
-
-    private static Behandling withId(Behandling behandling, URI uri) {
-        return withId(behandling, id(uri));
+        return getForObject(uri, BehandlingWrapper.class, false, true);
     }
 
     private static Behandling withId(Behandling behandling, String id) {
