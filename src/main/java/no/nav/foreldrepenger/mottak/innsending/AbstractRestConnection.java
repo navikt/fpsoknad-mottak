@@ -40,25 +40,6 @@ public abstract class AbstractRestConnection {
         }
     }
 
-    private static UriComponentsBuilder builder(URI base, String path) {
-        return UriComponentsBuilder
-                .fromUri(base)
-                .pathSegment(path);
-    }
-
-    protected static URI uri(URI base, String path) {
-        return uri(base, path, null);
-    }
-
-    protected static URI uri(URI base, String path, HttpHeaders queryParams) {
-        URI uri = builder(base, path)
-                .queryParams(queryParams)
-                .build()
-                .toUri();
-        LOG.debug("Bruker URI {}", uri);
-        return uri;
-    }
-
     protected static HttpHeaders queryParams(String key, String value) {
         HttpHeaders queryParams = new HttpHeaders();
         queryParams.add(key, value);
@@ -91,6 +72,23 @@ public abstract class AbstractRestConnection {
             LOG.warn("Kunne ikke hente respons", e);
             throw new RemoteUnavailableException(uri, e);
         }
+    }
+
+    protected static URI uri(URI base, String path) {
+        return uri(base, path, null);
+    }
+
+    protected static URI uri(URI base, String path, HttpHeaders queryParams) {
+        return builder(base, path)
+                .queryParams(queryParams)
+                .build()
+                .toUri();
+    }
+
+    private static UriComponentsBuilder builder(URI base, String path) {
+        return UriComponentsBuilder
+                .fromUri(base)
+                .pathSegment(path);
     }
 
     private <T> T getAndLog(URI uri, Class<T> responseType, boolean isConfidential) {
