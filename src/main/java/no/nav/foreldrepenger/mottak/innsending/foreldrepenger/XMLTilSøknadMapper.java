@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.List;
@@ -103,13 +102,15 @@ public class XMLTilSøknadMapper {
     }
 
     public Søknad tilSøknad(String xml) {
-        Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-
-        Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
-                tilYtelse(søknad.getOmYtelse()));
-        s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-        s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-        return s;
+        /*
+         * Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
+         * 
+         * Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(),
+         * tilSøker(søknad.getSoeker()), tilYtelse(søknad.getOmYtelse()));
+         * s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+         * s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad()); return s;
+         */
+        return null; // TODO for nw
     }
 
     private no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
