@@ -11,11 +11,11 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class SakClientHttp implements SakClient {
@@ -42,7 +42,7 @@ public class SakClientHttp implements SakClient {
         log.info("Querying Sak service at " + sakBaseUrl);
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Saml " + Base64.getEncoder().encodeToString(stripSpaces(samlToken).getBytes()));
+        headers.set("Authorization", "Saml " + encode(samlToken));
         if (EnvUtil.isDevOrPreprod(env)) {
             log.debug(EnvUtil.CONFIDENTIAL, headers.get("Authorization").toString());
         }
@@ -69,10 +69,12 @@ public class SakClientHttp implements SakClient {
             .collect(toList());
     }
 
-    private String stripSpaces(String samlAssertion) {
-        return Arrays.stream(samlAssertion.split("\n"))
-            .map(String::trim)
-            .collect(joining("\n"));
+    private String encode(String samlToken) {
+        try {
+            return Base64.getEncoder().encodeToString(samlToken.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
 }
