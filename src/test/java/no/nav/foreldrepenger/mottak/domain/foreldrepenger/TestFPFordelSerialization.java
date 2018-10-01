@@ -112,7 +112,7 @@ public class TestFPFordelSerialization {
         TestForeldrepengerSerialization.test(new FPSakFordeltKvittering("123", "456"), true, mapper);
     }
 
-    @Test
+    // @Test
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
         ForeldrepengerSøknadMapper fpFordelSøknadGenerator = new ForeldrepengerSøknadMapper(oppslag);
