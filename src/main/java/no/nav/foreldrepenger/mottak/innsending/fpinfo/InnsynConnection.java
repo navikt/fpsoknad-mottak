@@ -43,31 +43,34 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
-        SakWrapper[] saker = getForObject(uri(config.getBaseUri(), SAK,
-                queryParams(AKTOR_ID, aktørId)), SakWrapper[].class);
-        return Optional.ofNullable(saker).map(Arrays::asList).orElse(emptyList());
+        return Optional.ofNullable(getForObject(uri(config.getBaseUri(), SAK,
+                queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
+                .map(Arrays::asList)
+                .orElse(emptyList());
     }
 
     public Behandling hentBehandling(String behandlingId) {
-        return withID(getForObject(uri(config.getBaseUri(), BEHANDLING,
-                queryParams(BEHANDLING_ID, behandlingId)), Behandling.class), behandlingId);
+        return withId(getForObject(uri(config.getBaseUri(), BEHANDLING,
+                queryParams(BEHANDLING_ID, behandlingId)), Behandling.class, false, true), behandlingId);
     }
 
     public Behandling hentBehandling(Lenke lenke) {
         URI uri = URI.create(config.getBaseUri() + lenke.getHref());
-        return withID(getForObject(uri, Behandling.class), uri);
+        return withId(getForObject(uri, Behandling.class, false, true), uri);
     }
 
-    private static Behandling withID(Behandling behandling, URI uri) {
-        return withID(behandling, fromUri(uri).build().getQueryParams().getFirst(BEHANDLING_ID));
+    private static Behandling withId(Behandling behandling, URI uri) {
+        return withId(behandling, id(uri));
     }
 
-    private static Behandling withID(Behandling behandling, String id) {
-        if (behandling == null) {
-            return null;
-        }
-        behandling.setId(id);
-        return behandling;
+    private static Behandling withId(Behandling behandling, String id) {
+        return Optional.ofNullable(behandling)
+                .map(s -> s.withId(id))
+                .orElse(null);
+    }
+
+    private static String id(URI uri) {
+        return fromUri(uri).build().getQueryParams().getFirst(BEHANDLING_ID);
     }
 
     @Override

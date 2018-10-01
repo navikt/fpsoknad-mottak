@@ -11,4 +11,9 @@ public class Behandling {
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
+
+    public Behandling withId(String id) {
+        setId(id);
+        return this;
+    }
 }

@@ -16,6 +16,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 
 public abstract class AbstractRestConnection {
@@ -91,6 +92,11 @@ public abstract class AbstractRestConnection {
     }
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential) {
+        return getForObject(uri, responseType, isConfidential, false);
+
+    }
+
+    protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential, boolean doThrow) {
         try {
             T respons = template.getForObject(uri, responseType);
             if (isConfidential) {
@@ -99,11 +105,13 @@ public abstract class AbstractRestConnection {
             else {
                 LOG.info("Fikk respons {}", respons);
             }
+            if (doThrow) {
+                throw new NotFoundException("Kunne ikke hente fra " + uri);
+            }
             return respons;
-        } catch (Exception e) {
+        } catch (RestClientException e) {
             LOG.warn("Kunne ikke hente respons", e);
-
-            return null;
+            throw new RemoteUnavailableException(uri, e);
         }
     }
 

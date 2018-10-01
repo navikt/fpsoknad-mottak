@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SakWrapper {
+    private static final String BEHANDLINGER = "behandlinger";
     private final String saksnummer;
     private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
@@ -43,7 +44,7 @@ public class SakWrapper {
 
     @JsonIgnore
     public List<Lenke> getBehandlingsLenker() {
-        return getLenker().stream().filter(s -> s.getRel().equals("behandlinger")).collect(toList());
+        return getLenker().stream().filter(s -> s.getRel().equals(BEHANDLINGER)).collect(toList());
     }
 
     public String getSaksnummer() {

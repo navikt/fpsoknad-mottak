@@ -58,7 +58,7 @@ public class InnsynTjeneste implements Innsyn {
     private Sak tilSak(SakWrapper wrapper) {
         return new Sak(wrapper.getSaksnummer(), wrapper.getFagsakStatus(), wrapper.getBehandlingTema(),
                 wrapper.getAktørId(), wrapper.getAktørIdAnnenPart(), wrapper.getAktørIdBarn(),
-                hentBehandling(wrapper));
+                hentBehandlinger(wrapper.getBehandlingsLenker()));
     }
 
     @Override
@@ -66,14 +66,14 @@ public class InnsynTjeneste implements Innsyn {
         return connection.hentBehandling(behandlingId);
     }
 
-    private List<Behandling> hentBehandling(SakWrapper sak) {
-        return sak.getBehandlingsLenker()
+    private List<Behandling> hentBehandlinger(List<Lenke> lenker) {
+        return lenker
                 .stream()
-                .map(s -> hentBehandling(sak.getSaksnummer(), s))
+                .map(this::hentBehandling)
                 .collect(toList());
     }
 
-    private Behandling hentBehandling(String saksnr, Lenke lenke) {
+    private Behandling hentBehandling(Lenke lenke) {
         return connection.hentBehandling(lenke);
     }
 
@@ -81,5 +81,4 @@ public class InnsynTjeneste implements Innsyn {
     public String toString() {
         return getClass().getSimpleName() + " [mapper=" + mapper + ", connection=" + connection + "]";
     }
-
 }
