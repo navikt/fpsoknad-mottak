@@ -6,9 +6,9 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
-import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
-import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.METADATA;
-import static no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator.VEDLEGG;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -51,14 +51,14 @@ import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelGosysKvittering;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelMetdataGenerator;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPFordelPendingKvittering;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.ForeldrepengerSøknadMapper;
-import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetdataGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureJsonTesters

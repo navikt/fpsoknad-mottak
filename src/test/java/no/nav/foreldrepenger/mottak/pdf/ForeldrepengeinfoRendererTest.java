@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.pdf;
 
 import org.junit.Test;
 
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
+
 import static org.junit.Assert.assertEquals;
 
 public class ForeldrepengeinfoRendererTest {

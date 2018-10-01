@@ -13,7 +13,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.innsending.pdf.Arbeidsforhold;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection {

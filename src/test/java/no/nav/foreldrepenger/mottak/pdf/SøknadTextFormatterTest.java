@@ -1,6 +1,9 @@
 package no.nav.foreldrepenger.mottak.pdf;
 
 import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

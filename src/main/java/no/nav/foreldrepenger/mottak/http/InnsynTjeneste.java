@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.innsending.fpfordel.XMLTilSøknadMapper;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.Behandling;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.InnsynConnection;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.Lenke;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.Sak;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.SakWrapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.XMLTilSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsyn.Behandling;
+import no.nav.foreldrepenger.mottak.innsyn.InnsynConnection;
+import no.nav.foreldrepenger.mottak.innsyn.Lenke;
+import no.nav.foreldrepenger.mottak.innsyn.SakWrapper;
 
 @Service
 public class InnsynTjeneste implements Innsyn {

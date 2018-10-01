@@ -28,9 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.pdf.ForeldrepengerPDFGenerator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,9 +47,22 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.ForsendelseStatus;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.ForsendelsesStatusKvittering;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.NonPollingSaksPoller;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetdataGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelResponseHandler;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelSøknadSender;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
+import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
+import no.nav.foreldrepenger.mottak.innsyn.NonPollingSaksPoller;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class FPFordelTest {

@@ -3,9 +3,9 @@ package no.nav.foreldrepenger.mottak.http;
 import java.util.List;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.Behandling;
-import no.nav.foreldrepenger.mottak.innsending.fpinfo.Sak;
+import no.nav.foreldrepenger.mottak.innsyn.Behandling;
 
 public interface Innsyn {
     List<Sak> hentSaker(AktorId aktørId);

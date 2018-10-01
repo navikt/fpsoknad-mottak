@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.pdf.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.innsending.pdf.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 
 @Service
