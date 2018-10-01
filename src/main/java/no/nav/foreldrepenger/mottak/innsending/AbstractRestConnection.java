@@ -12,7 +12,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 
 public abstract class AbstractRestConnection {
@@ -69,28 +68,24 @@ public abstract class AbstractRestConnection {
     }
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential) {
-        return getForObject(uri, responseType, isConfidential, false);
-
-    }
-
-    protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential, boolean doThrow) {
         try {
-            LOG.trace("Henter fra URI {}", uri);
-            T respons = template.getForObject(uri, responseType);
-            if (isConfidential) {
-                LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
-            }
-            else {
-                LOG.info("Fikk respons {}", respons);
-            }
-            if (doThrow) {
-                throw new NotFoundException("Kunne ikke hente fra " + uri);
-            }
-            return respons;
+            return getAndLog(uri, responseType, isConfidential);
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke hente respons", e);
             throw new RemoteUnavailableException(uri, e);
         }
+    }
+
+    private <T> T getAndLog(URI uri, Class<T> responseType, boolean isConfidential) {
+        LOG.trace("Henter fra URI {}", uri);
+        T respons = template.getForObject(uri, responseType);
+        if (isConfidential) {
+            LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
+        }
+        else {
+            LOG.info("Fikk respons {}", respons);
+        }
+        return respons;
     }
 
 }
