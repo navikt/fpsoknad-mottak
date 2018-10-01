@@ -104,13 +104,14 @@ public class XMLTilSøknadMapper {
 
     public Søknad tilSøknad(String xml) {
         Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-        if (søknad != null) {
-            Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
-                    tilYtelse(søknad.getOmYtelse()));
-            s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-            s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-            return s;
-        }
+        /*
+         * if (søknad != null) { Søknad s = new
+         * Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
+         * tilYtelse(søknad.getOmYtelse()));
+         * s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+         * s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad()); return s;
+         * }
+         */
         return null;
     }
 
