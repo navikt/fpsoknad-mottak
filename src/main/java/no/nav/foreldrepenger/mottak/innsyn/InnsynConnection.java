@@ -2,9 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.BEHANDLING_ID;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
-import static org.springframework.web.util.UriComponentsBuilder.fromUri;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -53,19 +51,11 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
-        URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
+        String href = behandlingsLenke.getHref().replace("søknad", "soknad");
+        // URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
+        URI uri = URI.create(config.getBaseUri() + href);
         LOG.trace("Henter behandling fra {}", uri);
         return getForObject(uri, BehandlingWrapper.class, false, true);
-    }
-
-    private static Behandling withId(Behandling behandling, String id) {
-        return Optional.ofNullable(behandling)
-                .map(s -> s.withId(id))
-                .orElse(null);
-    }
-
-    private static String id(URI uri) {
-        return fromUri(uri).build().getQueryParams().getFirst(BEHANDLING_ID);
     }
 
     @Override
