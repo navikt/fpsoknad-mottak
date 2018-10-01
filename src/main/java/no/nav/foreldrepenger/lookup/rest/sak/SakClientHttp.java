@@ -42,7 +42,7 @@ public class SakClientHttp implements SakClient {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
-            sakBaseUrl + "?aktoerId=" + aktor.getAktør(),
+            sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT00&tema=FOR",
             HttpMethod.GET,
             requestEntity,
             new ParameterizedTypeReference<List<RemoteSak>>() {
