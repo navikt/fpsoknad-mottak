@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -14,10 +14,6 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.XMLTilSøknadMapper;
-import no.nav.foreldrepenger.mottak.innsyn.Behandling;
-import no.nav.foreldrepenger.mottak.innsyn.InnsynConnection;
-import no.nav.foreldrepenger.mottak.innsyn.Lenke;
-import no.nav.foreldrepenger.mottak.innsyn.SakWrapper;
 
 @Service
 public class InnsynTjeneste implements Innsyn {

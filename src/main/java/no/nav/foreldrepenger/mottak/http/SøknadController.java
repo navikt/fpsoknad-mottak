@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
+import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;

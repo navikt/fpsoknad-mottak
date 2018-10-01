@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 
 @RestController
