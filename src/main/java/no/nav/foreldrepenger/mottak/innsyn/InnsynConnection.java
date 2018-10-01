@@ -37,7 +37,10 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
-        URI uri = URI.create(config.getBaseUri() + søknadsLenke.getHref());
+        String href = søknadsLenke.getHref().replace("søknad", "soknad");
+        LOG.trace("Fixed href is" + href);
+        URI uri = URI.create(config.getBaseUri() + href);
+        // URI uri = URI.create(config.getBaseUri() + søknadsLenke.getHref());
         LOG.trace("Henter søknad fra {}", uri);
         return getForObject(uri, SøknadWrapper.class, false, true);
     }
@@ -51,10 +54,7 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
-        String href = behandlingsLenke.getHref().replace("søknad", "soknad");
-        LOG.trace("Fixed href is" + href);
-        // URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
-        URI uri = URI.create(config.getBaseUri() + href);
+        URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
         LOG.trace("Henter behandling fra {}", uri);
         return getForObject(uri, BehandlingWrapper.class, false, true);
     }
