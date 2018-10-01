@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.pdf;
+package no.nav.foreldrepenger.mottak.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

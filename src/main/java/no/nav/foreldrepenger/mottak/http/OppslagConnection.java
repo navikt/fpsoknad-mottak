@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.pdf.Arbeidsforhold;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection {
