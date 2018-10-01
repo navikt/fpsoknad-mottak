@@ -52,6 +52,7 @@ public class InnsynConnection extends AbstractRestConnection {
 
     public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
         String href = behandlingsLenke.getHref().replace("søknad", "soknad");
+        LOG.trace("Fixed href is" + href);
         // URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
         URI uri = URI.create(config.getBaseUri() + href);
         LOG.trace("Henter behandling fra {}", uri);
