@@ -37,7 +37,6 @@ public class SakClientHttp implements SakClient {
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Saml " + encode(samlToken));
-        headers.set("X-Correlation-ID", "bogus");
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
