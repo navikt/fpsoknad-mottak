@@ -111,6 +111,12 @@ public class XMLTilSøknadMapper {
             return null;
         }
         Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
+        if (erEndringsSøknad(xml)) {
+            LOG.info("Dette er en endringssøknad");
+            LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
+            return null;
+        }
+        LOG.warn("Dette er en førstegangssøknad");
         if (søknad != null) {
             LocalDate tid = søknad.getMottattDato();
             LOG.debug("Starttidspunkt {}", tid);
@@ -123,11 +129,12 @@ public class XMLTilSøknadMapper {
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
             return s;
         }
-        else {
-            LOG.warn("Ingen søknad kunne unmarshalles");
-        }
-
+        LOG.warn("Ingen søknad kunne unmarshalles");
         return null;
+    }
+
+    private static boolean erEndringsSøknad(String xml) {
+        return xml.contains("endringssoeknad");
     }
 
     private no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
