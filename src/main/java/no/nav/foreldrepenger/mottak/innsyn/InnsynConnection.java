@@ -37,13 +37,14 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
+        LOG.trace("Henter søknad");
         return Optional.ofNullable(søknadsLenke)
                 .map(s -> safeGet(s, SøknadWrapper.class, true, false))
                 .orElse(null);
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
-        LOG.trace("Henter saker for {}", aktørId);
+        LOG.trace("Henter saker", aktørId);
         return Optional.ofNullable(getForObject(uri(config.getBaseUri(), SAK,
                 queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
                 .map(Arrays::asList)
@@ -52,13 +53,12 @@ public class InnsynConnection extends AbstractRestConnection {
 
     public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
         URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
-        LOG.trace("Henter behandling fra {}", uri);
+        LOG.trace("Henter behandling");
         return getForObject(uri, BehandlingWrapper.class, false, true);
     }
 
     private <T> T safeGet(Lenke lenke, Class<T> clazz, boolean confidential, boolean doThrow) {
         URI uri = URI.create(config.getBaseUri() + lenke.getHref());
-        LOG.trace("Henter søknad fra {}", uri);
         return getForObject(uri, clazz, confidential, doThrow);
     }
 
