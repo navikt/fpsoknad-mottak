@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import lombok.Data;
 
 @Data
 public class BehandlingWrapper {
+    private static final String SØKNAD = "søknad";
     private final String status;
     private final String type;
     private final String tema;
@@ -39,6 +41,8 @@ public class BehandlingWrapper {
     }
 
     public Lenke getSøknadsLenke() {
-        return getLenker().stream().filter(s -> s.getRel().equals("søknad")).findFirst().get();
+        return safeStream(getLenker())
+                .filter(s -> s.getRel().equals(SØKNAD))
+                .findFirst().orElse(null);
     }
 }

@@ -43,39 +43,35 @@ public class InnsynTjeneste implements Innsyn {
         return saker;
     }
 
+    private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
+        LOG.info("Henter {} behandling(er)", behandlingsLenker.size());
+        List<Behandling> behandlinger = safeStream(behandlingsLenker)
+                .map(lenke -> connection.hentBehandling(lenke))
+                .map(wrapper -> tilBehandling(wrapper))
+                .collect(toList());
+        LOG.info("Hentet {} behandling(er) {}", behandlinger.size(), behandlinger);
+        return behandlinger;
+    }
+
+    private Søknad hentSøknad(Lenke søknadsLenke) {
+        Søknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
+                .map(wrapper -> wrapper.getXml())
+                .map(xml -> mapper.tilSøknad(xml))
+                .orElse(null);
+        LOG.info("Hentet søknad {}}", søknad);
+        return søknad;
+    }
+
     private Sak tilSak(SakWrapper wrapper) {
         return new Sak(wrapper.getSaksnummer(), wrapper.getFagsakStatus(), wrapper.getBehandlingTema(),
                 wrapper.getAktørId(), wrapper.getAktørIdAnnenPart(), wrapper.getAktørIdBarn(),
                 hentBehandlinger(wrapper.getBehandlingsLenker()));
     }
 
-    private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
-        LOG.info("Henter {} behandling(er)", behandlingsLenker.size());
-        List<Behandling> behandlinger = behandlingsLenker
-                .stream()
-                .map(this::hentBehandling)
-                .collect(toList());
-        LOG.info("Hentet {} behandling(er)", behandlinger.size());
-        return behandlinger;
-    }
-
-    private Behandling hentBehandling(Lenke behandlingsLenke) {
-        return tilBehandling(connection.hentBehandling(behandlingsLenke));
-    }
-
     private Behandling tilBehandling(BehandlingWrapper wrapper) {
         return new Behandling(wrapper.getStatus(), wrapper.getType(), wrapper.getTema(), wrapper.getÅrsak(),
                 wrapper.getBehandlendeEnhet(), wrapper.getBehandlendeEnhetNavn(),
                 hentSøknad(wrapper.getSøknadsLenke()));
-    }
-
-    private Søknad hentSøknad(Lenke søknadsLenke) {
-        Søknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
-                .map(s -> s.getXml())
-                .map(s -> mapper.tilSøknad(s))
-                .orElse(null);
-        LOG.info("Hentet søknad {}}", søknad);
-        return søknad;
     }
 
     @Override

@@ -35,7 +35,7 @@ public abstract class AbstractRestConnection {
             LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
             return response.getBody();
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke pinge FPInfo på {}", pingEndpoint, e);
+            LOG.warn("Kunne ikke pinge på {}", pingEndpoint, e);
             throw new RemoteUnavailableException(e);
         }
     }

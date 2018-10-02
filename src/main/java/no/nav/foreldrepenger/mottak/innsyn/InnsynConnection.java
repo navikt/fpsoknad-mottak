@@ -37,9 +37,9 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
-        URI uri = URI.create(config.getBaseUri() + søknadsLenke.getHref());
-        LOG.trace("Henter søknad fra {}", uri);
-        return getForObject(uri, SøknadWrapper.class, false, false);
+        return Optional.ofNullable(søknadsLenke)
+                .map(s -> safeGet(s, SøknadWrapper.class, true, false))
+                .orElse(null);
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
@@ -54,6 +54,12 @@ public class InnsynConnection extends AbstractRestConnection {
         URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
         LOG.trace("Henter behandling fra {}", uri);
         return getForObject(uri, BehandlingWrapper.class, false, true);
+    }
+
+    private <T> T safeGet(Lenke lenke, Class<T> clazz, boolean confidential, boolean doThrow) {
+        URI uri = URI.create(config.getBaseUri() + lenke.getHref());
+        LOG.trace("Henter søknad fra {}", uri);
+        return getForObject(uri, clazz, confidential, doThrow);
     }
 
     @Override
