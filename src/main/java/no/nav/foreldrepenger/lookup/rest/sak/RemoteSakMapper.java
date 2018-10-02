@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class RemoteSakMapper {
 
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     public static Sak map(RemoteSak remoteSak) {
         return new Sak(Integer.toString(remoteSak.getId()),
