@@ -14,10 +14,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.dom.DOMResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public final class Jaxb {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
 
     private Jaxb() {
 
@@ -79,7 +83,9 @@ public final class Jaxb {
         try {
 
             Unmarshaller unmarshaller = unmarshaller(context);
-            return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapeHtml4(xml)));
+            String unescapedXML = unescapeHtml4(xml);
+            LOG.trace("XML etter unescape er {}", unescapedXML);
+            return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapedXML));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }

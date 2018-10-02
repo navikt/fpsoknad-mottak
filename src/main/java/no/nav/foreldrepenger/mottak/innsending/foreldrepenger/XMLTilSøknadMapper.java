@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -111,13 +112,13 @@ public class XMLTilSøknadMapper {
         }
         Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
         if (søknad != null) {
-            LocalDateTime tid = søknad.getMottattDato().atStartOfDay();
+            LocalDate tid = søknad.getMottattDato();
             LOG.debug("Starttidspunkt {}", tid);
             Søker søker = tilSøker(søknad.getSoeker());
             LOG.debug("Søker {}", søker);
             Ytelse ytelse = tilYtelse(søknad.getOmYtelse());
             LOG.debug("Ytelse {}", ytelse);
-            Søknad s = new Søknad(tid, søker, ytelse);
+            Søknad s = new Søknad(tid != null ? tid.atStartOfDay() : LocalDateTime.now(), søker, ytelse);
             s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
             return s;
