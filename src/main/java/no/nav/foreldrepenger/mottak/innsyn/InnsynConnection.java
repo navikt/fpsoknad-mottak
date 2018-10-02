@@ -27,6 +27,7 @@ public class InnsynConnection extends AbstractRestConnection {
         this.config = config;
     }
 
+    @Override
     public boolean isEnabled() {
         return config.isEnabled();
     }
@@ -44,7 +45,7 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
-        LOG.trace("Henter saker", aktørId);
+        LOG.trace("Henter saker");
         return Optional.ofNullable(getForObject(uri(config.getBaseUri(), SAK,
                 queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
                 .map(Arrays::asList)

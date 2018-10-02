@@ -1,13 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static org.springframework.web.util.UriComponentsBuilder.fromUri;
-
 import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 
 @ConfigurationProperties(prefix = "fpfordel")
 @Configuration
@@ -54,26 +51,6 @@ public class FPFordelConfig {
 
     public void setPingPath(String pingPath) {
         this.pingPath = pingPath;
-    }
-
-    private URI uriFra(String pathSegment) {
-        return uriFra(pathSegment, new HttpHeaders());
-    }
-
-    private URI uriFra(String pathSegment, HttpHeaders queryParams) {
-        return fromUri(getUri())
-                .pathSegment(pathSegment)
-                .queryParams(queryParams)
-                .build()
-                .toUri();
-    }
-
-    public URI getSendEndpoint() {
-        return uriFra(getBasePath());
-    }
-
-    public URI getPingEndpoint() {
-        return uriFra(getPingPath());
     }
 
     @Override

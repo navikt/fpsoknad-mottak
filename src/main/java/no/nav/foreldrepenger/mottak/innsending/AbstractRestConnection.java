@@ -23,6 +23,8 @@ public abstract class AbstractRestConnection {
 
     public abstract URI pingEndpoint();
 
+    public abstract boolean isEnabled();
+
     public AbstractRestConnection(RestTemplate template) {
         this.template = template;
     }

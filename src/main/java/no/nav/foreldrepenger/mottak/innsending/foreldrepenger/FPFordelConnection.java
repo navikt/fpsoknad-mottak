@@ -28,12 +28,8 @@ public class FPFordelConnection extends AbstractRestConnection {
         this.responseHandler = responseHandler;
     }
 
-    public boolean isEnabled() {
-        return config.isEnabled();
-    }
-
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        URI sendEndpoint = config.getSendEndpoint();
+        URI sendEndpoint = uri(config.getUri(), config.getBasePath());
         try {
             return responseHandler.handle(template.postForEntity(sendEndpoint, payload, FPFordelKvittering.class), ref);
         } catch (RestClientException e) {
@@ -44,7 +40,12 @@ public class FPFordelConnection extends AbstractRestConnection {
 
     @Override
     public URI pingEndpoint() {
-        return config.getPingEndpoint();
+        return uri(config.getUri(), config.getPingPath());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return config.isEnabled();
     }
 
     @Override

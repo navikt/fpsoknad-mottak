@@ -32,6 +32,11 @@ public class OppslagConnection extends AbstractRestConnection {
     }
 
     @Override
+    public boolean isEnabled() {
+        return cfg.isEnabled();
+    }
+
+    @Override
     public URI pingEndpoint() {
         return uri(cfg.getBaseURI(), cfg.getPingPath());
     }
@@ -67,4 +72,5 @@ public class OppslagConnection extends AbstractRestConnection {
     public String toString() {
         return getClass().getSimpleName() + " [cfg=" + cfg + "]";
     }
+
 }
