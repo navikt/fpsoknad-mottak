@@ -47,7 +47,7 @@ public class InnsynTjeneste implements Innsyn {
         LOG.info("Henter {} behandling(er)", behandlingsLenker.size());
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
                 .map(lenke -> connection.hentBehandling(lenke))
-                .map(wrapper -> tilBehandling(wrapper))
+                .map(this::tilBehandling)
                 .collect(toList());
         LOG.info("Hentet {} behandling(er) {}", behandlinger.size(), behandlinger);
         return behandlinger;
@@ -55,8 +55,7 @@ public class InnsynTjeneste implements Innsyn {
 
     private Søknad hentSøknad(Lenke søknadsLenke) {
         Søknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
-                .map(wrapper -> wrapper.getXml())
-                .map(xml -> mapper.tilSøknad(xml))
+                .map(this::tilSøknad)
                 .orElse(null);
         LOG.info("Hentet søknad {}}", søknad);
         return søknad;
@@ -72,6 +71,10 @@ public class InnsynTjeneste implements Innsyn {
         return new Behandling(wrapper.getStatus(), wrapper.getType(), wrapper.getTema(), wrapper.getÅrsak(),
                 wrapper.getBehandlendeEnhet(), wrapper.getBehandlendeEnhetNavn(),
                 hentSøknad(wrapper.getSøknadsLenke()));
+    }
+
+    private Søknad tilSøknad(SøknadWrapper wrapper) {
+        return mapper.tilSøknad(wrapper.getXml());
     }
 
     @Override

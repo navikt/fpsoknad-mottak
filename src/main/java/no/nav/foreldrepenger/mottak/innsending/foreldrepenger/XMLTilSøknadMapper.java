@@ -103,6 +103,9 @@ public class XMLTilSøknadMapper {
     }
 
     public Søknad tilSøknad(String xml) {
+        if (xml == null) {
+            return null;
+        }
         Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
         /*
          * if (søknad != null) { Søknad s = new
