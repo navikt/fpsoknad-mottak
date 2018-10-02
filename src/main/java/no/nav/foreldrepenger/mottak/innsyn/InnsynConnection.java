@@ -39,8 +39,9 @@ public class InnsynConnection extends AbstractRestConnection {
 
     public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
         LOG.trace("Henter søknad");
+        URI uri = URI.create(config.getBaseUri() + søknadsLenke.getHref());
         return Optional.ofNullable(søknadsLenke)
-                .map(s -> safeGet(s, SøknadWrapper.class, true, false))
+                .map(s -> getForObject(uri, SøknadWrapper.class))
                 .orElse(null);
     }
 
@@ -56,11 +57,6 @@ public class InnsynConnection extends AbstractRestConnection {
         URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
         LOG.trace("Henter behandling");
         return getForObject(uri, BehandlingWrapper.class, false, true);
-    }
-
-    private <T> T safeGet(Lenke lenke, Class<T> clazz, boolean confidential, boolean doThrow) {
-        URI uri = URI.create(config.getBaseUri() + lenke.getHref());
-        return getForObject(uri, clazz, confidential, doThrow);
     }
 
     @Override
