@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -21,6 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.felles.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
@@ -104,17 +106,26 @@ public class XMLTilSøknadMapper {
 
     public Søknad tilSøknad(String xml) {
         if (xml == null) {
+            LOG.info("Ingen søknad ble funnet");
             return null;
         }
         Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-        /*
-         * if (søknad != null) { Søknad s = new
-         * Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
-         * tilYtelse(søknad.getOmYtelse()));
-         * s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-         * s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad()); return s;
-         * }
-         */
+        if (søknad != null) {
+            LocalDateTime tid = søknad.getMottattDato().atStartOfDay();
+            LOG.debug("Starttidspunkt {}", tid);
+            Søker søker = tilSøker(søknad.getSoeker());
+            LOG.debug("Søker {}", søker);
+            Ytelse ytelse = tilYtelse(søknad.getOmYtelse());
+            LOG.debug("Ytelse {}", ytelse);
+            Søknad s = new Søknad(tid, søker, ytelse);
+            s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+            s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+            return s;
+        }
+        else {
+            LOG.warn("Ingen søknad kunne unmarshalles");
+        }
+
         return null;
     }
 

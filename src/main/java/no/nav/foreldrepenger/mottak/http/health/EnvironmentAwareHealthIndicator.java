@@ -4,18 +4,23 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 
-public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator {
+public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, EnvironmentAware {
 
     private final AbstractRestConnection connection;
-    private boolean isPreprodOrDev;
+    private Environment env;
 
-    public EnvironmentAwareHealthIndicator(Environment env, AbstractRestConnection connection) {
-        this.isPreprodOrDev = isDevOrPreprod(env);
+    public EnvironmentAwareHealthIndicator(AbstractRestConnection connection) {
         this.connection = connection;
+    }
+
+    @Override
+    public void setEnvironment(Environment env) {
+        this.env = env;
     }
 
     protected void checkHealth() {
@@ -26,9 +31,9 @@ public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator
     public Health health() {
         try {
             checkHealth();
-            return isPreprodOrDev ? upWithDetails() : up();
+            return isDevOrPreprod(env) ? upWithDetails() : up();
         } catch (Exception e) {
-            return isPreprodOrDev ? downWithDetails(e) : down();
+            return isDevOrPreprod(env) ? downWithDetails(e) : down();
         }
     }
 
@@ -50,7 +55,7 @@ public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + "isPreprodOrDev "
-                + isPreprodOrDev + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + "isDevOrPreprod "
+                + isDevOrPreprod(env) + "]";
     }
 }
