@@ -84,7 +84,7 @@ public final class Jaxb {
 
             Unmarshaller unmarshaller = unmarshaller(context);
             String unescapedXML = unescapeHtml4(xml);
-            LOG.trace("XML etter unescape er {}", unescapedXML);
+            LOG.trace(EnvUtil.CONFIDENTIAL, "XML etter unescape er {}", unescapedXML);
             return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapedXML));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);

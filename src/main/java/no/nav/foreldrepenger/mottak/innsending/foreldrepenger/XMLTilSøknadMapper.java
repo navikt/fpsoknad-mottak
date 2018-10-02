@@ -31,6 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FrilansOppdrag;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
@@ -97,7 +98,7 @@ public class XMLTilSøknadMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLTilSøknadMapper.class);
 
-    private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class);
+    private static final JAXBContext CONTEXT = context(Soeknad.class, Endringssøknad.class, Foreldrepenger.class);
 
     private final Oppslag oppslag;
 
