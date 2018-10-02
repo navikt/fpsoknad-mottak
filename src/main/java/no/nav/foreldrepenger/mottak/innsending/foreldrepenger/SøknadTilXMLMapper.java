@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -60,6 +59,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -113,7 +113,7 @@ public class SøknadTilXMLMapper {
     private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
-    private static final JAXBContext CONTEXT = context(Soeknad.class, Foreldrepenger.class, Endringssoeknad.class);
+    private static final JAXBContext CONTEXT = Jaxb.DEFAULT_CONTEXT;
 
     private static final ObjectFactory FP_FACTORY = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();

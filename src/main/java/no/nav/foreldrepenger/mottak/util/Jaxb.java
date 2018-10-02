@@ -19,9 +19,16 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
+import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
+
 public final class Jaxb {
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
+
+    public static final JAXBContext DEFAULT_CONTEXT = context(Soeknad.class, Endringssoeknad.class,
+            Foreldrepenger.class);
 
     private Jaxb() {
 

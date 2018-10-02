@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -53,7 +52,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.Oppslag;
-import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
+import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
@@ -98,7 +97,7 @@ public class XMLTilSøknadMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLTilSøknadMapper.class);
 
-    private static final JAXBContext CONTEXT = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class);
+    private static final JAXBContext CONTEXT = Jaxb.DEFAULT_CONTEXT;
 
     private final Oppslag oppslag;
 
