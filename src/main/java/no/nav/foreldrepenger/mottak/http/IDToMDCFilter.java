@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 @Order(HIGHEST_PRECEDENCE)
 @Profile({ PREPROD, DEV })
 @Component
-public class IDFilter extends GenericFilterBean {
+public class IDToMDCFilter extends GenericFilterBean {
 
     private static final String USER_ID = "Nav-User-Id";
     private static final String AKTØR_ID = "Nav-Aktør-Id";
@@ -30,21 +30,21 @@ public class IDFilter extends GenericFilterBean {
     private final Oppslag oppslag;
     private final FnrExtractor extractor;
 
-    public IDFilter(FnrExtractor extractor, Oppslag oppslag) {
+    public IDToMDCFilter(FnrExtractor extractor, Oppslag oppslag) {
         this.extractor = extractor;
         this.oppslag = oppslag;
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        putIdFields();
-        chain.doFilter(request, response);
-    }
-
-    private void putIdFields() {
         MDC.put(USER_ID, extractor.fnrFromToken());
         MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
+        chain.doFilter(req, res);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", extractor=" + extractor + "]";
+    }
 }

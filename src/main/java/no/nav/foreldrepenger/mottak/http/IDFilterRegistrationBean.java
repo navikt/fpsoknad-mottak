@@ -14,9 +14,9 @@ import com.google.common.collect.Lists;
 
 @Component
 @Profile({ PREPROD, DEV })
-public class IDFilterRegistrationBean extends FilterRegistrationBean<IDFilter> {
+public class IDFilterRegistrationBean extends FilterRegistrationBean<IDToMDCFilter> {
 
-    public IDFilterRegistrationBean(IDFilter idFiltr) {
+    public IDFilterRegistrationBean(IDToMDCFilter idFiltr) {
         setFilter(idFiltr);
         setUrlPatterns(Lists.newArrayList(INNSENDING + "/*", INNSYN + "/*", INNSENDING_PREPROD + "/*"));
     }
