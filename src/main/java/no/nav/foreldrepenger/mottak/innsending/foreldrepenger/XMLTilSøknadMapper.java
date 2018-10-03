@@ -114,31 +114,43 @@ public class XMLTilSøknadMapper {
         }
         Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
         if (erEndringsSøknad(xml)) {
-            LOG.info("Dette er en endringssøknad");
-            LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
-            LocalDate tid = søknad.getMottattDato();
-            LOG.debug("Starttidspunkt {}", tid);
-            Søker søker = tilSøker(søknad.getSoeker());
-            LOG.debug("Søker {}", søker);
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(søknad.getOmYtelse());
-            LOG.debug("Ytelse {}", ytelse);
-            Søknad s = new Endringssøknad(søker, ytelse.getFordeling(), null, null, null, "42");
-            s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-            s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-            return s;
+            try {
+                LOG.info("Dette er en endringssøknad");
+                LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
+                LocalDate tid = søknad.getMottattDato();
+                LOG.debug("Starttidspunkt {}", tid);
+                Søker søker = tilSøker(søknad.getSoeker());
+                LOG.debug("Søker {}", søker);
+                no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(
+                        søknad.getOmYtelse());
+                LOG.debug("Ytelse {}", ytelse);
+                Søknad s = new Endringssøknad(søker, ytelse.getFordeling(), null, null, null, "42");
+                s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return s;
+            } catch (Exception e) {
+                LOG.warn("Feil ved unmarshalling av endringssøknad", e);
+                return null;
+            }
         }
         LOG.warn("Dette er en førstegangssøknad");
         if (søknad != null) {
-            LocalDate tid = søknad.getMottattDato();
-            LOG.debug("Starttidspunkt {}", tid);
-            Søker søker = tilSøker(søknad.getSoeker());
-            LOG.debug("Søker {}", søker);
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(søknad.getOmYtelse());
-            LOG.debug("Ytelse any {}", søknad.getOmYtelse().getAny().get(0).getClass().getSimpleName());
-            Søknad s = new Søknad(tid.atStartOfDay(), søker, ytelse);
-            s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-            s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-            return s;
+            try {
+                LocalDate tid = søknad.getMottattDato();
+                LOG.debug("Starttidspunkt {}", tid);
+                Søker søker = tilSøker(søknad.getSoeker());
+                LOG.debug("Søker {}", søker);
+                no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(
+                        søknad.getOmYtelse());
+                LOG.debug("Ytelse any {}", søknad.getOmYtelse().getAny().get(0).getClass().getSimpleName());
+                Søknad s = new Søknad(tid.atStartOfDay(), søker, ytelse);
+                s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return s;
+            } catch (Exception e) {
+                LOG.warn("Feil ved unmarshalling av førstegangssøknad", e);
+                return null;
+            }
         }
         LOG.warn("Ingen søknad kunne unmarshalles");
         return null;
@@ -159,7 +171,6 @@ public class XMLTilSøknadMapper {
         Object førsteYtelse = omYtelse.getAny().get(0);
         if (førsteYtelse instanceof Endringssoeknad) {
             Endringssoeknad endringsSøknad = Endringssoeknad.class.cast(førsteYtelse);
-
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
                     .fordeling(tilFordeling(endringsSøknad.getFordeling()))
                     .build();
