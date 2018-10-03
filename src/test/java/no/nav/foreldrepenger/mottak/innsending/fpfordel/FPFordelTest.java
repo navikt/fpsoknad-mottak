@@ -233,7 +233,7 @@ public class FPFordelTest {
 
     }
 
-    // @Test
+    @Test
     public void pollOnceThenOkAndFpInfoOngoing() throws Exception {
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);

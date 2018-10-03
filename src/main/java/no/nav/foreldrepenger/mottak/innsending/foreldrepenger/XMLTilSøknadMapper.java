@@ -123,7 +123,9 @@ public class XMLTilSøknadMapper {
             Søker søker = tilSøker(søknad.getSoeker());
             LOG.debug("Søker {}", søker);
             Ytelse ytelse = tilYtelse(søknad.getOmYtelse());
-            LOG.debug("Ytelse {}", ytelse);
+            LOG.debug("Ytelse {}", søknad.getOmYtelse().getClass().getSimpleName());
+            LOG.debug("Ytelse any {}", søknad.getOmYtelse().getAny().get(0).getClass().getSimpleName());
+
             Søknad s = new Søknad(tid != null ? tid.atStartOfDay() : LocalDateTime.now(), søker, ytelse);
             s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());

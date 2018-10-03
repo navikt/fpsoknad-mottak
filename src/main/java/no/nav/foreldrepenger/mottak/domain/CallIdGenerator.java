@@ -9,11 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class CallIdGenerator {
 
+    private static final String NAV_CALL_ID = "Nav-CallId";
+
     public String getOrCreate() {
-        return Optional.ofNullable(MDC.get("Nav-CallId")).orElse(create());
+        return Optional.ofNullable(MDC.get(NAV_CALL_ID)).orElse(create());
     }
 
     public String create() {
-        return UUID.randomUUID().toString();
+        String value = UUID.randomUUID().toString();
+        MDC.put(NAV_CALL_ID, value);
+        return value;
     }
 }
