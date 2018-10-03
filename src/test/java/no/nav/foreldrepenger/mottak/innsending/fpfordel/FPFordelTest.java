@@ -80,9 +80,9 @@ public class FPFordelTest {
     private static final String JOURNALID = "999";
     private static final String SAKSNR = "666";
 
-    private static final List<Arbeidsforhold> ARB_FORHOLD =
-        Arrays.asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-            Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
+    private static final List<Arbeidsforhold> ARB_FORHOLD = Arrays
+            .asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                    Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
 
     @Mock
     private RestTemplate template;
@@ -128,7 +128,7 @@ public class FPFordelTest {
                 new FPFordelConnection(template, cfg,
                         new FPFordelResponseHandler(template, 3, new NonPollingSaksPoller())),
                 konvoluttGenerator,
-                new CallIdGenerator("Nav-CallId"));
+                new CallIdGenerator());
     }
 
     private static ResponseEntity<FPFordelKvittering> gosysReceipt() {

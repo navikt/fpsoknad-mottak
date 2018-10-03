@@ -23,7 +23,7 @@ import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 @Order(HIGHEST_PRECEDENCE)
 @Profile({ PREPROD, DEV })
 @Component
-public class IDToMDCFilter extends GenericFilterBean {
+public class IDToMDCFilterBean extends GenericFilterBean {
 
     private static final String USER_ID = "Nav-User-Id";
     private static final String AKTØR_ID = "Nav-Aktør-Id";
@@ -31,7 +31,7 @@ public class IDToMDCFilter extends GenericFilterBean {
     private final Oppslag oppslag;
     private final FnrExtractor extractor;
 
-    public IDToMDCFilter(FnrExtractor extractor, Oppslag oppslag) {
+    public IDToMDCFilterBean(FnrExtractor extractor, Oppslag oppslag) {
         this.extractor = extractor;
         this.oppslag = oppslag;
     }
