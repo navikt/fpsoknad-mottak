@@ -21,6 +21,7 @@ server.servlet :
     use-forward-headers: true
 
 spring :
+    application.name : fpsoknad-mottak
     jackson :
       default-property-inclusion :  non_null
       mapper :

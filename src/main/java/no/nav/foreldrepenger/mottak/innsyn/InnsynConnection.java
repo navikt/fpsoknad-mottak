@@ -54,13 +54,14 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
-        URI uri = URI.create(config.getBaseUri() + behandlingsLenke.getHref());
         LOG.trace("Henter behandling");
-        return getForObject(uri, BehandlingWrapper.class, false, true);
+        return getForObject(URI.create(config.getBaseUri() + behandlingsLenke.getHref()), BehandlingWrapper.class,
+                false, true);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [config=" + config + "]";
     }
+
 }
