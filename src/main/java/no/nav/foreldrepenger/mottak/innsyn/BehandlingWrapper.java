@@ -20,6 +20,7 @@ public class BehandlingWrapper {
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
+    private final List<String> inntekstmeldinger;
     private final List<Lenke> lenker;
 
     @JsonCreator
@@ -30,6 +31,7 @@ public class BehandlingWrapper {
             @JsonProperty("årsak") String årsak,
             @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
             @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
+            @JsonProperty("inntekstmeldinger") List<String> inntekstmeldinger,
             @JsonProperty("lenker") List<Lenke> lenker) {
         this.status = status;
         this.tema = tema;
@@ -37,6 +39,7 @@ public class BehandlingWrapper {
         this.årsak = årsak;
         this.behandlendeEnhet = behandlendeEnhet;
         this.behandlendeEnhetNavn = behandlendeEnhetNavn;
+        this.inntekstmeldinger = Optional.ofNullable(inntekstmeldinger).orElse(emptyList());
         this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
     }
 

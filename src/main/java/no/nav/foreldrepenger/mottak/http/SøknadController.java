@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,17 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -81,32 +75,8 @@ public class SøknadController {
 
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
-        List<Sak> saker = innsyn.hentSaker(oppslag.getAktørId());
-        /*
-         * if (EnvUtil.isDevOrPreprod(env)) { try { if (!saker.isEmpty()) { String
-         * saksnummer = saker.get(0).getSaksnummer(); LOG.trace(EnvUtil.CONFIDENTIAL,
-         * "Tester endringssøknad mot sak {}", saksnummer); ValgfrittVedlegg vedlegg =
-         * new ValgfrittVedlegg(DokumentType.I500005, new
-         * ClassPathResource("sykkel.pdf")); Endringssøknad es = new
-         * Endringssøknad(søker(), fordeling(), null, null, null, saksnummer, vedlegg);
-         * sender.send(es, oppslag.getSøker()); } else {
-         * LOG.trace("Ingen saker å ettersende til"); } } catch (IOException e) {
-         * LOG.error("Funkade inte, men dette var bare en test", e); } }
-         */
-        return saker;
+        return innsyn.hentSaker(oppslag.getAktørId());
 
-    }
-
-    private static Søker søker() {
-        return new Søker(BrukerRolle.MOR);
-    }
-
-    private Fordeling fordeling() {
-        return new Fordeling(true, Overføringsårsak.ALENEOMSORG, perioder());
-    }
-
-    private List<LukketPeriodeMedVedlegg> perioder() {
-        return Collections.emptyList();
     }
 
     @Override
