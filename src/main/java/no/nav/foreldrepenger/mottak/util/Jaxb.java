@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.transform.dom.DOMResult;
 
 import org.slf4j.Logger;
@@ -68,7 +69,9 @@ public final class Jaxb {
 
     private static Unmarshaller unmarshaller(JAXBContext context) {
         try {
-            return context.createUnmarshaller();
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            unmarshaller.setEventHandler(new DefaultValidationEventHandler());
+            return unmarshaller;
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }

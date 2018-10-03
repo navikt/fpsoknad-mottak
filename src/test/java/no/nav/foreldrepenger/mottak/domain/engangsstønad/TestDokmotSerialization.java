@@ -31,6 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
@@ -67,7 +68,8 @@ public class TestDokmotSerialization {
 
     @Test
     public void testKonvoluttXML() throws Exception {
-        Søknad engangssøknad = engangssøknad(true, fødsel(), norskForelder(), valgfrittVedlegg());
+        Søknad engangssøknad = engangssøknad(true, fødsel(), norskForelder(),
+                valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
         String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person(),
                 refGenerator.getOrCreate());
         Dokumentforsendelse unmarshalled = unmarshal(konvolutt, FORSENDELSECTX, Dokumentforsendelse.class);
@@ -82,7 +84,7 @@ public class TestDokmotSerialization {
 
     @Test
     public void testDokmotModelTransformation() throws Exception {
-        ValgfrittVedlegg valgfrittVedlegg = valgfrittVedlegg();
+        ValgfrittVedlegg valgfrittVedlegg = valgfrittVedlegg(ForeldrepengerTestUtils.ID142);
         Søknad søknad = engangssøknad(true, termin(), norskForelder(), valgfrittVedlegg);
         Person søker = person();
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
@@ -97,11 +99,12 @@ public class TestDokmotSerialization {
     @Test
     public void testDokmotMarshalling() throws Exception {
         Søknad søknad = engangssøknad(true, termin(), utenlandskForelder(),
-                valgfrittVedlegg());
+                valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
         Person søker = person();
         serialize(søknad, true, mapper);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
-        Søknad søknad1 = engangssøknad(true, fødsel(), utenlandskForelder(), valgfrittVedlegg());
+        Søknad søknad1 = engangssøknad(true, fødsel(), utenlandskForelder(),
+                valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
         SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.tilXML(søknad, søker), SØKNADCTX,
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());

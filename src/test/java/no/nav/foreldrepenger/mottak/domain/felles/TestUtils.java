@@ -99,25 +99,25 @@ public class TestUtils {
         return overtakelse;
     }
 
-    public static PåkrevdVedlegg påkrevdVedlegg() {
-        return påkrevdVedlegg("terminbekreftelse.pdf");
+    public static PåkrevdVedlegg påkrevdVedlegg(String id) {
+        return påkrevdVedlegg(id, "terminbekreftelse.pdf");
     }
 
-    public static ValgfrittVedlegg valgfrittVedlegg() {
-        return valgfrittVedlegg("terminbekreftelse.pdf");
+    public static ValgfrittVedlegg valgfrittVedlegg(String id) {
+        return valgfrittVedlegg(id, "terminbekreftelse.pdf");
     }
 
-    public static PåkrevdVedlegg påkrevdVedlegg(String name) {
+    public static PåkrevdVedlegg påkrevdVedlegg(String id, String name) {
         try {
-            return new PåkrevdVedlegg(DokumentType.I000062, new ClassPathResource(name));
+            return new PåkrevdVedlegg(id, DokumentType.I000062, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    static ValgfrittVedlegg valgfrittVedlegg(String name) {
+    static ValgfrittVedlegg valgfrittVedlegg(String id, String name) {
         try {
-            return new ValgfrittVedlegg(DokumentType.I000062, new ClassPathResource(name));
+            return new ValgfrittVedlegg(id, DokumentType.I000062, new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

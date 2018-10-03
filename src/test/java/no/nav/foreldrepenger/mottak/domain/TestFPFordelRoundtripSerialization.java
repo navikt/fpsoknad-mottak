@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
@@ -98,7 +99,8 @@ public class TestFPFordelRoundtripSerialization {
     @Test
     public void testSøknadFødselMedNorskFar() throws IOException {
 
-        Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg());
+        Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(),
+                påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
         SoeknadsskjemaEngangsstoenad response = unmarshal(
                 template.postForObject(INNSENDING_PREPROD + "/søknad", engangssøknad, String.class),
                 SoeknadsskjemaEngangsstoenad.class);
@@ -109,21 +111,24 @@ public class TestFPFordelRoundtripSerialization {
     @Test
     public void testEngangsstønadSøknadSend() throws IOException {
         assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK, template.postForObject(INNSENDING + "/send",
-                engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg()), Kvittering.class)
+                engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg(ForeldrepengerTestUtils.ID142)),
+                Kvittering.class)
                 .getLeveranseStatus());
     }
 
     @Test
     public void testSøknadFødselFramtidShouldNotValidate() throws IOException {
         assertEquals(UNPROCESSABLE_ENTITY_422, template.postForEntity(INNSENDING_PREPROD + "/søknad",
-                engangssøknad(false, fødsel(nesteMåned()), norskForelder(), påkrevdVedlegg()),
+                engangssøknad(false, fødsel(nesteMåned()), norskForelder(),
+                        påkrevdVedlegg(ForeldrepengerTestUtils.ID142)),
                 String.class).getStatusCodeValue());
 
     }
 
     @Test
     public void testSøknadKonvoluttFødselMedNorskFar() throws IOException {
-        Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(), påkrevdVedlegg());
+        Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(),
+                påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
         Dokumentforsendelse response = unmarshal(
                 template.postForObject(INNSENDING_PREPROD + "/konvolutt", engangssøknad, String.class),
                 Dokumentforsendelse.class);

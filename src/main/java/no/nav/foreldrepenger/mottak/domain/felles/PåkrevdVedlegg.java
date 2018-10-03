@@ -17,7 +17,7 @@ import lombok.ToString;
 @Data
 public class PåkrevdVedlegg extends Vedlegg {
 
-    PåkrevdVedlegg(DokumentType dokumentType, Resource vedlegg) throws IOException {
+    private PåkrevdVedlegg(DokumentType dokumentType, Resource vedlegg) throws IOException {
         this(dokumentType.name(), dokumentType, vedlegg);
     }
 

@@ -22,13 +22,16 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class ForeldrepengerTestUtils {
 
-    public static final List<Vedlegg> ETT_VEDLEGG = Collections.singletonList(TestUtils.valgfrittVedlegg());
-    private static final List<String> ETT_VEDLEGG_REF = Collections.singletonList("42");
+    public static final String ID142 = "142";
+    public static final String ID143 = "143";
+    public static final List<Vedlegg> TO_VEDLEGG = Lists.newArrayList(TestUtils.valgfrittVedlegg(ID142),
+            TestUtils.valgfrittVedlegg(ID143));
+    private static final List<String> TO_VEDLEGG_REF = Lists.newArrayList(ID142, ID143);
 
     private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
 
     public static Søknad foreldrepengeSøknad() {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), ETT_VEDLEGG);
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), TO_VEDLEGG);
     }
 
     public static Søknad foreldrepengeSøknadUtenVedlegg() {
@@ -45,7 +48,7 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Ettersending ettersending() {
-        return new Ettersending("42", ETT_VEDLEGG);
+        return new Ettersending("42", TO_VEDLEGG);
     }
 
     static Foreldrepenger foreldrePenger() {
@@ -69,7 +72,7 @@ public class ForeldrepengerTestUtils {
         return new Frilans(åpenPeriode(true), false, false,
                 Lists.newArrayList(new FrilansOppdrag("bror min", åpenPeriode(true)),
                         new FrilansOppdrag("far min", åpenPeriode(true))),
-                Lists.newArrayList("42", "43"));
+                Lists.newArrayList(ID142, ID143));
 
     }
 
@@ -148,7 +151,7 @@ public class ForeldrepengerTestUtils {
 
     static UtenlandskArbeidsforhold utenlandskArbeidsforhold() {
         return UtenlandskArbeidsforhold.builder()
-                .vedlegg(ETT_VEDLEGG_REF)
+                .vedlegg(TO_VEDLEGG_REF)
                 .arbeidsgiverNavn("boss")
                 .land(CountryCode.PL)
                 .periode(åpenPeriode()).build();
@@ -159,13 +162,13 @@ public class ForeldrepengerTestUtils {
     }
 
     static UttaksPeriode uttaksPeriode() {
-        return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
+        return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), TO_VEDLEGG_REF,
                 FEDREKVOTE, true, MorsAktivitet.ARBEID_OG_UTDANNING);
     }
 
     static UttaksPeriode gradertPeriode() {
         GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
-                ETT_VEDLEGG_REF,
+                TO_VEDLEGG_REF,
                 FEDREKVOTE, true, MorsAktivitet.ARBEID_OG_UTDANNING);
         periode.setArbeidsForholdSomskalGraderes(true);
         periode.setArbeidstidProsent(75d);
@@ -183,17 +186,17 @@ public class ForeldrepengerTestUtils {
     }
 
     static OverføringsPeriode overføringsPeriode() {
-        return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
+        return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), TO_VEDLEGG_REF,
                 Overføringsårsak.ALENEOMSORG);
     }
 
     static OppholdsPeriode oppholdsPeriode() {
-        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
+        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), TO_VEDLEGG_REF,
                 Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER);
     }
 
     static UtsettelsesPeriode utsettelsesPeriode() {
-        return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), ETT_VEDLEGG_REF,
+        return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), TO_VEDLEGG_REF,
                 UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET);
     }
 

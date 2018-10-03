@@ -28,5 +28,6 @@
         <logger name="org.springframework.web.client" level="info" />
         <logger name="no.nav.foreldrepenger" level="trace" />
         <logger name="no.nav.security" level="info" />
+        <logger name="org.apache.fontbox" level="info" />  
     </springProfile>
 </configuration>

@@ -11,6 +11,9 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKon
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -59,6 +62,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvitte
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.DokumentTypeAnalysator;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureJsonTesters
@@ -112,13 +116,24 @@ public class TestFPFordelSerialization {
         TestForeldrepengerSerialization.test(new FPSakFordeltKvittering("123", "456"), true, mapper);
     }
 
-    // @Test
+    @Test
+    public void testEndringssøknad() throws Exception {
+        AktorId aktørId = new AktorId("42");
+        ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
+        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad();
+        String xml = mapper.tilXML(original, aktørId);
+        assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
+    }
+
+    @Test
     public void testSøknad() throws Exception {
         AktorId aktørId = new AktorId("42");
-        ForeldrepengerSøknadMapper fpFordelSøknadGenerator = new ForeldrepengerSøknadMapper(oppslag);
+        ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Søknad original = ForeldrepengerTestUtils.foreldrepengeSøknad();
-        String xml = fpFordelSøknadGenerator.tilXML(original, aktørId);
-        Søknad rekonstruert = fpFordelSøknadGenerator.tilSøknad(xml);
+        String xml = mapper.tilXML(original, aktørId);
+        assertFalse(new DokumentTypeAnalysator().erEndringssøknad(xml));
+        Søknad rekonstruert = mapper.tilSøknad(xml);
+        assertNotNull(rekonstruert);
         assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());
         assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());
         assertThat(rekonstruert.getTilleggsopplysninger()).isEqualTo(original.getTilleggsopplysninger());
@@ -135,7 +150,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() throws Exception {
-        Søknad søknad = søknad(valgfrittVedlegg());
+        Søknad søknad = søknad(valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
                 new CallIdGenerator().create());
         assertEquals(3, konvolutt.getBody().size());
@@ -154,9 +169,9 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEttersending() throws Exception {
-        ValgfrittVedlegg v1 = new ValgfrittVedlegg(DokumentType.I500002,
+        ValgfrittVedlegg v1 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID142, DokumentType.I500002,
                 new ClassPathResource("terminbekreftelse.pdf"));
-        ValgfrittVedlegg v2 = new ValgfrittVedlegg(DokumentType.I500005,
+        ValgfrittVedlegg v2 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID143, DokumentType.I500005,
                 new ClassPathResource("terminbekreftelse.pdf"));
         Ettersending es = new Ettersending("42", v1, v2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
@@ -172,9 +187,9 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEndring() throws Exception {
-        ValgfrittVedlegg v1 = new ValgfrittVedlegg(DokumentType.I500002,
+        ValgfrittVedlegg v1 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID142, DokumentType.I500002,
                 new ClassPathResource("terminbekreftelse.pdf"));
-        ValgfrittVedlegg v2 = new ValgfrittVedlegg(DokumentType.I500005,
+        ValgfrittVedlegg v2 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID143, DokumentType.I500005,
                 new ClassPathResource("terminbekreftelse.pdf"));
 
         Endringssøknad es = new Endringssøknad(LocalDateTime.now(), TestUtils.søker(),
