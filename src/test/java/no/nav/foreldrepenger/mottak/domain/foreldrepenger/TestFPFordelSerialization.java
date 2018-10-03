@@ -123,6 +123,13 @@ public class TestFPFordelSerialization {
         Endringssøknad original = ForeldrepengerTestUtils.endringssøknad();
         String xml = mapper.tilXML(original, aktørId);
         assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
+        Søknad rekonstruert = mapper.tilSøknad(xml);
+        assertNotNull(rekonstruert);
+        Foreldrepenger originalYtelse = Foreldrepenger.class.cast(original.getYtelse());
+        Foreldrepenger rekonstruertYtelse = Foreldrepenger.class.cast(rekonstruert.getYtelse());
+        System.out.println(rekonstruertYtelse.getFordeling().getPerioder());
+        System.out.println(originalYtelse.getFordeling().getPerioder());
+
     }
 
     @Test

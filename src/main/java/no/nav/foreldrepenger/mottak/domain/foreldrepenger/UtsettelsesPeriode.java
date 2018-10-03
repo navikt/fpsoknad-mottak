@@ -13,9 +13,12 @@ import lombok.ToString;
 public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
 
     private final UtsettelsesÅrsak årsak;
+    private final StønadskontoType uttaksperiodeType;
 
-    public UtsettelsesPeriode(LocalDate fom, LocalDate tom, List<String> vedlegg, UtsettelsesÅrsak årsak) {
+    public UtsettelsesPeriode(LocalDate fom, LocalDate tom, UtsettelsesÅrsak årsak, StønadskontoType uttaksperiodeType,
+            List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.årsak = årsak;
+        this.uttaksperiodeType = uttaksperiodeType;
     }
 }

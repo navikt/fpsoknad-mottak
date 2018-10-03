@@ -7,11 +7,11 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,6 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.felles.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
@@ -30,6 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FrilansOppdrag;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
@@ -54,6 +54,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.DokumentTypeAnalysator;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
+import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
@@ -115,7 +116,16 @@ public class XMLTilSøknadMapper {
         if (erEndringsSøknad(xml)) {
             LOG.info("Dette er en endringssøknad");
             LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
-            return null;
+            LocalDate tid = søknad.getMottattDato();
+            LOG.debug("Starttidspunkt {}", tid);
+            Søker søker = tilSøker(søknad.getSoeker());
+            LOG.debug("Søker {}", søker);
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(søknad.getOmYtelse());
+            LOG.debug("Ytelse {}", ytelse);
+            Søknad s = new Endringssøknad(søker, ytelse.getFordeling(), null, null, null, "42");
+            s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+            s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+            return s;
         }
         LOG.warn("Dette er en førstegangssøknad");
         if (søknad != null) {
@@ -123,11 +133,9 @@ public class XMLTilSøknadMapper {
             LOG.debug("Starttidspunkt {}", tid);
             Søker søker = tilSøker(søknad.getSoeker());
             LOG.debug("Søker {}", søker);
-            Ytelse ytelse = tilYtelse(søknad.getOmYtelse());
-            LOG.debug("Ytelse {}", søknad.getOmYtelse().getClass().getSimpleName());
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(søknad.getOmYtelse());
             LOG.debug("Ytelse any {}", søknad.getOmYtelse().getAny().get(0).getClass().getSimpleName());
-
-            Søknad s = new Søknad(tid != null ? tid.atStartOfDay() : LocalDateTime.now(), søker, ytelse);
+            Søknad s = new Søknad(tid.atStartOfDay(), søker, ytelse);
             s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
             return s;
@@ -140,31 +148,36 @@ public class XMLTilSøknadMapper {
         return new DokumentTypeAnalysator().erEndringssøknad(xml);
     }
 
-    private no.nav.foreldrepenger.mottak.domain.Ytelse tilYtelse(OmYtelse omYtelse) {
+    private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
         if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
         }
         if (omYtelse.getAny().size() > 1) {
-            LOG.warn("Fikk {} ytelser i søknaden, forventet kun 1", omYtelse.getAny().size());
+            LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
         }
         Object førsteYtelse = omYtelse.getAny().get(0);
-        if (!(førsteYtelse instanceof Foreldrepenger)) {
-            LOG.warn("Søknad av type {} er ikke støttet", førsteYtelse.getClass().getSimpleName());
-            return null;
+        if (førsteYtelse instanceof Endringssoeknad) {
+            Endringssoeknad endringsSøknad = Endringssoeknad.class.cast(førsteYtelse);
+
+            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
+                    .fordeling(tilFordeling(endringsSøknad.getFordeling()))
+                    .build();
         }
 
-        Foreldrepenger foreldrepengeSøknad = Foreldrepenger.class.cast(førsteYtelse);
-        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                .annenForelder(tilAnnenForelder(foreldrepengeSøknad.getAnnenForelder()))
-                .dekningsgrad(tilDekningsgrad(foreldrepengeSøknad.getDekningsgrad()))
-                .fordeling(tilFordeling(foreldrepengeSøknad.getFordeling()))
-                .medlemsskap(tilMedlemsskap(foreldrepengeSøknad.getMedlemskap()))
-                .opptjening(tilOpptjening(foreldrepengeSøknad.getOpptjening()))
-                .relasjonTilBarn(tilRelasjonTilBarn(foreldrepengeSøknad.getRelasjonTilBarnet()))
-                .rettigheter(tilRettigheter(foreldrepengeSøknad.getRettigheter()))
-                .build();
-
+        if (førsteYtelse instanceof Foreldrepenger) {
+            Foreldrepenger foreldrepengeSøknad = Foreldrepenger.class.cast(førsteYtelse);
+            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
+                    .annenForelder(tilAnnenForelder(foreldrepengeSøknad.getAnnenForelder()))
+                    .dekningsgrad(tilDekningsgrad(foreldrepengeSøknad.getDekningsgrad()))
+                    .fordeling(tilFordeling(foreldrepengeSøknad.getFordeling()))
+                    .medlemsskap(tilMedlemsskap(foreldrepengeSøknad.getMedlemskap()))
+                    .opptjening(tilOpptjening(foreldrepengeSøknad.getOpptjening()))
+                    .relasjonTilBarn(tilRelasjonTilBarn(foreldrepengeSøknad.getRelasjonTilBarnet()))
+                    .rettigheter(tilRettigheter(foreldrepengeSøknad.getRettigheter()))
+                    .build();
+        }
+        throw new NotImplementedException("Ukjent type " + førsteYtelse.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
@@ -402,8 +415,9 @@ public class XMLTilSøknadMapper {
         }
         if (periode instanceof Utsettelsesperiode) {
             Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
-            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), emptyList(),
-                    tilÅrsak(utsettelse.getAarsak()));
+            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), tilÅrsak(utsettelse.getAarsak()),
+                    tilStønadKontoType(utsettelse.getUtsettelseAv()),
+                    emptyList());
         }
 
         if (periode instanceof Gradering) {
