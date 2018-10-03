@@ -112,9 +112,10 @@ public class XMLTilSøknadMapper {
             LOG.info("Ingen søknad ble funnet");
             return null;
         }
-        Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-        if (erEndringsSøknad(xml)) {
-            try {
+        try {
+            Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
+            if (erEndringsSøknad(xml)) {
+
                 LOG.info("Dette er en endringssøknad");
                 LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
                 LocalDate tid = søknad.getMottattDato();
@@ -128,14 +129,9 @@ public class XMLTilSøknadMapper {
                 s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return s;
-            } catch (Exception e) {
-                LOG.warn("Feil ved unmarshalling av endringssøknad", e);
-                return null;
             }
-        }
-        LOG.warn("Dette er en førstegangssøknad");
-        if (søknad != null) {
-            try {
+            LOG.warn("Dette er en førstegangssøknad");
+            if (søknad != null) {
                 LocalDate tid = søknad.getMottattDato();
                 LOG.debug("Starttidspunkt {}", tid);
                 Søker søker = tilSøker(søknad.getSoeker());
@@ -147,10 +143,10 @@ public class XMLTilSøknadMapper {
                 s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return s;
-            } catch (Exception e) {
-                LOG.warn("Feil ved unmarshalling av førstegangssøknad", e);
-                return null;
             }
+        } catch (Exception e) {
+            LOG.warn("Feil ved unmarshalling av førstegangssøknad", e);
+            return null;
         }
         LOG.warn("Ingen søknad kunne unmarshalles");
         return null;
