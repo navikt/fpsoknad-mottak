@@ -25,7 +25,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
-import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
 public class ForeldrepengerPDFGenerator {

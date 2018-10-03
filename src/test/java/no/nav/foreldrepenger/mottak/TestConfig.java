@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

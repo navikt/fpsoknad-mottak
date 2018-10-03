@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.http.filters;
 
 import java.io.IOException;
 import java.util.Optional;

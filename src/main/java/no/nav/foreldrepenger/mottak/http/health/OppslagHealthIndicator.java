@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.http.health;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.http.OppslagConnection;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 
 @Component
 public class OppslagHealthIndicator extends EnvironmentAwareHealthIndicator {

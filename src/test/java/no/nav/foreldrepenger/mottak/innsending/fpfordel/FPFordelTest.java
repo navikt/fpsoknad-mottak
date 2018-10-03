@@ -47,7 +47,6 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.http.Oppslag;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
@@ -63,6 +62,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.NonPollingSaksPoller;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class FPFordelTest {

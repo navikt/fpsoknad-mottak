@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.http.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
 public class ForeldrepengerSøknadMapper {

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.http.filters;
 
 import static no.nav.foreldrepenger.mottak.http.InnsynController.INNSYN;
 import static no.nav.foreldrepenger.mottak.http.SøknadController.INNSENDING;
