@@ -63,8 +63,11 @@ public class InnsynTjeneste implements Innsyn {
         InnsynsSøknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
                 .map(this::tilSøknad)
                 .orElse(null);
-        LOG.info("Hentet søknad");
-        if (søknad != null) {
+        if (søknad == null) {
+            LOG.info("Hentet ingen søknad");
+        }
+        else {
+            LOG.info("Hentet søknad");
             LOG.info(CONFIDENTIAL, "{}", søknad);
         }
         return søknad;
