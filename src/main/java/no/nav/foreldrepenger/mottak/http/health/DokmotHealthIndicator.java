@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.http.health;
 
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
+
 import java.util.Arrays;
 
 import org.slf4j.Logger;
@@ -29,7 +32,6 @@ public class DokmotHealthIndicator implements HealthIndicator {
     public DokmotHealthIndicator(DokmotQueuePinger pinger, Environment env) {
         this.pinger = pinger;
         this.env = env;
-
     }
 
     @Override
@@ -58,11 +60,11 @@ public class DokmotHealthIndicator implements HealthIndicator {
     }
 
     private boolean isPreprod() {
-        return env.acceptsProfiles("preprod");
+        return env.acceptsProfiles(PREPROD);
     }
 
     private boolean isDev() {
-        return env.acceptsProfiles("dev");
+        return env.acceptsProfiles(DEV);
     }
 
     private static Health up() {

@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -37,7 +38,7 @@ import no.nav.security.oidc.api.Unprotected;
 @Unprotected
 @RestController
 @RequestMapping(path = SøknadPreprodController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
-@Profile("preprod")
+@Profile(PREPROD)
 public class SøknadPreprodController {
 
     public static final String INNSENDING_PREPROD = "/preprod";
