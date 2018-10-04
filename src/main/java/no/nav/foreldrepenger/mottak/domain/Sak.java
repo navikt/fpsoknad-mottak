@@ -3,15 +3,16 @@ package no.nav.foreldrepenger.mottak.domain;
 import static java.util.Collections.emptyList;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
 import no.nav.foreldrepenger.mottak.innsyn.Behandling;
 import no.nav.foreldrepenger.mottak.innsyn.FagsakStatus;
 
+@Data
 public class Sak {
     private final String saksnummer;
     private final FagsakStatus fagsakStatus;
@@ -37,88 +38,4 @@ public class Sak {
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
         this.behandlinger = Optional.ofNullable(behandlinger).orElse(emptyList());
     }
-
-    public List<Behandling> getBehandlinger() {
-        return behandlinger;
-    }
-
-    public String getSaksnummer() {
-        return saksnummer;
-    }
-
-    public FagsakStatus getFagsakStatus() {
-        return fagsakStatus;
-    }
-
-    public String getAktørId() {
-        return aktørId;
-    }
-
-    public String getAktørIdAnnenPart() {
-        return aktørIdAnnenPart;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarn, fagsakStatus, behandlingTema,
-                saksnummer, behandlinger);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Sak other = (Sak) obj;
-        if (aktørId == null) {
-            if (other.aktørId != null)
-                return false;
-        }
-        else if (!aktørId.equals(other.aktørId))
-            return false;
-        if (aktørIdAnnenPart == null) {
-            if (other.aktørIdAnnenPart != null)
-                return false;
-        }
-        else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart))
-            return false;
-        if (aktørIdBarn == null) {
-            if (other.aktørIdBarn != null)
-                return false;
-        }
-        else if (!aktørIdBarn.equals(other.aktørIdBarn))
-            return false;
-        if (fagsakStatus != other.fagsakStatus)
-            return false;
-        if (behandlingTema != other.behandlingTema)
-            return false;
-
-        if (saksnummer == null) {
-            if (other.saksnummer != null)
-                return false;
-        }
-        else if (!saksnummer.equals(other.saksnummer))
-            return false;
-        return true;
-    }
-
-    public List<String> getAktørIdBarn() {
-        return aktørIdBarn;
-    }
-
-    public String getBehandlingTema() {
-        return behandlingTema;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
-                + ", behandlingTema="
-                + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarn="
-                + aktørIdBarn + ", behandlinger=" + behandlinger + "]";
-    }
-
 }

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.List;
@@ -38,7 +39,8 @@ public class InnsynTjeneste implements Innsyn {
         List<Sak> saker = safeStream(connection.hentSaker(aktørId))
                 .map(this::tilSak)
                 .collect(toList());
-        LOG.info("Hentet {} sak(er) {}", saker.size(), saker);
+        LOG.info("Hentet {} sak(er)", saker.size());
+        LOG.info(CONFIDENTIAL, "{}", saker);
         return saker;
     }
 
@@ -48,7 +50,8 @@ public class InnsynTjeneste implements Innsyn {
                 .map(lenke -> connection.hentBehandling(lenke))
                 .map(this::tilBehandling)
                 .collect(toList());
-        LOG.info("Hentet {} behandling(er) {}", behandlinger.size(), behandlinger);
+        LOG.info("Hentet {} behandling(er)", behandlinger.size());
+        LOG.info(CONFIDENTIAL, "{}", behandlinger);
         return behandlinger;
     }
 
@@ -56,7 +59,8 @@ public class InnsynTjeneste implements Innsyn {
         InnsynsSøknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
                 .map(this::tilSøknad)
                 .orElse(null);
-        LOG.info("Hentet søknad {}}", søknad);
+        LOG.info("Hentet søknad");
+        LOG.info(CONFIDENTIAL, "{}", søknad);
         return søknad;
     }
 
@@ -70,10 +74,15 @@ public class InnsynTjeneste implements Innsyn {
 
     private Behandling tilBehandling(BehandlingWrapper wrapper) {
         return Optional.ofNullable(wrapper)
-                .map(w -> new Behandling.BehandlingBuilder().behandlendeEnhet(wrapper.getBehandlendeEnhet())
-                        .behandlendeEnhetNavn(wrapper.getBehandlendeEnhetNavn()).status(wrapper.getStatus())
-                        .årsak(wrapper.getÅrsak()).tema(wrapper.getTema()).type(wrapper.getType())
-                        .søknad(hentSøknad(wrapper.getSøknadsLenke())).build())
+                .map(w -> new Behandling.BehandlingBuilder()
+                        .behandlendeEnhet(wrapper.getBehandlendeEnhet())
+                        .behandlendeEnhetNavn(wrapper.getBehandlendeEnhetNavn())
+                        .status(wrapper.getStatus())
+                        .årsak(wrapper.getÅrsak())
+                        .tema(wrapper.getTema())
+                        .type(wrapper.getType())
+                        .søknad(hentSøknad(wrapper.getSøknadsLenke()))
+                        .build())
                 .orElse(null);
     }
 
