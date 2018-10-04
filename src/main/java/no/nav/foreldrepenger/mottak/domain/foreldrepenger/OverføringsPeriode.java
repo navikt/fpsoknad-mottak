@@ -13,13 +13,13 @@ import lombok.ToString;
 public class OverføringsPeriode extends LukketPeriodeMedVedlegg {
 
     private final Overføringsårsak årsak;
-    private final StønadskontoType overføringsperiodeType;
+    private final StønadskontoType uttaksperiodeType;
 
     public OverføringsPeriode(LocalDate fom, LocalDate tom, Overføringsårsak årsak,
-            StønadskontoType overføringsperiodeType,
+            StønadskontoType uttaksperiodeType,
             List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.årsak = årsak;
-        this.overføringsperiodeType = overføringsperiodeType;
+        this.uttaksperiodeType = uttaksperiodeType;
     }
 }
