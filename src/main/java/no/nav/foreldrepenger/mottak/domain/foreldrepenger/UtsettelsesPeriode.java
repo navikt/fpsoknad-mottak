@@ -14,10 +14,15 @@ public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
 
     private final UtsettelsesÅrsak årsak;
     private final StønadskontoType uttaksperiodeType;
+    private final boolean erArbeidstaker;
+    private final String virksomhetsnummer;
 
-    public UtsettelsesPeriode(LocalDate fom, LocalDate tom, UtsettelsesÅrsak årsak, StønadskontoType uttaksperiodeType,
+    public UtsettelsesPeriode(LocalDate fom, LocalDate tom, boolean erArbeidstaker, String virksomhetsnummer,
+            UtsettelsesÅrsak årsak, StønadskontoType uttaksperiodeType,
             List<String> vedlegg) {
         super(fom, tom, vedlegg);
+        this.erArbeidstaker = erArbeidstaker;
+        this.virksomhetsnummer = virksomhetsnummer;
         this.årsak = årsak;
         this.uttaksperiodeType = uttaksperiodeType;
     }

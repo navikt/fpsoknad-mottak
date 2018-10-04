@@ -435,7 +435,9 @@ public class XMLTilSøknadMapper {
         if (periode instanceof Utsettelsesperiode) {
             LOG.debug("Periode er utsetelsesperiode");
             Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
-            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), tilÅrsak(utsettelse.getAarsak()),
+            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), utsettelse.isErArbeidstaker(),
+                    utsettelse.getVirksomhetsnummer(),
+                    tilÅrsak(utsettelse.getAarsak()),
                     tilStønadKontoType(utsettelse.getUtsettelseAv()),
                     emptyList());
         }

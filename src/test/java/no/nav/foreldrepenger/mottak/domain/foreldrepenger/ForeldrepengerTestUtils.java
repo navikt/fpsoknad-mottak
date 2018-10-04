@@ -193,7 +193,7 @@ public class ForeldrepengerTestUtils {
     }
 
     static UtsettelsesPeriode utsettelsesPeriode() {
-        return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
+        return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), true, "222",
                 UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, TO_VEDLEGG_REF);
     }
 
