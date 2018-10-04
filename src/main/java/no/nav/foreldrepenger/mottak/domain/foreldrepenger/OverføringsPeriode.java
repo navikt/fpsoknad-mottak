@@ -15,7 +15,8 @@ public class OverføringsPeriode extends LukketPeriodeMedVedlegg {
     private final Overføringsårsak årsak;
     private final StønadskontoType overføringsperiodeType;
 
-    public OverføringsPeriode(LocalDate fom, LocalDate tom, Overføringsårsak årsak, StønadskontoType overføringsperiodeType,
+    public OverføringsPeriode(LocalDate fom, LocalDate tom, Overføringsårsak årsak,
+            StønadskontoType overføringsperiodeType,
             List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.årsak = årsak;

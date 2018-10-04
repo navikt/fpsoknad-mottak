@@ -14,7 +14,7 @@ public class OppholdsPeriode extends LukketPeriodeMedVedlegg {
 
     private final Oppholdsårsak årsak;
 
-    public OppholdsPeriode(LocalDate fom, LocalDate tom, List<String> vedlegg, Oppholdsårsak årsak) {
+    public OppholdsPeriode(LocalDate fom, LocalDate tom, Oppholdsårsak årsak, List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.årsak = årsak;
     }

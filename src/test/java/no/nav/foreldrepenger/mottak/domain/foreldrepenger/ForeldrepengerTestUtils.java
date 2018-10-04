@@ -191,8 +191,8 @@ public class ForeldrepengerTestUtils {
     }
 
     static OppholdsPeriode oppholdsPeriode() {
-        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), TO_VEDLEGG_REF,
-                Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER);
+        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER,
+                TO_VEDLEGG_REF);
     }
 
     static UtsettelsesPeriode utsettelsesPeriode() {

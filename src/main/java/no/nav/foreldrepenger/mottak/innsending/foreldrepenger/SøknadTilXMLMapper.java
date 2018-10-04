@@ -535,6 +535,7 @@ public class SøknadTilXMLMapper {
             return new Overfoeringsperiode()
                     .withFom(overføringsPeriode.getFom())
                     .withTom(overføringsPeriode.getTom())
+                    .withOverfoeringAv(uttaksperiodeTypeFra(overføringsPeriode.getOverføringsperiodeType()))
                     .withAarsak(overføringsÅrsakFra(overføringsPeriode.getÅrsak()));
         }
         if (periode instanceof OppholdsPeriode) {
@@ -550,7 +551,7 @@ public class SøknadTilXMLMapper {
             return new Utsettelsesperiode()
                     .withFom(utsettelsesPeriode.getFom())
                     .withTom(utsettelsesPeriode.getTom())
-
+                    .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType()))
                     .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()));
 
         }

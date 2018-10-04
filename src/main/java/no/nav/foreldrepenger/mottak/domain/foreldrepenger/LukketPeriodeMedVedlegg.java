@@ -16,9 +16,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 
 @Data
+@EqualsAndHashCode(exclude = { "vedlegg" })
 @Periode
 @JsonPropertyOrder({ "fom", "tom" })
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")

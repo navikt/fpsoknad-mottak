@@ -129,8 +129,12 @@ public class TestFPFordelSerialization {
         Foreldrepenger rekonstruertYtelse = Foreldrepenger.class.cast(rekonstruert.getYtelse());
         System.out.println(rekonstruertYtelse.getFordeling().getPerioder());
         System.out.println(originalYtelse.getFordeling().getPerioder());
-        // assertEquals(rekonstruertYtelse.getFordeling(),
-        // originalYtelse.getFordeling());
+        assertEquals(originalYtelse.getFordeling().getPerioder().get(0),
+                rekonstruertYtelse.getFordeling().getPerioder().get(0));
+        assertEquals(originalYtelse.getFordeling().getPerioder().get(1),
+                rekonstruertYtelse.getFordeling().getPerioder().get(1));
+        assertEquals(originalYtelse.getFordeling().getPerioder().get(2),
+                rekonstruertYtelse.getFordeling().getPerioder().get(2));
 
     }
 

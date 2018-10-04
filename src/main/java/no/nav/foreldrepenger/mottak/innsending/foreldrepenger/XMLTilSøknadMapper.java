@@ -428,8 +428,8 @@ public class XMLTilSøknadMapper {
         if (periode instanceof Oppholdsperiode) {
             LOG.debug("Periode er oppholdsperiode");
             Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
-            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(), emptyList(),
-                    tilÅrsak(oppholdsPeriode.getAarsak()));
+            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(), tilÅrsak(oppholdsPeriode.getAarsak()),
+                    emptyList());
         }
         if (periode instanceof Utsettelsesperiode) {
             LOG.debug("Periode er utsetelsesperiode");
