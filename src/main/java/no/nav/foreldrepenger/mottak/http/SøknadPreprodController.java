@@ -40,7 +40,7 @@ import no.nav.security.oidc.api.Unprotected;
 @Profile("preprod")
 public class SøknadPreprodController {
 
-    public static final String INNSENDING_PREPROD = "/mottak/preprod";
+    public static final String INNSENDING_PREPROD = "/preprod";
 
     private final DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator;
     private final DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator;
