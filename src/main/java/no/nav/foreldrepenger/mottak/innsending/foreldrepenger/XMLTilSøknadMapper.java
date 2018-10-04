@@ -145,7 +145,7 @@ public class XMLTilSøknadMapper {
                 return s;
             }
         } catch (Exception e) {
-            LOG.warn("Feil ved unmarshalling av førstegangssøknad", e);
+            LOG.warn("Feil ved unmarshalling av {}søknad", erEndringsSøknad(xml) ? "endrings" : "førstegangs", e);
             return null;
         }
         LOG.warn("Ingen søknad kunne unmarshalles");
