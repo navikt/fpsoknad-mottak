@@ -113,9 +113,9 @@ public class XMLTilSøknadMapper {
             return null;
         }
         try {
+            boolean erEndringsSøknad = erEndringsSøknad(xml);
             Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-            if (erEndringsSøknad(xml)) {
-
+            if (erEndringsSøknad) {
                 LOG.info("Dette er en endringssøknad");
                 LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
                 LocalDate tid = søknad.getMottattDato();
@@ -145,7 +145,7 @@ public class XMLTilSøknadMapper {
                 return s;
             }
         } catch (Exception e) {
-            LOG.warn("Feil ved unmarshalling av {}søknad", erEndringsSøknad(xml) ? "endrings" : "førstegangs", e);
+            LOG.warn("Feil ved unmarshalling av søknad", e);
             return null;
         }
         LOG.warn("Ingen søknad kunne unmarshalles");
