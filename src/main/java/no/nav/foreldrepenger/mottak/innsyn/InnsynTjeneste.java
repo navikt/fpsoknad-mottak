@@ -39,7 +39,7 @@ public class InnsynTjeneste implements Innsyn {
         List<Sak> saker = safeStream(connection.hentSaker(aktørId))
                 .map(this::tilSak)
                 .collect(toList());
-        LOG.info("Hentet {} sak{}", endelse(saker));
+        LOG.info("Hentet {} sak{}", saker.size(), endelse(saker));
         if (!saker.isEmpty()) {
             LOG.info(CONFIDENTIAL, "{}", saker);
         }
