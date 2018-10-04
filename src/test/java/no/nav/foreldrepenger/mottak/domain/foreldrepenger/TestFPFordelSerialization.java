@@ -23,7 +23,6 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +51,6 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
@@ -117,29 +115,24 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testEndringssøknad() throws Exception {
+    public void testEndringssøknadRoundtrip() throws Exception {
+        ValgfrittVedlegg v1 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID142, DokumentType.I500002,
+                new ClassPathResource("terminbekreftelse.pdf"));
         AktorId aktørId = new AktorId("42");
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
-        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad();
+        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(v1);
         String xml = mapper.tilXML(original, aktørId);
         assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
-        Søknad rekonstruert = mapper.tilSøknad(xml);
+        Endringssøknad rekonstruert = Endringssøknad.class.cast(mapper.tilSøknad(xml));
         assertNotNull(rekonstruert);
-        Foreldrepenger originalYtelse = Foreldrepenger.class.cast(original.getYtelse());
-        Foreldrepenger rekonstruertYtelse = Foreldrepenger.class.cast(rekonstruert.getYtelse());
-        System.out.println(rekonstruertYtelse.getFordeling().getPerioder());
-        System.out.println(originalYtelse.getFordeling().getPerioder());
-        assertEquals(originalYtelse.getFordeling().getPerioder().get(0),
-                rekonstruertYtelse.getFordeling().getPerioder().get(0));
-        assertEquals(originalYtelse.getFordeling().getPerioder().get(1),
-                rekonstruertYtelse.getFordeling().getPerioder().get(1));
-        assertEquals(originalYtelse.getFordeling().getPerioder().get(2),
-                rekonstruertYtelse.getFordeling().getPerioder().get(2));
-
+        assertThat(Foreldrepenger.class.cast(rekonstruert.getYtelse()).getFordeling())
+                .isEqualTo(Foreldrepenger.class.cast(original.getYtelse()).getFordeling());
+        assertThat(rekonstruert.getSaksnr()).isEqualTo(original.getSaksnr());
+        assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());
     }
 
     @Test
-    public void testSøknad() throws Exception {
+    public void testSøknadRoundtrip() throws Exception {
         AktorId aktørId = new AktorId("42");
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Søknad original = ForeldrepengerTestUtils.foreldrepengeSøknad();
@@ -155,10 +148,7 @@ public class TestFPFordelSerialization {
         assertThat(rekonstruertYtelse.getDekningsgrad()).isEqualTo(originalYtelse.getDekningsgrad());
         assertThat(rekonstruertYtelse.getRelasjonTilBarn()).isEqualTo(originalYtelse.getRelasjonTilBarn());
         assertThat(rekonstruertYtelse.getAnnenForelder()).isEqualTo(originalYtelse.getAnnenForelder());
-
-        // assertThat(rekonstruertYtelse.getFordeling()).isEqualTo(originalYtelse.getFordeling());
-
-        // assertEquals(original, rekonstruert);
+        assertThat(rekonstruertYtelse.getFordeling()).isEqualTo(originalYtelse.getFordeling());
     }
 
     @Test
@@ -205,8 +195,7 @@ public class TestFPFordelSerialization {
         ValgfrittVedlegg v2 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID143, DokumentType.I500005,
                 new ClassPathResource("terminbekreftelse.pdf"));
 
-        Endringssøknad es = new Endringssøknad(LocalDateTime.now(), TestUtils.søker(),
-                ForeldrepengerTestUtils.fordeling(), null, null, null, "42", v1, v2);
+        Endringssøknad es = ForeldrepengerTestUtils.endringssøknad(v1, v2);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(es));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
                 new CallIdGenerator().create());

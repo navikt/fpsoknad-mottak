@@ -428,7 +428,8 @@ public class XMLTilSøknadMapper {
         if (periode instanceof Oppholdsperiode) {
             LOG.debug("Periode er oppholdsperiode");
             Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
-            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(), tilÅrsak(oppholdsPeriode.getAarsak()),
+            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(),
+                    tilÅrsak(oppholdsPeriode.getAarsak()),
                     emptyList());
         }
         if (periode instanceof Utsettelsesperiode) {
@@ -442,10 +443,14 @@ public class XMLTilSøknadMapper {
         if (periode instanceof Gradering) {
             LOG.debug("Periode er gradert periode");
             Gradering gradering = Gradering.class.cast(periode);
-            return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(), emptyList(),
+            return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(),
                     tilStønadKontoType(gradering.getType()),
                     gradering.isOenskerSamtidigUttak(),
-                    tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()));
+                    tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()), gradering.getArbeidtidProsent(),
+                    gradering.isErArbeidstaker(),
+                    gradering.isArbeidsforholdSomSkalGraderes(), gradering.getVirksomhetsnummer().toString(), // TODO
+                                                                                                              // strange
+                    emptyList());
         }
 
         if (periode instanceof Uttaksperiode) {

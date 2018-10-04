@@ -42,9 +42,9 @@ public class ForeldrepengerTestUtils {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), asList(vedlegg));
     }
 
-    public static Endringssøknad endringssøknad() {
+    public static Endringssøknad endringssøknad(Vedlegg... vedlegg) {
         return new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), norskForelder(), fødsel(), rettigheter(),
-                "42");
+                "42", vedlegg);
     }
 
     public static Ettersending ettersending() {
@@ -168,12 +168,8 @@ public class ForeldrepengerTestUtils {
 
     static UttaksPeriode gradertPeriode() {
         GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
-                TO_VEDLEGG_REF,
-                FEDREKVOTE, true, MorsAktivitet.ARBEID_OG_UTDANNING);
-        periode.setArbeidsForholdSomskalGraderes(true);
-        periode.setArbeidstidProsent(75d);
-        periode.setErArbeidstaker(true);
-        periode.setVirksomhetsNummer("222222");
+                FEDREKVOTE,
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, 75d, true, true, "222222", TO_VEDLEGG_REF);
         return periode;
     }
 
@@ -191,7 +187,8 @@ public class ForeldrepengerTestUtils {
     }
 
     static OppholdsPeriode oppholdsPeriode() {
-        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER,
+        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
+                Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER,
                 TO_VEDLEGG_REF);
     }
 
