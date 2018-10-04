@@ -116,7 +116,6 @@ public class XMLTilSøknadMapper {
             boolean erEndringsSøknad = erEndringsSøknad(xml);
             Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
             if (erEndringsSøknad) {
-                LOG.info("Dette er en endringssøknad");
                 LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
                 LocalDate tid = søknad.getMottattDato();
                 LOG.debug("Starttidspunkt {}", tid);
@@ -153,7 +152,14 @@ public class XMLTilSøknadMapper {
     }
 
     private static boolean erEndringsSøknad(String xml) {
-        return new DokumentTypeAnalysator().erEndringssøknad(xml);
+        boolean erEndring = new DokumentTypeAnalysator().erEndringssøknad(xml);
+        if (erEndring) {
+            LOG.info("Dette er en endringssøknad");
+        }
+        else {
+            LOG.info("Dette er en færstegangssøknad");
+        }
+        return erEndring;
     }
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
