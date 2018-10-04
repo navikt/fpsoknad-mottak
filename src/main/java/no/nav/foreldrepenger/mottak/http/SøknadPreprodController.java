@@ -87,7 +87,7 @@ public class SøknadPreprodController {
     }
 
     private byte[] pdfForEndring(Endringssøknad endringssøknad) {
-        return pdfGenerator.generate(endringssøknad, søker());
+        return pdfGenerator.generate(endringssøknad, søker(), false);
     }
 
     private byte[] pdfForSøknad(Søknad søknad) {
