@@ -550,6 +550,7 @@ public class SøknadTilXMLMapper {
             return new Utsettelsesperiode()
                     .withFom(utsettelsesPeriode.getFom())
                     .withTom(utsettelsesPeriode.getTom())
+
                     .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()));
 
         }
