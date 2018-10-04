@@ -39,19 +39,23 @@ public class InnsynTjeneste implements Innsyn {
         List<Sak> saker = safeStream(connection.hentSaker(aktørId))
                 .map(this::tilSak)
                 .collect(toList());
-        LOG.info("Hentet {} sak(er)", saker.size());
-        LOG.info(CONFIDENTIAL, "{}", saker);
+        LOG.info("Hentet {} sak{}", endelse(saker));
+        if (!saker.isEmpty()) {
+            LOG.info(CONFIDENTIAL, "{}", saker);
+        }
         return saker;
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
-        LOG.info("Henter {} behandling(er)", behandlingsLenker.size());
+        LOG.info("Henter behandlinger");
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
                 .map(lenke -> connection.hentBehandling(lenke))
                 .map(this::tilBehandling)
                 .collect(toList());
-        LOG.info("Hentet {} behandling(er)", behandlinger.size());
-        LOG.info(CONFIDENTIAL, "{}", behandlinger);
+        LOG.info("Hentet {} behandling{}", behandlinger.size(), endelse(behandlinger));
+        if (!behandlinger.isEmpty()) {
+            LOG.info(CONFIDENTIAL, "{}", behandlinger);
+        }
         return behandlinger;
     }
 
@@ -60,7 +64,9 @@ public class InnsynTjeneste implements Innsyn {
                 .map(this::tilSøknad)
                 .orElse(null);
         LOG.info("Hentet søknad");
-        LOG.info(CONFIDENTIAL, "{}", søknad);
+        if (søknad != null) {
+            LOG.info(CONFIDENTIAL, "{}", søknad);
+        }
         return søknad;
     }
 
@@ -88,6 +94,10 @@ public class InnsynTjeneste implements Innsyn {
 
     private InnsynsSøknad tilSøknad(SøknadWrapper wrapper) {
         return new InnsynsSøknad(mapper.tilSøknad(wrapper.getXml()), wrapper.getJournalpostId());
+    }
+
+    private static String endelse(List<?> liste) {
+        return liste.size() == 1 ? "" : "er";
     }
 
     @Override
