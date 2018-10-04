@@ -91,7 +91,7 @@ public class SøknadPreprodController {
     }
 
     private byte[] pdfForSøknad(Søknad søknad) {
-        return pdfGenerator.generate(søknad, søker());
+        return pdfGenerator.generate(søknad, søker(), false);
     }
 
     @PostMapping(path = "/konvolutt", produces = { APPLICATION_XML_VALUE, APPLICATION_JSON_VALUE })

@@ -2,17 +2,26 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.Lists;
+
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -25,12 +34,16 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 @Component
-public class ForeldrepengerPDFGenerator {
+public class ForeldrepengerPDFGenerator implements EnvironmentAware {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
     private Oppslag oppslag;
     private ForeldrepengeInfoRenderer fpRenderer;
     private PDFElementRenderer pdfRenderer;
+    private Environment env;
 
     @Inject
     public ForeldrepengerPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
@@ -42,6 +55,10 @@ public class ForeldrepengerPDFGenerator {
     }
 
     public byte[] generate(Søknad søknad, Person søker) {
+        return generate(søknad, søker, true);
+    }
+
+    public byte[] generate(Søknad søknad, Person søker, boolean doLookup) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = PDFElementRenderer.calculateStartY();
 
@@ -63,7 +80,13 @@ public class ForeldrepengerPDFGenerator {
                 }
                 Opptjening opptjening = stønad.getOpptjening();
                 if (opptjening != null) {
-                    fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), cos, y);
+                    if (EnvUtil.isDevOrPreprod(env) && !doLookup) {
+                        LOG.trace("Slår ikke opp arbeidforhold");
+                        fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), cos, y);
+                    }
+                    else {
+                        fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), cos, y);
+                    }
                 }
 
                 doc.addPage(page1);
@@ -113,6 +136,11 @@ public class ForeldrepengerPDFGenerator {
 
     }
 
+    private static List<Arbeidsforhold> dummyArbeidsforhold() {
+        return Lists.newArrayList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
+    }
+
     public byte[] generate(Endringssøknad søknad, Person søker) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = PDFElementRenderer.calculateStartY();
@@ -157,5 +185,11 @@ public class ForeldrepengerPDFGenerator {
         } catch (IOException ex) {
             throw new RuntimeException("Error while creating pdf", ex);
         }
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.env = environment;
+
     }
 }
