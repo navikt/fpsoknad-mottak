@@ -34,20 +34,19 @@ public class InnsynConnection extends AbstractRestConnection {
 
     @Override
     public URI pingEndpoint() {
-        return uri(config.getBaseUri(), config.getPingPath());
+        return uri(config.getBaseURI(), config.getPingPath());
     }
 
     public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
         LOG.trace("Henter søknad");
-        URI uri = URI.create(config.getBaseUri() + søknadsLenke.getHref());
-        return Optional.ofNullable(søknadsLenke)
-                .map(s -> getForObject(uri, SøknadWrapper.class))
+        return Optional
+                .ofNullable(getForObject(URI.create(config.getBaseURI() + søknadsLenke.getHref()), SøknadWrapper.class))
                 .orElse(null);
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
         LOG.trace("Henter saker");
-        return Optional.ofNullable(getForObject(uri(config.getBaseUri(), SAK,
+        return Optional.ofNullable(getForObject(uri(config.getBaseURI(), SAK,
                 queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
@@ -55,8 +54,9 @@ public class InnsynConnection extends AbstractRestConnection {
 
     public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
         LOG.trace("Henter behandling");
-        return getForObject(URI.create(config.getBaseUri() + behandlingsLenke.getHref()), BehandlingWrapper.class,
-                false, true);
+        return Optional.ofNullable(
+                getForObject(URI.create(config.getBaseURI() + behandlingsLenke.getHref()), BehandlingWrapper.class))
+                .orElse(null);
     }
 
     @Override

@@ -33,11 +33,11 @@ public class InnsynConfig {
         this.basePath = basePath;
     }
 
-    public URI getBaseUri() {
+    public URI getBaseURI() {
         return Optional.ofNullable(baseUri).orElse(DEFAULT_BASE_URI);
     }
 
-    public void setBaseUrl(URI baseUri) {
+    public void setBaseURI(URI baseUri) {
         this.baseUri = baseUri;
     }
 

@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import lombok.Builder;
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 
 @Data
+@Builder
 public class Behandling {
     private final String status;
     private final String type;
@@ -11,6 +12,6 @@ public class Behandling {
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
-    private final Søknad søknad;
+    private final InnsynsSøknad søknad;
 
 }

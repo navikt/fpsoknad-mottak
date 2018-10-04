@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.XMLTilSøknadMapper;
 
 @Service
@@ -53,8 +52,8 @@ public class InnsynTjeneste implements Innsyn {
         return behandlinger;
     }
 
-    private Søknad hentSøknad(Lenke søknadsLenke) {
-        Søknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
+    private InnsynsSøknad hentSøknad(Lenke søknadsLenke) {
+        InnsynsSøknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
                 .map(this::tilSøknad)
                 .orElse(null);
         LOG.info("Hentet søknad {}}", søknad);
@@ -62,19 +61,24 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private Sak tilSak(SakWrapper wrapper) {
-        return new Sak(wrapper.getSaksnummer(), wrapper.getFagsakStatus(), wrapper.getBehandlingTema(),
-                wrapper.getAktørId(), wrapper.getAktørIdAnnenPart(), wrapper.getAktørIdBarn(),
-                hentBehandlinger(wrapper.getBehandlingsLenker()));
+        return Optional.ofNullable(wrapper)
+                .map(w -> new Sak(w.getSaksnummer(), w.getFagsakStatus(), w.getBehandlingTema(),
+                        w.getAktørId(), w.getAktørIdAnnenPart(), w.getAktørIdBarn(),
+                        hentBehandlinger(w.getBehandlingsLenker())))
+                .orElse(null);
     }
 
     private Behandling tilBehandling(BehandlingWrapper wrapper) {
-        return new Behandling(wrapper.getStatus(), wrapper.getType(), wrapper.getTema(), wrapper.getÅrsak(),
-                wrapper.getBehandlendeEnhet(), wrapper.getBehandlendeEnhetNavn(),
-                hentSøknad(wrapper.getSøknadsLenke()));
+        return Optional.ofNullable(wrapper)
+                .map(w -> new Behandling.BehandlingBuilder().behandlendeEnhet(wrapper.getBehandlendeEnhet())
+                        .behandlendeEnhetNavn(wrapper.getBehandlendeEnhetNavn()).status(wrapper.getStatus())
+                        .årsak(wrapper.getÅrsak()).tema(wrapper.getTema()).type(wrapper.getType())
+                        .søknad(hentSøknad(wrapper.getSøknadsLenke())).build())
+                .orElse(null);
     }
 
-    private Søknad tilSøknad(SøknadWrapper wrapper) {
-        return mapper.tilSøknad(wrapper.getXml());
+    private InnsynsSøknad tilSøknad(SøknadWrapper wrapper) {
+        return new InnsynsSøknad(mapper.tilSøknad(wrapper.getXml()), wrapper.getJournalpostId());
     }
 
     @Override
