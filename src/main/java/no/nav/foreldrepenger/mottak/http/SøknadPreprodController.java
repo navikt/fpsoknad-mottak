@@ -76,22 +76,14 @@ public class SøknadPreprodController {
     public ResponseEntity<byte[]> pdfEndring(@Valid @RequestBody Endringssøknad endringssøknad) {
         return ok()
                 .header("Content-disposition", "attachment; filename=" + endringssøknad.getSaksnr())
-                .body(pdfForEndring(endringssøknad));
+                .body(pdfGenerator.generate(endringssøknad, søker(), false));
     }
 
     @PostMapping(path = "/pdfSøknad", produces = APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> pdfSøknad(@Valid @RequestBody Søknad søknad) {
         return ok()
                 .header("Content-disposition", "attachment; filename=søknad")
-                .body(pdfForSøknad(søknad));
-    }
-
-    private byte[] pdfForEndring(Endringssøknad endringssøknad) {
-        return pdfGenerator.generate(endringssøknad, søker(), false);
-    }
-
-    private byte[] pdfForSøknad(Søknad søknad) {
-        return pdfGenerator.generate(søknad, søker(), false);
+                .body(pdfGenerator.generate(søknad, søker(), false));
     }
 
     @PostMapping(path = "/konvolutt", produces = { APPLICATION_XML_VALUE, APPLICATION_JSON_VALUE })

@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -25,6 +27,7 @@ import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 @Component
 public class IDToMDCFilterBean extends GenericFilterBean {
 
+    private static final Logger LOG = LoggerFactory.getLogger(IDToMDCFilterBean.class);
     private static final String USER_ID = "Nav-User-Id";
     private static final String AKTØR_ID = "Nav-Aktør-Id";
 
@@ -39,8 +42,13 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        MDC.put(USER_ID, extractor.fnrFromToken());
-        MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
+        if (extractor.hasToken()) {
+            MDC.put(USER_ID, extractor.fnrFromToken());
+            MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
+        }
+        else {
+            LOG.info("Ingen token i kontekst, så ingen IDer kan legges i MDC");
+        }
         chain.doFilter(req, res);
     }
 
