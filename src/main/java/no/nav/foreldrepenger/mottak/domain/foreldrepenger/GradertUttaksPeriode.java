@@ -27,7 +27,7 @@ public class GradertUttaksPeriode extends UttaksPeriode {
             @JsonProperty("UttaksperiodeType") StønadskontoType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
             @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType) {
-        super(fom, tom, vedlegg, uttaksperiodeType, ønskerSamtidigUttak, morsAktivitetsType);
+        super(fom, tom, uttaksperiodeType, ønskerSamtidigUttak, morsAktivitetsType, vedlegg);
 
     }
 }

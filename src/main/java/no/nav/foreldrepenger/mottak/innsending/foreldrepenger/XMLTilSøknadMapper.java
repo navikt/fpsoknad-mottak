@@ -358,6 +358,7 @@ public class XMLTilSøknadMapper {
         if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
+        LOG.debug("Genererer virksomhetstype modell");
         return Virksomhetstype.valueOf(type.getKode());
     }
 
@@ -365,6 +366,7 @@ public class XMLTilSøknadMapper {
         if (regnskapsfoerer == null) {
             return emptyList();
         }
+        LOG.debug("Genererer regnskaåsfører modell");
         return singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
     }
 
@@ -375,7 +377,7 @@ public class XMLTilSøknadMapper {
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
-        LOG.debug("Genererer medlemsskap  modell fra {}", medlemskap);
+        LOG.debug("Genererer medlemsskap modell");
         return new Medlemsskap(tilTidligereOpphold(medlemskap), tilFremtidigOpphold(medlemskap));
     }
 
@@ -388,10 +390,10 @@ public class XMLTilSøknadMapper {
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
-        LOG.debug("Genererer fordeling  modell fra {}", fordeling);
         if (fordeling == null) {
             return null;
         }
+        LOG.debug("Genererer fordeling modell");
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling(fordeling.isAnnenForelderErInformert(),
                 tilÅrsak(fordeling.getOenskerKvoteOverfoert()), tilPerioder(fordeling.getPerioder()));
     }
@@ -414,19 +416,23 @@ public class XMLTilSøknadMapper {
         if (periode == null) {
             return null;
         }
-
+        LOG.debug("Genererer lukket periode modell");
         if (periode instanceof Overfoeringsperiode) {
             Overfoeringsperiode overføringsPeriode = Overfoeringsperiode.class.cast(periode);
+            LOG.debug("Periode er overføringsperiode");
             return new OverføringsPeriode(overføringsPeriode.getFom(), overføringsPeriode.getTom(),
-                    emptyList(),
-                    tilÅrsak(overføringsPeriode.getAarsak()));
+                    tilÅrsak(overføringsPeriode.getAarsak()),
+                    tilStønadKontoType(overføringsPeriode.getOverfoeringAv()),
+                    emptyList());
         }
         if (periode instanceof Oppholdsperiode) {
+            LOG.debug("Periode er oppholdsperiode");
             Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
             return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(), emptyList(),
                     tilÅrsak(oppholdsPeriode.getAarsak()));
         }
         if (periode instanceof Utsettelsesperiode) {
+            LOG.debug("Periode er utsetelsesperiode");
             Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
             return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), tilÅrsak(utsettelse.getAarsak()),
                     tilStønadKontoType(utsettelse.getUtsettelseAv()),
@@ -434,6 +440,7 @@ public class XMLTilSøknadMapper {
         }
 
         if (periode instanceof Gradering) {
+            LOG.debug("Periode er gradert periode");
             Gradering gradering = Gradering.class.cast(periode);
             return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(), emptyList(),
                     tilStønadKontoType(gradering.getType()),
@@ -442,20 +449,21 @@ public class XMLTilSøknadMapper {
         }
 
         if (periode instanceof Uttaksperiode) {
+            LOG.debug("Periode er uttaksperiode");
             Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
-            return new UttaksPeriode(uttaksperiode.getFom(), uttaksperiode.getTom(), emptyList(),
-                    tilStønadKontoType(uttaksperiode.getType()), uttaksperiode.isOenskerSamtidigUttak(),
-                    tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()));
+            return new UttaksPeriode(uttaksperiode.getFom(), uttaksperiode.getTom(),
+                    tilStønadKontoType(uttaksperiode.getType()),
+                    uttaksperiode.isOenskerSamtidigUttak(), tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
+                    emptyList());
         }
-
         throw new IllegalArgumentException();
-
     }
 
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
         if (morsAktivitetIPerioden == null || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
+        LOG.debug("Genererer mors aktivitet modell");
         return MorsAktivitet.valueOf(morsAktivitetIPerioden.getKode());
     }
 
@@ -463,6 +471,7 @@ public class XMLTilSøknadMapper {
         if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
+        LOG.debug("Genererer stønadskontotype  modell");
         return StønadskontoType.valueOf(type.getKode());
     }
 
@@ -470,6 +479,7 @@ public class XMLTilSøknadMapper {
         if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
+        LOG.debug("Genererer utsettelsesårsak  modell");
         return UtsettelsesÅrsak.valueOf(aarsak.getKode());
     }
 
@@ -477,6 +487,7 @@ public class XMLTilSøknadMapper {
         if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
+        LOG.debug("Genererer oppholdsårsak  modell");
         return Oppholdsårsak.valueOf(aarsak.getKode());
     }
 
@@ -486,7 +497,6 @@ public class XMLTilSøknadMapper {
             return null;
         }
         LOG.debug("Genererer dekningsgrad modell");
-
         return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad
                 .fraKode(dekningsgrad.getDekningsgrad().getKode());
     }
@@ -497,15 +507,17 @@ public class XMLTilSøknadMapper {
             return null;
         }
         LOG.debug("Genererer annen forelder modell");
-
         if (annenForelder instanceof UkjentForelder) {
+            LOG.debug("Annen forelder er ukjent");
             return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder();
         }
         if (annenForelder instanceof AnnenForelderMedNorskIdent) {
+            LOG.debug("Annen forelder er norsk");
             AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
             return new NorskForelder(oppslag.getFnr(new AktorId(norskForelder.getAktoerId())), null);
         }
         if (annenForelder instanceof AnnenForelderUtenNorskIdent) {
+            LOG.debug("Annen forelder er utenlandsk");
             AnnenForelderUtenNorskIdent utenlandsForelder = AnnenForelderUtenNorskIdent.class.cast(annenForelder);
             return new UtenlandskForelder(utenlandsForelder.getUtenlandskPersonidentifikator(),
                     tilLand(utenlandsForelder.getLand()), null);
@@ -515,7 +527,6 @@ public class XMLTilSøknadMapper {
 
     private static Søker tilSøker(Bruker søker) {
         LOG.debug("Genererer søker model");
-
         return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
     }
 

@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
     @Override
-    public LocalDate unmarshal(String v) throws Exception {
-        return LocalDate.parse(v, ISO_DATE);
+    public LocalDate unmarshal(String date) throws Exception {
+        return LocalDate.parse(date, ISO_DATE);
     }
 
     @Override
-    public String marshal(LocalDate v) throws Exception {
-        return Optional.ofNullable(v).map(s -> s.toString()).orElse(null);
+    public String marshal(LocalDate date) throws Exception {
+        return Optional.ofNullable(date).map(s -> s.toString()).orElse(null);
     }
 }

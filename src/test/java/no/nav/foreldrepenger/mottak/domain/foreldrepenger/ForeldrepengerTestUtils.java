@@ -162,8 +162,8 @@ public class ForeldrepengerTestUtils {
     }
 
     static UttaksPeriode uttaksPeriode() {
-        return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), TO_VEDLEGG_REF,
-                FEDREKVOTE, true, MorsAktivitet.ARBEID_OG_UTDANNING);
+        return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), FEDREKVOTE,
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, TO_VEDLEGG_REF);
     }
 
     static UttaksPeriode gradertPeriode() {
@@ -186,8 +186,8 @@ public class ForeldrepengerTestUtils {
     }
 
     static OverføringsPeriode overføringsPeriode() {
-        return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), TO_VEDLEGG_REF,
-                Overføringsårsak.ALENEOMSORG);
+        return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
+                Overføringsårsak.ALENEOMSORG, StønadskontoType.FEDREKVOTE, TO_VEDLEGG_REF);
     }
 
     static OppholdsPeriode oppholdsPeriode() {
