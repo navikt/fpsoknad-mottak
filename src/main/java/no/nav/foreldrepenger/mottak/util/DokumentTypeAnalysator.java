@@ -15,7 +15,7 @@ public class DokumentTypeAnalysator {
         String shortxml = unescapedXML.substring(ix + "omYtels>".length());
         int begin = shortxml.indexOf("<");
         int end = shortxml.indexOf(">");
-        String value = unescapedXML.substring(begin + 1, end);
+        String value = shortxml.substring(begin + 1, end);
         return value.equals("endringssoeknad");
     }
 }
