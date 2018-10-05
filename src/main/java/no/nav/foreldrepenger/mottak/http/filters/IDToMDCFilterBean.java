@@ -28,6 +28,7 @@ import no.nav.foreldrepenger.mottak.util.FnrExtractor;
 public class IDToMDCFilterBean extends GenericFilterBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(IDToMDCFilterBean.class);
+
     private static final String USER_ID = "Nav-User-Id";
     private static final String AKTØR_ID = "Nav-Aktør-Id";
 
@@ -43,13 +44,19 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         if (extractor.hasToken()) {
-            MDC.put(USER_ID, extractor.fnrFromToken());
-            MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
-        }
-        else {
-            LOG.info("Ingen token i kontekst, så ingen IDer kan legges i MDC");
+            putFields();
+
         }
         chain.doFilter(req, res);
+    }
+
+    private void putFields() {
+        try {
+            MDC.put(USER_ID, extractor.fnrFromToken().getFnr());
+            MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
+        } catch (Exception e) {
+            LOG.warn("Noe gikk feil", e);
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.http.errorhandling.ForbiddenException;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
@@ -37,7 +38,7 @@ public class FnrExtractor {
                 .orElseThrow(() -> new ForbiddenException("Fant ikke token"));
     }
 
-    public String fnrFromToken() {
+    public Fødselsnummer fnrFromToken() {
         OIDCValidationContext context = context();
         if (context == null) {
             throw new ForbiddenException("Fant ikke context");
@@ -54,7 +55,7 @@ public class FnrExtractor {
         if (fnr == null || fnr.trim().isEmpty()) {
             throw new ForbiddenException("Fant ikke subject");
         }
-        return fnr;
+        return new Fødselsnummer(fnr);
     }
 
     private OIDCValidationContext context() {
