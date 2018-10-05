@@ -118,9 +118,11 @@ public class TestFPFordelSerialization {
     public void testEndringssøknadRoundtrip() throws Exception {
         ValgfrittVedlegg v1 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID142, DokumentType.I500002,
                 new ClassPathResource("terminbekreftelse.pdf"));
+        ValgfrittVedlegg v2 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID143, DokumentType.I500005,
+                new ClassPathResource("terminbekreftelse.pdf"));
         AktorId aktørId = new AktorId("42");
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
-        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(v1);
+        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(v1, v2);
         String xml = mapper.tilXML(original, aktørId);
         assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
         Endringssøknad rekonstruert = Endringssøknad.class.cast(mapper.tilSøknad(xml));
@@ -131,6 +133,7 @@ public class TestFPFordelSerialization {
         assertThat(rekonstruert.getMottattdato().toLocalDate()).isEqualTo(original.getMottattdato().toLocalDate());
         assertThat(rekonstruert.getSaksnr()).isEqualTo(original.getSaksnr());
         assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());
+        System.out.println(Foreldrepenger.class.cast(rekonstruert.getYtelse()).getFordeling());
     }
 
     @Test

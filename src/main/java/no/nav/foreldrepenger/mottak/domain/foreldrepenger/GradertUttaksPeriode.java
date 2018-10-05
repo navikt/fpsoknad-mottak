@@ -37,4 +37,5 @@ public class GradertUttaksPeriode extends UttaksPeriode {
         this.virksomhetsNummer = virksomhetsNummer;
         this.arbeidsForholdSomskalGraderes = arbeidsForholdSomskalGraderes;
     }
+
 }

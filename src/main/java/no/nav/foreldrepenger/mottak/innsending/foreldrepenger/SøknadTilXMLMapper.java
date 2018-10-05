@@ -118,6 +118,7 @@ public class SøknadTilXMLMapper {
     private static final ObjectFactory FP_FACTORY = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory UTTAK_FACTORY = new no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory();
 
     private final Oppslag oppslag;
 
@@ -202,7 +203,7 @@ public class SøknadTilXMLMapper {
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
 
-        Foreldrepenger foreldrepenger = new Foreldrepenger()
+        return new OmYtelse().withAny(marshalToElement(CONTEXT, new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
@@ -210,9 +211,7 @@ public class SøknadTilXMLMapper {
                 .withRettigheter(
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
-                .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()));
-
-        return new OmYtelse().withAny(marshalToElement(CONTEXT, foreldrepenger));
+                .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()))));
     }
 
     private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
@@ -318,7 +317,9 @@ public class SøknadTilXMLMapper {
                     .withBeskrivelseAvEndring(norskOrg.getBeskrivelseEndring())
                     .withNaerRelasjon(norskOrg.isNærRelasjon())
                     .withEndringsDato(norskOrg.getEndringsDato())
+                    .withOppstartsdato(norskOrg.getOppstartsDato())
                     .withErNyoppstartet(norskOrg.isErNyOpprettet())
+                    .withErNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
                     .withErVarigEndring(norskOrg.isErVarigEndring())
                     .withNaeringsinntektBrutto(BigInteger.valueOf(norskOrg.getNæringsinntektBrutto()))
                     .withNavn(norskOrg.getOrgName())
@@ -326,7 +327,7 @@ public class SøknadTilXMLMapper {
                     .withPeriode(periodeFra(norskOrg.getPeriode()))
                     .withRegnskapsfoerer(regnskapsFørerFra(norskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(norskOrg.getVirksomhetsTyper()))
-                    .withErNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
+                    .withOppstartsdato(norskOrg.getOppstartsDato())
                     .withArbeidsland(landFra(norskOrg.getArbeidsland()));
         }
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon) {
@@ -337,10 +338,13 @@ public class SøknadTilXMLMapper {
                     .withBeskrivelseAvEndring(utenlandskOrg.getBeskrivelseEndring())
                     .withNaerRelasjon(utenlandskOrg.isNærRelasjon())
                     .withEndringsDato(utenlandskOrg.getEndringsDato())
+                    .withOppstartsdato(utenlandskOrg.getOppstartsDato())
                     .withErNyoppstartet(utenlandskOrg.isErNyOpprettet())
+                    .withErNyIArbeidslivet(utenlandskOrg.isErNyIArbeidslivet())
                     .withErVarigEndring(utenlandskOrg.isErVarigEndring())
                     .withNaeringsinntektBrutto(BigInteger.valueOf(utenlandskOrg.getNæringsinntektBrutto()))
                     .withNavn(utenlandskOrg.getOrgName())
+                    .withRegistrertILand(landFra(utenlandskOrg.getRegistrertILand()))
                     .withPeriode(periodeFra(utenlandskOrg.getPeriode()))
                     .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()))
@@ -378,7 +382,7 @@ public class SøknadTilXMLMapper {
             return null;
         }
         if (regnskapsførere.size() > 1) {
-            LOG.warn("Flere regnskapsførere ikke støttet");
+            LOG.warn("Flere regnskapsførere ikke støttet, bruker kun den første");
         }
         Regnskapsfører regnskapsfører = regnskapsførere.get(0);
         return new Regnskapsfoerer()
@@ -527,6 +531,12 @@ public class SøknadTilXMLMapper {
 
     }
 
+    private static List<JAXBElement<Object>> lukketPeriodeVedleggFra(List<String> vedlegg) {
+        return vedlegg.stream()
+                .map(s -> UTTAK_FACTORY.createLukketPeriodeMedVedleggVedlegg(new Vedlegg().withId(s)))
+                .collect(toList());
+    }
+
     private static no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg lukkerPeriodeFra(
             LukketPeriodeMedVedlegg periode) {
         LOG.debug(CONFIDENTIAL, "Genererer periode XML fra {}", periode);
@@ -536,15 +546,17 @@ public class SøknadTilXMLMapper {
                     .withFom(overføringsPeriode.getFom())
                     .withTom(overføringsPeriode.getTom())
                     .withOverfoeringAv(uttaksperiodeTypeFra(overføringsPeriode.getUttaksperiodeType()))
-                    .withAarsak(overføringsÅrsakFra(overføringsPeriode.getÅrsak()));
+                    .withAarsak(overføringsÅrsakFra(overføringsPeriode.getÅrsak()))
+                    .withVedlegg(lukketPeriodeVedleggFra(overføringsPeriode.getVedlegg()));
+
         }
         if (periode instanceof OppholdsPeriode) {
             OppholdsPeriode oppholdsPeriode = OppholdsPeriode.class.cast(periode);
             return new Oppholdsperiode()
                     .withFom(oppholdsPeriode.getFom())
                     .withTom(oppholdsPeriode.getTom())
-                    .withAarsak(oppholdsÅrsakFra(oppholdsPeriode.getÅrsak()));
-
+                    .withAarsak(oppholdsÅrsakFra(oppholdsPeriode.getÅrsak()))
+                    .withVedlegg(lukketPeriodeVedleggFra(oppholdsPeriode.getVedlegg()));
         }
         if (periode instanceof UtsettelsesPeriode) {
             UtsettelsesPeriode utsettelsesPeriode = UtsettelsesPeriode.class.cast(periode);
@@ -554,30 +566,34 @@ public class SøknadTilXMLMapper {
                     .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
                     .withVirksomhetsnummer(utsettelsesPeriode.getVirksomhetsnummer())
                     .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType()))
-                    .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()));
+                    .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
+                    .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
         }
         if (periode instanceof GradertUttaksPeriode) {
             GradertUttaksPeriode uttaksPeriode = GradertUttaksPeriode.class.cast(periode);
             return new Gradering()
+                    .withFom(uttaksPeriode.getFom())
+                    .withTom(uttaksPeriode.getTom())
                     .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
-                    .withFom(uttaksPeriode.getFom())
-                    .withTom(uttaksPeriode.getTom())
                     .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                     .withErArbeidstaker(uttaksPeriode.isErArbeidstaker())
                     .withArbeidtidProsent(uttaksPeriode.getArbeidstidProsent())
                     .withVirksomhetsnummer(uttaksPeriode.getVirksomhetsNummer())
-                    .withArbeidsforholdSomSkalGraderes(uttaksPeriode.isArbeidsForholdSomskalGraderes());
+                    .withArbeidsforholdSomSkalGraderes(uttaksPeriode.isArbeidsForholdSomskalGraderes())
+                    .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
+
         }
         if (periode instanceof UttaksPeriode) {
             UttaksPeriode uttaksPeriode = UttaksPeriode.class.cast(periode);
             return new Uttaksperiode()
+                    .withFom(uttaksPeriode.getFom())
+                    .withTom(uttaksPeriode.getTom())
                     .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
-                    .withFom(uttaksPeriode.getFom())
-                    .withTom(uttaksPeriode.getTom());
+                    .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
         }
         throw new IllegalArgumentException("Vil aldri skje");
     }

@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -125,32 +126,32 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testFordeling() {
-        test(fordeling());
+        test(fordeling(Collections.emptyList()));
     }
 
     @Test
     public void testUttaksPeride() {
-        test(uttaksPeriode());
+        test(uttaksPeriode(Collections.emptyList()));
     }
 
     @Test
     public void testGradertPeriode() {
-        test(gradertPeriode());
+        test(gradertPeriode(Collections.emptyList()));
     }
 
     @Test
     public void testOverføringsperiode() {
-        test(overføringsPeriode());
+        test(overføringsPeriode(Collections.emptyList()));
     }
 
     @Test
     public void testOppholdsPeriode() {
-        test(oppholdsPeriode());
+        test(oppholdsPeriode(Collections.emptyList()));
     }
 
     @Test
     public void testUtsettelsesPeriode() {
-        test(utsettelsesPeriode());
+        test(utsettelsesPeriode(Collections.emptyList()));
     }
 
     @Test

@@ -9,8 +9,10 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
@@ -28,8 +30,6 @@ public class ForeldrepengerTestUtils {
             TestUtils.valgfrittVedlegg(ID143));
     private static final List<String> TO_VEDLEGG_REF = Lists.newArrayList(ID142, ID143);
 
-    private static final List<LukketPeriodeMedVedlegg> PERIODER = perioder();
-
     public static Søknad foreldrepengeSøknad() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), TO_VEDLEGG);
     }
@@ -43,7 +43,10 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Endringssøknad endringssøknad(Vedlegg... vedlegg) {
-        return new Endringssøknad(LocalDateTime.now(), søker(), fordeling(), norskForelder(), fødsel(), rettigheter(),
+        return new Endringssøknad(LocalDateTime.now(), søker(),
+                fordeling(Arrays.stream(vedlegg).map(s -> s.getId()).collect(Collectors.toList())), norskForelder(),
+                fødsel(),
+                rettigheter(),
                 "42", vedlegg);
     }
 
@@ -56,7 +59,7 @@ public class ForeldrepengerTestUtils {
                 .rettigheter(rettigheter())
                 .annenForelder(norskForelder())
                 .dekningsgrad(Dekningsgrad.GRAD100)
-                .fordeling(fordeling())
+                .fordeling(fordeling(Collections.emptyList()))
                 .opptjening(opptjening())
                 .relasjonTilBarn(termin())
                 .medlemsskap(medlemsskap(false))
@@ -157,19 +160,20 @@ public class ForeldrepengerTestUtils {
                 .periode(åpenPeriode()).build();
     }
 
-    private static List<LukketPeriodeMedVedlegg> perioder() {
-        return Lists.newArrayList(oppholdsPeriode(), overføringsPeriode(), utsettelsesPeriode(), gradertPeriode());
+    private static List<LukketPeriodeMedVedlegg> perioder(List<String> vedlegg) {
+        return Lists.newArrayList(oppholdsPeriode(vedlegg), overføringsPeriode(vedlegg), utsettelsesPeriode(vedlegg),
+                gradertPeriode(vedlegg));
     }
 
-    static UttaksPeriode uttaksPeriode() {
+    static UttaksPeriode uttaksPeriode(List<String> vedlegg) {
         return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, TO_VEDLEGG_REF);
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, vedlegg);
     }
 
-    static UttaksPeriode gradertPeriode() {
+    static UttaksPeriode gradertPeriode(List<String> vedlegg) {
         GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
                 FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, 75d, true, true, "222222", TO_VEDLEGG_REF);
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, 75d, true, true, "222222", vedlegg);
         return periode;
     }
 
@@ -181,24 +185,24 @@ public class ForeldrepengerTestUtils {
         return new Fødsel(LocalDate.now().minusMonths(2));
     }
 
-    static OverføringsPeriode overføringsPeriode() {
+    static OverføringsPeriode overføringsPeriode(List<String> vedlegg) {
         return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
-                Overføringsårsak.ALENEOMSORG, StønadskontoType.FEDREKVOTE, TO_VEDLEGG_REF);
+                Overføringsårsak.ALENEOMSORG, StønadskontoType.FEDREKVOTE, vedlegg);
     }
 
-    static OppholdsPeriode oppholdsPeriode() {
+    static OppholdsPeriode oppholdsPeriode(List<String> vedlegg) {
         return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
                 Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER,
-                TO_VEDLEGG_REF);
+                vedlegg);
     }
 
-    static UtsettelsesPeriode utsettelsesPeriode() {
+    static UtsettelsesPeriode utsettelsesPeriode(List<String> vedlegg) {
         return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), true, "222",
-                UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, TO_VEDLEGG_REF);
+                UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, vedlegg);
     }
 
-    static Fordeling fordeling() {
-        return new Fordeling(true, Overføringsårsak.IKKE_RETT_ANNEN_FORELDER, PERIODER);
+    static Fordeling fordeling(List<String> vedlegg) {
+        return new Fordeling(true, Overføringsårsak.IKKE_RETT_ANNEN_FORELDER, perioder(vedlegg));
     }
 
     static Rettigheter rettigheter() {

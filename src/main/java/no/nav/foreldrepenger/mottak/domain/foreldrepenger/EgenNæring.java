@@ -36,6 +36,7 @@ public abstract class EgenNæring {
     private final boolean erNyIArbeidslivet;
     private final long næringsinntektBrutto;
     private final LocalDate endringsDato;
+    private final LocalDate oppstartsDato;
     private final String beskrivelseEndring;
     private final List<String> vedlegg;
 
@@ -50,6 +51,7 @@ public abstract class EgenNæring {
             @JsonProperty("erNyIArbeidslivet") boolean erNyIArbeidslivet,
             @JsonProperty("næringsinntektBrutto") long næringsinntektBrutto,
             @JsonProperty("endringsDato") LocalDate endringsDato,
+            @JsonProperty("oppstartsDato") LocalDate oppstartsDato,
             @JsonProperty("beskrivelseEndring") String beskrivelseEndring,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         this.arbeidsland = arbeidsland;
@@ -62,6 +64,7 @@ public abstract class EgenNæring {
         this.erVarigEndring = erVarigEndring;
         this.næringsinntektBrutto = næringsinntektBrutto;
         this.endringsDato = endringsDato;
+        this.oppstartsDato = oppstartsDato;
         this.beskrivelseEndring = beskrivelseEndring;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }

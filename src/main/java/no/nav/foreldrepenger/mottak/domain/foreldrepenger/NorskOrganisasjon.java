@@ -26,12 +26,13 @@ public class NorskOrganisasjon extends EgenNæring {
     @Builder
     private NorskOrganisasjon(CountryCode arbeidsland, List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
-            boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, String beskrivelseEndring,
+            boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
+            String beskrivelseEndring,
             List<String> vedlegg,
             String orgNummer, String orgName) {
         super(arbeidsland, virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,
                 erVarigEndring, erNyIArbeidslivet,
-                næringsinntektBrutto, endringsDato, beskrivelseEndring, vedlegg);
+                næringsinntektBrutto, endringsDato, oppstartsDato, beskrivelseEndring, vedlegg);
         this.orgName = orgName;
         this.orgNummer = orgNummer;
     }
