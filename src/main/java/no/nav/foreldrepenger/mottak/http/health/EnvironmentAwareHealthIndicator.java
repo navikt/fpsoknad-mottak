@@ -9,7 +9,7 @@ import org.springframework.core.env.Environment;
 
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 
-public abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, EnvironmentAware {
+abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, EnvironmentAware {
 
     private final AbstractRestConnection connection;
     private Environment env;

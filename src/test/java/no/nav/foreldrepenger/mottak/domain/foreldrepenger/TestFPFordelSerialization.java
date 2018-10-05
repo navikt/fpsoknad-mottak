@@ -127,6 +127,8 @@ public class TestFPFordelSerialization {
         assertNotNull(rekonstruert);
         assertThat(Foreldrepenger.class.cast(rekonstruert.getYtelse()).getFordeling())
                 .isEqualTo(Foreldrepenger.class.cast(original.getYtelse()).getFordeling());
+
+        assertThat(rekonstruert.getMottattdato().toLocalDate()).isEqualTo(original.getMottattdato().toLocalDate());
         assertThat(rekonstruert.getSaksnr()).isEqualTo(original.getSaksnr());
         assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());
     }

@@ -124,7 +124,8 @@ public class XMLTilSøknadMapper {
                 no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(
                         søknad.getOmYtelse());
                 LOG.debug("Ytelse {}", ytelse);
-                Søknad s = new Endringssøknad(søker, ytelse.getFordeling(), null, null, null, "42");
+                Søknad s = new Endringssøknad(tid.atStartOfDay(), søker, ytelse.getFordeling(), null, null, null,
+                        "42");
                 s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return s;
