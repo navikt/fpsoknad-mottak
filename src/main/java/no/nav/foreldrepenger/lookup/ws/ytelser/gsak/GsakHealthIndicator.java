@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.lookup.ws.ytelser.gsak;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.lookup.EnvironmentAwareServiceHealthIndicator;
@@ -13,9 +12,8 @@ public class GsakHealthIndicator extends EnvironmentAwareServiceHealthIndicator 
 
     private final GsakClient client;
 
-    public GsakHealthIndicator(GsakClient client, Environment env,
-            @Value("${VIRKSOMHET_SAK_V2_ENDPOINTURL}") URI serviceUrl) {
-        super(env, serviceUrl);
+    public GsakHealthIndicator(GsakClient client, @Value("${VIRKSOMHET_SAK_V2_ENDPOINTURL}") URI serviceUrl) {
+        super(serviceUrl);
         this.client = client;
     }
 

@@ -1,20 +1,22 @@
 package no.nav.foreldrepenger.lookup;
 
+import static no.nav.foreldrepenger.lookup.EnvUtil.isDevOrPreprod;
+
 import java.net.URI;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
-public abstract class EnvironmentAwareServiceHealthIndicator implements HealthIndicator {
+public abstract class EnvironmentAwareServiceHealthIndicator implements EnvironmentAware, HealthIndicator {
 
     private final URI serviceUrl;
-    private boolean isPreprodOrDev;
+    private Environment env;
 
     protected abstract void checkHealth();
 
-    public EnvironmentAwareServiceHealthIndicator(Environment env, URI serviceUrl) {
-        this.isPreprodOrDev = isPreprodOrDev(env);
+    public EnvironmentAwareServiceHealthIndicator(URI serviceUrl) {
         this.serviceUrl = serviceUrl;
     }
 
@@ -22,10 +24,15 @@ public abstract class EnvironmentAwareServiceHealthIndicator implements HealthIn
     public Health health() {
         try {
             checkHealth();
-            return isPreprodOrDev ? upWithDetails() : up();
+            return isDevOrPreprod(env) ? upWithDetails() : up();
         } catch (Exception e) {
-            return isPreprodOrDev ? downWithDetails(e) : down();
+            return isDevOrPreprod(env) ? downWithDetails(e) : down();
         }
+    }
+
+    @Override
+    public void setEnvironment(Environment env) {
+        this.env = env;
     }
 
     private static Health down() {
@@ -34,10 +41,6 @@ public abstract class EnvironmentAwareServiceHealthIndicator implements HealthIn
 
     private Health downWithDetails(Exception e) {
         return Health.down().withDetail("url", serviceUrl).withException(e).build();
-    }
-
-    private boolean isPreprodOrDev(Environment env) {
-        return env.acceptsProfiles("dev", "preprod");
     }
 
     private static Health up() {
@@ -50,7 +53,6 @@ public abstract class EnvironmentAwareServiceHealthIndicator implements HealthIn
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [url=" + serviceUrl + "isPreprodOrDev "
-                + isPreprodOrDev + "]";
+        return getClass().getSimpleName() + " [url=" + serviceUrl + "]";
     }
 }

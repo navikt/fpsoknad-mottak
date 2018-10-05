@@ -2,19 +2,19 @@ package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 
 import java.net.URI;
 
-import no.nav.foreldrepenger.lookup.EnvironmentAwareServiceHealthIndicator;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import no.nav.foreldrepenger.lookup.EnvironmentAwareServiceHealthIndicator;
 
 @Component
 public class AaregHealthIndicator extends EnvironmentAwareServiceHealthIndicator {
 
     private final ArbeidsforholdClient client;
 
-    public AaregHealthIndicator(ArbeidsforholdClient client, Environment env,
-                                @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") URI serviceUrl) {
-        super(env, serviceUrl);
+    public AaregHealthIndicator(ArbeidsforholdClient client,
+            @Value("${VIRKSOMHET_ARBEIDSFORHOLD_V3_ENDPOINTURL}") URI serviceUrl) {
+        super(serviceUrl);
         this.client = client;
     }
 

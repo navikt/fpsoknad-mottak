@@ -6,10 +6,9 @@ import org.springframework.core.env.Environment;
 
 public final class EnvUtil {
 
-    public static final Marker CONFIDENTIAL = MarkerFactory.getMarker("CONFIDENTIAL");
-
     public static final String PREPROD = "preprod";
     public static final String DEV = "dev";
+    public static final Marker CONFIDENTIAL = MarkerFactory.getMarker("CONFIDENTIAL");
 
     private EnvUtil() {
 
