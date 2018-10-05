@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.http.errorhandling.ForbiddenException;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
@@ -34,7 +35,7 @@ public class FnrExtractorTest {
         when(context.getClaims(eq("selvbetjening"))).thenReturn(claims);
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
         FnrExtractor extractor = new FnrExtractor(holder);
-        assertEquals("42", extractor.fnrFromToken());
+        assertEquals(new Fødselsnummer("42"), extractor.fnrFromToken());
     }
 
     @Test(expected = ForbiddenException.class)

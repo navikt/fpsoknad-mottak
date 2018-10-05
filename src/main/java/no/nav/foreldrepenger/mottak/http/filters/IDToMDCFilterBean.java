@@ -44,13 +44,13 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         if (extractor.hasToken()) {
-            putFields();
+            tilMDC();
 
         }
         chain.doFilter(req, res);
     }
 
-    private void putFields() {
+    private void tilMDC() {
         try {
             MDC.put(USER_ID, extractor.fnrFromToken().getFnr());
             MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
