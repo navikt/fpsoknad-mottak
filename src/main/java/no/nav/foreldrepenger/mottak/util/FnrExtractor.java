@@ -2,16 +2,19 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
+import no.nav.foreldrepenger.mottak.http.errorhandling.ForbiddenException;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 
 @Component
-public final class FnrExtractor {
+public class FnrExtractor {
 
     private final OIDCRequestContextHolder ctxHolder;
 
@@ -20,29 +23,48 @@ public final class FnrExtractor {
     }
 
     public boolean hasToken() {
-        return OIDCValidationContext.class.cast(ctxHolder
-                .getRequestAttribute(OIDC_VALIDATION_CONTEXT)) != null;
+        try {
+            fnrFromToken();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getToken() {
+        return Optional.ofNullable(context().getToken("selvbetjening"))
+                .map(s -> s.getIdToken())
+                .orElseThrow(() -> new ForbiddenException("Fant ikke token"));
     }
 
     public String fnrFromToken() {
-        OIDCValidationContext context = (OIDCValidationContext) ctxHolder
-                .getRequestAttribute(OIDC_VALIDATION_CONTEXT);
+        OIDCValidationContext context = context();
         if (context == null) {
-            return "ingen";
+            throw new ForbiddenException("Fant ikke context");
         }
         OIDCClaims claims = context.getClaims("selvbetjening");
         if (claims == null) {
-            return "ingen";
+            throw new ForbiddenException("Fant ikke claims");
         }
         JWTClaimsSet claimSet = claims.getClaimSet();
         if (claimSet == null) {
-            return "ingen";
+            throw new ForbiddenException("Fant ikke claim set");
         }
         String fnr = claimSet.getSubject();
         if (fnr == null || fnr.trim().isEmpty()) {
-            return "ingen";
+            throw new ForbiddenException("Fant ikke subject");
         }
         return fnr;
     }
 
+    private OIDCValidationContext context() {
+        return Optional.ofNullable(ctxHolder.getRequestAttribute(OIDC_VALIDATION_CONTEXT))
+                .map(s -> OIDCValidationContext.class.cast(s))
+                .orElseThrow(() -> new ForbiddenException("Fant ikke context"));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [ctxHolder=" + ctxHolder + "]";
+    }
 }

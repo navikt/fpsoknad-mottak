@@ -7,7 +7,7 @@ replicas:
     cpuThresholdPercentage: 50
 prometheus:
     enabled: true
-    path: /api//actuator/prometheus
+    path: /api/actuator/prometheus
 port: 8080
 healthcheck:
     liveness:
