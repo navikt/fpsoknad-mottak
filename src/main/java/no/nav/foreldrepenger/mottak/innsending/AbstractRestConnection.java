@@ -7,6 +7,7 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -20,6 +21,8 @@ public abstract class AbstractRestConnection {
 
     protected final RestTemplate template;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
+
+    private Environment env;
 
     public abstract URI pingEndpoint();
 
@@ -52,13 +55,9 @@ public abstract class AbstractRestConnection {
         return getForObject(uri, responseType, false);
     }
 
-    protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential) {
-        return getForObject(uri, responseType, isConfidential, false);
-    }
-
-    protected <T> T getForObject(URI uri, Class<T> responseType, boolean isConfidential, boolean doThrow) {
+    protected <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
         try {
-            return getAndLog(uri, responseType, isConfidential);
+            return getAndLog(uri, responseType);
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode().equals(NOT_FOUND)) {
                 if (doThrow) {
@@ -93,16 +92,11 @@ public abstract class AbstractRestConnection {
                 .pathSegment(path);
     }
 
-    private <T> T getAndLog(URI uri, Class<T> responseType, boolean isConfidential) {
+    private <T> T getAndLog(URI uri, Class<T> responseType) {
         LOG.trace("Henter fra URI {}", uri);
         T respons = template.getForObject(uri, responseType);
-        if (isConfidential) {
-            LOG.info(CONFIDENTIAL, "Fikk respons {}", respons);
-        }
-        else {
-            LOG.info("Fikk respons {}", respons);
-        }
+        LOG.info("Fikk respons OK");
+        LOG.info(CONFIDENTIAL, "{}", respons);
         return respons;
     }
-
 }
