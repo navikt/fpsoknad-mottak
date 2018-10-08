@@ -125,7 +125,6 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         for (HttpMessageConverter<?> converter : partConverters) {
             if (converter.canWrite(partType, partContentType)) {
                 Charset charset = isFilenameCharsetSet() ? StandardCharsets.US_ASCII : this.charset;
-                LOG.info("Sender del {} med {}", name, converter.getClass().getSimpleName());
                 HttpOutputMessage multipartMessage = new MultipartHttpOutputMessage(os, charset);
                 multipartMessage.getHeaders().setContentDispositionFormData(name, getFilename(partBody));
                 if (!partHeaders.isEmpty()) {

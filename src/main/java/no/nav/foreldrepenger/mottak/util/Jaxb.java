@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
-import static javax.xml.bind.Marshaller.JAXB_FRAGMENT;
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import java.io.StringReader;
@@ -49,6 +48,10 @@ public final class Jaxb {
         return unmarshal(CONTEXT, bytes, clazz);
     }
 
+    public static <T> T unmarshal(String xml, Class<T> clazz) {
+        return unmarshal(CONTEXT, xml, clazz);
+    }
+
     private static JAXBContext context(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
@@ -57,24 +60,20 @@ public final class Jaxb {
         }
     }
 
-    private static String marshal(JAXBContext context, Object model) {
-        return marshal(context, model, true);
-    }
-
     private static Element marshalToElement(JAXBContext context, Object model) {
         try {
             DOMResult res = new DOMResult();
-            marshaller(context, true).marshal(model, res);
+            marshaller(context).marshal(model, res);
             return ((Document) res.getNode()).getDocumentElement();
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    private static String marshal(JAXBContext context, Object model, boolean isFragment) {
+    private static String marshal(JAXBContext context, Object model) {
         try {
             StringWriter sw = new StringWriter();
-            marshaller(context, isFragment).marshal(model, sw);
+            marshaller(context).marshal(model, sw);
             return sw.toString();
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
@@ -95,10 +94,6 @@ public final class Jaxb {
         return unmarshal(context, new String(bytes), clazz);
     }
 
-    public static <T> T unmarshal(String xml, Class<T> clazz) {
-        return unmarshal(CONTEXT, xml, clazz);
-    }
-
     private static <T> T unmarshal(JAXBContext context, String xml, Class<T> clazz) {
         try {
             return (T) unmarshaller(context).unmarshal(new StringReader(unescapeHtml4(xml)));
@@ -117,14 +112,13 @@ public final class Jaxb {
         }
     }
 
-    private static Marshaller marshaller(JAXBContext context, boolean isFragment) {
+    private static Marshaller marshaller(JAXBContext context) {
         try {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(JAXB_FRAGMENT, isFragment);
             marshaller.setEventHandler(new DefaultValidationEventHandler());
             return marshaller;
-        } catch (Exception e) {
+        } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
     }

@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -32,7 +34,9 @@ import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 })
 public abstract class LukketPeriodeMedVedlegg {
 
+    @NotNull
     protected final LocalDate fom;
+    @NotNull
     protected final LocalDate tom;
     protected final List<String> vedlegg;
 

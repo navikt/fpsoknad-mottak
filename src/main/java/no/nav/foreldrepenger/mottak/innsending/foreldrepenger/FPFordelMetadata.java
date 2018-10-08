@@ -28,7 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetdataGenerator.Filer;
 
-@JsonPropertyOrder({ "forsendelsesId", "brukerId", "forsendelseMottatt", "filer" })
+@JsonPropertyOrder({ "forsendelsesId", "saksnummer", "brukerId", "forsendelseMottatt", "filer" })
 public class FPFordelMetadata {
     private final String forsendelsesId;
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
