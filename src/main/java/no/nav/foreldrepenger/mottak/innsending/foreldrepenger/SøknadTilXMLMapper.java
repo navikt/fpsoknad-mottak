@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 
 import org.slf4j.Logger;
@@ -59,7 +58,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -113,8 +111,6 @@ public class SøknadTilXMLMapper {
     private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
-    private static final JAXBContext CONTEXT = Jaxb.CONTEXT;
-
     private static final ObjectFactory FP_FACTORY = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
@@ -127,11 +123,11 @@ public class SøknadTilXMLMapper {
     }
 
     public String tilXML(Søknad søknad, AktorId søker) {
-        return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), false);
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)));
     }
 
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(CONTEXT, SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), false);
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)));
     }
 
     private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
@@ -203,7 +199,7 @@ public class SøknadTilXMLMapper {
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
 
-        return new OmYtelse().withAny(marshalToElement(CONTEXT, new Foreldrepenger()
+        return new OmYtelse().withAny(marshalToElement(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))

@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import javax.xml.bind.JAXBContext;
-
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Filtype;
@@ -41,7 +39,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private static final String KANAL = "NAV_NO";
 
-    private static final JAXBContext CONTEXT = Jaxb.context(Dokumentforsendelse.class);
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
 
     public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
@@ -54,7 +51,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref,
             boolean inkluderVedlegg) {
-        return Jaxb.marshal(CONTEXT, dokmotModelFra(søknad, søker, ref, inkluderVedlegg));
+        return Jaxb.marshal(dokmotModelFra(søknad, søker, ref, inkluderVedlegg));
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,

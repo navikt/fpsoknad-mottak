@@ -15,26 +15,41 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.transform.dom.DOMResult;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
+import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 public final class Jaxb {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
-
-    public static final JAXBContext CONTEXT = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class);
+    private static final JAXBContext CONTEXT = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class,
+            SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
 
     private Jaxb() {
 
     }
 
-    public static JAXBContext context(Class<?>... classes) {
+    public static Element marshalToElement(Object model) {
+        return marshalToElement(CONTEXT, model);
+    }
+
+    public static <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz) {
+        return unmarshalToElement(CONTEXT, xml, clazz);
+    }
+
+    public static String marshal(Object model) {
+        return marshal(CONTEXT, model);
+    }
+
+    public static <T> T unmarshal(byte[] bytes, Class<T> clazz) {
+        return unmarshal(CONTEXT, bytes, clazz);
+    }
+
+    private static JAXBContext context(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
         } catch (JAXBException e) {
@@ -42,7 +57,11 @@ public final class Jaxb {
         }
     }
 
-    public static Element marshalToElement(JAXBContext context, Object model) {
+    private static String marshal(JAXBContext context, Object model) {
+        return marshal(context, model, true);
+    }
+
+    private static Element marshalToElement(JAXBContext context, Object model) {
         try {
             DOMResult res = new DOMResult();
             marshaller(context, true).marshal(model, res);
@@ -52,11 +71,7 @@ public final class Jaxb {
         }
     }
 
-    public static String marshal(JAXBContext context, Object model) {
-        return marshal(context, model, true);
-    }
-
-    public static String marshal(JAXBContext context, Object model, boolean isFragment) {
+    private static String marshal(JAXBContext context, Object model, boolean isFragment) {
         try {
             StringWriter sw = new StringWriter();
             marshaller(context, isFragment).marshal(model, sw);
@@ -76,11 +91,15 @@ public final class Jaxb {
         }
     }
 
-    public static <T> T unmarshal(byte[] bytes, JAXBContext context, Class<T> clazz) {
-        return unmarshal(new String(bytes), context, clazz);
+    private static <T> T unmarshal(JAXBContext context, byte[] bytes, Class<T> clazz) {
+        return unmarshal(context, new String(bytes), clazz);
     }
 
-    public static <T> T unmarshal(String xml, JAXBContext context, Class<T> clazz) {
+    public static <T> T unmarshal(String xml, Class<T> clazz) {
+        return unmarshal(CONTEXT, xml, clazz);
+    }
+
+    private static <T> T unmarshal(JAXBContext context, String xml, Class<T> clazz) {
         try {
             return (T) unmarshaller(context).unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
@@ -88,11 +107,7 @@ public final class Jaxb {
         }
     }
 
-    public static <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz) {
-        return unmarshalToElement(xml, CONTEXT, clazz);
-    }
-
-    private static <T> JAXBElement<T> unmarshalToElement(String xml, JAXBContext context, Class<T> clazz) {
+    private static <T> JAXBElement<T> unmarshalToElement(JAXBContext context, String xml, Class<T> clazz) {
         try {
 
             Unmarshaller unmarshaller = unmarshaller(context);

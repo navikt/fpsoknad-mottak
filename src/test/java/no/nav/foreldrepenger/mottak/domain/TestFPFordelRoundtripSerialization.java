@@ -8,7 +8,6 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedle
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static no.nav.foreldrepenger.mottak.http.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.http.SøknadPreprodController.INNSENDING_PREPROD;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -138,6 +137,6 @@ public class TestFPFordelRoundtripSerialization {
 
     private static <T> T unmarshal(String xml, Class<T> clazz) {
         LOG.info("Mottok xml\n{}", xml);
-        return Jaxb.unmarshal(xml, context(clazz), clazz);
+        return Jaxb.unmarshal(xml, clazz);
     }
 }

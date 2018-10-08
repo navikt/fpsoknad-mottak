@@ -9,12 +9,9 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import javax.xml.bind.JAXBContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,9 +47,6 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {
 
-    private static JAXBContext SØKNADCTX = context(SoeknadsskjemaEngangsstoenad.class);
-    private static JAXBContext FORSENDELSECTX = context(Dokumentforsendelse.class);
-
     @Autowired
     ObjectMapper mapper;
     @Autowired
@@ -72,11 +66,11 @@ public class TestDokmotSerialization {
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
         String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person(),
                 refGenerator.getOrCreate());
-        Dokumentforsendelse unmarshalled = unmarshal(konvolutt, FORSENDELSECTX, Dokumentforsendelse.class);
+        Dokumentforsendelse unmarshalled = unmarshal(konvolutt, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
         assertTrue(hasPdfSignature(pdf.getDokument()));
         Dokumentinnhold søknadsXML = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(1);
-        SoeknadsskjemaEngangsstoenad deserializedSøknadModel = unmarshal(søknadsXML.getDokument(), SØKNADCTX,
+        SoeknadsskjemaEngangsstoenad deserializedSøknadModel = unmarshal(søknadsXML.getDokument(),
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(deserializedSøknadModel.getOpplysningerOmBarn().getAntallBarn(), 1);
         assertEquals(deserializedSøknadModel.getSoknadsvalg().getFoedselEllerAdopsjon(), FoedselEllerAdopsjon.FOEDSEL);
@@ -105,7 +99,7 @@ public class TestDokmotSerialization {
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         Søknad søknad1 = engangssøknad(true, fødsel(), utenlandskForelder(),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
-        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.tilXML(søknad, søker), SØKNADCTX,
+        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.tilXML(søknad, søker),
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
         assertEquals(dokmotModel.getSoknadsvalg().getFoedselEllerAdopsjon(),

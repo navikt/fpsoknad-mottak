@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.context;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg.LASTET_OPP;
@@ -9,8 +8,6 @@ import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstyp
 
 import java.util.List;
 import java.util.stream.Stream;
-
-import javax.xml.bind.JAXBContext;
 
 import org.springframework.stereotype.Service;
 
@@ -54,7 +51,6 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 @Service
 public class DokmotEngangsstønadXMLGenerator {
 
-    private static final JAXBContext CONTEXT = context(SoeknadsskjemaEngangsstoenad.class);
     private final EngangsstønadPDFGenerator pdfGenerator;
 
     public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator) {
@@ -70,7 +66,7 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     public String tilXML(SoeknadsskjemaEngangsstoenad model) {
-        return marshal(CONTEXT, model);
+        return marshal(model);
     }
 
     public SoeknadsskjemaEngangsstoenad tilDokmotModel(Søknad søknad, Person søker) {
