@@ -7,7 +7,7 @@ import no.nav.tjeneste.virksomhet.sak.v2.WSSak;
 class GsakMapper {
 
     static Sak map(WSSak sak) {
-        return new Sak(sak.getSakId(), sak.getSakstype(), sak.getFagomrade(), sak.getFagsystem(),
+        return new Sak(sak.getSakId(), sak.getSakstype(), null, sak.getFagomrade(), sak.getFagsystem(),
             sak.getFagsystemSakId(), DateUtil.toLocalDate(sak.getOpprettelsetidspunkt()));
     }
 

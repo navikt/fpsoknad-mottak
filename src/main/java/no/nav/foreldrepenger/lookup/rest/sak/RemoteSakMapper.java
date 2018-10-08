@@ -13,6 +13,7 @@ public class RemoteSakMapper {
         return new Sak(Integer.toString(remoteSak.getId()),
             remoteSak.getTema(),
             null,
+            "FOR",
             remoteSak.getApplikasjon(),
             remoteSak.getFagsakNr(),
             LocalDate.parse(remoteSak.getOpprettetTidspunkt(), formatter));

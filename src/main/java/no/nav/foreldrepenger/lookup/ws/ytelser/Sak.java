@@ -7,15 +7,17 @@ public class Sak {
 
     private String sakId;
     private String sakstype;
+    private String status;
     private String fagomrade;
     private String fagsystem;
     private String fagsystemSakId;
     private LocalDate opprettet;
 
-    public Sak(String sakId, String sakstype, String fagomrade, String fagsystem,
-            String fagsystemSakId, LocalDate opprettet) {
+    public Sak(String sakId, String sakstype, String status, String fagomrade, String fagsystem,
+               String fagsystemSakId, LocalDate opprettet) {
         this.sakId = sakId;
         this.sakstype = sakstype;
+        this.status = status;
         this.fagomrade = fagomrade;
         this.fagsystem = fagsystem;
         this.fagsystemSakId = fagsystemSakId;
@@ -28,6 +30,10 @@ public class Sak {
 
     public String getSakstype() {
         return sakstype;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public String getFagomrade() {
@@ -48,27 +54,33 @@ public class Sak {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Sak sak = (Sak) o;
         return Objects.equals(sakId, sak.sakId) &&
-                Objects.equals(sakstype, sak.sakstype) &&
-                Objects.equals(fagomrade, sak.fagomrade) &&
-                Objects.equals(fagsystem, sak.fagsystem) &&
-                Objects.equals(fagsystemSakId, sak.fagsystemSakId) &&
-                Objects.equals(opprettet, sak.opprettet);
+            Objects.equals(sakstype, sak.sakstype) &&
+            Objects.equals(status, sak.status) &&
+            Objects.equals(fagomrade, sak.fagomrade) &&
+            Objects.equals(fagsystem, sak.fagsystem) &&
+            Objects.equals(fagsystemSakId, sak.fagsystemSakId) &&
+            Objects.equals(opprettet, sak.opprettet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sakId, sakstype, fagomrade, fagsystem, fagsystemSakId, opprettet);
+        return Objects.hash(sakId, sakstype, status, fagomrade, fagsystem, fagsystemSakId, opprettet);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [sakId=" + sakId + ", sakstype=" + sakstype + ", fagomrade=" + fagomrade
-                + ", fagsystem=" + fagsystem + ", fagsystemSakId=" + fagsystemSakId + ", opprettet=" + opprettet + "]";
+        return "Sak{" +
+            "sakId='" + sakId + '\'' +
+            ", sakstype='" + sakstype + '\'' +
+            ", status='" + status + '\'' +
+            ", fagomrade='" + fagomrade + '\'' +
+            ", fagsystem='" + fagsystem + '\'' +
+            ", fagsystemSakId='" + fagsystemSakId + '\'' +
+            ", opprettet=" + opprettet +
+            '}';
     }
 }

@@ -19,15 +19,14 @@ public class GsakClientStub implements GsakClient {
         LOG.debug("PONG");
     }
 
-
     @Override
     public List<Sak> casesFor(Fødselsnummer fnr) {
         return Arrays.asList(
-            new Sak("sak1", "typen", "fagomr", "systemet",
+            new Sak("sak1", "typen", "statusen", "fagomr", "systemet",
                 "fsid1", LocalDate.of(2018,9,19)),
-            new Sak("sak2", "typen", "fagomr", "systemet",
+            new Sak("sak2", "typen", "statusen", "fagomr", "systemet",
                 "fsid2", LocalDate.of(2018,9,18)),
-            new Sak("sak3", "typen", "fagomr", "systemet",
+            new Sak("sak3", "typen", "statusen", "fagomr", "systemet",
                 "fsid3", LocalDate.of(2018,9,17))
         );
     }

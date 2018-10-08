@@ -21,7 +21,7 @@ public class GsakMapperTest {
         sak.setFagsystemSakId("fsid1");
         LocalDate now = LocalDate.now();
         sak.setOpprettelsetidspunkt(DateUtil.toXMLGregorianCalendar(now));
-        Sak expected = new Sak("sak1", "typen", "omr", "systemet",
+        Sak expected = new Sak("sak1", "typen", null, "omr", "systemet",
             "fsid1", now);
         Sak actual = GsakMapper.map(sak);
         assertEquals(expected, actual);

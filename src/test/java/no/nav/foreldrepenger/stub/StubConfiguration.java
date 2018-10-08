@@ -11,6 +11,7 @@ import no.nav.foreldrepenger.lookup.ws.ytelser.arena.ArenaClient;
 import no.nav.foreldrepenger.lookup.ws.ytelser.fpsak.FpsakClient;
 import no.nav.foreldrepenger.lookup.ws.ytelser.gsak.GsakClient;
 import no.nav.foreldrepenger.lookup.ws.ytelser.infotrygd.InfotrygdClient;
+import no.nav.foreldrepenger.lookup.ws.ytelser.sakogbehandling.SakOgBehandlingClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -84,5 +85,11 @@ public class StubConfiguration {
     @Primary
     public SakClient sakClientStub() {
         return new SakClientStub();
+    }
+
+    @Bean
+    @Primary
+    public SakOgBehandlingClient sakOgBehandlingClientStub() {
+        return new SakOgBehandlingClientStub();
     }
 }

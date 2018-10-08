@@ -194,6 +194,19 @@
                             <sourceDestDir>target/generated-sources</sourceDestDir>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>WsdlSakOgBehandling</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>Binding.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <wsdlDirectory>src/main/resources/wsdl/sakogbehandling</wsdlDirectory>
+                            <sourceDestDir>target/generated-sources</sourceDestDir>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
