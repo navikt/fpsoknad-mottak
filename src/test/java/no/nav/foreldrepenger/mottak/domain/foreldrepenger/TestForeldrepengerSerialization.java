@@ -76,7 +76,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEttersending() throws Exception {
-        test(ettersending());
+        test(ettersending(), true);
     }
 
     @Test

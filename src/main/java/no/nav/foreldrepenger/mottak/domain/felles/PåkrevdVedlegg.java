@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static org.springframework.util.StreamUtils.copyToByteArray;
+
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.springframework.core.io.Resource;
 
@@ -17,24 +18,8 @@ import lombok.ToString;
 @Data
 public class PåkrevdVedlegg extends Vedlegg {
 
-    private PåkrevdVedlegg(DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(dokumentType.name(), dokumentType, vedlegg);
-    }
-
     PåkrevdVedlegg(String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(null, id, dokumentType, vedlegg);
-    }
-
-    PåkrevdVedlegg(String beskrivelse, String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(new VedleggMetaData(beskrivelse, id, dokumentType), vedlegg);
-    }
-
-    PåkrevdVedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {
-        super(metadata, vedlegg);
-    }
-
-    PåkrevdVedlegg(VedleggMetaData metadata, InputStream inputStream) throws IOException {
-        super(metadata, inputStream);
+        this(new VedleggMetaData(id, dokumentType), copyToByteArray(vedlegg.getInputStream()));
     }
 
     @JsonCreator

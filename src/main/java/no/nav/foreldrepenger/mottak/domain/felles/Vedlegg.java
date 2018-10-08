@@ -2,13 +2,8 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
-import static org.springframework.util.StreamUtils.copyToByteArray;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
-
-import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,17 +25,8 @@ public abstract class Vedlegg {
     private final VedleggMetaData metadata;
     private final byte[] vedlegg;
 
-    Vedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {
-        this(metadata, vedlegg.getInputStream());
-    }
-
-    Vedlegg(VedleggMetaData metadata, InputStream inputStream) throws IOException {
-        this(metadata, copyToByteArray(inputStream));
-    }
-
     @JsonCreator
-    public Vedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg)
-            throws IOException {
+    public Vedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg) {
         this.metadata = metadata;
         this.vedlegg = vedlegg;
     }

@@ -110,19 +110,19 @@ public class XMLTilSøknadMapper {
             Soeknad søknad = unmarshalToElement(xml, Soeknad.class).getValue();
             if (søknad != null) {
                 if (erEndringsSøknad(xml)) {
-                    Søknad endringssøknad = new Endringssøknad(søknad.getMottattDato().atStartOfDay(),
+                    Endringssøknad endringssøknad = new Endringssøknad(søknad.getMottattDato().atStartOfDay(),
                             tilSøker(søknad.getSoeker()),
                             tilYtelse(søknad.getOmYtelse()).getFordeling(), "42");
                     endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                     endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                     return endringssøknad;
                 }
-                Søknad førstegangssknad = new Søknad(søknad.getMottattDato().atStartOfDay(),
+                Søknad førstegangssøknad = new Søknad(søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),
                         tilYtelse(søknad.getOmYtelse()));
-                førstegangssknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                førstegangssknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return førstegangssknad;
+                førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return førstegangssøknad;
             }
             LOG.warn("Ingen søknad kunne unmarshalles");
             return null;

@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static org.springframework.util.StreamUtils.copyToByteArray;
+
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.springframework.core.io.Resource;
 
@@ -18,25 +19,12 @@ import lombok.ToString;
 public class ValgfrittVedlegg extends Vedlegg {
 
     public ValgfrittVedlegg(String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(null, id, dokumentType, vedlegg);
-    }
-
-    ValgfrittVedlegg(String beskrivelse, String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(new VedleggMetaData(beskrivelse, id, dokumentType), vedlegg);
-    }
-
-    ValgfrittVedlegg(VedleggMetaData metadata, Resource vedlegg) throws IOException {
-        super(metadata, vedlegg);
-    }
-
-    ValgfrittVedlegg(VedleggMetaData metadata, InputStream inputStream) throws IOException {
-        super(metadata, inputStream);
+        this(new VedleggMetaData(id, dokumentType), copyToByteArray(vedlegg.getInputStream()));
     }
 
     @JsonCreator
-    public ValgfrittVedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg)
-            throws IOException {
+    public ValgfrittVedlegg(@JsonProperty("metadata") VedleggMetaData metadata,
+            @JsonProperty("vedlegg") byte[] vedlegg) {
         super(metadata, vedlegg);
     }
-
 }
