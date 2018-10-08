@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +24,10 @@ import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.MorsAktivitet;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 
 public class PeriodeValidatorTest {
 
@@ -77,6 +82,26 @@ public class PeriodeValidatorTest {
         TidligereOppholdsInformasjon framtidig = new TidligereOppholdsInformasjon(true, ARBEIDET_I_UTLANDET,
                 opphold(periode2, periode1));
         Set<ConstraintViolation<TidligereOppholdsInformasjon>> constraintViolations = validator.validate(framtidig);
+        assertFalse(constraintViolations.isEmpty());
+    }
+
+    @Test
+    public void testLukketPeriodeMedVedleggOK() {
+        LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), now().plusMonths(6), StønadskontoType.FEDREKVOTE,
+                true,
+                MorsAktivitet.ARBEID,
+                Collections.emptyList());
+        Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
+        assertTrue(constraintViolations.isEmpty());
+    }
+
+    @Test
+    public void testLukketPeriodeMedVedleggNull() {
+        LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), null, StønadskontoType.FEDREKVOTE,
+                true,
+                MorsAktivitet.ARBEID,
+                Collections.emptyList());
+        Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
         assertFalse(constraintViolations.isEmpty());
     }
 

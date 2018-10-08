@@ -19,11 +19,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import no.nav.foreldrepenger.mottak.domain.validation.Periode;
+import no.nav.foreldrepenger.mottak.domain.validation.LukketPeriode;
 
 @Data
 @EqualsAndHashCode(exclude = { "vedlegg" })
-@Periode
+@LukketPeriode
 @JsonPropertyOrder({ "fom", "tom" })
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
@@ -34,14 +34,13 @@ import no.nav.foreldrepenger.mottak.domain.validation.Periode;
 })
 public abstract class LukketPeriodeMedVedlegg {
 
-    @NotNull
     protected final LocalDate fom;
-    @NotNull
     protected final LocalDate tom;
     protected final List<String> vedlegg;
 
     @JsonCreator
-    public LukketPeriodeMedVedlegg(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
+    public LukketPeriodeMedVedlegg(@JsonProperty("fom") @NotNull LocalDate fom,
+            @JsonProperty("tom") @NotNull LocalDate tom,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         this.fom = fom;
         this.tom = tom;
