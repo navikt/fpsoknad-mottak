@@ -23,6 +23,11 @@ public class Endringssøknad extends Søknad {
         this(now(), søker, fordeling, annenForelder, fødsel, rettigheter, saksnr, vedlegg);
     }
 
+    public Endringssøknad(LocalDateTime mottattDato, Søker søker, Fordeling fordeling, String saksnr,
+            Vedlegg... vedlegg) {
+        this(mottattDato, søker, fordeling, null, null, null, saksnr, vedlegg);
+    }
+
     public Endringssøknad(LocalDateTime mottattDato, Søker søker, Fordeling fordeling, AnnenForelder annenForelder,
             Fødsel fødsel, Rettigheter rettigheter, String saksnr,
             Vedlegg... vedlegg) {

@@ -113,7 +113,7 @@ public class SøknadTilXMLMapper {
     private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
-    private static final JAXBContext CONTEXT = Jaxb.DEFAULT_CONTEXT;
+    private static final JAXBContext CONTEXT = Jaxb.CONTEXT;
 
     private static final ObjectFactory FP_FACTORY = new ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak;
+package no.nav.foreldrepenger.mottak.config;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;

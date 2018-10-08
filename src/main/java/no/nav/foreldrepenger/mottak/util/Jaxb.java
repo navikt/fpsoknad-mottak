@@ -28,8 +28,7 @@ public final class Jaxb {
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
 
-    public static final JAXBContext DEFAULT_CONTEXT = context(Soeknad.class, Endringssoeknad.class,
-            Foreldrepenger.class);
+    public static final JAXBContext CONTEXT = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class);
 
     private Jaxb() {
 
@@ -89,13 +88,15 @@ public final class Jaxb {
         }
     }
 
-    public static <T> JAXBElement<T> unmarshalToElement(String xml, JAXBContext context, Class<T> clazz) {
+    public static <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz) {
+        return unmarshalToElement(xml, CONTEXT, clazz);
+    }
+
+    private static <T> JAXBElement<T> unmarshalToElement(String xml, JAXBContext context, Class<T> clazz) {
         try {
 
             Unmarshaller unmarshaller = unmarshaller(context);
-            String unescapedXML = unescapeHtml4(xml);
-            LOG.trace(EnvUtil.CONFIDENTIAL, "XML etter unescape er {}", unescapedXML);
-            return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapedXML));
+            return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
@@ -106,8 +107,9 @@ public final class Jaxb {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(JAXB_FRAGMENT, isFragment);
+            marshaller.setEventHandler(new DefaultValidationEventHandler());
             return marshaller;
-        } catch (JAXBException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
     }

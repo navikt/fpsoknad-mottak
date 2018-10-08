@@ -5,13 +5,11 @@ import javax.validation.Valid;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 @Builder
 public class Foreldrepenger extends Ytelse {
 

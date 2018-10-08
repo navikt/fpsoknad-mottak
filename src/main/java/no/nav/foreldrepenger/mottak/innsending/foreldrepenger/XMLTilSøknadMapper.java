@@ -6,10 +6,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
-import java.time.LocalDate;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -53,7 +50,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.DokumentTypeAnalysator;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -99,8 +95,6 @@ public class XMLTilSøknadMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLTilSøknadMapper.class);
 
-    private static final JAXBContext CONTEXT = Jaxb.DEFAULT_CONTEXT;
-
     private final Oppslag oppslag;
 
     public XMLTilSøknadMapper(Oppslag oppslag) {
@@ -109,47 +103,33 @@ public class XMLTilSøknadMapper {
 
     public Søknad tilSøknad(String xml) {
         if (xml == null) {
-            LOG.info("Ingen søknad ble funnet");
+            LOG.debug("Ingen søknad ble funnet");
             return null;
         }
         try {
-            boolean erEndringsSøknad = erEndringsSøknad(xml);
-            Soeknad søknad = unmarshalToElement(xml, CONTEXT, Soeknad.class).getValue();
-            if (erEndringsSøknad) {
-                LOG.info("Ytelse er {}", søknad.getOmYtelse().getClass().getSimpleName());
-                LocalDate tid = søknad.getMottattDato();
-                LOG.debug("Starttidspunkt {}", tid);
-                Søker søker = tilSøker(søknad.getSoeker());
-                LOG.debug("Søker {}", søker);
-                no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(
-                        søknad.getOmYtelse());
-                LOG.debug("Ytelse {}", ytelse);
-                Søknad s = new Endringssøknad(tid.atStartOfDay(), søker, ytelse.getFordeling(), null, null, null,
-                        "42");
-                s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return s;
-            }
-            LOG.warn("Dette er en førstegangssøknad");
+            Soeknad søknad = unmarshalToElement(xml, Soeknad.class).getValue();
             if (søknad != null) {
-                LocalDate tid = søknad.getMottattDato();
-                LOG.debug("Starttidspunkt {}", tid);
-                Søker søker = tilSøker(søknad.getSoeker());
-                LOG.debug("Søker {}", søker);
-                no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = tilYtelse(
-                        søknad.getOmYtelse());
-                LOG.debug("Ytelse any {}", søknad.getOmYtelse().getAny().get(0).getClass().getSimpleName());
-                Søknad s = new Søknad(tid.atStartOfDay(), søker, ytelse);
-                s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return s;
+                if (erEndringsSøknad(xml)) {
+                    Søknad endringssøknad = new Endringssøknad(søknad.getMottattDato().atStartOfDay(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse()).getFordeling(), "42");
+                    endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    return endringssøknad;
+                }
+                Søknad førstegangssknad = new Søknad(søknad.getMottattDato().atStartOfDay(),
+                        tilSøker(søknad.getSoeker()),
+                        tilYtelse(søknad.getOmYtelse()));
+                førstegangssknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                førstegangssknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return førstegangssknad;
             }
+            LOG.warn("Ingen søknad kunne unmarshalles");
+            return null;
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av søknad", e);
             return null;
         }
-        LOG.warn("Ingen søknad kunne unmarshalles");
-        return null;
     }
 
     private static boolean erEndringsSøknad(String xml) {

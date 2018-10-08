@@ -2,8 +2,13 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.google.common.collect.Lists.newArrayList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500005;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ID142;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ID143;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
@@ -23,7 +28,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,11 +77,12 @@ public class TestFPFordelSerialization {
 
     private FPFordelKonvoluttGenerator konvoluttGenerator;
 
+    private static final ValgfrittVedlegg V1 = vedlegg(ID142, I500002);
+    private static final ValgfrittVedlegg V2 = vedlegg(ID143, I500005);
+
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
-    private static final List<Arbeidsforhold> ARB_FORHOLD = Arrays
-            .asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                    Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
+    private static final List<Arbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
     private static final ObjectMapper mapper = mapper();
 
@@ -116,13 +122,10 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testEndringssøknadRoundtrip() throws Exception {
-        ValgfrittVedlegg v1 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID142, DokumentType.I500002,
-                new ClassPathResource("terminbekreftelse.pdf"));
-        ValgfrittVedlegg v2 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID143, DokumentType.I500005,
-                new ClassPathResource("terminbekreftelse.pdf"));
+
         AktorId aktørId = new AktorId("42");
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
-        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(v1, v2);
+        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(V1, V2);
         String xml = mapper.tilXML(original, aktørId);
         assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
         Endringssøknad rekonstruert = Endringssøknad.class.cast(mapper.tilSøknad(xml));
@@ -177,11 +180,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEttersending() throws Exception {
-        ValgfrittVedlegg v1 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID142, DokumentType.I500002,
-                new ClassPathResource("terminbekreftelse.pdf"));
-        ValgfrittVedlegg v2 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID143, DokumentType.I500005,
-                new ClassPathResource("terminbekreftelse.pdf"));
-        Ettersending es = new Ettersending("42", v1, v2);
+        Ettersending es = new Ettersending("42", V1, V2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
                 new CallIdGenerator().create());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
@@ -195,12 +194,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEndring() throws Exception {
-        ValgfrittVedlegg v1 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID142, DokumentType.I500002,
-                new ClassPathResource("terminbekreftelse.pdf"));
-        ValgfrittVedlegg v2 = new ValgfrittVedlegg(ForeldrepengerTestUtils.ID143, DokumentType.I500005,
-                new ClassPathResource("terminbekreftelse.pdf"));
-
-        Endringssøknad es = ForeldrepengerTestUtils.endringssøknad(v1, v2);
+        Endringssøknad es = ForeldrepengerTestUtils.endringssøknad(V1, V2);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(es));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
                 new CallIdGenerator().create());
@@ -214,12 +208,25 @@ public class TestFPFordelSerialization {
 
     private FPFordelKonvoluttGenerator konvoluttGenerator() {
         MottakConfiguration mottakConfiguration = new MottakConfiguration();
-        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
+        return new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
                 new ForeldrepengerSøknadMapper(oppslag),
                 new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
                         mottakConfiguration.kvitteringstekster(), oppslag));
-        return konvoluttGenerator;
+    }
+
+    private static ValgfrittVedlegg vedlegg(String id, DokumentType type) {
+        try {
+            return new ValgfrittVedlegg(id, type, new ClassPathResource("terminbekreftelse.pdf"));
+        } catch (Exception e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static ArrayList<Arbeidsforhold> arbeidsforhold() {
+        return newArrayList(
+                new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                        Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
     }
 
     private static void assertMediaType(HttpEntity<?> entity, String type) {
