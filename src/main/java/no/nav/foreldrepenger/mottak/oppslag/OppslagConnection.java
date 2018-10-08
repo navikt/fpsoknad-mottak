@@ -41,7 +41,7 @@ public class OppslagConnection extends AbstractRestConnection {
     }
 
     public Person getSøker() {
-        LOG.trace("Henter søøker");
+        LOG.trace("Henter søker");
         Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
         søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktorId.class);
         return søker;
