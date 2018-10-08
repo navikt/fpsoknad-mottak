@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RemoteSak {
 
@@ -16,13 +16,13 @@ public class RemoteSak {
     private String opprettetTidspunkt;
 
     public RemoteSak(@JsonProperty("id") int id,
-                     @JsonProperty("tema") String tema,
-                     @JsonProperty("applikasjon") String applikasjon,
-                     @JsonProperty("aktoerId") String aktoerId,
-                     @JsonProperty("orgnr") String orgnr,
-                     @JsonProperty("fagsakNr") String fagsakNr,
-                     @JsonProperty("opprettetAv") String opprettetAv,
-                     @JsonProperty("opprettetTidspunkt") String opprettetTidspunkt) {
+            @JsonProperty("tema") String tema,
+            @JsonProperty("applikasjon") String applikasjon,
+            @JsonProperty("aktoerId") String aktoerId,
+            @JsonProperty("orgnr") String orgnr,
+            @JsonProperty("fagsakNr") String fagsakNr,
+            @JsonProperty("opprettetAv") String opprettetAv,
+            @JsonProperty("opprettetTidspunkt") String opprettetTidspunkt) {
         this.id = id;
         this.tema = tema;
         this.applikasjon = applikasjon;
@@ -67,17 +67,19 @@ public class RemoteSak {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         RemoteSak remoteSak = (RemoteSak) o;
         return id == remoteSak.id &&
-            Objects.equals(tema, remoteSak.tema) &&
-            Objects.equals(applikasjon, remoteSak.applikasjon) &&
-            Objects.equals(aktoerId, remoteSak.aktoerId) &&
-            Objects.equals(orgnr, remoteSak.orgnr) &&
-            Objects.equals(fagsakNr, remoteSak.fagsakNr) &&
-            Objects.equals(opprettetAv, remoteSak.opprettetAv) &&
-            Objects.equals(opprettetTidspunkt, remoteSak.opprettetTidspunkt);
+                Objects.equals(tema, remoteSak.tema) &&
+                Objects.equals(applikasjon, remoteSak.applikasjon) &&
+                Objects.equals(aktoerId, remoteSak.aktoerId) &&
+                Objects.equals(orgnr, remoteSak.orgnr) &&
+                Objects.equals(fagsakNr, remoteSak.fagsakNr) &&
+                Objects.equals(opprettetAv, remoteSak.opprettetAv) &&
+                Objects.equals(opprettetTidspunkt, remoteSak.opprettetTidspunkt);
     }
 
     @Override
@@ -87,17 +89,15 @@ public class RemoteSak {
 
     @Override
     public String toString() {
-        return "RemoteSak{" +
-            "id=" + id +
-            ", tema='" + tema + '\'' +
-            ", applikasjon='" + applikasjon + '\'' +
-            ", aktoerId='" + aktoerId + '\'' +
-            ", orgnr='" + orgnr + '\'' +
-            ", fagsakNr='" + fagsakNr + '\'' +
-            ", opprettetAv='" + opprettetAv + '\'' +
-            ", opprettetTidspunkt='" + opprettetTidspunkt + '\'' +
-            '}';
+        return getClass().getSimpleName() + "{" +
+                "id=" + id +
+                ", tema='" + tema + '\'' +
+                ", applikasjon='" + applikasjon + '\'' +
+                ", aktoerId='" + aktoerId + '\'' +
+                ", orgnr='" + orgnr + '\'' +
+                ", fagsakNr='" + fagsakNr + '\'' +
+                ", opprettetAv='" + opprettetAv + '\'' +
+                ", opprettetTidspunkt='" + opprettetTidspunkt + '\'' +
+                '}';
     }
 }
-
-

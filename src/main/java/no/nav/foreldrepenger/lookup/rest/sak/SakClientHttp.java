@@ -1,23 +1,30 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
+import static java.util.stream.Collectors.toList;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import no.nav.foreldrepenger.lookup.EnvUtil;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
+import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 
 public class SakClientHttp implements SakClient {
 
-    private static final Logger log = LoggerFactory.getLogger(SakClientHttp.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SakClientHttp.class);
 
     private RestTemplate restTemplate;
 
@@ -33,7 +40,7 @@ public class SakClientHttp implements SakClient {
 
     @Override
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
-        log.info("Querying Sak service at " + sakBaseUrl);
+        LOG.info("henter saker på " + sakBaseUrl);
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Saml " + encode(samlToken));
@@ -41,22 +48,23 @@ public class SakClientHttp implements SakClient {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
-            sakBaseUrl + "?aktoerId=" + aktor.getAktør(),
-            HttpMethod.GET,
-            requestEntity,
-            new ParameterizedTypeReference<List<RemoteSak>>() {
-            }
-        );
+                sakBaseUrl + "?aktoerId=" + aktor.getAktør(),
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<RemoteSak>>() {
+                });
 
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
         }
 
-        log.info("Found {} saker", response.getBody().size());
+        List<RemoteSak> saker = response.getBody();
+        LOG.info("Fant {} saker", saker.size());
+        LOG.info(EnvUtil.CONFIDENTIAL, "{}", saker);
 
-        return response.getBody().stream().
-            map(RemoteSakMapper::map)
-            .collect(toList());
+        return saker.stream()
+                .map(RemoteSakMapper::map)
+                .collect(toList());
     }
 
     private String encode(String samlToken) {

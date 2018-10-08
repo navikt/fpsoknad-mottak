@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.lookup.ws;
 
+import static no.nav.foreldrepenger.lookup.EnvUtil.CONFIDENTIAL;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Base64;
@@ -35,7 +37,7 @@ import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedExcept
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class OnBehalfOfOutInterceptor extends AbstractPhaseInterceptor<Message> {
-    private static final Logger logger = LoggerFactory.getLogger(OnBehalfOfOutInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OnBehalfOfOutInterceptor.class);
 
     @Inject
     private SpringOIDCRequestContextHolder oidcRequestContextHolder;
@@ -43,6 +45,7 @@ public class OnBehalfOfOutInterceptor extends AbstractPhaseInterceptor<Message> 
     public enum TokenType {
         OIDC("urn:ietf:params:oauth:token-type:jwt");
         public String valueType;
+
         TokenType(String valueType) {
             this.valueType = valueType;
         }
@@ -55,31 +58,32 @@ public class OnBehalfOfOutInterceptor extends AbstractPhaseInterceptor<Message> 
     @Override
     public void handleMessage(Message message) throws Fault {
 
-        logger.debug("looking up OnBehalfOfToken from SpringOIDCRequestContextHolder.");
+        LOG.debug("looking up OnBehalfOfToken from SpringOIDCRequestContextHolder.");
         String token = getTokenFromFirstIssuerInValidationContext();
 
         if (token != null) {
             byte[] tokenBytes = token.getBytes();
             String wrappedToken = wrapTokenForTransport(tokenBytes, TokenType.OIDC);
             message.put(SecurityConstants.STS_TOKEN_ON_BEHALF_OF, createOnBehalfOfElement(wrappedToken));
-        } else {
-            logger.warn("could not find OnBehalfOfToken token in requestcontext.");
+        }
+        else {
+            LOG.warn("could not find OnBehalfOfToken token in requestcontext.");
             throw new OIDCUnauthorizedException("no OIDC token found when attempting to invoke sts.");
         }
     }
 
-    private String getTokenFromFirstIssuerInValidationContext(){
-    	OIDCValidationContext context = oidcRequestContextHolder.getOIDCValidationContext();
-    	List<String> issuers = context.getIssuers();
-    	if(context != null && issuers != null){
-    		String issuerName = issuers.stream().filter(Objects::nonNull).findFirst().orElse(null);
-    		logger.debug("getting first issuer in validation context: " + issuerName);
-    		TokenContext token = context.getToken(issuerName);
-    		logger.debug("found token: " + token);
-    		return token != null ? token.getIdToken() : null;
-    	}
-    	logger.warn("no issuers found in oidcvalidationcontext. returning null");
-    	return null;
+    private String getTokenFromFirstIssuerInValidationContext() {
+        OIDCValidationContext context = oidcRequestContextHolder.getOIDCValidationContext();
+        List<String> issuers = context.getIssuers();
+        if (context != null && issuers != null) {
+            String issuerName = issuers.stream().filter(Objects::nonNull).findFirst().orElse(null);
+            LOG.debug("getting first issuer in validation context: " + issuerName);
+            TokenContext token = context.getToken(issuerName);
+            LOG.debug(CONFIDENTIAL, "found token: " + token);
+            return token != null ? token.getIdToken() : null;
+        }
+        LOG.warn("no issuers found in oidcvalidationcontext. returning null");
+        return null;
     }
 
     private String wrapTokenForTransport(byte[] token, TokenType tokenType) {
