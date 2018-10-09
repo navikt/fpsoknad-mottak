@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static no.nav.foreldrepenger.mottak.http.filters.HeadersToMDCFilterBean.NAV_CALL_ID;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
 
-    private static final String UUID = "Nav-CallId";
     private final HttpStatus status;
     @JsonFormat(shape = STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private final LocalDateTime timestamp;
@@ -27,7 +27,7 @@ class ApiError {
         this.timestamp = LocalDateTime.now();
         this.status = status;
         this.messages = messages;
-        this.uuid = MDC.get(UUID);
+        this.uuid = MDC.get(NAV_CALL_ID);
     }
 
     public String getUuid() {

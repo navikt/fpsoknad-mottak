@@ -23,7 +23,7 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 public class HeadersToMDCFilterBean extends GenericFilterBean {
 
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
-    private static final String NAV_CALL_ID = "Nav-CallId";
+    public static final String NAV_CALL_ID = "Nav-CallId";
 
     private final CallIdGenerator generator;
     private final String applicationName;
