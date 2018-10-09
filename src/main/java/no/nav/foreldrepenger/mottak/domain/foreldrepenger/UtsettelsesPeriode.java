@@ -20,7 +20,7 @@ public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
     private final String virksomhetsnummer;
 
     public UtsettelsesPeriode(LocalDate fom, LocalDate tom, boolean erArbeidstaker, String virksomhetsnummer,
-            UtsettelsesÅrsak årsak, @NotNull StønadskontoType uttaksperiodeType,
+            @NotNull UtsettelsesÅrsak årsak, @NotNull StønadskontoType uttaksperiodeType,
             List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.erArbeidstaker = erArbeidstaker;

@@ -619,7 +619,9 @@ public class SøknadTilXMLMapper {
     }
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(UtsettelsesÅrsak årsak) {
-        return årsak == null ? utsettelsesÅrsakFra(UKJENT_KODEVERKSVERDI) : utsettelsesÅrsakFra(årsak.name());
+        return Optional.ofNullable(årsak)
+                .map(s -> utsettelsesÅrsakFra(s.name()))
+                .orElseThrow(() -> new IllegalArgumentException("Utsettelsesårsak må være satt"));
     }
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(String årsak) {
@@ -628,7 +630,9 @@ public class SøknadTilXMLMapper {
     }
 
     private static Oppholdsaarsaker oppholdsÅrsakFra(Oppholdsårsak årsak) {
-        return årsak == null ? oppholdsÅrsakFra(UKJENT_KODEVERKSVERDI) : oppholdsÅrsakFra(årsak.name());
+        return Optional.ofNullable(årsak)
+                .map(s -> oppholdsÅrsakFra(s.name()))
+                .orElseThrow(() -> new IllegalArgumentException("Oppholdsårsak må være satt"));
     }
 
     private static Oppholdsaarsaker oppholdsÅrsakFra(String årsak) {
