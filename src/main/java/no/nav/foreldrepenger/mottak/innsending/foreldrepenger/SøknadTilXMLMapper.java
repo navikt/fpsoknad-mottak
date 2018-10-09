@@ -11,6 +11,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBElement;
@@ -598,7 +599,9 @@ public class SøknadTilXMLMapper {
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
-        return type == null ? uttaksperiodeTypeFra(UKJENT_KODEVERKSVERDI) : uttaksperiodeTypeFra(type.name());
+        return Optional.ofNullable(type)
+                .map(s -> uttaksperiodeTypeFra(s.name()))
+                .orElseThrow(() -> new IllegalArgumentException("Stønadskontotype må være satt"));
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(String type) {

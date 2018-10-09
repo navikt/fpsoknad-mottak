@@ -6,6 +6,8 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -32,7 +34,7 @@ public class UttaksPeriode extends LukketPeriodeMedVedlegg {
 
     @JsonCreator
     public UttaksPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
-            @JsonProperty("uttaksperiodeType") StønadskontoType uttaksperiodeType,
+            @JsonProperty("uttaksperiodeType") @NotNull StønadskontoType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
             @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType,
             @JsonProperty("ønskerFlerbarnsdager") boolean ønskerFlerbarnsdager,
