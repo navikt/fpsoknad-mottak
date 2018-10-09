@@ -516,7 +516,7 @@ public class SøknadTilXMLMapper {
         }
         return new Fordeling()
                 .withPerioder(perioderFra(fordeling.getPerioder()))
-                .withOenskerKvoteOverfoert(overføringsÅrsakFra(fordeling.getØnskerKvoteOverført()))
+                .withOenskerKvoteOverfoert(overføringsÅrsakFra(fordeling.getØnskerKvoteOverført(), false))
                 .withAnnenForelderErInformert(fordeling.isErAnnenForelderInformert());
     }
 
@@ -543,7 +543,7 @@ public class SøknadTilXMLMapper {
                     .withFom(overføringsPeriode.getFom())
                     .withTom(overføringsPeriode.getTom())
                     .withOverfoeringAv(uttaksperiodeTypeFra(overføringsPeriode.getUttaksperiodeType()))
-                    .withAarsak(overføringsÅrsakFra(overføringsPeriode.getÅrsak()))
+                    .withAarsak(overføringsÅrsakFra(overføringsPeriode.getÅrsak(), true))
                     .withVedlegg(lukketPeriodeVedleggFra(overføringsPeriode.getVedlegg()));
 
         }
@@ -640,8 +640,11 @@ public class SøknadTilXMLMapper {
         return oppholdsÅrsak.withKodeverk(oppholdsÅrsak.getKodeverk());
     }
 
-    private static Overfoeringsaarsaker overføringsÅrsakFra(Overføringsårsak årsak) {
-        return årsak == null ? overføringsÅrsakFra(UKJENT_KODEVERKSVERDI) : overføringsÅrsakFra(årsak.name());
+    private static Overfoeringsaarsaker overføringsÅrsakFra(Overføringsårsak årsak, boolean required) {
+        return required ? Optional.ofNullable(årsak).map(s -> overføringsÅrsakFra(s.name()))
+                .orElse(overføringsÅrsakFra(UKJENT_KODEVERKSVERDI))
+                : Optional.ofNullable(årsak).map(s -> overføringsÅrsakFra(s.name()))
+                        .orElseThrow(() -> new IllegalArgumentException("Oppholdsårsak må være satt"));
     }
 
     private static Overfoeringsaarsaker overføringsÅrsakFra(String årsak) {
