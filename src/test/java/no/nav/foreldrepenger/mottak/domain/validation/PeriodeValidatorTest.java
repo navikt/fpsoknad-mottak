@@ -89,7 +89,7 @@ public class PeriodeValidatorTest {
     public void testLukketPeriodeMedVedleggOK() {
         LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), now().plusMonths(6), StønadskontoType.FEDREKVOTE,
                 true,
-                MorsAktivitet.ARBEID,
+                MorsAktivitet.ARBEID, true, 100.0d,
                 Collections.emptyList());
         Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
         assertTrue(constraintViolations.isEmpty());
@@ -99,7 +99,7 @@ public class PeriodeValidatorTest {
     public void testLukketPeriodeMedVedleggNull() {
         LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), null, StønadskontoType.FEDREKVOTE,
                 true,
-                MorsAktivitet.ARBEID,
+                MorsAktivitet.ARBEID, true, 100.0d,
                 Collections.emptyList());
         Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
         assertFalse(constraintViolations.isEmpty());

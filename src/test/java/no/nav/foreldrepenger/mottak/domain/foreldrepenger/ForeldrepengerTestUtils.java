@@ -167,13 +167,13 @@ public class ForeldrepengerTestUtils {
 
     static UttaksPeriode uttaksPeriode(List<String> vedlegg) {
         return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, vedlegg);
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 75.0d, vedlegg);
     }
 
     static UttaksPeriode gradertPeriode(List<String> vedlegg) {
         GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
                 FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, 75d, true, true, "222222", vedlegg);
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 75.0d, 75d, true, true, "222222", vedlegg);
         return periode;
     }
 

@@ -26,12 +26,15 @@ public class GradertUttaksPeriode extends UttaksPeriode {
             @JsonProperty("UttaksperiodeType") StønadskontoType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
             @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType,
+            @JsonProperty("ønskerFlerbarnsdager") boolean ønskerFlerbarnsdager,
+            @JsonProperty("samtidigUttakProsent") double samtidigUttakProsent,
             @JsonProperty("arbeidstidProsent") double arbeidstidProsent,
             @JsonProperty("erArbeidstaker") boolean erArbeidstaker,
             @JsonProperty("arbeidsForholdSomskalGraderes") boolean arbeidsForholdSomskalGraderes,
             @JsonProperty("virksomhetsNummer") String virksomhetsNummer,
             @JsonProperty("vedlegg") List<String> vedlegg) {
-        super(fom, tom, uttaksperiodeType, ønskerSamtidigUttak, morsAktivitetsType, vedlegg);
+        super(fom, tom, uttaksperiodeType, ønskerSamtidigUttak, morsAktivitetsType, ønskerFlerbarnsdager,
+                samtidigUttakProsent, vedlegg);
         this.arbeidstidProsent = arbeidstidProsent;
         this.erArbeidstaker = erArbeidstaker;
         this.virksomhetsNummer = virksomhetsNummer;

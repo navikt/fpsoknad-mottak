@@ -566,19 +566,20 @@ public class SøknadTilXMLMapper {
                     .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
         }
         if (periode instanceof GradertUttaksPeriode) {
-            GradertUttaksPeriode uttaksPeriode = GradertUttaksPeriode.class.cast(periode);
+            GradertUttaksPeriode gradertPeriode = GradertUttaksPeriode.class.cast(periode);
             return new Gradering()
-                    .withFom(uttaksPeriode.getFom())
-                    .withTom(uttaksPeriode.getTom())
-                    .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
-                    .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
-                    .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
-                    .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
-                    .withErArbeidstaker(uttaksPeriode.isErArbeidstaker())
-                    .withArbeidtidProsent(uttaksPeriode.getArbeidstidProsent())
-                    .withVirksomhetsnummer(uttaksPeriode.getVirksomhetsNummer())
-                    .withArbeidsforholdSomSkalGraderes(uttaksPeriode.isArbeidsForholdSomskalGraderes())
-                    .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
+                    .withFom(gradertPeriode.getFom())
+                    .withTom(gradertPeriode.getTom())
+                    .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
+                    .withOenskerSamtidigUttak(gradertPeriode.isØnskerSamtidigUttak())
+                    .withMorsAktivitetIPerioden(morsAktivitetFra(gradertPeriode.getMorsAktivitetsType()))
+                    .withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
+                    .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
+                    .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
+                    .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
+                    .withVirksomhetsnummer(gradertPeriode.getVirksomhetsNummer())
+                    .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
+                    .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
 
         }
         if (periode instanceof UttaksPeriode) {
@@ -586,6 +587,8 @@ public class SøknadTilXMLMapper {
             return new Uttaksperiode()
                     .withFom(uttaksPeriode.getFom())
                     .withTom(uttaksPeriode.getTom())
+                    .withSamtidigUttakProsent(uttaksPeriode.getSamtidigUttakProsent())
+                    .withOenskerFlerbarnsdager(uttaksPeriode.isØnskerFlerbarnsdager())
                     .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))

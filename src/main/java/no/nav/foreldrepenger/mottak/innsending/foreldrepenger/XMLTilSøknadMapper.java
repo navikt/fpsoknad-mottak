@@ -429,7 +429,10 @@ public class XMLTilSøknadMapper {
             return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(),
                     tilStønadKontoType(gradering.getType()),
                     gradering.isOenskerSamtidigUttak(),
-                    tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()), gradering.getArbeidtidProsent(),
+                    tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()),
+                    gradering.isOenskerFlerbarnsdager(),
+                    gradering.getSamtidigUttakProsent(),
+                    gradering.getArbeidtidProsent(),
                     gradering.isErArbeidstaker(),
                     gradering.isArbeidsforholdSomSkalGraderes(), gradering.getVirksomhetsnummer().toString(), // TODO
                                                                                                               // strange
@@ -441,7 +444,10 @@ public class XMLTilSøknadMapper {
             Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
             return new UttaksPeriode(uttaksperiode.getFom(), uttaksperiode.getTom(),
                     tilStønadKontoType(uttaksperiode.getType()),
-                    uttaksperiode.isOenskerSamtidigUttak(), tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
+                    uttaksperiode.isOenskerSamtidigUttak(),
+                    tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
+                    uttaksperiode.isOenskerFlerbarnsdager(),
+                    uttaksperiode.getSamtidigUttakProsent(),
                     emptyList());
         }
         throw new IllegalArgumentException();

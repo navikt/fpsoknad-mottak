@@ -27,16 +27,23 @@ public class UttaksPeriode extends LukketPeriodeMedVedlegg {
     private final StønadskontoType uttaksperiodeType;
     private final boolean ønskerSamtidigUttak;
     private final MorsAktivitet morsAktivitetsType;
+    private final boolean ønskerFlerbarnsdager;
+    private final double samtidigUttakProsent;
 
     @JsonCreator
     public UttaksPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
             @JsonProperty("uttaksperiodeType") StønadskontoType uttaksperiodeType,
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
             @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType,
+            @JsonProperty("ønskerFlerbarnsdager") boolean ønskerFlerbarnsdager,
+            @JsonProperty("samtidigUttakProsent") double samtidigUttakProsent,
+
             @JsonProperty("vedlegg") List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.uttaksperiodeType = uttaksperiodeType;
         this.ønskerSamtidigUttak = ønskerSamtidigUttak;
         this.morsAktivitetsType = morsAktivitetsType;
+        this.ønskerFlerbarnsdager = ønskerFlerbarnsdager;
+        this.samtidigUttakProsent = samtidigUttakProsent;
     }
 }

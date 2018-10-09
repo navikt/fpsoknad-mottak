@@ -39,6 +39,8 @@
                     <xsd:element name="type" type="kv:Uttaksperiodetyper" />
                     <xsd:element minOccurs="0" name="oenskerSamtidigUttak" type="xsd:boolean" />
                     <xsd:element minOccurs="0" name="morsAktivitetIPerioden" type="kv:MorsAktivitetsTyper" />
+                    <xsd:element minOccurs="0" name="oenskerFlerbarnsdager" type="xsd:boolean" />
+                    <xsd:element minOccurs="0" name="samtidigUttakProsent" type="xsd:double" />
                 </xsd:sequence>
                 <xsd:anyAttribute processContents="lax" />
             </xsd:extension>
