@@ -88,9 +88,9 @@
     <xsd:complexType name="Medlemskap">
         <xsd:sequence>
             <xsd:element name="oppholdNorge" type="felles:OppholdNorge" minOccurs="0" maxOccurs="unbounded"/>
-            <xsd:element name="iNorgeVedFoedselstidspunkt" type="xsd:boolean" minOccurs="0"/>
-            <xsd:element name="boddINorgeSiste12Mnd" type="xsd:boolean" minOccurs="0"/>
-            <xsd:element name="borINorgeNeste12Mnd" type="xsd:boolean" minOccurs="0"/>
+            <xsd:element name="iNorgeVedFoedselstidspunkt" type="xsd:boolean"/>
+            <xsd:element name="boddINorgeSiste12Mnd" type="xsd:boolean"/>
+            <xsd:element name="borINorgeNeste12Mnd" type="xsd:boolean"/>
             <xsd:element name="oppholdUtlandet" type="felles:OppholdUtlandet" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
         <xsd:anyAttribute processContents="lax"/>

@@ -192,7 +192,7 @@ public class ForeldrepengerTestUtils {
 
     static OppholdsPeriode oppholdsPeriode(List<String> vedlegg) {
         return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
-                Oppholdsårsak.UTTAK_FELLSP_ANNEN_FORLDER,
+                Oppholdsårsak.UTTAK_FEDREKVOTE_ANNEN_FORELDER,
                 vedlegg);
     }
 
