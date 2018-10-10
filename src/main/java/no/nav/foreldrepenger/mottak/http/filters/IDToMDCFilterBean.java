@@ -52,7 +52,7 @@ public class IDToMDCFilterBean extends GenericFilterBean {
 
     private void tilMDC() {
         try {
-            MDC.put(USER_ID, extractor.fnrFromToken().getFnr());
+            MDC.put(USER_ID, extractor.autentisertBruker().getFnr());
             MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
             LOG.warn("Noe gikk feil", e);

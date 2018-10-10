@@ -45,7 +45,7 @@ public class TokenHandlerTest {
     @Test
     public void testExtractorOK() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().subject(FNR.getFnr()).build());
-        assertEquals(FNR, tokenHandler.fnrFromToken());
+        assertEquals(FNR, tokenHandler.autentisertBruker());
         assertTrue(tokenHandler.erAutentisert());
     }
 
@@ -53,27 +53,27 @@ public class TokenHandlerTest {
     public void testExtractorNoContext() {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.fnrFromToken();
+        tokenHandler.autentisertBruker();
     }
 
     @Test(expected = ForbiddenException.class)
     public void testExtractorNoClaims() {
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.fnrFromToken();
+        tokenHandler.autentisertBruker();
     }
 
     @Test(expected = ForbiddenException.class)
     public void testExtractorNoClaimset() {
         when(claims.getClaimSet()).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.fnrFromToken();
+        tokenHandler.autentisertBruker();
     }
 
     @Test(expected = ForbiddenException.class)
     public void testExtractorNoSubject() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().build());
         assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.fnrFromToken();
+        tokenHandler.autentisertBruker();
     }
 }

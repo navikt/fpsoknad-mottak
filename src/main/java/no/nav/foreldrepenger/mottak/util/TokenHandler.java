@@ -26,7 +26,7 @@ public class TokenHandler {
 
     public boolean erAutentisert() {
         try {
-            fnrFromToken();
+            autentisertBruker();
             return true;
         } catch (Exception e) {
             return false;
@@ -39,7 +39,7 @@ public class TokenHandler {
                 .orElseThrow(() -> new ForbiddenException("Fant ikke token for issuer " + ISSUER));
     }
 
-    public Fødselsnummer fnrFromToken() {
+    public Fødselsnummer autentisertBruker() {
         OIDCValidationContext context = Optional.ofNullable(context())
                 .orElseThrow(() -> new ForbiddenException("Fant ikke context"));
 

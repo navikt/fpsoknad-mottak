@@ -30,7 +30,7 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public AktorId getAktørId() {
-        return getAktørId(extractor.fnrFromToken());
+        return getAktørId(extractor.autentisertBruker());
     }
 
     @Override
