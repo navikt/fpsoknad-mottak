@@ -227,8 +227,10 @@ public class SøknadTilXMLMapper {
 
     private static Dekningsgrad dekningsgradFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad dekningsgrad) {
-        return dekningsgrad != null ? new Dekningsgrad()
-                .withDekningsgrad(dekningsgradFra(dekningsgrad.kode())) : null;
+        return Optional.ofNullable(dekningsgrad)
+                .map(s -> dekningsgradFra(s.kode()))
+                .map(s -> new Dekningsgrad().withDekningsgrad(s))
+                .orElse(null);
     }
 
     private static Dekningsgrader dekningsgradFra(String kode) {
@@ -244,8 +246,7 @@ public class SøknadTilXMLMapper {
         return new Opptjening()
                 .withFrilans(frilansFra(opptjening.getFrilans()))
                 .withEgenNaering(egenNæringFra(opptjening.getEgenNæring()))
-                .withUtenlandskArbeidsforhold(
-                        utenlandskArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
+                .withUtenlandskArbeidsforhold(utenlandskArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
                 .withAnnenOpptjening(annenOpptjeningFra(opptjening.getAnnenOpptjening()));
     }
 
@@ -365,7 +366,9 @@ public class SøknadTilXMLMapper {
 
     private static Virksomhetstyper virksomhetsTypeFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype type) {
-        return type == null ? null : virksomhetsTypeFra(type.name());
+        return Optional.ofNullable(type)
+                .map(s -> virksomhetsTypeFra(s.name()))
+                .orElse(null);
     }
 
     private static Virksomhetstyper virksomhetsTypeFra(String type) {
@@ -426,7 +429,9 @@ public class SøknadTilXMLMapper {
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
-        return type == null ? null : annenOpptjeningTypeFra(type.name());
+        return Optional.ofNullable(type)
+                .map(s -> annenOpptjeningTypeFra(s.name()))
+                .orElse(null);
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {
@@ -436,7 +441,9 @@ public class SøknadTilXMLMapper {
     }
 
     private static Periode periodeFra(ÅpenPeriode periode) {
-        return periode == null ? null : new Periode().withFom(periode.getFom()).withTom(periode.getTom());
+        return Optional.ofNullable(periode)
+                .map(s -> new Periode().withFom(s.getFom()).withTom(s.getTom()))
+                .orElse(null);
     }
 
     private static Medlemskap medlemsskapFra(Medlemsskap ms) {
@@ -488,7 +495,6 @@ public class SøknadTilXMLMapper {
                         safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
                 .map(SøknadTilXMLMapper::utenlandOppholdFra)
                 .collect(toList());
-
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
@@ -501,7 +507,9 @@ public class SøknadTilXMLMapper {
     }
 
     private static Land landFra(CountryCode land) {
-        return land == null ? null : landFra(land.getAlpha3());
+        return Optional.ofNullable(land)
+                .map(s -> landFra(s.getAlpha3()))
+                .orElse(null);
     }
 
     private static Land landFra(String alphq3) {
@@ -516,7 +524,7 @@ public class SøknadTilXMLMapper {
         }
         return new Fordeling()
                 .withPerioder(perioderFra(fordeling.getPerioder()))
-                .withOenskerKvoteOverfoert(overføringsÅrsakFra(fordeling.getØnskerKvoteOverført(), false))
+                .withOenskerKvoteOverfoert(valgfriOverføringsÅrsakFra(fordeling.getØnskerKvoteOverført()))
                 .withAnnenForelderErInformert(fordeling.isErAnnenForelderInformert());
     }
 
@@ -543,7 +551,7 @@ public class SøknadTilXMLMapper {
                     .withFom(overføringsPeriode.getFom())
                     .withTom(overføringsPeriode.getTom())
                     .withOverfoeringAv(uttaksperiodeTypeFra(overføringsPeriode.getUttaksperiodeType()))
-                    .withAarsak(overføringsÅrsakFra(overføringsPeriode.getÅrsak(), true))
+                    .withAarsak(påkrevdOverføringsÅrsakFra(overføringsPeriode.getÅrsak()))
                     .withVedlegg(lukketPeriodeVedleggFra(overføringsPeriode.getVedlegg()));
 
         }
@@ -610,7 +618,9 @@ public class SøknadTilXMLMapper {
     }
 
     private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet aktivitet) {
-        return aktivitet == null ? morsAktivitetFra(UKJENT_KODEVERKSVERDI) : morsAktivitetFra(aktivitet.name());
+        return Optional.ofNullable(aktivitet)
+                .map(s -> morsAktivitetFra(s.name()))
+                .orElse(morsAktivitetFra(UKJENT_KODEVERKSVERDI));
     }
 
     private static MorsAktivitetsTyper morsAktivitetFra(String aktivitet) {
@@ -640,11 +650,16 @@ public class SøknadTilXMLMapper {
         return oppholdsÅrsak.withKodeverk(oppholdsÅrsak.getKodeverk());
     }
 
-    private static Overfoeringsaarsaker overføringsÅrsakFra(Overføringsårsak årsak, boolean required) {
-        return required ? Optional.ofNullable(årsak).map(s -> overføringsÅrsakFra(s.name()))
-                .orElse(overføringsÅrsakFra(UKJENT_KODEVERKSVERDI))
-                : Optional.ofNullable(årsak).map(s -> overføringsÅrsakFra(s.name()))
-                        .orElseThrow(() -> new IllegalArgumentException("Oppholdsårsak må være satt"));
+    private static Overfoeringsaarsaker påkrevdOverføringsÅrsakFra(Overføringsårsak årsak) {
+        return Optional.ofNullable(årsak)
+                .map(s -> overføringsÅrsakFra(s.name()))
+                .orElseThrow(() -> new IllegalArgumentException("Oppholdsårsak må være satt"));
+    }
+
+    private static Overfoeringsaarsaker valgfriOverføringsÅrsakFra(Overføringsårsak årsak) {
+        return Optional.ofNullable(årsak)
+                .map(s -> overføringsÅrsakFra(s.name()))
+                .orElse(overføringsÅrsakFra(UKJENT_KODEVERKSVERDI));
     }
 
     private static Overfoeringsaarsaker overføringsÅrsakFra(String årsak) {
