@@ -127,6 +127,7 @@ public class TestFPFordelSerialization {
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(V1, V2);
         String xml = mapper.tilXML(original, aktørId);
+        System.out.println(xml);
         assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
         Endringssøknad rekonstruert = Endringssøknad.class.cast(mapper.tilSøknad(xml));
         assertNotNull(rekonstruert);

@@ -132,6 +132,10 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
         return tilXML(søknad, søker, true);
     }
 
+    public String tilXML(Endringssøknad endringsøknad, AktorId søker) {
+        return tilXML(endringsøknad, søker, true);
+    }
+
     public String tilXML(Søknad søknad, AktorId søker, boolean doLookup) {
         return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker, doLookup)));
     }
