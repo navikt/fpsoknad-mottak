@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.FnrExtractor;
+import no.nav.foreldrepenger.mottak.util.TokenHandler;
 
 @Order(HIGHEST_PRECEDENCE)
 @Profile({ PREPROD, DEV })
@@ -33,9 +33,9 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     private static final String AKTØR_ID = "Nav-Aktør-Id";
 
     private final Oppslag oppslag;
-    private final FnrExtractor extractor;
+    private final TokenHandler extractor;
 
-    public IDToMDCFilterBean(FnrExtractor extractor, Oppslag oppslag) {
+    public IDToMDCFilterBean(TokenHandler extractor, Oppslag oppslag) {
         this.extractor = extractor;
         this.oppslag = oppslag;
     }

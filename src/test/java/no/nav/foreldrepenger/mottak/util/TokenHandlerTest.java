@@ -19,7 +19,7 @@ import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class FnrExtractorTest {
+public class TokenHandlerTest {
 
     @Mock
     private OIDCRequestContextHolder holder;
@@ -34,14 +34,14 @@ public class FnrExtractorTest {
         when(claims.getClaimSet()).thenReturn(claimsSet);
         when(context.getClaims(eq("selvbetjening"))).thenReturn(claims);
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
-        FnrExtractor extractor = new FnrExtractor(holder);
+        TokenHandler extractor = new TokenHandler(holder);
         assertEquals(new Fødselsnummer("42"), extractor.fnrFromToken());
     }
 
     @Test(expected = ForbiddenException.class)
     public void testExtractorNoToken() {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(null);
-        FnrExtractor extractor = new FnrExtractor(holder);
+        TokenHandler extractor = new TokenHandler(holder);
         assertEquals(extractor.hasToken(), false);
         extractor.fnrFromToken();
     }
@@ -50,7 +50,7 @@ public class FnrExtractorTest {
     public void testExtractorNoClaims() {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
-        FnrExtractor extractor = new FnrExtractor(holder);
+        TokenHandler extractor = new TokenHandler(holder);
         assertEquals(extractor.hasToken(), false);
         extractor.fnrFromToken();
     }
@@ -60,7 +60,7 @@ public class FnrExtractorTest {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
         when(context.getClaims(eq("selvbetjening"))).thenReturn(claims);
         when(claims.getClaimSet()).thenReturn(null);
-        FnrExtractor extractor = new FnrExtractor(holder);
+        TokenHandler extractor = new TokenHandler(holder);
         assertEquals(extractor.hasToken(), false);
         extractor.fnrFromToken();
     }
@@ -71,7 +71,7 @@ public class FnrExtractorTest {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
         when(context.getClaims(eq("selvbetjening"))).thenReturn(claims);
         when(claims.getClaimSet()).thenReturn(claimsSet);
-        FnrExtractor extractor = new FnrExtractor(holder);
+        TokenHandler extractor = new TokenHandler(holder);
         assertEquals(extractor.hasToken(), false);
         extractor.fnrFromToken();
     }

@@ -9,16 +9,16 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.util.FnrExtractor;
+import no.nav.foreldrepenger.mottak.util.TokenHandler;
 
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagTjeneste implements Oppslag {
 
     private final OppslagConnection connection;
-    private final FnrExtractor extractor;
+    private final TokenHandler extractor;
 
-    public OppslagTjeneste(OppslagConnection connection, FnrExtractor extractor) {
+    public OppslagTjeneste(OppslagConnection connection, TokenHandler extractor) {
         this.connection = connection;
         this.extractor = extractor;
     }
