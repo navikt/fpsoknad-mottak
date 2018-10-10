@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadTilXMLMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.security.oidc.api.Unprotected;
 
@@ -45,17 +45,17 @@ public class SøknadPreprodController {
 
     private final DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator;
     private final DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator;
-    private final ForeldrepengerSøknadMapper fpfordelSøknadGenerator;
+    private final SøknadTilXMLMapper søknadMapper;
     private final FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator;
     @Inject
     ForeldrepengerPDFGenerator pdfGenerator;
 
     public SøknadPreprodController(DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator,
             DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator,
-            ForeldrepengerSøknadMapper fpfordelSøknadGenerator, FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator) {
+            SøknadTilXMLMapper søknadMapper, FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator) {
         this.dokmotSøknadGenerator = dokmotSøknadGenerator;
         this.dokmotKonvoluttGenerator = dokmotKonvoluttGenerator;
-        this.fpfordelSøknadGenerator = fpfordelSøknadGenerator;
+        this.søknadMapper = søknadMapper;
         this.fpfordelKonvoluttGenerator = fpfordelKonvoluttGenerator;
     }
 
@@ -99,11 +99,11 @@ public class SøknadPreprodController {
     }
 
     private String fpSøknad(Søknad søknad) {
-        return fpfordelSøknadGenerator.tilXML(søknad, new AktorId("42"));
+        return søknadMapper.tilXML(søknad, new AktorId("42"), false);
     }
 
     private String fpEndringsSøknad(Endringssøknad endringssøknad) {
-        return fpfordelSøknadGenerator.tilXML(endringssøknad, new AktorId("42"));
+        return søknadMapper.tilXML(endringssøknad, new AktorId("42"), false);
     }
 
     private String esKonvolutt(Søknad søknad, Person søker) {
@@ -137,7 +137,7 @@ public class SøknadPreprodController {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [dokmotSøknadGenerator=" + dokmotSøknadGenerator
-                + ", dokmotKonvoluttGenerator=" + dokmotKonvoluttGenerator + ", fpfordelSøknadGenerator="
-                + fpfordelSøknadGenerator + ", fpfordelKonvoluttGenerator=" + fpfordelKonvoluttGenerator + "]";
+                + ", dokmotKonvoluttGenerator=" + dokmotKonvoluttGenerator + ", søknadMapper="
+                + søknadMapper + ", fpfordelKonvoluttGenerator=" + fpfordelKonvoluttGenerator + "]";
     }
 }

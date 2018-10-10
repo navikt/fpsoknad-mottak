@@ -4,6 +4,8 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.isProd;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -18,6 +20,8 @@ import javax.xml.bind.JAXBElement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -107,7 +111,7 @@ import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class SøknadTilXMLMapper {
+public class SøknadTilXMLMapper implements EnvironmentAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
     private static final String UKJENT_KODEVERKSVERDI = "-";
@@ -118,20 +122,25 @@ public class SøknadTilXMLMapper {
     private static final no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory UTTAK_FACTORY = new no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory();
 
     private final Oppslag oppslag;
+    private Environment env;
 
     public SøknadTilXMLMapper(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
     public String tilXML(Søknad søknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)));
+        return tilXML(søknad, søker, true);
     }
 
-    public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)));
+    public String tilXML(Søknad søknad, AktorId søker, boolean doLookup) {
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker, doLookup)));
     }
 
-    private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
+    public String tilXML(Endringssøknad endringssøknad, AktorId søker, boolean doLookup) {
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker, doLookup)));
+    }
+
+    private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker, boolean doLookup) {
         LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
         return new Soeknad()
                 .withMottattDato(LocalDate.now())
@@ -151,13 +160,13 @@ public class SøknadTilXMLMapper {
                 .withSaksnummer(endringssøknad.getSaksnr());
     }
 
-    private Soeknad tilModell(Søknad søknad, AktorId søker) {
+    private Soeknad tilModell(Søknad søknad, AktorId søker, boolean doLookup) {
         LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))
-                .withOmYtelse(ytelseFra(søknad))
+                .withOmYtelse(ytelseFra(søknad, doLookup))
                 .withMottattDato(søknad.getMottattdato().toLocalDate())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
@@ -195,7 +204,7 @@ public class SøknadTilXMLMapper {
         return type.withKodeverk(type.getKodeverk());
     }
 
-    private OmYtelse ytelseFra(Søknad søknad) {
+    private OmYtelse ytelseFra(Søknad søknad, boolean doLookup) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
@@ -207,7 +216,7 @@ public class SøknadTilXMLMapper {
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
                 .withRettigheter(
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
-                .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
+                .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder(), doLookup))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()))));
     }
 
@@ -689,7 +698,7 @@ public class SøknadTilXMLMapper {
     }
 
     private AnnenForelder annenForelderFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder, boolean doLookup) {
 
         if (erAnnenForelderUkjent(annenForelder)) {
             return ukjentForelder();
@@ -698,7 +707,7 @@ public class SøknadTilXMLMapper {
             return utenlandskForelder(UtenlandskForelder.class.cast(annenForelder));
         }
         if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder) {
-            return norskForelder(NorskForelder.class.cast(annenForelder));
+            return norskForelder(NorskForelder.class.cast(annenForelder), doLookup);
         }
         return null;
     }
@@ -713,8 +722,15 @@ public class SøknadTilXMLMapper {
                 .withLand(landFra(utenlandskForelder.getLand()));
     }
 
-    private AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
-
+    private AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder, boolean doLookup) {
+        if (isProd(env) && !doLookup) {
+            throw new IllegalStateException("Kan ikke slå av oppslag av aktørid for annen forelder i prod");
+        }
+        if (isDevOrPreprod(env) && !doLookup) {
+            LOG.warn("Slår ikke opp aktørId for norsk annen forelder, dette skal kun gjøres fra Swagger");
+            return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent()
+                    .withAktoerId("1234567890X");
+        }
         return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent()
                 .withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
     }
@@ -784,6 +800,11 @@ public class SøknadTilXMLMapper {
     private static Brukerroller brukerRolleFra(String rolle) {
         Brukerroller brukerRolle = new Brukerroller().withKode(rolle);
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
+    }
+
+    @Override
+    public void setEnvironment(Environment env) {
+        this.env = env;
     }
 
     @Override
