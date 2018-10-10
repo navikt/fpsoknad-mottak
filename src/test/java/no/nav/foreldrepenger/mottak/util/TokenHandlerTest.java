@@ -1,10 +1,14 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static no.nav.foreldrepenger.mottak.util.TokenHandler.ISSUER;
 import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -21,6 +25,7 @@ import no.nav.security.oidc.context.OIDCValidationContext;
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class TokenHandlerTest {
 
+    private static final Fødselsnummer FNR = new Fødselsnummer("42");
     @Mock
     private OIDCRequestContextHolder holder;
     @Mock
@@ -28,51 +33,47 @@ public class TokenHandlerTest {
     @Mock
     private OIDCClaims claims;
 
+    private TokenHandler tokenHandler;
+
+    @Before
+    public void before() {
+        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
+        when(context.getClaims(eq(ISSUER))).thenReturn(claims);
+        tokenHandler = new TokenHandler(holder);
+    }
+
     @Test
     public void testExtractorOK() {
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder().subject("42").build();
-        when(claims.getClaimSet()).thenReturn(claimsSet);
-        when(context.getClaims(eq("selvbetjening"))).thenReturn(claims);
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
-        TokenHandler extractor = new TokenHandler(holder);
-        assertEquals(new Fødselsnummer("42"), extractor.fnrFromToken());
+        when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().subject(FNR.getFnr()).build());
+        assertEquals(FNR, tokenHandler.fnrFromToken());
+        assertTrue(tokenHandler.erAutentisert());
     }
 
     @Test(expected = ForbiddenException.class)
-    public void testExtractorNoToken() {
+    public void testExtractorNoContext() {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(null);
-        TokenHandler extractor = new TokenHandler(holder);
-        assertEquals(extractor.hasToken(), false);
-        extractor.fnrFromToken();
+        assertFalse(tokenHandler.erAutentisert());
+        tokenHandler.fnrFromToken();
     }
 
     @Test(expected = ForbiddenException.class)
     public void testExtractorNoClaims() {
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
-        TokenHandler extractor = new TokenHandler(holder);
-        assertEquals(extractor.hasToken(), false);
-        extractor.fnrFromToken();
+        assertFalse(tokenHandler.erAutentisert());
+        tokenHandler.fnrFromToken();
     }
 
     @Test(expected = ForbiddenException.class)
     public void testExtractorNoClaimset() {
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
-        when(context.getClaims(eq("selvbetjening"))).thenReturn(claims);
         when(claims.getClaimSet()).thenReturn(null);
-        TokenHandler extractor = new TokenHandler(holder);
-        assertEquals(extractor.hasToken(), false);
-        extractor.fnrFromToken();
+        assertFalse(tokenHandler.erAutentisert());
+        tokenHandler.fnrFromToken();
     }
 
     @Test(expected = ForbiddenException.class)
     public void testExtractorNoSubject() {
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder().build();
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
-        when(context.getClaims(eq("selvbetjening"))).thenReturn(claims);
-        when(claims.getClaimSet()).thenReturn(claimsSet);
-        TokenHandler extractor = new TokenHandler(holder);
-        assertEquals(extractor.hasToken(), false);
-        extractor.fnrFromToken();
+        when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().build());
+        assertFalse(tokenHandler.erAutentisert());
+        tokenHandler.fnrFromToken();
     }
 }

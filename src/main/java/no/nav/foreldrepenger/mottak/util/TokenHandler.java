@@ -17,14 +17,14 @@ import no.nav.security.oidc.context.OIDCValidationContext;
 @Component
 public class TokenHandler {
 
-    private static final String ISSUER = "selvbetjening";
+    static final String ISSUER = "selvbetjening";
     private final OIDCRequestContextHolder ctxHolder;
 
     public TokenHandler(OIDCRequestContextHolder ctxHolder) {
         this.ctxHolder = ctxHolder;
     }
 
-    public boolean hasToken() {
+    public boolean erAutentisert() {
         try {
             fnrFromToken();
             return true;
@@ -51,7 +51,7 @@ public class TokenHandler {
 
         return Optional.ofNullable(claimSet.getSubject())
                 .map(String::trim)
-                .map(s -> new Fødselsnummer(s))
+                .map(Fødselsnummer::new)
                 .orElseThrow(() -> new ForbiddenException("Fant ikke subject"));
 
     }
