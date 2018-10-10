@@ -131,17 +131,17 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUttaksPeride() {
-        test(uttaksPeriode(Collections.emptyList()));
+        test(uttaksPeriode(Collections.emptyList()), true);
     }
 
     @Test
     public void testGradertPeriode() {
-        test(gradertPeriode(Collections.emptyList()));
+        test(gradertPeriode(Collections.emptyList()), true);
     }
 
     @Test
     public void testOverføringsperiode() {
-        test(overføringsPeriode(Collections.emptyList()));
+        test(overføringsPeriode(Collections.emptyList()), true);
     }
 
     @Test

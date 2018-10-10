@@ -26,7 +26,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetdataGenerator.Filer;
 
 @JsonPropertyOrder({ "forsendelsesId", "saksnummer", "brukerId", "forsendelseMottatt", "filer" })
 public class FPFordelMetadata {
@@ -34,11 +33,11 @@ public class FPFordelMetadata {
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private final LocalDateTime forsendelseMottatt;
     private final String brukerId;
-    private final List<Filer> filer;
+    private final List<Del> deler;
     private final String saksnummer;
 
     public FPFordelMetadata(Ettersending ettersending, AktorId aktorId, String ref) {
-        this(files(ettersending), aktorId, ref, ettersending.getSaksnr());
+        this(ettersendingsDeler(ettersending), aktorId, ref, ettersending.getSaksnr());
     }
 
     public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref) {
@@ -46,18 +45,18 @@ public class FPFordelMetadata {
     }
 
     public FPFordelMetadata(Endringssøknad endringssøknad, AktorId aktorId, String ref) {
-        this(files(endringssøknad), aktorId, ref, endringssøknad.getSaksnr());
+        this(endringssøknadsDeler(endringssøknad), aktorId, ref, endringssøknad.getSaksnr());
     }
 
     public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref, String saksnr) {
-        this(files(søknad), aktorId, ref, saksnr);
+        this(søknadsDeler(søknad), aktorId, ref, saksnr);
     }
 
-    public FPFordelMetadata(List<Filer> filer, AktorId aktorId, String ref, String saksnr) {
+    public FPFordelMetadata(List<Del> deler, AktorId aktorId, String ref, String saksnr) {
         this.forsendelsesId = ref;
         this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();
-        this.filer = filer;
+        this.deler = deler;
         this.saksnummer = saksnr;
     }
 
@@ -65,8 +64,8 @@ public class FPFordelMetadata {
         return saksnummer;
     }
 
-    public List<Filer> getFiler() {
-        return filer;
+    public List<Del> getDeler() {
+        return deler;
     }
 
     public String getForsendelsesId() {
@@ -81,39 +80,41 @@ public class FPFordelMetadata {
         return brukerId;
     }
 
-    private static List<Filer> files(Søknad søknad) {
+    private static List<Del> søknadsDeler(Søknad søknad) {
         final AtomicInteger id = new AtomicInteger(1);
-        List<Filer> dokumenter = newArrayList(søknad(id, søknad), søknad(id, søknad));
+        List<Del> dokumenter = newArrayList(søknadsDel(id, søknad), søknadsDel(id, søknad));
         dokumenter.addAll(søknad.getVedlegg().stream()
-                .map(s -> vedlegg(s, id))
+                .map(s -> vedleggsDel(s, id))
                 .collect(toList()));
         return dokumenter;
     }
 
-    private static List<Filer> files(Endringssøknad endringssøknad) {
+    private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad) {
         final AtomicInteger id = new AtomicInteger(1);
-        List<Filer> dokumenter = newArrayList(søknad(id, endringssøknad), søknad(id, endringssøknad));
+        List<Del> dokumenter = newArrayList(endringsøknadsDel(id, endringssøknad), endringsøknadsDel(id, endringssøknad));
         dokumenter.addAll(endringssøknad.getVedlegg().stream()
-                .map(s -> vedlegg(s, id))
+                .map(s -> vedleggsDel(s, id))
                 .collect(toList()));
         return dokumenter;
     }
 
-    private static List<Filer> files(Ettersending ettersending) {
+    private static List<Del> ettersendingsDeler(Ettersending ettersending) {
         AtomicInteger id = new AtomicInteger(1);
-        return ettersending.getVedlegg().stream().map(s -> vedlegg(s, id)).collect(toList());
+        return ettersending.getVedlegg().stream()
+                .map(s -> vedleggsDel(s, id))
+                .collect(toList());
     }
 
-    private static Filer søknad(final AtomicInteger id, Søknad søknad) {
-        return new Filer(dokumentTypeFraRelasjon(søknad), id.getAndIncrement());
+    private static Del søknadsDel(final AtomicInteger id, Søknad søknad) {
+        return new Del(dokumentTypeFraRelasjon(søknad), id.getAndIncrement());
     }
 
-    private static Filer søknad(final AtomicInteger id, Endringssøknad søknad) {
-        return new Filer(I000050, id.getAndIncrement());
+    private static Del endringsøknadsDel(final AtomicInteger id, Endringssøknad søknad) {
+        return new Del(I000050, id.getAndIncrement());
     }
 
-    private static Filer vedlegg(Vedlegg vedlegg, final AtomicInteger id) {
-        return new Filer(vedlegg.getDokumentType(), id.getAndIncrement());
+    private static Del vedleggsDel(Vedlegg vedlegg, final AtomicInteger id) {
+        return new Del(vedlegg.getDokumentType(), id.getAndIncrement());
     }
 
     private static DokumentType dokumentTypeFraRelasjon(Søknad søknad) {
@@ -131,7 +132,7 @@ public class FPFordelMetadata {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [forsendelsesId=" + forsendelsesId + ", forsendelseMottatt="
-                + forsendelseMottatt + ", brukerId=" + brukerId + ", filer=" + filer + ", saksnummer=" + saksnummer
+                + forsendelseMottatt + ", brukerId=" + brukerId + ", filer=" + deler + ", saksnummer=" + saksnummer
                 + "]";
     }
 

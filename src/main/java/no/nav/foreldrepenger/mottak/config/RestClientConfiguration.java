@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
+package no.nav.foreldrepenger.mottak.config;
 
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -10,9 +10,10 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RestClientResponseErrorHandler;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 
 @Configuration
-public class FPFordelConfiguration {
+public class RestClientConfiguration {
 
     private static final class NonRedirectingRequestFactory extends HttpComponentsClientHttpRequestFactory {
 
