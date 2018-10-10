@@ -49,7 +49,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DokumentTypeAnalysator;
+import no.nav.foreldrepenger.mottak.util.LatterligEnkelDokumentTypeAnalysator;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -91,6 +91,8 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 @Component
 public class XMLTilSøknadMapper {
 
+    private static final LatterligEnkelDokumentTypeAnalysator DOKUMENT_TYPE_ANALYSATOR = new LatterligEnkelDokumentTypeAnalysator();
+
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLTilSøknadMapper.class);
@@ -124,16 +126,16 @@ public class XMLTilSøknadMapper {
                 førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return førstegangssøknad;
             }
-            LOG.warn("Ingen søknad kunne unmarshalles");
+            LOG.debug("Ingen søknad kunne unmarshalles");
             return null;
         } catch (Exception e) {
-            LOG.warn("Feil ved unmarshalling av søknad", e);
+            LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
             return null;
         }
     }
 
     private static boolean erEndringsSøknad(String xml) {
-        boolean erEndring = new DokumentTypeAnalysator().erEndringssøknad(xml);
+        boolean erEndring = DOKUMENT_TYPE_ANALYSATOR.erEndringssøknad(xml);
         if (erEndring) {
             LOG.info("Dette er en endringssøknad");
         }

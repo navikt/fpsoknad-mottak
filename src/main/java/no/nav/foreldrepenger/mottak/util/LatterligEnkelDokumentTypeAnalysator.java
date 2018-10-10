@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
-public class DokumentTypeAnalysator {
+public class LatterligEnkelDokumentTypeAnalysator {
 
     public boolean erEndringssøknad(String xml) {
         String unescapedXML = unescapeHtml4(xml);

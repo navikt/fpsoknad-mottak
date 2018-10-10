@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
@@ -44,8 +45,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = { ForbiddenException.class })
-    protected ResponseEntity<Object> handleForbidden(ForbiddenException e, WebRequest request) {
-        return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
+    protected ResponseEntity<Object> handleUnauthorized(ForbiddenException e, WebRequest request) {
+        return logAndHandle(UNAUTHORIZED, e, request, getRootCauseMessage(e));
     }
 
     @Override

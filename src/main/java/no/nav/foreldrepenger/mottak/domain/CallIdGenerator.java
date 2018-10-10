@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import static no.nav.foreldrepenger.mottak.http.filters.Headers.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 
 import java.util.Optional;
 import java.util.UUID;

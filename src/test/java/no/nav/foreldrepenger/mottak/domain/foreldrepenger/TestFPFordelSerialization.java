@@ -65,7 +65,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvitte
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DokumentTypeAnalysator;
+import no.nav.foreldrepenger.mottak.util.LatterligEnkelDokumentTypeAnalysator;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureJsonTesters
@@ -127,7 +127,7 @@ public class TestFPFordelSerialization {
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(V1, V2);
         String xml = mapper.tilXML(original, aktørId);
-        assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
+        assertTrue(new LatterligEnkelDokumentTypeAnalysator().erEndringssøknad(xml));
         Endringssøknad rekonstruert = Endringssøknad.class.cast(mapper.tilSøknad(xml));
         assertNotNull(rekonstruert);
         assertThat(Foreldrepenger.class.cast(rekonstruert.getYtelse()).getFordeling())
@@ -145,7 +145,7 @@ public class TestFPFordelSerialization {
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Søknad original = ForeldrepengerTestUtils.foreldrepengeSøknad();
         String xml = mapper.tilXML(original, aktørId);
-        assertFalse(new DokumentTypeAnalysator().erEndringssøknad(xml));
+        assertFalse(new LatterligEnkelDokumentTypeAnalysator().erEndringssøknad(xml));
         Søknad rekonstruert = mapper.tilSøknad(xml);
         assertNotNull(rekonstruert);
         assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());

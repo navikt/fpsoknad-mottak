@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static no.nav.foreldrepenger.mottak.http.filters.Headers.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 
 import java.time.LocalDateTime;
 import java.util.List;

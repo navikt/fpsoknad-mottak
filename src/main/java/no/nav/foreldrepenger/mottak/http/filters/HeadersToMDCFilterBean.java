@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
-import static no.nav.foreldrepenger.mottak.http.filters.Headers.NAV_CALL_ID;
-import static no.nav.foreldrepenger.mottak.http.filters.Headers.NAV_CONSUMER_ID;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CONSUMER_ID;
 
 import java.io.IOException;
 import java.util.Optional;
