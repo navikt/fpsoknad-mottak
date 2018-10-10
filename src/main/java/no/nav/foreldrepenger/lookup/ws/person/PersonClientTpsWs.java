@@ -1,18 +1,5 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
@@ -25,6 +12,17 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 public class PersonClientTpsWs implements PersonClient {
 
@@ -58,19 +56,21 @@ public class PersonClientTpsWs implements PersonClient {
         try {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Slår opp person fra {}", id);
-            }
-            else {
+            } else {
                 LOG.info("Slår opp person");
             }
+
             HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(request).getPerson();
-            Person p = person(id, tpsPerson, barnFor(tpsPerson));
+            // Person p = person(id, tpsPerson, barnFor(tpsPerson)); TODO: Fjerner henting av barn inntil frontendproblematikk blir løst
+            Person p = person(id, tpsPerson, emptyList());
+
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Fant person {}", p);
-            }
-            else {
+            } else {
                 LOG.info("Fant en person OK");
             }
+
             return p;
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
@@ -91,7 +91,7 @@ public class PersonClientTpsWs implements PersonClient {
                     .map(s -> hentBarn(s, fnrSøker))
                     .filter(Objects::nonNull)
                     .filter(barn -> barnutvelger.erStonadsberettigetBarn(fnrSøker, barn))
-                    .collect(Collectors.toList());
+                    .collect(toList());
         default:
             throw new IllegalStateException("ID type " + idType + " ikke støttet");
         }
