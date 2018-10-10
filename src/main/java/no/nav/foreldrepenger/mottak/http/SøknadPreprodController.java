@@ -103,7 +103,7 @@ public class SøknadPreprodController {
     }
 
     private String fpEndringsSøknad(Endringssøknad endringssøknad) {
-        return søknadMapper.tilXML(endringssøknad, new AktorId("42"), false);
+        return søknadMapper.tilXML(endringssøknad, new AktorId("42"));
     }
 
     private String esKonvolutt(Søknad søknad, Person søker) {

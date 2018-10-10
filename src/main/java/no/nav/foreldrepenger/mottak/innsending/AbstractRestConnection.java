@@ -1,14 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -21,8 +20,6 @@ public abstract class AbstractRestConnection {
 
     protected final RestTemplate template;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
-
-    private Environment env;
 
     public abstract URI pingEndpoint();
 
@@ -59,16 +56,19 @@ public abstract class AbstractRestConnection {
         try {
             return getAndLog(uri, responseType);
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode().equals(NOT_FOUND)) {
+            HttpStatus code = e.getStatusCode();
+            switch (code) {
+            case NOT_FOUND:
                 if (doThrow) {
-                    LOG.warn("{} resulterte i 404, kaster videre", uri);
+                    LOG.warn("{} resulterte i {}, kaster videre", uri, code);
                     throw e;
                 }
-                LOG.trace("{} resulterte i 404, returnerer null", uri);
+                LOG.trace("{} resulterte i {}, returnerer null", uri, code);
                 return null;
+            default:
+                LOG.trace("{} resulterte i {} ({}), kaster videre", uri, e.getStatusCode(), e.getStatusText());
+                throw e;
             }
-            LOG.trace("{} resulterte i {} ({}), kaster videre", uri, e.getStatusCode(), e.getStatusText());
-            throw e;
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke hente respons", e);
             throw new RemoteUnavailableException(uri, e);

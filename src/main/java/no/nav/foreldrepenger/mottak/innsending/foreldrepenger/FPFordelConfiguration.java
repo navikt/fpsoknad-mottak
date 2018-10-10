@@ -16,7 +16,7 @@ public class FPFordelConfiguration {
 
     private static final class NonRedirectingRequestFactory extends HttpComponentsClientHttpRequestFactory {
 
-        public NonRedirectingRequestFactory() {
+        NonRedirectingRequestFactory() {
             setHttpClient(HttpClientBuilder.create().disableRedirectHandling().build());
         }
     }

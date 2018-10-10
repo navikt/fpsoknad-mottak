@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
+import static no.nav.foreldrepenger.mottak.http.filters.Headers.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.http.filters.Headers.NAV_CONSUMER_ID;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -22,9 +25,6 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 @Order(1)
 public class HeadersToMDCFilterBean extends GenericFilterBean {
 
-    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
-    public static final String NAV_CALL_ID = "Nav-CallId";
-
     private final CallIdGenerator generator;
     private final String applicationName;
 
@@ -45,7 +45,7 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
     private void propagateOrCreate(ServletRequest request) {
         HttpServletRequest req = HttpServletRequest.class.cast(request);
         propagateOrCreate(NAV_CONSUMER_ID, req, applicationName);
-        propagateOrCreate(NAV_CALL_ID, req, generator.create());
+        propagateOrCreate(NAV_CALL_ID, req, generator.createAndPut());
     }
 
     private static void propagateOrCreate(String key, HttpServletRequest req, String defaultValue) {

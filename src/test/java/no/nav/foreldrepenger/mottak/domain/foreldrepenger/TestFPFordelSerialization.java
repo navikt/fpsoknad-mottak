@@ -127,7 +127,6 @@ public class TestFPFordelSerialization {
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(V1, V2);
         String xml = mapper.tilXML(original, aktørId);
-        System.out.println(xml);
         assertTrue(new DokumentTypeAnalysator().erEndringssøknad(xml));
         Endringssøknad rekonstruert = Endringssøknad.class.cast(mapper.tilSøknad(xml));
         assertNotNull(rekonstruert);
@@ -146,7 +145,6 @@ public class TestFPFordelSerialization {
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Søknad original = ForeldrepengerTestUtils.foreldrepengeSøknad();
         String xml = mapper.tilXML(original, aktørId);
-        System.out.println(xml);
         assertFalse(new DokumentTypeAnalysator().erEndringssøknad(xml));
         Søknad rekonstruert = mapper.tilSøknad(xml);
         assertNotNull(rekonstruert);
@@ -165,7 +163,7 @@ public class TestFPFordelSerialization {
     public void testKonvolutt() throws Exception {
         Søknad søknad = søknad(valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
-                new CallIdGenerator().create());
+                new CallIdGenerator().createAndPut());
         assertEquals(3, konvolutt.getBody().size());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         List<HttpEntity<?>> hoveddokumenter = konvolutt.getBody().get(HOVEDDOKUMENT);
@@ -184,7 +182,7 @@ public class TestFPFordelSerialization {
     public void testKonvoluttEttersending() throws Exception {
         Ettersending es = new Ettersending("42", V1, V2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
-                new CallIdGenerator().create());
+                new CallIdGenerator().createAndPut());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         assertEquals(1, metadata.size());
         List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
@@ -199,7 +197,7 @@ public class TestFPFordelSerialization {
         Endringssøknad es = ForeldrepengerTestUtils.endringssøknad(V1, V2);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(es));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
-                new CallIdGenerator().create());
+                new CallIdGenerator().createAndPut());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         assertEquals(1, metadata.size());
         List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);

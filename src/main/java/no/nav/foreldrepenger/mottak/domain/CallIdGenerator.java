@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static no.nav.foreldrepenger.mottak.http.filters.Headers.NAV_CALL_ID;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,13 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CallIdGenerator {
 
-    private static final String NAV_CALL_ID = "Nav-CallId";
-
     public String getOrCreate() {
-        return Optional.ofNullable(MDC.get(NAV_CALL_ID)).orElse(create());
+        return Optional.ofNullable(MDC.get(NAV_CALL_ID)).orElse(createAndPut());
     }
 
-    public String create() {
+    public String createAndPut() {
         String value = UUID.randomUUID().toString();
         MDC.put(NAV_CALL_ID, value);
         return value;

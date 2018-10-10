@@ -40,18 +40,23 @@ import no.nav.foreldrepenger.mottak.util.EnvUtil;
 public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
-    private Oppslag oppslag;
-    private ForeldrepengeInfoRenderer fpRenderer;
-    private PDFElementRenderer pdfRenderer;
+    private final Oppslag oppslag;
+    private final ForeldrepengeInfoRenderer fpRenderer;
+    private final PDFElementRenderer pdfRenderer;
     private Environment env;
 
     @Inject
     public ForeldrepengerPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
             @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
             Oppslag oppslag) {
+        this(oppslag, new PDFElementRenderer(), new ForeldrepengeInfoRenderer(landkoder, kvitteringstekster));
+    }
+
+    private ForeldrepengerPDFGenerator(Oppslag oppslag, PDFElementRenderer pdfRenderer,
+            ForeldrepengeInfoRenderer fpRenderer) {
         this.oppslag = oppslag;
-        this.pdfRenderer = new PDFElementRenderer();
-        this.fpRenderer = new ForeldrepengeInfoRenderer(landkoder, kvitteringstekster);
+        this.pdfRenderer = pdfRenderer;
+        this.fpRenderer = fpRenderer;
     }
 
     public byte[] generate(Søknad søknad, Person søker) {
@@ -133,12 +138,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         } catch (IOException ex) {
             throw new RuntimeException("Error while creating pdf", ex);
         }
-
-    }
-
-    private static List<Arbeidsforhold> dummyArbeidsforhold() {
-        return Lists.newArrayList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
     }
 
     public byte[] generate(Endringssøknad søknad, Person søker) {
@@ -187,9 +186,19 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         }
     }
 
+    private static List<Arbeidsforhold> dummyArbeidsforhold() {
+        return Lists.newArrayList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
+    }
+
     @Override
     public void setEnvironment(Environment environment) {
         this.env = environment;
+    }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer + ", pdfRenderer="
+                + pdfRenderer + ", env=" + env + "]";
     }
 }
