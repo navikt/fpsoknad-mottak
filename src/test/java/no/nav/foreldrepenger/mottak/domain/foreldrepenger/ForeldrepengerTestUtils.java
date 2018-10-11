@@ -161,7 +161,10 @@ public class ForeldrepengerTestUtils {
     }
 
     private static List<LukketPeriodeMedVedlegg> perioder(List<String> vedlegg) {
-        return Lists.newArrayList(oppholdsPeriode(vedlegg), overføringsPeriode(vedlegg), utsettelsesPeriode(vedlegg),
+        return Lists.newArrayList(oppholdsPeriode(vedlegg),
+                overføringsPeriode(vedlegg),
+                utsettelsesPeriode(vedlegg),
+                uttaksPeriode(vedlegg),
                 gradertPeriode(vedlegg));
     }
 

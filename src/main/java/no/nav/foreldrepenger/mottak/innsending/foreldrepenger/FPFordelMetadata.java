@@ -33,7 +33,7 @@ public class FPFordelMetadata {
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private final LocalDateTime forsendelseMottatt;
     private final String brukerId;
-    private final List<Del> deler;
+    private final List<Del> filer;
     private final String saksnummer;
 
     public FPFordelMetadata(Ettersending ettersending, AktorId aktorId, String ref) {
@@ -52,11 +52,11 @@ public class FPFordelMetadata {
         this(søknadsDeler(søknad), aktorId, ref, saksnr);
     }
 
-    public FPFordelMetadata(List<Del> deler, AktorId aktorId, String ref, String saksnr) {
+    public FPFordelMetadata(List<Del> filer, AktorId aktorId, String ref, String saksnr) {
         this.forsendelsesId = ref;
         this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();
-        this.deler = deler;
+        this.filer = filer;
         this.saksnummer = saksnr;
     }
 
@@ -64,8 +64,8 @@ public class FPFordelMetadata {
         return saksnummer;
     }
 
-    public List<Del> getDeler() {
-        return deler;
+    public List<Del> getFiler() {
+        return filer;
     }
 
     public String getForsendelsesId() {
@@ -91,7 +91,8 @@ public class FPFordelMetadata {
 
     private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad) {
         final AtomicInteger id = new AtomicInteger(1);
-        List<Del> dokumenter = newArrayList(endringsøknadsDel(id, endringssøknad), endringsøknadsDel(id, endringssøknad));
+        List<Del> dokumenter = newArrayList(endringsøknadsDel(id, endringssøknad),
+                endringsøknadsDel(id, endringssøknad));
         dokumenter.addAll(endringssøknad.getVedlegg().stream()
                 .map(s -> vedleggsDel(s, id))
                 .collect(toList()));
@@ -132,7 +133,7 @@ public class FPFordelMetadata {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [forsendelsesId=" + forsendelsesId + ", forsendelseMottatt="
-                + forsendelseMottatt + ", brukerId=" + brukerId + ", filer=" + deler + ", saksnummer=" + saksnummer
+                + forsendelseMottatt + ", brukerId=" + brukerId + ", filer=" + filer + ", saksnummer=" + saksnummer
                 + "]";
     }
 

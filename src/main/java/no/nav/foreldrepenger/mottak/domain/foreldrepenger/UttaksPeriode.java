@@ -39,7 +39,6 @@ public class UttaksPeriode extends LukketPeriodeMedVedlegg {
             @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType,
             @JsonProperty("ønskerFlerbarnsdager") boolean ønskerFlerbarnsdager,
             @JsonProperty("samtidigUttakProsent") double samtidigUttakProsent,
-
             @JsonProperty("vedlegg") List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.uttaksperiodeType = uttaksperiodeType;
