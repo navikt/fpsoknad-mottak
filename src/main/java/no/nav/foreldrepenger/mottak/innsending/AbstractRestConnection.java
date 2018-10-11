@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.mottak.http.errorhandling.IllegalRequestException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 
 public abstract class AbstractRestConnection {
@@ -43,20 +44,15 @@ public abstract class AbstractRestConnection {
     }
 
     protected <T> ResponseEntity<T> getForEntityWithDelay(URI uri, Class<T> responseType, long delayMS) {
-        try {
-            waitFor(delayMS);
-            return getForEntity(uri, responseType);
-        } catch (InterruptedException e) {
-            LOG.warn("Kunne ikke hente entity fra {}", uri, e);
-            throw new RemoteUnavailableException(e);
-        }
+        waitFor(delayMS);
+        return getForEntity(uri, responseType);
     }
 
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
         try {
             return template.postForEntity(uri, payload, responseType);
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke pote entity til {}", uri, e);
+            LOG.warn("Kunne ikke poste entity til {}", uri, e);
             throw new RemoteUnavailableException(e);
         }
     }
@@ -121,8 +117,12 @@ public abstract class AbstractRestConnection {
         return respons;
     }
 
-    private static void waitFor(long delayMillis) throws InterruptedException {
-        LOG.trace("Venter i {}ms", delayMillis);
-        Thread.sleep(delayMillis);
+    private static void waitFor(long delayMillis) {
+        try {
+            LOG.trace("Venter i {}ms", delayMillis);
+            Thread.sleep(delayMillis);
+        } catch (InterruptedException e) {
+            throw new IllegalRequestException("Kunne ikke vente i " + delayMillis + "ms", e);
+        }
     }
 }

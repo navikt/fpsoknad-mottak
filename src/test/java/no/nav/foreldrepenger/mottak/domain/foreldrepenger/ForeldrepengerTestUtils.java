@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
@@ -14,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
@@ -26,9 +26,8 @@ public class ForeldrepengerTestUtils {
 
     public static final String ID142 = "142";
     public static final String ID143 = "143";
-    public static final List<Vedlegg> TO_VEDLEGG = Lists.newArrayList(TestUtils.valgfrittVedlegg(ID142),
+    public static final List<Vedlegg> TO_VEDLEGG = newArrayList(TestUtils.valgfrittVedlegg(ID142),
             TestUtils.valgfrittVedlegg(ID143));
-    private static final List<String> TO_VEDLEGG_REF = Lists.newArrayList(ID142, ID143);
 
     public static Søknad foreldrepengeSøknad() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), TO_VEDLEGG);
@@ -44,10 +43,16 @@ public class ForeldrepengerTestUtils {
 
     public static Endringssøknad endringssøknad(Vedlegg... vedlegg) {
         return new Endringssøknad(LocalDateTime.now(), søker(),
-                fordeling(Arrays.stream(vedlegg).map(s -> s.getId()).collect(Collectors.toList())), norskForelder(),
+                fordeling(vedleggRefs(vedlegg)), norskForelder(),
                 fødsel(),
                 rettigheter(),
                 "42", vedlegg);
+    }
+
+    private static List<String> vedleggRefs(Vedlegg... vedlegg) {
+        return Arrays.stream(vedlegg)
+                .map(s -> s.getId())
+                .collect(Collectors.toList());
     }
 
     public static Ettersending ettersending() {
@@ -73,18 +78,18 @@ public class ForeldrepengerTestUtils {
 
     private static Frilans frilans() {
         return new Frilans(åpenPeriode(true), false, false,
-                Lists.newArrayList(new FrilansOppdrag("bror min", åpenPeriode(true)),
+                newArrayList(new FrilansOppdrag("bror min", åpenPeriode(true)),
                         new FrilansOppdrag("far min", åpenPeriode(true))),
-                Lists.newArrayList(ID142, ID143));
+                newArrayList(ID142, ID143));
 
     }
 
     private static List<AnnenOpptjening> andreOpptjeninger() {
-        return Lists.newArrayList(annenOpptjening());
+        return newArrayList(annenOpptjening());
     }
 
     private static List<EgenNæring> egneNæringer() {
-        return Lists.newArrayList(utenlandskEgenNæring(), norskEgenNæring());
+        return newArrayList(utenlandskEgenNæring(), norskEgenNæring());
     }
 
     static UtenlandskForelder utenlandskForelder() {
@@ -152,16 +157,17 @@ public class ForeldrepengerTestUtils {
         return new AnnenOpptjening(AnnenOpptjeningType.LØNN_UNDER_UTDANNING, åpenPeriode(), null);
     }
 
-    static UtenlandskArbeidsforhold utenlandskArbeidsforhold() {
+    static UtenlandskArbeidsforhold utenlandskArbeidsforhold(Vedlegg... vedlegg) {
         return UtenlandskArbeidsforhold.builder()
-                .vedlegg(TO_VEDLEGG_REF)
+                .vedlegg(vedleggRefs(vedlegg))
                 .arbeidsgiverNavn("boss")
                 .land(CountryCode.PL)
                 .periode(åpenPeriode()).build();
     }
 
     private static List<LukketPeriodeMedVedlegg> perioder(List<String> vedlegg) {
-        return Lists.newArrayList(oppholdsPeriode(vedlegg),
+        return newArrayList(
+                oppholdsPeriode(vedlegg),
                 overføringsPeriode(vedlegg),
                 utsettelsesPeriode(vedlegg),
                 uttaksPeriode(vedlegg),
@@ -174,10 +180,9 @@ public class ForeldrepengerTestUtils {
     }
 
     static UttaksPeriode gradertPeriode(List<String> vedlegg) {
-        GradertUttaksPeriode periode = new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
+        return new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
                 FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 75.0d, 75d, true, true, "222222", vedlegg);
-        return periode;
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true, "222222", vedlegg);
     }
 
     static FremtidigFødsel termin() {

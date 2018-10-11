@@ -23,8 +23,7 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
     }
 
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        return responseHandler.handle(
-                postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class), ref);
+        return responseHandler.handle(postForEntity(tilURI(), payload, FPFordelKvittering.class), ref);
     }
 
     @Override
@@ -40,6 +39,10 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
     @Override
     public boolean isEnabled() {
         return config.isEnabled();
+    }
+
+    private URI tilURI() {
+        return uri(config.getUri(), config.getBasePath());
     }
 
     @Override
