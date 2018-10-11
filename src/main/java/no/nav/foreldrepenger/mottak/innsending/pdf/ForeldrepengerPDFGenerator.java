@@ -74,13 +74,13 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
             try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
                 float y = yTop;
                 LOG.trace("Y at start {}", y);
-                y = header(søker, doc, cos, y);
+                header(søker, doc, cos, y);
                 LOG.trace("Y after header {}", y);
-                y = annenForelder(stønad, cos, y);
+                annenForelder(stønad, cos, y);
                 LOG.trace("Y after annenForelder {}", y);
-                y = dekningsgrad(stønad, cos, y);
+                dekningsgrad(stønad, cos, y);
                 LOG.trace("Y after dekningsgrad {}", y);
-                y = opptjeniing(doLookup, stønad, cos, y);
+                opptjeniing(doLookup, stønad, cos, y);
                 LOG.trace("Y after opptjeniing {}", y);
                 doc.addPage(page1);
             } catch (IOException ex) {
