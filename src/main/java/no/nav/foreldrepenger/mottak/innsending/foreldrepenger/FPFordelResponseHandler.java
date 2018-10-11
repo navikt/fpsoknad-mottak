@@ -13,25 +13,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
+import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsyn.SaksStatusPoller;
 
 @Component
-public class FPFordelResponseHandler {
+public class FPFordelResponseHandler extends AbstractRestConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
-    private final RestTemplate template;
     private final int maxAntallForsøk;
     private final SaksStatusPoller poller;
 
     public FPFordelResponseHandler(RestTemplate template, @Value("${fpfordel.max:5}") int maxAntallForsøk,
             SaksStatusPoller poller) {
-        this.template = template;
+        super(template);
         this.maxAntallForsøk = maxAntallForsøk;
         this.poller = poller;
     }
@@ -113,18 +111,7 @@ public class FPFordelResponseHandler {
     }
 
     private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {
-        try {
-            waitFor(delayMillis);
-            return template.getForEntity(uri, clazz);
-        } catch (RestClientException | InterruptedException e) {
-            LOG.warn("Kunne ikke polle {} på {}", name, uri, e);
-            throw new RemoteUnavailableException(uri, e);
-        }
-    }
-
-    private static void waitFor(long delayMillis) throws InterruptedException {
-        LOG.trace("Venter i {}ms", delayMillis);
-        Thread.sleep(delayMillis);
+        return getForEntityWithDelay(uri, clazz, delayMillis);
     }
 
     private static Kvittering kvitteringMedType(LeveranseStatus type, String ref, String journalId, String saksnr) {
@@ -142,6 +129,11 @@ public class FPFordelResponseHandler {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", maxAntallForsøk=" + maxAntallForsøk + "]";
+        return getClass().getSimpleName() + " [maxAntallForsøk=" + maxAntallForsøk + "]";
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

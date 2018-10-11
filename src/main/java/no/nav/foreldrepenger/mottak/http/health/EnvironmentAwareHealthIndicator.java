@@ -7,15 +7,15 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
-import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
 
 abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, EnvironmentAware {
 
-    private final AbstractRestConnection connection;
+    private final Pingable pingable;
     private Environment env;
 
-    public EnvironmentAwareHealthIndicator(AbstractRestConnection connection) {
-        this.connection = connection;
+    public EnvironmentAwareHealthIndicator(Pingable pingable) {
+        this.pingable = pingable;
     }
 
     @Override
@@ -24,7 +24,7 @@ abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, Envir
     }
 
     protected void checkHealth() {
-        connection.ping();
+        pingable.ping();
     }
 
     @Override
@@ -42,7 +42,7 @@ abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, Envir
     }
 
     private Health downWithDetails(Exception e) {
-        return Health.down().withDetail("url", connection.pingEndpoint()).withException(e).build();
+        return Health.down().withDetail("url", pingable.pingEndpoint()).withException(e).build();
     }
 
     private static Health up() {
@@ -50,12 +50,12 @@ abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, Envir
     }
 
     private Health upWithDetails() {
-        return Health.up().withDetail("url", connection.pingEndpoint()).build();
+        return Health.up().withDetail("url", pingable.pingEndpoint()).build();
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + "isDevOrPreprod "
+        return getClass().getSimpleName() + " [pingable=" + pingable + "isDevOrPreprod "
                 + isDevOrPreprod(env) + "]";
     }
 }

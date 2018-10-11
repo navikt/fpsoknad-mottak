@@ -17,9 +17,10 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
 
 @Component
-public class OppslagConnection extends AbstractRestConnection {
+public class OppslagConnection extends AbstractRestConnection implements Pingable {
 
     public static final Logger LOG = LoggerFactory.getLogger(OppslagConnection.class);
 
@@ -33,6 +34,11 @@ public class OppslagConnection extends AbstractRestConnection {
     @Override
     public boolean isEnabled() {
         return cfg.isEnabled();
+    }
+
+    @Override
+    public String ping() {
+        return ping(pingEndpoint());
     }
 
     @Override

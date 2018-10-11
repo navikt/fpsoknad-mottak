@@ -2,22 +2,16 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 
 @Component
-public class FPFordelConnection extends AbstractRestConnection {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
+public class FPFordelConnection extends AbstractRestConnection implements Pingable {
 
     private final FPFordelConfig config;
     private final FPFordelResponseHandler responseHandler;
@@ -29,13 +23,13 @@ public class FPFordelConnection extends AbstractRestConnection {
     }
 
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        URI sendEndpoint = uri(config.getUri(), config.getBasePath());
-        try {
-            return responseHandler.handle(template.postForEntity(sendEndpoint, payload, FPFordelKvittering.class), ref);
-        } catch (RestClientException e) {
-            LOG.warn("Kunne ikke poste til FPFordel på {}", sendEndpoint, e);
-            throw new RemoteUnavailableException(sendEndpoint, e);
-        }
+        return responseHandler.handle(
+                postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class), ref);
+    }
+
+    @Override
+    public String ping() {
+        return ping(pingEndpoint());
     }
 
     @Override
@@ -50,8 +44,7 @@ public class FPFordelConnection extends AbstractRestConnection {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", config=" + config + ", responseHandler="
-                + responseHandler + "]";
+        return getClass().getSimpleName() + " [config=" + config + ", responseHandler=" + responseHandler + "]";
     }
 
 }

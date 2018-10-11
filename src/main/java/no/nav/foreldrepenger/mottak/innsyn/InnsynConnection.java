@@ -15,9 +15,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
 
 @Component
-public class InnsynConnection extends AbstractRestConnection {
+public class InnsynConnection extends AbstractRestConnection implements Pingable {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
 
     private final InnsynConfig config;
@@ -33,6 +34,10 @@ public class InnsynConnection extends AbstractRestConnection {
     }
 
     @Override
+    public String ping() {
+        return ping(pingEndpoint());
+    }
+
     public URI pingEndpoint() {
         return uri(config.getBaseURI(), config.getPingPath());
     }

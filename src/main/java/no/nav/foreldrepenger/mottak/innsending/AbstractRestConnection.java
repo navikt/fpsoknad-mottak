@@ -6,6 +6,7 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,8 @@ import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableExceptio
 
 public abstract class AbstractRestConnection {
 
-    protected final RestTemplate template;
+    private final RestTemplate template;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
-
-    public abstract URI pingEndpoint();
 
     public abstract boolean isEnabled();
 
@@ -29,17 +28,8 @@ public abstract class AbstractRestConnection {
         this.template = template;
     }
 
-    public String ping() {
-        URI pingEndpoint = pingEndpoint();
-        try {
-            LOG.info("Pinger {}", pingEndpoint);
-            ResponseEntity<String> response = template.getForEntity(pingEndpoint, String.class);
-            LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
-            return response.getBody();
-        } catch (RestClientException e) {
-            LOG.warn("Kunne ikke pinge på {}", pingEndpoint, e);
-            throw new RemoteUnavailableException(e);
-        }
+    public String ping(URI uri) {
+        return getForEntity(uri, String.class).getBody();
     }
 
     protected static HttpHeaders queryParams(String key, String value) {
@@ -50,6 +40,37 @@ public abstract class AbstractRestConnection {
 
     protected <T> T getForObject(URI uri, Class<T> responseType) {
         return getForObject(uri, responseType, false);
+    }
+
+    protected <T> ResponseEntity<T> getForEntityWithDelay(URI uri, Class<T> responseType, long delayMS) {
+        try {
+            waitFor(delayMS);
+            return getForEntity(uri, responseType);
+        } catch (InterruptedException e) {
+            LOG.warn("Kunne ikke hente entity fra {}", uri, e);
+            throw new RemoteUnavailableException(e);
+        }
+    }
+
+    protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
+        try {
+            return template.postForEntity(uri, payload, responseType);
+        } catch (RestClientException e) {
+            LOG.warn("Kunne ikke pote entity til {}", uri, e);
+            throw new RemoteUnavailableException(e);
+        }
+    }
+
+    protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
+        try {
+            LOG.info("Henter entity fra {}", uri);
+            ResponseEntity<T> response = template.getForEntity(uri, responseType);
+            LOG.info("Fikk response entity {} ({})", response.getBody(), response.getStatusCodeValue());
+            return response;
+        } catch (RestClientException e) {
+            LOG.warn("Kunne ikke hente entity fra {}", uri, e);
+            throw new RemoteUnavailableException(e);
+        }
     }
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
@@ -98,5 +119,10 @@ public abstract class AbstractRestConnection {
         LOG.info("Fikk respons OK");
         LOG.info(CONFIDENTIAL, "{}", respons);
         return respons;
+    }
+
+    private static void waitFor(long delayMillis) throws InterruptedException {
+        LOG.trace("Venter i {}ms", delayMillis);
+        Thread.sleep(delayMillis);
     }
 }

@@ -16,24 +16,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
+import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 
 @Service
-public class FPInfoSaksPoller implements SaksStatusPoller {
+public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStatusPoller {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoSaksPoller.class);
 
-    private final RestTemplate template;
     private final int maxAntallForsøk;
 
     public FPInfoSaksPoller(RestTemplate template, @Value("${fpfordel.max:5}") int maxAntallForsøk) {
-        this.template = template;
+        super(template);
         this.maxAntallForsøk = maxAntallForsøk;
     }
 
@@ -91,18 +89,7 @@ public class FPInfoSaksPoller implements SaksStatusPoller {
     }
 
     private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {
-        try {
-            waitFor(delayMillis);
-            return template.getForEntity(uri, clazz);
-        } catch (RestClientException | InterruptedException e) {
-            LOG.warn("Kunne ikke polle {} på {}", name, uri, e);
-            throw new RemoteUnavailableException(uri, e);
-        }
-    }
-
-    private static void waitFor(long delayMillis) throws InterruptedException {
-        LOG.trace("Venter i {}ms", delayMillis);
-        Thread.sleep(delayMillis);
+        return getForEntityWithDelay(uri, clazz, delayMillis);
     }
 
     private static long stop(StopWatch timer) {
@@ -143,6 +130,11 @@ public class FPInfoSaksPoller implements SaksStatusPoller {
         kvittering.setJournalId(journalId);
         kvittering.setSaksNr(saksnr);
         return kvittering;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }

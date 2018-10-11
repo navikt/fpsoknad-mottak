@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -33,7 +34,8 @@ public class FPFordelMetadata {
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private final LocalDateTime forsendelseMottatt;
     private final String brukerId;
-    private final List<Del> filer;
+    @JsonProperty("filer")
+    private final List<Del> deler;
     private final String saksnummer;
 
     public FPFordelMetadata(Ettersending ettersending, AktorId aktorId, String ref) {
@@ -52,11 +54,11 @@ public class FPFordelMetadata {
         this(søknadsDeler(søknad), aktorId, ref, saksnr);
     }
 
-    public FPFordelMetadata(List<Del> filer, AktorId aktorId, String ref, String saksnr) {
+    public FPFordelMetadata(List<Del> deler, AktorId aktorId, String ref, String saksnr) {
         this.forsendelsesId = ref;
         this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();
-        this.filer = filer;
+        this.deler = deler;
         this.saksnummer = saksnr;
     }
 
@@ -65,7 +67,7 @@ public class FPFordelMetadata {
     }
 
     public List<Del> getFiler() {
-        return filer;
+        return deler;
     }
 
     public String getForsendelsesId() {
@@ -133,7 +135,7 @@ public class FPFordelMetadata {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [forsendelsesId=" + forsendelsesId + ", forsendelseMottatt="
-                + forsendelseMottatt + ", brukerId=" + brukerId + ", filer=" + filer + ", saksnummer=" + saksnummer
+                + forsendelseMottatt + ", brukerId=" + brukerId + ", deler=" + deler + ", saksnummer=" + saksnummer
                 + "]";
     }
 
