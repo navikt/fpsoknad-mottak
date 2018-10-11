@@ -73,16 +73,15 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     page1.getMediaBox().getWidth());
             try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
                 float y = yTop;
-                LOG.trace("Y nat start {}", y);
-                y -= header(søker, doc, cos, y);
+                LOG.trace("Y at start {}", y);
+                y = header(søker, doc, cos, y);
                 LOG.trace("Y after header {}", y);
-                y -= annenForelder(stønad, cos, y);
+                y = annenForelder(stønad, cos, y);
                 LOG.trace("Y after annenForelder {}", y);
-                y -= dekningsgrad(stønad, cos, y);
+                y = dekningsgrad(stønad, cos, y);
                 LOG.trace("Y after dekningsgrad {}", y);
-                y -= opptjeniing(doLookup, stønad, cos, y);
+                y = opptjeniing(doLookup, stønad, cos, y);
                 LOG.trace("Y after opptjeniing {}", y);
-
                 doc.addPage(page1);
             } catch (IOException ex) {
                 throw new RuntimeException("Error while creating pdf", ex);
