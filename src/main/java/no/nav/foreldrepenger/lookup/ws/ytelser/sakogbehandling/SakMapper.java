@@ -13,10 +13,9 @@ public class SakMapper {
     public static Sak map(no.nav.tjeneste.virksomhet.sakogbehandling.v1.informasjon.finnsakogbehandlingskjedeliste.Sak sbSak) {
         return new Sak(sbSak.getSaksId(),
             sbSak.getSakstema().getValue(),
-            status(sbSak.getBehandlingskjede()),
-            "FOR",
             null,
             sbSak.getSaksId(),
+            status(sbSak.getBehandlingskjede()),
             DateUtil.toLocalDate(sbSak.getOpprettet()));
     }
 

@@ -19,8 +19,8 @@ public class SakMapperTest {
         no.nav.tjeneste.virksomhet.sakogbehandling.v1.informasjon.finnsakogbehandlingskjedeliste.Sak sbSak =
             sbsak(now);
 
-        Sak expected = new Sak("sak1", "temaer", "statusen",
-            "FOR", null, "sak1", now);
+        Sak expected = new Sak("sak1", "temaer",
+            null, "sak1", "statusen", now);
         Sak actual = SakMapper.map(sbSak);
 
         assertEquals(expected, actual);

@@ -12,10 +12,9 @@ public class RemoteSakMapper {
     public static Sak map(RemoteSak remoteSak) {
         return new Sak(Integer.toString(remoteSak.getId()),
             remoteSak.getTema(),
-            null,
-            "FOR",
             remoteSak.getApplikasjon(),
             remoteSak.getFagsakNr(),
+            "",
             LocalDate.parse(remoteSak.getOpprettetTidspunkt(), formatter));
     }
 

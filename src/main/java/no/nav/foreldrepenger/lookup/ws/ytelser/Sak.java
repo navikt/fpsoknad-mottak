@@ -7,20 +7,17 @@ public class Sak {
 
     private String sakId;
     private String sakstype;
-    private String status;
-    private String fagomrade;
     private String fagsystem;
-    private String fagsystemSakId;
+    private String saksnummer;
+    private String status;
     private LocalDate opprettet;
 
-    public Sak(String sakId, String sakstype, String status, String fagomrade, String fagsystem,
-               String fagsystemSakId, LocalDate opprettet) {
+    public Sak(String sakId, String sakstype, String fagsystem, String saksnummer, String status, LocalDate opprettet) {
         this.sakId = sakId;
         this.sakstype = sakstype;
-        this.status = status;
-        this.fagomrade = fagomrade;
         this.fagsystem = fagsystem;
-        this.fagsystemSakId = fagsystemSakId;
+        this.saksnummer = saksnummer;
+        this.status = status;
         this.opprettet = opprettet;
     }
 
@@ -32,24 +29,20 @@ public class Sak {
         return sakstype;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public String getFagomrade() {
-        return fagomrade;
-    }
-
     public String getFagsystem() {
         return fagsystem;
     }
 
-    public String getFagsystemSakId() {
-        return fagsystemSakId;
+    public String getSaksnummer() {
+        return saksnummer;
     }
 
     public LocalDate getOpprettet() {
         return opprettet;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     @Override
@@ -59,16 +52,14 @@ public class Sak {
         Sak sak = (Sak) o;
         return Objects.equals(sakId, sak.sakId) &&
             Objects.equals(sakstype, sak.sakstype) &&
-            Objects.equals(status, sak.status) &&
-            Objects.equals(fagomrade, sak.fagomrade) &&
             Objects.equals(fagsystem, sak.fagsystem) &&
-            Objects.equals(fagsystemSakId, sak.fagsystemSakId) &&
+            Objects.equals(saksnummer, sak.saksnummer) &&
             Objects.equals(opprettet, sak.opprettet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sakId, sakstype, status, fagomrade, fagsystem, fagsystemSakId, opprettet);
+        return Objects.hash(sakId, sakstype, fagsystem, saksnummer, opprettet);
     }
 
     @Override
@@ -76,10 +67,8 @@ public class Sak {
         return "Sak{" +
             "sakId='" + sakId + '\'' +
             ", sakstype='" + sakstype + '\'' +
-            ", status='" + status + '\'' +
-            ", fagomrade='" + fagomrade + '\'' +
             ", fagsystem='" + fagsystem + '\'' +
-            ", fagsystemSakId='" + fagsystemSakId + '\'' +
+            ", saksnummer='" + saksnummer + '\'' +
             ", opprettet=" + opprettet +
             '}';
     }
