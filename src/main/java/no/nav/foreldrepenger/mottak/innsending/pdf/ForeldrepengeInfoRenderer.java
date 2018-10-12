@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.GradertUttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon;
@@ -48,8 +51,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 
 public class ForeldrepengeInfoRenderer {
-    private PDFElementRenderer renderer;
-    private SøknadTextFormatter textFormatter;
+    private final PDFElementRenderer renderer;
+    private final SøknadTextFormatter textFormatter;
 
     public ForeldrepengeInfoRenderer(MessageSource landkoder, MessageSource kvitteringstekster) {
         renderer = new PDFElementRenderer();
@@ -201,7 +204,7 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("barn"), cos, y);
-        y -= renderer.addLineOfRegularText(barn(relasjon), cos, y);
+        y -= renderer.addLinesOfRegularText(barn(relasjon), cos, y);
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("antallbarn", relasjon.getAntallBarn()), cos,
                 y);
         return startY - y;
@@ -210,9 +213,75 @@ public class ForeldrepengeInfoRenderer {
     public float fordeling(Fordeling fordeling, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("perioder"), cos, y);
-        y -= renderer.addBulletList(perioder(fordeling.getPerioder()), cos, y);
+        for (LukketPeriodeMedVedlegg periode : fordeling.getPerioder()) {
+            y -= renderer.addBulletPoint(formatterPeriode(periode), cos, y);
+            y -= renderer.addLinesOfRegularText(20, periodeDataFra(periode), cos, y);
+            y -= renderer.addBlankLine();
+        }
         y -= renderer.addBlankLine();
         return startY - y;
+    }
+
+    private List<String> periodeDataFra(LukketPeriodeMedVedlegg periode) {
+        if (periode instanceof OverføringsPeriode) {
+            OverføringsPeriode overføring = OverføringsPeriode.class.cast(periode);
+            return newArrayList(
+                    textFormatter.fromMessageSource("uttaksperiodetype",
+                            textFormatter.capitalize(overføring.getUttaksperiodeType().name())),
+                    textFormatter.fromMessageSource("overføringsårsak",
+                            textFormatter.capitalize(overføring.getÅrsak().name())));
+
+        }
+        if (periode instanceof GradertUttaksPeriode) {
+            GradertUttaksPeriode gradert = GradertUttaksPeriode.class.cast(periode);
+            return newArrayList(textFormatter.fromMessageSource("uttaksperiodetype",
+                    textFormatter.capitalize(gradert.getUttaksperiodeType().name())),
+                    textFormatter.fromMessageSource("morsaktivitet",
+                            textFormatter.capitalize(gradert.getMorsAktivitetsType().name())),
+                    textFormatter.fromMessageSource("arbeidstidprosent", gradert.getArbeidstidProsent()),
+                    textFormatter.fromMessageSource("samtidiguttakprosent",
+                            String.valueOf(gradert.getSamtidigUttakProsent())),
+                    textFormatter.fromMessageSource("virksomhetsnummer", gradert.getVirksomhetsnummer()),
+                    textFormatter.fromMessageSource("skalgraderes",
+                            textFormatter.yesNo(gradert.isArbeidsForholdSomskalGraderes())),
+                    textFormatter.fromMessageSource("erarbeidstaker",
+                            textFormatter.yesNo(gradert.isErArbeidstaker())),
+                    textFormatter.fromMessageSource("ønskerflerbarnsdager",
+                            textFormatter.yesNo(gradert.isØnskerFlerbarnsdager())),
+                    textFormatter.fromMessageSource("ønskersamtidiguttak",
+                            textFormatter.yesNo(gradert.isØnskerSamtidigUttak())));
+        }
+        if (periode instanceof UttaksPeriode) {
+            UttaksPeriode uttak = UttaksPeriode.class.cast(periode);
+            return newArrayList(textFormatter.fromMessageSource("uttaksperiodetype",
+                    textFormatter.capitalize(uttak.getUttaksperiodeType().name())),
+                    textFormatter.fromMessageSource("morsaktivitet",
+                            textFormatter.capitalize(uttak.getMorsAktivitetsType().name())),
+                    textFormatter.fromMessageSource("samtidiguttakprosent",
+                            String.valueOf(uttak.getSamtidigUttakProsent())),
+                    textFormatter.fromMessageSource("ønskerflerbarnsdager",
+                            textFormatter.yesNo(uttak.isØnskerFlerbarnsdager())),
+                    textFormatter.fromMessageSource("ønskersamtidiguttak",
+                            textFormatter.yesNo(uttak.isØnskerSamtidigUttak())));
+        }
+        if (periode instanceof OppholdsPeriode) {
+            OppholdsPeriode opphold = OppholdsPeriode.class.cast(periode);
+            return newArrayList(
+                    textFormatter.fromMessageSource("oppholdsårsak",
+                            textFormatter.capitalize(opphold.getÅrsak().name())));
+        }
+        if (periode instanceof UtsettelsesPeriode) {
+            UtsettelsesPeriode utsettelse = UtsettelsesPeriode.class.cast(periode);
+            return newArrayList(textFormatter.fromMessageSource("uttaksperiodetype",
+                    textFormatter.capitalize(utsettelse.getUttaksperiodeType().name())),
+                    textFormatter.fromMessageSource("utsettelsesårsak",
+                            textFormatter.capitalize(utsettelse.getÅrsak().name())),
+                    textFormatter.fromMessageSource("virksomhetsnummer", utsettelse.getVirksomhetsnummer()),
+                    textFormatter.fromMessageSource("erarbeidstaker",
+                            textFormatter.yesNo(utsettelse.isErArbeidstaker())));
+        }
+
+        throw new IllegalArgumentException(periode.getClass().getSimpleName() + " ikke støttet");
     }
 
     public float relasjonTilBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
@@ -367,52 +436,48 @@ public class ForeldrepengeInfoRenderer {
         return sb.toString();
     }
 
-    private List<String> perioder(List<LukketPeriodeMedVedlegg> perioder) {
-        return perioder.stream()
-                .map(this::format)
-                .collect(toList());
-    }
-
-    private String barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
+    private List<String> barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
         if (relasjonTilBarn instanceof Fødsel) {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
-            return "Fødselsdato: " + textFormatter.dates(fødsel.getFødselsdato());
+            return Collections.singletonList("Fødselsdato: " + textFormatter.dates(fødsel.getFødselsdato()));
         }
         else if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
-            return "Adopsjon: " + adopsjon.toString();
+            return Collections.singletonList("Adopsjon: " + adopsjon.toString());
         }
         else if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
-            return "Fødsel med termin: " + textFormatter.date(fødsel.getTerminDato()) +
-                    " (bekreftelse utstedt " + textFormatter.date(fødsel.getUtstedtDato()) + ")";
+            return newArrayList("Fødsel med termin: " + textFormatter.date(fødsel.getTerminDato()),
+                    "Bekreftelse utstedt " + textFormatter.date(fødsel.getUtstedtDato()));
         }
         else {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
-            return "Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
-                    ", " + omsorgsovertakelse.getÅrsak();
+            return Collections.singletonList("Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
+                    ", " + omsorgsovertakelse.getÅrsak());
         }
 
     }
 
-    private String format(LukketPeriodeMedVedlegg periode) {
+    private String formatterPeriode(LukketPeriodeMedVedlegg periode) {
         String tid = textFormatter.date(periode.getFom()) + " - " + textFormatter.date(periode.getTom());
         if (periode instanceof OverføringsPeriode) {
-            OverføringsPeriode overføring = OverføringsPeriode.class.cast(periode);
-            return "Overføring: " + tid + ", " + textFormatter.capitalize(overføring.getÅrsak().name());
+            return "Overføring: " + tid;
         }
-        else if (periode instanceof UttaksPeriode) {
-            UttaksPeriode uttak = UttaksPeriode.class.cast(periode);
-            return "Uttak: " + tid + ", " + textFormatter.capitalize(uttak.getUttaksperiodeType().name());
+        if (periode instanceof GradertUttaksPeriode) {
+            return "Gradert uttak: " + tid;
         }
-        else if (periode instanceof OppholdsPeriode) {
-            OppholdsPeriode opphold = OppholdsPeriode.class.cast(periode);
-            return "Opphold: " + tid + ", " + textFormatter.capitalize(opphold.getÅrsak().name());
+        if (periode instanceof UttaksPeriode) {
+            return "Uttak: " + tid;
         }
-        else {
-            UtsettelsesPeriode utsettelse = UtsettelsesPeriode.class.cast(periode);
-            return "Utsettelse: " + tid + ", " + textFormatter.capitalize(utsettelse.getÅrsak().name());
+        if (periode instanceof OppholdsPeriode) {
+            return "Opphold: " + tid;
         }
+        if (periode instanceof UtsettelsesPeriode) {
+            return "Utsettelse: " + tid;
+        }
+
+        throw new IllegalArgumentException(periode.getClass().getSimpleName() + " ikke støttet");
+
     }
 
 }

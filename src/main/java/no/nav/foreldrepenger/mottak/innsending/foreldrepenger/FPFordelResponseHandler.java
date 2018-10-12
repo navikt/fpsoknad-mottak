@@ -54,7 +54,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                     ResponseEntity<FPFordelKvittering> fpInfoRespons = pollFPFordel(pollURI,
                             pending.getPollInterval().toMillis());
                     fpFordelKvittering = FPFordelKvittering.class.cast(fpInfoRespons.getBody());
-                    LOG.info("Behandler poll respons {} etter {}ms", fpInfoRespons, timer.getTime());
+                    LOG.info("Behandler poll respons {} etter {}ms", fpInfoRespons.getBody(), timer.getTime());
                     switch (fpInfoRespons.getStatusCode()) {
                     case OK:
                         if (fpFordelKvittering instanceof FPFordelPendingKvittering) {

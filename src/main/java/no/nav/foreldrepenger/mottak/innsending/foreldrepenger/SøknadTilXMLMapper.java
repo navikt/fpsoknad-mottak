@@ -595,7 +595,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
                     .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                     .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
                     .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
-                    .withVirksomhetsnummer(gradertPeriode.getVirksomhetsNummer())
+                    .withVirksomhetsnummer(gradertPeriode.getVirksomhetsnummer())
                     .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                     .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
 

@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -38,18 +39,30 @@ public class PDFElementRenderer {
     }
 
     public float addLineOfRegularText(String line, PDPageContentStream cos, float startY) throws IOException {
+        return addLineOfRegularText(0, line, cos, startY);
+    }
+
+    public float addLineOfRegularText(int marginOffset, String line, PDPageContentStream cos, float startY)
+            throws IOException {
         cos.beginText();
         cos.setFont(FONTPLAIN, FONTPLAINSIZE);
-        cos.newLineAtOffset(MARGIN, startY);
-        cos.showText(line);
+        cos.newLineAtOffset(MARGIN + marginOffset, startY);
+        cos.showText(Optional.ofNullable(line).orElse(""));
         cos.endText();
         return FONTPLAINHEIGHT;
     }
 
-    public float addLinesOfRegularText(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
+    public float addLinesOfRegularText(List<String> lines, PDPageContentStream cos, float startY)
+            throws IOException {
+        return addLinesOfRegularText(0, lines, cos, startY);
+
+    }
+
+    public float addLinesOfRegularText(int marginOffset, List<String> lines, PDPageContentStream cos, float startY)
+            throws IOException {
         float yTotal = 0;
         for (String line : lines) {
-            yTotal += addLineOfRegularText(line, cos, startY - yTotal);
+            yTotal += addLineOfRegularText(marginOffset, line, cos, startY - yTotal);
         }
         return yTotal;
     }

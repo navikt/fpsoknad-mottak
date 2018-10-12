@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,7 +36,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.EnvUtil;
 
 @Component
 public class ForeldrepengerPDFGenerator implements EnvironmentAware {
@@ -42,6 +43,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
     private final Oppslag oppslag;
     private final ForeldrepengeInfoRenderer fpRenderer;
+
     private final PDFElementRenderer pdfRenderer;
     private Environment env;
 
@@ -69,28 +71,41 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page1 = pdfRenderer.newPage();
-            LOG.trace("Page dimensions in points:  {}x{}", page1.getMediaBox().getHeight(),
-                    page1.getMediaBox().getWidth());
             try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
                 float y = yTop;
-                LOG.trace("Y at start {}", y);
-                header(søker, doc, cos, y);
-                LOG.trace("Y after header {}", y);
-                annenForelder(stønad, cos, y);
-                LOG.trace("Y after annenForelder {}", y);
-                dekningsgrad(stønad, cos, y);
-                LOG.trace("Y after dekningsgrad {}", y);
-                opptjeniing(doLookup, stønad, cos, y);
-                LOG.trace("Y after opptjeniing {}", y);
+                y -= fpRenderer.header(søker, doc, cos, false, y);
+                AnnenForelder annenForelder = stønad.getAnnenForelder();
+                if (annenForelder != null) {
+                    y -= fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
+                            stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                            y);
+                }
+
+                if (stønad.getDekningsgrad() != null) {
+                    y -= fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
+                }
+                Opptjening opptjening = stønad.getOpptjening();
+                if (opptjening != null) {
+                    if (isDevOrPreprod(env) && !doLookup) {
+                        LOG.trace("Slår IKKE opp arbeidforhold");
+                        y -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), cos, y);
+                    }
+                    else {
+                        y -= fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), cos, y);
+                    }
+                }
+
                 doc.addPage(page1);
             } catch (IOException ex) {
                 throw new RuntimeException("Error while creating pdf", ex);
             }
 
             PDPage page2 = pdfRenderer.newPage();
-            try (PDPageContentStream cos = new PDPageContentStream(doc, page2)) {
+            doc.addPage(page2);
+            try {
+                PDPageContentStream cos = new PDPageContentStream(doc, page2);
                 float y = yTop;
-                y -= header(søker, doc, cos, y);
+                y -= fpRenderer.header(søker, doc, cos, false, y);
 
                 Medlemsskap medlemsskap = stønad.getMedlemsskap();
                 if (medlemsskap != null) {
@@ -100,67 +115,63 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 if (relasjon != null) {
                     y -= fpRenderer.relasjonTilBarn(relasjon, cos, y);
                 }
-
                 Fordeling fordeling = stønad.getFordeling();
                 if (fordeling != null) {
-                    y -= fpRenderer.fordeling(fordeling, cos, y);
+                    PDPage scratch = pdfRenderer.newPage();
+                    PDPageContentStream dummycos = new PDPageContentStream(doc, scratch);
+                    float startY = PDFElementRenderer.calculateStartY();
+                    startY -= fpRenderer.header(søker, doc, dummycos, false, startY);
+                    startY -= fpRenderer.fordeling(fordeling, dummycos, startY);
+                    float spaceRequired = PDFElementRenderer.calculateStartY() - startY;
+                    if (spaceRequired <= y) {
+                        y -= fpRenderer.fordeling(fordeling, cos, y);
+                    }
+                    else {
+                        cos.close();
+                        doc.addPage(scratch);
+                        cos = dummycos;
+                        y = startY;
+                    }
                 }
-
                 Rettigheter rettigheter = stønad.getRettigheter();
                 if (rettigheter != null) {
-                    y -= fpRenderer.rettigheter(rettigheter, cos, y);
+                    PDPage scratch = pdfRenderer.newPage();
+                    PDPageContentStream dummycos = new PDPageContentStream(doc, scratch,
+                            PDPageContentStream.AppendMode.APPEND,
+                            false, false);
+                    float startY = PDFElementRenderer.calculateStartY();
+                    startY -= fpRenderer.header(søker, doc, dummycos, false, startY);
+                    startY -= fpRenderer.rettigheter(rettigheter, dummycos, startY);
+                    float spaceRequired = PDFElementRenderer.calculateStartY() - startY;
+                    if (spaceRequired <= y) {
+                        y -= fpRenderer.rettigheter(rettigheter, cos, y);
+                    }
+                    else {
+                        cos.close();
+                        doc.addPage(scratch);
+                        cos = dummycos;
+                        y = startY;
+                    }
                 }
-
                 final List<Vedlegg> vedlegg = søknad.getVedlegg();
                 if (vedlegg != null) {
                     fpRenderer.vedlegg(søknad.getVedlegg(), cos, y);
                 }
-
-                doc.addPage(page2);
+                cos.close();
+                doc.save(baos);
+                return baos.toByteArray();
             } catch (IOException ex) {
                 throw new RuntimeException("Error while creating pdf", ex);
             }
 
-            doc.save(baos);
-            return baos.toByteArray();
         } catch (IOException ex) {
             throw new RuntimeException("Error while creating pdf", ex);
         }
     }
 
-    private float header(Person søker, PDDocument doc, PDPageContentStream cos, float y) throws IOException {
-        return fpRenderer.header(søker, doc, cos, false, y);
-    }
-
-    private float opptjeniing(boolean doLookup, Foreldrepenger stønad, PDPageContentStream cos, float y)
-            throws IOException {
-        Opptjening opptjening = stønad.getOpptjening();
-        if (opptjening != null) {
-            if (EnvUtil.isDevOrPreprod(env) && !doLookup) {
-                LOG.trace("Slår ikke opp arbeidforhold, håper dette var fra Swagger");
-                y -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), cos, y);
-            }
-            else {
-                y -= fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), cos, y);
-            }
-        }
-        return y;
-    }
-
-    private float dekningsgrad(Foreldrepenger stønad, PDPageContentStream cos, float y) throws IOException {
-        if (stønad.getDekningsgrad() != null) {
-            y -= fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
-        }
-        return y;
-    }
-
-    private float annenForelder(Foreldrepenger stønad, PDPageContentStream cos, float y) throws IOException {
-        AnnenForelder annenForelder = stønad.getAnnenForelder();
-        if (annenForelder != null) {
-            y -= fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                    stønad.getRettigheter().isHarAnnenForelderRett(), cos, y);
-        }
-        return y;
+    private boolean nokPlass(Fordeling fordeling) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     public byte[] generate(Endringssøknad søknad, Person søker) {
@@ -173,7 +184,12 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 float y = yTop;
                 y -= fpRenderer.header(søker, doc, cos, true, y);
 
-                y = annenForelder(stønad, cos, y);
+                AnnenForelder annenForelder = stønad.getAnnenForelder();
+                if (annenForelder != null) {
+                    y -= fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
+                            stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                            y);
+                }
 
                 RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
                 if (relasjon != null) {
