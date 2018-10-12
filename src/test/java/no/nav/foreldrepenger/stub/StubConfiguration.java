@@ -4,14 +4,8 @@ import no.nav.foreldrepenger.lookup.rest.sak.SakClient;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.OrganisasjonClient;
-import no.nav.foreldrepenger.lookup.ws.inntekt.InntektClient;
-import no.nav.foreldrepenger.lookup.ws.medl.MedlClient;
 import no.nav.foreldrepenger.lookup.ws.person.PersonClient;
-import no.nav.foreldrepenger.lookup.ws.ytelser.arena.ArenaClient;
 import no.nav.foreldrepenger.lookup.ws.ytelser.fpsak.FpsakClient;
-import no.nav.foreldrepenger.lookup.ws.ytelser.gsak.GsakClient;
-import no.nav.foreldrepenger.lookup.ws.ytelser.infotrygd.InfotrygdClient;
-import no.nav.foreldrepenger.lookup.ws.ytelser.sakogbehandling.SakOgBehandlingClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -41,32 +35,8 @@ public class StubConfiguration {
 
     @Bean
     @Primary
-    public ArenaClient getArenaClientStub() {
-        return new ArenaClientStub();
-    }
-
-    @Bean
-    @Primary
     public FpsakClient getFpsakClientStub() {
         return new FpsakClientStub();
-    }
-
-    @Bean
-    @Primary
-    public InfotrygdClient getInfotrygdClientStub() {
-        return new InfotrygdClientStub();
-    }
-
-    @Bean
-    @Primary
-    public InntektClient getInntektClientStub() {
-        return new InntektClientStub();
-    }
-
-    @Bean
-    @Primary
-    public MedlClient getMedlClientStub() {
-        return new MedlClientStub();
     }
 
     @Bean
@@ -77,19 +47,7 @@ public class StubConfiguration {
 
     @Bean
     @Primary
-    public GsakClient gsakClientStub() {
-        return new GsakClientStub();
-    }
-
-    @Bean
-    @Primary
     public SakClient sakClientStub() {
         return new SakClientStub();
-    }
-
-    @Bean
-    @Primary
-    public SakOgBehandlingClient sakOgBehandlingClientStub() {
-        return new SakOgBehandlingClientStub();
     }
 }

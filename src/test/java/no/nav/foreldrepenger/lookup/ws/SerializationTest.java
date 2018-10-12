@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.lookup.ws.inntekt.Inntekt;
-import no.nav.foreldrepenger.lookup.ws.medl.MedlPeriode;
 import no.nav.foreldrepenger.lookup.ws.person.*;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.Arbeidsforhold;
@@ -83,16 +81,6 @@ public class SerializationTest {
         test(id());
     }
 
-    @Test
-    public void testInntektSerialization() throws IOException {
-        test(inntekt());
-    }
-
-    @Test
-    public void testMedlPeriodeSerialization() throws IOException {
-        test(medlPeriode());
-    }
-
     private void test(Object object) throws IOException {
         String serialized = write(object);
         Object deserialized = mapper.readValue(serialized, object.getClass());
@@ -131,15 +119,6 @@ public class SerializationTest {
     private static Ytelse ytelse() {
         return new Ytelse("typen", "statusen", LocalDate.now().minus(Period.ofYears(2)),
                 Optional.of(LocalDate.now().minus(Period.ofYears(1))));
-    }
-
-    private static Inntekt inntekt() {
-        return new Inntekt(LocalDate.now(), Optional.of(LocalDate.now().minusMonths(2)), 1234.5, "acme industries");
-    }
-
-    private static MedlPeriode medlPeriode() {
-        return new MedlPeriode(LocalDate.now(), Optional.of(LocalDate.now().minusMonths(2)), "statusen", "typen",
-                "grunnlagstypen", "landet");
     }
 
     private static Arbeidsforhold arbeidsforhold() {
