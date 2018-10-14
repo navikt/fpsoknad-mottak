@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.time.LocalDate;
 import java.util.List;
 
-import io.prometheus.client.Histogram;
+import io.micrometer.core.annotation.Timed;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.errorhandling.IncompleteRequestException;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
@@ -30,10 +30,6 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     private final OrganisasjonClient orgClient;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.aareg");
-    private static final Histogram requestLatency = Histogram.build()
-        .name("requests_latency_seconds_arbeidsforhold")
-        .help("Request latency in seconds for arbeidsforhold")
-        .register();
 
     public ArbeidsforholdClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator,
             OrganisasjonClient orgClient) {
@@ -54,8 +50,8 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     }
 
     @Override
+    @Timed("lookup.arbeidsforhold")
     public List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr) {
-        Histogram.Timer requestTimer = requestLatency.startTimer();
         try {
             FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3
                     .finnArbeidsforholdPrArbeidstaker(request(fnr));
@@ -73,8 +69,6 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
             throw new RuntimeException(ex);
-        } finally {
-            requestTimer.observeDuration();
         }
     }
 

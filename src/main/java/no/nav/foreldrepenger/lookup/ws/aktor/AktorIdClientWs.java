@@ -1,11 +1,6 @@
 package no.nav.foreldrepenger.lookup.ws.aktor;
 
-import java.util.Objects;
-
-import io.prometheus.client.Histogram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
@@ -15,6 +10,10 @@ import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIk
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentIdentForAktoerIdPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentIdentForAktoerIdRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 public class AktorIdClientWs implements AktorIdClient {
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientWs.class);
@@ -24,14 +23,6 @@ public class AktorIdClientWs implements AktorIdClient {
 
     private static final Counter ERROR_COUNTER_AKTOR = Metrics.counter("errors.lookup.aktorid");
     private static final Counter ERROR_COUNTER_FNR = Metrics.counter("errors.lookup.fnr");
-    private static final Histogram requestLatencyAktor = Histogram.build()
-        .name("requests_latency_seconds_aktor")
-        .help("Request latency in seconds for Aktør from fødselsnummer")
-        .register();
-    private static final Histogram requestLatencyFnr = Histogram.build()
-        .name("requests_latency_seconds_fnr")
-        .help("Request latency in seconds for fødselsnummer from aktørid")
-        .register();
 
     public AktorIdClientWs(AktoerV2 aktoerV2, AktoerV2 healthIndicator) {
         this.aktoerV2 = Objects.requireNonNull(aktoerV2);
@@ -39,8 +30,8 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     @Override
+    @Timed("lookup.fnr")
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
-        Histogram.Timer requestTimer = requestLatencyAktor.startTimer();
         try {
             return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
         } catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
@@ -49,14 +40,12 @@ public class AktorIdClientWs implements AktorIdClient {
         } catch (Exception ex) {
             ERROR_COUNTER_AKTOR.increment();
             throw ex;
-        } finally {
-            requestTimer.observeDuration();
         }
     }
 
     @Override
+    @Timed("lookup.aktorid")
     public Fødselsnummer fnrForAktørId(AktorId aktørId) {
-        Histogram.Timer requestTimer = requestLatencyFnr.startTimer();
         try {
             return new Fødselsnummer(aktoerV2.hentIdentForAktoerId(request(aktørId)).getIdent());
         } catch (HentIdentForAktoerIdPersonIkkeFunnet e) {
@@ -65,8 +54,6 @@ public class AktorIdClientWs implements AktorIdClient {
         } catch (Exception ex) {
             ERROR_COUNTER_FNR.increment();
             throw ex;
-        } finally {
-            requestTimer.observeDuration();
         }
     }
 

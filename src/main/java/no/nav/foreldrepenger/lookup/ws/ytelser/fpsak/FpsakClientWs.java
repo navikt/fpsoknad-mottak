@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Objects;
 
-import io.prometheus.client.Histogram;
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +27,6 @@ public class FpsakClientWs implements FpsakClient {
     private final ForeldrepengesakV1 healthIndicator;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.fpsak");
-    private static final Histogram requestLatency = Histogram.build()
-        .name("requests_latency_seconds_fpsak")
-        .help("Request latency in seconds for FPSAK")
-        .register();
 
     public FpsakClientWs(ForeldrepengesakV1 fpsakV1, ForeldrepengesakV1 healthIndicator) {
         this.fpsakV1 = Objects.requireNonNull(fpsakV1);
@@ -49,12 +45,12 @@ public class FpsakClientWs implements FpsakClient {
     }
 
     @Override
+    @Timed("lookup.fpsak")
     public List<Ytelse> casesFor(AktorId aktor) {
         FinnSakListeRequest req = new FinnSakListeRequest();
         Aktoer a = new Aktoer();
         a.setAktoerId(aktor.getAktør());
         req.setSakspart(a);
-        Histogram.Timer requestTimer = requestLatency.startTimer();
         try {
             FinnSakListeResponse res = fpsakV1.finnSakListe(req);
             return res.getSakListe().stream().map(SakMapper::map).collect(toList());
@@ -64,8 +60,6 @@ public class FpsakClientWs implements FpsakClient {
             LOG.warn("Error while reading from Fpsak", ex);
             ERROR_COUNTER.increment();
             throw new RuntimeException("Error while reading from Fpsak", ex);
-        } finally {
-            requestTimer.observeDuration();
         }
     }
 

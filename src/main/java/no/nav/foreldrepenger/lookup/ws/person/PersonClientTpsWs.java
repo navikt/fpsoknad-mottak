@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import io.prometheus.client.Histogram;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
@@ -34,10 +34,6 @@ public class PersonClientTpsWs implements PersonClient {
     private final Barnutvelger barnutvelger;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.tps");
-    private static final Histogram requestLatency = Histogram.build()
-        .name("requests_latency_seconds_person")
-        .help("Request latency in seconds for person")
-        .register();
 
     public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, Barnutvelger barnutvelger) {
         this.person = Objects.requireNonNull(person);
@@ -143,8 +139,8 @@ public class PersonClientTpsWs implements PersonClient {
         }
     }
 
+    @Timed("lookup.person")
     private HentPersonResponse hentPerson(HentPersonRequest request) {
-        Histogram.Timer requestTimer = requestLatency.startTimer();
         try {
             return person.hentPerson(request);
         } catch (HentPersonPersonIkkeFunnet e) {
@@ -153,8 +149,6 @@ public class PersonClientTpsWs implements PersonClient {
         } catch (HentPersonSikkerhetsbegrensning e) {
             LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);
             throw new ForbiddenException(e);
-        } finally {
-            requestTimer.observeDuration();
         }
     }
 
