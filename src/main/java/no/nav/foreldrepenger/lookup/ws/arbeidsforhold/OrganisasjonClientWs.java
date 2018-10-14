@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import io.prometheus.client.Histogram;
 import no.nav.tjeneste.virksomhet.organisasjon.v5.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.organisasjon.v5.binding.HentOrganisasjonUgyldigInput;
 import no.nav.tjeneste.virksomhet.organisasjon.v5.binding.OrganisasjonV5;
@@ -21,6 +22,10 @@ public class OrganisasjonClientWs implements OrganisasjonClient {
 
     private static final Logger log = LoggerFactory.getLogger(OrganisasjonClientWs.class);
     private static final Counter errorCounter = Metrics.counter("errors.lookup.organisasjon");
+    private static final Histogram requestLatency = Histogram.build()
+        .name("requests_latency_seconds_organisasjon")
+        .help("Request latency in seconds for organisasjon")
+        .register();
 
     private OrganisasjonV5 organisasjonV5;
     private OrganisasjonV5 healthIndicator;
@@ -44,6 +49,7 @@ public class OrganisasjonClientWs implements OrganisasjonClient {
 
     @Override
     public Optional<String> nameFor(String orgnr) {
+        Histogram.Timer requestTimer = requestLatency.startTimer();
         try {
             HentOrganisasjonRequest request = new HentOrganisasjonRequest();
             request.setOrgnummer(orgnr);
@@ -58,6 +64,8 @@ public class OrganisasjonClientWs implements OrganisasjonClient {
         } catch (Exception ex) {
             log.warn("Error while looking up organisation " + orgnr, ex);
             errorCounter.increment();
+        } finally {
+            requestTimer.observeDuration();
         }
 
         return Optional.empty();

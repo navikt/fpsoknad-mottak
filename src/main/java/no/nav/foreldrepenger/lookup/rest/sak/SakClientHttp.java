@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
+import io.prometheus.client.Histogram;
 import no.nav.foreldrepenger.lookup.EnvUtil;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
@@ -10,10 +11,10 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -21,6 +22,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class SakClientHttp implements SakClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SakClientHttp.class);
+
+    private static final Histogram requestLatency = Histogram.build()
+        .name("requests_latency_seconds_sak")
+        .help("Request latency in seconds for Sak")
+        .register();
 
     private RestTemplate restTemplate;
 
@@ -45,18 +51,22 @@ public class SakClientHttp implements SakClient {
         headers.setAccept(singletonList(APPLICATION_JSON));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
 
-        ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
+        Histogram.Timer requestTimer = requestLatency.startTimer();
+        List<RemoteSak> saker = new ArrayList<>();
+        try {
+            ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
                 sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
                 HttpMethod.GET,
                 requestEntity,
                 new ParameterizedTypeReference<List<RemoteSak>>() {
                 });
-
-        if (response.getStatusCode() != HttpStatus.OK) {
-            throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
+            if (response.getStatusCode() != HttpStatus.OK) {
+                throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
+            }
+            saker.addAll(response.getBody());
+        } finally {
+            requestTimer.observeDuration();
         }
-
-        List<RemoteSak> saker = response.getBody() != null ? response.getBody() : emptyList();
 
         LOG.info("Fant {} saker", saker.size());
         LOG.info(EnvUtil.CONFIDENTIAL, "{}", saker);
