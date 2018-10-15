@@ -78,32 +78,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WsdlInfotrygd</id>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlFiles>
-                                <wsdlFile>Binding.wsdl</wsdlFile>
-                            </wsdlFiles>
-                            <wsdlDirectory>src/main/resources/wsdl/infotrygd/</wsdlDirectory>
-                            <sourceDestDir>target/generated-sources</sourceDestDir>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WsdlInntekt</id>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlFiles>
-                                <wsdlFile>Binding.wsdl</wsdlFile>
-                            </wsdlFiles>
-                            <wsdlDirectory>src/main/resources/wsdl/inntekt/</wsdlDirectory>
-                            <sourceDestDir>target/generated-sources</sourceDestDir>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>WsdlPerson</id>
                         <goals>
                             <goal>wsimport</goal>
@@ -113,19 +87,6 @@
                                 <wsdlFile>Binding.wsdl</wsdlFile>
                             </wsdlFiles>
                             <wsdlDirectory>src/main/resources/wsdl/person/</wsdlDirectory>
-                            <sourceDestDir>target/generated-sources</sourceDestDir>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WsdlArena</id>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlFiles>
-                                <wsdlFile>Binding.wsdl</wsdlFile>
-                            </wsdlFiles>
-                            <wsdlDirectory>src/main/resources/wsdl/arena/</wsdlDirectory>
                             <sourceDestDir>target/generated-sources</sourceDestDir>
                         </configuration>
                     </execution>
@@ -156,19 +117,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WsdlMedl</id>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlFiles>
-                                <wsdlFile>MedlemskapV2.wsdl</wsdlFile>
-                            </wsdlFiles>
-                            <wsdlDirectory>src/main/resources/wsdl/medl/virksomhet/medlemskap/v2</wsdlDirectory>
-                            <sourceDestDir>target/generated-sources</sourceDestDir>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>WsdlOrganisasjon</id>
                         <goals>
                             <goal>wsimport</goal>
@@ -178,32 +126,6 @@
                                 <wsdlFile>Binding.wsdl</wsdlFile>
                             </wsdlFiles>
                             <wsdlDirectory>src/main/resources/wsdl/organisasjon</wsdlDirectory>
-                            <sourceDestDir>target/generated-sources</sourceDestDir>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WsdlGsak</id>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlFiles>
-                                <wsdlFile>SakV2.wsdl</wsdlFile>
-                            </wsdlFiles>
-                            <wsdlDirectory>src/main/resources/wsdl/gsak</wsdlDirectory>
-                            <sourceDestDir>target/generated-sources</sourceDestDir>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WsdlSakOgBehandling</id>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <wsdlFiles>
-                                <wsdlFile>Binding.wsdl</wsdlFile>
-                            </wsdlFiles>
-                            <wsdlDirectory>src/main/resources/wsdl/sakogbehandling</wsdlDirectory>
                             <sourceDestDir>target/generated-sources</sourceDestDir>
                         </configuration>
                     </execution>

@@ -1,21 +1,5 @@
 package no.nav.foreldrepenger.lookup;
 
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.lookup.ws.Søkerinfo;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
@@ -26,9 +10,21 @@ import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.foreldrepenger.lookup.ws.person.ID;
 import no.nav.foreldrepenger.lookup.ws.person.Person;
 import no.nav.foreldrepenger.lookup.ws.person.PersonClient;
-import no.nav.foreldrepenger.lookup.ws.ytelser.gsak.GsakClient;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
+import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @no.nav.security.oidc.api.ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -36,13 +32,10 @@ import no.nav.security.oidc.context.OIDCRequestContextHolder;
 public class OppslagController {
 
     public static final String OPPSLAG = "/oppslag";
-    @Inject
-    Environment env;
+
     private static final Logger LOG = getLogger(OppslagController.class);
 
     private final AktorIdClient aktorClient;
-
-    private final GsakClient gsakClient;
 
     private final PersonClient personClient;
 
@@ -52,12 +45,11 @@ public class OppslagController {
 
     @Inject
     public OppslagController(AktorIdClient aktorClient, PersonClient personClient,
-            ArbeidsforholdClient arbeidsforholdClient, GsakClient gsakClient,
+            ArbeidsforholdClient arbeidsforholdClient,
             OIDCRequestContextHolder contextHolder) {
         this.aktorClient = aktorClient;
         this.personClient = personClient;
         this.arbeidsforholdClient = arbeidsforholdClient;
-        this.gsakClient = gsakClient;
         this.contextHolder = contextHolder;
     }
 
@@ -67,9 +59,6 @@ public class OppslagController {
             @RequestParam(name = "register", defaultValue = "all", required = false) PingableRegisters register) {
         LOG.info("Vil pinge register {}", register);
         switch (register) {
-        case gsak:
-            gsakClient.ping();
-            break;
         case aareg:
             arbeidsforholdClient.ping();
             break;
@@ -83,7 +72,6 @@ public class OppslagController {
             aktorClient.ping();
             personClient.ping();
             arbeidsforholdClient.ping();
-            gsakClient.ping();
             break;
         }
         return registerNavn(register) + " er i toppform";
