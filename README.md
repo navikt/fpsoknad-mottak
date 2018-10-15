@@ -21,7 +21,7 @@ Få tak i en Java truststore med gyldige sertifikater for aktuelt miljø.
 
 # Henvendelser
 
-Spørsmål knyttet til koden eller prosjektet kan rettes til:
+Spørsmål knyttet til  koden eller prosjektet kan rettes til:
 
 * nav.team.bris@nav.no
 
