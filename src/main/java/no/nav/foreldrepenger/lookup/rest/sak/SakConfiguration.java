@@ -1,7 +1,11 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import no.nav.foreldrepenger.lookup.UUIDCallIdGenerator;
-import no.nav.security.spring.oidc.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
+import static java.util.stream.Collectors.toCollection;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -9,11 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.util.stream.Collectors.toCollection;
+import no.nav.foreldrepenger.lookup.UUIDCallIdGenerator;
+import no.nav.security.spring.oidc.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
 public class SakConfiguration {
@@ -38,19 +39,16 @@ public class SakConfiguration {
     @Bean
     public RestTemplate restTemplateSak(UUIDCallIdGenerator gen, ClientHttpRequestInterceptor... interceptors) {
         List<ClientHttpRequestInterceptor> interceptorListWithoutAuth = Arrays.stream(interceptors)
-            // We'll add our own auth header with SAML elsewhere
-            .filter(i -> !(i instanceof BearerTokenClientHttpRequestInterceptor))
-            .collect(toCollection(ArrayList::new));
+                // We'll add our own auth header with SAML elsewhere
+                .filter(i -> !(i instanceof BearerTokenClientHttpRequestInterceptor))
+                .collect(toCollection(ArrayList::new));
 
-        interceptorListWithoutAuth.add(new CallIdRequestInterceptor(gen));
-
-        ClientHttpRequestInterceptor[] interceptorsAsArray =
-            interceptorListWithoutAuth.stream()
+        ClientHttpRequestInterceptor[] interceptorsAsArray = interceptorListWithoutAuth.stream()
                 .toArray(ClientHttpRequestInterceptor[]::new);
 
         return new RestTemplateBuilder()
-            .interceptors(interceptorsAsArray)
-            .build();
+                .interceptors(interceptorsAsArray)
+                .build();
     }
 
     @Bean

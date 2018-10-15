@@ -1,14 +1,17 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import no.nav.foreldrepenger.lookup.UUIDCallIdGenerator;
+import java.io.IOException;
+
 import org.slf4j.MDC;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import no.nav.foreldrepenger.lookup.UUIDCallIdGenerator;
 
+@Component
 public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
 
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
@@ -20,7 +23,8 @@ public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
     }
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest req, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    public ClientHttpResponse intercept(HttpRequest req, byte[] body, ClientHttpRequestExecution execution)
+            throws IOException {
         String callId = req.getHeaders().getFirst(callIdGenerator.getCallIdKey());
         String consumerId = req.getHeaders().getFirst(NAV_CONSUMER_ID);
         if (consumerId != null) {
@@ -29,7 +33,8 @@ public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
 
         if (callId != null) {
             MDC.put(callIdGenerator.getCallIdKey(), callId);
-        } else {
+        }
+        else {
             String newCallId = callIdGenerator.create();
             MDC.put(callIdGenerator.getCallIdKey(), newCallId);
             req.getHeaders().set("X-Correlation-ID", newCallId);
@@ -37,6 +42,5 @@ public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
 
         return execution.execute(req, body);
     }
-
 
 }
