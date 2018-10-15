@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.tjeneste.virksomhet.organisasjon.v5.binding.HentOrganisasjonOrganisasjonIkkeFunnet;
@@ -43,6 +44,7 @@ public class OrganisasjonClientWs implements OrganisasjonClient {
     }
 
     @Override
+    @Timed("lookup.organisasjon")
     public Optional<String> nameFor(String orgnr) {
         try {
             HentOrganisasjonRequest request = new HentOrganisasjonRequest();

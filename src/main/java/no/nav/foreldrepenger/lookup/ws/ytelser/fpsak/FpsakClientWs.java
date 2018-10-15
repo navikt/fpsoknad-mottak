@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Objects;
 
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,7 @@ public class FpsakClientWs implements FpsakClient {
     }
 
     @Override
+    @Timed("lookup.fpsak")
     public List<Ytelse> casesFor(AktorId aktor) {
         FinnSakListeRequest req = new FinnSakListeRequest();
         Aktoer a = new Aktoer();

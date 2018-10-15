@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
+import io.micrometer.core.annotation.Timed;
 import no.nav.foreldrepenger.lookup.EnvUtil;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -35,6 +37,7 @@ public class SakClientHttp implements SakClient {
     }
 
     @Override
+    @Timed("lookup.sak")
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         LOG.info("henter saker på " + sakBaseUrl);
 
@@ -46,17 +49,15 @@ public class SakClientHttp implements SakClient {
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
 
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
-                sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
-                HttpMethod.GET,
-                requestEntity,
-                new ParameterizedTypeReference<List<RemoteSak>>() {
-                });
-
+            sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
+            HttpMethod.GET,
+            requestEntity,
+            new ParameterizedTypeReference<List<RemoteSak>>() {
+            });
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
         }
-
-        List<RemoteSak> saker = response.getBody() != null ? response.getBody() : emptyList();
+        List<RemoteSak> saker = Optional.ofNullable(response.getBody()).orElse(emptyList());
 
         LOG.info("Fant {} saker", saker.size());
         LOG.info(EnvUtil.CONFIDENTIAL, "{}", saker);

@@ -1,10 +1,6 @@
 package no.nav.foreldrepenger.lookup.ws.aktor;
 
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
@@ -14,6 +10,10 @@ import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIk
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentIdentForAktoerIdPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentIdentForAktoerIdRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 public class AktorIdClientWs implements AktorIdClient {
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientWs.class);
@@ -30,6 +30,7 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     @Override
+    @Timed("lookup.fnr")
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
         try {
             return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
@@ -43,6 +44,7 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     @Override
+    @Timed("lookup.aktorid")
     public Fødselsnummer fnrForAktørId(AktorId aktørId) {
         try {
             return new Fødselsnummer(aktoerV2.hentIdentForAktoerId(request(aktørId)).getIdent());

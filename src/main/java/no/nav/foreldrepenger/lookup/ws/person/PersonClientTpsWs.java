@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
@@ -138,6 +139,7 @@ public class PersonClientTpsWs implements PersonClient {
         }
     }
 
+    @Timed("lookup.person")
     private HentPersonResponse hentPerson(HentPersonRequest request) {
         try {
             return person.hentPerson(request);
