@@ -1,13 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import static java.util.stream.Collectors.joining;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +10,16 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.joining;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 
 public class SøknadTextFormatter {
 
@@ -35,7 +37,7 @@ public class SøknadTextFormatter {
     }
 
     public String countryName(String isoCode, Object... values) {
-        return getMessage(isoCode, landkoder, values);
+        return Optional.ofNullable(getMessage(isoCode, landkoder, values)).orElse(isoCode);
     }
 
     public String fromMessageSource(String key, Object... values) {

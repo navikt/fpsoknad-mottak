@@ -67,23 +67,24 @@ public class PDFElementRenderer {
         return yTotal;
     }
 
-    public float addBulletPoint(String line, PDPageContentStream cos, float startY) throws IOException {
-        return addLineOfRegularText("\u2022 " + line, cos, startY);
+    public float addBulletPoint(int offset, String line, PDPageContentStream cos, float startY) throws IOException {
+        return addLineOfRegularText(offset, "\u2022 " + line, cos, startY);
     }
 
-    public float addLMultilineBulletpoint(List<String> lines, PDPageContentStream cos, float startY)
+    public float addLMultilineBulletpoint(int offset, List<String> lines, PDPageContentStream cos, float startY)
             throws IOException {
-        float yTotal = addBulletPoint(lines.get(0), cos, startY);
+        float yTotal = addBulletPoint(offset, lines.get(0), cos, startY);
         for (String line : lines.subList(1, lines.size())) {
             yTotal += addLineOfRegularText("  " + line, cos, startY - yTotal);
         }
         return yTotal;
     }
 
-    public float addBulletList(List<String> lines, PDPageContentStream cos, float startY) throws IOException {
+    public float addBulletList(int offset, List<String> lines, PDPageContentStream cos, float startY)
+            throws IOException {
         float yTotal = 0;
         for (String line : lines) {
-            yTotal += addBulletPoint(line, cos, startY - yTotal);
+            yTotal += addBulletPoint(offset, line, cos, startY - yTotal);
         }
         return yTotal;
     }
@@ -158,5 +159,17 @@ public class PDFElementRenderer {
 
     private static int fontPlainHeight() {
         return Math.round(FONTPLAIN.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * FONTPLAINSIZE);
+    }
+
+    public float addBulletList(List<String> lines, PDPageContentStream cos, float y) throws IOException {
+        return addBulletList(0, lines, cos, y);
+    }
+
+    public float addBulletPoint(String line, PDPageContentStream cos, float y) throws IOException {
+        return addBulletPoint(0, line, cos, y);
+    }
+
+    public float addLMultilineBulletpoint(List<String> lines, PDPageContentStream cos, float y) throws IOException {
+        return addLMultilineBulletpoint(0, lines, cos, y);
     }
 }

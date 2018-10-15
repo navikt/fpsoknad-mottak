@@ -71,7 +71,9 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page1 = pdfRenderer.newPage();
-            try (PDPageContentStream cos = new PDPageContentStream(doc, page1)) {
+            doc.addPage(page1);
+            try {
+                PDPageContentStream cos = new PDPageContentStream(doc, page1);
                 float y = yTop;
                 y -= fpRenderer.header(søker, doc, cos, false, y);
                 AnnenForelder annenForelder = stønad.getAnnenForelder();
@@ -84,18 +86,35 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 if (stønad.getDekningsgrad() != null) {
                     y -= fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
                 }
+
                 Opptjening opptjening = stønad.getOpptjening();
                 if (opptjening != null) {
                     if (isDevOrPreprod(env) && !doLookup) {
+                        System.out.println("y now " + y);
                         LOG.trace("Slår IKKE opp arbeidforhold");
-                        y -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), cos, y);
+                        PDPage scratch = pdfRenderer.newPage();
+                        PDPageContentStream dummycos = new PDPageContentStream(doc, scratch);
+                        float startY = PDFElementRenderer.calculateStartY();
+                        startY -= fpRenderer.header(søker, doc, dummycos, false, startY);
+                        startY -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), dummycos, startY);
+                        float spaceRequired = PDFElementRenderer.calculateStartY() - startY;
+                        if (spaceRequired <= y) {
+                            System.out.println(spaceRequired + "<" + y);
+                            y -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), cos, y);
+                        }
+                        else {
+                            System.out.println(spaceRequired + ">=" + y);
+                            cos.close();
+                            doc.addPage(scratch);
+                            cos = dummycos;
+                            y = startY;
+                        }
                     }
                     else {
                         y -= fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), cos, y);
                     }
                 }
-
-                doc.addPage(page1);
+                cos.close();
             } catch (IOException ex) {
                 throw new RuntimeException("Error while creating pdf", ex);
             }
@@ -169,11 +188,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         }
     }
 
-    private boolean nokPlass(Fordeling fordeling) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
     public byte[] generate(Endringssøknad søknad, Person søker) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = PDFElementRenderer.calculateStartY();
@@ -222,7 +236,9 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
     private static List<Arbeidsforhold> dummyArbeidsforhold() {
         return Lists.newArrayList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
+                Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
+                new Arbeidsforhold("5678", "", LocalDate.now().minusDays(100),
+                        Optional.of(LocalDate.now()), 80.0, "TGD"));
     }
 
     @Override

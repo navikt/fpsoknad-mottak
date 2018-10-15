@@ -5,6 +5,8 @@ import static java.util.Collections.emptyList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -20,6 +22,7 @@ public class UtenlandskArbeidsforhold {
     private final CountryCode land;
     @Length(max = 50)
     private final String arbeidsgiverNavn;
+    @NotNull
     private final ÅpenPeriode periode;
     private final List<String> vedlegg;
 

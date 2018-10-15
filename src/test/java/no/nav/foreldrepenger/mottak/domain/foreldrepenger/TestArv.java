@@ -26,7 +26,7 @@ public class TestArv {
 @JsonSubTypes({
         @Type(value = B.class, name = "nameB"),
         @Type(value = C.class, name = "nameC"),
-
+        @Type(value = D.class, name = "nameD"),
 })
 abstract class A {
     private final int i;
@@ -41,11 +41,6 @@ abstract class A {
 
 }
 
-@JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
-@JsonSubTypes({
-        @Type(value = D.class, name = "nameD"),
-
-})
 class B extends A {
 
     public B(int i) {
