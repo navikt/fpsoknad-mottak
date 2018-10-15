@@ -13,7 +13,9 @@ import org.springframework.web.client.RestTemplate;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -55,7 +57,7 @@ public class SakClientHttp implements SakClient {
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
         }
-        List<RemoteSak> saker = response.getBody();
+        List<RemoteSak> saker = Optional.ofNullable(response.getBody()).orElse(emptyList());
 
         LOG.info("Fant {} saker", saker.size());
         LOG.info(EnvUtil.CONFIDENTIAL, "{}", saker);
