@@ -125,8 +125,8 @@ public class ForeldrepengeInfoRenderer {
 
         y = arbeidsforholdOpptjening(arbeidsforhold, cos, y);
         y = utenlandskeArbeidsforholdOpptjening(opptjening.getUtenlandskArbeidsforhold(), cos, y);
-        y = egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
         y = annenOpptjening(opptjening.getAnnenOpptjening(), cos, y);
+        y = egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
         y = frilansOpptjening(opptjening.getFrilans(), cos, y);
         return startY - y;
     }
@@ -144,20 +144,33 @@ public class ForeldrepengeInfoRenderer {
         if (CollectionUtils.isEmpty(annenOpptjening)) {
             return y;
         }
-        y -= renderer.addBlankLine();
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("annenopptjening"), cos, y);
-        y -= renderer.addBulletList(annenOpptjening(annenOpptjening), cos, y);
+        for (AnnenOpptjening annen : annenOpptjening) {
+            y -= renderer.addBulletPoint(
+                    textFormatter.fromMessageSource("type", textFormatter.capitalize(annen.getType().name())), cos, y);
+            if (annen.getPeriode() != null) {
+                y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("fom",
+                        textFormatter.date(annen.getPeriode().getFom())), cos, y);
+                if (annen.getPeriode().getTom() != null) {
+                    y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("tom",
+                            textFormatter.date(annen.getPeriode().getTom())), cos, y);
+                }
+            }
+        }
+        y -= renderer.addBlankLine();
         return y;
 
     }
 
-    public float egneNæringerOpptjening(List<EgenNæring> egenNæring, PDPageContentStream cos, float y)
+    public float egneNæringerOpptjening(List<EgenNæring> egneNæringer, PDPageContentStream cos, float y)
             throws IOException {
-        if (CollectionUtils.isEmpty(egenNæring)) {
+        if (CollectionUtils.isEmpty(egneNæringer)) {
             return y;
         }
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("egennæring"), cos, y);
-        for (List<String> næring : egenNæring(egenNæring)) {
+        for (EgenNæring egenNæring : egneNæringer) {
+        }
+        for (List<String> næring : egenNæring(egneNæringer)) {
             y -= renderer.addLMultilineBulletpoint(næring, cos, y);
         }
         return y;
@@ -172,7 +185,6 @@ public class ForeldrepengeInfoRenderer {
         }
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("utenlandskarbeid"), cos, y);
         for (UtenlandskArbeidsforhold forhold : utenlandskArbeidsforhold) {
-            textFormatter.fromMessageSource("fom", textFormatter.date(forhold.getPeriode().getFom()));
             y -= renderer.addBulletPoint(
                     textFormatter.fromMessageSource("arbeidsgiver",
                             Optional.ofNullable(forhold.getArbeidsgiverNavn()).orElse("Ikke oppgitt")),
@@ -192,11 +204,9 @@ public class ForeldrepengeInfoRenderer {
         if (CollectionUtils.isEmpty(arbeidsforhold)) {
             return y;
         }
-        y -= renderer.addBlankLine();
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("arbeidsforhold"), cos, y);
 
         for (Arbeidsforhold forhold : arbeidsforhold) {
-            textFormatter.fromMessageSource("fom", textFormatter.date(forhold.getFrom()));
             y -= renderer.addBulletPoint(textFormatter.fromMessageSource("arbeidsgiver", forhold.getArbeidsgiverNavn()),
                     cos,
                     y);
@@ -235,7 +245,7 @@ public class ForeldrepengeInfoRenderer {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("siste12") + " " +
+        y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("siste12") + " " +
                 (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
         if (tidligereOpphold.getUtenlandsOpphold().size() != 0) {
             y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tidligereopphold"), cos, y);
@@ -244,7 +254,7 @@ public class ForeldrepengeInfoRenderer {
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("neste12") + " " +
                 (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
-        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("føderi",
+        y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("føderi",
                 (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
         if (framtidigeOpphold.getUtenlandsOpphold().size() != 0) {
             y -= renderer.addLeftHeading(textFormatter.fromMessageSource("framtidigeopphold"), cos, y);
@@ -478,21 +488,6 @@ public class ForeldrepengeInfoRenderer {
         sb.append(næring.getBeskrivelseEndring());
 
         return Arrays.asList(sb.toString().split("\n"));
-    }
-
-    private List<String> annenOpptjening(List<AnnenOpptjening> annenOpptjening) {
-        return annenOpptjening.stream()
-                .map(this::formatAnnenOpptjening)
-                .collect(toList());
-    }
-
-    private String formatAnnenOpptjening(AnnenOpptjening annenOpptjening) {
-        StringBuilder sb = new StringBuilder(textFormatter.capitalize(annenOpptjening.getType().toString()));
-        sb.append(" " + textFormatter.periode(annenOpptjening.getPeriode()));
-        if (annenOpptjening.getVedlegg().size() != 0) {
-            sb.append(", vedlegg: " + annenOpptjening.getVedlegg().stream().collect(joining(", ")));
-        }
-        return sb.toString();
     }
 
     private List<String> barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {

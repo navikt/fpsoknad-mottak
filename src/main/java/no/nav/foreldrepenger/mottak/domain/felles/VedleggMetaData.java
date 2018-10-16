@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,8 +13,8 @@ public class VedleggMetaData {
     private final InnsendingsType innsendingsType;
     private final DokumentType dokumentType;
 
-    public VedleggMetaData(String id, DokumentType dokumentType) {
-        this(dokumentType.beskrivelse, id, LASTET_OPP, dokumentType);
+    public VedleggMetaData(String id, InnsendingsType innsendingsType, DokumentType dokumentType) {
+        this(dokumentType.beskrivelse, id, innsendingsType, dokumentType);
     }
 
     @JsonCreator

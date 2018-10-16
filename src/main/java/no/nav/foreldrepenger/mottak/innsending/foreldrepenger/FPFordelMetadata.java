@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -86,6 +87,7 @@ public class FPFordelMetadata {
         final AtomicInteger id = new AtomicInteger(1);
         List<Del> dokumenter = newArrayList(søknadsDel(id, søknad), søknadsDel(id, søknad));
         dokumenter.addAll(søknad.getVedlegg().stream()
+                .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
                 .collect(toList()));
         return dokumenter;

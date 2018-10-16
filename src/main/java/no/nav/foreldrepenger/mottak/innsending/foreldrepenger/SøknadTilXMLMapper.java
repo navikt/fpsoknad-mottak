@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.isProd;
@@ -188,20 +189,20 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
     }
 
     private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
-        if (innsendingsType == null) {
-            return opplastetInnsendingsType();
-        }
+
         switch (innsendingsType) {
+        case SEND_SENERE:
+            return innsendingsTypeMedKodeverk(SEND_SENERE);
         case LASTET_OPP:
-            return opplastetInnsendingsType();
+            return innsendingsTypeMedKodeverk(LASTET_OPP);
         default:
             throw new IllegalArgumentException("Innsendingstype " + innsendingsType + " foreløpig kke støttet");
         }
     }
 
-    private static Innsendingstype opplastetInnsendingsType() {
-        Innsendingstype type = new Innsendingstype().withKode(LASTET_OPP.name());
-        return type.withKodeverk(type.getKodeverk());
+    private static Innsendingstype innsendingsTypeMedKodeverk(InnsendingsType type) {
+        Innsendingstype typeMedKodeverk = new Innsendingstype().withKode(type.name());
+        return typeMedKodeverk.withKodeverk(typeMedKodeverk.getKodeverk());
     }
 
     private OmYtelse ytelseFra(Søknad søknad, boolean doLookup) {

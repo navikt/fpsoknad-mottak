@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static org.springframework.util.StreamUtils.copyToByteArray;
 
 import java.io.IOException;
@@ -18,8 +19,10 @@ import lombok.ToString;
 @Data
 public class ValgfrittVedlegg extends Vedlegg {
 
-    public ValgfrittVedlegg(String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(new VedleggMetaData(id, dokumentType), copyToByteArray(vedlegg.getInputStream()));
+    public ValgfrittVedlegg(String id, InnsendingsType innsendingsType, DokumentType dokumentType, Resource vedlegg)
+            throws IOException {
+        this(new VedleggMetaData(id, innsendingsType, dokumentType),
+                innsendingsType.equals(LASTET_OPP) ? copyToByteArray(vedlegg.getInputStream()) : null);
     }
 
     @JsonCreator

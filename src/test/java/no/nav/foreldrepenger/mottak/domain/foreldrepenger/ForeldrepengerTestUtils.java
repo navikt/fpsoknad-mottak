@@ -2,6 +2,9 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000063;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500005;
 import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
@@ -15,19 +18,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.ClassPathResource;
+
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class ForeldrepengerTestUtils {
 
     public static final String ID142 = "142";
     public static final String ID143 = "143";
-    public static final List<Vedlegg> TO_VEDLEGG = newArrayList(TestUtils.valgfrittVedlegg(ID142),
-            TestUtils.valgfrittVedlegg(ID143));
+    public static final List<Vedlegg> TO_VEDLEGG = newArrayList(
+            TestUtils.valgfrittVedlegg(ID142, InnsendingsType.LASTET_OPP),
+            TestUtils.valgfrittVedlegg(ID143, InnsendingsType.LASTET_OPP));
+    private static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
+    private static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
+
+    private static final ValgfrittVedlegg IKKE_OPPLASTETV1 = ikkeOpplastet(ID143, I000063);
 
     public static Søknad foreldrepengeSøknad() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), TO_VEDLEGG);
@@ -35,6 +48,22 @@ public class ForeldrepengerTestUtils {
 
     public static Søknad foreldrepengeSøknadUtenVedlegg() {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger());
+    }
+
+    public static Søknad søknadMedEttVedlegg() {
+        return søknad(V1);
+    }
+
+    public static Søknad søknadMedEttOpplastetEttIkkeOpplastetVedlegg() {
+        return søknad(V1, IKKE_OPPLASTETV1);
+    }
+
+    public static Søknad søknadMedToVedlegg() {
+        return søknad(V1, V2);
+    }
+
+    public static Søknad søknadMedEttIkkeOpplastedVedlegg() {
+        return søknad(IKKE_OPPLASTETV1);
     }
 
     public static Søknad søknad(Vedlegg... vedlegg) {
@@ -215,5 +244,22 @@ public class ForeldrepengerTestUtils {
 
     static Rettigheter rettigheter() {
         return new Rettigheter(true, true, true, LocalDate.now());
+    }
+
+    private static ValgfrittVedlegg opplastetVedlegg(String id, DokumentType type) {
+        try {
+            return new ValgfrittVedlegg(id, InnsendingsType.LASTET_OPP, type,
+                    new ClassPathResource("terminbekreftelse.pdf"));
+        } catch (Exception e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static ValgfrittVedlegg ikkeOpplastet(String id, DokumentType type) {
+        try {
+            return new ValgfrittVedlegg(id, InnsendingsType.SEND_SENERE, type, null);
+        } catch (Exception e) {
+            throw new IllegalArgumentException();
+        }
     }
 }

@@ -56,6 +56,7 @@ import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
@@ -77,8 +78,8 @@ public class TestFPFordelSerialization {
 
     private FPFordelKonvoluttGenerator konvoluttGenerator;
 
-    private static final ValgfrittVedlegg V1 = vedlegg(ID142, I500002);
-    private static final ValgfrittVedlegg V2 = vedlegg(ID143, I500005);
+    private static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
+    private static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
@@ -143,8 +144,9 @@ public class TestFPFordelSerialization {
     public void testSøknadRoundtrip() throws Exception {
         AktorId aktørId = new AktorId("42");
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
-        Søknad original = ForeldrepengerTestUtils.foreldrepengeSøknad();
+        Søknad original = ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg();
         String xml = mapper.tilXML(original, aktørId);
+        System.out.println(xml);
         assertFalse(new LatterligEnkelDokumentTypeAnalysator().erEndringssøknad(xml));
         Søknad rekonstruert = mapper.tilSøknad(xml);
         assertNotNull(rekonstruert);
@@ -161,7 +163,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() throws Exception {
-        Søknad søknad = søknad(valgfrittVedlegg(ForeldrepengerTestUtils.ID142));
+        Søknad søknad = søknad(valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
                 new CallIdGenerator().createAndPut());
         assertEquals(3, konvolutt.getBody().size());
@@ -215,9 +217,10 @@ public class TestFPFordelSerialization {
                         mottakConfiguration.kvitteringstekster(), oppslag));
     }
 
-    private static ValgfrittVedlegg vedlegg(String id, DokumentType type) {
+    private static ValgfrittVedlegg opplastetVedlegg(String id, DokumentType type) {
         try {
-            return new ValgfrittVedlegg(id, type, new ClassPathResource("terminbekreftelse.pdf"));
+            return new ValgfrittVedlegg(id, InnsendingsType.LASTET_OPP, type,
+                    new ClassPathResource("terminbekreftelse.pdf"));
         } catch (Exception e) {
             throw new IllegalArgumentException();
         }

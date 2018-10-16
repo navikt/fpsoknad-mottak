@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
@@ -58,6 +59,7 @@ public class FPFordelKonvoluttGenerator {
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
         søknad.getVedlegg().stream()
+                .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
         return new HttpEntity<>(builder.build(), headers());

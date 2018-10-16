@@ -103,8 +103,8 @@ public class TestUtils {
         return påkrevdVedlegg(id, "terminbekreftelse.pdf");
     }
 
-    public static ValgfrittVedlegg valgfrittVedlegg(String id) {
-        return valgfrittVedlegg(id, "terminbekreftelse.pdf");
+    public static ValgfrittVedlegg valgfrittVedlegg(String id, InnsendingsType type) {
+        return valgfrittVedlegg(id, type, "terminbekreftelse.pdf");
     }
 
     public static PåkrevdVedlegg påkrevdVedlegg(String id, String name) {
@@ -115,9 +115,10 @@ public class TestUtils {
         }
     }
 
-    static ValgfrittVedlegg valgfrittVedlegg(String id, String name) {
+    static ValgfrittVedlegg valgfrittVedlegg(String id, InnsendingsType type, String name) {
         try {
-            return new ValgfrittVedlegg(id, DokumentType.I000062, new ClassPathResource(name));
+            return new ValgfrittVedlegg(id, type, DokumentType.I000062,
+                    new ClassPathResource(name));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

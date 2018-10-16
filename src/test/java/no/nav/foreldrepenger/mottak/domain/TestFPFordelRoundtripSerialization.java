@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.nesteMåned;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static no.nav.foreldrepenger.mottak.http.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.http.SøknadPreprodController.INNSENDING_PREPROD;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
@@ -59,6 +58,7 @@ public class TestFPFordelRoundtripSerialization {
     CallIdGenerator refGenerator;
     @Autowired
     ForeldrepengerSøknadMapper søknadXMLGenerator;
+
     @Autowired
     FPFordelKonvoluttGenerator konvoluttGenerator;
 
@@ -81,7 +81,7 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     public void testForeldrepengerSøknadXML() throws IOException {
-        Søknad foreldrepenger = foreldrepengeSøknad();
+        Søknad foreldrepenger = ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg();
         String xml = template.postForObject(INNSENDING_PREPROD + "/søknad", foreldrepenger, String.class);
         Søknad søknad = søknadXMLGenerator.tilSøknad(xml);
         assertEquals(foreldrepenger.getMottattdato().toLocalDate(), søknad.getMottattdato().toLocalDate());
@@ -90,8 +90,10 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     public void testForeldrepengerSøknadSend() throws IOException {
+
         assertEquals(LeveranseStatus.IKKE_SENDT_FPSAK,
-                template.postForObject(INNSENDING + "/send", foreldrepengeSøknad(), Kvittering.class)
+                template.postForObject(INNSENDING + "/send",
+                        ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg(), Kvittering.class)
                         .getLeveranseStatus());
     }
 

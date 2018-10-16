@@ -2,8 +2,13 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 
 import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,6 +27,8 @@ import lombok.Data;
 })
 public abstract class Vedlegg {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Vedlegg.class);
+
     private final VedleggMetaData metadata;
     private final byte[] vedlegg;
 
@@ -31,14 +38,6 @@ public abstract class Vedlegg {
         this.vedlegg = vedlegg;
     }
 
-    private String bytes() {
-        String vedleggAsString = Arrays.toString(vedlegg);
-        if (vedleggAsString.length() >= 50) {
-            return vedleggAsString.substring(0, 49) + ".... " + (vedleggAsString.length() - 50) + " more bytes";
-        }
-        return vedleggAsString;
-    }
-
     @JsonIgnore
     public String getBeskrivelse() {
         return metadata.getBeskrivelse();
@@ -46,6 +45,14 @@ public abstract class Vedlegg {
 
     @JsonIgnore
     public InnsendingsType getInnsendingsType() {
+        if (getStørrelse() == 0) {
+            LOG.info("Ingen vedlegg, setter type til SEND_SENERE siden vi ikke haar bytes for vedlegg");
+            return SEND_SENERE;
+        }
+        if (metadata.getInnsendingsType() == null) {
+            LOG.info("Ingen innsendingstype er satt, setter type til LASTET_OPP, siden vi har bytes for vedlegg");
+            return LASTET_OPP;
+        }
         return metadata.getInnsendingsType();
     }
 
@@ -61,7 +68,15 @@ public abstract class Vedlegg {
 
     @JsonIgnore
     public long getStørrelse() {
-        return vedlegg.length;
+        return vedlegg == null ? 0 : vedlegg.length;
+    }
+
+    private String bytes() {
+        String vedleggAsString = Arrays.toString(vedlegg);
+        if (vedleggAsString.length() >= 50) {
+            return vedleggAsString.substring(0, 49) + ".... " + (vedleggAsString.length() - 50) + " more bytes";
+        }
+        return vedleggAsString;
     }
 
     @Override

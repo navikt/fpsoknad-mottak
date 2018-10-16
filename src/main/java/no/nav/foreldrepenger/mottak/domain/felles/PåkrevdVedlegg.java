@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static org.springframework.util.StreamUtils.copyToByteArray;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ import lombok.ToString;
 public class PåkrevdVedlegg extends Vedlegg {
 
     PåkrevdVedlegg(String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(new VedleggMetaData(id, dokumentType), copyToByteArray(vedlegg.getInputStream()));
+        this(new VedleggMetaData(id, LASTET_OPP, dokumentType), copyToByteArray(vedlegg.getInputStream()));
     }
 
     @JsonCreator
