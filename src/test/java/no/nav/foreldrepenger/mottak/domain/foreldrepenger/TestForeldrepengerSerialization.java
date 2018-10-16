@@ -182,7 +182,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUtenlandskrbeidsforhold() {
-        test(utenlandskArbeidsforhold());
+        test(utenlandskArbeidsforhold(ForeldrepengerTestUtils.V1), true);
     }
 
     @Test

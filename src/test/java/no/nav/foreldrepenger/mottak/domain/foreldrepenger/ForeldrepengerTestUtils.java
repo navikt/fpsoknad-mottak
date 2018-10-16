@@ -37,8 +37,8 @@ public class ForeldrepengerTestUtils {
     public static final List<Vedlegg> TO_VEDLEGG = newArrayList(
             TestUtils.valgfrittVedlegg(ID142, InnsendingsType.LASTET_OPP),
             TestUtils.valgfrittVedlegg(ID143, InnsendingsType.LASTET_OPP));
-    private static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
-    private static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
+    public static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
+    public static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
 
     private static final ValgfrittVedlegg IKKE_OPPLASTETV1 = ikkeOpplastet(ID143, I000063);
 

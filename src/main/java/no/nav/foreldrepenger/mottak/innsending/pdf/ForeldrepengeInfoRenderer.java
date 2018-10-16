@@ -3,11 +3,13 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,8 +68,7 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         float startY = y;
         y -= renderer.addLogo(doc, cos, y);
-        y -= renderer.addCenteredHeading(endring ? textFormatter.fromMessageSource("endringsøknad_fp")
-                : textFormatter.fromMessageSource("søknad_fp"), cos, y);
+        y -= renderer.addCenteredHeading(endring ? txt("endringsøknad_fp") : txt("søknad_fp"), cos, y);
         y -= renderer.addCenteredHeadings(søker(søker), cos, y);
         y -= renderer.addDividerLine(cos, y);
         y -= renderer.addBlankLine();
@@ -78,7 +79,7 @@ public class ForeldrepengeInfoRenderer {
             boolean harAnnenForelderRett,
             PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
+        y -= renderer.addLeftHeading(txt("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
         }
@@ -90,10 +91,10 @@ public class ForeldrepengeInfoRenderer {
         }
 
         if (!(annenForelder instanceof UkjentForelder)) {
-            y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("harrett") +
+            y -= renderer.addLineOfRegularText(INDENT, txt("harrett") +
                     textFormatter.yesNo(harAnnenForelderRett), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
-                    textFormatter.fromMessageSource("informert") + textFormatter.yesNo(erAnnenForlderInformert), cos,
+                    txt("informert") + textFormatter.yesNo(erAnnenForlderInformert), cos,
                     y);
         }
         y -= renderer.addBlankLine();
@@ -102,7 +103,7 @@ public class ForeldrepengeInfoRenderer {
 
     public float dekningsgrad(Dekningsgrad dekningsgrad, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("dekningsgrad"), cos, y);
+        y -= renderer.addLeftHeading(txt("dekningsgrad"), cos, y);
         y -= renderer.addLineOfRegularText(INDENT, dekningsgrad.kode() + "%", cos, y);
         y -= renderer.addBlankLine();
         return startY - y;
@@ -110,22 +111,23 @@ public class ForeldrepengeInfoRenderer {
 
     public float rettigheter(Rettigheter rettigheter, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("rettigheter"), cos, y);
-        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("aleneomsorg") +
+        y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
+        y -= renderer.addLineOfRegularText(txt("aleneomsorg") +
                 textFormatter.yesNo(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
-        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("omsorgiperiodene") +
+        y -= renderer.addLineOfRegularText(txt("omsorgiperiodene") +
                 textFormatter.yesNo(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
         return startY - y;
 
     }
 
-    public float opptjening(Opptjening opptjening, List<Arbeidsforhold> arbeidsforhold, PDPageContentStream cos,
+    public float opptjening(Opptjening opptjening, List<Arbeidsforhold> arbeidsforhold, List<Vedlegg> vedlegg,
+            PDPageContentStream cos,
             float y) throws IOException {
         float startY = y;
 
         y = arbeidsforholdOpptjening(arbeidsforhold, cos, y);
-        y = utenlandskeArbeidsforholdOpptjening(opptjening.getUtenlandskArbeidsforhold(), cos, y);
-        y = annenOpptjening(opptjening.getAnnenOpptjening(), cos, y);
+        y = utenlandskeArbeidsforholdOpptjening(opptjening.getUtenlandskArbeidsforhold(), vedlegg, cos, y);
+        y = annenOpptjening(opptjening.getAnnenOpptjening(), vedlegg, cos, y);
         y = egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
         y = frilansOpptjening(opptjening.getFrilans(), cos, y);
         return startY - y;
@@ -139,23 +141,26 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    private float annenOpptjening(List<AnnenOpptjening> annenOpptjening, PDPageContentStream cos, float y)
+    private float annenOpptjening(List<AnnenOpptjening> annenOpptjening, List<Vedlegg> vedlegg, PDPageContentStream cos,
+            float y)
             throws IOException {
         if (CollectionUtils.isEmpty(annenOpptjening)) {
             return y;
         }
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("annenopptjening"), cos, y);
+        y -= renderer.addLeftHeading(txt("annenopptjening"), cos, y);
         for (AnnenOpptjening annen : annenOpptjening) {
             y -= renderer.addBulletPoint(
-                    textFormatter.fromMessageSource("type", textFormatter.capitalize(annen.getType().name())), cos, y);
+                    txt("type", textFormatter.capitalize(annen.getType().name())), cos, y);
             if (annen.getPeriode() != null) {
-                y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("fom",
+                y -= renderer.addLineOfRegularText(INDENT, txt("fom",
                         textFormatter.date(annen.getPeriode().getFom())), cos, y);
                 if (annen.getPeriode().getTom() != null) {
-                    y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("tom",
+                    y -= renderer.addLineOfRegularText(INDENT, txt("tom",
                             textFormatter.date(annen.getPeriode().getTom())), cos, y);
                 }
             }
+            y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
+            y = renderVedlegg(vedlegg, annen.getVedlegg(), "vedleggannenopptjening", cos, y);
         }
         y -= renderer.addBlankLine();
         return y;
@@ -167,7 +172,7 @@ public class ForeldrepengeInfoRenderer {
         if (CollectionUtils.isEmpty(egneNæringer)) {
             return y;
         }
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("egennæring"), cos, y);
+        y -= renderer.addLeftHeading(txt("egennæring"), cos, y);
         for (EgenNæring egenNæring : egneNæringer) {
         }
         for (List<String> næring : egenNæring(egneNæringer)) {
@@ -178,24 +183,35 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float utenlandskeArbeidsforholdOpptjening(List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold,
-            PDPageContentStream cos,
+            List<Vedlegg> vedlegg, PDPageContentStream cos,
             float y) throws IOException {
         if (CollectionUtils.isEmpty(utenlandskArbeidsforhold)) {
             return y;
         }
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("utenlandskarbeid"), cos, y);
+        y -= renderer.addLeftHeading(txt("utenlandskarbeid"), cos, y);
         for (UtenlandskArbeidsforhold forhold : utenlandskArbeidsforhold) {
             y -= renderer.addBulletPoint(
-                    textFormatter.fromMessageSource("arbeidsgiver",
+                    txt("arbeidsgiver",
                             Optional.ofNullable(forhold.getArbeidsgiverNavn()).orElse("Ikke oppgitt")),
                     cos,
                     y);
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskeArbeidsforhold(forhold), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
+            y = renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
         }
         y -= renderer.addBlankLine();
-        // y -=
-        // renderer.addBulletList(utenlandskeArbeidsforhold(utenlandskArbeidsforhold),
-        // cos, y);
+        return y;
+    }
+
+    private float renderVedlegg(List<Vedlegg> vedlegg, List<String> vedleggRefs, String keyIfAnnet,
+            PDPageContentStream cos,
+            float y) throws IOException {
+        for (String id : vedleggRefs) {
+            Vedlegg details = vedlegg.stream().filter(s -> s.getId().equals(id)).findFirst().get();
+            String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details);
+            y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", beskrivelse,
+                    textFormatter.capitalize(details.getInnsendingsType().name())), cos, y);
+        }
         return y;
     }
 
@@ -204,10 +220,10 @@ public class ForeldrepengeInfoRenderer {
         if (CollectionUtils.isEmpty(arbeidsforhold)) {
             return y;
         }
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("arbeidsforhold"), cos, y);
+        y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
 
         for (Arbeidsforhold forhold : arbeidsforhold) {
-            y -= renderer.addBulletPoint(textFormatter.fromMessageSource("arbeidsgiver", forhold.getArbeidsgiverNavn()),
+            y -= renderer.addBulletPoint(txt("arbeidsgiver", forhold.getArbeidsgiverNavn()),
                     cos,
                     y);
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
@@ -219,7 +235,7 @@ public class ForeldrepengeInfoRenderer {
     public float frilans(Frilans frilans, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
         y -= renderer.addBlankLine();
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("frilans"), cos, y);
+        y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         StringBuilder sb = new StringBuilder(textFormatter.periode(frilans.getPeriode()));
         if (frilans.isHarInntektFraFosterhjem()) {
             sb.append(", har fra fosterhjem");
@@ -231,7 +247,7 @@ public class ForeldrepengeInfoRenderer {
             sb.append(", vedlegg: " + frilans.getVedlegg().stream().collect(joining(", ")));
         }
         if (frilans.getFrilansOppdrag().size() != 0) {
-            sb.append(", " + textFormatter.fromMessageSource("nærrelasjon"));
+            sb.append(", " + txt("nærrelasjon"));
         }
         y -= renderer.addLineOfRegularText(sb.toString(), cos, y);
         List<String> oppdrag = frilans.getFrilansOppdrag().stream()
@@ -243,21 +259,21 @@ public class ForeldrepengeInfoRenderer {
 
     public float medlemsskap(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("medlemsskap"), cos, y);
+        y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("siste12") + " " +
+        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + " " +
                 (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
         if (tidligereOpphold.getUtenlandsOpphold().size() != 0) {
-            y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tidligereopphold"), cos, y);
+            y -= renderer.addLeftHeading(txt("tidligereopphold"), cos, y);
             y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()), cos, y);
         }
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
-        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("neste12") + " " +
+        y -= renderer.addLineOfRegularText(txt("neste12") + " " +
                 (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, textFormatter.fromMessageSource("føderi",
+        y -= renderer.addLineOfRegularText(INDENT, txt("føderi",
                 (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
         if (framtidigeOpphold.getUtenlandsOpphold().size() != 0) {
-            y -= renderer.addLeftHeading(textFormatter.fromMessageSource("framtidigeopphold"), cos, y);
+            y -= renderer.addLeftHeading(txt("framtidigeopphold"), cos, y);
             y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()), cos,
                     y);
         }
@@ -267,18 +283,25 @@ public class ForeldrepengeInfoRenderer {
     public float omBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
             throws IOException {
         float startY = y;
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("barn"), cos, y);
-        y -= renderer.addLinesOfRegularText(barn(relasjon), cos, y);
-        y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("antallbarn", relasjon.getAntallBarn()), cos,
-                y);
+        y -= renderer.addLeftHeading(txt("barn"), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, barn(relasjon), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("antallbarn", relasjon.getAntallBarn()), cos, y);
         return startY - y;
     }
 
     public float fordeling(Fordeling fordeling, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("perioder"), cos, y);
+        y -= renderer.addLeftHeading(txt("perioder"), cos, y);
+        Collections.sort(fordeling.getPerioder(), new Comparator<LukketPeriodeMedVedlegg>() {
+
+            @Override
+            public int compare(LukketPeriodeMedVedlegg o1, LukketPeriodeMedVedlegg o2) {
+                return o1.getFom().compareTo(o2.getFom());
+            }
+
+        });
         for (LukketPeriodeMedVedlegg periode : fordeling.getPerioder()) {
-            y -= renderer.addBulletPoint(formatterPeriode(periode), cos, y);
+            y -= renderer.addBulletPoint(periode(periode), cos, y);
             y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode), cos, y);
             y -= renderer.addBlankLine();
         }
@@ -290,81 +313,97 @@ public class ForeldrepengeInfoRenderer {
         if (periode instanceof OverføringsPeriode) {
             OverføringsPeriode overføring = OverføringsPeriode.class.cast(periode);
             return newArrayList(
-                    textFormatter.fromMessageSource("uttaksperiodetype",
+                    txt("fom", textFormatter.date(overføring.getFom())),
+                    txt("tom", textFormatter.date(overføring.getTom())),
+                    txt("uttaksperiodetype",
                             textFormatter.capitalize(overføring.getUttaksperiodeType().name())),
-                    textFormatter.fromMessageSource("overføringsårsak",
+                    txt("overføringsårsak",
                             textFormatter.capitalize(overføring.getÅrsak().name())));
 
         }
         if (periode instanceof GradertUttaksPeriode) {
             GradertUttaksPeriode gradert = GradertUttaksPeriode.class.cast(periode);
-            ArrayList<String> attributter = newArrayList(textFormatter.fromMessageSource("uttaksperiodetype",
-                    textFormatter.capitalize(gradert.getUttaksperiodeType().name())),
-                    textFormatter.fromMessageSource("samtidiguttakprosent",
-                            String.valueOf(gradert.getSamtidigUttakProsent())),
-                    textFormatter.fromMessageSource("virksomhetsnummer", gradert.getVirksomhetsnummer()),
-                    textFormatter.fromMessageSource("skalgraderes",
+            ArrayList<String> attributter = newArrayList(
+                    txt("fom", textFormatter.date(gradert.getFom())),
+                    txt("tom", textFormatter.date(gradert.getTom())),
+                    txt("uttaksperiodetype", textFormatter.capitalize(gradert.getUttaksperiodeType().name())),
+                    txt("virksomhetsnummer", gradert.getVirksomhetsnummer()),
+                    txt("skalgraderes",
                             textFormatter.yesNo(gradert.isArbeidsForholdSomskalGraderes())),
-                    textFormatter.fromMessageSource("erarbeidstaker",
+                    txt("erarbeidstaker",
                             textFormatter.yesNo(gradert.isErArbeidstaker())),
-                    textFormatter.fromMessageSource("ønskerflerbarnsdager",
+                    txt("ønskerflerbarnsdager",
                             textFormatter.yesNo(gradert.isØnskerFlerbarnsdager())),
-                    textFormatter.fromMessageSource("ønskersamtidiguttak",
+                    txt("ønskersamtidiguttak",
                             textFormatter.yesNo(gradert.isØnskerSamtidigUttak())));
             if (gradert.getMorsAktivitetsType() != null) {
-                attributter.add(textFormatter.fromMessageSource("morsaktivitet",
+                attributter.add(txt("morsaktivitet",
                         textFormatter.capitalize(gradert.getMorsAktivitetsType().name())));
+            }
+            if (gradert.isØnskerSamtidigUttak()) {
+                attributter.add(txt("samtidiguttakprosent",
+                        String.valueOf(gradert.getSamtidigUttakProsent())));
             }
             return attributter;
         }
         if (periode instanceof UttaksPeriode) {
             UttaksPeriode uttak = UttaksPeriode.class.cast(periode);
-            ArrayList<String> attributter = newArrayList(textFormatter.fromMessageSource("uttaksperiodetype",
-                    textFormatter.capitalize(uttak.getUttaksperiodeType().name())),
-                    textFormatter.fromMessageSource("samtidiguttakprosent",
-                            String.valueOf(uttak.getSamtidigUttakProsent())),
-                    textFormatter.fromMessageSource("ønskerflerbarnsdager",
+            ArrayList<String> attributter = newArrayList(
+                    txt("fom", textFormatter.date(uttak.getFom())),
+                    txt("tom", textFormatter.date(uttak.getTom())),
+                    txt("uttaksperiodetype", textFormatter.capitalize(uttak.getUttaksperiodeType().name())),
+                    txt("ønskerflerbarnsdager",
                             textFormatter.yesNo(uttak.isØnskerFlerbarnsdager())),
-                    textFormatter.fromMessageSource("ønskersamtidiguttak",
+                    txt("ønskersamtidiguttak",
                             textFormatter.yesNo(uttak.isØnskerSamtidigUttak())));
             if (uttak.getMorsAktivitetsType() != null) {
-                attributter.add(textFormatter.fromMessageSource("morsaktivitet",
+                attributter.add(txt("morsaktivitet",
                         textFormatter.capitalize(uttak.getMorsAktivitetsType().name())));
+            }
+            if (uttak.isØnskerSamtidigUttak()) {
+                attributter.add(txt("samtidiguttakprosent",
+                        String.valueOf(uttak.getSamtidigUttakProsent())));
             }
             return attributter;
         }
         if (periode instanceof OppholdsPeriode) {
             OppholdsPeriode opphold = OppholdsPeriode.class.cast(periode);
             return newArrayList(
-                    textFormatter.fromMessageSource("oppholdsårsak",
-                            textFormatter.capitalize(opphold.getÅrsak().name())));
+                    txt("fom", textFormatter.date(opphold.getFom())),
+                    txt("tom", textFormatter.date(opphold.getTom())),
+                    txt("oppholdsårsak", textFormatter.capitalize(opphold.getÅrsak().name())));
         }
         if (periode instanceof UtsettelsesPeriode) {
             UtsettelsesPeriode utsettelse = UtsettelsesPeriode.class.cast(periode);
-            return newArrayList(textFormatter.fromMessageSource("uttaksperiodetype",
-                    textFormatter.capitalize(utsettelse.getUttaksperiodeType().name())),
-                    textFormatter.fromMessageSource("utsettelsesårsak",
+            return newArrayList(
+                    txt("fom", textFormatter.date(utsettelse.getFom())),
+                    txt("tom", textFormatter.date(utsettelse.getTom())),
+                    txt("uttaksperiodetype", textFormatter.capitalize(utsettelse.getUttaksperiodeType().name())),
+                    txt("utsettelsesårsak",
                             textFormatter.capitalize(utsettelse.getÅrsak().name())),
-                    textFormatter.fromMessageSource("virksomhetsnummer", utsettelse.getVirksomhetsnummer()),
-                    textFormatter.fromMessageSource("erarbeidstaker",
+                    txt("virksomhetsnummer", utsettelse.getVirksomhetsnummer()),
+                    txt("erarbeidstaker",
                             textFormatter.yesNo(utsettelse.isErArbeidstaker())));
         }
 
         throw new IllegalArgumentException(periode.getClass().getSimpleName() + " ikke støttet");
     }
 
-    public float relasjonTilBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
+    public float relasjonTilBarn(RelasjonTilBarnMedVedlegg relasjon, List<Vedlegg> vedlegg, PDPageContentStream cos,
+            float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBlankLine();
         y -= omBarn(relasjon, cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
+        y = renderVedlegg(vedlegg, relasjon.getVedlegg(), "vedleggrelasjondok", cos, y);
         y -= renderer.addBlankLine();
         return startY - y;
     }
 
     public float vedlegg(List<Vedlegg> vedlegg, PDPageContentStream cos, float y) throws IOException {
         float startY = y;
-        y -= renderer.addLeftHeading(textFormatter.fromMessageSource("vedlegg"), cos, y);
+        y -= renderer.addLeftHeading(txt("vedlegg"), cos, y);
         List<String> formatted = vedlegg.stream()
                 .map(textFormatter::vedlegg)
                 .collect(toList());
@@ -395,13 +434,13 @@ public class ForeldrepengeInfoRenderer {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> lines = new ArrayList<>();
         lines.add(Optional.ofNullable(utenlandsForelder.getNavn())
-                .map(n -> textFormatter.fromMessageSource("navn", n))
+                .map(n -> txt("navn", n))
                 .orElse("Ukjent"));
-        lines.add(textFormatter.fromMessageSource("nasjonalitet",
+        lines.add(txt("nasjonalitet",
                 textFormatter.countryName(utenlandsForelder.getLand().getAlpha2(),
                         utenlandsForelder.getLand().getName())));
         if (utenlandsForelder.getId() != null) {
-            lines.add(textFormatter.fromMessageSource("utenlandskid", utenlandsForelder.getId()));
+            lines.add(txt("utenlandskid", utenlandsForelder.getId()));
         }
         return lines;
     }
@@ -409,33 +448,34 @@ public class ForeldrepengeInfoRenderer {
     private List<String> norskForelder(NorskForelder norskForelder) {
         return Arrays.asList(
                 Optional.ofNullable(norskForelder.getNavn())
-                        .map(n -> textFormatter.fromMessageSource("navn", n))
+                        .map(n -> txt("navn", n))
                         .orElse("Ukjent"),
-                textFormatter.fromMessageSource("nasjonalitet", "Norsk"),
-                textFormatter.fromMessageSource("fnr", norskForelder.getFnr().getFnr()));
+                txt("nasjonalitet", "Norsk"),
+                txt("fnr", norskForelder.getFnr().getFnr()));
     }
 
     private List<String> arbeidsforhold(Arbeidsforhold arbeidsforhold) {
         List<String> attributter = Lists
-                .newArrayList(textFormatter.fromMessageSource("fom", textFormatter.date(arbeidsforhold.getFrom())));
+                .newArrayList(txt("fom", textFormatter.date(arbeidsforhold.getFrom())));
         if (arbeidsforhold.getTo().isPresent()) {
-            attributter.add(textFormatter.fromMessageSource("tom", textFormatter.date(arbeidsforhold.getTo().get())));
+            attributter.add(txt("tom", textFormatter.date(arbeidsforhold.getTo().get())));
         }
         attributter
-                .add(textFormatter.fromMessageSource("stillingsprosent", arbeidsforhold.getStillingsprosent()));
+                .add(txt("stillingsprosent", arbeidsforhold.getStillingsprosent()));
         return attributter;
     }
 
     private List<String> utenlandskeArbeidsforhold(UtenlandskArbeidsforhold ua) {
         List<String> attributter = Lists
-                .newArrayList(textFormatter.fromMessageSource("fom", textFormatter.date(ua.getPeriode().getFom())));
+                .newArrayList(txt("fom", textFormatter.date(ua.getPeriode().getFom())));
         if (ua.getPeriode().getTom() != null) {
-            attributter.add(textFormatter.fromMessageSource("tom", textFormatter.date(ua.getPeriode().getTom())));
+            attributter.add(txt("tom", textFormatter.date(ua.getPeriode().getTom())));
         }
         if (ua.getLand() != null) {
             attributter
-                    .add(textFormatter.fromMessageSource("land", textFormatter.countryName(ua.getLand().getAlpha2())));
+                    .add(txt("land", textFormatter.countryName(ua.getLand().getAlpha2())));
         }
+
         return attributter;
     }
 
@@ -465,19 +505,19 @@ public class ForeldrepengeInfoRenderer {
 
         sb.append("\n");
         if (næring.isErVarigEndring()) {
-            sb.append(textFormatter.fromMessageSource("varigendring"));
+            sb.append(txt("varigendring"));
         }
 
         if (næring.isErNyOpprettet()) {
-            sb.append(", " + textFormatter.fromMessageSource("nyopprettet"));
+            sb.append(", " + txt("nyopprettet"));
         }
 
         if (næring.isErNyIArbeidslivet()) {
-            sb.append(", " + textFormatter.fromMessageSource("nyiarbeidslivet"));
+            sb.append(", " + txt("nyiarbeidslivet"));
         }
 
         if (næring.isNærRelasjon()) {
-            sb.append(", " + textFormatter.fromMessageSource("nærrelasjon"));
+            sb.append(", " + txt("nærrelasjon"));
         }
         sb.append("\n");
 
@@ -495,43 +535,52 @@ public class ForeldrepengeInfoRenderer {
             Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
             return Collections.singletonList("Fødselsdato: " + textFormatter.dates(fødsel.getFødselsdato()));
         }
-        else if (relasjonTilBarn instanceof Adopsjon) {
+        if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
             return Collections.singletonList("Adopsjon: " + adopsjon.toString());
         }
-        else if (relasjonTilBarn instanceof FremtidigFødsel) {
+        if (relasjonTilBarn instanceof FremtidigFødsel) {
             FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
             return newArrayList("Fødsel med termin: " + textFormatter.date(fødsel.getTerminDato()),
                     "Bekreftelse utstedt " + textFormatter.date(fødsel.getUtstedtDato()));
         }
-        else {
-            Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
-            return Collections.singletonList("Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
-                    ", " + omsorgsovertakelse.getÅrsak());
-        }
+
+        Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
+        return Collections.singletonList("Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
+                ", " + omsorgsovertakelse.getÅrsak());
 
     }
 
-    private String formatterPeriode(LukketPeriodeMedVedlegg periode) {
-        String tid = textFormatter.date(periode.getFom()) + " - " + textFormatter.date(periode.getTom());
+    private String periode(LukketPeriodeMedVedlegg periode) {
         if (periode instanceof OverføringsPeriode) {
-            return "Overføring: " + tid;
+            return txt("overføring");
         }
         if (periode instanceof GradertUttaksPeriode) {
-            return "Gradert uttak: " + tid;
+            return txt("gradertuttak");
         }
         if (periode instanceof UttaksPeriode) {
-            return "Uttak: " + tid;
+            return txt("uttak");
         }
         if (periode instanceof OppholdsPeriode) {
-            return "Opphold: " + tid;
+            return txt("opphold");
         }
         if (periode instanceof UtsettelsesPeriode) {
-            return "Utsettelse: " + tid;
+            return txt("utsettelse");
         }
 
         throw new IllegalArgumentException(periode.getClass().getSimpleName() + " ikke støttet");
 
     }
 
+    private String vedleggsBeskrivelse(String key, Vedlegg vedlegg) {
+        return erAnnenDokumentType(vedlegg) ? txt(key) : vedlegg.getBeskrivelse();
+    }
+
+    private static boolean erAnnenDokumentType(Vedlegg vedlegg) {
+        return vedlegg.getDokumentType().equals(I000060);
+    }
+
+    private String txt(String key, Object... values) {
+        return textFormatter.fromMessageSource(key, values);
+    }
 }

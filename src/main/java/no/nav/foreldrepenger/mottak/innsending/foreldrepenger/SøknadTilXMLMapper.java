@@ -586,19 +586,21 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
         }
         if (periode instanceof GradertUttaksPeriode) {
             GradertUttaksPeriode gradertPeriode = GradertUttaksPeriode.class.cast(periode);
-            return new Gradering()
+            Gradering gradering = new Gradering()
                     .withFom(gradertPeriode.getFom())
                     .withTom(gradertPeriode.getTom())
                     .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(gradertPeriode.isØnskerSamtidigUttak())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(gradertPeriode.getMorsAktivitetsType()))
-                    .withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
                     .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                     .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
                     .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
                     .withVirksomhetsnummer(gradertPeriode.getVirksomhetsnummer())
                     .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                     .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
+            return gradertPeriode.isØnskerSamtidigUttak()
+                    ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
+                    : gradering;
 
         }
         if (periode instanceof UttaksPeriode) {

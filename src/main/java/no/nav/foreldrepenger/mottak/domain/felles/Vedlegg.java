@@ -45,15 +45,18 @@ public abstract class Vedlegg {
 
     @JsonIgnore
     public InnsendingsType getInnsendingsType() {
+        InnsendingsType type = metadata.getInnsendingsType();
         if (getStørrelse() == 0) {
-            LOG.info("Ingen vedlegg, setter type til SEND_SENERE siden vi ikke haar bytes for vedlegg");
+            if (!SEND_SENERE.equals(type) && type != null) {
+                LOG.warn("Feil innsendingstype {}, ingen vedlegg, setter type til SEND_SENERE", type);
+            }
             return SEND_SENERE;
         }
-        if (metadata.getInnsendingsType() == null) {
-            LOG.info("Ingen innsendingstype er satt, setter type til LASTET_OPP, siden vi har bytes for vedlegg");
+        if (type == null) {
+            LOG.info("Innsendingstype er ikke satt, setter til LASTET_OPP, siden vi har vedlegg");
             return LASTET_OPP;
         }
-        return metadata.getInnsendingsType();
+        return type;
     }
 
     @JsonIgnore

@@ -10,7 +10,7 @@ public enum DokumentType {
     I000037("Mor innlagt i helseinstitisjon"),
     I000038("Mor i arbeid, utdanning på heltid eller syk"),
     I000039("Tjenestebevis"),
-    I000041("Dokumentasjon av termindato (lev. kun av mor), fødsel eller dato for omsorgsovertakelse"),
+    I000041("Dokumentasjon av termindat, fødsel eller dato for omsorgsovertakelse"),
     I000042("Dokumentasjon av overtakelse av omsorg"),
     I000043("Dokumentasjon av arbeidsforhold"),
     I000044("Dokumentasjon av etterlønn eller sluttvederlag"),

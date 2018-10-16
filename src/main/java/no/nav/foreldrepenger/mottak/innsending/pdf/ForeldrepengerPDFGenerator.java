@@ -96,11 +96,13 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                         PDPageContentStream dummycos = new PDPageContentStream(doc, scratch);
                         float startY = PDFElementRenderer.calculateStartY();
                         startY -= fpRenderer.header(søker, doc, dummycos, false, startY);
-                        startY -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), dummycos, startY);
+                        startY -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), søknad.getVedlegg(),
+                                dummycos,
+                                startY);
                         float spaceRequired = PDFElementRenderer.calculateStartY() - startY;
                         if (spaceRequired <= y) {
                             System.out.println(spaceRequired + "<" + y);
-                            y -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), cos, y);
+                            y -= fpRenderer.opptjening(opptjening, dummyArbeidsforhold(), søknad.getVedlegg(), cos, y);
                         }
                         else {
                             System.out.println(spaceRequired + ">=" + y);
@@ -111,7 +113,8 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                         }
                     }
                     else {
-                        y -= fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), cos, y);
+                        y -= fpRenderer.opptjening(opptjening, oppslag.getArbeidsforhold(), søknad.getVedlegg(), cos,
+                                y);
                     }
                 }
                 cos.close();
@@ -132,7 +135,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
                 RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
                 if (relasjon != null) {
-                    y -= fpRenderer.relasjonTilBarn(relasjon, cos, y);
+                    y -= fpRenderer.relasjonTilBarn(relasjon, søknad.getVedlegg(), cos, y);
                 }
                 Fordeling fordeling = stønad.getFordeling();
                 if (fordeling != null) {
@@ -207,7 +210,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
                 if (relasjon != null) {
-                    y -= fpRenderer.relasjonTilBarn(relasjon, cos, y);
+                    y -= fpRenderer.relasjonTilBarn(relasjon, søknad.getVedlegg(), cos, y);
                 }
 
                 Fordeling fordeling = stønad.getFordeling();
