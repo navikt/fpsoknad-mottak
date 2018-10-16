@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
-import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -34,6 +35,7 @@ public class PersonClientTpsWs implements PersonClient {
     private final Barnutvelger barnutvelger;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.tps");
+    private static final Timer timer = Metrics.timer("lookup.person");
 
     public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, Barnutvelger barnutvelger) {
         this.person = Objects.requireNonNull(person);
@@ -139,8 +141,8 @@ public class PersonClientTpsWs implements PersonClient {
         }
     }
 
-    @Timed("lookup.person")
     private HentPersonResponse hentPerson(HentPersonRequest request) {
+        long start = System.currentTimeMillis();
         try {
             return person.hentPerson(request);
         } catch (HentPersonPersonIkkeFunnet e) {
@@ -149,6 +151,9 @@ public class PersonClientTpsWs implements PersonClient {
         } catch (HentPersonSikkerhetsbegrensning e) {
             LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);
             throw new ForbiddenException(e);
+        } finally {
+            long end = System.currentTimeMillis();
+            timer.record(end - start, TimeUnit.MILLISECONDS);
         }
     }
 
