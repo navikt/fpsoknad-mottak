@@ -14,9 +14,11 @@ import no.nav.foreldrepenger.lookup.UUIDCallIdGenerator;
 @Component
 public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
 
+    private static final String X_CORRELATION_ID = "X-Correlation-ID";
+
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
 
-    private UUIDCallIdGenerator callIdGenerator;
+    private final UUIDCallIdGenerator callIdGenerator;
 
     public CallIdRequestInterceptor(UUIDCallIdGenerator callIdGenerator) {
         this.callIdGenerator = callIdGenerator;
@@ -25,22 +27,14 @@ public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest req, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
-        String callId = req.getHeaders().getFirst(callIdGenerator.getCallIdKey());
-        String consumerId = req.getHeaders().getFirst(NAV_CONSUMER_ID);
-        if (consumerId != null) {
-            MDC.put(NAV_CONSUMER_ID, consumerId);
-        }
-
-        if (callId != null) {
-            MDC.put(callIdGenerator.getCallIdKey(), callId);
-        }
-        else {
-            String newCallId = callIdGenerator.create();
-            MDC.put(callIdGenerator.getCallIdKey(), newCallId);
-            req.getHeaders().set("X-Correlation-ID", newCallId);
-        }
-
+        req.getHeaders().set(X_CORRELATION_ID, MDC.get(callIdGenerator.getCallIdKey()));
+        req.getHeaders().set(NAV_CONSUMER_ID, MDC.get(NAV_CONSUMER_ID));
+        req.getHeaders().set(callIdGenerator.getCallIdKey(), MDC.get(callIdGenerator.getCallIdKey()));
         return execution.execute(req, body);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [callIdGenerator=" + callIdGenerator + "]";
+    }
 }

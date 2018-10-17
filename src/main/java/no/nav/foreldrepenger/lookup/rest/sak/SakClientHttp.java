@@ -1,16 +1,9 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Timer;
-import no.nav.foreldrepenger.lookup.EnvUtil;
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
@@ -18,21 +11,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
+import no.nav.foreldrepenger.lookup.EnvUtil;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
 public class SakClientHttp implements SakClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SakClientHttp.class);
-    private static final Timer timer = Metrics.timer("lookup.sak");
+    private static final Timer TIMER = Metrics.timer("lookup.sak");
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    private String sakBaseUrl;
+    private final String sakBaseUrl;
 
-    private StsClient stsClient;
+    private final StsClient stsClient;
 
     public SakClientHttp(String sakBaseUrl, RestTemplate restTemplate, StsClient stsClient) {
         this.sakBaseUrl = sakBaseUrl;
@@ -54,13 +58,12 @@ public class SakClientHttp implements SakClient {
 
         long start = System.currentTimeMillis();
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
-            sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
-            HttpMethod.GET,
-            requestEntity,
-            new ParameterizedTypeReference<List<RemoteSak>>() {
-            });
-        long end = System.currentTimeMillis();
-        timer.record(end - start, TimeUnit.MILLISECONDS);
+                sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<RemoteSak>>() {
+                });
+        TIMER.record(System.currentTimeMillis() - start, TimeUnit.MILLISECONDS);
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
         }
@@ -80,6 +83,12 @@ public class SakClientHttp implements SakClient {
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [restTemplate=" + restTemplate + ", sakBaseUrl=" + sakBaseUrl
+                + ", stsClient=" + stsClient + "]";
     }
 
 }
