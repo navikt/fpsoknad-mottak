@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.lookup.EnvUtil;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
 public class SakClientHttp implements SakClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SakClientHttp.class);
-    private static final Timer TIMER = Metrics.timer("lookup.sak");
 
     private final RestTemplate restTemplate;
 
@@ -56,14 +52,12 @@ public class SakClientHttp implements SakClient {
         headers.setAccept(singletonList(APPLICATION_JSON));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
 
-        long start = System.currentTimeMillis();
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
                 sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
                 HttpMethod.GET,
                 requestEntity,
                 new ParameterizedTypeReference<List<RemoteSak>>() {
                 });
-        TIMER.record(System.currentTimeMillis() - start, TimeUnit.MILLISECONDS);
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
         }

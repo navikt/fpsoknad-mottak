@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.errorhandling.ForbiddenException;
 import no.nav.foreldrepenger.errorhandling.IncompleteRequestException;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.stream.Collectors.toList;
 
@@ -30,7 +29,6 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     private final OrganisasjonClient orgClient;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.aareg");
-    private static final Timer timer = Metrics.timer("lookup.arbeidsforhold");
 
     public ArbeidsforholdClientWs(ArbeidsforholdV3 arbeidsforholdV3, ArbeidsforholdV3 healthIndicator,
             OrganisasjonClient orgClient) {
@@ -51,8 +49,8 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     }
 
     @Override
+    @Timed("lookup.arbeidsforhold")
     public List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr) {
-        long start = System.currentTimeMillis();
         try {
             FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3
                     .finnArbeidsforholdPrArbeidstaker(request(fnr));
@@ -70,9 +68,6 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
         } catch (Exception ex) {
             ERROR_COUNTER.increment();
             throw new RuntimeException(ex);
-        } finally {
-            long end = System.currentTimeMillis();
-            timer.record(end - start, TimeUnit.MILLISECONDS);
         }
     }
 
