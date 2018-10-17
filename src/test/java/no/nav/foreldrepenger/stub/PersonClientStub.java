@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.stub;
 
 import com.neovisionaries.i18n.CountryCode;
+import io.micrometer.core.annotation.Timed;
 import no.nav.foreldrepenger.lookup.ws.person.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ public class PersonClientStub implements PersonClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersonClientStub.class);
 
+    @Timed("lookup.person")
     @Override
     public Person hentPersonInfo(ID id) {
         Navn navn = new Navn("Skjegg", "Stub", "Sveen");
