@@ -30,7 +30,7 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     @Override
-    @Timed("lookup.aktor")
+    @Timed(value = "lookup.time", extraTags = {"aktor"})
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
         try {
             return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
@@ -44,7 +44,7 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     @Override
-    @Timed("lookup.fnr")
+    @Timed(value = "lookup.time", extraTags = {"fnr"})
     public Fødselsnummer fnrForAktørId(AktorId aktørId) {
         try {
             return new Fødselsnummer(aktoerV2.hentIdentForAktoerId(request(aktørId)).getIdent());
