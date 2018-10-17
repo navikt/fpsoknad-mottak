@@ -53,7 +53,7 @@ public class PersonClientTpsWs implements PersonClient {
     }
 
     @Override
-    @Timed(value = "lookup.time", extraTags = {"person"})
+    @Timed("lookup.person")
     public Person hentPersonInfo(ID id) {
         try {
             if (LOG.isTraceEnabled()) {

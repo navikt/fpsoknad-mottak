@@ -44,7 +44,7 @@ public class OrganisasjonClientWs implements OrganisasjonClient {
     }
 
     @Override
-    @Timed(value = "lookup.time", extraTags = {"organisasjon"})
+    @Timed("lookup.organisasjon")
     public Optional<String> nameFor(String orgnr) {
         try {
             HentOrganisasjonRequest request = new HentOrganisasjonRequest();

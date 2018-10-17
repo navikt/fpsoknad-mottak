@@ -49,7 +49,7 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
     }
 
     @Override
-    @Timed(value = "lookup.time", extraTags = {"arbeidsforhold"})
+    @Timed("lookup.arbeidsforhold")
     public List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr) {
         try {
             FinnArbeidsforholdPrArbeidstakerResponse response = arbeidsforholdV3

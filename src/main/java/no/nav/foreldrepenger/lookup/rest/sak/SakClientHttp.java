@@ -41,7 +41,7 @@ public class SakClientHttp implements SakClient {
     }
 
     @Override
-    @Timed(value = "lookup.time", extraTags = {"sak"})
+    @Timed("lookup.sak")
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         LOG.info("henter saker på " + sakBaseUrl);
 

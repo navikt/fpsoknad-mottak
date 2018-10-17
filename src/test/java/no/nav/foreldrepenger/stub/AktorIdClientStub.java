@@ -12,7 +12,7 @@ public class AktorIdClientStub implements AktorIdClient {
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientStub.class);
 
     @Override
-    @Timed(value = "lookup.time", extraTags = {"aktor"})
+    @Timed("lookup.aktor")
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
         return new AktorId("Michael learns to rock");
     }
@@ -23,7 +23,7 @@ public class AktorIdClientStub implements AktorIdClient {
     }
 
     @Override
-    @Timed(value = "lookup.time", extraTags = {"fnr"})
+    @Timed("lookup.fnr")
     public Fødselsnummer fnrForAktørId(AktorId fnr) {
         return new Fødselsnummer("01010100000");
     }
