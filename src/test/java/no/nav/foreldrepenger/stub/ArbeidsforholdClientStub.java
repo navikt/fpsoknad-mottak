@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.stub;
 
+import io.micrometer.core.annotation.Timed;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.ArbeidsforholdClient;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
@@ -23,6 +24,7 @@ public class ArbeidsforholdClientStub implements ArbeidsforholdClient {
     }
 
     @Override
+    @Timed("lookup.arbeidsforhold")
     public List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr) {
         Arbeidsforhold arbeidsforhold1 = new Arbeidsforhold("0123456789", "orgnummer",
             69d, now().minusYears(1), empty());

@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.stub;
 
+import io.micrometer.core.annotation.Timed;
 import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.OrganisasjonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ public class OrganisasjonClientStub implements OrganisasjonClient {
     }
 
     @Override
+    @Timed("lookup.organisasjon")
     public Optional<String> nameFor(String orgnr) {
         return Optional.of("S. Vindel & sønn");
     }

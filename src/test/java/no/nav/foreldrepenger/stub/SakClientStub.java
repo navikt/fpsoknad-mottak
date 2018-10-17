@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.stub;
 
+import io.micrometer.core.annotation.Timed;
 import no.nav.foreldrepenger.lookup.rest.sak.Sak;
 import no.nav.foreldrepenger.lookup.rest.sak.SakClient;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class SakClientStub implements SakClient {
     @Override
+    @Timed("lookup.sak")
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         return Arrays.asList(
             new Sak("sak1", "typen", "systemet", "fsid1",

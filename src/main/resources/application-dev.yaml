@@ -1,9 +1,9 @@
 management :
    endpoints.web.exposure.include:  '*'
-   endpoint: 
+   endpoint:
      health.show-details : always
      security.enabled : false
-                
+
 no.nav.security.oidc:
   issuers: selvbetjening
   issuer:
@@ -28,3 +28,5 @@ SAK_SAKER_URL: http://localhost
 SECURITYTOKENSERVICE_URL: http://localhost
 FPSELVBETJENING_USERNAME: something
 FPSELVBETJENING_PASSWORD: bogus
+
+server.port: 9000

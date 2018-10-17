@@ -1,17 +1,18 @@
 package no.nav.foreldrepenger.stub;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.micrometer.core.annotation.Timed;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AktorIdClientStub implements AktorIdClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientStub.class);
 
     @Override
+    @Timed("lookup.aktor")
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
         return new AktorId("Michael learns to rock");
     }
@@ -22,6 +23,7 @@ public class AktorIdClientStub implements AktorIdClient {
     }
 
     @Override
+    @Timed("lookup.fnr")
     public Fødselsnummer fnrForAktørId(AktorId fnr) {
         return new Fødselsnummer("01010100000");
     }
