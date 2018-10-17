@@ -18,7 +18,7 @@ import org.springframework.web.filter.GenericFilterBean;
 @Order(1)
 public class CallAndConsumerIdFilter extends GenericFilterBean {
 
-    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
+    public static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
 
     private final UUIDCallIdGenerator generator;
 

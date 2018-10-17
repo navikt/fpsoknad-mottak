@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
+import static no.nav.foreldrepenger.lookup.CallAndConsumerIdFilter.NAV_CONSUMER_ID;
+
 import java.io.IOException;
 
 import org.slf4j.MDC;
@@ -15,8 +17,6 @@ import no.nav.foreldrepenger.lookup.UUIDCallIdGenerator;
 public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
 
     private static final String X_CORRELATION_ID = "X-Correlation-ID";
-
-    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
 
     private final UUIDCallIdGenerator callIdGenerator;
 
