@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SakClientStub implements SakClient {
     @Override
-    @Timed("lookup.sak")
+    @Timed(value = "lookup.time", extraTags = {"sak"})
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         return Arrays.asList(
             new Sak("sak1", "typen", "systemet", "fsid1",

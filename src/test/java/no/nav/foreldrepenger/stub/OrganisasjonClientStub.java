@@ -17,7 +17,7 @@ public class OrganisasjonClientStub implements OrganisasjonClient {
     }
 
     @Override
-    @Timed("lookup.organisasjon")
+    @Timed(value = "lookup.time", extraTags = {"organisasjon"})
     public Optional<String> nameFor(String orgnr) {
         return Optional.of("S. Vindel & sønn");
     }

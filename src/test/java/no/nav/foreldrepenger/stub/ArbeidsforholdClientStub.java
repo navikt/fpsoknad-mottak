@@ -24,7 +24,7 @@ public class ArbeidsforholdClientStub implements ArbeidsforholdClient {
     }
 
     @Override
-    @Timed("lookup.arbeidsforhold")
+    @Timed(value = "lookup.time", extraTags = {"arbeidsforhold"})
     public List<Arbeidsforhold> aktiveArbeidsforhold(Fødselsnummer fnr) {
         Arbeidsforhold arbeidsforhold1 = new Arbeidsforhold("0123456789", "orgnummer",
             69d, now().minusYears(1), empty());

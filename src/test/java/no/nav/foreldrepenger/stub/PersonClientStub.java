@@ -15,7 +15,7 @@ public class PersonClientStub implements PersonClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersonClientStub.class);
 
-    @Timed("lookup.person")
+    @Timed(value = "lookup.time", extraTags = {"person"})
     @Override
     public Person hentPersonInfo(ID id) {
         Navn navn = new Navn("Skjegg", "Stub", "Sveen");
