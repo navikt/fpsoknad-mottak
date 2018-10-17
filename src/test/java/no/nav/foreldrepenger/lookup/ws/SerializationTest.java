@@ -1,26 +1,34 @@
 package no.nav.foreldrepenger.lookup.ws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.lookup.ws.person.*;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Ytelse;
-import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.Arbeidsforhold;
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Optional;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neovisionaries.i18n.CountryCode;
 
-import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
+import no.nav.foreldrepenger.lookup.ws.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.lookup.ws.person.Bankkonto;
+import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
+import no.nav.foreldrepenger.lookup.ws.person.ID;
+import no.nav.foreldrepenger.lookup.ws.person.Kjønn;
+import no.nav.foreldrepenger.lookup.ws.person.Navn;
+import no.nav.foreldrepenger.lookup.ws.person.Person;
+import no.nav.foreldrepenger.lookup.ws.person.PoststedFinner;
+import no.nav.foreldrepenger.lookup.ws.person.StatiskPoststedFinner;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
@@ -34,11 +42,6 @@ public class SerializationTest {
         PoststedFinner finner = new StatiskPoststedFinner();
         assertTrue(finner.poststed("1353").equalsIgnoreCase("Bærums Verk"));
         assertTrue(finner.poststed("1332").equalsIgnoreCase("Østerås"));
-    }
-
-    @Test
-    public void testYtelseSerialization() throws IOException {
-        test(ytelse());
     }
 
     @Test
@@ -97,7 +100,7 @@ public class SerializationTest {
 
     private static Person person() {
         return new Person(id(), CountryCode.NO, Kjønn.M, name(), "nynorsk",
-            bankkonto(), birthDate(), emptyList());
+                bankkonto(), birthDate(), emptyList());
     }
 
     private static LocalDate birthDate() {
@@ -114,11 +117,6 @@ public class SerializationTest {
 
     private static Bankkonto bankkonto() {
         return new Bankkonto("1234567890", "Pæng r'us");
-    }
-
-    private static Ytelse ytelse() {
-        return new Ytelse("typen", "statusen", LocalDate.now().minus(Period.ofYears(2)),
-                Optional.of(LocalDate.now().minus(Period.ofYears(1))));
     }
 
     private static Arbeidsforhold arbeidsforhold() {

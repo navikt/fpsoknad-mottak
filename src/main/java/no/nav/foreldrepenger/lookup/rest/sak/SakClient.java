@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface SakClient {
 
-    List<no.nav.foreldrepenger.lookup.ws.ytelser.Sak> sakerFor(AktorId aktor, String oidcToken);
+    List<no.nav.foreldrepenger.lookup.rest.sak.Sak> sakerFor(AktorId aktor, String oidcToken);
 
 }

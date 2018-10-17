@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

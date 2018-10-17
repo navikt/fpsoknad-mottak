@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.lookup.ws.ytelser;
+package no.nav.foreldrepenger.lookup.rest.sak;
 
 import java.time.LocalDate;
 import java.util.Objects;

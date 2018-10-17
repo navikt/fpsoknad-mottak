@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.stub;
 
+import no.nav.foreldrepenger.lookup.rest.sak.Sak;
 import no.nav.foreldrepenger.lookup.rest.sak.SakClient;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 
 import java.time.LocalDate;
 import java.util.Arrays;

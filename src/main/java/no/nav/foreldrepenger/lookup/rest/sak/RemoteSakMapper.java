@@ -3,8 +3,6 @@ package no.nav.foreldrepenger.lookup.rest.sak;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
-
 public class RemoteSakMapper {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");

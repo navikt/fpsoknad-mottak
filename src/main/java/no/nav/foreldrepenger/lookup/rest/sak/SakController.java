@@ -4,7 +4,6 @@ import no.nav.foreldrepenger.lookup.FnrExtractor;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
 import no.nav.security.oidc.OIDCConstants;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;

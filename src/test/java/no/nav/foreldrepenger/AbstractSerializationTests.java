@@ -21,9 +21,9 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureJsonTesters
 
-public class TestFPInfoSerialization {
+public abstract class AbstractSerializationTests {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestFPInfoSerialization.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractSerializationTests.class);
 
     private static final ObjectMapper mapper = mapper();
 

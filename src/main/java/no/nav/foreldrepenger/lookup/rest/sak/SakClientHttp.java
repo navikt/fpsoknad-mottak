@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.lookup.EnvUtil;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-import no.nav.foreldrepenger.lookup.ws.ytelser.Sak;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
