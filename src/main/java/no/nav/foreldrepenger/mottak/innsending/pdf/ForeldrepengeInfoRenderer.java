@@ -182,10 +182,17 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
         }
         for (String id : vedleggRefs) {
-            Vedlegg details = vedlegg.stream().filter(s -> s.getId().equals(id)).findFirst().get();
-            String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details);
-            y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", beskrivelse,
-                    textFormatter.capitalize(details.getInnsendingsType().name())), cos, y);
+            Optional<Vedlegg> details = vedlegg.stream().filter(s -> s.getId().equals(id)).findFirst();
+            if (details.isPresent()) {
+                String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
+                y -= renderer.addBulletPoint(INDENT,
+                        txt("vedlegg2", beskrivelse, cap(details.get().getInnsendingsType().name())),
+                        cos, y);
+            }
+            else {
+                // Never, hopefully
+                y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", "vedlegg"), cos, y);
+            }
         }
         return y;
     }
