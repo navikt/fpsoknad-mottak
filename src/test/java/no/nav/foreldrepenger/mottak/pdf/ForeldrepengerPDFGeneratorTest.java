@@ -54,7 +54,7 @@ public class ForeldrepengerPDFGeneratorTest {
         return Lists.newArrayList(
                 new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
                         Optional.of(LocalDate.now()), 90.0, "El caca"),
-                new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                new Arbeidsforhold("1234", "", LocalDate.now().minusDays(500),
                         Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
                 new Arbeidsforhold("5678", "", LocalDate.now().minusDays(100),
                         Optional.of(LocalDate.now()), 80.0, "TGD"));

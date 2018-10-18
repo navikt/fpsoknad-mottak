@@ -41,7 +41,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { RemoteUnavailableException.class })
     protected ResponseEntity<Object> handleRemoteUnavailable(RemoteUnavailableException e, WebRequest request) {
-        return logAndHandle(NOT_FOUND, e, request, getRootCauseMessage(e));
+        return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
     }
 
     @ExceptionHandler(value = { NotFoundException.class })

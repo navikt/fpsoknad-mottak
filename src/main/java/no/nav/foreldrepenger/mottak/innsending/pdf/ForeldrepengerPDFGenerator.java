@@ -74,11 +74,35 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
             y = fpRenderer.header(søker, doc, cos, false, y);
             float headerSize = yTop - y;
             LOG.info("Heaader trenger  {}", headerSize);
+
+            if (stønad.getRelasjonTilBarn() != null) {
+                LOG.info("Y før relasjon til barn {}", y);
+                PDPage scratch1 = pdfRenderer.newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float startY = STARTY;
+                startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                float size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
+                        startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    LOG.info("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
+                    scratchcos.close();
+                    y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
+                }
+                else {
+                    LOG.info("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
+                            currentPage, behov, y);
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                    currentPage++;
+                }
+            }
+
             LOG.info("Y før annen  forelder {}", y);
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                        stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                        stønad.getRettigheter(), cos,
                         y);
             }
             LOG.info("Y før dekninggsgrad {}", y);
@@ -232,29 +256,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                                 "Trenger ny side. IKKE nok plass til medlemsskap på side {}, trenger {}, har {}",
                                 currentPage,
                                 behov, y);
-                        cos = nySide(doc, cos, scratch1, scratchcos);
-                        y = nesteSideStart(headerSize, behov);
-                        currentPage++;
-                    }
-                }
-
-                if (stønad.getRelasjonTilBarn() != null) {
-                    LOG.info("Y før relasjon til barn {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
-                    startY = STARTY;
-                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
-                            startY);
-                    behov = startY - size;
-                    if (behov <= y) {
-                        LOG.info("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
-                        scratchcos.close();
-                        y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
-                    }
-                    else {
-                        LOG.info("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
-                                currentPage, behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                         currentPage++;
