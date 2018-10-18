@@ -42,7 +42,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
@@ -72,13 +71,12 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addCenteredHeadings(søker(søker), cos, y);
         y -= renderer.addDividerLine(cos, y);
         y -= renderer.addBlankLine();
-        return startY - y;
+        return y;
     }
 
     public float annenForelder(AnnenForelder annenForelder, boolean erAnnenForlderInformert,
             boolean harAnnenForelderRett,
             PDPageContentStream cos, float y) throws IOException {
-        float startY = y;
         y -= renderer.addLeftHeading(txt("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
@@ -98,50 +96,35 @@ public class ForeldrepengeInfoRenderer {
                     y);
         }
         y -= renderer.addBlankLine();
-        return startY - y;
+        return y;
     }
 
     public float dekningsgrad(Dekningsgrad dekningsgrad, PDPageContentStream cos, float y) throws IOException {
-        float startY = y;
         y -= renderer.addLeftHeading(txt("dekningsgrad"), cos, y);
         y -= renderer.addLineOfRegularText(INDENT, dekningsgrad.kode() + "%", cos, y);
         y -= renderer.addBlankLine();
-        return startY - y;
+        return y;
     }
 
     public float rettigheter(Rettigheter rettigheter, PDPageContentStream cos, float y) throws IOException {
-        float startY = y;
         y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
-        y -= renderer.addLineOfRegularText(txt("aleneomsorg") +
+        y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg") +
                 textFormatter.yesNo(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
-        y -= renderer.addLineOfRegularText(txt("omsorgiperiodene") +
+        y -= renderer.addLineOfRegularText(INDENT, txt("omsorgiperiodene") +
                 textFormatter.yesNo(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
-        return startY - y;
+        return y;
 
-    }
-
-    public float opptjening(Opptjening opptjening, List<Arbeidsforhold> arbeidsforhold, List<Vedlegg> vedlegg,
-            PDPageContentStream cos,
-            float y) throws IOException {
-        float startY = y;
-
-        y = arbeidsforholdOpptjening(arbeidsforhold, cos, y);
-        y = utenlandskeArbeidsforholdOpptjening(opptjening.getUtenlandskArbeidsforhold(), vedlegg, cos, y);
-        y = annenOpptjening(opptjening.getAnnenOpptjening(), vedlegg, cos, y);
-        y = egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
-        y = frilansOpptjening(opptjening.getFrilans(), cos, y);
-        return startY - y;
     }
 
     public float frilansOpptjening(Frilans frilans, PDPageContentStream cos, float y) throws IOException {
         if (frilans == null) {
             return y;
         }
-        y -= frilans(frilans, cos, y);
+        y = frilans(frilans, cos, y);
         return y;
     }
 
-    private float annenOpptjening(List<AnnenOpptjening> annenOpptjening, List<Vedlegg> vedlegg, PDPageContentStream cos,
+    float annenOpptjening(List<AnnenOpptjening> annenOpptjening, List<Vedlegg> vedlegg, PDPageContentStream cos,
             float y)
             throws IOException {
         if (CollectionUtils.isEmpty(annenOpptjening)) {
@@ -159,7 +142,6 @@ public class ForeldrepengeInfoRenderer {
                             textFormatter.date(annen.getPeriode().getTom())), cos, y);
                 }
             }
-            y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
             y = renderVedlegg(vedlegg, annen.getVedlegg(), "vedleggannenopptjening", cos, y);
         }
         y -= renderer.addBlankLine();
@@ -196,7 +178,6 @@ public class ForeldrepengeInfoRenderer {
                     cos,
                     y);
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskeArbeidsforhold(forhold), cos, y);
-            y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
             y = renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
         }
         y -= renderer.addBlankLine();
@@ -206,6 +187,9 @@ public class ForeldrepengeInfoRenderer {
     private float renderVedlegg(List<Vedlegg> vedlegg, List<String> vedleggRefs, String keyIfAnnet,
             PDPageContentStream cos,
             float y) throws IOException {
+        if (!vedleggRefs.isEmpty()) {
+            y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
+        }
         for (String id : vedleggRefs) {
             Vedlegg details = vedlegg.stream().filter(s -> s.getId().equals(id)).findFirst().get();
             String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details);
@@ -227,72 +211,83 @@ public class ForeldrepengeInfoRenderer {
                     cos,
                     y);
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
+            y -= renderer.addBlankLine();
+        }
+        return y;
+    }
+
+    public float frilans(Frilans frilans, PDPageContentStream cos, float y) throws IOException {
+        y -= renderer.addLeftHeading(txt("frilans"), cos, y);
+        List<String> attributter = new ArrayList<>();
+        attributter.add(txt("fom", textFormatter.date(frilans.getPeriode().getFom())));
+        if (frilans.getPeriode().getTom() != null) {
+            attributter.add(txt("tom", textFormatter.date(frilans.getPeriode().getTom())));
+        }
+        if (frilans.isHarInntektFraFosterhjem()) {
+            attributter.add(txt("fosterhjem", textFormatter.yesNo(frilans.isHarInntektFraFosterhjem())));
+        }
+        if (frilans.isNyOppstartet()) {
+            attributter.add(txt("nyoppstartet", textFormatter.yesNo(frilans.isNyOppstartet())));
+        }
+        if (!frilans.getFrilansOppdrag().isEmpty()) {
+            attributter.add(txt("nærrelasjon", textFormatter.yesNo(true)));
+        }
+        y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
+        if (!frilans.getFrilansOppdrag().isEmpty()) {
+            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
+        }
+
+        List<String> oppdrag = frilans.getFrilansOppdrag().stream()
+                .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
+                .collect(toList());
+        y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
+        y -= renderer.addBlankLine();
+        return y;
+    }
+
+    public float medlemsskap(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
+        y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
+        TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
+        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + " " +
+                (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
+        if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {
+            y -= renderer.addLeftHeading(txt("tidligereopphold"), cos, y);
+            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()), cos, y);
+        }
+        FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
+        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") + " " +
+                (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("føderi",
+                (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
+        if (!framtidigeOpphold.getUtenlandsOpphold().isEmpty()) {
+            y -= renderer.addLeftHeading(txt("framtidigeopphold"), cos, y);
+            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()), cos,
+                    y);
+        }
+        return y;
+    }
+
+    public float omBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
+            throws IOException {
+        y -= renderer.addLeftHeading(txt("barn"), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, barn(relasjon), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("antallbarn", relasjon.getAntallBarn()), cos, y);
+        return y;
+    }
+
+    public float fordeling(Fordeling fordeling, PDPageContentStream cos, float y) throws IOException {
+        y -= renderer.addLeftHeading(txt("perioder"), cos, y);
+        for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
+            y -= renderer.addBulletPoint(periode(periode), cos, y);
+            y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode), cos, y);
+            y -= renderer.addBlankLine();
         }
         y -= renderer.addBlankLine();
         return y;
     }
 
-    public float frilans(Frilans frilans, PDPageContentStream cos, float y) throws IOException {
-        float startY = y;
-        y -= renderer.addBlankLine();
-        y -= renderer.addLeftHeading(txt("frilans"), cos, y);
-        StringBuilder sb = new StringBuilder(textFormatter.periode(frilans.getPeriode()));
-        if (frilans.isHarInntektFraFosterhjem()) {
-            sb.append(", har fra fosterhjem");
-        }
-        if (frilans.isNyOppstartet()) {
-            sb.append(", nyoppstartet");
-        }
-        if (frilans.getVedlegg().size() != 0) {
-            sb.append(", vedlegg: " + frilans.getVedlegg().stream().collect(joining(", ")));
-        }
-        if (frilans.getFrilansOppdrag().size() != 0) {
-            sb.append(", " + txt("nærrelasjon"));
-        }
-        y -= renderer.addLineOfRegularText(sb.toString(), cos, y);
-        List<String> oppdrag = frilans.getFrilansOppdrag().stream()
-                .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
-                .collect(toList());
-        y -= renderer.addBulletList(oppdrag, cos, y);
-        return startY - y;
-    }
-
-    public float medlemsskap(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
-        float startY = y;
-        y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + " " +
-                (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
-        if (tidligereOpphold.getUtenlandsOpphold().size() != 0) {
-            y -= renderer.addLeftHeading(txt("tidligereopphold"), cos, y);
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()), cos, y);
-        }
-        FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
-        y -= renderer.addLineOfRegularText(txt("neste12") + " " +
-                (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt("føderi",
-                (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
-        if (framtidigeOpphold.getUtenlandsOpphold().size() != 0) {
-            y -= renderer.addLeftHeading(txt("framtidigeopphold"), cos, y);
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()), cos,
-                    y);
-        }
-        return startY - y;
-    }
-
-    public float omBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
-            throws IOException {
-        float startY = y;
-        y -= renderer.addLeftHeading(txt("barn"), cos, y);
-        y -= renderer.addLinesOfRegularText(INDENT, barn(relasjon), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt("antallbarn", relasjon.getAntallBarn()), cos, y);
-        return startY - y;
-    }
-
-    public float fordeling(Fordeling fordeling, PDPageContentStream cos, float y) throws IOException {
-        float startY = y;
-        y -= renderer.addLeftHeading(txt("perioder"), cos, y);
-        Collections.sort(fordeling.getPerioder(), new Comparator<LukketPeriodeMedVedlegg>() {
+    private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
+        Collections.sort(perioder, new Comparator<LukketPeriodeMedVedlegg>() {
 
             @Override
             public int compare(LukketPeriodeMedVedlegg o1, LukketPeriodeMedVedlegg o2) {
@@ -300,13 +295,7 @@ public class ForeldrepengeInfoRenderer {
             }
 
         });
-        for (LukketPeriodeMedVedlegg periode : fordeling.getPerioder()) {
-            y -= renderer.addBulletPoint(periode(periode), cos, y);
-            y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode), cos, y);
-            y -= renderer.addBlankLine();
-        }
-        y -= renderer.addBlankLine();
-        return startY - y;
+        return perioder;
     }
 
     private List<String> periodeDataFra(LukketPeriodeMedVedlegg periode) {
@@ -392,13 +381,11 @@ public class ForeldrepengeInfoRenderer {
     public float relasjonTilBarn(RelasjonTilBarnMedVedlegg relasjon, List<Vedlegg> vedlegg, PDPageContentStream cos,
             float y)
             throws IOException {
-        float startY = y;
         y -= renderer.addBlankLine();
-        y -= omBarn(relasjon, cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
+        y = omBarn(relasjon, cos, y);
         y = renderVedlegg(vedlegg, relasjon.getVedlegg(), "vedleggrelasjondok", cos, y);
         y -= renderer.addBlankLine();
-        return startY - y;
+        return y;
     }
 
     public float vedlegg(List<Vedlegg> vedlegg, PDPageContentStream cos, float y) throws IOException {

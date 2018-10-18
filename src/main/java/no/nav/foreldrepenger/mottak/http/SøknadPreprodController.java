@@ -7,6 +7,8 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -19,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
@@ -77,14 +81,14 @@ public class SøknadPreprodController {
     public ResponseEntity<byte[]> pdfEndring(@Valid @RequestBody Endringssøknad endringssøknad) {
         return ok()
                 .header("Content-disposition", "attachment; filename=" + endringssøknad.getSaksnr())
-                .body(pdfGenerator.generate(endringssøknad, søker(), false));
+                .body(pdfGenerator.generate(endringssøknad, søker(), arbeidsforhold()));
     }
 
     @PostMapping(path = "/pdfSøknad", produces = APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> pdfSøknad(@Valid @RequestBody Søknad søknad) {
         return ok()
                 .header("Content-disposition", "attachment; filename=søknad")
-                .body(pdfGenerator.generate(søknad, søker(), false));
+                .body(pdfGenerator.generate(søknad, søker(), arbeidsforhold()));
     }
 
     @PostMapping(path = "/konvolutt", produces = { APPLICATION_XML_VALUE, APPLICATION_JSON_VALUE })
@@ -132,6 +136,13 @@ public class SøknadPreprodController {
         søker.land = CountryCode.NO;
         søker.målform = "NN";
         return søker;
+    }
+
+    private static List<Arbeidsforhold> arbeidsforhold() {
+        return Lists.newArrayList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
+                new Arbeidsforhold("5678", "", LocalDate.now().minusDays(100),
+                        Optional.of(LocalDate.now()), 80.0, "TGD"));
     }
 
     @Override

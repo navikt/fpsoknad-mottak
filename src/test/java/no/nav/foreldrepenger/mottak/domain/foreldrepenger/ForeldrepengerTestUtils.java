@@ -106,7 +106,7 @@ public class ForeldrepengerTestUtils {
     }
 
     private static Frilans frilans() {
-        return new Frilans(åpenPeriode(true), false, false,
+        return new Frilans(åpenPeriode(true), true, true,
                 newArrayList(new FrilansOppdrag("bror min", åpenPeriode(true)),
                         new FrilansOppdrag("far min", åpenPeriode(true))),
                 newArrayList(ID142, ID143));

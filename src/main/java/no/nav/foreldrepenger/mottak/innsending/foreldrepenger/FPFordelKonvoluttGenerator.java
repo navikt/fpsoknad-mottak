@@ -51,7 +51,7 @@ public class FPFordelKonvoluttGenerator {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-
+        LOG.info("Genererer payload");
         builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
                 id(id));

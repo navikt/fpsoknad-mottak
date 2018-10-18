@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
@@ -25,6 +27,12 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvitte
 
 @Service
 public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStatusPoller {
+
+    private static final Counter PENDING = Metrics.counter("fpinfo.kvitteringer.påvent");
+    private static final Counter REJECTED = Metrics.counter("fpinfo.kvitteringer.avslått");
+    private static final Counter ACCEPTED = Metrics.counter("fpinfo.kvitteringer.innvilget");
+    private static final Counter RUNNING = Metrics.counter("fpinfo.kvitteringer.pågår");
+    private static final Counter FAILED = Metrics.counter("fpinfo.kvitteringer.feilet");
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoSaksPoller.class);
 
@@ -102,18 +110,23 @@ public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStat
 
         switch (forsendelsesStatus.getForsendelseStatus()) {
         case AVSLÅTT:
+            REJECTED.increment();
             return kvitteringMedType(AVSLÅTT, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case INNVILGET:
+            ACCEPTED.increment();
             return kvitteringMedType(INNVILGET, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅ_VENT:
+            PENDING.increment();
             return kvitteringMedType(PÅ_VENT, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅGÅR:
+            RUNNING.increment();
             return kvitteringMedType(PÅGÅR, ref, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         default:
+            FAILED.increment();
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
     }
@@ -121,6 +134,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStat
     private static Kvittering sendtOgForsøktBehandletKvittering(String ref, FPSakFordeltKvittering kvittering) {
         LOG.info("Søknaden er motatt og forsøkt behandlet av FPSak, journalId er {}, saksnummer er {}",
                 kvittering.getJournalpostId(), kvittering.getSaksnummer());
+        FAILED.increment();
         return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref, kvittering.getJournalpostId(),
                 kvittering.getSaksnummer());
     }
