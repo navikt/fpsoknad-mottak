@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 @Component
 public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
+    private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
     private final Oppslag oppslag;
     private final ForeldrepengeInfoRenderer fpRenderer;
@@ -61,272 +62,270 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
     public byte[] generate(Søknad søknad, Person søker, final List<Arbeidsforhold> arbeidsforhold) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
-        float yTop = PDFElementRenderer.calculateStartY();
+        float yTop = STARTY;
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = pdfRenderer.newPage();
             doc.addPage(page);
-            try {
-                PDPageContentStream cos = new PDPageContentStream(doc, page);
-                float y = yTop;
-                LOG.info("Y ved start {}", y);
-                y = fpRenderer.header(søker, doc, cos, false, y);
-                float headerSize = yTop - y;
-                LOG.info("Heaader trenger  {}", headerSize);
-                LOG.info("Y før annen  forelder {}", y);
-                AnnenForelder annenForelder = stønad.getAnnenForelder();
-                if (annenForelder != null) {
-                    y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                            stønad.getRettigheter().isHarAnnenForelderRett(), cos,
-                            y);
-                }
-                LOG.info("Y før dekninggsgrad {}", y);
-                if (stønad.getDekningsgrad() != null) {
-                    y = fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
-                }
-
-                Opptjening opptjening = stønad.getOpptjening();
-                List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
-                if (opptjening != null) {
-                    LOG.info("Y før opptjening {}", y);
-                    PDPage scratch = pdfRenderer.newPage();
-                    PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch);
-                    float startY = PDFElementRenderer.calculateStartY();
-                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    float size = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, scratchcos, startY);
-                    float behov = startY - size;
-                    if (behov <= y) {
-                        scratchcos.close();
-                        LOG.info("Nok plass til opptjening, trenger {}, har {}", behov, y);
-                        y = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, cos, y);
-                    }
-                    else {
-                        LOG.info("Trenger ny side. IKKE nok plass til opptjening på denne siden, trenger {}, har {}",
-                                behov, y);
-                        cos.close();
-                        doc.addPage(scratch);
-                        cos = scratchcos;
-                        y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                    }
-                    if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
-                        LOG.info("Y før utenlandsk arbeidsforhold {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.utenlandskeArbeidsforholdOpptjening(
-                                opptjening.getUtenlandskArbeidsforhold(),
-                                søknad.getVedlegg(),
-                                scratchcos, startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til utenlandsk arbeidsforhold, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.utenlandskeArbeidsforholdOpptjening(
-                                    opptjening.getUtenlandskArbeidsforhold(),
-                                    søknad.getVedlegg(), cos, y);
-                        }
-                        else {
-                            LOG.info(
-                                    "Trenger ny side. IKKE nok plass til utenlandsk arbeidsforhold på denne siden, trenger {}, har {}",
-                                    behov, y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                    if (!opptjening.getAnnenOpptjening().isEmpty()) {
-                        LOG.info("Y før annen opptjening {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.annenOpptjening(opptjening.getAnnenOpptjening(), søknad.getVedlegg(),
-                                scratchcos, startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til annen opptjening, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.annenOpptjening(
-                                    opptjening.getAnnenOpptjening(),
-                                    søknad.getVedlegg(), cos, y);
-                        }
-                        else {
-                            LOG.info(
-                                    "Trenger ny side. IKKE nok plass til annen opptjening på denne siden, trenger {}, har {}",
-                                    behov,
-                                    y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                    if (!opptjening.getEgenNæring().isEmpty()) {
-                        LOG.info("Y før egen næring {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til egen næring, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
-                        }
-                        else {
-                            LOG.info(
-                                    "Trenger ny side. IKKE nok plass til egen næring på denne siden, trenger {}, har {}",
-                                    behov, y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                    if (opptjening.getFrilans() != null) {
-                        LOG.info("Y før frilans {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.frilansOpptjening(opptjening.getFrilans(),
-                                scratchcos, startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til frilans, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.frilansOpptjening(opptjening.getFrilans(), cos, y);
-                        }
-                        else {
-                            LOG.info("Trenger ny side. IKKE nok plass til frilans på denne siden, trenger {}, har {}",
-                                    behov, y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                    if (stønad.getMedlemsskap() != null) {
-                        LOG.info("Y før medlemsskap {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.medlemsskap(stønad.getMedlemsskap(), scratchcos, startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til medlemsskap, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), cos, y);
-                        }
-                        else {
-                            LOG.info(
-                                    "Trenger ny side. IKKE nok plass til medlemsskap på denne siden, trenger {}, har {}",
-                                    behov, y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                    if (stønad.getRelasjonTilBarn() != null) {
-                        LOG.info("Y før relasjon til barn {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
-                                startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
-                        }
-                        else {
-                            LOG.info("Trenger ny side. IKKE nok plass til relasjon på denne siden, trenger {}, har {}",
-                                    behov, y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                    if (stønad.getFordeling() != null) {
-                        LOG.info("Y før fordeling {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.fordeling(stønad.getFordeling(), scratchcos,
-                                startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til fordeling, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.fordeling(stønad.getFordeling(), cos, y);
-                        }
-                        else {
-                            LOG.info(
-                                    "Trenger ny side. IKKE nok plass til fordeling på denne siden, trenger {}, har {}",
-                                    behov, y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                    if (stønad.getRettigheter() != null) {
-                        LOG.info("Y før rettigheter {}", y);
-                        PDPage scratch1 = pdfRenderer.newPage();
-                        scratchcos = new PDPageContentStream(doc, scratch1);
-                        startY = PDFElementRenderer.calculateStartY();
-                        startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                        size = fpRenderer.rettigheter(stønad.getRettigheter(), scratchcos,
-                                startY);
-                        behov = startY - size;
-                        if (behov <= y) {
-                            LOG.info("Nok plass til rettigheter, trenger {}, har {}", behov, y);
-                            scratchcos.close();
-                            y = fpRenderer.rettigheter(stønad.getRettigheter(), cos, y);
-                        }
-                        else {
-                            LOG.info(
-                                    "Trenger ny side. IKKE nok plass til rettigheter på denne siden, trenger {}, har {}",
-                                    behov, y);
-                            cos.close();
-                            doc.addPage(scratch1);
-                            cos = scratchcos;
-                            y = PDFElementRenderer.calculateStartY() - behov - headerSize;
-                        }
-                    }
-
-                }
-                cos.close();
-                doc.save(baos);
-                return baos.toByteArray();
-            } catch (IOException ex) {
-                throw new RuntimeException("Error while creating pdf", ex);
+            int currentPage = 1;
+            PDPageContentStream cos = new PDPageContentStream(doc, page);
+            float y = yTop;
+            LOG.info("Y ved start {}", y);
+            y = fpRenderer.header(søker, doc, cos, false, y);
+            float headerSize = yTop - y;
+            LOG.info("Heaader trenger  {}", headerSize);
+            LOG.info("Y før annen  forelder {}", y);
+            AnnenForelder annenForelder = stønad.getAnnenForelder();
+            if (annenForelder != null) {
+                y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
+                        stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                        y);
+            }
+            LOG.info("Y før dekninggsgrad {}", y);
+            if (stønad.getDekningsgrad() != null) {
+                y = fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
             }
 
-        } catch (IOException ex) {
-            throw new RuntimeException("Error while creating pdf", ex);
+            Opptjening opptjening = stønad.getOpptjening();
+            List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
+            if (opptjening != null) {
+                LOG.info("Y før opptjening {}", y);
+                PDPage scratch = pdfRenderer.newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch);
+                float startY = STARTY;
+                startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                float size = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, scratchcos, startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    scratchcos.close();
+                    LOG.info("Nok plass til opptjening, trenger {}, har {}", behov, y);
+                    y = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, cos, y);
+                }
+                else {
+                    LOG.info("Trenger ny side. IKKE nok plass til opptjening på side {}, trenger {}, har {}",
+                            currentPage,
+                            behov, y);
+                    cos = nySide(doc, cos, scratch, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                    currentPage++;
+                }
+                if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
+                    LOG.info("Y før utenlandsk arbeidsforhold {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.utenlandskeArbeidsforholdOpptjening(
+                            opptjening.getUtenlandskArbeidsforhold(),
+                            søknad.getVedlegg(),
+                            scratchcos, startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til utenlandsk arbeidsforhold, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.utenlandskeArbeidsforholdOpptjening(
+                                opptjening.getUtenlandskArbeidsforhold(),
+                                søknad.getVedlegg(), cos, y);
+                    }
+                    else {
+                        LOG.info(
+                                "Trenger ny side. IKKE nok plass til utenlandsk arbeidsforhold på side {}, trenger {}, har {}",
+                                currentPage,
+                                behov, y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+                if (!opptjening.getAnnenOpptjening().isEmpty()) {
+                    LOG.info("Y før annen opptjening {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.annenOpptjening(opptjening.getAnnenOpptjening(), søknad.getVedlegg(),
+                            scratchcos, startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til annen opptjening, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.annenOpptjening(
+                                opptjening.getAnnenOpptjening(),
+                                søknad.getVedlegg(), cos, y);
+                    }
+                    else {
+                        LOG.info(
+                                "Trenger ny side. IKKE nok plass til annen opptjening på side {}, trenger {}, har {}",
+                                currentPage,
+                                behov,
+                                y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+                if (!opptjening.getEgenNæring().isEmpty()) {
+                    LOG.info("Y før egen næring {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til egen næring, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
+                    }
+                    else {
+                        LOG.info(
+                                "Trenger ny side. IKKE nok plass til egen næring på side {}, trenger {}, har {}",
+                                currentPage,
+                                behov, y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+                if (opptjening.getFrilans() != null) {
+                    LOG.info("Y før frilans {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.frilansOpptjening(opptjening.getFrilans(),
+                            scratchcos, startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til frilans, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.frilansOpptjening(opptjening.getFrilans(), cos, y);
+                    }
+                    else {
+                        LOG.info("Trenger ny side. IKKE nok plass til frilans på side {}, trenger {}, har {}",
+                                currentPage,
+                                behov, y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+                if (stønad.getMedlemsskap() != null) {
+                    LOG.info("Y før medlemsskap {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.medlemsskap(stønad.getMedlemsskap(), scratchcos, startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til medlemsskap, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), cos, y);
+                    }
+                    else {
+                        LOG.info(
+                                "Trenger ny side. IKKE nok plass til medlemsskap på side {}, trenger {}, har {}",
+                                currentPage,
+                                behov, y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+                if (stønad.getRelasjonTilBarn() != null) {
+                    LOG.info("Y før relasjon til barn {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
+                            startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
+                    }
+                    else {
+                        LOG.info("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
+                                currentPage, behov, y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+                if (stønad.getFordeling() != null) {
+                    LOG.info("Y før fordeling {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.fordeling(stønad.getFordeling(), scratchcos,
+                            startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til fordeling, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.fordeling(stønad.getFordeling(), cos, y);
+                    }
+                    else {
+                        LOG.info(
+                                "Trenger ny side. IKKE nok plass til fordeling på side {}, trenger {}, har {}",
+                                currentPage,
+                                behov, y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+                if (stønad.getRettigheter() != null) {
+                    LOG.info("Y før rettigheter {}", y);
+                    PDPage scratch1 = pdfRenderer.newPage();
+                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    startY = STARTY;
+                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
+                    size = fpRenderer.rettigheter(stønad.getRettigheter(), scratchcos,
+                            startY);
+                    behov = startY - size;
+                    if (behov <= y) {
+                        LOG.info("Nok plass til rettigheter, trenger {}, har {}", behov, y);
+                        scratchcos.close();
+                        y = fpRenderer.rettigheter(stønad.getRettigheter(), cos, y);
+                    }
+                    else {
+                        LOG.info(
+                                "Trenger ny side. IKKE nok plass til rettigheter på side {}, trenger {}, har {}",
+                                currentPage,
+                                behov, y);
+                        cos = nySide(doc, cos, scratch1, scratchcos);
+                        y = nesteSideStart(headerSize, behov);
+                        currentPage++;
+                    }
+                }
+
+            }
+            cos.close();
+            doc.save(baos);
+            LOG.info("Dokumentet er på {} side{}", currentPage, currentPage > 1 ? "r" : "");
+            return baos.toByteArray();
+
+        } catch (IOException e) {
+            LOG.warn("Kunne ikke lage PDF", e);
+            throw new PDFException("Kunne ikke lage PDF", e);
         }
     }
 
     public byte[] generate(Endringssøknad søknad, Person søker) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
-        float yTop = PDFElementRenderer.calculateStartY();
+        float yTop = STARTY;
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = pdfRenderer.newPage();
@@ -359,24 +358,37 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     fpRenderer.vedlegg(søknad.getVedlegg(), cos, y);
                 }
                 doc.addPage(page);
-            } catch (IOException ex) {
-                throw new RuntimeException("Error while creating pdf", ex);
+            } catch (IOException e) {
+                LOG.warn("Kunne ikke lage PDF", e);
+                throw new PDFException("Kunne ikke lage PDF", e);
             }
             doc.save(baos);
             return baos.toByteArray();
-        } catch (IOException ex) {
-            throw new RuntimeException("Error while creating pdf", ex);
+        } catch (IOException e) {
+            LOG.warn("Kunne ikke lage PDF", e);
+            throw new PDFException("Kunne ikke lage PDF", e);
         }
     }
 
     private List<Arbeidsforhold> arbeidsforhold(List<Arbeidsforhold> forhold) {
         return forhold.isEmpty() ? oppslag.getArbeidsforhold() : forhold;
-
     }
 
     @Override
     public void setEnvironment(Environment environment) {
         this.env = environment;
+    }
+
+    private static PDPageContentStream nySide(PDDocument doc, PDPageContentStream cos, PDPage scratch,
+            PDPageContentStream scratchcos) throws IOException {
+        cos.close();
+        doc.addPage(scratch);
+        cos = scratchcos;
+        return cos;
+    }
+
+    private static float nesteSideStart(float headerSize, float behov) {
+        return STARTY - behov - headerSize;
     }
 
     @Override
