@@ -17,7 +17,9 @@ public class RemoteSakMapper {
                 remoteSak.getApplikasjon(),
                 remoteSak.getFagsakNr(),
                 "",
-                LocalDate.parse(remoteSak.getOpprettetTidspunkt(), FORMATTER));
+                LocalDate.parse(remoteSak.getOpprettetTidspunkt(), FORMATTER),
+                remoteSak.getOpprettetAv()
+            );
     }
 
 }

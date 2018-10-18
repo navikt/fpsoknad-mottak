@@ -15,11 +15,11 @@ public class SakClientStub implements SakClient {
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         return Arrays.asList(
             new Sak("sak1", "typen", "systemet", "fsid1",
-                "status", LocalDate.of(2018,9,19)),
+                "status", LocalDate.of(2018,9,19), ""),
             new Sak("sak2", "typen", "systemet", "fsid2",
-                "status", LocalDate.of(2018,9,18)),
+                "status", LocalDate.of(2018,9,18), ""),
             new Sak("sak3", "typen", "systemet", "fsid3",
-                "status", LocalDate.of(2018,9,17))
+                "status", LocalDate.of(2018,9,17), "")
         );
     }
 }

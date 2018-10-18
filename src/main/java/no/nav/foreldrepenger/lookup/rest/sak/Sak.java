@@ -11,14 +11,16 @@ public class Sak {
     private String saksnummer;
     private String status;
     private LocalDate opprettet;
+    private String opprettetAv;
 
-    public Sak(String sakId, String sakstype, String fagsystem, String saksnummer, String status, LocalDate opprettet) {
+    public Sak(String sakId, String sakstype, String fagsystem, String saksnummer, String status, LocalDate opprettet, String opprettetAv) {
         this.sakId = sakId;
         this.sakstype = sakstype;
         this.fagsystem = fagsystem;
         this.saksnummer = saksnummer;
         this.status = status;
         this.opprettet = opprettet;
+        this.opprettetAv = opprettetAv;
     }
 
     public String getSakId() {
@@ -45,6 +47,8 @@ public class Sak {
         return status;
     }
 
+    public String getOpprettetAv() { return opprettetAv; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,6 +74,7 @@ public class Sak {
             ", fagsystem='" + fagsystem + '\'' +
             ", saksnummer='" + saksnummer + '\'' +
             ", opprettet=" + opprettet +
+            ", opprettetAv=" + opprettetAv +
             '}';
     }
 }
