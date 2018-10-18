@@ -286,32 +286,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                         currentPage++;
                     }
                 }
-
-                if (stønad.getRettigheter() != null) {
-                    LOG.info("Y før rettigheter {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
-                    startY = STARTY;
-                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.rettigheter(stønad.getRettigheter(), scratchcos,
-                            startY);
-                    behov = startY - size;
-                    if (behov <= y) {
-                        LOG.info("Nok plass til rettigheter, trenger {}, har {}", behov, y);
-                        scratchcos.close();
-                        y = fpRenderer.rettigheter(stønad.getRettigheter(), cos, y);
-                    }
-                    else {
-                        LOG.info(
-                                "Trenger ny side. IKKE nok plass til rettigheter på side {}, trenger {}, har {}",
-                                currentPage,
-                                behov, y);
-                        cos = nySide(doc, cos, scratch1, scratchcos);
-                        y = nesteSideStart(headerSize, behov);
-                        currentPage++;
-                    }
-                }
-
             }
             cos.close();
             doc.save(baos);
@@ -336,7 +310,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 AnnenForelder annenForelder = stønad.getAnnenForelder();
                 if (annenForelder != null) {
                     y -= fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                            stønad.getRettigheter().isHarAnnenForelderRett(), cos,
+                            stønad.getRettigheter(), cos,
                             y);
                 }
 

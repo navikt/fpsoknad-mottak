@@ -76,21 +76,25 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float annenForelder(AnnenForelder annenForelder, boolean erAnnenForlderInformert,
-            Rettigheter Rettigheter,
+            Rettigheter rettigheter,
             PDPageContentStream cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg") +
+                    jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
         }
         else if (annenForelder instanceof UtenlandskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(annenForelder), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg") +
+                    jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
         }
         else {
             y -= renderer.addLineOfRegularText(INDENT, "Ukjent", cos, y);
         }
 
         if (!(annenForelder instanceof UkjentForelder)) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(Rettigheter.isHarAnnenForelderRett())), cos,
+            y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.isHarAnnenForelderRett())), cos,
                     y);
             y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
         }
@@ -182,7 +186,7 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
         }
         for (String id : vedleggRefs) {
-            Optional<Vedlegg> details = vedlegg.stream().filter(s -> s.getId().equals(id)).findFirst();
+            Optional<Vedlegg> details = vedlegg.stream().filter(s -> id.equals(s.getId())).findFirst();
             if (details.isPresent()) {
                 String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
                 y -= renderer.addBulletPoint(INDENT,
