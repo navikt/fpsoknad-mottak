@@ -67,7 +67,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = pdfRenderer.newPage();
             doc.addPage(page);
-            int currentPage = 1;
             PDPageContentStream cos = new PDPageContentStream(doc, page);
             float y = yTop;
             LOG.info("Y ved start {}", y);
@@ -91,10 +90,9 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
                 else {
                     LOG.info("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
-                            currentPage, behov, y);
+                            doc.getNumberOfPages(), behov, y);
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
-                    currentPage++;
                 }
             }
 
@@ -127,11 +125,10 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
                 else {
                     LOG.info("Trenger ny side. IKKE nok plass til opptjening på side {}, trenger {}, har {}",
-                            currentPage,
+                            doc.getNumberOfPages(),
                             behov, y);
                     cos = nySide(doc, cos, scratch, scratchcos);
                     y = nesteSideStart(headerSize, behov);
-                    currentPage++;
                 }
                 if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
                     LOG.info("Y før utenlandsk arbeidsforhold {}", y);
@@ -154,11 +151,10 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     else {
                         LOG.info(
                                 "Trenger ny side. IKKE nok plass til utenlandsk arbeidsforhold på side {}, trenger {}, har {}",
-                                currentPage,
+                                doc.getNumberOfPages(),
                                 behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
-                        currentPage++;
                     }
                 }
 
@@ -181,12 +177,11 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     else {
                         LOG.info(
                                 "Trenger ny side. IKKE nok plass til annen opptjening på side {}, trenger {}, har {}",
-                                currentPage,
+                                doc.getNumberOfPages(),
                                 behov,
                                 y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
-                        currentPage++;
                     }
                 }
 
@@ -206,11 +201,10 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     else {
                         LOG.info(
                                 "Trenger ny side. IKKE nok plass til egen næring på side {}, trenger {}, har {}",
-                                currentPage,
+                                doc.getNumberOfPages(),
                                 behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
-                        currentPage++;
                     }
                 }
 
@@ -230,11 +224,10 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     }
                     else {
                         LOG.info("Trenger ny side. IKKE nok plass til frilans på side {}, trenger {}, har {}",
-                                currentPage,
+                                doc.getNumberOfPages(),
                                 behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
-                        currentPage++;
                     }
                 }
 
@@ -254,11 +247,10 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     else {
                         LOG.info(
                                 "Trenger ny side. IKKE nok plass til medlemsskap på side {}, trenger {}, har {}",
-                                currentPage,
+                                doc.getNumberOfPages(),
                                 behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
-                        currentPage++;
                     }
                 }
 
@@ -279,17 +271,17 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     else {
                         LOG.info(
                                 "Trenger ny side. IKKE nok plass til fordeling på side {}, trenger {}, har {}",
-                                currentPage,
+                                doc.getNumberOfPages(),
                                 behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
-                        currentPage++;
                     }
                 }
             }
             cos.close();
             doc.save(baos);
-            LOG.info("Dokumentet er på {} side{}", currentPage, currentPage > 1 ? "r" : "");
+            doc.getNumberOfPages();
+            LOG.info("Dokumentet er på {} side{}", doc.getNumberOfPages(), doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
         } catch (IOException e) {
