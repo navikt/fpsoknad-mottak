@@ -10,17 +10,14 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.LocalDate.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 public class SakClientHttp implements SakClient {
@@ -67,6 +64,7 @@ public class SakClientHttp implements SakClient {
 
         Sak sisteSak = saker.stream()
             .map(RemoteSakMapper::map)
+            .filter(s -> s.getOpprettet().isAfter(now().minusYears(3)))
             .max(comparing(Sak::getOpprettet))
             .orElse(null);
 
