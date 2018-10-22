@@ -68,7 +68,7 @@ public class SakClientHttp implements SakClient {
             .max(comparing(Sak::getOpprettet))
             .orElse(null);
 
-        return singletonList(sisteSak);
+        return sisteSak != null ? singletonList(sisteSak) : emptyList();
     }
 
     private String encode(String samlToken) {
