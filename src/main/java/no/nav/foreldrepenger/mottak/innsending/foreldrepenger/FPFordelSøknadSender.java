@@ -9,6 +9,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -20,6 +22,13 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 @Service
 @Qualifier("fpfordel")
 public class FPFordelSøknadSender implements SøknadSender {
+
+    private static final Counter TELLER_FØRSTEGANG = Metrics.counter("fpfordel,send", "søknad", "success", "ytelse",
+            "foreldrepenger", "type", "initiell");
+    private static final Counter TELLER_ENDRING = Metrics.counter("fpfordel,send", "søknad", "success", "ytelse",
+            "foreldrepenger", "type", "endring");
+    private static final Counter TELLER_ETTERSSENDING = Metrics.counter("fpfordel,send", "søknad", "success", "ytelse",
+            "foreldrepenger", "type", "ettersending");
 
     private static final String ETTERSENDING = "ettersending";
 
@@ -46,19 +55,25 @@ public class FPFordelSøknadSender implements SøknadSender {
     @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        return send(SØKNAD, ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
+        Kvittering kvittering = send(SØKNAD, ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
+        TELLER_ENDRING.increment();
+        return kvittering;
     }
 
     @Override
     public Kvittering send(Søknad søknad, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        return send(SØKNAD, ref, konvoluttGenerator.payload(søknad, søker, ref));
+        Kvittering kvittering = send(SØKNAD, ref, konvoluttGenerator.payload(søknad, søker, ref));
+        TELLER_FØRSTEGANG.increment();
+        return kvittering;
     }
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        return send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
+        Kvittering kvittering = send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
+        TELLER_ETTERSSENDING.increment();
+        return kvittering;
     }
 
     private Kvittering send(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {

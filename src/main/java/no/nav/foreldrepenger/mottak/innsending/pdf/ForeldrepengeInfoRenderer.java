@@ -299,7 +299,9 @@ public class ForeldrepengeInfoRenderer {
             PDPageContentStream cos, float y)
             throws IOException {
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
-        y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
+        if (dekningsgrad != null) {
+            y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
+        }
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             y -= renderer.addBulletPoint(periode(periode), cos, y);
             y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode), cos, y);
