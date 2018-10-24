@@ -257,12 +257,14 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                     size = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
+                            stønad.getRelasjonTilBarn().getAntallBarn(),
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
                         LOG.info("Nok plass til fordeling, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
+                                stønad.getRelasjonTilBarn().getAntallBarn(),
                                 cos, y);
                     }
                     else {
@@ -310,7 +312,8 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 Fordeling fordeling = stønad.getFordeling();
                 if (fordeling != null) {
-                    y -= fpRenderer.fordeling(fordeling, stønad.getDekningsgrad(), søknad.getVedlegg(), cos, y);
+                    y -= fpRenderer.fordeling(fordeling, stønad.getDekningsgrad(), søknad.getVedlegg(),
+                            stønad.getRelasjonTilBarn().getAntallBarn(), cos, y);
                 }
 
                 Rettigheter rettigheter = stønad.getRettigheter();

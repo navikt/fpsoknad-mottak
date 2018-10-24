@@ -43,31 +43,31 @@ public class ForeldrepengerTestUtils {
     private static final ValgfrittVedlegg IKKE_OPPLASTETV1 = ikkeOpplastet(ID143, I000063);
 
     public static Søknad foreldrepengeSøknad() {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), TO_VEDLEGG);
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(false), TO_VEDLEGG);
     }
 
     public static Søknad foreldrepengeSøknadUtenVedlegg() {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger());
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(false));
     }
 
     public static Søknad søknadMedEttVedlegg() {
-        return søknad(V1);
+        return søknad(false, V1);
     }
 
     public static Søknad søknadMedEttOpplastetEttIkkeOpplastetVedlegg() {
-        return søknad(V1, IKKE_OPPLASTETV1);
+        return søknad(false, V1, IKKE_OPPLASTETV1);
     }
 
     public static Søknad søknadMedToVedlegg() {
-        return søknad(V1, V2);
+        return søknad(false, V1, V2);
     }
 
-    public static Søknad søknadMedEttIkkeOpplastedVedlegg() {
-        return søknad(IKKE_OPPLASTETV1);
+    public static Søknad søknadMedEttIkkeOpplastedVedlegg(boolean utland) {
+        return søknad(utland, IKKE_OPPLASTETV1);
     }
 
-    public static Søknad søknad(Vedlegg... vedlegg) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(), asList(vedlegg));
+    public static Søknad søknad(boolean utland, Vedlegg... vedlegg) {
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(utland), asList(vedlegg));
     }
 
     public static Endringssøknad endringssøknad(Vedlegg... vedlegg) {
@@ -88,7 +88,7 @@ public class ForeldrepengerTestUtils {
         return new Ettersending("42", TO_VEDLEGG);
     }
 
-    static Foreldrepenger foreldrePenger() {
+    static Foreldrepenger foreldrePenger(boolean utland) {
         return Foreldrepenger.builder()
                 .rettigheter(rettigheter())
                 .annenForelder(norskForelder())
@@ -96,7 +96,7 @@ public class ForeldrepengerTestUtils {
                 .fordeling(fordeling(Collections.emptyList()))
                 .opptjening(opptjening())
                 .relasjonTilBarn(termin())
-                .medlemsskap(medlemsskap(false))
+                .medlemsskap(medlemsskap(utland))
                 .build();
     }
 

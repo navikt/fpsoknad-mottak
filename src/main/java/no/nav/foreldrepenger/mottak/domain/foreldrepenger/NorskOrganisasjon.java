@@ -27,7 +27,7 @@ public class NorskOrganisasjon extends EgenNæring {
     private NorskOrganisasjon(CountryCode arbeidsland, List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
             boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
-            String beskrivelseEndring, Float stillingsprosent,
+            String beskrivelseEndring, Double stillingsprosent,
             List<String> vedlegg,
             String orgNummer, String orgName) {
         super(arbeidsland, virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,

@@ -243,7 +243,6 @@ public class ForeldrepengeInfoRenderer {
         }
         addIfTrue(attributter, "fosterhjem", frilans.isHarInntektFraFosterhjem());
         addIfTrue(attributter, "nyoppstartet", frilans.isNyOppstartet());
-        addIfTrue(attributter, "nærrelasjon", !frilans.getFrilansOppdrag().isEmpty());
 
         y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
         if (!frilans.getFrilansOppdrag().isEmpty()) {
@@ -267,20 +266,23 @@ public class ForeldrepengeInfoRenderer {
     public float medlemsskap(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + " " +
-                (tidligereOpphold.isBoddINorge() ? "Norge" : "utlandet"), cos, y);
-        if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {
-            y -= renderer.addLeftHeading(txt("tidligereopphold"), cos, y);
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()), cos, y);
-        }
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
-        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") + " " +
-                (framtidigeOpphold.isNorgeNeste12() ? "Norge" : "utlandet"), cos, y);
         y -= renderer.addLineOfRegularText(INDENT, txt("føderi",
                 (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + " " +
+                (tidligereOpphold.isBoddINorge() ? "Norge" : ""), cos, y);
+        if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {
+            // y -= renderer.addLeftHeading(txt("tidligereopphold"), cos, y);
+            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()),
+                    cos, y);
+        }
+        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") + " " +
+                (framtidigeOpphold.isNorgeNeste12() ? "Norge" : ""), cos, y);
+
         if (!framtidigeOpphold.getUtenlandsOpphold().isEmpty()) {
-            y -= renderer.addLeftHeading(txt("framtidigeopphold"), cos, y);
-            y -= renderer.addBulletList(textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()), cos,
+            // y -= renderer.addLeftHeading(txt("framtidigeopphold"), cos, y);
+            y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()),
+                    cos,
                     y);
         }
         return y;
@@ -294,7 +296,7 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float fordeling(Fordeling fordeling, Dekningsgrad dekningsgrad, List<Vedlegg> vedlegg,
+    public float fordeling(Fordeling fordeling, Dekningsgrad dekningsgrad, List<Vedlegg> vedlegg, int antallBarn,
             PDPageContentStream cos, float y)
             throws IOException {
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
@@ -303,7 +305,7 @@ public class ForeldrepengeInfoRenderer {
         }
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             y -= renderer.addBulletPoint(periode(periode), cos, y);
-            y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode), cos, y);
+            y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode, antallBarn), cos, y);
             y = renderVedlegg(vedlegg, periode.getVedlegg(), "dokumentasjon", cos, y);
             y -= renderer.addBlankLine();
         }
@@ -323,7 +325,7 @@ public class ForeldrepengeInfoRenderer {
         return perioder;
     }
 
-    private List<String> periodeDataFra(LukketPeriodeMedVedlegg periode) {
+    private List<String> periodeDataFra(LukketPeriodeMedVedlegg periode, int antallBarn) {
         if (periode instanceof OverføringsPeriode) {
             OverføringsPeriode overføring = OverføringsPeriode.class.cast(periode);
             ArrayList<String> attributter = new ArrayList<>();
@@ -342,9 +344,11 @@ public class ForeldrepengeInfoRenderer {
             addIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
             attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
             attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
-            attributter.add(txt("ønskerflerbarnsdager", jaNei(gradert.isØnskerFlerbarnsdager())));
-            attributter.add(txt("ønskersamtidiguttak", jaNei(gradert.isØnskerSamtidigUttak())));
             addIfSet(attributter, gradert.getMorsAktivitetsType());
+            if (antallBarn > 1) {
+                attributter.add(txt("ønskerflerbarnsdager", jaNei(gradert.isØnskerFlerbarnsdager())));
+            }
+            attributter.add(txt("ønskersamtidiguttak", jaNei(gradert.isØnskerSamtidigUttak())));
             addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent",
                     String.valueOf(gradert.getSamtidigUttakProsent()));
             return attributter;
@@ -355,9 +359,11 @@ public class ForeldrepengeInfoRenderer {
             addIfSet(attributter, "fom", uttak.getFom());
             addIfSet(attributter, "tom", uttak.getTom());
             attributter.add(txt("uttaksperiodetype", cap(uttak.getUttaksperiodeType().name())));
-            attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
-            attributter.add(txt("ønskersamtidiguttak", jaNei(uttak.isØnskerSamtidigUttak())));
             addIfSet(attributter, uttak.getMorsAktivitetsType());
+            if (antallBarn > 1) {
+                attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
+            }
+            attributter.add(txt("ønskersamtidiguttak", jaNei(uttak.isØnskerSamtidigUttak())));
             addIfSet(attributter, uttak.isØnskerSamtidigUttak(), "samtidiguttakprosent",
                     String.valueOf(uttak.getSamtidigUttakProsent()));
             return attributter;
@@ -461,7 +467,9 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "arbeidsgiver", arbeidsforhold.getArbeidsgiverNavn());
         addIfSet(attributter, "fom", arbeidsforhold.getFrom());
         addIfSet(attributter, "tom", arbeidsforhold.getTo());
-        attributter.add(txt("stillingsprosent", arbeidsforhold.getStillingsprosent()));
+        if (arbeidsforhold.getStillingsprosent() != null) {
+            attributter.add(txt("stillingsprosent", arbeidsforhold.getStillingsprosent()));
+        }
         return attributter;
     }
 
@@ -493,6 +501,9 @@ public class ForeldrepengeInfoRenderer {
         else {
             attributter.add(txt("egennæringavsluttet", næring.getPeriode().getFom(),
                     textFormatter.date(næring.getPeriode().getTom())));
+        }
+        if (næring.getStillingsprosent() != null) {
+            attributter.add(txt("stillingsprosent", næring.getStillingsprosent()));
         }
         attributter.add(txt("nyopprettet", jaNei(næring.isErNyOpprettet())));
         attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));

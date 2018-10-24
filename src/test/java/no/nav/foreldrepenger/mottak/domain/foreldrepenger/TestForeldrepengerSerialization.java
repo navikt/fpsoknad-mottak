@@ -86,12 +86,12 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testForeldrepenger() {
-        test(foreldrePenger(), true);
+        test(foreldrePenger(false), true);
     }
 
     @Test
     public void testSøknad() {
-        test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(), true);
+        test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(false), true);
         // test(foreldrepengeSøknadUtenVedlegg(), true);
     }
 

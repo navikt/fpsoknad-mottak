@@ -45,7 +45,7 @@ public class ForeldrepengerPDFGeneratorTest {
     public void space() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
-            fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(), person(), arbeidsforhold()));
+            fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(true), person(), arbeidsforhold()));
         }
 
     }

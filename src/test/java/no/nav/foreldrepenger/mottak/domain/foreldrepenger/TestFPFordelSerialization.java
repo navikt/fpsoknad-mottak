@@ -163,7 +163,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() throws Exception {
-        Søknad søknad = søknad(valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
+        Søknad søknad = søknad(false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
                 new CallIdGenerator().createAndPut());
         assertEquals(3, konvolutt.getBody().size());

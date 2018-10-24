@@ -38,7 +38,7 @@ public abstract class EgenNæring {
     private final LocalDate endringsDato;
     private final LocalDate oppstartsDato;
     private final String beskrivelseEndring;
-    private final Float stillingsprosent;
+    private final Double stillingsprosent;
     private final List<String> vedlegg;
 
     @JsonCreator
@@ -54,7 +54,7 @@ public abstract class EgenNæring {
             @JsonProperty("endringsDato") LocalDate endringsDato,
             @JsonProperty("oppstartsDato") LocalDate oppstartsDato,
             @JsonProperty("beskrivelseEndring") String beskrivelseEndring,
-            @JsonProperty("stillingsprosent") Float stillingsprosent,
+            @JsonProperty("stillingsprosent") Double stillingsprosent,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         this.arbeidsland = arbeidsland;
         this.virksomhetsTyper = virksomhetsTyper;
