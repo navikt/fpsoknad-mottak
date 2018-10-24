@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
@@ -484,6 +483,7 @@ public class ForeldrepengeInfoRenderer {
     private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, næring.getArbeidsland());
+        addIfSet(attributter, næring.getPeriode());
         attributter.add(txt("egennæringtyper", næring.getVirksomhetsTyper().stream()
                 .map(v -> textFormatter.capitalize(v.toString()))
                 .collect(joining(","))));
@@ -499,10 +499,9 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "egennæringbeskrivelseendring", næring.getBeskrivelseEndring());
         addIfSet(attributter, "egennæringendringsdato", næring.getEndringsDato());
         addMoneyIfSet(attributter, "egennæringbruttoinntekt", næring.getNæringsinntektBrutto());
-        addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
-        addIfSet(attributter, næring.getPeriode());
         if (næring.isErNyIArbeidslivet()) {
             attributter.add(txt("nyiarbeidslivet", jaNei(true)));
+            addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
         }
         Regnskapsfører rf = regnskapsfører(næring);
         if (rf != null) {
@@ -546,6 +545,12 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
+    private void addIfSet(List<String> attributter, String key, List<LocalDate> datoer) {
+        if (!CollectionUtils.isEmpty(datoer)) {
+            attributter.add(txt(key, textFormatter.dates(datoer)));
+        }
+    }
+
     private void addIfSet(List<String> attributter, String key, Optional<LocalDate> dato) {
         if (dato.isPresent()) {
             attributter.add(txt(key, textFormatter.date(dato.get())));
@@ -562,8 +567,6 @@ public class ForeldrepengeInfoRenderer {
     private void addMoneyIfSet(List<String> attributter, String key, Long sum) {
         if (sum != null && sum > 0L) {
             attributter.add(txt(key, String.valueOf(sum)));
-            // System.out.println(NumberFormat.getCurrencyInstance(new Locale("no",
-            // "NO")).format(sum));
         }
     }
 
@@ -579,23 +582,51 @@ public class ForeldrepengeInfoRenderer {
 
     private List<String> barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
         if (relasjonTilBarn instanceof Fødsel) {
-            Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
-            return Collections.singletonList("Fødselsdato: " + textFormatter.dates(fødsel.getFødselsdato()));
+            return fødsel(Fødsel.class.cast(relasjonTilBarn));
         }
         if (relasjonTilBarn instanceof Adopsjon) {
-            Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
-            return Collections.singletonList("Adopsjon: " + adopsjon.toString());
+            return adopsjon(Adopsjon.class.cast(relasjonTilBarn));
+
         }
         if (relasjonTilBarn instanceof FremtidigFødsel) {
-            FremtidigFødsel fødsel = FremtidigFødsel.class.cast(relasjonTilBarn);
-            return newArrayList("Fødsel med termin: " + textFormatter.date(fødsel.getTerminDato()),
-                    "Bekreftelse utstedt " + textFormatter.date(fødsel.getUtstedtDato()));
+            return termin(FremtidigFødsel.class.cast(relasjonTilBarn));
         }
+        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
+            return omsorgsovertakelse(Omsorgsovertakelse.class.cast(relasjonTilBarn));
+        }
+        throw new IllegalArgumentException(relasjonTilBarn.getClass().getSimpleName() + " ikke støttet");
+    }
 
-        Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
-        return Collections.singletonList("Omsorgsovertakelse: " + omsorgsovertakelse.getOmsorgsovertakelsesdato() +
-                ", " + omsorgsovertakelse.getÅrsak());
+    private List<String> termin(FremtidigFødsel termin) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "fødselmedtermin", termin.getTerminDato());
+        addIfSet(attributter, "utstedtdato", termin.getUtstedtDato());
+        return attributter;
+    }
 
+    private List<String> adopsjon(Adopsjon adopsjon) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "adopsjonsdato", adopsjon.getOmsorgsovertakelsesdato());
+        addIfSet(attributter, "ankomstdato", adopsjon.getAnkomstDato());
+        addIfSet(attributter, "fødselsdato", adopsjon.getFødselsdato());
+        addIfTrue(attributter, "ektefellesbarn", adopsjon.isEktefellesBarn());
+        addIfSet(attributter, "fødselsdato", adopsjon.getFødselsdato());
+        return attributter;
+    }
+
+    private List<String> fødsel(Fødsel fødsel) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "fødselsdato", fødsel.getFødselsdato());
+        return attributter;
+    }
+
+    private List<String> omsorgsovertakelse(Omsorgsovertakelse overtakelse) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "omsorgsovertakelsesårsak", cap(overtakelse.getÅrsak().name()));
+        addIfSet(attributter, "omsorgsovertakelsesdato", overtakelse.getOmsorgsovertakelsesdato());
+        addIfSet(attributter, "omsorgsovertagelsebeskrivelse", overtakelse.getBeskrivelse());
+        addIfSet(attributter, "fødselsdato", overtakelse.getFødselsdato());
+        return attributter;
     }
 
     private String periode(LukketPeriodeMedVedlegg periode) {
