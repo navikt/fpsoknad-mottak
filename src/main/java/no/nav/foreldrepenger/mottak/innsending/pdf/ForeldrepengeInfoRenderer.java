@@ -263,16 +263,50 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
-    public float medlemsskap(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
+    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarnMedVedlegg relasjonTilBarn,
+            PDPageContentStream cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
-        y -= renderer.addLineOfRegularText(INDENT, txt("føderi",
-                (framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet")), cos, y);
+        String land = framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet";
+        if (relasjonTilBarn instanceof FremtidigFødsel) {
+            if (FremtidigFødsel.class.cast(relasjonTilBarn).getTerminDato().isBefore(LocalDate.now())) {
+                y -= renderer.addLineOfRegularText(INDENT, txt("fødtei", land), cos, y);
+            }
+            else {
+                y -= renderer.addLineOfRegularText(INDENT, txt("føderi", land), cos, y);
+            }
+        }
+        if (relasjonTilBarn instanceof Fødsel) {
+            if (Fødsel.class.cast(relasjonTilBarn).getFødselsdato().get(0).isBefore(LocalDate.now())) {
+                y -= renderer.addLineOfRegularText(INDENT, txt("terminfødtei", land), cos, y);
+            }
+            else {
+                y -= renderer.addLineOfRegularText(INDENT, txt("terminføderi", land), cos, y);
+            }
+        }
+
+        if (relasjonTilBarn instanceof Adopsjon) {
+            if (Adopsjon.class.cast(relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
+            }
+            else {
+                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
+            }
+        }
+
+        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
+            if (Omsorgsovertakelse.class.cast(relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
+            }
+            else {
+                y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
+            }
+        }
+
         y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + " " +
                 (tidligereOpphold.isBoddINorge() ? "Norge" : ""), cos, y);
         if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {
-            // y -= renderer.addLeftHeading(txt("tidligereopphold"), cos, y);
             y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()),
                     cos, y);
         }
@@ -280,7 +314,6 @@ public class ForeldrepengeInfoRenderer {
                 (framtidigeOpphold.isNorgeNeste12() ? "Norge" : ""), cos, y);
 
         if (!framtidigeOpphold.getUtenlandsOpphold().isEmpty()) {
-            // y -= renderer.addLeftHeading(txt("framtidigeopphold"), cos, y);
             y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()),
                     cos,
                     y);

@@ -233,12 +233,13 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.medlemsskap(stønad.getMedlemsskap(), scratchcos, startY);
+                    size = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), scratchcos,
+                            startY);
                     behov = startY - size;
                     if (behov <= y) {
                         LOG.info("Nok plass til medlemsskap, trenger {}, har {}", behov, y);
                         scratchcos.close();
-                        y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), cos, y);
+                        y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), cos, y);
                     }
                     else {
                         LOG.info(
