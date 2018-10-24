@@ -102,13 +102,6 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float dekningsgrad(Dekningsgrad dekningsgrad, PDPageContentStream cos, float y) throws IOException {
-        y -= renderer.addLeftHeading(txt("dekningsgrad"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, dekningsgrad.kode() + "%", cos, y);
-        y -= renderer.addBlankLine();
-        return y;
-    }
-
     public float rettigheter(Rettigheter rettigheter, PDPageContentStream cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
         y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg") +
@@ -157,7 +150,7 @@ public class ForeldrepengeInfoRenderer {
             return y;
         }
         y -= renderer.addLeftHeading(txt("egennæring"), cos, y);
-        for (List<String> næring : egenNæring(egneNæringer)) {
+        for (List<String> næring : egneNæringer(egneNæringer)) {
             y -= renderer.addLinesOfRegularText(INDENT, næring, cos, y);
             y -= renderer.addBlankLine();
         }
@@ -242,7 +235,13 @@ public class ForeldrepengeInfoRenderer {
     public float frilans(Frilans frilans, PDPageContentStream cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         List<String> attributter = new ArrayList<>();
-        addIfSet(attributter, frilans.getPeriode());
+        if (frilans.getPeriode().getTom() == null) {
+            addIfSet(attributter, "frilanspågår", textFormatter.date(frilans.getPeriode().getFom()));
+        }
+        else {
+            attributter.add(txt("frilansavsluttet", frilans.getPeriode().getFom(),
+                    textFormatter.date(frilans.getPeriode().getTom())));
+        }
         addIfTrue(attributter, "fosterhjem", frilans.isHarInntektFraFosterhjem());
         addIfTrue(attributter, "nyoppstartet", frilans.isNyOppstartet());
         addIfTrue(attributter, "nærrelasjon", !frilans.getFrilansOppdrag().isEmpty());
@@ -264,7 +263,6 @@ public class ForeldrepengeInfoRenderer {
         if (value) {
             attributter.add(txt(key, jaNei(value)));
         }
-
     }
 
     public float medlemsskap(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
@@ -297,11 +295,15 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float fordeling(Fordeling fordeling, PDPageContentStream cos, float y) throws IOException {
+    public float fordeling(Fordeling fordeling, Dekningsgrad dekningsgrad, List<Vedlegg> vedlegg,
+            PDPageContentStream cos, float y)
+            throws IOException {
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
+        y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             y -= renderer.addBulletPoint(periode(periode), cos, y);
             y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode), cos, y);
+            y = renderVedlegg(vedlegg, periode.getVedlegg(), "dokumentasjon", cos, y);
             y -= renderer.addBlankLine();
         }
         y -= renderer.addBlankLine();
@@ -471,27 +473,39 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    private List<List<String>> egenNæring(List<EgenNæring> egenNæring) {
+    private List<List<String>> egneNæringer(List<EgenNæring> egenNæring) {
         return egenNæring.stream()
-                .map(this::format)
+                .map(this::egenNæring)
                 .collect(toList());
     }
 
-    private List<String> format(EgenNæring næring) {
+    private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
-        addIfSetWithDefault(attributter, næring.getArbeidsland());
+        addIfSet(attributter, næring.getArbeidsland());
         attributter.add(txt("egennæringtyper", næring.getVirksomhetsTyper().stream()
                 .map(v -> textFormatter.capitalize(v.toString()))
                 .collect(joining(","))));
+        if (næring.getPeriode().getTom() == null) {
+            addIfSet(attributter, "egennæringpågår", textFormatter.date(næring.getPeriode().getFom()));
+        }
+        else {
+            attributter.add(txt("egennæringavsluttet", næring.getPeriode().getFom(),
+                    textFormatter.date(næring.getPeriode().getTom())));
+        }
+        attributter.add(txt("nyopprettet", jaNei(næring.isErNyOpprettet())));
+        attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
         addIfSet(attributter, "egennæringbeskrivelseendring", næring.getBeskrivelseEndring());
         addIfSet(attributter, "egennæringendringsdato", næring.getEndringsDato());
         addMoneyIfSet(attributter, "egennæringbruttoinntekt", næring.getNæringsinntektBrutto());
         addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
         addIfSet(attributter, næring.getPeriode());
-        attributter.add(txt("nyiarbeidslivet", jaNei(næring.isErNyIArbeidslivet())));
-        attributter.add(txt("nyopprettet", jaNei(næring.isErNyOpprettet())));
-        attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
-        attributter.add(txt("nærrelasjon", jaNei(næring.isNærRelasjon())));
+        if (næring.isErNyIArbeidslivet()) {
+            attributter.add(txt("nyiarbeidslivet", jaNei(true)));
+        }
+        Regnskapsfører rf = regnskapsfører(næring);
+        if (rf != null) {
+            attributter.add(txt("regnskapsfører", rf.getNavn(), jaNei(næring.isNærRelasjon())));
+        }
 
         if (næring instanceof NorskOrganisasjon) {
             NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
@@ -505,18 +519,16 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
+    private static Regnskapsfører regnskapsfører(EgenNæring næring) {
+        if (næring.getRegnskapsførere().isEmpty()) {
+            return null;
+        }
+        return næring.getRegnskapsførere().get(0);
+    }
+
     private void addIfSet(List<String> attributter, String key, String value) {
         if (value != null) {
             attributter.add(txt(key, value));
-        }
-    }
-
-    private void addIfSet(List<String> attributter, String key, String value, String defaultValue) {
-        if (value != null) {
-            attributter.add(txt(key, value));
-        }
-        else {
-            attributter.add(txt(key, defaultValue));
         }
     }
 
@@ -545,13 +557,6 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
-    private void addIfSet(List<String> attributter, String key, LukketPeriodeMedVedlegg periode) {
-        if (periode != null) {
-            addIfSet(attributter, "fom", periode.getFom());
-            addIfSet(attributter, "tom", periode.getTom());
-        }
-    }
-
     private void addMoneyIfSet(List<String> attributter, String key, Long sum) {
         if (sum != null && sum > 0L) {
             attributter.add(txt(key, String.valueOf(sum)));
@@ -568,16 +573,6 @@ public class ForeldrepengeInfoRenderer {
         if (land != null) {
             attributter.add(txt("land", textFormatter.countryName(land.getAlpha2())));
         }
-    }
-
-    private void addIfSetWithDefault(List<String> attributter, CountryCode land) {
-        if (land != null) {
-            attributter.add(txt("land", textFormatter.countryName(land.getAlpha2())));
-        }
-        else {
-            attributter.add(txt("land", textFormatter.countryName(CountryCode.NO.getAlpha2())));
-        }
-
     }
 
     private List<String> barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {

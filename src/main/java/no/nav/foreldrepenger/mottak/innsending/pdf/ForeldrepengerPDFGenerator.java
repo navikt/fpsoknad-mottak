@@ -103,10 +103,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                         stønad.getRettigheter(), cos,
                         y);
             }
-            LOG.info("Y før dekninggsgrad {}", y);
-            if (stønad.getDekningsgrad() != null) {
-                y = fpRenderer.dekningsgrad(stønad.getDekningsgrad(), cos, y);
-            }
 
             Opptjening opptjening = stønad.getOpptjening();
             List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
@@ -260,13 +256,14 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.fordeling(stønad.getFordeling(), scratchcos,
-                            startY);
+                    size = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
+                            scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
                         LOG.info("Nok plass til fordeling, trenger {}, har {}", behov, y);
                         scratchcos.close();
-                        y = fpRenderer.fordeling(stønad.getFordeling(), cos, y);
+                        y = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
+                                cos, y);
                     }
                     else {
                         LOG.info(
@@ -313,7 +310,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 Fordeling fordeling = stønad.getFordeling();
                 if (fordeling != null) {
-                    y -= fpRenderer.fordeling(fordeling, cos, y);
+                    y -= fpRenderer.fordeling(fordeling, stønad.getDekningsgrad(), søknad.getVedlegg(), cos, y);
                 }
 
                 Rettigheter rettigheter = stønad.getRettigheter();
