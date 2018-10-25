@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import no.nav.foreldrepenger.mottak.http.Counters;
+
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -34,13 +36,20 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, request, validationErrors(e));
     }
 
-    @ExceptionHandler(value = { IllegalRequestException.class })
-    protected ResponseEntity<Object> handleIllegalRequest(IllegalRequestException e, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, request, getRootCauseMessage(e));
     }
 
     @ExceptionHandler(value = { RemoteUnavailableException.class })
     protected ResponseEntity<Object> handleRemoteUnavailable(RemoteUnavailableException e, WebRequest request) {
+        return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
+    }
+
+    @ExceptionHandler(value = { SendException.class })
+    protected ResponseEntity<Object> handleSendException(SendException e, WebRequest request) {
+        Counters.TELLER_SENDFEIL.increment();
         return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
     }
 
@@ -52,12 +61,6 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = { ForbiddenException.class })
     protected ResponseEntity<Object> handleUnauthorized(ForbiddenException e, WebRequest request) {
         return logAndHandle(UNAUTHORIZED, e, request, getRootCauseMessage(e));
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, request, getRootCauseMessage(e));
     }
 
     @ExceptionHandler(value = { Exception.class })
@@ -74,14 +77,14 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, new ApiError(status, e, messages), new HttpHeaders(), status, req);
     }
 
-    private List<String> validationErrors(MethodArgumentNotValidException e) {
+    private static List<String> validationErrors(MethodArgumentNotValidException e) {
         return e.getBindingResult().getFieldErrors()
                 .stream()
-                .map(this::errorMessage)
+                .map(MottakExceptionHandler::errorMessage)
                 .collect(toList());
     }
 
-    private String errorMessage(FieldError error) {
+    private static String errorMessage(FieldError error) {
         return error.getField() + " " + error.getDefaultMessage();
     }
 }

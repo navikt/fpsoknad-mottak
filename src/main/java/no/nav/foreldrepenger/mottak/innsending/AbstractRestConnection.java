@@ -15,7 +15,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import no.nav.foreldrepenger.mottak.http.errorhandling.IllegalRequestException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 
 public abstract class AbstractRestConnection {
@@ -123,7 +122,7 @@ public abstract class AbstractRestConnection {
             LOG.trace("Venter i {}ms", delayMillis);
             Thread.sleep(delayMillis);
         } catch (InterruptedException e) {
-            throw new IllegalRequestException("Kunne ikke vente i " + delayMillis + "ms", e);
+            throw new RuntimeException("Kunne ikke vente i " + delayMillis + "ms", e);
         }
     }
 }
