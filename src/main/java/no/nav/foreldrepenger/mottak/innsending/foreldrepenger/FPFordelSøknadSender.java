@@ -4,6 +4,9 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPS
 import static no.nav.foreldrepenger.mottak.http.Counters.TELLER_ENDRING;
 import static no.nav.foreldrepenger.mottak.http.Counters.TELLER_ETTERSSENDING;
 import static no.nav.foreldrepenger.mottak.http.Counters.TELLER_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +48,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        Kvittering kvittering = send("endring", ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
+        Kvittering kvittering = send(ENDRING, ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
         TELLER_ENDRING.increment();
         return kvittering;
     }
@@ -53,7 +56,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     @Override
     public Kvittering send(Søknad søknad, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        Kvittering kvittering = send("initiell", ref, konvoluttGenerator.payload(søknad, søker, ref));
+        Kvittering kvittering = send(INITIELL, ref, konvoluttGenerator.payload(søknad, søker, ref));
         TELLER_FØRSTEGANG.increment();
         return kvittering;
     }
@@ -61,12 +64,12 @@ public class FPFordelSøknadSender implements SøknadSender {
     @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
         String ref = callIdGenerator.getOrCreate();
-        Kvittering kvittering = send("ettersending", ref, konvoluttGenerator.payload(ettersending, søker, ref));
+        Kvittering kvittering = send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
         TELLER_ETTERSSENDING.increment();
         return kvittering;
     }
 
-    private Kvittering send(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+    private Kvittering send(SøknadType type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         if (connection.isEnabled()) {
             return doSend(type, ref, payload);
         }
@@ -74,8 +77,8 @@ public class FPFordelSøknadSender implements SøknadSender {
         return new Kvittering(IKKE_SENDT_FPSAK, ref);
     }
 
-    private Kvittering doSend(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        LOG.info("Sender {} til FPFordel", type.toLowerCase());
+    private Kvittering doSend(SøknadType type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+        LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
         Kvittering kvittering = connection.send(payload, ref);
         LOG.info("Returnerer kvittering {}", kvittering);
         return kvittering;
