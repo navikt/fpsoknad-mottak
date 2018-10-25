@@ -91,7 +91,7 @@ public class SøknadTextFormatter {
     }
 
     public String vedlegg(Vedlegg vedlegg) {
-        return Optional.ofNullable(vedlegg.getMetadata().getBeskrivelse())
+        return Optional.ofNullable(vedlegg.getBeskrivelse())
                 .orElse(vedlegg.getDokumentType().beskrivelse);
     }
 

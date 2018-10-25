@@ -104,7 +104,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private static no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg dokmotVedlegg(Vedlegg vedlegg) {
 
         return new no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg()
-                .withBrukeroppgittTittel(vedlegg.getMetadata().getBeskrivelse())
+                .withBrukeroppgittTittel(vedlegg.getBeskrivelse())
                 .withDokumenttypeId(vedlegg.getMetadata().getId())
                 .withDokumentinnholdListe(new Dokumentinnhold()
                         .withVariantformat(new Variantformater().withValue(ARKIV.name()))

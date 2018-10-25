@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public abstract class Vedlegg {
 
     @JsonIgnore
     public String getBeskrivelse() {
-        return metadata.getBeskrivelse();
+        return Optional.ofNullable(metadata.getBeskrivelse()).orElse(getDokumentType().beskrivelse);
     }
 
     @JsonIgnore
