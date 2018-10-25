@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -69,9 +70,7 @@ public class SøknadTextFormatter {
         if (søker == null) {
             return null;
         }
-        return (Optional.ofNullable(søker.fornavn).orElse("ukjent") + " "
-                + Optional.ofNullable(søker.mellomnavn).orElse("u") + " "
-                + Optional.ofNullable(søker.etternavn).orElse("ukjentsen")).trim();
+        return Joiner.on(' ').skipNulls().join(søker.fornavn, søker.mellomnavn, søker.etternavn);
     }
 
     public String yesNo(boolean b) {
