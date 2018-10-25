@@ -241,19 +241,21 @@ public class ForeldrepengeInfoRenderer {
             attributter.add(txt("frilansavsluttet", frilans.getPeriode().getFom(),
                     textFormatter.date(frilans.getPeriode().getTom())));
         }
-        addIfTrue(attributter, "fosterhjem", frilans.isHarInntektFraFosterhjem());
-        addIfTrue(attributter, "nyoppstartet", frilans.isNyOppstartet());
+        attributter.add(txt("fosterhjem", jaNei(frilans.isHarInntektFraFosterhjem())));
+        attributter.add(txt("nyoppstartet", jaNei(frilans.isNyOppstartet())));
 
         y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
         if (!frilans.getFrilansOppdrag().isEmpty()) {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
+            List<String> oppdrag = frilans.getFrilansOppdrag().stream()
+                    .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
+                    .collect(toList());
+            y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
+            y -= renderer.addBlankLine();
         }
-
-        List<String> oppdrag = frilans.getFrilansOppdrag().stream()
-                .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
-                .collect(toList());
-        y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
-        y -= renderer.addBlankLine();
+        else {
+            y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
+        }
         return y;
     }
 
