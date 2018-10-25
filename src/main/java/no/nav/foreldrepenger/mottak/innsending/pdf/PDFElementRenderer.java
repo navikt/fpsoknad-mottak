@@ -50,11 +50,14 @@ public class PDFElementRenderer {
             throws IOException {
         cos.beginText();
         cos.setFont(FONTPLAIN, FONTPLAINSIZE);
-        String norm = Normalizer.normalize(line, NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         cos.newLineAtOffset(MARGIN + marginOffset, startY);
-        cos.showText(Optional.ofNullable(norm).orElse(""));
+        cos.showText(Optional.ofNullable(normalize(line)).orElse(""));
         cos.endText();
         return FONTPLAINHEIGHT;
+    }
+
+    private static String normalize(String line) {
+        return Normalizer.normalize(line, NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
     }
 
     public float addLinesOfRegularText(List<String> lines, PDPageContentStream cos, float startY)
