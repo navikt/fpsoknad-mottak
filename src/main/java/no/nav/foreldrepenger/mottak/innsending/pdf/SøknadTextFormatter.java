@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -97,7 +97,7 @@ public class SøknadTextFormatter {
         }
         return opphold.stream()
                 .map(this::formatOpphold)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private String formatOpphold(Utenlandsopphold opphold) {

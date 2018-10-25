@@ -458,7 +458,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public String regnskapsførere(List<Regnskapsfører> regnskapsførere) {
-        return regnskapsførere == null ? "ukjent"
+        return CollectionUtils.isEmpty(regnskapsførere) ? "ukjent"
                 : regnskapsførere.stream()
                         .map(this::format)
                         .collect(joining(","));
@@ -568,7 +568,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private static Regnskapsfører regnskapsfører(EgenNæring næring) {
-        if (næring.getRegnskapsførere().isEmpty()) {
+        if (næring == null || CollectionUtils.isEmpty(næring.getRegnskapsførere())) {
             return null;
         }
         return næring.getRegnskapsførere().get(0);
