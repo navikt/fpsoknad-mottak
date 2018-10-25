@@ -2,9 +2,8 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +14,12 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StreamUtils;
 
 public class PDFElementRenderer {
+
+    private static final byte[] NAV_LOGO = logo();
 
     private static final int MARGIN = 40;
 
@@ -46,8 +49,12 @@ public class PDFElementRenderer {
             throws IOException {
         cos.beginText();
         cos.setFont(FONTPLAIN, FONTPLAINSIZE);
+        String norm = Normalizer.normalize(line, Normalizer.Form.NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]",
+                "");
+
+        System.out.println(norm);
         cos.newLineAtOffset(MARGIN + marginOffset, startY);
-        cos.showText(Optional.ofNullable(line).orElse(""));
+        cos.showText(Optional.ofNullable(norm).orElse(""));
         cos.endText();
         return FONTPLAINHEIGHT;
     }
@@ -127,7 +134,7 @@ public class PDFElementRenderer {
     }
 
     public float addLogo(PDDocument doc, PDPageContentStream cos, float startY) throws IOException {
-        PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, logoFromInputStream(), "logo");
+        PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, NAV_LOGO, "logo");
         float startX = (MEDIABOX.getWidth() - ximage.getWidth()) / 2;
         float offsetTop = 40;
         startY -= ximage.getHeight() / 2 + offsetTop;
@@ -139,18 +146,12 @@ public class PDFElementRenderer {
         return 20;
     }
 
-    private static byte[] logoFromInputStream() {
-        try (InputStream is = PDFElementRenderer.class.getResourceAsStream("/pdf/nav-logo.png");
-                ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[1024];
-            for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
-                os.write(buffer, 0, len);
-            }
-            return os.toByteArray();
+    private static byte[] logo() {
+        try {
+            return StreamUtils.copyToByteArray(new ClassPathResource("/pdf/nav-logo.png").getInputStream());
         } catch (IOException ex) {
             throw new RuntimeException("Error while reading image", ex);
         }
-
     }
 
     private static int fontHeadingHeight() {

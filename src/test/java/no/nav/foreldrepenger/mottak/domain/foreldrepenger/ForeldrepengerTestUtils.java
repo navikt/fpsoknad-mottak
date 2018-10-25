@@ -189,7 +189,7 @@ public class ForeldrepengerTestUtils {
     static UtenlandskArbeidsforhold utenlandskArbeidsforhold(Vedlegg... vedlegg) {
         return UtenlandskArbeidsforhold.builder()
                 .vedlegg(vedleggRefs(vedlegg))
-                .arbeidsgiverNavn("boss")
+                .arbeidsgiverNavn("Brzeziński")
                 .land(CountryCode.PL)
                 .periode(åpenPeriode()).build();
     }

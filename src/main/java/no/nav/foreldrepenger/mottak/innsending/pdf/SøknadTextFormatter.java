@@ -67,10 +67,7 @@ public class SøknadTextFormatter {
     }
 
     public String navn(Person søker) {
-        if (søker == null) {
-            return null;
-        }
-        return Joiner.on(' ').skipNulls().join(søker.fornavn, søker.mellomnavn, søker.etternavn);
+        return søker == null ? "" : Joiner.on(' ').skipNulls().join(søker.fornavn, søker.mellomnavn, søker.etternavn);
     }
 
     public String yesNo(boolean b) {
