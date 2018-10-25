@@ -47,7 +47,6 @@ public class ForeldrepengerPDFGeneratorTest {
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(true), person(), arbeidsforhold()));
         }
-
     }
 
     private static List<Arbeidsforhold> arbeidsforhold() {

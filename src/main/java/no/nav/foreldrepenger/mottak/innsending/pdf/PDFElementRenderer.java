@@ -51,8 +51,6 @@ public class PDFElementRenderer {
         cos.setFont(FONTPLAIN, FONTPLAINSIZE);
         String norm = Normalizer.normalize(line, Normalizer.Form.NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]",
                 "");
-
-        System.out.println(norm);
         cos.newLineAtOffset(MARGIN + marginOffset, startY);
         cos.showText(Optional.ofNullable(norm).orElse(""));
         cos.endText();
