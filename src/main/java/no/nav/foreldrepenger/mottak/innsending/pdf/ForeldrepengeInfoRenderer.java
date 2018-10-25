@@ -525,9 +525,10 @@ public class ForeldrepengeInfoRenderer {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, næring.getArbeidsland());
         addIfSet(attributter, næring.getPeriode());
-        attributter.add(txt("egennæringtyper", næring.getVirksomhetsTyper().stream()
-                .map(v -> textFormatter.capitalize(v.toString()))
-                .collect(joining(","))));
+        attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
+                næring.getVirksomhetsTyper().stream()
+                        .map(v -> textFormatter.capitalize(v.toString()))
+                        .collect(joining(","))));
         if (næring.getPeriode().getTom() == null) {
             addIfSet(attributter, "egennæringpågår", textFormatter.date(næring.getPeriode().getFom()));
         }

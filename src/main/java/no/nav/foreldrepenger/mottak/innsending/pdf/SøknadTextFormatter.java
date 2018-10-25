@@ -46,10 +46,9 @@ public class SøknadTextFormatter {
     }
 
     public String navn(Navn navn) {
-        String sammensattNavn = (Optional.ofNullable(navn.getFornavn()).orElse("") + " "
-                + Optional.ofNullable(navn.getMellomnavn()).orElse("") + " "
-                + Optional.ofNullable(navn.getEtternavn()).orElse("")).trim();
-        return sammensattNavn.isEmpty() ? "" : fromMessageSource("navn", sammensattNavn);
+        String sammensattnavn = Joiner.on(' ').skipNulls().join(navn.getFornavn(), navn.getMellomnavn(),
+                navn.getEtternavn());
+        return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
     }
 
     public String date(LocalDate localDate) {
@@ -75,9 +74,9 @@ public class SøknadTextFormatter {
     }
 
     public String periode(ÅpenPeriode periode) {
-        StringBuilder sb = new StringBuilder("fom " + date(periode.getFom()));
+        StringBuilder sb = new StringBuilder(fromMessageSource("fom", date(periode.getFom())));
         if (periode.getTom() != null) {
-            sb.append(periode.getTom() != null ? " tom " + date(periode.getTom()) : " pågående");
+            sb.append(periode.getTom() != null ? fromMessageSource("tom", date(periode.getTom())) : " pågående");
         }
         return sb.toString();
     }
