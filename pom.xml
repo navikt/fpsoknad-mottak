@@ -14,7 +14,7 @@
     <artifactId>fpsoknad-mottak</artifactId>
     <version>0-SNAPSHOT</version>
     <properties>
-        <oidc-spring-support.version>0.2.7</oidc-spring-support.version>
+        <oidc-spring-support.version>0.2.11</oidc-spring-support.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <springfox.version>2.9.2</springfox.version>
