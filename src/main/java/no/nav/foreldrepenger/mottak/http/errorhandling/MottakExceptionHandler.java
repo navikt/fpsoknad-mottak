@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.http.Counters.TELLER_SENDFEIL;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import no.nav.foreldrepenger.mottak.http.Counters;
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
@@ -49,7 +48,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { SendException.class })
     protected ResponseEntity<Object> handleSendException(SendException e, WebRequest request) {
-        Counters.TELLER_SENDFEIL.increment();
+        TELLER_SENDFEIL.increment();
         return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
     }
 
