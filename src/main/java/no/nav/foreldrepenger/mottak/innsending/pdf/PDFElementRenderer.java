@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.text.Normalizer.Form.NFD;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
@@ -49,8 +50,7 @@ public class PDFElementRenderer {
             throws IOException {
         cos.beginText();
         cos.setFont(FONTPLAIN, FONTPLAINSIZE);
-        String norm = Normalizer.normalize(line, Normalizer.Form.NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]",
-                "");
+        String norm = Normalizer.normalize(line, NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         cos.newLineAtOffset(MARGIN + marginOffset, startY);
         cos.showText(Optional.ofNullable(norm).orElse(""));
         cos.endText();
