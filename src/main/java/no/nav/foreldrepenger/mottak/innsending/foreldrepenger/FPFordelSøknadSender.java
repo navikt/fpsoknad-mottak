@@ -19,7 +19,6 @@ import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
-import no.nav.foreldrepenger.mottak.http.errorhandling.SendException;
 
 @Service
 @Qualifier("fpfordel")
@@ -76,14 +75,10 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering doSend(String type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        try {
-            LOG.info("Sender {} til FPFordel", type.toLowerCase());
-            Kvittering kvittering = connection.send(payload, ref);
-            LOG.info("Returnerer kvittering {}", kvittering);
-            return kvittering;
-        } catch (Exception e) {
-            throw new SendException(type, e);
-        }
+        LOG.info("Sender {} til FPFordel", type.toLowerCase());
+        Kvittering kvittering = connection.send(payload, ref);
+        LOG.info("Returnerer kvittering {}", kvittering);
+        return kvittering;
     }
 
     @Override
