@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
-import static no.nav.foreldrepenger.mottak.http.Counters.TELLER_ENDRING;
-import static no.nav.foreldrepenger.mottak.http.Counters.TELLER_ETTERSSENDING;
-import static no.nav.foreldrepenger.mottak.http.Counters.TELLER_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_ENDRING;
+import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
@@ -50,7 +50,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
         String ref = callIdGenerator.getOrCreate();
         Kvittering kvittering = send(ENDRING, ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
-        TELLER_ENDRING.increment();
+        FP_ENDRING.increment();
         return kvittering;
     }
 
@@ -58,7 +58,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     public Kvittering send(Søknad søknad, Person søker) {
         String ref = callIdGenerator.getOrCreate();
         Kvittering kvittering = send(INITIELL, ref, konvoluttGenerator.payload(søknad, søker, ref));
-        TELLER_FØRSTEGANG.increment();
+        FP_FØRSTEGANG.increment();
         return kvittering;
     }
 
@@ -66,7 +66,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     public Kvittering send(Ettersending ettersending, Person søker) {
         String ref = callIdGenerator.getOrCreate();
         Kvittering kvittering = send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
-        TELLER_ETTERSSENDING.increment();
+        FP_ETTERSSENDING.increment();
         return kvittering;
     }
 
