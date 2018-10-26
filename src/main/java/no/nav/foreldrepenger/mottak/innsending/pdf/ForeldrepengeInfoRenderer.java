@@ -274,10 +274,10 @@ public class ForeldrepengeInfoRenderer {
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
         String land = framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet";
         if (relasjonTilBarn instanceof FremtidigFødsel) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("føderi", land), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("terminføderi", land), cos, y);
         }
         if (relasjonTilBarn instanceof Fødsel) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("terminføderi", land), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("føderi", land), cos, y);
         }
 
         if (relasjonTilBarn instanceof Adopsjon) {
