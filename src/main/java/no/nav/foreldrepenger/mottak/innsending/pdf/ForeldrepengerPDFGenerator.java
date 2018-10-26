@@ -69,13 +69,13 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
             doc.addPage(page);
             PDPageContentStream cos = new PDPageContentStream(doc, page);
             float y = yTop;
-            LOG.info("Y ved start {}", y);
+            LOG.trace("Y ved start {}", y);
             y = fpRenderer.header(søker, doc, cos, false, y);
             float headerSize = yTop - y;
-            LOG.info("Heaader trenger  {}", headerSize);
+            LOG.trace("Heaader trenger  {}", headerSize);
 
             if (stønad.getRelasjonTilBarn() != null) {
-                LOG.info("Y før relasjon til barn {}", y);
+                LOG.trace("Y før relasjon til barn {}", y);
                 PDPage scratch1 = pdfRenderer.newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float startY = STARTY;
@@ -84,19 +84,19 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                         startY);
                 float behov = startY - size;
                 if (behov <= y) {
-                    LOG.info("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
+                    LOG.trace("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
                     scratchcos.close();
                     y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
                 }
                 else {
-                    LOG.info("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
+                    LOG.trace("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
                             doc.getNumberOfPages(), behov, y);
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }
 
-            LOG.info("Y før annen  forelder {}", y);
+            LOG.trace("Y før annen  forelder {}", y);
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
@@ -107,7 +107,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
             Opptjening opptjening = stønad.getOpptjening();
             List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
             if (opptjening != null) {
-                LOG.info("Y før opptjening {}", y);
+                LOG.trace("Y før opptjening {}", y);
                 PDPage scratch = pdfRenderer.newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch);
                 float startY = STARTY;
@@ -116,18 +116,18 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    LOG.info("Nok plass til opptjening, trenger {}, har {}", behov, y);
+                    LOG.trace("Nok plass til opptjening, trenger {}, har {}", behov, y);
                     y = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, cos, y);
                 }
                 else {
-                    LOG.info("Trenger ny side. IKKE nok plass til opptjening på side {}, trenger {}, har {}",
+                    LOG.trace("Trenger ny side. IKKE nok plass til opptjening på side {}, trenger {}, har {}",
                             doc.getNumberOfPages(),
                             behov, y);
                     cos = nySide(doc, cos, scratch, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
                 if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
-                    LOG.info("Y før utenlandsk arbeidsforhold {}", y);
+                    LOG.trace("Y før utenlandsk arbeidsforhold {}", y);
                     PDPage scratch1 = pdfRenderer.newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
@@ -138,14 +138,14 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.info("Nok plass til utenlandsk arbeidsforhold, trenger {}, har {}", behov, y);
+                        LOG.trace("Nok plass til utenlandsk arbeidsforhold, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.utenlandskeArbeidsforholdOpptjening(
                                 opptjening.getUtenlandskArbeidsforhold(),
                                 søknad.getVedlegg(), cos, y);
                     }
                     else {
-                        LOG.info(
+                        LOG.trace(
                                 "Trenger ny side. IKKE nok plass til utenlandsk arbeidsforhold på side {}, trenger {}, har {}",
                                 doc.getNumberOfPages(),
                                 behov, y);
@@ -155,7 +155,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
 
                 if (!opptjening.getAnnenOpptjening().isEmpty()) {
-                    LOG.info("Y før annen opptjening {}", y);
+                    LOG.trace("Y før annen opptjening {}", y);
                     PDPage scratch1 = pdfRenderer.newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
@@ -164,14 +164,14 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.info("Nok plass til annen opptjening, trenger {}, har {}", behov, y);
+                        LOG.trace("Nok plass til annen opptjening, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.annenOpptjening(
                                 opptjening.getAnnenOpptjening(),
                                 søknad.getVedlegg(), cos, y);
                     }
                     else {
-                        LOG.info(
+                        LOG.trace(
                                 "Trenger ny side. IKKE nok plass til annen opptjening på side {}, trenger {}, har {}",
                                 doc.getNumberOfPages(),
                                 behov,
@@ -182,7 +182,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
 
                 if (!opptjening.getEgenNæring().isEmpty()) {
-                    LOG.info("Y før egen næring {}", y);
+                    LOG.trace("Y før egen næring {}", y);
                     PDPage scratch1 = pdfRenderer.newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
@@ -190,12 +190,12 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     size = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.info("Nok plass til egen næring, trenger {}, har {}", behov, y);
+                        LOG.trace("Nok plass til egen næring, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
                     }
                     else {
-                        LOG.info(
+                        LOG.trace(
                                 "Trenger ny side. IKKE nok plass til egen næring på side {}, trenger {}, har {}",
                                 doc.getNumberOfPages(),
                                 behov, y);
@@ -205,7 +205,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
 
                 if (opptjening.getFrilans() != null) {
-                    LOG.info("Y før frilans {}", y);
+                    LOG.trace("Y før frilans {}", y);
                     PDPage scratch1 = pdfRenderer.newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
@@ -214,12 +214,12 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.info("Nok plass til frilans, trenger {}, har {}", behov, y);
+                        LOG.trace("Nok plass til frilans, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.frilansOpptjening(opptjening.getFrilans(), cos, y);
                     }
                     else {
-                        LOG.info("Trenger ny side. IKKE nok plass til frilans på side {}, trenger {}, har {}",
+                        LOG.trace("Trenger ny side. IKKE nok plass til frilans på side {}, trenger {}, har {}",
                                 doc.getNumberOfPages(),
                                 behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
@@ -228,7 +228,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
 
                 if (stønad.getMedlemsskap() != null) {
-                    LOG.info("Y før medlemsskap {}", y);
+                    LOG.trace("Y før medlemsskap {}", y);
                     PDPage scratch1 = pdfRenderer.newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
@@ -237,12 +237,12 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                             startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.info("Nok plass til medlemsskap, trenger {}, har {}", behov, y);
+                        LOG.trace("Nok plass til medlemsskap, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), cos, y);
                     }
                     else {
-                        LOG.info(
+                        LOG.trace(
                                 "Trenger ny side. IKKE nok plass til medlemsskap på side {}, trenger {}, har {}",
                                 doc.getNumberOfPages(),
                                 behov, y);
@@ -252,7 +252,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
 
                 if (stønad.getFordeling() != null) {
-                    LOG.info("Y før fordeling {}", y);
+                    LOG.trace("Y før fordeling {}", y);
                     PDPage scratch1 = pdfRenderer.newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
@@ -262,14 +262,14 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.info("Nok plass til fordeling, trenger {}, har {}", behov, y);
+                        LOG.trace("Nok plass til fordeling, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
                                 stønad.getRelasjonTilBarn().getAntallBarn(),
                                 cos, y);
                     }
                     else {
-                        LOG.info(
+                        LOG.trace(
                                 "Trenger ny side. IKKE nok plass til fordeling på side {}, trenger {}, har {}",
                                 doc.getNumberOfPages(),
                                 behov, y);
@@ -281,7 +281,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
             cos.close();
             doc.save(baos);
             doc.getNumberOfPages();
-            LOG.info("Dokumentet er på {} side{}", doc.getNumberOfPages(), doc.getNumberOfPages() > 1 ? "r" : "");
+            LOG.trace("Dokumentet er på {} side{}", doc.getNumberOfPages(), doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
         } catch (IOException e) {
