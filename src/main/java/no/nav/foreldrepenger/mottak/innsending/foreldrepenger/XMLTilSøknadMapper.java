@@ -91,8 +91,6 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 @Component
 public class XMLTilSøknadMapper {
 
-    private static final LatterligEnkelDokumentTypeAnalysator DOKUMENT_TYPE_ANALYSATOR = new LatterligEnkelDokumentTypeAnalysator();
-
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLTilSøknadMapper.class);
@@ -135,7 +133,7 @@ public class XMLTilSøknadMapper {
     }
 
     private static boolean erEndringsSøknad(String xml) {
-        boolean erEndring = DOKUMENT_TYPE_ANALYSATOR.erEndringssøknad(xml);
+        boolean erEndring = LatterligEnkelDokumentTypeAnalysator.erEndringssøknad(xml);
         if (erEndring) {
             LOG.info("Dette er en endringssøknad");
         }

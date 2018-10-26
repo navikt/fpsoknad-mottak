@@ -128,7 +128,7 @@ public class TestFPFordelSerialization {
         ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
         Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(V1, V2);
         String xml = mapper.tilXML(original, aktørId);
-        assertTrue(new LatterligEnkelDokumentTypeAnalysator().erEndringssøknad(xml));
+        assertTrue(LatterligEnkelDokumentTypeAnalysator.erEndringssøknad(xml));
         Endringssøknad rekonstruert = Endringssøknad.class.cast(mapper.tilSøknad(xml));
         assertNotNull(rekonstruert);
         assertThat(Foreldrepenger.class.cast(rekonstruert.getYtelse()).getFordeling())
@@ -147,7 +147,7 @@ public class TestFPFordelSerialization {
         Søknad original = ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg();
         String xml = mapper.tilXML(original, aktørId);
         System.out.println(xml);
-        assertFalse(new LatterligEnkelDokumentTypeAnalysator().erEndringssøknad(xml));
+        assertFalse(LatterligEnkelDokumentTypeAnalysator.erEndringssøknad(xml));
         Søknad rekonstruert = mapper.tilSøknad(xml);
         assertNotNull(rekonstruert);
         assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.getBegrunnelseForSenSøknad());
