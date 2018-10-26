@@ -27,9 +27,10 @@ public class CallIdRequestInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest req, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
-        req.getHeaders().set(X_CORRELATION_ID, MDC.get(callIdGenerator.getCallIdKey()));
+        String callId = MDC.get(callIdGenerator.getCallIdKey());
+        req.getHeaders().set(X_CORRELATION_ID, callId);
         req.getHeaders().set(NAV_CONSUMER_ID, MDC.get(NAV_CONSUMER_ID));
-        req.getHeaders().set(callIdGenerator.getCallIdKey(), MDC.get(callIdGenerator.getCallIdKey()));
+        req.getHeaders().set(callIdGenerator.getCallIdKey(), callId);
         return execution.execute(req, body);
     }
 
