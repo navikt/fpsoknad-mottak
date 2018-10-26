@@ -522,7 +522,6 @@ public class ForeldrepengeInfoRenderer {
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
         }
         addIfSet(attributter, næring.getArbeidsland());
-        addIfSet(attributter, næring.getPeriode());
         attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
                 næring.getVirksomhetsTyper().stream()
                         .map(v -> textFormatter.capitalize(v.toString()))
