@@ -1,10 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.text.Normalizer.Form.NFD;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 
 import java.io.IOException;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -696,6 +698,14 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private String txt(String key, Object... values) {
-        return textFormatter.fromMessageSource(key, values);
+        return textFormatter.fromMessageSource(key, normalize(values));
+    }
+
+    private static Object[] normalize(Object[] values) {
+        return Arrays.stream(values)
+                .map(Object::toString)
+                .map(s -> Normalizer.normalize(s, NFD))
+                .map(s -> s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""))
+                .toArray();
     }
 }
