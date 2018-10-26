@@ -698,8 +698,12 @@ public class ForeldrepengeInfoRenderer {
     private static Object[] normalize(Object[] values) {
         return Arrays.stream(values)
                 .map(Object::toString)
+                .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
+                .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
                 .map(s -> Normalizer.normalize(s, NFD))
                 .map(s -> s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""))
+                .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
+                .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
                 .toArray();
     }
 }
