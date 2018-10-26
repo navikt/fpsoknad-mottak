@@ -21,14 +21,10 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
@@ -296,40 +292,73 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = pdfRenderer.newPage();
-            try (PDPageContentStream cos = new PDPageContentStream(doc, page)) {
-                float y = yTop;
-                y = fpRenderer.header(søker, doc, cos, true, y);
-                AnnenForelder annenForelder = stønad.getAnnenForelder();
-                if (annenForelder != null) {
-                    y -= fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                            stønad.getRettigheter(), cos,
-                            y);
-                }
+            doc.addPage(page);
+            PDPageContentStream cos = new PDPageContentStream(doc, page);
+            float y = yTop;
+            LOG.trace("Y ved start {}", y);
+            y = fpRenderer.header(søker, doc, cos, true, y);
+            float headerSize = yTop - y;
+            LOG.trace("Heaader trenger  {}", headerSize);
 
-                RelasjonTilBarnMedVedlegg relasjon = stønad.getRelasjonTilBarn();
-                if (relasjon != null) {
-                    y -= fpRenderer.relasjonTilBarn(relasjon, søknad.getVedlegg(), cos, y);
+            if (stønad.getRelasjonTilBarn() != null) {
+                LOG.trace("Y før relasjon til barn {}", y);
+                PDPage scratch1 = pdfRenderer.newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float startY = STARTY;
+                startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
+                float size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
+                        startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    LOG.trace("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
+                    scratchcos.close();
+                    y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
                 }
-
-                Fordeling fordeling = stønad.getFordeling();
-                if (fordeling != null) {
-                    y -= fpRenderer.fordeling(fordeling, stønad.getDekningsgrad(), søknad.getVedlegg(),
-                            stønad.getRelasjonTilBarn().getAntallBarn(), cos, y);
+                else {
+                    LOG.trace("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
+                            doc.getNumberOfPages(), behov, y);
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
                 }
-
-                Rettigheter rettigheter = stønad.getRettigheter();
-                if (rettigheter != null) {
-                    y -= fpRenderer.rettigheter(rettigheter, cos, y);
-                }
-                final List<Vedlegg> vedlegg = søknad.getVedlegg();
-                if (vedlegg != null && !vedlegg.isEmpty()) {
-                    fpRenderer.vedlegg(søknad.getVedlegg(), cos, y);
-                }
-                doc.addPage(page);
-            } catch (IOException e) {
-                LOG.warn("Kunne ikke lage PDF", e);
-                throw new PDFException("Kunne ikke lage PDF", e);
             }
+
+            LOG.trace("Y før annen  forelder {}", y);
+            AnnenForelder annenForelder = stønad.getAnnenForelder();
+            if (annenForelder != null) {
+                y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
+                        stønad.getRettigheter(), cos,
+                        y);
+            }
+
+            if (stønad.getFordeling() != null) {
+                LOG.trace("Y før fordeling {}", y);
+                PDPage scratch1 = pdfRenderer.newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float startY = STARTY;
+                startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
+                float size = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(),
+                        søknad.getVedlegg(),
+                        stønad.getRelasjonTilBarn().getAntallBarn(),
+                        scratchcos, startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    LOG.trace("Nok plass til fordeling, trenger {}, har {}", behov, y);
+                    scratchcos.close();
+                    y = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
+                            stønad.getRelasjonTilBarn().getAntallBarn(),
+                            cos, y);
+                }
+                else {
+                    LOG.trace(
+                            "Trenger ny side. IKKE nok plass til fordeling på side {}, trenger {}, har {}",
+                            doc.getNumberOfPages(),
+                            behov, y);
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+            cos.close();
+            doc.addPage(page);
             doc.save(baos);
             return baos.toByteArray();
         } catch (IOException e) {

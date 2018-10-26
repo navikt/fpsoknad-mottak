@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.pdf;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.V1;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg;
 import static org.junit.Assert.assertTrue;
@@ -46,6 +48,14 @@ public class ForeldrepengerPDFGeneratorTest {
 
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(true), person(), arbeidsforhold()));
+        }
+    }
+
+    @Test
+    public void space1() throws Exception {
+
+        try (FileOutputStream fos = new FileOutputStream("/tmp/søknad1.pdf")) {
+            fos.write(gen.generate(endringssøknad(V1), person()));
         }
     }
 
