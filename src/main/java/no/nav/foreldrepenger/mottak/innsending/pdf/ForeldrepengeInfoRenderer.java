@@ -314,6 +314,7 @@ public class ForeldrepengeInfoRenderer {
                     cos,
                     y);
         }
+        y -= renderer.addBlankLine();
         return y;
     }
 
