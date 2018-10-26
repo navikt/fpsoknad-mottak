@@ -275,11 +275,11 @@ public class ForeldrepengeInfoRenderer {
         String land = framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet";
         if (relasjonTilBarn instanceof FremtidigFødsel) {
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("terminføderi", land, relasjonTilBarn.getAntallBarn() > 1 ? "a" : "et"), cos, y);
+                    txt("terminføderi", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
         }
         if (relasjonTilBarn instanceof Fødsel) {
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("fødtei", land, relasjonTilBarn.getAntallBarn() > 1 ? "a" : "et"), cos, y);
+                    txt("fødtei", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
         }
 
         if (relasjonTilBarn instanceof Adopsjon) {
@@ -315,6 +315,10 @@ public class ForeldrepengeInfoRenderer {
                     y);
         }
         return y;
+    }
+
+    private static String pluralize(int antallBarn) {
+        return antallBarn > 1 ? "a" : "et";
     }
 
     public float omBarn(RelasjonTilBarnMedVedlegg relasjon, PDPageContentStream cos, float y)
