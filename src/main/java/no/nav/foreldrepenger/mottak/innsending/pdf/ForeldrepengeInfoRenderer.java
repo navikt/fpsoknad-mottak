@@ -275,10 +275,10 @@ public class ForeldrepengeInfoRenderer {
         String land = framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet";
         if (relasjonTilBarn instanceof FremtidigFødsel) {
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("terminføderi", relasjonTilBarn.getAntallBarn() > 1 ? "a" : "et", land), cos, y);
+                    txt("terminføderi", land, relasjonTilBarn.getAntallBarn() > 1 ? "a" : "et"), cos, y);
         }
         if (relasjonTilBarn instanceof Fødsel) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("føderi", land), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("fødtei", land), cos, y);
         }
 
         if (relasjonTilBarn instanceof Adopsjon) {
