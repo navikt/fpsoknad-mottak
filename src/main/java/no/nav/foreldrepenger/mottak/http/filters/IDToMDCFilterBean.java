@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_AKTØR_ID;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_USER_ID;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
@@ -29,9 +31,6 @@ public class IDToMDCFilterBean extends GenericFilterBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(IDToMDCFilterBean.class);
 
-    private static final String USER_ID = "Nav-User-Id";
-    private static final String AKTØR_ID = "Nav-Aktør-Id";
-
     private final Oppslag oppslag;
     private final TokenHandler extractor;
 
@@ -52,8 +51,8 @@ public class IDToMDCFilterBean extends GenericFilterBean {
 
     private void tilMDC() {
         try {
-            MDC.put(USER_ID, extractor.autentisertBruker().getFnr());
-            MDC.put(AKTØR_ID, oppslag.getAktørId().getId());
+            MDC.put(NAV_USER_ID, extractor.autentisertBruker().getFnr());
+            MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
             LOG.warn("Noe gikk feil", e);
         }

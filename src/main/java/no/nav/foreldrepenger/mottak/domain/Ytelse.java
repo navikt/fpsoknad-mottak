@@ -20,6 +20,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 })
 @Data
 @Valid
-public class Ytelse {
+abstract public class Ytelse {
 
 }

@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.config;
 
 import static com.google.common.base.Predicates.or;
 import static java.util.stream.Collectors.toSet;
-import static no.nav.foreldrepenger.mottak.http.InnsynController.INNSYN;
-import static no.nav.foreldrepenger.mottak.http.SøknadController.INNSENDING;
-import static no.nav.foreldrepenger.mottak.http.SøknadPreprodController.INNSENDING_PREPROD;
+import static no.nav.foreldrepenger.mottak.http.controllers.InnsynController.INNSYN;
+import static no.nav.foreldrepenger.mottak.http.controllers.SøknadController.INNSENDING;
+import static no.nav.foreldrepenger.mottak.http.controllers.SøknadPreprodController.INNSENDING_PREPROD;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 import java.util.Arrays;

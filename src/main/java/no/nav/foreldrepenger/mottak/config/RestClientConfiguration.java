@@ -1,26 +1,18 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter;
+import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RestClientResponseErrorHandler;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 
 @Configuration
 public class RestClientConfiguration {
-
-    private static final class NonRedirectingRequestFactory extends HttpComponentsClientHttpRequestFactory {
-
-        NonRedirectingRequestFactory() {
-            setHttpClient(HttpClientBuilder.create().disableRedirectHandling().build());
-        }
-    }
 
     @Bean
     public RestTemplate restTemplate(FPFordelConfig cfg, ClientHttpRequestInterceptor... interceptors) {
