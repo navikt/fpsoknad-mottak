@@ -177,16 +177,16 @@ public class EngangsstønadPDFGenerator {
     private List<String> fødsel(Søknad søknad, Engangsstønad stønad) {
         FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
         List<String> texts = new ArrayList<>();
-        texts.add(textFormatter.fromMessageSource("termindato", textFormatter.date(ff.getTerminDato())));
+        texts.add(textFormatter.fromMessageSource("termindato", textFormatter.dato(ff.getTerminDato())));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
-            texts.add(textFormatter.fromMessageSource("termindatotekst", textFormatter.date(ff.getUtstedtDato())));
+            texts.add(textFormatter.fromMessageSource("termindatotekst", textFormatter.dato(ff.getUtstedtDato())));
         }
         return texts;
     }
 
     private String født(Søknad søknad, Engangsstønad stønad) {
         Fødsel ff = Fødsel.class.cast(stønad.getRelasjonTilBarn());
-        return textFormatter.fromMessageSource("fødselsdato", textFormatter.dates(ff.getFødselsdato()));
+        return textFormatter.fromMessageSource("fødselsdato", textFormatter.datoer(ff.getFødselsdato()));
     }
 
     private static boolean erFremtidigFødsel(Engangsstønad stønad) {

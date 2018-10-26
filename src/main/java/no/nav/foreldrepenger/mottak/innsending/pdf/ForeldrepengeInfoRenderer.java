@@ -237,11 +237,11 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         List<String> attributter = new ArrayList<>();
         if (frilans.getPeriode().getTom() == null) {
-            addIfSet(attributter, "frilanspågår", textFormatter.date(frilans.getPeriode().getFom()));
+            addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.getPeriode().getFom()));
         }
         else {
             attributter.add(txt("frilansavsluttet", frilans.getPeriode().getFom(),
-                    textFormatter.date(frilans.getPeriode().getTom())));
+                    textFormatter.dato(frilans.getPeriode().getTom())));
         }
         attributter.add(txt("fosterhjem", jaNei(frilans.isHarInntektFraFosterhjem())));
         attributter.add(txt("nyoppstartet", jaNei(frilans.isNyOppstartet())));
@@ -521,11 +521,11 @@ public class ForeldrepengeInfoRenderer {
                         .map(v -> textFormatter.capitalize(v.toString()))
                         .collect(joining(","))));
         if (næring.getPeriode().getTom() == null) {
-            addIfSet(attributter, "egennæringpågår", textFormatter.date(næring.getPeriode().getFom()));
+            addIfSet(attributter, "egennæringpågår", textFormatter.dato(næring.getPeriode().getFom()));
         }
         else {
             attributter.add(txt("egennæringavsluttet", næring.getPeriode().getFom(),
-                    textFormatter.date(næring.getPeriode().getTom())));
+                    textFormatter.dato(næring.getPeriode().getTom())));
         }
         if (næring.getStillingsprosent() != null) {
             attributter.add(txt("stillingsprosent", næring.getStillingsprosent()));
@@ -574,19 +574,19 @@ public class ForeldrepengeInfoRenderer {
 
     private void addIfSet(List<String> attributter, String key, LocalDate dato) {
         if (dato != null) {
-            attributter.add(txt(key, textFormatter.date(dato)));
+            attributter.add(txt(key, textFormatter.dato(dato)));
         }
     }
 
     private void addIfSet(List<String> attributter, String key, List<LocalDate> datoer) {
         if (!CollectionUtils.isEmpty(datoer)) {
-            attributter.add(txt(key, textFormatter.dates(datoer)));
+            attributter.add(txt(key, textFormatter.datoer(datoer)));
         }
     }
 
     private void addIfSet(List<String> attributter, String key, Optional<LocalDate> dato) {
         if (dato.isPresent()) {
-            attributter.add(txt(key, textFormatter.date(dato.get())));
+            attributter.add(txt(key, textFormatter.dato(dato.get())));
         }
     }
 

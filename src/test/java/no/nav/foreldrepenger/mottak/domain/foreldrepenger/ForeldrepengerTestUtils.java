@@ -126,7 +126,7 @@ public class ForeldrepengerTestUtils {
     }
 
     static NorskForelder norskForelder() {
-        return new NorskForelder(new Fødselsnummer("01010111111"), "Jan Johansen");
+        return new NorskForelder(new Fødselsnummer("01010111111"), "Åge Mañana Pålsen");
     }
 
     static Adopsjon adopsjon() {

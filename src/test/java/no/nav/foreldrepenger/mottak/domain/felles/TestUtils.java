@@ -227,9 +227,9 @@ public class TestUtils {
         søker.aktørId = new AktorId("42");
         søker.bankkonto = new Bankkonto("2000.20.20000", "Store Fiskerbank");
         søker.fnr = new Fødselsnummer("010101010101");
-        søker.fornavn = "Mor";
-        søker.mellomnavn = "Mellommor";
-        søker.etternavn = "Moro";
+        søker.fornavn = "Åse";
+        søker.mellomnavn = "Mañana";
+        søker.etternavn = "Pålsen";
         søker.fødselsdato = LocalDate.now().minusYears(25);
         søker.kjønn = "K";
         søker.ikkeNordiskEøsLand = false;

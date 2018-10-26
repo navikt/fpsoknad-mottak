@@ -51,13 +51,13 @@ public class SøknadTextFormatter {
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
     }
 
-    public String date(LocalDate localDate) {
+    public String dato(LocalDate localDate) {
         return localDate != null ? localDate.format(DATE_FMT) : "?";
     }
 
-    public String dates(List<LocalDate> dates) {
+    public String datoer(List<LocalDate> dates) {
         return dates.stream()
-                .map(this::date)
+                .map(this::dato)
                 .collect(joining(", "));
     }
 
@@ -74,9 +74,9 @@ public class SøknadTextFormatter {
     }
 
     public String periode(ÅpenPeriode periode) {
-        StringBuilder sb = new StringBuilder("fra og med " + date(periode.getFom()));
+        StringBuilder sb = new StringBuilder("fra og med " + dato(periode.getFom()));
         if (periode.getTom() != null) {
-            sb.append(periode.getTom() != null ? " til og med" + date(periode.getTom()) : " pågående");
+            sb.append(periode.getTom() != null ? " til og med" + dato(periode.getTom()) : " pågående");
         }
         return sb.toString();
     }
@@ -103,8 +103,8 @@ public class SøknadTextFormatter {
     private String formatOpphold(Utenlandsopphold opphold) {
         return countryName(opphold.getLand().getAlpha2(), opphold.getLand().getName())
                 + ": "
-                + date(opphold.getVarighet().getFom()) + " - "
-                + date(opphold.getVarighet().getTom());
+                + dato(opphold.getVarighet().getFom()) + " - "
+                + dato(opphold.getVarighet().getTom());
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {

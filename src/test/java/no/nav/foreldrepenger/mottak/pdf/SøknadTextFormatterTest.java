@@ -20,7 +20,7 @@ public class SøknadTextFormatterTest {
     @Test
     public void datesMayBeNull() {
         SøknadTextFormatter formatter = new SøknadTextFormatter(null, null, CountryCode.NO);
-        String formatted = formatter.date(null);
+        String formatted = formatter.dato(null);
         assertEquals("?", formatted);
     }
 
