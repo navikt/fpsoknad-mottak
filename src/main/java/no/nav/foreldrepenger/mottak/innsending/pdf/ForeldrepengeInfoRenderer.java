@@ -449,18 +449,6 @@ public class ForeldrepengeInfoRenderer {
         return startY - y;
     }
 
-    public String regnskapsførere(List<Regnskapsfører> regnskapsførere) {
-        return CollectionUtils.isEmpty(regnskapsførere) ? "ukjent"
-                : regnskapsførere.stream()
-                        .map(this::format)
-                        .collect(joining(","));
-    }
-
-    private String format(Regnskapsfører regnskapsfører) {
-        return regnskapsfører.getNavn() + " (" +
-                Optional.ofNullable(regnskapsfører.getTelefon()).orElse("ukjent tlfnr") + ")";
-    }
-
     private List<String> søker(Person søker) {
         String fnr = søker.fnr.getFnr();
         String navn = textFormatter.navn(søker);
@@ -553,7 +541,13 @@ public class ForeldrepengeInfoRenderer {
         }
         Regnskapsfører rf = regnskapsfører(næring);
         if (rf != null) {
-            attributter.add(txt("regnskapsfører", rf.getNavn(), jaNei(næring.isNærRelasjon())));
+            if (rf.getTelefon() != null) {
+                attributter.add(
+                        txt("regnskapsførertelefon", rf.getNavn(), rf.getTelefon(), jaNei(næring.isNærRelasjon())));
+            }
+            else {
+                attributter.add(txt("regnskapsfører", rf.getNavn(), jaNei(næring.isNærRelasjon())));
+            }
         }
 
         return attributter;
