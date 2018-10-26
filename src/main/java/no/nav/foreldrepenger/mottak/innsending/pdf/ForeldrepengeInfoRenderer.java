@@ -91,7 +91,7 @@ public class ForeldrepengeInfoRenderer {
                     jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
         }
         else {
-            y -= renderer.addLineOfRegularText(INDENT, "Ukjent", cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
 
         if (!(annenForelder instanceof UkjentForelder)) {
