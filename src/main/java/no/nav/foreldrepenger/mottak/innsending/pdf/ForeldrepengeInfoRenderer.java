@@ -517,6 +517,15 @@ public class ForeldrepengeInfoRenderer {
 
     private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
+        if (næring instanceof NorskOrganisasjon) {
+            NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
+            addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
+            addIfSet(attributter, "orgnummer", org.getOrgNummer());
+        }
+        if (næring instanceof UtenlandskOrganisasjon) {
+            UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
+            addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
+        }
         addIfSet(attributter, næring.getArbeidsland());
         addIfSet(attributter, næring.getPeriode());
         attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
@@ -547,15 +556,6 @@ public class ForeldrepengeInfoRenderer {
             attributter.add(txt("regnskapsfører", rf.getNavn(), jaNei(næring.isNærRelasjon())));
         }
 
-        if (næring instanceof NorskOrganisasjon) {
-            NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
-            addIfSet(attributter, "navn", org.getOrgName());
-            addIfSet(attributter, "orgnummer", org.getOrgNummer());
-        }
-        else {
-            UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
-            addIfSet(attributter, "navn", org.getOrgName());
-        }
         return attributter;
     }
 
