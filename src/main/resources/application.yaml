@@ -19,6 +19,7 @@ server.servlet:
     context-path: /api
     use-forward-headers: true
 spring:
+    application.name : fpsoknad-oppslag
     jackson:
       default-property-inclusion: non_null
       deserialization:
