@@ -6,6 +6,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
 
 import java.io.IOException;
 import java.text.Normalizer;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -57,14 +58,15 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 
+@Component
 public class ForeldrepengeInfoRenderer {
     private static final int INDENT = 20;
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
 
-    public ForeldrepengeInfoRenderer(MessageSource landkoder, MessageSource kvitteringstekster) {
-        renderer = new PDFElementRenderer();
-        textFormatter = new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO);
+    public ForeldrepengeInfoRenderer(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
+        this.renderer = renderer;
+        this.textFormatter = textFormatter;
     }
 
     public float header(Person søker, PDDocument doc, PDPageContentStream cos, boolean endring, float y)
@@ -661,10 +663,7 @@ public class ForeldrepengeInfoRenderer {
 
     private List<String> fødsel(Fødsel fødsel) {
         List<String> attributter = new ArrayList<>();
-        addIfSet(attributter, "fødselsdato", fødsel.getFødselsdato()
-                .stream()
-                .distinct()
-                .collect(toList()));
+        addIfSet(attributter, "fødselsdato", distinct(fødsel.getFødselsdato()));
         return attributter;
     }
 

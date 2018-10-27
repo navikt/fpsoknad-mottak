@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -33,6 +32,9 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtil
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
+import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
+import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -41,10 +43,14 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("dev")
 @ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class,
         DokmotEngangsstønadXMLGenerator.class,
-        DokmotEngangsstønadXMLKonvoluttGenerator.class, CallIdGenerator.class, SpringOIDCRequestContextHolder.class })
+        DokmotEngangsstønadXMLKonvoluttGenerator.class,
+        CallIdGenerator.class,
+        PDFElementRenderer.class,
+        ForeldrepengeInfoRenderer.class,
+        SøknadTextFormatter.class,
+        SpringOIDCRequestContextHolder.class })
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {
 

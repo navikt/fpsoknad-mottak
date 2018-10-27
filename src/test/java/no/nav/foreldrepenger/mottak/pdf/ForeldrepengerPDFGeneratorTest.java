@@ -25,11 +25,16 @@ import com.google.common.collect.Lists;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
+import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { MottakConfiguration.class, ForeldrepengerPDFGenerator.class,
+@ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
+        PDFElementRenderer.class,
+        ForeldrepengerPDFGenerator.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 
 @ActiveProfiles("dev")

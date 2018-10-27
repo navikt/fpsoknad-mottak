@@ -58,7 +58,10 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelResponseHa
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelSøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
+import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.NonPollingSaksPoller;
@@ -116,8 +119,11 @@ public class FPFordelTest {
 
     private FPFordelSøknadSender sender() {
         MottakConfiguration mottakConfig = new MottakConfiguration();
-        ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(mottakConfig.landkoder(),
-                mottakConfig.kvitteringstekster(), oppslag);
+        PDFElementRenderer jalla1 = new PDFElementRenderer();
+        SøknadTextFormatter jalla2 = new SøknadTextFormatter(mottakConfig.landkoder(),
+                mottakConfig.kvitteringstekster());
+        ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
+        ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(oppslag, jalla);
 
         ForeldrepengerSøknadMapper søknadGenerator = new ForeldrepengerSøknadMapper(oppslag);
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(

@@ -1,20 +1,18 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -35,20 +33,10 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
     private final Oppslag oppslag;
     private final ForeldrepengeInfoRenderer fpRenderer;
 
-    private final PDFElementRenderer pdfRenderer;
     private Environment env;
 
-    @Inject
-    public ForeldrepengerPDFGenerator(@Qualifier("landkoder") MessageSource landkoder,
-            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster,
-            Oppslag oppslag) {
-        this(oppslag, new PDFElementRenderer(), new ForeldrepengeInfoRenderer(landkoder, kvitteringstekster));
-    }
-
-    private ForeldrepengerPDFGenerator(Oppslag oppslag, PDFElementRenderer pdfRenderer,
-            ForeldrepengeInfoRenderer fpRenderer) {
+    public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer) {
         this.oppslag = oppslag;
-        this.pdfRenderer = pdfRenderer;
         this.fpRenderer = fpRenderer;
     }
 
@@ -61,7 +49,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         float yTop = STARTY;
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            PDPage page = pdfRenderer.newPage();
+            PDPage page = newPage();
             doc.addPage(page);
             PDPageContentStream cos = new PDPageContentStream(doc, page);
             float y = yTop;
@@ -72,7 +60,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
             if (stønad.getRelasjonTilBarn() != null) {
                 LOG.trace("Y før relasjon til barn {}", y);
-                PDPage scratch1 = pdfRenderer.newPage();
+                PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -104,7 +92,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
             List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
             if (opptjening != null) {
                 LOG.trace("Y før opptjening {}", y);
-                PDPage scratch = pdfRenderer.newPage();
+                PDPage scratch = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -124,7 +112,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
                 if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
                     LOG.trace("Y før utenlandsk arbeidsforhold {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
+                    PDPage scratch1 = newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -152,7 +140,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 if (!opptjening.getAnnenOpptjening().isEmpty()) {
                     LOG.trace("Y før annen opptjening {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
+                    PDPage scratch1 = newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -179,7 +167,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 if (!opptjening.getEgenNæring().isEmpty()) {
                     LOG.trace("Y før egen næring {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
+                    PDPage scratch1 = newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -202,7 +190,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 if (opptjening.getFrilans() != null) {
                     LOG.trace("Y før frilans {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
+                    PDPage scratch1 = newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -225,7 +213,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 if (stønad.getMedlemsskap() != null) {
                     LOG.trace("Y før medlemsskap {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
+                    PDPage scratch1 = newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -249,7 +237,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
                 if (stønad.getFordeling() != null) {
                     LOG.trace("Y før fordeling {}", y);
-                    PDPage scratch1 = pdfRenderer.newPage();
+                    PDPage scratch1 = newPage();
                     scratchcos = new PDPageContentStream(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -291,7 +279,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         float yTop = STARTY;
 
         try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            PDPage page = pdfRenderer.newPage();
+            PDPage page = newPage();
             doc.addPage(page);
             PDPageContentStream cos = new PDPageContentStream(doc, page);
             float y = yTop;
@@ -302,7 +290,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
             if (stønad.getRelasjonTilBarn() != null) {
                 LOG.trace("Y før relasjon til barn {}", y);
-                PDPage scratch1 = pdfRenderer.newPage();
+                PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
@@ -332,7 +320,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
             if (stønad.getFordeling() != null) {
                 LOG.trace("Y før fordeling {}", y);
-                PDPage scratch1 = pdfRenderer.newPage();
+                PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
@@ -388,9 +376,13 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         return STARTY - behov - headerSize;
     }
 
+    private static PDPage newPage() {
+        return new PDPage(A4);
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer + ", pdfRenderer="
-                + pdfRenderer + ", env=" + env + "]";
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer + ", env=" + env
+                + "]";
     }
 }

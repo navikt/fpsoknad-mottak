@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +41,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MultiValueMap;
 
@@ -50,6 +53,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
@@ -64,19 +68,29 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetdataGen
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
+import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.LatterligEnkelDokumentTypeAnalysator;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureJsonTesters
-
+@ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
+        PDFElementRenderer.class,
+        ForeldrepengerPDFGenerator.class, TestConfig.class })
 public class TestFPFordelSerialization {
 
     @Mock
     private Oppslag oppslag;
 
     private FPFordelKonvoluttGenerator konvoluttGenerator;
+
+    @Inject
+    PDFElementRenderer pdfRenderer;
+    @Inject
+    ForeldrepengeInfoRenderer fpRenderer;
 
     private static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
     private static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
@@ -209,12 +223,10 @@ public class TestFPFordelSerialization {
     }
 
     private FPFordelKonvoluttGenerator konvoluttGenerator() {
-        MottakConfiguration mottakConfiguration = new MottakConfiguration();
         return new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
                 new ForeldrepengerSøknadMapper(oppslag),
-                new ForeldrepengerPDFGenerator(mottakConfiguration.landkoder(),
-                        mottakConfiguration.kvitteringstekster(), oppslag));
+                new ForeldrepengerPDFGenerator(oppslag, fpRenderer));
     }
 
     private static ValgfrittVedlegg opplastetVedlegg(String id, DokumentType type) {

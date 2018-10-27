@@ -10,8 +10,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.stereotype.Component;
 
 import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
@@ -22,19 +26,25 @@ import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 
+@Component
 public class SøknadTextFormatter {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
     private final MessageSource landkoder;
-
     private final MessageSource kvitteringstekster;
     private final Locale locale;
 
-    public SøknadTextFormatter(MessageSource landkoder, MessageSource kvitteringstekster, CountryCode countryCode) {
+    @Inject
+    public SøknadTextFormatter(@Qualifier("landkoder") MessageSource landkoder,
+            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster) {
+        this(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
+    }
+
+    private SøknadTextFormatter(MessageSource landkoder, MessageSource kvitteringstekster, Locale locale) {
         this.landkoder = landkoder;
         this.kvitteringstekster = kvitteringstekster;
-        this.locale = countryCode.toLocale();
+        this.locale = locale;
     }
 
     public String countryName(String isoCode, Object... values) {
@@ -52,7 +62,9 @@ public class SøknadTextFormatter {
     }
 
     public String dato(LocalDate localDate) {
-        return localDate != null ? localDate.format(DATE_FMT) : "?";
+        return Optional.ofNullable(localDate)
+                .map(s -> s.format(DATE_FMT))
+                .orElse("?");
     }
 
     public String datoer(List<LocalDate> dates) {

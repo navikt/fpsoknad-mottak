@@ -14,8 +14,10 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
+@Component
 public class PDFElementRenderer {
 
     private static final byte[] NAV_LOGO = logo();

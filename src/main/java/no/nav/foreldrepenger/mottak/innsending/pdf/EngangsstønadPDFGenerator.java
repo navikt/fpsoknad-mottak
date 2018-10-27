@@ -11,10 +11,7 @@ import javax.inject.Inject;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-
-import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.KjentForelder;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -36,14 +33,6 @@ public class EngangsstønadPDFGenerator {
     private final PDFElementRenderer renderer;
 
     @Inject
-    public EngangsstønadPDFGenerator(MessageSource landkoder, MessageSource kvitteringstekster) {
-        this(new SøknadTextFormatter(landkoder, kvitteringstekster, CountryCode.NO));
-    }
-
-    private EngangsstønadPDFGenerator(SøknadTextFormatter textFormatter) {
-        this(textFormatter, new PDFElementRenderer());
-    }
-
     private EngangsstønadPDFGenerator(SøknadTextFormatter textFormatter, PDFElementRenderer renderer) {
         this.textFormatter = textFormatter;
         this.renderer = renderer;
