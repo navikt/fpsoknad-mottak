@@ -466,9 +466,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<String> søker(Person søker) {
-        String fnr = søker.fnr.getFnr();
-        String navn = textFormatter.navn(søker);
-        return asList(fnr, navn);
+        return asList(søker.fnr.getFnr(), textFormatter.navn(søker));
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
@@ -663,7 +661,10 @@ public class ForeldrepengeInfoRenderer {
 
     private List<String> fødsel(Fødsel fødsel) {
         List<String> attributter = new ArrayList<>();
-        addIfSet(attributter, "fødselsdato", fødsel.getFødselsdato());
+        addIfSet(attributter, "fødselsdato", fødsel.getFødselsdato()
+                .stream()
+                .distinct()
+                .collect(toList()));
         return attributter;
     }
 
