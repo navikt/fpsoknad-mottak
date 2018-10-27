@@ -66,7 +66,10 @@ public class SøknadTextFormatter {
     }
 
     public String navn(Person søker) {
-        return søker == null ? "" : Joiner.on(' ').skipNulls().join(søker.fornavn, søker.mellomnavn, søker.etternavn);
+        return Optional.ofNullable(søker)
+                .map(s -> Joiner.on(' ').skipNulls().join(s.fornavn, s.mellomnavn, s.etternavn))
+                .map(String::trim)
+                .orElse("Ukjent");
     }
 
     public String yesNo(boolean b) {

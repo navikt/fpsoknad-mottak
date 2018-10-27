@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.text.Normalizer.Form.NFD;
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
@@ -9,7 +11,6 @@ import java.io.IOException;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -202,19 +203,22 @@ public class ForeldrepengeInfoRenderer {
         }
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
 
-        for (Arbeidsforhold forhold : sortArbeidsforhold(arbeidsforhold)) {
+        for (Arbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
             y -= renderer.addBlankLine();
         }
         return y;
     }
 
-    private static List<Arbeidsforhold> sortArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
+    private static List<Arbeidsforhold> sorterArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
         Collections.sort(arbeidsforhold, new Comparator<Arbeidsforhold>() {
 
             @Override
             public int compare(Arbeidsforhold o1, Arbeidsforhold o2) {
-                return o1.getFrom().compareTo(o2.getFrom());
+                if (o1.getFrom() != null && o2.getFrom() != null) {
+                    return o1.getFrom().compareTo(o2.getFrom());
+                }
+                return 0;
             }
 
         });
@@ -226,7 +230,12 @@ public class ForeldrepengeInfoRenderer {
 
             @Override
             public int compare(UtenlandskArbeidsforhold o1, UtenlandskArbeidsforhold o2) {
-                return o1.getPeriode().getFom().compareTo(o2.getPeriode().getFom());
+                if (o1.getPeriode() != null && o2.getPeriode() != null
+                        && o1.getPeriode().getFom() != null
+                        && o2.getPeriode().getFom() != null) {
+                    return o1.getPeriode().getFom().compareTo(o2.getPeriode().getFom());
+                }
+                return 0;
             }
 
         });
@@ -459,8 +468,7 @@ public class ForeldrepengeInfoRenderer {
     private List<String> søker(Person søker) {
         String fnr = søker.fnr.getFnr();
         String navn = textFormatter.navn(søker);
-        return Arrays.asList(fnr,
-                navn != null ? navn : "ukjent");
+        return asList(fnr, navn);
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
@@ -477,7 +485,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<String> norskForelder(NorskForelder norskForelder) {
-        return Arrays.asList(
+        return asList(
                 Optional.ofNullable(norskForelder.getNavn())
                         .map(n -> txt("navn", n))
                         .orElse("Ukjent"),
@@ -702,7 +710,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private static Object[] normalize(Object[] values) {
-        return Arrays.stream(values)
+        return stream(values)
                 .map(Object::toString)
                 .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
                 .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
