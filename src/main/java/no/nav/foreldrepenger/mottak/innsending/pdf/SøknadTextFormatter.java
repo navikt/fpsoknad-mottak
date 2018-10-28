@@ -23,7 +23,6 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 
 @Component
@@ -56,24 +55,25 @@ public class SøknadTextFormatter {
     }
 
     public String navn(Navn navn) {
-        String sammensattnavn = Joiner.on(' ').skipNulls().join(navn.getFornavn(), navn.getMellomnavn(),
-                navn.getEtternavn());
+        String sammensattnavn = Joiner.on(' ')
+                .skipNulls()
+                .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
     }
 
     public String dato(LocalDate localDate) {
         return Optional.ofNullable(localDate)
                 .map(s -> s.format(DATE_FMT))
-                .orElse("?");
+                .orElse("");
     }
 
-    public String datoer(List<LocalDate> dates) {
-        return dates.stream()
+    public String datoer(List<LocalDate> datoer) {
+        return datoer.stream()
                 .map(this::dato)
                 .collect(joining(", "));
     }
 
-    public String countryName(Boolean b) {
+    public String countryName(boolean b) {
         return b ? "Norge" : "utlandet";
     }
 
@@ -99,11 +99,6 @@ public class SøknadTextFormatter {
     public String capitalize(String orig) {
         String lowerWithSpace = orig.replaceAll("_", " ").toLowerCase();
         return lowerWithSpace.substring(0, 1).toUpperCase() + lowerWithSpace.substring(1);
-    }
-
-    public String vedlegg(Vedlegg vedlegg) {
-        return Optional.ofNullable(vedlegg.getBeskrivelse())
-                .orElse(vedlegg.getDokumentType().beskrivelse);
     }
 
     public List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {

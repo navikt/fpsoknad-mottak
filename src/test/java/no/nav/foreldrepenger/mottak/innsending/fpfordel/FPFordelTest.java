@@ -44,7 +44,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
@@ -133,8 +132,7 @@ public class FPFordelTest {
         return new FPFordelSøknadSender(
                 new FPFordelConnection(template, cfg,
                         new FPFordelResponseHandler(template, 3, new NonPollingSaksPoller())),
-                konvoluttGenerator,
-                new CallIdGenerator());
+                konvoluttGenerator);
     }
 
     private static ResponseEntity<FPFordelKvittering> gosysReceipt() {

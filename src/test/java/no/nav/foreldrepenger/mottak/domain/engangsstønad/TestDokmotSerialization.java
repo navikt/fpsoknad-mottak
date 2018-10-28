@@ -57,8 +57,6 @@ public class TestDokmotSerialization {
     @Autowired
     ObjectMapper mapper;
     @Autowired
-    CallIdGenerator refGenerator;
-    @Autowired
     DokmotEngangsstønadXMLGenerator søknadXMLGenerator;
     @Autowired
     DokmotEngangsstønadXMLKonvoluttGenerator søknadXMLKonvoluttGenerator;
@@ -72,7 +70,7 @@ public class TestDokmotSerialization {
         Søknad engangssøknad = engangssøknad(true, fødsel(), norskForelder(),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person(),
-                refGenerator.getOrCreate());
+                "42");
         Dokumentforsendelse unmarshalled = unmarshal(konvolutt, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
         assertTrue(hasPdfSignature(pdf.getDokument()));

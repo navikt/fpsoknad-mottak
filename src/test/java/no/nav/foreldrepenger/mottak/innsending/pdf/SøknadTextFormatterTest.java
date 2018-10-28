@@ -1,10 +1,8 @@
-package no.nav.foreldrepenger.mottak.pdf;
+package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 
 public class SøknadTextFormatterTest {
 
@@ -19,7 +17,7 @@ public class SøknadTextFormatterTest {
     public void datesMayBeNull() {
         SøknadTextFormatter formatter = new SøknadTextFormatter(null, null);
         String formatted = formatter.dato(null);
-        assertEquals("?", formatted);
+        assertEquals("", formatted);
     }
 
 }

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_ENDRING;
 import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_ETTERSSENDING;
 import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_FØRSTEGANG;
@@ -10,12 +11,12 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
-import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.SøknadSender;
@@ -31,14 +32,11 @@ public class FPFordelSøknadSender implements SøknadSender {
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
 
     private final FPFordelConnection connection;
-    private final CallIdGenerator callIdGenerator;
     private final FPFordelKonvoluttGenerator konvoluttGenerator;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator,
-            CallIdGenerator callIdGenerator) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator) {
         this.connection = connection;
         this.konvoluttGenerator = konvoluttGenerator;
-        this.callIdGenerator = callIdGenerator;
     }
 
     public void ping() {
@@ -48,7 +46,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
-        String ref = callIdGenerator.getOrCreate();
+        String ref = MDC.get(NAV_CALL_ID);
         Kvittering kvittering = send(ENDRING, ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
         FP_ENDRING.increment();
         return kvittering;
@@ -56,7 +54,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Søknad søknad, Person søker) {
-        String ref = callIdGenerator.getOrCreate();
+        String ref = MDC.get(NAV_CALL_ID);
         Kvittering kvittering = send(INITIELL, ref, konvoluttGenerator.payload(søknad, søker, ref));
         FP_FØRSTEGANG.increment();
         return kvittering;
@@ -64,7 +62,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
-        String ref = callIdGenerator.getOrCreate();
+        String ref = MDC.get(NAV_CALL_ID);
         Kvittering kvittering = send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
         FP_ETTERSSENDING.increment();
         return kvittering;
@@ -91,8 +89,8 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", callIdGenerator=" + callIdGenerator
-                + ", konvoluttGenerator=" + konvoluttGenerator + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", konvoluttGenerator=" + konvoluttGenerator
+                + "]";
     }
 
 }

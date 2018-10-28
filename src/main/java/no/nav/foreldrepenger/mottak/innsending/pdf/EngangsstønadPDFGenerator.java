@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class EngangsstønadPDFGenerator {
     public byte[] generate(Søknad søknad, Person søker) {
         Engangsstønad stønad = Engangsstønad.class.cast(søknad.getYtelse());
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
-        final PDPage page = renderer.newPage();
+        final PDPage page = newPage();
         try (PDDocument doc = new PDDocument();
                 PDPageContentStream cos = new PDPageContentStream(doc, page);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -70,8 +72,8 @@ public class EngangsstønadPDFGenerator {
             cos.close();
             doc.save(baos);
             return baos.toByteArray();
-        } catch (IOException ex) {
-            throw new RuntimeException("Error while creating pdf", ex);
+        } catch (IOException e) {
+            throw new PDFException("Kunne ikke lage PDF", e);
         }
     }
 
@@ -196,6 +198,10 @@ public class EngangsstønadPDFGenerator {
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("neste12"), cos, y);
         y -= renderer.addBulletList(medlemsPerioder.getSecond(), cos, y);
         return startY - y;
+    }
+
+    private static PDPage newPage() {
+        return new PDPage(A4);
     }
 
     @Override

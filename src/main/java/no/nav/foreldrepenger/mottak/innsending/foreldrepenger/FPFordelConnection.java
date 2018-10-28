@@ -8,7 +8,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 
 @Component
 public class FPFordelConnection extends AbstractRestConnection implements Pingable {

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
 
 @Component

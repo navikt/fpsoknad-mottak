@@ -461,7 +461,7 @@ public class ForeldrepengeInfoRenderer {
         float startY = y;
         y -= renderer.addLeftHeading(txt("vedlegg"), cos, y);
         List<String> formatted = vedlegg.stream()
-                .map(textFormatter::vedlegg)
+                .map(Vedlegg::getBeskrivelse)
                 .collect(toList());
         y -= renderer.addBulletList(formatted, cos, y);
         return startY - y;

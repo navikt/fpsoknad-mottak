@@ -22,7 +22,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.innsending.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 
 @Service

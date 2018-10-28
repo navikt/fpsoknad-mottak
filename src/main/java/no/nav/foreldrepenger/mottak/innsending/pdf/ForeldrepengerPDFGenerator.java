@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.util.Collections.emptyList;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -27,9 +27,8 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
 public class ForeldrepengerPDFGenerator implements EnvironmentAware {
-
-    private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
+    private static final float STARTY = PDFElementRenderer.calculateStartY();
     private final Oppslag oppslag;
     private final ForeldrepengeInfoRenderer fpRenderer;
 
@@ -41,7 +40,7 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
     }
 
     public byte[] generate(Søknad søknad, Person søker) {
-        return generate(søknad, søker, Collections.emptyList());
+        return generate(søknad, søker, emptyList());
     }
 
     public byte[] generate(Søknad søknad, Person søker, final List<Arbeidsforhold> arbeidsforhold) {

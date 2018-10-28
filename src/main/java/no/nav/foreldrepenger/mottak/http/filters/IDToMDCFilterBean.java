@@ -32,26 +32,25 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(IDToMDCFilterBean.class);
 
     private final Oppslag oppslag;
-    private final TokenHandler extractor;
+    private final TokenHandler handler;
 
-    public IDToMDCFilterBean(TokenHandler extractor, Oppslag oppslag) {
-        this.extractor = extractor;
+    public IDToMDCFilterBean(TokenHandler handler, Oppslag oppslag) {
+        this.handler = handler;
         this.oppslag = oppslag;
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        if (extractor.erAutentisert()) {
+        if (handler.erAutentisert()) {
             tilMDC();
-
         }
         chain.doFilter(req, res);
     }
 
     private void tilMDC() {
         try {
-            MDC.put(NAV_USER_ID, extractor.autentisertBruker().getFnr());
+            MDC.put(NAV_USER_ID, handler.autentisertBruker().getFnr());
             MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
             LOG.warn("Noe gikk feil", e);
@@ -60,6 +59,6 @@ public class IDToMDCFilterBean extends GenericFilterBean {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", extractor=" + extractor + "]";
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", handler=" + handler + "]";
     }
 }

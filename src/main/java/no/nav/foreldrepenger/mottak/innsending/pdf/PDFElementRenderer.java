@@ -34,10 +34,6 @@ public class PDFElementRenderer {
 
     private static final PDRectangle MEDIABOX = new PDPage(A4).getMediaBox();
 
-    public PDPage newPage() {
-        return new PDPage(A4);
-    }
-
     public static float calculateStartY() {
         return MEDIABOX.getUpperRightY() - MARGIN;
     }
