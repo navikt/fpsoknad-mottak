@@ -38,16 +38,16 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        setValues(HttpServletRequest.class.cast(request));
+        putValues(HttpServletRequest.class.cast(request));
         chain.doFilter(request, response);
     }
 
-    private void setValues(HttpServletRequest request) {
-        setValue(NAV_CONSUMER_ID, request.getHeader(NAV_CONSUMER_ID), applicationName);
-        setValue(NAV_CALL_ID, request.getHeader(NAV_CALL_ID), generator.create());
+    private void putValues(HttpServletRequest request) {
+        putValue(NAV_CONSUMER_ID, request.getHeader(NAV_CONSUMER_ID), applicationName);
+        putValue(NAV_CALL_ID, request.getHeader(NAV_CALL_ID), generator.create());
     }
 
-    private static void setValue(String key, String value, String defaultValue) {
+    private static void putValue(String key, String value, String defaultValue) {
         MDC.put(key, Optional.ofNullable(value).orElse(defaultValue));
     }
 

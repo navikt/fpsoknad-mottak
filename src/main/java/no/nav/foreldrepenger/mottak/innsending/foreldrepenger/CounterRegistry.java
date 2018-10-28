@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http;
+package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING;

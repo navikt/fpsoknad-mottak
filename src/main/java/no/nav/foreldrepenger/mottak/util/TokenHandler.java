@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static no.nav.foreldrepenger.mottak.http.Constants.ISSUER;
 import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
 
 import java.util.Optional;
@@ -17,7 +18,6 @@ import no.nav.security.oidc.context.OIDCValidationContext;
 @Component
 public class TokenHandler {
 
-    static final String ISSUER = "selvbetjening";
     private final OIDCRequestContextHolder ctxHolder;
 
     public TokenHandler(OIDCRequestContextHolder ctxHolder) {

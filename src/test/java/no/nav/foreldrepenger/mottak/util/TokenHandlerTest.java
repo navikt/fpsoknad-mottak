@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.util.TokenHandler.ISSUER;
+import static no.nav.foreldrepenger.mottak.http.Constants.ISSUER;
 import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

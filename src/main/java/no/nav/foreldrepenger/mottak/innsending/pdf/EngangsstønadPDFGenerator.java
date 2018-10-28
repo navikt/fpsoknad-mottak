@@ -123,7 +123,7 @@ public class EngangsstønadPDFGenerator {
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> lines = new ArrayList<>(Arrays.asList(textFormatter.fromMessageSource("nasjonalitet",
-                textFormatter.countryName(utenlandsForelder.getLand().getAlpha2(),
+                textFormatter.countryName(utenlandsForelder.getLand(),
                         utenlandsForelder.getLand().getName())),
                 textFormatter.navn(utenlandsForelder.getNavn())));
 

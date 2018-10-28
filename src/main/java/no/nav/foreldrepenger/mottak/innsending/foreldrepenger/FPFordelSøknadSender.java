@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_ENDRING;
-import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_ETTERSSENDING;
-import static no.nav.foreldrepenger.mottak.http.CounterRegistry.FP_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;

@@ -204,7 +204,7 @@ public class TestForeldrepengerSerialization {
 
     }
 
-    static void test(Object expected, boolean log, ObjectMapper mapper) {
+    public static void test(Object expected, boolean log, ObjectMapper mapper) {
         try {
             String serialized = serialize(expected, log, mapper);
             Object deserialized = mapper.readValue(serialized, expected.getClass());

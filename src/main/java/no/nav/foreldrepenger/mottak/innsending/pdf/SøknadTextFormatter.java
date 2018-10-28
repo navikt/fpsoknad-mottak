@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
@@ -46,7 +47,11 @@ public class SøknadTextFormatter {
         this.locale = locale;
     }
 
-    public String countryName(String isoCode, Object... values) {
+    public String countryName(CountryCode code, Object... values) {
+        return countryName(code.getAlpha2(), values);
+    }
+
+    private String countryName(String isoCode, Object... values) {
         return Optional.ofNullable(getMessage(isoCode, landkoder, values)).orElse(isoCode);
     }
 
@@ -102,8 +107,8 @@ public class SøknadTextFormatter {
     }
 
     public List<String> utenlandsOpphold(List<Utenlandsopphold> opphold) {
-        if (opphold.isEmpty()) {
-            return Collections.singletonList(countryName(CountryCode.NO.getAlpha2()));
+        if (CollectionUtils.isEmpty(opphold)) {
+            return Collections.singletonList(countryName(CountryCode.NO));
         }
         return opphold.stream()
                 .map(this::formatOpphold)
@@ -111,7 +116,7 @@ public class SøknadTextFormatter {
     }
 
     private String formatOpphold(Utenlandsopphold opphold) {
-        return countryName(opphold.getLand().getAlpha2(), opphold.getLand().getName())
+        return countryName(opphold.getLand(), opphold.getLand().getName())
                 + ": "
                 + dato(opphold.getVarighet().getFom()) + " - "
                 + dato(opphold.getVarighet().getTom());

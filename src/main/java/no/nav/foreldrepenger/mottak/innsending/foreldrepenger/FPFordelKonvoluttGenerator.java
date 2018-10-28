@@ -32,10 +32,10 @@ public class FPFordelKonvoluttGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelKonvoluttGenerator.class);
 
-    public static final String VEDLEGG = "vedlegg";
-    public static final String METADATA = "metadata";
-    public static final String CONTENT_ID = "Content-ID";
-    public static final String HOVEDDOKUMENT = "hoveddokument";
+    static final String HOVEDDOKUMENT = "hoveddokument";
+    static final String VEDLEGG = "vedlegg";
+    static final String METADATA = "metadata";
+    private static final String CONTENT_ID = "Content-ID";
     private final FPFordelMetdataGenerator metadataGenerator;
     private final ForeldrepengerSøknadMapper søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
+package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -62,12 +62,11 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetdataGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.TestForeldrepengerSerialization;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;

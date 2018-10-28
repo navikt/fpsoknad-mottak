@@ -478,7 +478,7 @@ public class ForeldrepengeInfoRenderer {
                 .map(n -> txt("navn", n))
                 .orElse("Ukjent"));
         attributter.add(txt("nasjonalitet",
-                textFormatter.countryName(utenlandsForelder.getLand().getAlpha2(),
+                textFormatter.countryName(utenlandsForelder.getLand(),
                         utenlandsForelder.getLand().getName())));
         addIfSet(attributter, "utenlandskid", utenlandsForelder.getId());
         return attributter;
@@ -623,7 +623,7 @@ public class ForeldrepengeInfoRenderer {
 
     private void addIfSet(List<String> attributter, CountryCode land) {
         if (land != null) {
-            attributter.add(txt("land", textFormatter.countryName(land.getAlpha2())));
+            attributter.add(txt("land", textFormatter.countryName(land)));
         }
     }
 
