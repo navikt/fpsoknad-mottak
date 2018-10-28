@@ -50,7 +50,7 @@ public class IDToMDCFilterBean extends GenericFilterBean {
 
     private void tilMDC() {
         try {
-            MDC.put(NAV_USER_ID, handler.autentisertBruker().getFnr());
+            MDC.put(NAV_USER_ID, handler.getFnr());
             MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
             LOG.warn("Noe gikk feil", e);

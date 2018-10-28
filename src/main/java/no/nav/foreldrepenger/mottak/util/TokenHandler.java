@@ -39,6 +39,10 @@ public class TokenHandler {
                 .orElseThrow(() -> new ForbiddenException("Fant ikke token for issuer " + ISSUER));
     }
 
+    public String getFnr() {
+        return autentisertBruker().getFnr();
+    }
+
     public Fødselsnummer autentisertBruker() {
         OIDCValidationContext context = Optional.ofNullable(context())
                 .orElseThrow(() -> new ForbiddenException("Fant ikke context"));

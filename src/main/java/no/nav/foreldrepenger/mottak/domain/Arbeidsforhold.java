@@ -76,13 +76,10 @@ public class Arbeidsforhold {
 
     @Override
     public String toString() {
-        return "Arbeidsforhold{" +
-                "arbeidsgiverId='" + arbeidsgiverId + '\'' +
-                ", arbeidsgiverIdType='" + arbeidsgiverIdType + '\'' +
-                ", from=" + from +
-                ", to=" + to +
-                ", stillingsprosent=" + stillingsprosent +
-                ", arbeidsgiverNavn='" + arbeidsgiverNavn + '\'' +
-                '}';
+        return getClass().getSimpleName() + " [arbeidsgiverId=" + arbeidsgiverId + ", arbeidsgiverIdType="
+                + arbeidsgiverIdType
+                + ", from=" + from + ", to=" + to + ", stillingsprosent=" + stillingsprosent + ", arbeidsgiverNavn="
+                + arbeidsgiverNavn + "]";
     }
+
 }
