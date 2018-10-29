@@ -14,6 +14,7 @@ public enum DokumentType {
     I000042("Dokumentasjon av overtakelse av omsorg"),
     I000043("Dokumentasjon av arbeidsforhold"),
     I000044("Dokumentasjon av etterlønn eller sluttvederlag"),
+    I000045("Beskrivelse/Dokumentasjon funksjonsnedsettelse"),
     I000047("Brukeropplastet dokumentasjon"),
     I000049("Mor skal delta på heltid i introduksjonsprogrammet etter kapittel 2 for nyankomne innvandrere"),
     I000050("Søknad om endring av uttak av foreldrepenger eller overføring av kvote"),
