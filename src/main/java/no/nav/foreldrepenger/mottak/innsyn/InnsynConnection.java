@@ -54,7 +54,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     public List<SakWrapper> hentSaker(String aktørId) {
         LOG.trace("Henter saker");
         return Optional.ofNullable(getForObject(uri(config.getBaseURI(), SAK,
-                queryParams(SAKSNUMMER, aktørId)), SakWrapper[].class))
+                queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
@@ -62,7 +62,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan");
         return Optional.ofNullable(getForObject(uri(config.getBaseURI(), UTTAKSPLAN,
-                queryParams(AKTOR_ID, saksnummer)), UttaksPeriode[].class))
+                queryParams(SAKSNUMMER, saksnummer)), UttaksPeriode[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
