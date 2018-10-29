@@ -13,7 +13,7 @@ import javax.validation.Validator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import no.nav.foreldrepenger.mottak.domain.validation.Termindato;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Termindato;
 
 public class TermindatoValidatorTest {
 

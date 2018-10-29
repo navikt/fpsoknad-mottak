@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.validation.Opphold;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 
 @Data
 @Valid

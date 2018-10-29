@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.validation;
+package no.nav.foreldrepenger.mottak.domain.validation.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,14 +7,16 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-@Constraint(validatedBy = LukketPeriodeMedVedleggValidator.class)
+import no.nav.foreldrepenger.mottak.domain.validation.RettigheterValidator;
+
+@Constraint(validatedBy = RettigheterValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LukketPeriode {
+public @interface Rettighet {
 
     Class<?>[] groups() default {};
 
     Class<?>[] payload() default {};
 
-    String message() default "{ytelse.medlemsskap.periode.ugyldig}";
+    String message() default "{ytelse.rettighet.ugyldig}";
 }

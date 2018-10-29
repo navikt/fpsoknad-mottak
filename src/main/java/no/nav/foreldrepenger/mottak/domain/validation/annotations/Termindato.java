@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.validation;
+package no.nav.foreldrepenger.mottak.domain.validation.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,6 +10,8 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.NotNull;
+
+import no.nav.foreldrepenger.mottak.domain.validation.TermindatoValidator;
 
 @NotNull
 @Target({ ElementType.FIELD })

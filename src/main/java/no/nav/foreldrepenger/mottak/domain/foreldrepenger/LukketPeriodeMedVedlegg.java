@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import no.nav.foreldrepenger.mottak.domain.validation.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
 
 @Data
 @EqualsAndHashCode(exclude = { "vedlegg" })

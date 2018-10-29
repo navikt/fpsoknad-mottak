@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.validation;
+package no.nav.foreldrepenger.mottak.domain.validation.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,10 +7,12 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-@Constraint(validatedBy = PeriodeValidator.class)
+import no.nav.foreldrepenger.mottak.domain.validation.LukketPeriodeMedVedleggValidator;
+
+@Constraint(validatedBy = LukketPeriodeMedVedleggValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Periode {
+public @interface LukketPeriode {
 
     Class<?>[] groups() default {};
 

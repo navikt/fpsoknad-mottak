@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.validation.Opphold;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 
 @Data
 public class TidligereOppholdsInformasjon {

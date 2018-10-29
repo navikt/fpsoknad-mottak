@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.validation.Orgnr;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

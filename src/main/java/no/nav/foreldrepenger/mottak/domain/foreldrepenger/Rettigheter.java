@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 import java.time.LocalDate;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.validation.Rettighet;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Rettighet;
 
 @Data
 @Rettighet

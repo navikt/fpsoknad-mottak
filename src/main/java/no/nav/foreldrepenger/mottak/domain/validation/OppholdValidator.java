@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 
 public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenlandsopphold>> {
 

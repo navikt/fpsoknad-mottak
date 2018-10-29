@@ -2,6 +2,9 @@ package no.nav.foreldrepenger.mottak.domain.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
+
 import java.time.LocalDate;
 
 import static java.time.LocalDate.now;

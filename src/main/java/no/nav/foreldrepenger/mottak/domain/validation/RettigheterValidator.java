@@ -4,6 +4,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Rettighet;
 
 public class RettigheterValidator implements ConstraintValidator<Rettighet, Rettigheter> {
 

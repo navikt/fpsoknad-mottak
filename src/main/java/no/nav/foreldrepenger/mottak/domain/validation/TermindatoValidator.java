@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Termindato;
+
 public class TermindatoValidator implements ConstraintValidator<Termindato, LocalDate> {
 
     private int weeks;

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.validation;
+package no.nav.foreldrepenger.mottak.domain.validation.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
+
+import no.nav.foreldrepenger.mottak.domain.validation.PastOrTodayValidator;
 
 @Target({ ElementType.FIELD, ElementType.TYPE_USE })
 @Retention(RetentionPolicy.RUNTIME)

@@ -9,6 +9,8 @@ import javax.validation.Validator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
+
 public class OrgnrValidatorTest {
 
     private static final String NAV = "999263550";
