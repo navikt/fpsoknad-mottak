@@ -21,11 +21,16 @@ public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
 
     private final XMLTilSøknadMapper mapper;
-    private final InnsynConnection connection;
+    private final InnsynConnection innsynConnection;
 
-    public InnsynTjeneste(InnsynConnection connection, XMLTilSøknadMapper mapper) {
-        this.connection = connection;
+    public InnsynTjeneste(InnsynConnection innsynConnection, XMLTilSøknadMapper mapper) {
+        this.innsynConnection = innsynConnection;
         this.mapper = mapper;
+    }
+
+    @Override
+    public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
+        return innsynConnection.hentUttaksplan(saksnummer);
     }
 
     @Override
@@ -36,7 +41,7 @@ public class InnsynTjeneste implements Innsyn {
     @Override
     public List<Sak> hentSaker(String aktørId) {
         LOG.info("Henter saker for {}", aktørId);
-        List<Sak> saker = safeStream(connection.hentSaker(aktørId))
+        List<Sak> saker = safeStream(innsynConnection.hentSaker(aktørId))
                 .map(this::tilSak)
                 .collect(toList());
         LOG.info("Hentet {} sak{}", saker.size(), endelse(saker));
@@ -49,7 +54,7 @@ public class InnsynTjeneste implements Innsyn {
     private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
         LOG.info("Henter behandlinger");
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
-                .map(lenke -> connection.hentBehandling(lenke))
+                .map(lenke -> innsynConnection.hentBehandling(lenke))
                 .map(this::tilBehandling)
                 .collect(toList());
         LOG.info("Hentet {} behandling{}", behandlinger.size(), endelse(behandlinger));
@@ -60,7 +65,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad hentSøknad(Lenke søknadsLenke) {
-        InnsynsSøknad søknad = Optional.ofNullable(connection.hentSøknad(søknadsLenke))
+        InnsynsSøknad søknad = Optional.ofNullable(innsynConnection.hentSøknad(søknadsLenke))
                 .map(this::tilSøknad)
                 .orElse(null);
         if (søknad == null) {
@@ -105,6 +110,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mapper=" + mapper + ", connection=" + connection + "]";
+        return getClass().getSimpleName() + " [mapper=" + mapper + ", innsynConnection=" + innsynConnection + "]";
     }
+
 }

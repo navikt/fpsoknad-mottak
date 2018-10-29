@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
+import no.nav.foreldrepenger.mottak.innsyn.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 
@@ -31,6 +33,11 @@ public class InnsynController {
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
         return innsyn.hentSaker(oppslag.getAktørId());
+    }
+
+    @GetMapping(value = "/uttaksplan")
+    public List<UttaksPeriode> uttaksplan(@RequestParam(name = "saksnummer") String saksnummer) {
+        return innsyn.hentUttaksplan(saksnummer);
     }
 
     @Override

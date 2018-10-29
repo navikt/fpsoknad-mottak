@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
+import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAKSNUMMER;
+import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.UTTAKSPLAN;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -52,7 +54,15 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     public List<SakWrapper> hentSaker(String aktørId) {
         LOG.trace("Henter saker");
         return Optional.ofNullable(getForObject(uri(config.getBaseURI(), SAK,
-                queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
+                queryParams(SAKSNUMMER, aktørId)), SakWrapper[].class))
+                .map(Arrays::asList)
+                .orElse(emptyList());
+    }
+
+    public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
+        LOG.trace("Henter uttaksplan");
+        return Optional.ofNullable(getForObject(uri(config.getBaseURI(), UTTAKSPLAN,
+                queryParams(AKTOR_ID, saksnummer)), UttaksPeriode[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }

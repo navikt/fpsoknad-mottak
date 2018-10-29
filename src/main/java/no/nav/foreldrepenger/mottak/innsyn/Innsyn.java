@@ -10,4 +10,6 @@ public interface Innsyn {
 
     List<Sak> hentSaker(String aktørId);
 
+    List<UttaksPeriode> hentUttaksplan(String saksnummer);
+
 }
