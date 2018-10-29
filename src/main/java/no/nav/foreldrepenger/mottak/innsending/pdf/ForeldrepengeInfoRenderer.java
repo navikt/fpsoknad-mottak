@@ -508,7 +508,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "arbeidsgiver", ua.getArbeidsgiverNavn());
         addIfSet(attributter, "fom", ua.getPeriode().getFom());
         addIfSet(attributter, "tom", ua.getPeriode().getTom());
-        addIfSet(attributter, ua.getLand());
+        addIfSet(attributter, "virksomhetsland", ua.getLand());
         return attributter;
     }
 
@@ -529,7 +529,7 @@ public class ForeldrepengeInfoRenderer {
             UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
         }
-        addIfSet(attributter, næring.getArbeidsland());
+        addIfSet(attributter, "virksomhetsland", næring.getArbeidsland());
         attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
                 næring.getVirksomhetsTyper().stream()
                         .map(v -> textFormatter.capitalize(v.toString()))
@@ -621,9 +621,9 @@ public class ForeldrepengeInfoRenderer {
         return textFormatter.yesNo(value);
     }
 
-    private void addIfSet(List<String> attributter, CountryCode land) {
+    private void addIfSet(List<String> attributter, String key, CountryCode land) {
         if (land != null) {
-            attributter.add(txt("land", textFormatter.countryName(land)));
+            attributter.add(txt(key, textFormatter.countryName(land)));
         }
     }
 
