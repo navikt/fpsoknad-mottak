@@ -61,7 +61,9 @@ public abstract class AbstractRestConnection {
             LOG.info("Henter entity fra {}", uri);
             ResponseEntity<T> response = template.getForEntity(uri, responseType);
             LOG.info("Fikk respons status {}", response.getStatusCodeValue());
-            LOG.info("{}", CONFIDENTIAL, response.getBody());
+            if (response.hasBody()) {
+                LOG.info("Body: {}", CONFIDENTIAL, response.getBody());
+            }
             return response;
         } catch (RestClientException e) {
             LOG.warn("Kunne ikke hente entity fra {}", uri, e);
