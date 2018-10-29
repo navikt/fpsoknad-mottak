@@ -23,6 +23,7 @@ public enum DokumentType {
     I000061("Mor utdanning på heltid"),
     I000062("Terminbekreftelse"),
     I000063("Fødselsattest"),
+    I000065("Bekreftelse fra arbeidsgiver"),
     I500002("Ettersendelse til søknad om foreldrepenger ved adopsjon"),
     I500003("Ettersendelse til søknad om engangsstønad ved fødsel"),
     I500004("Ettersendelse til søknad om engangsstønad ved adopsjon"),
