@@ -24,7 +24,7 @@ public class UttaksPeriode {
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
             @JsonProperty("samtidigUttak") Boolean samtidigUttak,
             @JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
-            @JsonProperty("trekkonto") Trekkonto trekkonto, @JsonProperty("fom") Integer trekkDager,
+            @JsonProperty("trekkonto") Trekkonto trekkonto, @JsonProperty("trekkDager") Integer trekkDager,
             @JsonProperty("arbeidstidprosent") Double arbeidstidProsent,
             @JsonProperty("utbetalingprosent") Double utbetalingprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart) {
