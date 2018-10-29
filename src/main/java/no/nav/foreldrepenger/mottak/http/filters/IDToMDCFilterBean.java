@@ -2,8 +2,7 @@ package no.nav.foreldrepenger.mottak.http.filters;
 
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_AKTØR_ID;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_USER_ID;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 import java.io.IOException;
@@ -16,7 +15,6 @@ import javax.servlet.ServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -25,7 +23,6 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.TokenHandler;
 
 @Order(HIGHEST_PRECEDENCE)
-@Profile({ PREPROD, DEV })
 @Component
 public class IDToMDCFilterBean extends GenericFilterBean {
 
@@ -50,7 +47,9 @@ public class IDToMDCFilterBean extends GenericFilterBean {
 
     private void tilMDC() {
         try {
-            MDC.put(NAV_USER_ID, handler.getFnr());
+            if (isDevOrPreprod(getEnvironment())) {
+                MDC.put(NAV_USER_ID, handler.getFnr());
+            }
             MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
             LOG.warn("Noe gikk feil", e);
