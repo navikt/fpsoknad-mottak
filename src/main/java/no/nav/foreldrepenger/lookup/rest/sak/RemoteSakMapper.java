@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public class RemoteSakMapper {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private RemoteSakMapper() {
 
@@ -17,9 +17,13 @@ public class RemoteSakMapper {
                 remoteSak.getApplikasjon(),
                 remoteSak.getFagsakNr(),
                 "",
-                LocalDate.parse(remoteSak.getOpprettetTidspunkt(), FORMATTER),
+                LocalDate.parse(stripSubSecondPart(remoteSak.getOpprettetTidspunkt()), FORMATTER),
                 remoteSak.getOpprettetAv()
             );
+    }
+
+    private static String stripSubSecondPart(String orig) {
+        return orig.substring(0, orig.indexOf((".")));
     }
 
 }
