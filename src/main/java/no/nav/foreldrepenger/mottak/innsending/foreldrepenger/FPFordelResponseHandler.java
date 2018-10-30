@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
+import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
@@ -121,7 +122,8 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     }
 
     private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {
-        return getForEntityWithDelay(uri, clazz, delayMillis);
+        waitFor(delayMillis);
+        return getForEntity(uri, clazz);
     }
 
     private static Kvittering kvitteringMedType(LeveranseStatus type, String ref, String journalId, String saksnr) {

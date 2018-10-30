@@ -19,6 +19,8 @@ public final class CounterRegistry {
     }
 
     private static Counter counter(String type) {
-        return Metrics.counter("fpfordel.send", "ytelse", "foreldrepenger", "type", type);
+        Counter counter = Metrics.counter("fpfordel.send", "ytelse", "foreldrepenger", "type", type);
+        counter.increment(0);
+        return counter;
     }
 }

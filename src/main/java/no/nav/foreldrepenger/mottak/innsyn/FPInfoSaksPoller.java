@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
+import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 
 import java.net.URI;
 import java.time.Duration;
@@ -97,7 +98,8 @@ public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStat
     }
 
     private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {
-        return getForEntityWithDelay(uri, clazz, delayMillis);
+        waitFor(delayMillis);
+        return getForEntity(uri, clazz);
     }
 
     private static long stop(StopWatch timer) {

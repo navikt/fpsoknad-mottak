@@ -42,11 +42,6 @@ public abstract class AbstractRestConnection {
         return getForObject(uri, responseType, false);
     }
 
-    protected <T> ResponseEntity<T> getForEntityWithDelay(URI uri, Class<T> responseType, long delayMS) {
-        waitFor(delayMS);
-        return getForEntity(uri, responseType);
-    }
-
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
         try {
             return template.postForEntity(uri, payload, responseType);
@@ -60,7 +55,7 @@ public abstract class AbstractRestConnection {
         try {
             LOG.trace("Henter entity fra {}", uri);
             ResponseEntity<T> response = template.getForEntity(uri, responseType);
-            LOG.trace("Fikk respons status {}", response.getStatusCodeValue());
+            LOG.trace("Fikk respons OK for {}", uri);
             if (response.hasBody()) {
                 LOG.trace(CONFIDENTIAL, "Body: {}", response.getBody());
             }
@@ -119,12 +114,4 @@ public abstract class AbstractRestConnection {
         return respons;
     }
 
-    private static void waitFor(long delayMillis) {
-        try {
-            LOG.trace("Venter i {}ms", delayMillis);
-            Thread.sleep(delayMillis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Kunne ikke vente i " + delayMillis + "ms", e);
-        }
-    }
 }
