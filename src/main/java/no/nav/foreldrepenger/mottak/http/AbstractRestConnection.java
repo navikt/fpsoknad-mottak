@@ -62,7 +62,7 @@ public abstract class AbstractRestConnection {
             ResponseEntity<T> response = template.getForEntity(uri, responseType);
             LOG.info("Fikk respons status {}", response.getStatusCodeValue());
             if (response.hasBody()) {
-                LOG.info("Body: {}", CONFIDENTIAL, response.getBody());
+                LOG.info(CONFIDENTIAL, "Body: {}", response.getBody());
             }
             return response;
         } catch (RestClientException e) {
