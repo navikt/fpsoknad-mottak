@@ -114,8 +114,8 @@ public abstract class AbstractRestConnection {
     private <T> T getAndLog(URI uri, Class<T> responseType) {
         LOG.trace("Henter fra URI {}", uri);
         T respons = template.getForObject(uri, responseType);
-        LOG.info("Fikk respons OK");
-        LOG.info(CONFIDENTIAL, "{}", respons);
+        LOG.trace("Fikk respons OK for {}", uri);
+        LOG.trace(CONFIDENTIAL, "{}", respons);
         return respons;
     }
 
