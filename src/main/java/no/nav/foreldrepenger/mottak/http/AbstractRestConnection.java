@@ -58,11 +58,11 @@ public abstract class AbstractRestConnection {
 
     protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
         try {
-            LOG.info("Henter entity fra {}", uri);
+            LOG.trace("Henter entity fra {}", uri);
             ResponseEntity<T> response = template.getForEntity(uri, responseType);
-            LOG.info("Fikk respons status {}", response.getStatusCodeValue());
+            LOG.trace("Fikk respons status {}", response.getStatusCodeValue());
             if (response.hasBody()) {
-                LOG.info(CONFIDENTIAL, "Body: {}", response.getBody());
+                LOG.trace(CONFIDENTIAL, "Body: {}", response.getBody());
             }
             return response;
         } catch (RestClientException e) {
