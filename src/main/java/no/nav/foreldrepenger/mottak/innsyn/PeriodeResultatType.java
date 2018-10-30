@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-public enum PerioderResultatType {
+public enum PeriodeResultatType {
     INNVILGET, AVSLÅTT, IKKE_FASTSATT, MANUELL_BEHANDLING
 }

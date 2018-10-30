@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
 @Data
 public class UttaksPeriode {
 
-    private final PerioderResultatType periodeResultatType;
+    private final PeriodeResultatType periodeResultatType;
     private final Boolean graderingInnvilget;
     private final Boolean samtidigUttak;
     private final LukketPeriode periode;
@@ -22,7 +22,7 @@ public class UttaksPeriode {
     private final Double utbetalingprosent;
     private final Boolean gjelderAnnenPart;
 
-    public UttaksPeriode(@JsonProperty("periodeResultatType") PerioderResultatType periodeResultatType,
+    public UttaksPeriode(@JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
             @JsonProperty("samtidigUttak") Boolean samtidigUttak,
             @JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,

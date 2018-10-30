@@ -9,18 +9,16 @@ import io.micrometer.core.instrument.Metrics;
 
 public final class CounterRegistry {
 
-    private static final String YTELSE = "ytelse";
-    private static final String TYPE = "type";
-    private static final String FP = "foreldrepenger";
-    private static final String NAVN = "fpfordel.send";
-
-    public static final Counter FP_SENDFEIL = Metrics.counter(NAVN, YTELSE, FP, TYPE, "feil");
-    public static final Counter FP_FØRSTEGANG = Metrics.counter(NAVN, YTELSE, FP, TYPE, INITIELL.name());
-    public static final Counter FP_ENDRING = Metrics.counter(NAVN, YTELSE, FP, TYPE, ENDRING.name());
-    public static final Counter FP_ETTERSSENDING = Metrics.counter(NAVN, YTELSE, FP, TYPE, ETTERSENDING.name());
+    public static final Counter FP_SENDFEIL = counter("feil");
+    public static final Counter FP_FØRSTEGANG = counter(INITIELL.name());
+    public static final Counter FP_ENDRING = counter(ENDRING.name());
+    public static final Counter FP_ETTERSSENDING = counter(ETTERSENDING.name());
 
     private CounterRegistry() {
 
     }
 
+    private static Counter counter(String type) {
+        return Metrics.counter("fpfordel.send", "ytelse", "foreldrepenger", "type", type);
+    }
 }
