@@ -2,6 +2,10 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FEILET_KVITTERINGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FORDELT_KVITTERING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.GITTOPP_KVITTERING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.MANUELL_KVITTERING;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
@@ -16,8 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
@@ -25,11 +27,6 @@ import no.nav.foreldrepenger.mottak.innsyn.SaksStatusPoller;
 
 @Component
 public class FPFordelResponseHandler extends AbstractRestConnection {
-
-    private static final Counter GITTOPP = Metrics.counter("fpfordel.kvitteringer.gittopp");
-    private static final Counter MANUELL = Metrics.counter("fpfordel.kvitteringer.gosys");
-    private static final Counter FORDELT = Metrics.counter("fpfordel.kvitteringer.fordelt");
-    private static final Counter FEILET = Metrics.counter("fpfordel.kvitteringer.feilet");
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final int maxAntallForsøk;
@@ -48,7 +45,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
         timer.start();
         if (!leveranseRespons.hasBody()) {
             LOG.warn("Fikk ingen kvittering etter leveranse av søknad");
-            FEILET.increment();
+            FEILET_KVITTERINGER.increment();
             return new Kvittering(FP_FORDEL_MESSED_UP, ref);
         }
         FPFordelKvittering fpFordelKvittering = FPFordelKvittering.class.cast(leveranseRespons.getBody());
@@ -73,19 +70,19 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                         }
                         if (fpFordelKvittering instanceof FPFordelGosysKvittering) {
                             LOG.info("Fikk Gosys kvittering  på {}. forsøk, returnerer etter {}ms", i, stop(timer));
-                            MANUELL.increment();
+                            MANUELL_KVITTERING.increment();
                             return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(fpFordelKvittering));
                         }
                         LOG.warn("Uventet kvittering {} for statuskode {}, gir opp (etter {}ms)", fpFordelKvittering,
                                 fpInfoRespons.getStatusCode(), stop(timer));
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
                     case SEE_OTHER:
-                        FORDELT.increment();
+                        FORDELT_KVITTERING.increment();
                         FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
                         return poller.poll(locationFra(fpInfoRespons), ref, timer, pending.getPollInterval(), fordelt);
 
                     default:
-                        FEILET.increment();
+                        FEILET_KVITTERINGER.increment();
                         LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",
                                 fpInfoRespons.getStatusCode(), timer.getTime());
                         return new Kvittering(FP_FORDEL_MESSED_UP, ref);
@@ -93,11 +90,11 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                 }
                 LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp (etter {}ms)", maxAntallForsøk,
                         stop(timer));
-                GITTOPP.increment();
+                GITTOPP_KVITTERING.increment();
                 return new Kvittering(FP_FORDEL_MESSED_UP, ref);
             }
         default:
-            FEILET.increment();
+            FEILET_KVITTERINGER.increment();
             LOG.warn("Uventet responskode {} ved leveranse av søknad, gir opp (etter {}ms)",
                     leveranseRespons.getStatusCode(),
                     stop(timer));
