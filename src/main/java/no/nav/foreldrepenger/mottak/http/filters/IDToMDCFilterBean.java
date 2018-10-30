@@ -40,12 +40,12 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         if (handler.erAutentisert()) {
-            tilMDC();
+            copyHeadersToMDC();
         }
         chain.doFilter(req, res);
     }
 
-    private void tilMDC() {
+    private void copyHeadersToMDC() {
         try {
             if (isDevOrPreprod(getEnvironment())) {
                 MDC.put(NAV_USER_ID, handler.getFnr());

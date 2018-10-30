@@ -2,10 +2,12 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
 
 @Data
 public class UttaksPeriode {
@@ -14,7 +16,7 @@ public class UttaksPeriode {
     private final Boolean graderingInnvilget;
     private final Boolean samtidigUttak;
     private final LukketPeriode periode;
-    private final Trekkonto trekkonto;
+    private final StønadskontoType stønadskontotype;
     private final Integer trekkDager;
     private final Double arbeidstidProsent;
     private final Double utbetalingprosent;
@@ -24,7 +26,8 @@ public class UttaksPeriode {
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
             @JsonProperty("samtidigUttak") Boolean samtidigUttak,
             @JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
-            @JsonProperty("trekkonto") Trekkonto trekkonto, @JsonProperty("trekkDager") Integer trekkDager,
+            @JsonProperty("stønadskontotype") @JsonAlias("trekkonto") StønadskontoType stønadskontotype,
+            @JsonProperty("trekkDager") Integer trekkDager,
             @JsonProperty("arbeidstidprosent") Double arbeidstidProsent,
             @JsonProperty("utbetalingprosent") Double utbetalingprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart) {
@@ -32,7 +35,7 @@ public class UttaksPeriode {
         this.graderingInnvilget = graderingInnvilget;
         this.samtidigUttak = samtidigUttak;
         this.periode = new LukketPeriode(fom, tom);
-        this.trekkonto = trekkonto;
+        this.stønadskontotype = stønadskontotype;
         this.trekkDager = trekkDager;
         this.arbeidstidProsent = arbeidstidProsent;
         this.utbetalingprosent = utbetalingprosent;
