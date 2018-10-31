@@ -22,8 +22,7 @@
         <OnMatch>DENY</OnMatch>
     </turboFilter>
  </springProfile>
-    
-    <logger name="org.apache.pdfbox.pdmodel.font.PDType1Font" level="error" />
+    <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
      <springProfile name="dev,preprod">
         <logger name="org.springframework.web.client" level="info" />
         <logger name="no.nav.foreldrepenger" level="trace" />
@@ -31,3 +30,4 @@
         <logger name="org.apache.fontbox" level="info" />  
     </springProfile>
 </configuration>
+
