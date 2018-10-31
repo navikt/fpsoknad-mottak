@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "morsAktivitetsType")
 @ToString(callSuper = true)
 public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
 
@@ -30,41 +30,5 @@ public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
         this.årsak = årsak;
         this.uttaksperiodeType = uttaksperiodeType;
         this.morsAktivitetsType = morsAktivitetsType;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        UtsettelsesPeriode other = (UtsettelsesPeriode) obj;
-        if (erArbeidstaker != other.erArbeidstaker)
-            return false;
-
-        if (uttaksperiodeType != other.uttaksperiodeType)
-            return false;
-        if (virksomhetsnummer == null) {
-            if (other.virksomhetsnummer != null)
-                return false;
-        }
-        else if (!virksomhetsnummer.equals(other.virksomhetsnummer))
-            return false;
-        if (årsak != other.årsak)
-            return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + (erArbeidstaker ? 1231 : 1237);
-        result = prime * result + ((uttaksperiodeType == null) ? 0 : uttaksperiodeType.hashCode());
-        result = prime * result + ((virksomhetsnummer == null) ? 0 : virksomhetsnummer.hashCode());
-        result = prime * result + ((årsak == null) ? 0 : årsak.hashCode());
-        return result;
     }
 }
