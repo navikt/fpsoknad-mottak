@@ -235,7 +235,8 @@ public class ForeldrepengerTestUtils {
 
     static UtsettelsesPeriode utsettelsesPeriode(List<String> vedlegg) {
         return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), true, "222",
-                UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, vedlegg);
+                UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, MorsAktivitet.ARBEID,
+                vedlegg);
     }
 
     static Fordeling fordeling(List<String> vedlegg) {

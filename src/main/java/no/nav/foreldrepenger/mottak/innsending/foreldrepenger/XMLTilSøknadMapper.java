@@ -420,6 +420,7 @@ public class XMLTilSøknadMapper {
                     utsettelse.getVirksomhetsnummer(),
                     tilÅrsak(utsettelse.getAarsak()),
                     tilStønadKontoType(utsettelse.getUtsettelseAv()),
+                    null,
                     emptyList());
         }
 
