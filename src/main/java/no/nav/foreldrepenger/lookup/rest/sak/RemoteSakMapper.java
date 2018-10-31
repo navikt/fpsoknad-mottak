@@ -2,9 +2,13 @@ package no.nav.foreldrepenger.lookup.rest.sak;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RemoteSakMapper {
-
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteSakMapper.class);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private RemoteSakMapper() {
@@ -17,13 +21,19 @@ public class RemoteSakMapper {
                 remoteSak.getApplikasjon(),
                 remoteSak.getFagsakNr(),
                 "",
-                LocalDate.parse(stripSubSecondPart(remoteSak.getOpprettetTidspunkt()), FORMATTER),
-                remoteSak.getOpprettetAv()
-            );
+                parseSafely(remoteSak.getOpprettetTidspunkt()),
+                remoteSak.getOpprettetAv());
     }
 
-    private static String stripSubSecondPart(String orig) {
-        return orig.substring(0, orig.indexOf((".")));
+    private static LocalDate parseSafely(String opprettetTidspunkt) {
+        try {
+            return Optional.ofNullable(opprettetTidspunkt)
+                    .map(s -> s.substring(0, s.indexOf(".")))
+                    .map(s -> LocalDate.parse(s, FORMATTER)).orElse(null);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke parse dato {}", opprettetTidspunkt);
+            return null;
+        }
     }
 
 }
