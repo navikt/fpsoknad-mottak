@@ -269,6 +269,7 @@ public class ForeldrepengeInfoRenderer {
         else {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
         }
+        y -= renderer.addBlankLine();
         return y;
     }
 
