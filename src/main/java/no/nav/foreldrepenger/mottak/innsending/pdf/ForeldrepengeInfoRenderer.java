@@ -419,7 +419,12 @@ public class ForeldrepengeInfoRenderer {
             ArrayList<String> attributter = new ArrayList<>();
             addIfSet(attributter, "fom", opphold.getFom());
             addIfSet(attributter, "tom", opphold.getTom());
-            attributter.add(txt("oppholdsårsak", cap(opphold.getÅrsak().name())));
+            if (opphold.getÅrsak().key != null) {
+                attributter.add(txt("oppholdsårsak", txt(opphold.getÅrsak().key)));
+            }
+            else {
+                attributter.add(txt("oppholdsårsak", cap(opphold.getÅrsak().name())));
+            }
             return attributter;
         }
         if (periode instanceof UtsettelsesPeriode) {
