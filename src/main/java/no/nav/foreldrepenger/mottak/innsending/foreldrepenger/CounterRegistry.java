@@ -21,14 +21,14 @@ public final class CounterRegistry {
     public static final Counter FORDELT_KVITTERING = counter(FPFORDEL_KVITTERINGER, "fordelt");
     public static final Counter FEILET_KVITTERINGER = counter(FPFORDEL_KVITTERINGER, "feilet");
 
+    public static final Counter FPFORDEL_SEND_INITIELL = Metrics.counter("fpfordel_send_initiell");
+
     private CounterRegistry() {
 
     }
 
     private static Counter counter(String name, String type) {
-        Counter counter = Metrics.counter(name, "ytelse", "foreldrepenger", "type", type);
-        counter.increment(0);
-        return counter;
+        return Metrics.counter(name, "ytelse", "foreldrepenger", "type", type);
     }
 
 }
