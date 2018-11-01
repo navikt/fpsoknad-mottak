@@ -394,6 +394,7 @@ public class ForeldrepengeInfoRenderer {
             if (antallBarn > 1) {
                 attributter.add(txt("ønskerflerbarnsdager", jaNei(gradert.isØnskerFlerbarnsdager())));
             }
+            attributter.add(txt("gradertprosent", gradert.getArbeidstidProsent()));
             attributter.add(txt("ønskersamtidiguttak", jaNei(gradert.isØnskerSamtidigUttak())));
             addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent",
                     String.valueOf(gradert.getSamtidigUttakProsent()));
@@ -663,7 +664,6 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "ankomstdato", adopsjon.getAnkomstDato());
         addIfSet(attributter, "fødselsdato", adopsjon.getFødselsdato());
         addIfTrue(attributter, "ektefellesbarn", adopsjon.isEktefellesBarn());
-        addIfSet(attributter, "fødselsdato", adopsjon.getFødselsdato());
         return attributter;
     }
 
