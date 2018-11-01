@@ -77,4 +77,9 @@ public class OppslagConnection extends AbstractRestConnection implements Pingabl
         return getClass().getSimpleName() + " [cfg=" + cfg + "]";
     }
 
+    @Override
+    public String name() {
+        return "fpsoknad-oppslag";
+    }
+
 }

@@ -79,4 +79,9 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
         return getClass().getSimpleName() + " [config=" + config + "]";
     }
 
+    @Override
+    public String name() {
+        return "fpinfo";
+    }
+
 }

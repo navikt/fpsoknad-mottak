@@ -6,4 +6,6 @@ public interface Pingable {
     String ping();
 
     URI pingEndpoint();
+
+    String name();
 }

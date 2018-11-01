@@ -38,12 +38,13 @@ abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, Envir
     }
 
     private Health up() {
-        return isDevOrPreprod(env) ? Health.up().withDetail("url", pingable.pingEndpoint()).build()
+        return isDevOrPreprod(env) ? Health.up().withDetail(pingable.name(), pingable.pingEndpoint()).build()
                 : Health.up().build();
     }
 
     private Health down(Exception e) {
-        return isDevOrPreprod(env) ? Health.down().withDetail("url", pingable.pingEndpoint()).withException(e).build()
+        return isDevOrPreprod(env)
+                ? Health.down().withDetail(pingable.name(), pingable.pingEndpoint()).withException(e).build()
                 : Health.down().build();
     }
 

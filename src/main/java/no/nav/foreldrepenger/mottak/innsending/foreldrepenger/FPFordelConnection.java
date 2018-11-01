@@ -50,4 +50,9 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
         return getClass().getSimpleName() + " [config=" + config + ", responseHandler=" + responseHandler + "]";
     }
 
+    @Override
+    public String name() {
+        return "fpfordel";
+    }
+
 }
