@@ -72,7 +72,7 @@ public class DokmotHealthIndicator implements HealthIndicator {
     }
 
     private Health upWithDetails() {
-        return Health.up().withDetail("config", pinger.getQueueConfig().toString()).build();
+        return Health.up().withDetail("config", pinger.getQueueConfig().loggable()).build();
     }
 
     @Override
