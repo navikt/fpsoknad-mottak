@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
 import io.micrometer.core.annotation.Timed;
-import no.nav.foreldrepenger.lookup.EnvUtil;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,7 @@ public class SakClientHttp implements SakClient {
     @Override
     @Timed("lookup.sak")
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
-        LOG.info("henter saker på " + sakBaseUrl);
+        LOG.trace("henter saker på " + sakBaseUrl);
 
         String samlToken = stsClient.exchangeForSamlToken(oidcToken);
         HttpHeaders headers = new HttpHeaders();
@@ -59,8 +58,8 @@ public class SakClientHttp implements SakClient {
         }
         List<RemoteSak> saker = Optional.ofNullable(response.getBody()).orElse(emptyList());
 
-        LOG.info("Fant {} saker", saker.size());
-        LOG.info(EnvUtil.CONFIDENTIAL, "{}", saker);
+        LOG.info("Fant {} sak(er)", saker.size());
+        LOG.trace("{}", saker);
 
         Sak sisteSak = saker.stream()
             .map(RemoteSakMapper::map)

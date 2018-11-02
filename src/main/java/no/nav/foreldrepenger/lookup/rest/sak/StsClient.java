@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.joining;
 
 public class StsClient {
 
-    private static final Logger log = LoggerFactory.getLogger(StsClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StsClient.class);
 
     private RestTemplate restTemplate;
     private String stsUrl;
@@ -31,7 +31,7 @@ public class StsClient {
     }
 
     public String exchangeForSamlToken(String oidcToken) {
-        log.info("Attempting OIDC to SAML token exchange from " + stsUrl);
+        LOG.trace("Attempting OIDC to SAML token exchange from " + stsUrl);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "text/xml");
         headers.set("SOAPAction", "http://docs.oasis-open.org/ws-sx/ws-trust/200512/RST/Issue");
@@ -41,7 +41,7 @@ public class StsClient {
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while exchanging token, STS returned " + response.getStatusCode());
         }
-        log.info("Got SAMl token");
+        LOG.trace("Got SAMl token");
         return extractSamlAssertionFrom(response.getBody());
     }
 
