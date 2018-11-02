@@ -1,8 +1,11 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.net.URI;
+
+import javax.ws.rs.ForbiddenException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +48,14 @@ public abstract class AbstractRestConnection {
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
         try {
             return template.postForEntity(uri, payload, responseType);
-        } catch (RestClientException e) {
+        } catch (HttpStatusCodeException e) {
+            HttpStatus code = e.getStatusCode();
+            if (UNAUTHORIZED.equals(code)) {
+                LOG.warn("Kunne ikke poste entity til {}, status kode var {}", uri, code, e);
+                throw new ForbiddenException(e);
+            }
+            throw new RemoteUnavailableException(e);
+        } catch (Exception e) {
             LOG.warn("Kunne ikke poste entity til {}", uri, e);
             throw new RemoteUnavailableException(e);
         }

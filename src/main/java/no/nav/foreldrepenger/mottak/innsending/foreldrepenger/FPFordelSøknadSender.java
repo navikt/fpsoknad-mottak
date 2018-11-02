@@ -2,7 +2,11 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.*;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FPFORDEL_SEND_INITIELL;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_SENDFEIL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
@@ -21,7 +25,6 @@ import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
-import no.nav.foreldrepenger.mottak.http.errorhandling.SendException;
 
 @Service
 @Qualifier("fpfordel")
@@ -82,7 +85,8 @@ public class FPFordelSøknadSender implements SøknadSender {
             LOG.info("Returnerer kvittering {}", kvittering);
             return kvittering;
         } catch (Exception e) {
-            throw new SendException(type, e);
+            FP_SENDFEIL.increment();
+            throw (e);
         }
     }
 
