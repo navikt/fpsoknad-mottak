@@ -1,23 +1,28 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import io.micrometer.core.annotation.Timed;
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
+import static java.time.LocalDate.now;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Comparator.comparing;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
-import static java.time.LocalDate.now;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static java.util.Comparator.comparing;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import io.micrometer.core.annotation.Timed;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
 public class SakClientHttp implements SakClient {
 
@@ -48,11 +53,11 @@ public class SakClientHttp implements SakClient {
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
 
         ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
-            sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
-            HttpMethod.GET,
-            requestEntity,
-            new ParameterizedTypeReference<List<RemoteSak>>() {
-            });
+                sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<RemoteSak>>() {
+                });
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
         }
@@ -62,10 +67,11 @@ public class SakClientHttp implements SakClient {
         LOG.trace("{}", saker);
 
         Sak sisteSak = saker.stream()
-            .map(RemoteSakMapper::map)
-            .filter(s -> s.getOpprettet().isAfter(now().minusYears(3)))
-            .max(comparing(Sak::getOpprettet))
-            .orElse(null);
+                .map(RemoteSakMapper::map)
+                .filter(s -> s.getOpprettet() != null)
+                .filter(s -> s.getOpprettet().isAfter(now().minusYears(3)))
+                .max(comparing(Sak::getOpprettet))
+                .orElse(null);
 
         return sisteSak != null ? singletonList(sisteSak) : emptyList();
     }
@@ -81,7 +87,7 @@ public class SakClientHttp implements SakClient {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [restTemplate=" + restTemplate + ", sakBaseUrl=" + sakBaseUrl
-            + ", stsClient=" + stsClient + "]";
+                + ", stsClient=" + stsClient + "]";
     }
 
 }
