@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,7 +14,7 @@ public class RemoteSak {
     private String orgnr;
     private String fagsakNr;
     private String opprettetAv;
-    private String opprettetTidspunkt;
+    private LocalDateTime opprettetTidspunkt;
 
     public RemoteSak(@JsonProperty("id") int id,
             @JsonProperty("tema") String tema,
@@ -22,7 +23,7 @@ public class RemoteSak {
             @JsonProperty("orgnr") String orgnr,
             @JsonProperty("fagsakNr") String fagsakNr,
             @JsonProperty("opprettetAv") String opprettetAv,
-            @JsonProperty("opprettetTidspunkt") String opprettetTidspunkt) {
+            @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt) {
         this.id = id;
         this.tema = tema;
         this.applikasjon = applikasjon;
@@ -61,7 +62,7 @@ public class RemoteSak {
         return opprettetAv;
     }
 
-    public String getOpprettetTidspunkt() {
+    public LocalDateTime getOpprettetTidspunkt() {
         return opprettetTidspunkt;
     }
 
