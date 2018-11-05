@@ -14,7 +14,7 @@ public class RemoteSak {
     private String orgnr;
     private String fagsakNr;
     private String opprettetAv;
-    private LocalDateTime opprettetTidspunkt;
+    private String opprettetTidspunkt;
 
     public RemoteSak(@JsonProperty("id") int id,
             @JsonProperty("tema") String tema,
@@ -23,7 +23,7 @@ public class RemoteSak {
             @JsonProperty("orgnr") String orgnr,
             @JsonProperty("fagsakNr") String fagsakNr,
             @JsonProperty("opprettetAv") String opprettetAv,
-            @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt) {
+            @JsonProperty("opprettetTidspunkt") String opprettetTidspunkt) {
         this.id = id;
         this.tema = tema;
         this.applikasjon = applikasjon;
@@ -62,7 +62,7 @@ public class RemoteSak {
         return opprettetAv;
     }
 
-    public LocalDateTime getOpprettetTidspunkt() {
+    public String getOpprettetTidspunkt() {
         return opprettetTidspunkt;
     }
 
