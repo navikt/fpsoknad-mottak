@@ -14,8 +14,19 @@ public class RemoteSakMapper {
                 remoteSak.getApplikasjon(),
                 remoteSak.getFagsakNr(),
                 "",
-                remoteSak.getOpprettetTidspunkt().toLocalDate(),
+                parseSafely(remoteSak.getOpprettetTidspunkt().toLocalDate()),
                 remoteSak.getOpprettetAv());
+    }
+    
+    private static LocalDate parseSafely(String opprettetTidspunkt) {
+        try {
+            return Optional.ofNullable(opprettetTidspunkt)
+                    .map(s -> s.substring(0, s.indexOf(".")))
+                    .map(s -> LocalDate.parse(s, FORMATTER)).orElse(null);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke parse dato {}", opprettetTidspunkt);
+            return null;
+        }
     }
 
 }
