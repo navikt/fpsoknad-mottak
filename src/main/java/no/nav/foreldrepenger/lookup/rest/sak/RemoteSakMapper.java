@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+
 
 
 // Format 2017-08-04T23:56:09+02:00 must be handled
