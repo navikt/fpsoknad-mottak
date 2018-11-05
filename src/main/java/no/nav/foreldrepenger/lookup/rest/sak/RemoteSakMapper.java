@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.lookup.rest.sak;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -10,7 +12,8 @@ import java.time.format.DateTimeFormatter;
 public class RemoteSakMapper {
     
    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
+   private static final Logger LOG = LoggerFactory.getLogger(RemoteSakMapper.class);
+    
     private RemoteSakMapper() {
 
     }
