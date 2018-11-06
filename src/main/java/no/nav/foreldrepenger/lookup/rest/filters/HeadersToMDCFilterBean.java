@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.lookup.rest.filters;
 
 import static no.nav.foreldrepenger.lookup.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.lookup.Constants.NAV_CONSUMER_ID;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -22,7 +23,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import no.nav.foreldrepenger.lookup.CallIdGenerator;
 
 @Component
-@Order(1)
+@Order(HIGHEST_PRECEDENCE)
 public class HeadersToMDCFilterBean extends GenericFilterBean {
 
     private final CallIdGenerator generator;

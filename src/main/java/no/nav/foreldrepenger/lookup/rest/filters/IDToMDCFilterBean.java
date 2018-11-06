@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.lookup.rest.filters;
 import static no.nav.foreldrepenger.lookup.Constants.NAV_AKTØR_ID;
 import static no.nav.foreldrepenger.lookup.Constants.NAV_USER_ID;
 import static no.nav.foreldrepenger.lookup.EnvUtil.isDevOrPreprod;
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 import java.io.IOException;
 
@@ -15,14 +14,12 @@ import javax.servlet.ServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
 
-@Order(HIGHEST_PRECEDENCE)
 @Component
 public class IDToMDCFilterBean extends GenericFilterBean {
 
