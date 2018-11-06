@@ -9,28 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.lookup.FnrExtractor;
+import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
 
 @RestController
 @no.nav.security.oidc.api.ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-class ArbeidsforholdController {
+public class ArbeidsforholdController {
 
+    public static final String ARBEIDSFORHOLD = "/arbeidsforhold";
     @Inject
     private ArbeidsforholdClient arbeidsforholdClient;
 
     @Inject
-    private OIDCRequestContextHolder contextHolder;
+    private TokenHandler tokenHandler;
 
-    @RequestMapping(method = { RequestMethod.GET }, value = "/arbeidsforhold")
+    @RequestMapping(method = { RequestMethod.GET }, value = ARBEIDSFORHOLD)
     public ResponseEntity<List<Arbeidsforhold>> workHistory() {
-        String fnrFromClaims = FnrExtractor.extract(contextHolder);
-        if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Fødselsnummer fnr = new Fødselsnummer(fnrFromClaims);
+        Fødselsnummer fnr = tokenHandler.autentisertBruker();
         List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.aktiveArbeidsforhold(fnr);
         return ResponseEntity.ok(arbeidsforhold);
     }

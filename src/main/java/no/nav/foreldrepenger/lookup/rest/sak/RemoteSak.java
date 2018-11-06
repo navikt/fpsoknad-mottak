@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

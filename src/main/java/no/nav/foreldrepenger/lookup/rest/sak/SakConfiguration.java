@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.foreldrepenger.lookup.UUIDCallIdGenerator;
+import no.nav.foreldrepenger.lookup.CallIdGenerator;
 import no.nav.security.spring.oidc.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
@@ -37,7 +37,7 @@ public class SakConfiguration {
     }
 
     @Bean
-    public RestTemplate restTemplateSak(UUIDCallIdGenerator gen, ClientHttpRequestInterceptor... interceptors) {
+    public RestTemplate restTemplateSak(CallIdGenerator gen, ClientHttpRequestInterceptor... interceptors) {
         List<ClientHttpRequestInterceptor> interceptorListWithoutAuth = Arrays.stream(interceptors)
                 // We'll add our own auth header with SAML elsewhere
                 .filter(i -> !(i instanceof BearerTokenClientHttpRequestInterceptor))

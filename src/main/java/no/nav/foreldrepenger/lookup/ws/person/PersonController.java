@@ -9,38 +9,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.lookup.FnrExtractor;
+import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
 
 @RestController
 @no.nav.security.oidc.api.ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
-@RequestMapping("/person")
+@RequestMapping(PersonController.PERSON)
 public class PersonController {
 
+    public static final String PERSON = "/person";
     private final AktorIdClient aktorClient;
     private final PersonClient personClient;
-    private final OIDCRequestContextHolder contextHolder;
+    private final TokenHandler tokenHandler;
 
     @Inject
     public PersonController(AktorIdClient aktorClient, PersonClient personClient,
-            OIDCRequestContextHolder contextHolder) {
+            TokenHandler tokenHandler) {
         this.aktorClient = aktorClient;
         this.personClient = personClient;
-        this.contextHolder = contextHolder;
+        this.tokenHandler = tokenHandler;
     }
 
     @GetMapping
     public ResponseEntity<Person> person() {
-        String fnrFromClaims = FnrExtractor.extract(contextHolder);
-        if (fnrFromClaims == null || fnrFromClaims.trim().length() == 0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Fødselsnummer fnr = new Fødselsnummer(fnrFromClaims);
+        Fødselsnummer fnr = tokenHandler.autentisertBruker();
         AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
-
         return ok(personClient.hentPersonInfo(new ID(aktorId, fnr)));
     }
 

@@ -1,6 +1,20 @@
 package no.nav.foreldrepenger.lookup;
 
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import no.nav.foreldrepenger.lookup.ws.Søkerinfo;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
@@ -11,20 +25,6 @@ import no.nav.foreldrepenger.lookup.ws.person.ID;
 import no.nav.foreldrepenger.lookup.ws.person.Person;
 import no.nav.foreldrepenger.lookup.ws.person.PersonClient;
 import no.nav.security.oidc.api.Unprotected;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import org.slf4j.Logger;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @no.nav.security.oidc.api.ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
@@ -41,16 +41,16 @@ public class OppslagController {
 
     private final ArbeidsforholdClient arbeidsforholdClient;
 
-    private final OIDCRequestContextHolder contextHolder;
+    private final TokenHandler tokenHandler;
 
     @Inject
     public OppslagController(AktorIdClient aktorClient, PersonClient personClient,
             ArbeidsforholdClient arbeidsforholdClient,
-            OIDCRequestContextHolder contextHolder) {
+            TokenHandler tokenHandler) {
         this.aktorClient = aktorClient;
         this.personClient = personClient;
         this.arbeidsforholdClient = arbeidsforholdClient;
-        this.contextHolder = contextHolder;
+        this.tokenHandler = tokenHandler;
     }
 
     @Unprotected
@@ -79,7 +79,7 @@ public class OppslagController {
 
     @GetMapping
     public Søkerinfo essensiellSøkerinfo() {
-        Fødselsnummer fnr = fnrFromClaims();
+        Fødselsnummer fnr = tokenHandler.autentisertBruker();
         AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
         Person person = personClient.hentPersonInfo(new ID(aktorId, fnr));
         List<Arbeidsforhold> arbeidsforhold = arbeidsforholdClient.aktiveArbeidsforhold(fnr);
@@ -88,7 +88,7 @@ public class OppslagController {
 
     @GetMapping(value = "/aktor")
     public AktorId getAktørId() {
-        return getAktørIdForFNR(fnrFromClaims());
+        return getAktørIdForFNR(tokenHandler.autentisertBruker());
     }
 
     @GetMapping(value = "/aktorfnr")
@@ -99,14 +99,6 @@ public class OppslagController {
     @GetMapping(value = "/fnr")
     public Fødselsnummer getFNRforAktørIdR(@RequestParam(name = "aktorId") AktorId aktorId) {
         return aktorClient.fnrForAktørId(aktorId);
-    }
-
-    private Fødselsnummer fnrFromClaims() {
-        String fnrFromClaims = FnrExtractor.extract(contextHolder);
-        if (fnrFromClaims == null || fnrFromClaims.trim().isEmpty()) {
-            throw new ForbiddenException("Fant ikke FNR i token");
-        }
-        return new Fødselsnummer(fnrFromClaims);
     }
 
     private static String registerNavn(PingableRegisters register) {
