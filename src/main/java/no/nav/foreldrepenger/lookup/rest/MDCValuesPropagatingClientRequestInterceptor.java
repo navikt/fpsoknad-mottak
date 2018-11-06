@@ -6,6 +6,8 @@ import static no.nav.foreldrepenger.lookup.Constants.X_CORRELATION_ID;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -20,6 +22,8 @@ public class MDCValuesPropagatingClientRequestInterceptor implements ClientHttpR
 
     private final CallIdGenerator callIdGenerator;
 
+    private static final Logger LOG = LoggerFactory.getLogger(MDCValuesPropagatingClientRequestInterceptor.class);
+
     public MDCValuesPropagatingClientRequestInterceptor(CallIdGenerator callIdGenerator) {
         this.callIdGenerator = callIdGenerator;
     }
@@ -28,7 +32,7 @@ public class MDCValuesPropagatingClientRequestInterceptor implements ClientHttpR
     public ClientHttpResponse intercept(HttpRequest req, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
         propagateIfSet(req, NAV_CALL_ID, NAV_CONSUMER_ID);
-        req.getHeaders().set(X_CORRELATION_ID, MDC.get(NAV_CALL_ID));
+        propagate(req, X_CORRELATION_ID, MDC.get(NAV_CALL_ID));
         return execution.execute(req, body);
     }
 
@@ -36,9 +40,15 @@ public class MDCValuesPropagatingClientRequestInterceptor implements ClientHttpR
         for (String key : keys) {
             String value = MDC.get(key);
             if (value != null) {
-                request.getHeaders().add(key, value);
+                propagate(request, key, value);
             }
         }
+    }
+
+    private static void propagate(HttpRequest request, String key, String value) {
+        LOG.trace("Propagating {}={}", key, value);
+        request.getHeaders().set(key, value);
+
     }
 
     @Override
