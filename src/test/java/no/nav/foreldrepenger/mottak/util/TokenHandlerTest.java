@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.http.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
@@ -49,28 +49,28 @@ public class TokenHandlerTest {
         assertTrue(tokenHandler.erAutentisert());
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoContext() {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
         tokenHandler.autentisertBruker();
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoClaims() {
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
         tokenHandler.autentisertBruker();
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoClaimset() {
         when(claims.getClaimSet()).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
         tokenHandler.autentisertBruker();
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoSubject() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().build());
         assertFalse(tokenHandler.erAutentisert());

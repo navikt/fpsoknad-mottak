@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.http.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
@@ -36,7 +36,7 @@ public class TokenHandler {
     public String getToken() {
         return Optional.ofNullable(context().getToken(ISSUER))
                 .map(s -> s.getIdToken())
-                .orElseThrow(() -> new ForbiddenException("Fant ikke token for issuer " + ISSUER));
+                .orElseThrow(() -> new UnauthenticatedException("Fant ikke token for issuer " + ISSUER));
     }
 
     public String getFnr() {
@@ -45,18 +45,18 @@ public class TokenHandler {
 
     public Fødselsnummer autentisertBruker() {
         OIDCValidationContext context = Optional.ofNullable(context())
-                .orElseThrow(() -> new ForbiddenException("Fant ikke context"));
+                .orElseThrow(() -> new UnauthenticatedException("Fant ikke context"));
 
         OIDCClaims claims = Optional.ofNullable(context.getClaims(ISSUER))
-                .orElseThrow(() -> new ForbiddenException("Fant ikke claims for issuer " + ISSUER));
+                .orElseThrow(() -> new UnauthenticatedException("Fant ikke claims for issuer " + ISSUER));
 
         JWTClaimsSet claimSet = Optional.ofNullable(claims.getClaimSet())
-                .orElseThrow(() -> new ForbiddenException("Fant ikke claim set"));
+                .orElseThrow(() -> new UnauthenticatedException("Fant ikke claim set"));
 
         return Optional.ofNullable(claimSet.getSubject())
                 .map(String::trim)
                 .map(Fødselsnummer::new)
-                .orElseThrow(() -> new ForbiddenException("Fant ikke subject"));
+                .orElseThrow(() -> new UnauthenticatedException("Fant ikke subject"));
 
     }
 

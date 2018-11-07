@@ -1,11 +1,8 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.net.URI;
-
-import javax.ws.rs.ForbiddenException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +15,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
+import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
+import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
 
 public abstract class AbstractRestConnection {
 
@@ -50,28 +50,43 @@ public abstract class AbstractRestConnection {
             return template.postForEntity(uri, payload, responseType);
         } catch (HttpStatusCodeException e) {
             HttpStatus code = e.getStatusCode();
-            if (UNAUTHORIZED.equals(code)) {
-                LOG.warn("Kunne ikke poste entity til {}, status kode var {}", uri, code, e);
-                throw new ForbiddenException(e);
+            LOG.warn("Kunne ikke poste entity til {}, status kode var {}", uri, code, e);
+            switch (code) {
+            case UNAUTHORIZED:
+                throw new UnauthorizedException(e);
+            case FORBIDDEN:
+                throw new UnauthenticatedException(e);
+            default:
+                throw new RemoteUnavailableException(e);
             }
-            throw new RemoteUnavailableException(e);
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke poste entity til {}", uri, e);
+        } catch (RestClientException e) {
             throw new RemoteUnavailableException(e);
         }
     }
 
     protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
         try {
-            LOG.trace("Henter entity fra {}", uri);
             ResponseEntity<T> response = template.getForEntity(uri, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
             if (response.hasBody()) {
                 LOG.trace(CONFIDENTIAL, "Body: {}", response.getBody());
             }
             return response;
+        } catch (HttpStatusCodeException e) {
+            HttpStatus code = e.getStatusCode();
+            LOG.warn("Fant ingen entitet på {}, status kode var {}", uri, code, e);
+            switch (code) {
+            case NOT_FOUND:
+                throw new NotFoundException(e);
+            case UNAUTHORIZED:
+                throw new UnauthorizedException(e);
+            case FORBIDDEN:
+                throw new UnauthenticatedException(e);
+            default:
+                throw new RemoteUnavailableException(e);
+            }
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke hente entity fra {}", uri, e);
+            LOG.warn("Fant ingen entitet på {}", uri, e);
             throw new RemoteUnavailableException(e);
         }
     }
@@ -81,20 +96,24 @@ public abstract class AbstractRestConnection {
             return getAndLog(uri, responseType);
         } catch (HttpStatusCodeException e) {
             HttpStatus code = e.getStatusCode();
+            LOG.warn("Fant intet objekt på {}, status kode var {}", uri, code, e);
             switch (code) {
             case NOT_FOUND:
                 if (doThrow) {
-                    LOG.warn("{} resulterte i {}, kaster videre", uri, code);
-                    throw e;
+                    LOG.trace("kaster NotFoundException videre");
+                    throw new NotFoundException(e);
                 }
-                LOG.trace("{} resulterte i {}, returnerer null", uri, code);
+                LOG.trace("Returnerer null");
                 return null;
+            case UNAUTHORIZED:
+                throw new UnauthorizedException(e);
+            case FORBIDDEN:
+                throw new UnauthenticatedException(e);
             default:
-                LOG.trace("{} resulterte i {} ({}), kaster videre", uri, e.getStatusCode(), e.getStatusText());
-                throw e;
+                throw new RemoteUnavailableException(e);
             }
         } catch (RestClientException e) {
-            LOG.warn("Kunne ikke hente respons", e);
+            LOG.warn("Fant intet objekt på {}", uri, e);
             throw new RemoteUnavailableException(uri, e);
         }
     }
@@ -117,11 +136,8 @@ public abstract class AbstractRestConnection {
     }
 
     private <T> T getAndLog(URI uri, Class<T> responseType) {
-        LOG.trace("Henter fra URI {}", uri);
         T respons = template.getForObject(uri, responseType);
-        LOG.trace("Fikk respons OK for {}", uri);
         LOG.trace(CONFIDENTIAL, "{}", respons);
         return respons;
     }
-
 }
