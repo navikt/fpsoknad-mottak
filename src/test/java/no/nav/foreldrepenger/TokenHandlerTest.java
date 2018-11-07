@@ -22,7 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.errorhandling.UnauthorizedException;
 import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.security.oidc.context.OIDCClaims;
@@ -74,7 +74,7 @@ public class TokenHandlerTest {
         assertTrue(tokenHandler.erAutentisert());
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthorizedException.class)
     public void testNoContext() {
         when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
@@ -83,7 +83,7 @@ public class TokenHandlerTest {
         tokenHandler.autentisertBruker();
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthorizedException.class)
     public void testNoClaims() {
         when(context.getClaims(eq(ISSUER))).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
@@ -91,20 +91,20 @@ public class TokenHandlerTest {
         tokenHandler.autentisertBruker();
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthorizedException.class)
     public void testNoClaimset() {
         assertNull(tokenHandler.getSubject());
         assertFalse(tokenHandler.erAutentisert());
         tokenHandler.autentisertBruker();
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthorizedException.class)
     public void testNoToken() {
         when(context.getToken(eq(ISSUER))).thenReturn(null);
         tokenHandler.getToken();
     }
 
-    @Test(expected = ForbiddenException.class)
+    @Test(expected = UnauthorizedException.class)
     public void testNoSubject() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().build());
         assertNull(tokenHandler.getSubject());

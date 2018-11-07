@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.lookup.ws.person;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.errorhandling.UnauthorizedException;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
@@ -148,7 +148,7 @@ public class PersonClientTpsWs implements PersonClient {
             throw new NotFoundException(e);
         } catch (HentPersonSikkerhetsbegrensning e) {
             LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);
-            throw new ForbiddenException(e);
+            throw new UnauthorizedException(e);
         }
     }
 

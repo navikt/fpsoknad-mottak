@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.lookup.ws.arbeidsforhold;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.errorhandling.UnauthorizedException;
 import no.nav.foreldrepenger.errorhandling.IncompleteRequestException;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.tjeneste.virksomhet.arbeidsforhold.v3.binding.ArbeidsforholdV3;
@@ -62,7 +62,7 @@ public class ArbeidsforholdClientWs implements ArbeidsforholdClient {
                     .collect(toList());
         } catch (FinnArbeidsforholdPrArbeidstakerSikkerhetsbegrensning ex) {
             LOG.warn("Sikkerhetsfeil fra AAREG", ex);
-            throw new ForbiddenException(ex);
+            throw new UnauthorizedException(ex);
         } catch (FinnArbeidsforholdPrArbeidstakerUgyldigInput ex) {
             throw new IncompleteRequestException(ex);
         } catch (Exception ex) {

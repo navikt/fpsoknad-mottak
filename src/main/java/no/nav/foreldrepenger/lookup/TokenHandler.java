@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.lookup;
 
 import static no.nav.foreldrepenger.StreamUtil.not;
 import static no.nav.foreldrepenger.lookup.Constants.ISSUER;
-import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
 
 import java.util.Date;
 import java.util.Objects;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
-import no.nav.foreldrepenger.errorhandling.ForbiddenException;
+import no.nav.foreldrepenger.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
@@ -48,11 +47,11 @@ public class TokenHandler {
 
     public Fødselsnummer autentisertBruker() {
         return Optional.ofNullable(getSubject())
-                .orElseThrow(forbidden("Fant ikke subject"));
+                .orElseThrow(unauthenticated("Fant ikke subject"));
     }
 
-    private static Supplier<? extends ForbiddenException> forbidden(String msg) {
-        return () -> new ForbiddenException(msg);
+    private static Supplier<? extends UnauthenticatedException> unauthenticated(String msg) {
+        return () -> new UnauthenticatedException(msg);
     }
 
     private JWTClaimsSet claimSet() {
@@ -68,8 +67,7 @@ public class TokenHandler {
     }
 
     private OIDCValidationContext context() {
-        return Optional.ofNullable(ctxHolder.getRequestAttribute(OIDC_VALIDATION_CONTEXT))
-                .map(s -> OIDCValidationContext.class.cast(s))
+        return Optional.ofNullable(ctxHolder.getOIDCValidationContext())
                 .orElse(null);
     }
 
@@ -78,7 +76,7 @@ public class TokenHandler {
                 .map(c -> c.getToken(ISSUER))
                 .filter(not(Objects::isNull))
                 .map(TokenContext::getIdToken)
-                .orElseThrow(forbidden("Fant ikke token"));
+                .orElseThrow(unauthenticated("Fant ikke ID-token"));
     }
 
     @Override
