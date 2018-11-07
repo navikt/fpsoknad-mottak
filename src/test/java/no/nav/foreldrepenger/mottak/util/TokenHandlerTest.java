@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.foreldrepenger.mottak.http.Constants.ISSUER;
-import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -37,7 +36,7 @@ public class TokenHandlerTest {
 
     @Before
     public void before() {
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
+        when(holder.getOIDCValidationContext()).thenReturn(context);
         when(context.getClaims(eq(ISSUER))).thenReturn(claims);
         tokenHandler = new TokenHandler(holder);
     }
@@ -51,7 +50,7 @@ public class TokenHandlerTest {
 
     @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoContext() {
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(null);
+        when(holder.getOIDCValidationContext()).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
         tokenHandler.autentisertBruker();
     }
