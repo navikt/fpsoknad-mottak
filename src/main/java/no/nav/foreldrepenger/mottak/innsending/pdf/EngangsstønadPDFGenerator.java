@@ -145,7 +145,7 @@ public class EngangsstønadPDFGenerator {
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
         if (erFremtidigFødsel(stønad)) {
             return textFormatter.fromMessageSource("terminføderi",
-                    textFormatter.countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge(),fødsel.getAntallBarn() > 1 ? "a" : "et"));
+                    textFormatter.countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()),fødsel.getAntallBarn() > 1 ? "a" : "et"));
         }
         else {
             Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
