@@ -1,9 +1,12 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.foreldrepenger.mottak.http.Constants.ISSUER;
-import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 
+import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.springframework.stereotype.Component;
 
@@ -14,6 +17,7 @@ import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
+import no.nav.security.oidc.context.TokenContext;
 
 @Component
 public class TokenHandler {
@@ -25,45 +29,54 @@ public class TokenHandler {
     }
 
     public boolean erAutentisert() {
-        try {
-            autentisertBruker();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return getSubject() != null;
     }
 
-    public String getToken() {
-        return Optional.ofNullable(context().getToken(ISSUER))
-                .map(s -> s.getIdToken())
-                .orElseThrow(() -> new UnauthenticatedException("Fant ikke token for issuer " + ISSUER));
+    public Date getExp() {
+        return Optional.ofNullable(claimSet())
+                .map(JWTClaimsSet::getExpirationTime)
+                .orElse(null);
     }
 
-    public String getFnr() {
-        return autentisertBruker().getFnr();
+    public Fødselsnummer getSubject() {
+        return Optional.ofNullable(claimSet())
+                .map(JWTClaimsSet::getSubject)
+                .map(Fødselsnummer::new)
+                .orElse(null);
     }
 
     public Fødselsnummer autentisertBruker() {
-        OIDCValidationContext context = Optional.ofNullable(context())
-                .orElseThrow(() -> new UnauthenticatedException("Fant ikke context"));
+        return Optional.ofNullable(getSubject())
+                .orElseThrow(unauthenticated("Fant ikke subject"));
+    }
 
-        OIDCClaims claims = Optional.ofNullable(context.getClaims(ISSUER))
-                .orElseThrow(() -> new UnauthenticatedException("Fant ikke claims for issuer " + ISSUER));
+    private static Supplier<? extends UnauthenticatedException> unauthenticated(String msg) {
+        return () -> new UnauthenticatedException(msg);
+    }
 
-        JWTClaimsSet claimSet = Optional.ofNullable(claims.getClaimSet())
-                .orElseThrow(() -> new UnauthenticatedException("Fant ikke claim set"));
+    private JWTClaimsSet claimSet() {
+        return Optional.ofNullable(claims())
+                .map(OIDCClaims::getClaimSet)
+                .orElse(null);
+    }
 
-        return Optional.ofNullable(claimSet.getSubject())
-                .map(String::trim)
-                .map(Fødselsnummer::new)
-                .orElseThrow(() -> new UnauthenticatedException("Fant ikke subject"));
-
+    private OIDCClaims claims() {
+        return Optional.ofNullable(context())
+                .map(s -> s.getClaims(ISSUER))
+                .orElse(null);
     }
 
     private OIDCValidationContext context() {
-        return Optional.ofNullable(ctxHolder.getRequestAttribute(OIDC_VALIDATION_CONTEXT))
-                .map(s -> OIDCValidationContext.class.cast(s))
+        return Optional.ofNullable(ctxHolder.getOIDCValidationContext())
                 .orElse(null);
+    }
+
+    public String getToken() {
+        return Optional.ofNullable(context())
+                .map(c -> c.getToken(ISSUER))
+                .filter(not(Objects::isNull))
+                .map(TokenContext::getIdToken)
+                .orElseThrow(unauthenticated("Fant ikke ID-token"));
     }
 
     @Override

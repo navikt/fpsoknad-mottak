@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public final class StreamUtil {
@@ -18,5 +19,9 @@ public final class StreamUtil {
 
     public static <T> List<T> distinct(List<T> list) {
         return safeStream(list).distinct().collect(toList());
+    }
+
+    public static <T> Predicate<T> not(Predicate<T> t) {
+        return t.negate();
     }
 }

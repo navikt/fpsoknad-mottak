@@ -48,7 +48,7 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     private void copyHeadersToMDC() {
         try {
             if (isDevOrPreprod(getEnvironment())) {
-                MDC.put(NAV_USER_ID, handler.getFnr());
+                MDC.put(NAV_USER_ID, handler.autentisertBruker().getFnr());
             }
             MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
