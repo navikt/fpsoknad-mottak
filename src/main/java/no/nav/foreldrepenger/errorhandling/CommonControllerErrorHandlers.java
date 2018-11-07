@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -87,13 +86,6 @@ public class CommonControllerErrorHandlers extends ResponseEntityExceptionHandle
     public ResponseEntity<Object> handleUnauthenticatedException(UnauthenticatedException e, WebRequest req) {
         unauthenticatedCounter.increment();
         return logAndRespond(FORBIDDEN, e, req, getRootCauseMessage(e));
-    }
-
-    @ExceptionHandler({ MissingServletRequestParameterException.class })
-    public ResponseEntity<Object> handleMissingServletRequestParameterException(
-            MissingServletRequestParameterException e, WebRequest req) {
-        invalidRequestsCounter.increment();
-        return logAndRespond(BAD_REQUEST, e, req);
     }
 
     @ExceptionHandler({ Exception.class })
