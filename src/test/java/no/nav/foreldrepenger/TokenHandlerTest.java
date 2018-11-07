@@ -47,7 +47,7 @@ public class TokenHandlerTest {
 
     @Before
     public void before() {
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(context);
+        when(holder.getOIDCValidationContext()).thenReturn(context);
         when(context.getClaims(eq(ISSUER))).thenReturn(claims);
         tokenHandler = new TokenHandler(holder);
     }
@@ -76,7 +76,7 @@ public class TokenHandlerTest {
 
     @Test(expected = UnauthorizedException.class)
     public void testNoContext() {
-        when(holder.getRequestAttribute(eq(OIDC_VALIDATION_CONTEXT))).thenReturn(null);
+        when(holder.getOIDCValidationContext()).thenReturn(null);
         assertFalse(tokenHandler.erAutentisert());
         assertNull(tokenHandler.getSubject());
         assertNull(tokenHandler.getExp());
