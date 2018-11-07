@@ -26,4 +26,13 @@ public class RemoteSakMapperTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void alternativeDateFormat1() {
+        RemoteSak remoteSak = new RemoteSak(1, "temaet", "appen", "aktøren",
+                "org123", "fagsakNr", "oppretteren", "2015-11-12T08:19:16+01:00");
+        Sak expected = new Sak("1", "temaet", "appen", "fagsakNr", null, LocalDate.of(2015, 11, 12), "");
+        Sak actual = RemoteSakMapper.map(remoteSak);
+        assertEquals(expected, actual);
+    }
+
 }

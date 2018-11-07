@@ -1,19 +1,19 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
+
 import java.time.LocalDate;
-import java.util.Optional;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 // Format 2017-08-04T23:56:09+02:00 must be handled
 
 public class RemoteSakMapper {
-    
-   private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-   private static final Logger LOG = LoggerFactory.getLogger(RemoteSakMapper.class);
-    
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteSakMapper.class);
+
     private RemoteSakMapper() {
 
     }
@@ -27,14 +27,23 @@ public class RemoteSakMapper {
                 parseSafely(remoteSak.getOpprettetTidspunkt()),
                 remoteSak.getOpprettetAv());
     }
-    
-    private static LocalDate parseSafely(String opprettetTidspunkt) {
+
+    private static LocalDate parseSafely(String opprettet) {
+        if (opprettet == null) {
+            LOG.warn("ingen opprettet dato");
+            return null;
+        }
+        int index = opprettet.indexOf('T');
+        if (index < 0) {
+            LOG.warn("Nok et merkverdig format {}", opprettet);
+            return null;
+        }
+        String dato = opprettet.substring(0, index);
         try {
-            return Optional.ofNullable(opprettetTidspunkt)
-                    .map(s -> s.substring(0, s.indexOf(".")))
+            return Optional.ofNullable(dato)
                     .map(s -> LocalDate.parse(s, FORMATTER)).orElse(null);
         } catch (Exception e) {
-            LOG.warn("Kunne ikke parse dato {}", opprettetTidspunkt);
+            LOG.warn("Kunne ikke parse dato {}", dato);
             return null;
         }
     }
