@@ -127,9 +127,9 @@ public final class Jaxb {
             marshaller.setEventHandler(new DefaultValidationEventHandler());
             if (validate) {
                 LOG.info("Validating XML");
-                ClassPathResource ss = new ClassPathResource("kodverk/kodeverk.xsd");
+                ClassPathResource ss = new ClassPathResource("kodeverk/kodeverk.xsd");
                 LOG.trace("TESTING TESTING  kodeverk " + ss.exists());
-                ss = new ClassPathResource("/kodverk/kodeverk.xsd");
+                ss = new ClassPathResource("/kodeverk/kodeverk.xsd");
                 LOG.trace("TESTING TESTING  kodeverk /" + ss.exists());
                 ss = new ClassPathResource("application.yaml");
                 LOG.trace("TESTING TESTING  application " + ss.exists());
