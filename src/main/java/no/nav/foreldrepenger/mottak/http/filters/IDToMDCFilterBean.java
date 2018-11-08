@@ -52,7 +52,7 @@ public class IDToMDCFilterBean extends GenericFilterBean {
             }
             MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
-            LOG.warn("Noe gikk feil", e);
+            LOG.trace("Noe gikk feil ved oppslag av aktørid, MDC-verdier er inkomplette", e);
         }
     }
 
