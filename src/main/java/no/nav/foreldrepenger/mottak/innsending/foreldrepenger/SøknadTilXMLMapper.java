@@ -121,6 +121,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory UTTAK_FACTORY = new no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory ENDRING_FACTORY = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
     private Environment env;
@@ -155,10 +156,10 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
         return new OmYtelse().withAny(endringssøknadFra(endringssøknad));
     }
 
-    private static Endringssoeknad endringssøknadFra(Endringssøknad endringssøknad) {
-        return new Endringssoeknad()
+    private static JAXBElement<Endringssoeknad> endringssøknadFra(Endringssøknad endringssøknad) {
+        return ENDRING_FACTORY.createEndringssoeknad(new Endringssoeknad()
                 .withFordeling(fordelingFra(endringssøknad))
-                .withSaksnummer(endringssøknad.getSaksnr());
+                .withSaksnummer(endringssøknad.getSaksnr()));
     }
 
     private Soeknad tilModell(Søknad søknad, AktorId søker, boolean doLookup) {
@@ -209,8 +210,12 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
+        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(doLookup, ytelse)));
+    }
 
-        return new OmYtelse().withAny(marshalToElement(new Foreldrepenger()
+    private JAXBElement<Foreldrepenger> foreldrePengerFra(boolean doLookup,
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse) {
+        return FP_FACTORY.createForeldrepenger(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
@@ -218,7 +223,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
                 .withRettigheter(
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder(), doLookup))
-                .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn()))));
+                .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn())));
     }
 
     private static Fordeling fordelingFra(Endringssøknad endringssøknad) {

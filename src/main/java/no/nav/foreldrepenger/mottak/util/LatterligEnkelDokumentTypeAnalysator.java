@@ -15,6 +15,6 @@ public final class LatterligEnkelDokumentTypeAnalysator {
         int begin = shortxml.indexOf("<");
         int end = shortxml.indexOf(">");
         String value = shortxml.substring(begin + 1, end);
-        return value.equals("endringssoeknad");
+        return value.contains("endringssoeknad");
     }
 }
