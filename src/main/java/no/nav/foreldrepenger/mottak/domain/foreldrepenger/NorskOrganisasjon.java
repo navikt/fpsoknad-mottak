@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.hibernate.validator.constraints.Length;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -14,6 +16,7 @@ import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 
 @Data
+@Valid
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class NorskOrganisasjon extends EgenNæring {
