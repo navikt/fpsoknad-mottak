@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger;
 
 import static no.nav.foreldrepenger.lookup.Constants.ISSUER;
-import static no.nav.security.oidc.OIDCConstants.OIDC_VALIDATION_CONTEXT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
