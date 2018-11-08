@@ -51,7 +51,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref,
             boolean inkluderVedlegg) {
-        return Jaxb.marshal(dokmotModelFra(søknad, søker, ref, inkluderVedlegg));
+        return Jaxb.marshal(dokmotModelFra(søknad, søker, ref, inkluderVedlegg), false);
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,

@@ -103,7 +103,7 @@ public class SøknadPreprodController {
     }
 
     private String fpSøknad(Søknad søknad) {
-        return søknadMapper.tilXML(søknad, new AktorId("42"), false);
+        return søknadMapper.tilXML(søknad, new AktorId("42"));
     }
 
     private String fpEndringsSøknad(Endringssøknad endringssøknad) {

@@ -5,8 +5,6 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.isProd;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -21,8 +19,6 @@ import javax.xml.bind.JAXBElement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -112,7 +108,7 @@ import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class SøknadTilXMLMapper implements EnvironmentAware {
+public class SøknadTilXMLMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
     public static final String UKJENT_KODEVERKSVERDI = "-";
@@ -124,22 +120,17 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
     private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory ENDRING_FACTORY = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
-    private Environment env;
 
     public SøknadTilXMLMapper(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
     public String tilXML(Søknad søknad, AktorId søker) {
-        return tilXML(søknad, søker, true);
-    }
-
-    public String tilXML(Søknad søknad, AktorId søker, boolean doLookup) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker, doLookup)));
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), true);
     }
 
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)));
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), true);
     }
 
     private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
@@ -162,13 +153,13 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
                 .withSaksnummer(endringssøknad.getSaksnr()));
     }
 
-    private Soeknad tilModell(Søknad søknad, AktorId søker, boolean doLookup) {
+    private Soeknad tilModell(Søknad søknad, AktorId søker) {
         LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))
-                .withOmYtelse(ytelseFra(søknad, doLookup))
+                .withOmYtelse(ytelseFra(søknad))
                 .withMottattDato(søknad.getMottattdato().toLocalDate())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
@@ -206,14 +197,14 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
         return typeMedKodeverk.withKodeverk(typeMedKodeverk.getKodeverk());
     }
 
-    private OmYtelse ytelseFra(Søknad søknad, boolean doLookup) {
+    private OmYtelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
-        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(doLookup, ytelse)));
+        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse)));
     }
 
-    private JAXBElement<Foreldrepenger> foreldrePengerFra(boolean doLookup,
+    private JAXBElement<Foreldrepenger> foreldrePengerFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse) {
         return FP_FACTORY.createForeldrepenger(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
@@ -222,7 +213,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
                 .withRettigheter(
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
-                .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder(), doLookup))
+                .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn())));
     }
 
@@ -706,7 +697,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
     }
 
     private AnnenForelder annenForelderFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder, boolean doLookup) {
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder annenForelder) {
 
         if (erAnnenForelderUkjent(annenForelder)) {
             return ukjentForelder();
@@ -715,7 +706,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
             return utenlandskForelder(UtenlandskForelder.class.cast(annenForelder));
         }
         if (annenForelder instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder) {
-            return norskForelder(NorskForelder.class.cast(annenForelder), doLookup);
+            return norskForelder(NorskForelder.class.cast(annenForelder));
         }
         return null;
     }
@@ -730,15 +721,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
                 .withLand(landFra(utenlandskForelder.getLand()));
     }
 
-    private AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder, boolean doLookup) {
-        if (isProd(env) && !doLookup) {
-            throw new IllegalStateException("Kan ikke slå av oppslag av aktørid for annen forelder i prod");
-        }
-        if (isDevOrPreprod(env) && !doLookup) {
-            LOG.warn("Slår ikke opp aktørId for norsk annen forelder, dette skal kun gjøres fra Swagger");
-            return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent()
-                    .withAktoerId("1234567890X");
-        }
+    private AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
         return new no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent()
                 .withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
     }
@@ -811,13 +794,7 @@ public class SøknadTilXMLMapper implements EnvironmentAware {
     }
 
     @Override
-    public void setEnvironment(Environment env) {
-        this.env = env;
-    }
-
-    @Override
     public String toString() {
         return getClass().getSimpleName() + " [oppslag=" + oppslag + "]";
     }
-
 }

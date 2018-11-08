@@ -66,7 +66,7 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     public String tilXML(SoeknadsskjemaEngangsstoenad model) {
-        return marshal(model);
+        return marshal(model, false);
     }
 
     public SoeknadsskjemaEngangsstoenad tilDokmotModel(Søknad søknad, Person søker) {
