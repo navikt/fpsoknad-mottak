@@ -19,6 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
+import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
@@ -51,7 +52,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref,
             boolean inkluderVedlegg) {
-        return Jaxb.marshal(dokmotModelFra(søknad, søker, ref, inkluderVedlegg), false);
+        return Jaxb.marshal(dokmotModelFra(søknad, søker, ref, inkluderVedlegg), ValidationMode.ENGANGSSTØNAD);
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,

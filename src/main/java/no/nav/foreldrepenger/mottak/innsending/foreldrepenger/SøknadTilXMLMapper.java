@@ -60,6 +60,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -126,11 +127,11 @@ public class SøknadTilXMLMapper {
     }
 
     public String tilXML(Søknad søknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), true);
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), ValidationMode.FORELDREPENGER);
     }
 
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), true);
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), ValidationMode.FORELDREPENGER);
     }
 
     private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
@@ -201,7 +202,7 @@ public class SøknadTilXMLMapper {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
-        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse)));
+        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse), ValidationMode.FORELDREPENGER));
     }
 
     private JAXBElement<Foreldrepenger> foreldrePengerFra(
