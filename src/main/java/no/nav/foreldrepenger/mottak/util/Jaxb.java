@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -57,15 +57,11 @@ public final class Jaxb {
         try {
             return SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
                     .newSchema(sourcesFra(
-                            "/soeknad-fpfordel.xsd",
-                            "/endringssoeknad-fpfordel.xsd",
-                            "/felles/felles.xsd",
-                            "/foreldrepenger/foreldrepenger.xsd",
-                            "/uttak/uttak.xsd",
-                            "/kodeverk/kodeverk.xsd"));
+                            "foreldrepenger/foreldrepenger.xsd",
+                            "endringssoeknad-fpfordel.xsd",
+                            "soeknad-fpfordel.xsd"));
         } catch (SAXException e) {
-            return null; // for now
-            // throw new IllegalStateException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -150,36 +146,45 @@ public final class Jaxb {
     }
 
     private static Marshaller marshaller(JAXBContext context, ValidationMode mode) {
-        Marshaller marshaller = null;
-        try {
-            marshaller = context.createMarshaller();
-            marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setEventHandler(new DefaultValidationEventHandler());
-            switch (mode) {
-            case INGEN:
-                return marshaller;
-            case ENGANGSSTØNAD:
-                return marshaller;
-            case FORELDREPENGER:
+        Marshaller marshaller = createMarshaller(context);
+
+        switch (mode) {
+        case INGEN:
+            return marshaller;
+        case ENGANGSSTØNAD:
+            return marshaller;
+        case FORELDREPENGER:
+            try {
                 Schema schema = fpSchema();
                 if (schema != null) {
-                    LOG.info("Validating XML, using schena {}", schema);
+                    LOG.info("Validerer XM med  schena {}", schema);
                 }
                 else {
-                    LOG.info("NOT Validating XML, we do not have all the schema definitions");
+                    LOG.info("Validerer ikke XML");
                 }
-                // marshaller.setSchema(schema);
-                return marshaller;
-            default:
-                return marshaller;
+            } catch (Exception e) {
+                LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller", e);
             }
+            return marshaller;
+        default:
+            return marshaller;
+        }
+    }
+
+    private static Marshaller createMarshaller(JAXBContext context) {
+        try {
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setEventHandler(new DefaultValidationEventHandler());
+            return marshaller;
         } catch (Exception e) {
-            return Optional.ofNullable(marshaller).orElseThrow(() -> new IllegalStateException(e));
+            throw new IllegalStateException(e);
         }
     }
 
     private static Source[] sourcesFra(String... schemas) {
-        return Arrays.stream(schemas)
+        return Stream.concat(Arrays.stream(schemas)
+                .map(s -> "/src/main/xsd" + s), Arrays.stream(schemas))
                 .map(ClassPathResource::new)
                 .filter(ClassPathResource::exists)
                 .map(Jaxb::inputStream)
@@ -191,7 +196,7 @@ public final class Jaxb {
     private static InputStream inputStream(ClassPathResource res) {
         try {
             InputStream is = res.getInputStream();
-            LOG.trace("La til schema fra {}", res.getFilename());
+            LOG.info("La til schema fra {}", res.getFilename());
             return is;
         } catch (IOException e) {
             throw new IllegalStateException("Ingen input stream for " + res.getFilename(), e);
