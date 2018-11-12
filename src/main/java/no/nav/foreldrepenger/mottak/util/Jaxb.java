@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -23,7 +24,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
@@ -167,7 +167,7 @@ public final class Jaxb {
         case FORELDREPENGER:
             if (FP_SCHEMA != null) {
                 LOG.info("Kunne ha validerer XM, gjør det ikke");
-                marshaller.setSchema(FP_SCHEMA);
+                // marshaller.setSchema(FP_SCHEMA);
             }
             else {
                 LOG.info("Validerer ikke XML");
