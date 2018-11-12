@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
 import java.text.Normalizer;
@@ -18,7 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -60,6 +64,9 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 
 @Component
 public class ForeldrepengeInfoRenderer {
+    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
+
+    private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final int INDENT = 20;
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
@@ -212,6 +219,10 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
+    private static PDPage newPage() {
+        return new PDPage(A4);
+    }
+
     private static List<Arbeidsforhold> sorterArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
         Collections.sort(arbeidsforhold, new Comparator<Arbeidsforhold>() {
 
@@ -342,105 +353,274 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float fordeling(Fordeling fordeling, Dekningsgrad dekningsgrad, List<Vedlegg> vedlegg, int antallBarn,
-            PDPageContentStream cos, float y)
+    public PDPageContentStream fordeling(PDDocument doc, Person søker, Fordeling fordeling, Dekningsgrad dekningsgrad,
+            List<Vedlegg> vedlegg,
+            int antallBarn,
+            boolean erEndring, PDPageContentStream cos, float y)
             throws IOException {
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
         if (dekningsgrad != null) {
+            LOG.info("Render dekningsgrad start at " + y);
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
+            LOG.info("Render dekningsgrad end at " + y);
+
         }
+        LOG.info("Render fordeling start at " + y);
+        float heaaderSize = 190;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
-            y -= renderer.addBulletPoint(periode(periode), cos, y);
-            y -= renderer.addLinesOfRegularText(INDENT, periodeDataFra(periode, antallBarn), cos, y);
-            y = renderVedlegg(vedlegg, periode.getVedlegg(), "dokumentasjon", cos, y);
-            y -= renderer.addBlankLine();
+            if (periode.getClass().equals(UttaksPeriode.class)) {
+                LOG.info("Render uttak start at " + y);
+                PDPage scratch1 = newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn,
+                        scratchcos, STARTY - 190);
+                float behov = (STARTY - 190 - x);
+                LOG.info("Uttak trenger " + behov + " har " + y);
+                if (behov < y) {
+                    LOG.info("Nok plass til uttak");
+                    scratchcos.close();
+                    y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                            y);
+
+                }
+                else {
+                    LOG.info("Ikke nok plass til uttak");
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    y = STARTY - (heaaderSize + behov);
+                }
+                LOG.info("Render utak end at " + y);
+            }
+            else if (periode instanceof GradertUttaksPeriode) {
+                LOG.info("Render gradert start at " + y);
+                PDPage scratch1 = newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn,
+                        scratchcos,
+                        STARTY - 190);
+                float behov = (STARTY - 190 - x);
+                LOG.info("Gradert trenger " + behov + " har " + y);
+                if (behov < y) {
+                    LOG.info("Nok plass til gradert");
+                    scratchcos.close();
+                    y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                            y);
+                }
+                else {
+                    LOG.info("Ikke nok plass til gradert");
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    y = STARTY - (heaaderSize + behov);
+                }
+                LOG.info("Render gradert end at " + y);
+
+            }
+            else if (periode instanceof OppholdsPeriode) {
+                LOG.info("Render opphold start at " + y);
+                PDPage scratch1 = newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, scratchcos,
+                        STARTY - 190);
+                float behov = (STARTY - 190 - x);
+                LOG.info("Opphold trenger " + behov + " har " + y);
+                if (behov < y) {
+                    LOG.info("Nok plass til opphold");
+                    scratchcos.close();
+                    y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                            y);
+                }
+                else {
+                    LOG.info("Ikke nok plass til opphold");
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    y = STARTY - (heaaderSize + behov);
+                    LOG.info("Render opphold etter ny side end at " + y);
+                }
+                LOG.info("Render opphold end at " + y);
+
+            }
+            else if (periode instanceof UtsettelsesPeriode) {
+                LOG.info("Render utsettelse start at " + y);
+                PDPage scratch1 = newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn,
+                        scratchcos, STARTY - 190);
+                float behov = (STARTY - 190 - x);
+                LOG.info("Utsettelse trenger " + behov + " har " + y);
+                if (behov < y) {
+                    LOG.info("Nok plass til utsettelse");
+                    scratchcos.close();
+                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                            y);
+                }
+                else {
+                    LOG.info("Ikke nok plass til utsettelse");
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    y = STARTY - (heaaderSize + behov);
+                }
+                LOG.info("Render utsettelse end at " + y);
+
+            }
+            else if (periode instanceof OverføringsPeriode) {
+                LOG.info("Render overføring start at " + y);
+                PDPage scratch1 = newPage();
+                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                float x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn,
+                        scratchcos, STARTY - 190);
+                float behov = (STARTY - 190 - x);
+                LOG.info("Overføring trenger " + behov + " har " + y);
+                if (behov < y) {
+                    LOG.info("Nok plass til overføring");
+                    scratchcos.close();
+                    y = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                            y);
+                }
+                else {
+                    LOG.info("Ikke nok plass til overføring");
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    y = STARTY - (heaaderSize + behov);
+                }
+                LOG.info("Render overføring end at " + y);
+            }
         }
+        y -= renderer.addBlankLine();
+        return cos;
+    }
+
+    private PDPageContentStream nySide(PDDocument doc, PDPageContentStream cos, PDPage scratch,
+            PDPageContentStream scratchcos, Person søker) throws IOException {
+        cos.close();
+        LOG.info("Før ny side  " + STARTY);
+        float y = header(søker, doc, scratchcos, false, STARTY);
+        doc.addPage(scratch);
+        cos = scratchcos;
+        LOG.info("Etter ny side  " + y);
+        return cos;
+    }
+
+    public float renderOverføringsPeriode(OverføringsPeriode overføring, List<Vedlegg> vedlegg, int antallBarn,
+            PDPageContentStream cos, float y) throws IOException {
+        y -= renderer.addBulletPoint(txt("overføring"), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(overføring), cos, y);
+        y = renderVedlegg(vedlegg, overføring.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
     }
 
-    private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
-        Collections.sort(perioder, new Comparator<LukketPeriodeMedVedlegg>() {
-
-            @Override
-            public int compare(LukketPeriodeMedVedlegg o1, LukketPeriodeMedVedlegg o2) {
-                return o1.getFom().compareTo(o2.getFom());
-            }
-
-        });
-        return perioder;
+    private List<String> uttaksData(OverføringsPeriode overføring) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "fom", overføring.getFom());
+        addIfSet(attributter, "tom", overføring.getTom());
+        attributter.add(txt("uttaksperiodetype", cap(overføring.getUttaksperiodeType().name())));
+        attributter.add(txt("overføringsårsak", cap(overføring.getÅrsak().name())));
+        return attributter;
     }
 
-    private List<String> periodeDataFra(LukketPeriodeMedVedlegg periode, int antallBarn) {
-        if (periode instanceof OverføringsPeriode) {
-            OverføringsPeriode overføring = OverføringsPeriode.class.cast(periode);
-            ArrayList<String> attributter = new ArrayList<>();
-            addIfSet(attributter, "fom", overføring.getFom());
-            addIfSet(attributter, "tom", overføring.getTom());
-            attributter.add(txt("uttaksperiodetype", cap(overføring.getUttaksperiodeType().name())));
-            attributter.add(txt("overføringsårsak", cap(overføring.getÅrsak().name())));
-            return attributter;
-        }
-        if (periode instanceof GradertUttaksPeriode) {
-            GradertUttaksPeriode gradert = GradertUttaksPeriode.class.cast(periode);
-            ArrayList<String> attributter = new ArrayList<>();
-            addIfSet(attributter, "fom", gradert.getFom());
-            addIfSet(attributter, "tom", gradert.getTom());
-            attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
-            addIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
-            attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
-            attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
-            addIfSet(attributter, gradert.getMorsAktivitetsType());
-            if (antallBarn > 1) {
-                attributter.add(txt("ønskerflerbarnsdager", jaNei(gradert.isØnskerFlerbarnsdager())));
-            }
-            attributter.add(txt("gradertprosent", gradert.getArbeidstidProsent()));
-            attributter.add(txt("ønskersamtidiguttak", jaNei(gradert.isØnskerSamtidigUttak())));
-            addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent",
-                    String.valueOf(gradert.getSamtidigUttakProsent()));
-            return attributter;
-        }
-        if (periode instanceof UttaksPeriode) {
-            UttaksPeriode uttak = UttaksPeriode.class.cast(periode);
-            ArrayList<String> attributter = new ArrayList<>();
-            addIfSet(attributter, "fom", uttak.getFom());
-            addIfSet(attributter, "tom", uttak.getTom());
-            attributter.add(txt("uttaksperiodetype", cap(uttak.getUttaksperiodeType().name())));
-            addIfSet(attributter, uttak.getMorsAktivitetsType());
-            if (antallBarn > 1) {
-                attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
-            }
-            attributter.add(txt("ønskersamtidiguttak", jaNei(uttak.isØnskerSamtidigUttak())));
-            addIfSet(attributter, uttak.isØnskerSamtidigUttak(), "samtidiguttakprosent",
-                    String.valueOf(uttak.getSamtidigUttakProsent()));
-            return attributter;
-        }
-        if (periode instanceof OppholdsPeriode) {
-            OppholdsPeriode opphold = OppholdsPeriode.class.cast(periode);
-            ArrayList<String> attributter = new ArrayList<>();
-            addIfSet(attributter, "fom", opphold.getFom());
-            addIfSet(attributter, "tom", opphold.getTom());
-            if (opphold.getÅrsak().key != null) {
-                attributter.add(txt("oppholdsårsak", txt(opphold.getÅrsak().key)));
-            }
-            else {
-                attributter.add(txt("oppholdsårsak", cap(opphold.getÅrsak().name())));
-            }
-            return attributter;
-        }
-        if (periode instanceof UtsettelsesPeriode) {
-            UtsettelsesPeriode utsettelse = UtsettelsesPeriode.class.cast(periode);
-            ArrayList<String> attributter = new ArrayList<>();
-            addIfSet(attributter, "fom", utsettelse.getFom());
-            addIfSet(attributter, "tom", utsettelse.getTom());
-            attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
-            attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
-            addIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
-            attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
-            return attributter;
-        }
+    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, List<Vedlegg> vedlegg, int antallBarn,
+            PDPageContentStream cos, float y) throws IOException {
+        y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse), cos, y);
+        y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), "dokumentasjon", cos, y);
+        y -= renderer.addBlankLine();
+        return y;
+    }
 
-        throw new IllegalArgumentException(periode.getClass().getSimpleName() + " ikke støttet");
+    private List<String> uttaksData(UtsettelsesPeriode utsettelse) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "fom", utsettelse.getFom());
+        addIfSet(attributter, "tom", utsettelse.getTom());
+        attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
+        attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
+        addIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
+        attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
+        return attributter;
+    }
+
+    public float renderOppholdsPeriode(OppholdsPeriode opphold, List<Vedlegg> vedlegg, int antallBarn,
+            PDPageContentStream cos, float y) throws IOException {
+        y -= renderer.addBulletPoint(txt("opphold"), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(opphold, antallBarn), cos, y);
+        y = renderVedlegg(vedlegg, opphold.getVedlegg(), "dokumentasjon", cos, y);
+        y -= renderer.addBlankLine();
+        return y;
+    }
+
+    private List<String> uttaksData(OppholdsPeriode opphold, int antallBarn) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "fom", opphold.getFom());
+        addIfSet(attributter, "tom", opphold.getTom());
+        if (opphold.getÅrsak().key != null) {
+            attributter.add(txt("oppholdsårsak", txt(opphold.getÅrsak().key)));
+        }
+        else {
+            attributter.add(txt("oppholdsårsak", cap(opphold.getÅrsak().name())));
+        }
+        return attributter;
+    }
+
+    public float renderUttaksPeriode(UttaksPeriode uttak, List<Vedlegg> vedlegg, int antallBarn,
+            PDPageContentStream cos, float y)
+            throws IOException {
+        y -= renderer.addBulletPoint(txt("uttak"), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn), cos, y);
+        y = renderVedlegg(vedlegg, uttak.getVedlegg(), "dokumentasjon", cos, y);
+        y -= renderer.addBlankLine();
+        return y;
+    }
+
+    public float renderGradertPeriode(GradertUttaksPeriode gradert, List<Vedlegg> vedlegg, int antallBarn,
+            PDPageContentStream cos, float y)
+            throws IOException {
+        y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn), cos, y);
+        y = renderVedlegg(vedlegg, gradert.getVedlegg(), "dokumentasjon", cos, y);
+        y -= renderer.addBlankLine();
+        return y;
+    }
+
+    private List<String> uttaksData(GradertUttaksPeriode gradert, int antallBarn) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "fom", gradert.getFom());
+        addIfSet(attributter, "tom", gradert.getTom());
+        attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
+        addIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
+        attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
+        attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
+        addIfSet(attributter, gradert.getMorsAktivitetsType());
+        if (antallBarn > 1) {
+            attributter.add(txt("ønskerflerbarnsdager", jaNei(gradert.isØnskerFlerbarnsdager())));
+        }
+        attributter.add(txt("gradertprosent", gradert.getArbeidstidProsent()));
+        attributter.add(txt("ønskersamtidiguttak", jaNei(gradert.isØnskerSamtidigUttak())));
+        addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent",
+                String.valueOf(gradert.getSamtidigUttakProsent()));
+        return attributter;
+    }
+
+    private List<String> uttaksData(UttaksPeriode uttak, int antallBarn) {
+        ArrayList<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "fom", uttak.getFom());
+        addIfSet(attributter, "tom", uttak.getTom());
+        attributter.add(txt("uttaksperiodetype", cap(uttak.getUttaksperiodeType().name())));
+        addIfSet(attributter, uttak.getMorsAktivitetsType());
+        if (antallBarn > 1) {
+            attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
+        }
+        attributter.add(txt("ønskersamtidiguttak", jaNei(uttak.isØnskerSamtidigUttak())));
+        addIfSet(attributter, uttak.isØnskerSamtidigUttak(), "samtidiguttakprosent",
+                String.valueOf(uttak.getSamtidigUttakProsent()));
+        return attributter;
+    }
+
+    private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
+        Collections.sort(perioder,
+                new Comparator<LukketPeriodeMedVedlegg>() {
+
+                    @Override
+                    public int compare(LukketPeriodeMedVedlegg o1,
+                            LukketPeriodeMedVedlegg o2) {
+                        return o1.getFom().compareTo(o2.getFom());
+                    }
+
+                });
+        return perioder;
     }
 
     private void addIfSet(List<String> attributter, MorsAktivitet morsAktivitetsType) {
@@ -680,27 +860,6 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "omsorgsovertagelsebeskrivelse", overtakelse.getBeskrivelse());
         addIfSet(attributter, "fødselsdato", overtakelse.getFødselsdato());
         return attributter;
-    }
-
-    private String periode(LukketPeriodeMedVedlegg periode) {
-        if (periode instanceof OverføringsPeriode) {
-            return txt("overføring");
-        }
-        if (periode instanceof GradertUttaksPeriode) {
-            return txt("gradertuttak");
-        }
-        if (periode instanceof UttaksPeriode) {
-            return txt("uttak");
-        }
-        if (periode instanceof OppholdsPeriode) {
-            return txt("opphold");
-        }
-        if (periode instanceof UtsettelsesPeriode) {
-            return txt("utsettelse");
-        }
-
-        throw new IllegalArgumentException(periode.getClass().getSimpleName() + " ikke støttet");
-
     }
 
     private String vedleggsBeskrivelse(String key, Vedlegg vedlegg) {

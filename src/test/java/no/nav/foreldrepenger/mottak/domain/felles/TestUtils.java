@@ -140,6 +140,12 @@ public class TestUtils {
         List<Utenlandsopphold> opphold = new ArrayList<>();
         opphold.add(new Utenlandsopphold(CountryCode.GR,
                 new LukketPeriode(LocalDate.now(), LocalDate.now().plusMonths(6))));
+        opphold.add(new Utenlandsopphold(CountryCode.GR,
+                new LukketPeriode(LocalDate.now(), LocalDate.now().plusMonths(6))));
+        opphold.add(new Utenlandsopphold(CountryCode.GR,
+                new LukketPeriode(LocalDate.now(), LocalDate.now().plusMonths(6))));
+        opphold.add(new Utenlandsopphold(CountryCode.GR,
+                new LukketPeriode(LocalDate.now(), LocalDate.now().plusMonths(6))));
         opphold.add(new Utenlandsopphold(CountryCode.DE,
                 new LukketPeriode(LocalDate.now().plusMonths(6).plusDays(1), LocalDate.now().plusYears(1))));
         return new FramtidigOppholdsInformasjon(true, false, opphold);

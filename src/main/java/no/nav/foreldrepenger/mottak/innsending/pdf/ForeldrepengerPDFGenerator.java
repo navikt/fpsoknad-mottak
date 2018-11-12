@@ -77,14 +77,17 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
+                LOG.trace("Y etter relasjon til barn {}", y);
             }
 
-            LOG.trace("Y før annen  forelder {}", y);
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
+                LOG.trace("Y før annen  forelder {}", y);
                 y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
                         stønad.getRettigheter(), cos,
                         y);
+                LOG.trace("Y etter annen forelder {}", y);
+
             }
 
             Opptjening opptjening = stønad.getOpptjening();
@@ -235,35 +238,14 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 }
 
                 if (stønad.getFordeling() != null) {
-                    LOG.trace("Y før fordeling {}", y);
-                    PDPage scratch1 = newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
-                    startY = STARTY;
-                    startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                    size = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
-                            stønad.getRelasjonTilBarn().getAntallBarn(),
-                            scratchcos, startY);
-                    behov = startY - size;
-                    if (behov <= y) {
-                        LOG.trace("Nok plass til fordeling, trenger {}, har {}", behov, y);
-                        scratchcos.close();
-                        y = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
-                                stønad.getRelasjonTilBarn().getAntallBarn(),
-                                cos, y);
-                    }
-                    else {
-                        LOG.trace(
-                                "Trenger ny side. IKKE nok plass til fordeling på side {}, trenger {}, har {}",
-                                doc.getNumberOfPages(),
-                                behov, y);
-                        cos = nySide(doc, cos, scratch1, scratchcos);
-                        y = nesteSideStart(headerSize, behov);
-                    }
+                    cos = fpRenderer.fordeling(doc, søker, stønad.getFordeling(), stønad.getDekningsgrad(),
+                            søknad.getVedlegg(),
+                            stønad.getRelasjonTilBarn().getAntallBarn(), false,
+                            cos, y);
                 }
             }
             cos.close();
             doc.save(baos);
-            doc.getNumberOfPages();
             LOG.trace("Dokumentet er på {} side{}", doc.getNumberOfPages(), doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
@@ -283,7 +265,8 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
             PDPageContentStream cos = new PDPageContentStream(doc, page);
             float y = yTop;
             LOG.trace("Y ved start {}", y);
-            y = fpRenderer.header(søker, doc, cos, true, y);
+            y = fpRenderer.header(søker, doc, cos, true,
+                    y);
             float headerSize = yTop - y;
             LOG.trace("Heaader trenger  {}", headerSize);
 
@@ -292,57 +275,46 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
                 PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float startY = STARTY;
-                startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
-                float size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
-                        startY);
+                startY = fpRenderer.header(søker, doc, scratchcos,
+                        true, startY);
+                float size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(),
+                        scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     LOG.trace("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
                     scratchcos.close();
-                    y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
+                    y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(),
+                            cos, y);
                 }
                 else {
                     LOG.trace("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
                             doc.getNumberOfPages(), behov, y);
-                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    cos = nySide(doc, cos, scratch1,
+                            scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
+                LOG.trace("Y etter relasjon til barn {}", y);
+
             }
 
-            LOG.trace("Y før annen  forelder {}", y);
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
-                y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                        stønad.getRettigheter(), cos,
-                        y);
+                LOG.trace("Y før annen  forelder {}", y);
+                y = fpRenderer.annenForelder(annenForelder,
+                        stønad.getFordeling().isErAnnenForelderInformert(), stønad.getRettigheter(),
+                        cos, y);
+                LOG.trace("Y etter forelder {}", y);
+
             }
 
             if (stønad.getFordeling() != null) {
                 LOG.trace("Y før fordeling {}", y);
-                PDPage scratch1 = newPage();
-                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
-                float startY = STARTY;
-                startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
-                float size = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(),
+                cos = fpRenderer.fordeling(doc, søker, stønad.getFordeling(), stønad.getDekningsgrad(),
                         søknad.getVedlegg(),
-                        stønad.getRelasjonTilBarn().getAntallBarn(),
-                        scratchcos, startY);
-                float behov = startY - size;
-                if (behov <= y) {
-                    LOG.trace("Nok plass til fordeling, trenger {}, har {}", behov, y);
-                    scratchcos.close();
-                    y = fpRenderer.fordeling(stønad.getFordeling(), stønad.getDekningsgrad(), søknad.getVedlegg(),
-                            stønad.getRelasjonTilBarn().getAntallBarn(),
-                            cos, y);
-                }
-                else {
-                    LOG.trace(
-                            "Trenger ny side. IKKE nok plass til fordeling på side {}, trenger {}, har {}",
-                            doc.getNumberOfPages(),
-                            behov, y);
-                    cos = nySide(doc, cos, scratch1, scratchcos);
-                    y = nesteSideStart(headerSize, behov);
-                }
+                        stønad.getRelasjonTilBarn().getAntallBarn(), true,
+                        cos, y);
+                LOG.trace("Y etter fordeling {}", y);
+
             }
             cos.close();
             doc.addPage(page);

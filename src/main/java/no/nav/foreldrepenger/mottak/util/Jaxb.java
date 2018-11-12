@@ -167,7 +167,7 @@ public final class Jaxb {
         case FORELDREPENGER:
             if (FP_SCHEMA != null) {
                 LOG.info("Kunne ha validerer XM, gjør det ikke");
-                // marshaller.setSchema(FP_SCHEMA);
+                marshaller.setSchema(FP_SCHEMA);
             }
             else {
                 LOG.info("Validerer ikke XML");

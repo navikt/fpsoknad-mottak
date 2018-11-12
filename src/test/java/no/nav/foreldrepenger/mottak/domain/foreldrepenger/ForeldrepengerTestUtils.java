@@ -108,7 +108,11 @@ public class ForeldrepengerTestUtils {
 
     private static Frilans frilans() {
         return new Frilans(åpenPeriode(true), true, true,
-                newArrayList(new FrilansOppdrag("bror min", åpenPeriode(true)),
+                newArrayList(
+                        new FrilansOppdrag("bror min", åpenPeriode(true)),
+                        new FrilansOppdrag("bror min", åpenPeriode(true)),
+                        new FrilansOppdrag("bror min", åpenPeriode(true)),
+                        new FrilansOppdrag("bror min", åpenPeriode(true)),
                         new FrilansOppdrag("far min", åpenPeriode(true))),
                 newArrayList(ID142, ID143));
 
@@ -205,17 +209,6 @@ public class ForeldrepengerTestUtils {
                 gradertPeriode(vedlegg));
     }
 
-    static UttaksPeriode uttaksPeriode(List<String> vedlegg) {
-        return new UttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 75.0d, vedlegg);
-    }
-
-    static UttaksPeriode gradertPeriode(List<String> vedlegg) {
-        return new GradertUttaksPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
-                FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true, "222222", vedlegg);
-    }
-
     static FremtidigFødsel termin() {
         return new FremtidigFødsel(LocalDate.now(), LocalDate.now());
     }
@@ -224,19 +217,30 @@ public class ForeldrepengerTestUtils {
         return new Fødsel(LocalDate.now().minusMonths(2));
     }
 
+    static UttaksPeriode uttaksPeriode(List<String> vedlegg) {
+        return new UttaksPeriode(LocalDate.now().plusMonths(3), LocalDate.now().plusMonths(4), FEDREKVOTE,
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 75.0d, vedlegg);
+    }
+
+    static UttaksPeriode gradertPeriode(List<String> vedlegg) {
+        return new GradertUttaksPeriode(LocalDate.now().plusMonths(4), LocalDate.now().plusMonths(5),
+                FEDREKVOTE,
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true, "222222", vedlegg);
+    }
+
     static OverføringsPeriode overføringsPeriode(List<String> vedlegg) {
-        return new OverføringsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
+        return new OverføringsPeriode(LocalDate.now(), LocalDate.now().plusMonths(1),
                 Overføringsårsak.ALENEOMSORG, StønadskontoType.FEDREKVOTE, vedlegg);
     }
 
     static OppholdsPeriode oppholdsPeriode(List<String> vedlegg) {
-        return new OppholdsPeriode(LocalDate.now().minusMonths(1), LocalDate.now(),
+        return new OppholdsPeriode(LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
                 Oppholdsårsak.UTTAK_FEDREKVOTE_ANNEN_FORELDER,
                 vedlegg);
     }
 
     static UtsettelsesPeriode utsettelsesPeriode(List<String> vedlegg) {
-        return new UtsettelsesPeriode(LocalDate.now().minusMonths(1), LocalDate.now(), true, "222",
+        return new UtsettelsesPeriode(LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(3), true, "222",
                 UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, MorsAktivitet.ARBEID,
                 vedlegg);
     }
