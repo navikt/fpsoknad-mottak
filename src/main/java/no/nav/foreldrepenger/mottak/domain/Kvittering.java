@@ -1,8 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 
 import java.time.LocalDateTime;
+
+import org.slf4j.MDC;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,8 +23,8 @@ public class Kvittering {
     private String journalId;
     private String saksNr;
 
-    public Kvittering(LeveranseStatus leveranseStatus, String ref) {
-        this(leveranseStatus, LocalDateTime.now(), ref);
+    public Kvittering(LeveranseStatus leveranseStatus) {
+        this(leveranseStatus, LocalDateTime.now(), MDC.get(NAV_CALL_ID));
     }
 
     @JsonCreator

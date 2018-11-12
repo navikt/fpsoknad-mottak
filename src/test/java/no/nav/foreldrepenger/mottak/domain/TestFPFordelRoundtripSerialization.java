@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
 import no.nav.foreldrepenger.mottak.util.Jaxb;
+import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
@@ -139,6 +140,6 @@ public class TestFPFordelRoundtripSerialization {
 
     private static <T> T unmarshal(String xml, Class<T> clazz) {
         LOG.info("Mottok xml\n{}", xml);
-        return Jaxb.unmarshal(xml, clazz);
+        return Jaxb.unmarshal(xml, clazz, ValidationMode.FORELDREPENGER);
     }
 }

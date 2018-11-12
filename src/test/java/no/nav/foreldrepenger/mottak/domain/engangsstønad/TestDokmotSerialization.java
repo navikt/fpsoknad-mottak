@@ -35,6 +35,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -69,14 +70,14 @@ public class TestDokmotSerialization {
     public void testKonvoluttXML() throws Exception {
         Søknad engangssøknad = engangssøknad(true, fødsel(), norskForelder(),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
-        String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person(),
-                "42");
-        Dokumentforsendelse unmarshalled = unmarshal(konvolutt, Dokumentforsendelse.class);
+        String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person());
+        Dokumentforsendelse unmarshalled = unmarshal(konvolutt, Dokumentforsendelse.class,
+                ValidationMode.ENGANGSSTØNAD);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
         assertTrue(hasPdfSignature(pdf.getDokument()));
         Dokumentinnhold søknadsXML = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(1);
         SoeknadsskjemaEngangsstoenad deserializedSøknadModel = unmarshal(søknadsXML.getDokument(),
-                SoeknadsskjemaEngangsstoenad.class);
+                SoeknadsskjemaEngangsstoenad.class, ValidationMode.ENGANGSSTØNAD);
         assertEquals(deserializedSøknadModel.getOpplysningerOmBarn().getAntallBarn(), 1);
         assertEquals(deserializedSøknadModel.getSoknadsvalg().getFoedselEllerAdopsjon(), FoedselEllerAdopsjon.FOEDSEL);
     }
@@ -103,7 +104,7 @@ public class TestDokmotSerialization {
         serialize(søknad, true, mapper);
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.tilXML(søknad, søker),
-                SoeknadsskjemaEngangsstoenad.class);
+                SoeknadsskjemaEngangsstoenad.class, ValidationMode.ENGANGSSTØNAD);
         assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
         assertEquals(dokmotModel.getSoknadsvalg().getFoedselEllerAdopsjon(),
                 unmarshalled.getSoknadsvalg().getFoedselEllerAdopsjon());

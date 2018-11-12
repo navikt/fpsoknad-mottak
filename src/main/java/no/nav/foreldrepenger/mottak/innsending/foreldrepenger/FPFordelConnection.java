@@ -22,8 +22,8 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
         this.responseHandler = responseHandler;
     }
 
-    public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, String ref) {
-        return responseHandler.handle(postForEntity(uri(), payload, FPFordelKvittering.class), ref);
+    public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+        return responseHandler.handle(postForEntity(uri(), payload, FPFordelKvittering.class));
     }
 
     @Override

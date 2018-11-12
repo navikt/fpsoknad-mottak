@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
-import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
@@ -13,7 +12,6 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
@@ -47,16 +45,14 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
-        String ref = MDC.get(NAV_CALL_ID);
-        Kvittering kvittering = send(ENDRING, ref, konvoluttGenerator.payload(endringsSøknad, søker, ref));
+        Kvittering kvittering = send(ENDRING, konvoluttGenerator.payload(endringsSøknad, søker));
         FP_ENDRING.increment();
         return kvittering;
     }
 
     @Override
     public Kvittering send(Søknad søknad, Person søker) {
-        String ref = MDC.get(NAV_CALL_ID);
-        Kvittering kvittering = send(INITIELL, ref, konvoluttGenerator.payload(søknad, søker, ref));
+        Kvittering kvittering = send(INITIELL, konvoluttGenerator.payload(søknad, søker));
         FPFORDEL_SEND_INITIELL.increment();
         FP_FØRSTEGANG.increment();
         return kvittering;
@@ -64,24 +60,23 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
-        String ref = MDC.get(NAV_CALL_ID);
-        Kvittering kvittering = send(ETTERSENDING, ref, konvoluttGenerator.payload(ettersending, søker, ref));
+        Kvittering kvittering = send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker));
         FP_ETTERSSENDING.increment();
         return kvittering;
     }
 
-    private Kvittering send(SøknadType type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+    private Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         if (connection.isEnabled()) {
-            return doSend(type, ref, payload);
+            return doSend(type, payload);
         }
         LOG.info("Sending av {} til FPFordel er deaktivert, ingenting å sende", type);
-        return new Kvittering(IKKE_SENDT_FPSAK, ref);
+        return new Kvittering(IKKE_SENDT_FPSAK);
     }
 
-    private Kvittering doSend(SøknadType type, String ref, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+    private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         try {
             LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
-            Kvittering kvittering = connection.send(payload, ref);
+            Kvittering kvittering = connection.send(payload);
             LOG.info("Returnerer kvittering {}", kvittering);
             return kvittering;
         } catch (Exception e) {

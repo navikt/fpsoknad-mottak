@@ -19,18 +19,17 @@ public class NonPollingSaksPoller implements SaksStatusPoller {
     private static final Logger LOG = LoggerFactory.getLogger(NonPollingSaksPoller.class);
 
     @Override
-    public Kvittering poll(URI uri, String ref, StopWatch timer, Duration delay,
+    public Kvittering poll(URI uri, StopWatch timer, Duration delay,
             FPSakFordeltKvittering fordeltKvittering) {
         LOG.debug("This poller does not poll");
         FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fordeltKvittering);
         return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK,
-                ref,
                 fordelt.getJournalpostId(),
                 fordelt.getSaksnummer());
     }
 
-    private static Kvittering kvitteringMedType(LeveranseStatus type, String ref, String journalId, String saksnr) {
-        Kvittering kvittering = new Kvittering(type, ref);
+    private static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
+        Kvittering kvittering = new Kvittering(type);
         kvittering.setJournalId(journalId);
         kvittering.setSaksNr(saksnr);
         return kvittering;

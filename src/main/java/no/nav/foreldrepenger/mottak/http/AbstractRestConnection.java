@@ -50,7 +50,7 @@ public abstract class AbstractRestConnection {
             return template.postForEntity(uri, payload, responseType);
         } catch (HttpStatusCodeException e) {
             HttpStatus code = e.getStatusCode();
-            LOG.warn("Kunne ikke poste entity til {}, status kode var {}", uri, code, e);
+            LOG.warn("Kunne ikke poste entitet til {}, status kode var {}", uri, code, e);
             switch (code) {
             case UNAUTHORIZED:
                 throw new UnauthorizedException(e);

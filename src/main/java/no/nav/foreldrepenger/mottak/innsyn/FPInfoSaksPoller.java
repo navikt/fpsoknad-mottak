@@ -45,15 +45,15 @@ public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStat
     }
 
     @Override
-    public Kvittering poll(URI uri, String ref, StopWatch timer, Duration delay,
+    public Kvittering poll(URI uri, StopWatch timer, Duration delay,
             FPSakFordeltKvittering fordeltKvittering) {
-        ForsendelsesStatusKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delay.toMillis(), ref, timer);
+        ForsendelsesStatusKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delay.toMillis(), timer);
         return forsendelsesStatus != null
-                ? forsendelsesStatusKvittering(forsendelsesStatus, fordeltKvittering, ref)
-                : sendtOgForsøktBehandletKvittering(ref, fordeltKvittering);
+                ? forsendelsesStatusKvittering(forsendelsesStatus, fordeltKvittering)
+                : sendtOgForsøktBehandletKvittering(fordeltKvittering);
     }
 
-    private ForsendelsesStatusKvittering pollForsendelsesStatus(URI pollURI, long delayMillis, String ref,
+    private ForsendelsesStatusKvittering pollForsendelsesStatus(URI pollURI, long delayMillis,
             StopWatch timer) {
         ForsendelsesStatusKvittering kvittering = null;
 
@@ -108,41 +108,41 @@ public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStat
     }
 
     private static Kvittering forsendelsesStatusKvittering(ForsendelsesStatusKvittering forsendelsesStatus,
-            FPSakFordeltKvittering fordeltKvittering, String ref) {
+            FPSakFordeltKvittering fordeltKvittering) {
 
         switch (forsendelsesStatus.getForsendelseStatus()) {
         case AVSLÅTT:
             REJECTED.increment();
-            return kvitteringMedType(AVSLÅTT, ref, fordeltKvittering.getJournalpostId(),
+            return kvitteringMedType(AVSLÅTT, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case INNVILGET:
             ACCEPTED.increment();
-            return kvitteringMedType(INNVILGET, ref, fordeltKvittering.getJournalpostId(),
+            return kvitteringMedType(INNVILGET, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅ_VENT:
             PENDING.increment();
-            return kvitteringMedType(PÅ_VENT, ref, fordeltKvittering.getJournalpostId(),
+            return kvitteringMedType(PÅ_VENT, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         case PÅGÅR:
             RUNNING.increment();
-            return kvitteringMedType(PÅGÅR, ref, fordeltKvittering.getJournalpostId(),
+            return kvitteringMedType(PÅGÅR, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         default:
             FAILED.increment();
-            return new Kvittering(FP_FORDEL_MESSED_UP, ref);
+            return new Kvittering(FP_FORDEL_MESSED_UP);
         }
     }
 
-    private static Kvittering sendtOgForsøktBehandletKvittering(String ref, FPSakFordeltKvittering kvittering) {
+    private static Kvittering sendtOgForsøktBehandletKvittering(FPSakFordeltKvittering kvittering) {
         LOG.info("Søknaden er motatt og forsøkt behandlet av FPSak, journalId er {}, saksnummer er {}",
                 kvittering.getJournalpostId(), kvittering.getSaksnummer());
         FAILED.increment();
-        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, ref, kvittering.getJournalpostId(),
+        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, kvittering.getJournalpostId(),
                 kvittering.getSaksnummer());
     }
 
-    private static Kvittering kvitteringMedType(LeveranseStatus type, String ref, String journalId, String saksnr) {
-        Kvittering kvittering = new Kvittering(type, ref);
+    private static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
+        Kvittering kvittering = new Kvittering(type);
         kvittering.setJournalId(journalId);
         kvittering.setSaksNr(saksnr);
         return kvittering;

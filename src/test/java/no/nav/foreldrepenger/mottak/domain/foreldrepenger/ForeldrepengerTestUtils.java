@@ -32,18 +32,19 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class ForeldrepengerTestUtils {
 
-    public static final String ID142 = "142";
-    public static final String ID143 = "143";
+    public static final String ID142 = "V142";
+    public static final String ID143 = "V143";
     public static final List<Vedlegg> TO_VEDLEGG = newArrayList(
             TestUtils.valgfrittVedlegg(ID142, InnsendingsType.LASTET_OPP),
             TestUtils.valgfrittVedlegg(ID143, InnsendingsType.LASTET_OPP));
     public static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
     public static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
 
-    private static final ValgfrittVedlegg IKKE_OPPLASTETV1 = ikkeOpplastet(ID143, I000063);
+    private static final ValgfrittVedlegg IKKE_OPPLASTETV1 = ikkeOpplastet(ID142, I000063);
+    private static final ValgfrittVedlegg IKKE_OPPLASTETV2 = ikkeOpplastet(ID143, I000063);
 
     public static Søknad foreldrepengeSøknad() {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(false), TO_VEDLEGG);
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(false), V1);
     }
 
     public static Søknad foreldrepengeSøknadUtenVedlegg() {
@@ -55,7 +56,7 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Søknad søknadMedEttOpplastetEttIkkeOpplastetVedlegg() {
-        return søknad(false, V1, IKKE_OPPLASTETV1);
+        return søknad(false, V1, IKKE_OPPLASTETV2);
     }
 
     public static Søknad søknadMedToVedlegg() {
@@ -150,6 +151,7 @@ public class ForeldrepengerTestUtils {
 
     static UtenlandskOrganisasjon utenlandskEgenNæring() {
         return UtenlandskOrganisasjon.builder()
+                .registrertILand(CountryCode.UG)
                 .periode(åpenPeriode())
                 .regnskapsførere(Collections.singletonList(new Regnskapsfører("Rein Åge Skapsfører", "+4746929061")))
                 .erNyOpprettet(true)

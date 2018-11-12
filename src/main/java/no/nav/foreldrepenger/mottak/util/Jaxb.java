@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -25,7 +25,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -47,7 +47,7 @@ public final class Jaxb {
     private static final JAXBContext CONTEXT = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class,
             SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
 
-    // private static final Schema FP_SCHEMA = fpSchema();
+    static final Schema FP_SCHEMA = fpSchema();
 
     private Jaxb() {
 
@@ -61,24 +61,25 @@ public final class Jaxb {
                             "endringssoeknad-fpfordel.xsd",
                             "soeknad-fpfordel.xsd"));
         } catch (SAXException e) {
-            throw new IllegalStateException(e);
+            LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller", e);
+            return null;
         }
     }
 
-    public static <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz) {
-        return unmarshalToElement(CONTEXT, xml, clazz);
+    public static <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz, ValidationMode mode) {
+        return unmarshalToElement(CONTEXT, xml, clazz, mode);
     }
 
     public static String marshal(Object model, ValidationMode mode) {
         return marshal(CONTEXT, model, mode);
     }
 
-    public static <T> T unmarshal(byte[] bytes, Class<T> clazz) {
-        return unmarshal(CONTEXT, bytes, clazz);
+    public static <T> T unmarshal(byte[] bytes, Class<T> clazz, ValidationMode mode) {
+        return unmarshal(CONTEXT, bytes, clazz, mode);
     }
 
-    public static <T> T unmarshal(String xml, Class<T> clazz) {
-        return unmarshal(CONTEXT, xml, clazz);
+    public static <T> T unmarshal(String xml, Class<T> clazz, ValidationMode mode) {
+        return unmarshal(CONTEXT, xml, clazz, mode);
     }
 
     private static JAXBContext context(Class<?>... classes) {
@@ -99,6 +100,7 @@ public final class Jaxb {
             marshaller(context, mode).marshal(model, res);
             return ((Document) res.getNode()).getDocumentElement();
         } catch (JAXBException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e);
         }
     }
@@ -113,7 +115,11 @@ public final class Jaxb {
         }
     }
 
-    private static Unmarshaller unmarshaller(JAXBContext context) {
+    static Unmarshaller unmarshaller(ValidationMode mode) {
+        return unmarshaller(CONTEXT, mode);
+    }
+
+    private static Unmarshaller unmarshaller(JAXBContext context, ValidationMode mode) {
         try {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler(new DefaultValidationEventHandler());
@@ -123,26 +129,31 @@ public final class Jaxb {
         }
     }
 
-    private static <T> T unmarshal(JAXBContext context, byte[] bytes, Class<T> clazz) {
-        return unmarshal(context, new String(bytes), clazz);
+    private static <T> T unmarshal(JAXBContext context, byte[] bytes, Class<T> clazz, ValidationMode mode) {
+        return unmarshal(context, new String(bytes), clazz, mode);
     }
 
-    private static <T> T unmarshal(JAXBContext context, String xml, Class<T> clazz) {
+    private static <T> T unmarshal(JAXBContext context, String xml, Class<T> clazz, ValidationMode mode) {
         try {
-            return (T) unmarshaller(context).unmarshal(new StringReader(unescapeHtml4(xml)));
+            return (T) unmarshaller(context, mode).unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    private static <T> JAXBElement<T> unmarshalToElement(JAXBContext context, String xml, Class<T> clazz) {
+    private static <T> JAXBElement<T> unmarshalToElement(JAXBContext context, String xml, Class<T> clazz,
+            ValidationMode mode) {
         try {
 
-            Unmarshaller unmarshaller = unmarshaller(context);
+            Unmarshaller unmarshaller = unmarshaller(context, mode);
             return (JAXBElement<T>) unmarshaller.unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    static Marshaller marshaller(ValidationMode mode) {
+        return marshaller(CONTEXT, mode);
     }
 
     private static Marshaller marshaller(JAXBContext context, ValidationMode mode) {
@@ -154,16 +165,12 @@ public final class Jaxb {
         case ENGANGSSTØNAD:
             return marshaller;
         case FORELDREPENGER:
-            try {
-                Schema schema = fpSchema();
-                if (schema != null) {
-                    LOG.info("Validerer XM med  schena {}", schema);
-                }
-                else {
-                    LOG.info("Validerer ikke XML");
-                }
-            } catch (Exception e) {
-                LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller", e);
+            if (FP_SCHEMA != null) {
+                LOG.info("Kunne ha validerer XM, gjør det ikke");
+                // marshaller.setSchema(FP_SCHEMA);
+            }
+            else {
+                LOG.info("Validerer ikke XML");
             }
             return marshaller;
         default:
@@ -183,24 +190,29 @@ public final class Jaxb {
     }
 
     private static Source[] sourcesFra(String... schemas) {
-        return Stream.concat(Arrays.stream(schemas)
-                .map(s -> "/src/main/xsd" + s), Arrays.stream(schemas))
-                .map(ClassPathResource::new)
-                .filter(ClassPathResource::exists)
-                .map(Jaxb::inputStream)
-                .map(StreamSource::new)
+        return Arrays.stream(schemas)
+                .map(Jaxb::source)
                 .toArray(Source[]::new);
 
     }
 
-    private static InputStream inputStream(ClassPathResource res) {
+    private static Source source(String re) {
         try {
-            InputStream is = res.getInputStream();
-            LOG.info("La til schema fra {}", res.getFilename());
-            return is;
-        } catch (IOException e) {
-            throw new IllegalStateException("Ingen input stream for " + res.getFilename(), e);
+            final URL url = Jaxb.class.getClassLoader().getResource(re);
+            return new StreamSource(inputStream(new UrlResource(url)), url.toExternalForm());
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
+    }
 
+    private static InputStream inputStream(UrlResource res) {
+        try {
+            if (!res.exists()) {
+                throw new IllegalStateException("Rssursen  " + res + " finnes ikke");
+            }
+            return res.getInputStream();
+        } catch (IOException e) {
+            throw new IllegalStateException("Ingen input stream for " + res, e);
+        }
     }
 }

@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.PDFA;
 import static no.nav.foreldrepenger.mottak.domain.Filtype.XML;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000003;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.innsending.engangsstønad.ArkivVariant.ARKIV;
 import static no.nav.foreldrepenger.mottak.innsending.engangsstønad.ArkivVariant.ORIGINAL;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Filtype;
@@ -46,18 +48,20 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
         this.søknadGenerator = Objects.requireNonNull(generator);
     }
 
-    public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref) {
-        return toXML(søknad, søker, ref, true);
+    public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
+
+        return toXML(søknad, søker, true);
     }
 
-    public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref,
+    public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
             boolean inkluderVedlegg) {
-        return Jaxb.marshal(dokmotModelFra(søknad, søker, ref, inkluderVedlegg), ValidationMode.ENGANGSSTØNAD);
+        return Jaxb.marshal(dokmotModelFra(søknad, søker, inkluderVedlegg),
+                ValidationMode.ENGANGSSTØNAD);
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
-            String ref, boolean inkluderVedlegg) {
-        return dokumentForsendelseFra(søknad, søker, ref);
+            boolean inkluderVedlegg) {
+        return dokumentForsendelseFra(søknad, søker);
     }
 
     public String toSøknadsXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
@@ -65,10 +69,10 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     }
 
     private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad,
-            no.nav.foreldrepenger.mottak.domain.felles.Person søker, String ref) {
+            no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
         return new Dokumentforsendelse()
                 .withForsendelsesinformasjon(new Forsendelsesinformasjon()
-                        .withKanalreferanseId(ref)
+                        .withKanalreferanseId(MDC.get(NAV_CALL_ID))
                         .withTema(new Tema().withValue(TEMA))
                         .withMottakskanal(new Mottakskanaler().withValue(KANAL))
                         .withBehandlingstema(new Behandlingstema().withValue(BEHANDLINGSTEMA))

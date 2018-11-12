@@ -154,7 +154,7 @@ public class SøknadTilXMLMapper {
                 .withSaksnummer(endringssøknad.getSaksnr()));
     }
 
-    private Soeknad tilModell(Søknad søknad, AktorId søker) {
+    public Soeknad tilModell(Søknad søknad, AktorId søker) {
         LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))

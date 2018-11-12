@@ -39,14 +39,14 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
         this.poller = poller;
     }
 
-    public Kvittering handle(ResponseEntity<FPFordelKvittering> leveranseRespons, String ref) {
+    public Kvittering handle(ResponseEntity<FPFordelKvittering> leveranseRespons) {
         LOG.info("Behandler respons {}", leveranseRespons);
         StopWatch timer = new StopWatch();
         timer.start();
         if (!leveranseRespons.hasBody()) {
             LOG.warn("Fikk ingen kvittering etter leveranse av søknad");
             FEILET_KVITTERINGER.increment();
-            return new Kvittering(FP_FORDEL_MESSED_UP, ref);
+            return new Kvittering(FP_FORDEL_MESSED_UP);
         }
         FPFordelKvittering fpFordelKvittering = FPFordelKvittering.class.cast(leveranseRespons.getBody());
         switch (leveranseRespons.getStatusCode()) {
@@ -71,34 +71,34 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                         if (fpFordelKvittering instanceof FPFordelGosysKvittering) {
                             LOG.info("Fikk Gosys kvittering  på {}. forsøk, returnerer etter {}ms", i, stop(timer));
                             MANUELL_KVITTERING.increment();
-                            return gosysKvittering(ref, FPFordelGosysKvittering.class.cast(fpFordelKvittering));
+                            return gosysKvittering(FPFordelGosysKvittering.class.cast(fpFordelKvittering));
                         }
                         LOG.warn("Uventet kvittering {} for statuskode {}, gir opp (etter {}ms)", fpFordelKvittering,
                                 fpInfoRespons.getStatusCode(), stop(timer));
-                        return new Kvittering(FP_FORDEL_MESSED_UP, ref);
+                        return new Kvittering(FP_FORDEL_MESSED_UP);
                     case SEE_OTHER:
                         FORDELT_KVITTERING.increment();
                         FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
-                        return poller.poll(locationFra(fpInfoRespons), ref, timer, pending.getPollInterval(), fordelt);
+                        return poller.poll(locationFra(fpInfoRespons), timer, pending.getPollInterval(), fordelt);
 
                     default:
                         FEILET_KVITTERINGER.increment();
                         LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",
                                 fpInfoRespons.getStatusCode(), timer.getTime());
-                        return new Kvittering(FP_FORDEL_MESSED_UP, ref);
+                        return new Kvittering(FP_FORDEL_MESSED_UP);
                     }
                 }
                 LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp (etter {}ms)", maxAntallForsøk,
                         stop(timer));
                 GITTOPP_KVITTERING.increment();
-                return new Kvittering(FP_FORDEL_MESSED_UP, ref);
+                return new Kvittering(FP_FORDEL_MESSED_UP);
             }
         default:
             FEILET_KVITTERINGER.increment();
             LOG.warn("Uventet responskode {} ved leveranse av søknad, gir opp (etter {}ms)",
                     leveranseRespons.getStatusCode(),
                     stop(timer));
-            return new Kvittering(FP_FORDEL_MESSED_UP, ref);
+            return new Kvittering(FP_FORDEL_MESSED_UP);
         }
     }
 
@@ -123,17 +123,17 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
         return getForEntity(uri, clazz);
     }
 
-    private static Kvittering kvitteringMedType(LeveranseStatus type, String ref, String journalId, String saksnr) {
-        Kvittering kvittering = new Kvittering(type, ref);
+    private static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
+        Kvittering kvittering = new Kvittering(type);
         kvittering.setJournalId(journalId);
         kvittering.setSaksNr(saksnr);
         return kvittering;
     }
 
-    private static Kvittering gosysKvittering(String ref, FPFordelGosysKvittering gosysKvittering) {
+    private static Kvittering gosysKvittering(FPFordelGosysKvittering gosysKvittering) {
         LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}",
                 gosysKvittering.getJournalpostId());
-        return kvitteringMedType(GOSYS, ref, gosysKvittering.getJournalpostId(), null);
+        return kvitteringMedType(GOSYS, gosysKvittering.getJournalpostId(), null);
     }
 
     @Override

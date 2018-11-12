@@ -35,7 +35,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <additionalClasspathElements>
-                        <additionalClasspathElement>/src/main/xsd</additionalClasspathElement>
+                        <additionalClasspathElement>src/main/xsd</additionalClasspathElement>
                     </additionalClasspathElements>
                 </configuration>
             </plugin>

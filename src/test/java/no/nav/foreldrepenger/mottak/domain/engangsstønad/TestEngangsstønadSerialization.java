@@ -57,7 +57,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testKvittering() {
-        Kvittering kvittering = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK, "42");
+        Kvittering kvittering = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
         kvittering.setJournalId("555");
         kvittering.setSaksNr("666");
         test(kvittering, true);

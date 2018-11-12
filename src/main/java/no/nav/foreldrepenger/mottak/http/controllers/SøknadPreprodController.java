@@ -9,7 +9,6 @@ import static org.springframework.http.ResponseEntity.ok;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -111,11 +110,11 @@ public class SøknadPreprodController {
     }
 
     private String esKonvolutt(Søknad søknad, Person søker) {
-        return dokmotKonvoluttGenerator.tilXML(søknad, søker, UUID.randomUUID().toString());
+        return dokmotKonvoluttGenerator.tilXML(søknad, søker);
     }
 
     private Object fpKonvolutt(Søknad søknad, Person søker) {
-        return fpfordelKonvoluttGenerator.payload(søknad, søker, "999");
+        return fpfordelKonvoluttGenerator.payload(søknad, søker);
     }
 
     private static boolean isForeldrepenger(Søknad søknad) {

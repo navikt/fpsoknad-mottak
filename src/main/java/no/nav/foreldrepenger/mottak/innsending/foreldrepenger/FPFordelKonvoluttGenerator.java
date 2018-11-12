@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
@@ -13,6 +14,7 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -47,12 +49,12 @@ public class FPFordelKonvoluttGenerator {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker, String ref) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         LOG.trace("Genererer payload");
-        builder.part(METADATA, metadata(søknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(søknad, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
                 id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker), APPLICATION_PDF)
@@ -83,11 +85,10 @@ public class FPFordelKonvoluttGenerator {
         return new HttpEntity<>(builder.build(), headers());
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, Person søker,
-            String ref) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, Person søker) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        builder.part(METADATA, metadata(ettersending, søker.aktørId, ref), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(ettersending, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
         ettersending.getVedlegg().stream()
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 

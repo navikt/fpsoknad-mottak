@@ -49,6 +49,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
 import no.nav.foreldrepenger.mottak.util.LatterligEnkelDokumentTypeAnalysator;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
@@ -107,7 +108,7 @@ public class XMLTilSøknadMapper {
             return null;
         }
         try {
-            Soeknad søknad = unmarshalToElement(xml, Soeknad.class).getValue();
+            Soeknad søknad = unmarshalToElement(xml, Soeknad.class, ValidationMode.FORELDREPENGER).getValue();
             if (søknad != null) {
                 if (erEndringsSøknad(xml)) {
                     Endringssøknad endringssøknad = new Endringssøknad(søknad.getMottattDato().atStartOfDay(),

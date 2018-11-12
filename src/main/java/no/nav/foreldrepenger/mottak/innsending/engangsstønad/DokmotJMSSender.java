@@ -40,17 +40,16 @@ public class DokmotJMSSender implements SøknadSender {
     @Override
     public Kvittering send(Søknad søknad, Person søker) {
         if (dokmotConnection.isEnabled()) {
-            String ref = MDC.get(NAV_CALL_ID);
             dokmotConnection.send(session -> {
-                TextMessage msg = session.createTextMessage(generator.tilXML(søknad, søker, ref));
+                TextMessage msg = session.createTextMessage(generator.tilXML(søknad, søker));
                 LOG.info("Sender SøknadsXML til DOKMOT");
-                msg.setStringProperty("callId", ref);
+                msg.setStringProperty("callId", MDC.get(NAV_CALL_ID));
                 return msg;
             });
-            return new Kvittering(PÅ_VENT, ref);
+            return new Kvittering(PÅ_VENT);
         }
         LOG.info("Leveranse til DOKMOT er deaktivert, ingenting å sende");
-        return new Kvittering(IKKE_SENDT_FPSAK, "42");
+        return new Kvittering(IKKE_SENDT_FPSAK);
     }
 
     @Override

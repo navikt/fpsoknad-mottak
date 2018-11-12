@@ -10,6 +10,6 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvitte
 
 public interface SaksStatusPoller {
 
-    Kvittering poll(URI locationFra, String ref, StopWatch timer, Duration duration, FPSakFordeltKvittering cast);
+    Kvittering poll(URI locationFra, StopWatch timer, Duration duration, FPSakFordeltKvittering cast);
 
 }
