@@ -108,10 +108,12 @@
         <xsd:attribute name="kode">
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
-                    <xsd:enumeration value="UTTAK_KVOTE_ANNEN_FORELDER"/>
-                    <xsd:enumeration value="UTTAK_FELLESP_ANNEN_FORELDER"/>
-                    <xsd:enumeration value="INGEN"/>
-                    <xsd:enumeration value="-"/>
+                   <xsd:enumeration value="UTTAK_MØDREKVOTE_ANNEN_FORELDER"/>
+                   <xsd:enumeration value="UTTAK_FEDREKVOTE_ANNEN_FORELDER"/>
+                   <xsd:enumeration value="UTTAK_FORELDREPENGER_ANNEN_FORELDER"/>
+                   <xsd:enumeration value="UTTAK_FELLESP_ANNEN_FORELDER"/>
+                   <xsd:enumeration value="INGEN"/>
+                   <xsd:enumeration value="-"/>
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
