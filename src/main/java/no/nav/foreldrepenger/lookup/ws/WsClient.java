@@ -9,6 +9,8 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.lookup.TokenHandler;
+
 @Component
 public class WsClient<T> {
 
@@ -17,6 +19,9 @@ public class WsClient<T> {
 
     @Inject
     private OnBehalfOfOutInterceptor onBehalfOfOutInterceptor;
+
+    @Inject
+    protected TokenHandler tokenHandler;
 
     public T createPortForExternalUser(String serviceUrl, Class<?> portType) {
         T port = createAndConfigurePort(serviceUrl, portType);

@@ -1,32 +1,38 @@
 package no.nav.foreldrepenger.lookup.ws.aktor;
 
+import java.util.Objects;
+
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentAktoerIdForIdentPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.HentIdentForAktoerIdPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentAktoerIdForIdentRequest;
 import no.nav.tjeneste.virksomhet.aktoer.v2.meldinger.HentIdentForAktoerIdRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Objects;
 
 public class AktorIdClientWs implements AktorIdClient {
     private static final Logger LOG = LoggerFactory.getLogger(AktorIdClientWs.class);
 
     private final AktoerV2 aktoerV2;
     private final AktoerV2 healthIndicator;
+    protected final TokenHandler tokenHandler;
 
     private static final Counter ERROR_COUNTER_AKTOR = Metrics.counter("errors.lookup.aktorid");
     private static final Counter ERROR_COUNTER_FNR = Metrics.counter("errors.lookup.fnr");
 
-    public AktorIdClientWs(AktoerV2 aktoerV2, AktoerV2 healthIndicator) {
+    public AktorIdClientWs(AktoerV2 aktoerV2, AktoerV2 healthIndicator, TokenHandler tokenHandler) {
         this.aktoerV2 = Objects.requireNonNull(aktoerV2);
         this.healthIndicator = Objects.requireNonNull(healthIndicator);
+        this.tokenHandler = tokenHandler;
     }
 
     @Override
@@ -37,9 +43,13 @@ public class AktorIdClientWs implements AktorIdClient {
         } catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
             LOG.warn("Henting av aktørid har feilet", e);
             throw new NotFoundException(e.getMessage());
-        } catch (Exception ex) {
+        } catch (SOAPFaultException e) {
             ERROR_COUNTER_AKTOR.increment();
-            throw ex;
+            LOG.warn("SOAP Fault {}, token utgår {}", e.getFault(), tokenHandler.getExp());
+            throw e;
+        } catch (Exception e) {
+            ERROR_COUNTER_AKTOR.increment();
+            throw e;
         }
     }
 

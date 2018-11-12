@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.WsClient;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
 
@@ -25,7 +26,7 @@ public class AktorIdConfiguration extends WsClient<AktoerV2> {
 
     @Bean
     public AktorIdClient aktorIdClientWs(@Qualifier("aktoerV2") AktoerV2 aktoerV2,
-            @Qualifier("healthIndicatorAktør") AktoerV2 healthIndicator) {
-        return new AktorIdClientWs(aktoerV2, healthIndicator);
+            @Qualifier("healthIndicatorAktør") AktoerV2 healthIndicator, TokenHandler tokenHandler) {
+        return new AktorIdClientWs(aktoerV2, healthIndicator, tokenHandler);
     }
 }
