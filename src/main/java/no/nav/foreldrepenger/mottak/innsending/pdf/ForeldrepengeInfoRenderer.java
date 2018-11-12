@@ -385,7 +385,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     LOG.info("Ikke nok plass til uttak");
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
                 LOG.info("Render utak end at " + y);
@@ -407,7 +407,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     LOG.info("Ikke nok plass til gradert");
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
                 LOG.info("Render gradert end at " + y);
@@ -429,7 +429,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     LOG.info("Ikke nok plass til opphold");
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                     LOG.info("Render opphold etter ny side end at " + y);
                 }
@@ -452,7 +452,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     LOG.info("Ikke nok plass til utsettelse");
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
                 LOG.info("Render utsettelse end at " + y);
@@ -474,7 +474,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     LOG.info("Ikke nok plass til overføring");
-                    cos = nySide(doc, cos, scratch1, scratchcos, søker);
+                    cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
                 LOG.info("Render overføring end at " + y);
@@ -485,10 +485,10 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private PDPageContentStream nySide(PDDocument doc, PDPageContentStream cos, PDPage scratch,
-            PDPageContentStream scratchcos, Person søker) throws IOException {
+            PDPageContentStream scratchcos, Person søker, boolean erEndring) throws IOException {
         cos.close();
         LOG.info("Før ny side  " + STARTY);
-        float y = header(søker, doc, scratchcos, false, STARTY);
+        float y = header(søker, doc, scratchcos, erEndring, STARTY);
         doc.addPage(scratch);
         cos = scratchcos;
         LOG.info("Etter ny side  " + y);
