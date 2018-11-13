@@ -164,7 +164,6 @@ public class ForeldrepengerTestUtils {
                 .næringsinntektBrutto(100_000)
                 .orgName("Utenlandsk org")
                 .virksomhetsTyper(Collections.singletonList(FISKE))
-                .arbeidsland(CountryCode.SE)
                 .beskrivelseEndring("Endringer skjer fort i verdens største land (utlandet)")
                 .nærRelasjon(true)
                 .endringsDato(LocalDate.now()).build();
@@ -182,7 +181,6 @@ public class ForeldrepengerTestUtils {
                 .orgName("Norsk org")
                 .orgNummer("82828282")
                 .virksomhetsTyper(Collections.singletonList(FISKE))
-                .arbeidsland(CountryCode.NO)
                 .beskrivelseEndring("Ting endrer seg i Norge også")
                 .nærRelasjon(true)
                 .endringsDato(LocalDate.now()).build();

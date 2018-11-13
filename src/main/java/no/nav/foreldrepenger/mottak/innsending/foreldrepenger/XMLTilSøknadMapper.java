@@ -307,7 +307,6 @@ public class XMLTilSøknadMapper {
         if (egenNæring instanceof UtenlandskOrganisasjon) {
             UtenlandskOrganisasjon utenlandskOrg = UtenlandskOrganisasjon.class.cast(egenNæring);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon.builder()
-                    .arbeidsland(CountryCode.getByCode(utenlandskOrg.getArbeidsland().getKode()))
                     .beskrivelseEndring(utenlandskOrg.getBeskrivelseAvEndring())
                     .endringsDato(utenlandskOrg.getEndringsDato())
                     .erNyOpprettet(utenlandskOrg.isErNyoppstartet())

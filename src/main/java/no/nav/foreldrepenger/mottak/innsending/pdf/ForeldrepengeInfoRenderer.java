@@ -716,7 +716,6 @@ public class ForeldrepengeInfoRenderer {
             UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
         }
-        addIfSet(attributter, "virksomhetsland", næring.getArbeidsland());
         attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
                 næring.getVirksomhetsTyper().stream()
                         .map(v -> textFormatter.capitalize(v.toString()))

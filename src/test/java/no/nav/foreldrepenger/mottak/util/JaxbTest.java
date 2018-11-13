@@ -19,7 +19,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtil
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadTilXMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
-import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class JaxbTest {
@@ -40,8 +39,8 @@ public class JaxbTest {
     public void testSerialization() throws Exception {
         Søknad søknad = ForeldrepengerTestUtils.søknadMedToVedlegg();
         Marshaller marshaller = Jaxb.marshaller(ValidationMode.FORELDREPENGER_V1);
-        // marshaller.setSchema(Jaxb.FP_SCHEMA);
-        Soeknad mdodel = new SøknadTilXMLMapper(oppslag).tilModell(søknad, new AktorId("42"));
-        marshaller.marshal(mdodel, System.out);
+        // marshaller.setSchema(Jaxb.FP_SCHEMA_V1);
+        SøknadTilXMLMapper søknadTilXMLMapper = new SøknadTilXMLMapper(oppslag);
+        System.out.println(søknadTilXMLMapper.tilXML(søknad, new AktorId("42")));
     }
 }

@@ -7,8 +7,6 @@ import javax.validation.Valid;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.neovisionaries.i18n.CountryCode;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,13 +25,13 @@ public class NorskOrganisasjon extends EgenNæring {
     private final String orgName;
 
     @Builder
-    private NorskOrganisasjon(CountryCode arbeidsland, List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
+    private NorskOrganisasjon(List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
             boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
             String beskrivelseEndring, Double stillingsprosent,
             List<String> vedlegg,
             String orgNummer, String orgName) {
-        super(arbeidsland, virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,
+        super(virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,
                 erVarigEndring, erNyIArbeidslivet,
                 næringsinntektBrutto, endringsDato, oppstartsDato, beskrivelseEndring, stillingsprosent, vedlegg);
         this.orgName = orgName;

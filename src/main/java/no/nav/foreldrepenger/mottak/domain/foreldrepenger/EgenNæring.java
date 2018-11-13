@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Data;
 
@@ -26,7 +25,6 @@ import lombok.Data;
 
 public abstract class EgenNæring {
 
-    private final CountryCode arbeidsland;
     private final List<Virksomhetstype> virksomhetsTyper;
     private final ÅpenPeriode periode;
     private final boolean nærRelasjon;
@@ -42,7 +40,7 @@ public abstract class EgenNæring {
     private final List<String> vedlegg;
 
     @JsonCreator
-    public EgenNæring(@JsonProperty("arbeidsland") CountryCode arbeidsland,
+    public EgenNæring(
             @JsonProperty("virksomhetsType") List<Virksomhetstype> virksomhetsTyper,
             @JsonProperty("periode") ÅpenPeriode periode,
             @JsonProperty("nærRelasjon") boolean nærRelasjon,
@@ -56,7 +54,6 @@ public abstract class EgenNæring {
             @JsonProperty("beskrivelseEndring") String beskrivelseEndring,
             @JsonProperty("stillingsprosent") Double stillingsprosent,
             @JsonProperty("vedlegg") List<String> vedlegg) {
-        this.arbeidsland = arbeidsland;
         this.virksomhetsTyper = virksomhetsTyper;
         this.periode = periode;
         this.nærRelasjon = nærRelasjon;

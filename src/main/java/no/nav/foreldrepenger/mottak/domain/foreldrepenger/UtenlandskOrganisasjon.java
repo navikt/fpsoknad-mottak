@@ -23,13 +23,13 @@ public class UtenlandskOrganisasjon extends EgenNæring {
     private final CountryCode registrertILand;
 
     @Builder
-    private UtenlandskOrganisasjon(CountryCode arbeidsland, CountryCode registrertILand,
+    private UtenlandskOrganisasjon(CountryCode registrertILand,
             List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
             boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
             String beskrivelseEndring, Double stillingsprosent,
             List<String> vedlegg, String orgName) {
-        super(arbeidsland, virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,
+        super(virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,
                 erVarigEndring, erNyIArbeidslivet,
                 næringsinntektBrutto, endringsDato, oppstartsDato, beskrivelseEndring, stillingsprosent, vedlegg);
         this.orgName = orgName;

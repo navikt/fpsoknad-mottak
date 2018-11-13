@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SE
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
+import static no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode.FORELDREPENGER_V1;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.math.BigInteger;
@@ -60,7 +61,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -115,8 +115,8 @@ public class SøknadTilXMLMapper {
     public static final String UKJENT_KODEVERKSVERDI = "-";
 
     private static final ObjectFactory FP_FACTORY = new ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory UTTAK_FACTORY = new no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory ENDRING_FACTORY = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory();
 
@@ -127,11 +127,11 @@ public class SøknadTilXMLMapper {
     }
 
     public String tilXML(Søknad søknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), ValidationMode.FORELDREPENGER_V1);
+        return marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(søknad, søker)), FORELDREPENGER_V1);
     }
 
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), ValidationMode.FORELDREPENGER_V1);
+        return marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(endringssøknad, søker)), FORELDREPENGER_V1);
     }
 
     private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
@@ -202,7 +202,7 @@ public class SøknadTilXMLMapper {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
-        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse), ValidationMode.FORELDREPENGER_V1));
+        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse), FORELDREPENGER_V1));
     }
 
     private JAXBElement<Foreldrepenger> foreldrePengerFra(
@@ -332,8 +332,7 @@ public class SøknadTilXMLMapper {
                     .withPeriode(periodeFra(norskOrg.getPeriode()))
                     .withRegnskapsfoerer(regnskapsFørerFra(norskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(norskOrg.getVirksomhetsTyper()))
-                    .withOppstartsdato(norskOrg.getOppstartsDato())
-                    .withArbeidsland(landFra(norskOrg.getArbeidsland()));
+                    .withOppstartsdato(norskOrg.getOppstartsDato());
         }
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon) {
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon utenlandskOrg = no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon.class
@@ -352,8 +351,7 @@ public class SøknadTilXMLMapper {
                     .withRegistrertILand(landFra(utenlandskOrg.getRegistrertILand()))
                     .withPeriode(periodeFra(utenlandskOrg.getPeriode()))
                     .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
-                    .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()))
-                    .withArbeidsland(landFra(utenlandskOrg.getArbeidsland()));
+                    .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()));
         }
         throw new IllegalArgumentException("Vil aldri skje");
     }
@@ -775,7 +773,7 @@ public class SøknadTilXMLMapper {
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FELLES_FACTORY.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FELLES_FACTORY_V1.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 

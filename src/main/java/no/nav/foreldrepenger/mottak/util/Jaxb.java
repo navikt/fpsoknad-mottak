@@ -45,9 +45,11 @@ public final class Jaxb {
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
     private static final JAXBContext CTX_FPV1 = contextFra(
-            no.nav.vedtak.felles.xml.soeknad.v1.Soeknad.class,
             no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad.class,
-            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger.class);
+            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger.class,
+            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory.class,
+            no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
+            no.nav.vedtak.felles.xml.soeknad.v1.Soeknad.class);
     private static final JAXBContext CTX_ES = contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
     static final Schema FP_SCHEMA_V1 = fpSchema(Version.v1);
 
@@ -171,7 +173,7 @@ public final class Jaxb {
         case FORELDREPENGER_V1:
             if (FP_SCHEMA_V1 != null) {
                 LOG.info("Kunne ha validerer XM, gjør det ikke");
-                // marshaller.setSchema(FP_SCHEMA);
+                // marshaller.setSchema(Jaxb.FP_SCHEMA_V1);
             }
             else {
                 LOG.info("Validerer ikke XML");
