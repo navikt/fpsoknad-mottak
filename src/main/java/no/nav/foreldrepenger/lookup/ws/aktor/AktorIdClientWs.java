@@ -62,6 +62,10 @@ public class AktorIdClientWs implements AktorIdClient {
         } catch (HentIdentForAktoerIdPersonIkkeFunnet e) {
             LOG.warn("Henting av fnr har feilet", e);
             throw new NotFoundException(e.getMessage());
+        } catch (SOAPFaultException e) {
+            ERROR_COUNTER_AKTOR.increment();
+            LOG.warn("SOAP Fault {}, token utgår {}", e.getFault(), tokenHandler.getExp());
+            throw e;
         } catch (Exception ex) {
             ERROR_COUNTER_FNR.increment();
             throw ex;
