@@ -49,10 +49,6 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
     }
 
-    private static String getRootCauseMessage(Exception e) {
-        return getMostSpecificCause(e).getMessage();
-    }
-
     @ExceptionHandler(value = { NotFoundException.class })
     protected ResponseEntity<Object> handleNotFound(RemoteUnavailableException e, WebRequest request) {
         return logAndHandle(NOT_FOUND, e, request, getRootCauseMessage(e));
@@ -98,6 +94,10 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(MottakExceptionHandler::errorMessage)
                 .collect(toList());
+    }
+
+    private static String getRootCauseMessage(Exception e) {
+        return getMostSpecificCause(e).getMessage();
     }
 
     private static String errorMessage(FieldError error) {

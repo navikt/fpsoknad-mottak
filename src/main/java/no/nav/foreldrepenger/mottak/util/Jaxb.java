@@ -57,11 +57,11 @@ public final class Jaxb {
         try {
             return SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
                     .newSchema(sourcesFra(
-                            "foreldrepenger/foreldrepenger.xsd",
-                            "endringssoeknad-fpfordel.xsd",
-                            "soeknad-fpfordel.xsd"));
+                            "v1/foreldrepenger/foreldrepenger.xsd",
+                            "v1/endringssoeknad-fpfordel.xsd",
+                            "v1/soeknad-fpfordel.xsd"));
         } catch (SAXException e) {
-            LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller", e);
+            LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller");
             return null;
         }
     }

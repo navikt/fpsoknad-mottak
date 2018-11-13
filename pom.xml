@@ -36,6 +36,7 @@
                 <configuration>
                     <additionalClasspathElements>
                         <additionalClasspathElement>/src/main/xsd</additionalClasspathElement>
+                        <additionalClasspathElement>/src/main/xsd/v1</additionalClasspathElement>
                     </additionalClasspathElements>
                 </configuration>
             </plugin>

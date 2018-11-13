@@ -10,19 +10,19 @@
         <xjc:javaType adapter="no.nav.foreldrepenger.mottak.domain.serialization.LocalDateTimeAdapter" name="java.time.LocalDateTime" xmlType="xsd:dateTime"/>
  </jaxb:globalBindings>
 
-    <jaxb:bindings schemaLocation="../xsd/foreldrepenger/foreldrepenger.xsd" node="/xs:schema">
+    <jaxb:bindings schemaLocation="../xsd/v1/foreldrepenger/foreldrepenger.xsd" node="/xs:schema">
         <jaxb:bindings node="//xs:complexType[@name='Foreldrepenger']">
             <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement</annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
      
-     <jaxb:bindings schemaLocation="../xsd/soeknad-fpfordel.xsd" node="/xs:schema">
+     <jaxb:bindings schemaLocation="../xsd/v1/soeknad-fpfordel.xsd" node="/xs:schema">
         <jaxb:bindings node="//xs:complexType[@name='Soeknad']">
             <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement</annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
     
-    <jaxb:bindings schemaLocation="../xsd/endringssoeknad-fpfordel.xsd" node="/xs:schema">
+    <jaxb:bindings schemaLocation="../xsd/v1/endringssoeknad-fpfordel.xsd" node="/xs:schema">
         <jaxb:bindings node="//xs:complexType[@name='Endringssoeknad']">
             <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement</annox:annotateClass>
         </jaxb:bindings>
