@@ -12,7 +12,7 @@ import org.springframework.retry.annotation.Retryable;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.errorhandling.UnauthenticatedException;
+import no.nav.foreldrepenger.errorhandling.TokenExpiredException;
 import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.tjeneste.virksomhet.aktoer.v2.binding.AktoerV2;
@@ -48,7 +48,7 @@ public class AktorIdClientWs implements AktorIdClient {
         } catch (SOAPFaultException e) {
             ERROR_COUNTER_AKTOR.increment();
             if (tokenHandler.isExpired()) {
-                throw new UnauthenticatedException("Token ugyldig, gikk ut " + tokenHandler.getExp());
+                throw new TokenExpiredException(tokenHandler.getExp(), e);
             }
             throw e;
         } catch (Exception e) {
@@ -68,7 +68,7 @@ public class AktorIdClientWs implements AktorIdClient {
         } catch (SOAPFaultException e) {
             ERROR_COUNTER_AKTOR.increment();
             if (tokenHandler.isExpired()) {
-                throw new UnauthenticatedException("Token ugyldig, gikk ut " + tokenHandler.getExp());
+                throw new TokenExpiredException(tokenHandler.getExp(), e);
             }
             throw e;
         } catch (Exception ex) {
