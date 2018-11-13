@@ -43,7 +43,7 @@ public class AktorIdClientWs implements AktorIdClient {
             return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
         } catch (HentAktoerIdForIdentPersonIkkeFunnet e) {
             LOG.warn("Henting av aktørid har feilet", e);
-            throw new NotFoundException(e.getMessage());
+            throw new NotFoundException(e);
         } catch (SOAPFaultException e) {
             ERROR_COUNTER_AKTOR.increment();
             LOG.warn("SOAP Fault {}, token utgår {}", e.getFault(), tokenHandler.getExp());
@@ -61,7 +61,7 @@ public class AktorIdClientWs implements AktorIdClient {
             return new Fødselsnummer(aktoerV2.hentIdentForAktoerId(request(aktørId)).getIdent());
         } catch (HentIdentForAktoerIdPersonIkkeFunnet e) {
             LOG.warn("Henting av fnr har feilet", e);
-            throw new NotFoundException(e.getMessage());
+            throw new NotFoundException(e);
         } catch (SOAPFaultException e) {
             ERROR_COUNTER_AKTOR.increment();
             LOG.warn("SOAP Fault {}, token utgår {}", e.getFault(), tokenHandler.getExp());
