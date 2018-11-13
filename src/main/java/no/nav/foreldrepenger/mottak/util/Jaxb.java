@@ -208,7 +208,7 @@ public final class Jaxb {
     private static InputStream inputStream(UrlResource res) {
         try {
             if (!res.exists()) {
-                throw new IllegalStateException("Rssursen  " + res + " finnes ikke");
+                throw new IllegalStateException("Ressursen  " + res + " finnes ikke");
             }
             return res.getInputStream();
         } catch (IOException e) {
