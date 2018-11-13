@@ -23,6 +23,8 @@ public class Kvittering {
     private String journalId;
     private String saksNr;
 
+    public static final Kvittering IKKE_SENDT = new Kvittering(LeveranseStatus.IKKE_SENDT_FPSAK);
+
     public Kvittering(LeveranseStatus leveranseStatus) {
         this(leveranseStatus, LocalDateTime.now(), MDC.get(NAV_CALL_ID));
     }

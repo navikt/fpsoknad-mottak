@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
@@ -45,24 +44,17 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
-        Kvittering kvittering = send(ENDRING, konvoluttGenerator.payload(endringsSøknad, søker));
-        FP_ENDRING.increment();
-        return kvittering;
+        return send(ENDRING, konvoluttGenerator.payload(endringsSøknad, søker));
     }
 
     @Override
     public Kvittering send(Søknad søknad, Person søker) {
-        Kvittering kvittering = send(INITIELL, konvoluttGenerator.payload(søknad, søker));
-        FPFORDEL_SEND_INITIELL.increment();
-        FP_FØRSTEGANG.increment();
-        return kvittering;
+        return send(INITIELL, konvoluttGenerator.payload(søknad, søker));
     }
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker) {
-        Kvittering kvittering = send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker));
-        FP_ETTERSSENDING.increment();
-        return kvittering;
+        return send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker));
     }
 
     private Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
@@ -70,18 +62,35 @@ public class FPFordelSøknadSender implements SøknadSender {
             return doSend(type, payload);
         }
         LOG.info("Sending av {} til FPFordel er deaktivert, ingenting å sende", type);
-        return new Kvittering(IKKE_SENDT_FPSAK);
+        return Kvittering.IKKE_SENDT;
     }
 
     private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         try {
-            LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
+            logAndCount(type);
             Kvittering kvittering = connection.send(payload);
             LOG.info("Returnerer kvittering {}", kvittering);
             return kvittering;
         } catch (Exception e) {
             FP_SENDFEIL.increment();
             throw (e);
+        }
+    }
+
+    private static void logAndCount(SøknadType type) {
+        LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
+        switch (type) {
+        case ENDRING:
+            FP_ENDRING.increment();
+            break;
+        case ETTERSENDING:
+            FP_ETTERSSENDING.increment();
+            break;
+
+        case INITIELL:
+            FPFORDEL_SEND_INITIELL.increment();
+            FP_FØRSTEGANG.increment();
+            break;
         }
     }
 
