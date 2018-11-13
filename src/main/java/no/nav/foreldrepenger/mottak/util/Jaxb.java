@@ -39,27 +39,35 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 public final class Jaxb {
 
     public enum ValidationMode {
-        INGEN, ENGANGSSTØNAD, FORELDREPENGER
+        ENGANGSSTØNAD, FORELDREPENGER
+
+    }
+
+    private enum Version {
+        v1, v2
 
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
-    private static final JAXBContext CONTEXT = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class,
-            SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
-
-    static final Schema FP_SCHEMA = fpSchema();
+    private static final JAXBContext CTX_FP = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class);
+    private static final JAXBContext CTX_ES = context(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
+    static final Schema FP_SCHEMA_V1 = fpSchema(Version.v1);
 
     private Jaxb() {
 
     }
 
-    private static Schema fpSchema() {
+    private static final JAXBContext context(ValidationMode mode) {
+        return mode.equals(ValidationMode.ENGANGSSTØNAD) ? CTX_ES : CTX_FP;
+    }
+
+    private static Schema fpSchema(Version version) {
         try {
             return SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
-                    .newSchema(sourcesFra(
-                            "v1/foreldrepenger/foreldrepenger.xsd",
-                            "v1/endringssoeknad-fpfordel.xsd",
-                            "v1/soeknad-fpfordel.xsd"));
+                    .newSchema(sourcesFra(version,
+                            "/foreldrepenger/foreldrepenger.xsd",
+                            "/endringssoeknad-fpfordel.xsd",
+                            "/soeknad-fpfordel.xsd"));
         } catch (SAXException e) {
             LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller");
             return null;
@@ -67,19 +75,19 @@ public final class Jaxb {
     }
 
     public static <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz, ValidationMode mode) {
-        return unmarshalToElement(CONTEXT, xml, clazz, mode);
+        return unmarshalToElement(context(mode), xml, clazz, mode);
     }
 
     public static String marshal(Object model, ValidationMode mode) {
-        return marshal(CONTEXT, model, mode);
+        return marshal(context(mode), model, mode);
     }
 
     public static <T> T unmarshal(byte[] bytes, Class<T> clazz, ValidationMode mode) {
-        return unmarshal(CONTEXT, bytes, clazz, mode);
+        return unmarshal(context(mode), bytes, clazz, mode);
     }
 
     public static <T> T unmarshal(String xml, Class<T> clazz, ValidationMode mode) {
-        return unmarshal(CONTEXT, xml, clazz, mode);
+        return unmarshal(context(mode), xml, clazz, mode);
     }
 
     private static JAXBContext context(Class<?>... classes) {
@@ -91,7 +99,7 @@ public final class Jaxb {
     }
 
     public static Element marshalToElement(Object model, ValidationMode mode) {
-        return marshalToElement(CONTEXT, model, mode);
+        return marshalToElement(context(mode), model, mode);
     }
 
     private static Element marshalToElement(JAXBContext context, Object model, ValidationMode mode) {
@@ -116,7 +124,7 @@ public final class Jaxb {
     }
 
     static Unmarshaller unmarshaller(ValidationMode mode) {
-        return unmarshaller(CONTEXT, mode);
+        return unmarshaller(context(mode), mode);
     }
 
     private static Unmarshaller unmarshaller(JAXBContext context, ValidationMode mode) {
@@ -153,19 +161,17 @@ public final class Jaxb {
     }
 
     static Marshaller marshaller(ValidationMode mode) {
-        return marshaller(CONTEXT, mode);
+        return marshaller(context(mode), mode);
     }
 
     private static Marshaller marshaller(JAXBContext context, ValidationMode mode) {
         Marshaller marshaller = createMarshaller(context);
 
         switch (mode) {
-        case INGEN:
-            return marshaller;
         case ENGANGSSTØNAD:
             return marshaller;
         case FORELDREPENGER:
-            if (FP_SCHEMA != null) {
+            if (FP_SCHEMA_V1 != null) {
                 LOG.info("Kunne ha validerer XM, gjør det ikke");
                 // marshaller.setSchema(FP_SCHEMA);
             }
@@ -189,8 +195,9 @@ public final class Jaxb {
         }
     }
 
-    private static Source[] sourcesFra(String... schemas) {
+    private static Source[] sourcesFra(Version version, String... schemas) {
         return Arrays.stream(schemas)
+                .map(s -> version.name() + s)
                 .map(Jaxb::source)
                 .toArray(Source[]::new);
 

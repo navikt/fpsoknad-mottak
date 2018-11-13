@@ -4,8 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.io.StringWriter;
-
 import javax.xml.bind.Marshaller;
 
 import org.junit.Before;
@@ -44,22 +42,6 @@ public class JaxbTest {
         Marshaller marshaller = Jaxb.marshaller(ValidationMode.FORELDREPENGER);
         // marshaller.setSchema(Jaxb.FP_SCHEMA);
         Soeknad mdodel = new SøknadTilXMLMapper(oppslag).tilModell(søknad, new AktorId("42"));
-        StringWriter sw = new StringWriter();
         marshaller.marshal(mdodel, System.out);
-
-        // Unmarshaller unmarshaller = Jaxb.unmarshaller(ValidationMode.FORELDREPENGER);
-        // unmarshaller.setSchema(Jaxb.FP_SCHEMA);
-        // Soeknad retur = Soeknad.class.cast(unmarshaller.unmarshal(new
-        // StringReader(xml)));
-        // Foreldrepenger ytelse = ((JAXBElement<Foreldrepenger>)
-        // retur.getOmYtelse().getAny().get(0)).getValue();
-        // Vedlegg v1 = (Vedlegg)
-        // ytelse.getOpptjening().getFrilans().getVedlegg().get(0).getValue();
-        // Vedlegg v2 = (Vedlegg)
-        // ytelse.getOpptjening().getFrilans().getVedlegg().get(1).getValue();
-        // assertEquals(v1.getId(), ForeldrepengerTestUtils.V1.getId());
-        // assertEquals(v2.getId(), ForeldrepengerTestUtils.V2.getId());
-
     }
-
 }

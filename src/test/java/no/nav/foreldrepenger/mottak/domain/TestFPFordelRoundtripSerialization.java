@@ -105,7 +105,7 @@ public class TestFPFordelRoundtripSerialization {
                 påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
         SoeknadsskjemaEngangsstoenad response = unmarshal(
                 template.postForObject(INNSENDING_PREPROD + "/søknad", engangssøknad, String.class),
-                SoeknadsskjemaEngangsstoenad.class);
+                SoeknadsskjemaEngangsstoenad.class, ValidationMode.ENGANGSSTØNAD);
         assertEquals(engangssøknad.getBegrunnelseForSenSøknad(), response.getOpplysningerOmBarn().getBegrunnelse());
 
     }
@@ -133,13 +133,13 @@ public class TestFPFordelRoundtripSerialization {
                 påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
         Dokumentforsendelse response = unmarshal(
                 template.postForObject(INNSENDING_PREPROD + "/konvolutt", engangssøknad, String.class),
-                Dokumentforsendelse.class);
+                Dokumentforsendelse.class, ValidationMode.ENGANGSSTØNAD);
         assertEquals("FOR", response.getForsendelsesinformasjon().getTema().getValue());
 
     }
 
-    private static <T> T unmarshal(String xml, Class<T> clazz) {
+    private static <T> T unmarshal(String xml, Class<T> clazz, ValidationMode mode) {
         LOG.info("Mottok xml\n{}", xml);
-        return Jaxb.unmarshal(xml, clazz, ValidationMode.FORELDREPENGER);
+        return Jaxb.unmarshal(xml, clazz, mode);
     }
 }
