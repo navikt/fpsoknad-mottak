@@ -39,7 +39,7 @@ public class JaxbTest {
     @Test
     public void testSerialization() throws Exception {
         Søknad søknad = ForeldrepengerTestUtils.søknadMedToVedlegg();
-        Marshaller marshaller = Jaxb.marshaller(ValidationMode.FORELDREPENGER);
+        Marshaller marshaller = Jaxb.marshaller(ValidationMode.FORELDREPENGER_V1);
         // marshaller.setSchema(Jaxb.FP_SCHEMA);
         Soeknad mdodel = new SøknadTilXMLMapper(oppslag).tilModell(søknad, new AktorId("42"));
         marshaller.marshal(mdodel, System.out);

@@ -108,7 +108,7 @@ public class XMLTilSøknadMapper {
             return null;
         }
         try {
-            Soeknad søknad = unmarshalToElement(xml, Soeknad.class, ValidationMode.FORELDREPENGER).getValue();
+            Soeknad søknad = unmarshalToElement(xml, Soeknad.class, ValidationMode.FORELDREPENGER_V1).getValue();
             if (søknad != null) {
                 if (erEndringsSøknad(xml)) {
                     Endringssøknad endringssøknad = new Endringssøknad(søknad.getMottattDato().atStartOfDay(),

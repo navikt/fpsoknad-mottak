@@ -39,18 +39,17 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 public final class Jaxb {
 
     public enum ValidationMode {
-        ENGANGSSTØNAD, FORELDREPENGER
+        ENGANGSSTØNAD, FORELDREPENGER_V1
 
     }
 
     private enum Version {
-        v1, v2
-
+        v1
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
-    private static final JAXBContext CTX_FP = context(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class);
-    private static final JAXBContext CTX_ES = context(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
+    private static final JAXBContext CTX_FP = contextFra(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class);
+    private static final JAXBContext CTX_ES = contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
     static final Schema FP_SCHEMA_V1 = fpSchema(Version.v1);
 
     private Jaxb() {
@@ -90,7 +89,7 @@ public final class Jaxb {
         return unmarshal(context(mode), xml, clazz, mode);
     }
 
-    private static JAXBContext context(Class<?>... classes) {
+    private static JAXBContext contextFra(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
         } catch (JAXBException e) {
@@ -170,7 +169,7 @@ public final class Jaxb {
         switch (mode) {
         case ENGANGSSTØNAD:
             return marshaller;
-        case FORELDREPENGER:
+        case FORELDREPENGER_V1:
             if (FP_SCHEMA_V1 != null) {
                 LOG.info("Kunne ha validerer XM, gjør det ikke");
                 // marshaller.setSchema(FP_SCHEMA);

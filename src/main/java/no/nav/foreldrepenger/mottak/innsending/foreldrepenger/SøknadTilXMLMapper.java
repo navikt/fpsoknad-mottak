@@ -127,11 +127,11 @@ public class SøknadTilXMLMapper {
     }
 
     public String tilXML(Søknad søknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), ValidationMode.FORELDREPENGER);
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(søknad, søker)), ValidationMode.FORELDREPENGER_V1);
     }
 
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), ValidationMode.FORELDREPENGER);
+        return marshal(SØKNAD_FACTORY.createSoeknad(tilModell(endringssøknad, søker)), ValidationMode.FORELDREPENGER_V1);
     }
 
     private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
@@ -202,7 +202,7 @@ public class SøknadTilXMLMapper {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
-        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse), ValidationMode.FORELDREPENGER));
+        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse), ValidationMode.FORELDREPENGER_V1));
     }
 
     private JAXBElement<Foreldrepenger> foreldrePengerFra(
