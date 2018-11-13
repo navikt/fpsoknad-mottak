@@ -32,6 +32,11 @@ public class TokenHandler {
         return getSubject() != null;
     }
 
+    public boolean isExpired() {
+        Date exp = getExp();
+        return exp == null ? true : exp.before(new Date());
+    }
+
     public Date getExp() {
         return Optional.ofNullable(claimSet())
                 .map(JWTClaimsSet::getExpirationTime)
