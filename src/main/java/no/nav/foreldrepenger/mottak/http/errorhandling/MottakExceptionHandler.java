@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -47,6 +47,10 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = { RemoteUnavailableException.class })
     protected ResponseEntity<Object> handleRemoteUnavailable(RemoteUnavailableException e, WebRequest request) {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
+    }
+
+    private static String getRootCauseMessage(Exception e) {
+        return getMostSpecificCause(e).getMessage();
     }
 
     @ExceptionHandler(value = { NotFoundException.class })
