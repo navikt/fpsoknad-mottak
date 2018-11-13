@@ -32,15 +32,11 @@ import org.xml.sax.SAXException;
 
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
-import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 public final class Jaxb {
 
     public enum ValidationMode {
         ENGANGSSTØNAD, FORELDREPENGER_V1
-
     }
 
     private enum Version {
@@ -48,7 +44,10 @@ public final class Jaxb {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
-    private static final JAXBContext CTX_FP = contextFra(Soeknad.class, Endringssoeknad.class, Foreldrepenger.class);
+    private static final JAXBContext CTX_FPV1 = contextFra(
+            no.nav.vedtak.felles.xml.soeknad.v1.Soeknad.class,
+            no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad.class,
+            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger.class);
     private static final JAXBContext CTX_ES = contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
     static final Schema FP_SCHEMA_V1 = fpSchema(Version.v1);
 
@@ -57,7 +56,7 @@ public final class Jaxb {
     }
 
     private static final JAXBContext context(ValidationMode mode) {
-        return mode.equals(ValidationMode.ENGANGSSTØNAD) ? CTX_ES : CTX_FP;
+        return mode.equals(ValidationMode.ENGANGSSTØNAD) ? CTX_ES : CTX_FPV1;
     }
 
     private static Schema fpSchema(Version version) {
@@ -197,21 +196,21 @@ public final class Jaxb {
     private static Source[] sourcesFra(Version version, String... schemas) {
         return Arrays.stream(schemas)
                 .map(s -> version.name() + s)
-                .map(Jaxb::source)
+                .map(Jaxb::sourceFra)
                 .toArray(Source[]::new);
 
     }
 
-    private static Source source(String re) {
+    private static Source sourceFra(String re) {
         try {
-            final URL url = Jaxb.class.getClassLoader().getResource(re);
-            return new StreamSource(inputStream(new UrlResource(url)), url.toExternalForm());
+            URL url = Jaxb.class.getClassLoader().getResource(re);
+            return new StreamSource(inputStreamFra(new UrlResource(url)), url.toExternalForm());
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private static InputStream inputStream(UrlResource res) {
+    private static InputStream inputStreamFra(UrlResource res) {
         try {
             if (!res.exists()) {
                 throw new IllegalStateException("Ressursen  " + res + " finnes ikke");
