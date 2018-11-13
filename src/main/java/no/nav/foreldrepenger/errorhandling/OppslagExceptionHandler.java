@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.errorhandling;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -32,9 +32,9 @@ import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 
 @ControllerAdvice
-public class CommonControllerErrorHandlers extends ResponseEntityExceptionHandler {
+public class OppslagExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CommonControllerErrorHandlers.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OppslagExceptionHandler.class);
 
     private static final Counter invalidRequestsCounter = Metrics.counter("errors.request.invalid");
     private static final Counter unauthorizedCounter = Metrics.counter("errors.lookup.unauthorized");
@@ -105,10 +105,14 @@ public class CommonControllerErrorHandlers extends ResponseEntityExceptionHandle
                 new HttpHeaders(), status, req);
     }
 
+    private static String getRootCauseMessage(Exception e) {
+        return getMostSpecificCause(e).getMessage();
+    }
+
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
         return e.getBindingResult().getFieldErrors()
                 .stream()
-                .map(CommonControllerErrorHandlers::errorMessage)
+                .map(OppslagExceptionHandler::errorMessage)
                 .collect(toList());
     }
 
