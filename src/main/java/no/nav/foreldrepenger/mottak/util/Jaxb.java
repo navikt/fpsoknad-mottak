@@ -131,6 +131,13 @@ public final class Jaxb {
         try {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler(new DefaultValidationEventHandler());
+            switch (mode) {
+            case ENGANGSSTØNAD:
+                return unmarshaller;
+            case FORELDREPENGER_V1:
+                unmarshaller.setSchema(FP_SCHEMA_V1);
+                return unmarshaller;
+            }
             return unmarshaller;
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);

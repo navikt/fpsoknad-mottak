@@ -8,6 +8,8 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,7 +154,8 @@ public class XMLTilSøknadMapper {
         if (omYtelse.getAny().size() > 1) {
             LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
         }
-        Object førsteYtelse = omYtelse.getAny().get(0);
+        JAXBElement elem = (JAXBElement) omYtelse.getAny().get(0);
+        Object førsteYtelse = elem.getValue();
         if (førsteYtelse instanceof Endringssoeknad) {
             Endringssoeknad endringsSøknad = Endringssoeknad.class.cast(førsteYtelse);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
@@ -220,7 +223,7 @@ public class XMLTilSøknadMapper {
         LOG.debug("Genererer opptjening modell");
 
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening(
-                tilUtenlandsArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
+                tilUtenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
                 tilEgenNæring(opptjening.getEgenNaering()), tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
                 tilFrilans(opptjening.getFrilans()));
     }
@@ -297,7 +300,7 @@ public class XMLTilSøknadMapper {
                     .erNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
                     .næringsinntektBrutto(norskOrg.getNaeringsinntektBrutto().longValue())
                     .nærRelasjon(norskOrg.isNaerRelasjon())
-                    .orgName(norskOrg.getOrganisasjonsnummer())
+                    .orgName(norskOrg.getNavn())
                     .orgNummer(norskOrg.getOrganisasjonsnummer())
                     .periode(tilÅpenPeriode(norskOrg.getPeriode()))
                     .regnskapsførere(tilRegnskapsFørere(norskOrg.getRegnskapsfoerer()))
@@ -307,6 +310,8 @@ public class XMLTilSøknadMapper {
         if (egenNæring instanceof UtenlandskOrganisasjon) {
             UtenlandskOrganisasjon utenlandskOrg = UtenlandskOrganisasjon.class.cast(egenNæring);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskOrganisasjon.builder()
+                    .registrertILand(tilLand(utenlandskOrg.getRegistrertILand()))
+                    .orgName(utenlandskOrg.getNavn())
                     .beskrivelseEndring(utenlandskOrg.getBeskrivelseAvEndring())
                     .endringsDato(utenlandskOrg.getEndringsDato())
                     .erNyOpprettet(utenlandskOrg.isErNyoppstartet())
@@ -351,10 +356,17 @@ public class XMLTilSøknadMapper {
         return singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
     }
 
-    private static List<UtenlandskArbeidsforhold> tilUtenlandsArbeidsforhold(
+    private static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
-        // TODO
-        return emptyList();
+        return utenlandskArbeidsforhold.stream().map(XMLTilSøknadMapper::tilUtenlandskArbeidsforhold).collect(toList());
+
+    }
+
+    private static UtenlandskArbeidsforhold tilUtenlandskArbeidsforhold(
+            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold arbeidforhold) {
+        return new UtenlandskArbeidsforhold(arbeidforhold.getArbeidsgiversnavn(),
+                tilÅpenPeriode(arbeidforhold.getPeriode()), null, tilLand(arbeidforhold.getArbeidsland()));
+
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
