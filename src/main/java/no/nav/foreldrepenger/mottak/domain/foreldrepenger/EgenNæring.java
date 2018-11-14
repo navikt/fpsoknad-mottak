@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
@@ -23,6 +24,7 @@ import lombok.Data;
         @Type(value = UtenlandskOrganisasjon.class, name = "utenlandsk")
 })
 
+@EqualsAndHashCode(exclude = "vedlegg")
 public abstract class EgenNæring {
 
     private final List<Virksomhetstype> virksomhetsTyper;

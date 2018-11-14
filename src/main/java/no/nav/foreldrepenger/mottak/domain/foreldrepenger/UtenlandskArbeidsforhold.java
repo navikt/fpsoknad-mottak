@@ -15,8 +15,10 @@ import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(exclude = "vedlegg")
 public class UtenlandskArbeidsforhold {
 
     private final CountryCode land;

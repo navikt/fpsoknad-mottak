@@ -8,8 +8,10 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(exclude = "vedlegg")
 public class AnnenOpptjening {
 
     private final AnnenOpptjeningType type;

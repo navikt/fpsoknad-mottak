@@ -51,7 +51,7 @@ public class JaxbTest {
         assertEquals(fp1.getMedlemsskap(), fp2.getMedlemsskap());
         assertEquals(fp1.getOpptjening(), fp2.getOpptjening());
         assertEquals(fp1.getRelasjonTilBarn(), fp2.getRelasjonTilBarn());
-        // assertEquals(fp1.getRettigheter(), fp2.getRettigheter());
+        assertEquals(fp1.getRettigheter(), fp2.getRettigheter());
 
     }
 }
