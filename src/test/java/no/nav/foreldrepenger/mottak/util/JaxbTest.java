@@ -28,30 +28,33 @@ public class JaxbTest {
 
     @Mock
     private Oppslag oppslag;
+    private SøknadTilXMLMapper søknadTilXMLMapper;
+    private XMLTilSøknadMapper fraXMLMapper;
 
     @Before
     public void before() {
         when(oppslag.getFnr(eq(ID))).thenReturn(FNR);
         when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(ID);
+        søknadTilXMLMapper = new SøknadTilXMLMapper(oppslag);
+        fraXMLMapper = new XMLTilSøknadMapper(oppslag);
+
     }
 
     @Test
     public void testSerialization() throws Exception {
         Søknad søknad = ForeldrepengerTestUtils.søknadMedToVedlegg();
-        SøknadTilXMLMapper søknadTilXMLMapper = new SøknadTilXMLMapper(oppslag);
         String xml = søknadTilXMLMapper.tilXML(søknad, new AktorId("42"));
-        XMLTilSøknadMapper fraXMLMapper = new XMLTilSøknadMapper(oppslag);
         System.out.println(xml);
         Søknad retur = fraXMLMapper.tilSøknad(xml);
         Foreldrepenger fp1 = Foreldrepenger.class.cast(søknad.getYtelse());
         Foreldrepenger fp2 = Foreldrepenger.class.cast(retur.getYtelse());
-        assertEquals(fp1.getAnnenForelder(), fp2.getAnnenForelder());
-        assertEquals(fp1.getDekningsgrad(), fp2.getDekningsgrad());
-        assertEquals(fp1.getFordeling(), fp2.getFordeling());
-        assertEquals(fp1.getMedlemsskap(), fp2.getMedlemsskap());
-        assertEquals(fp1.getOpptjening(), fp2.getOpptjening());
-        assertEquals(fp1.getRelasjonTilBarn(), fp2.getRelasjonTilBarn());
-        assertEquals(fp1.getRettigheter(), fp2.getRettigheter());
+        assertEquals(fp1, fp2);
+        assertEquals(søknad.getBegrunnelseForSenSøknad(), retur.getBegrunnelseForSenSøknad());
+        assertEquals(søknad.getMottattdato().toLocalDate(), retur.getMottattdato().toLocalDate());
+        assertEquals(søknad.getTilleggsopplysninger(), retur.getTilleggsopplysninger());
+        assertEquals(søknad.getSøker(), retur.getSøker());
+        assertEquals(søknad.getPåkrevdeVedlegg(), retur.getPåkrevdeVedlegg());
+        // assertEquals(søknad.getFrivilligeVedlegg(), retur.getFrivilligeVedlegg());
 
     }
 }

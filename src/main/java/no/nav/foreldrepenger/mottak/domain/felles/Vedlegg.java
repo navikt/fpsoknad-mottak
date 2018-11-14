@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
@@ -26,12 +27,13 @@ import lombok.Data;
         @Type(value = ValgfrittVedlegg.class, name = "valgfritt"),
         @Type(value = PåkrevdVedlegg.class, name = "påkrevd")
 })
+@EqualsAndHashCode(exclude = "vedlegg")
 public abstract class Vedlegg {
 
     private static final Logger LOG = LoggerFactory.getLogger(Vedlegg.class);
 
     private final VedleggMetaData metadata;
-    private final byte[] vedlegg;
+    protected final byte[] vedlegg;
 
     @JsonCreator
     public Vedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg) {
