@@ -67,6 +67,7 @@ import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.TokenHandler;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class FPFordelTest {
@@ -94,6 +95,8 @@ public class FPFordelTest {
     private Oppslag oppslag;
     @Mock
     private FPInfoSaksPoller poller;
+    @Mock
+    private TokenHandler tokenHandler;
     private FPFordelConfig cfg;
 
     private ResponseEntity<FPFordelKvittering> pollReceipt202, pollReceipt200;
@@ -134,8 +137,8 @@ public class FPFordelTest {
                 søknadGenerator,
                 pdfGenerator);
         return new FPFordelSøknadSender(
-                new FPFordelConnection(template, cfg,
-                        new FPFordelResponseHandler(template, 3, poller)),
+                new FPFordelConnection(template, tokenHandler, cfg,
+                        new FPFordelResponseHandler(template, tokenHandler, 3, poller)),
                 konvoluttGenerator);
     }
 

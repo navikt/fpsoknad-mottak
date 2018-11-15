@@ -19,16 +19,19 @@ import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
+import no.nav.foreldrepenger.mottak.util.TokenHandler;
 
 public abstract class AbstractRestConnection {
 
     private final RestTemplate template;
+    private final TokenHandler tokenHandler;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
     public abstract boolean isEnabled();
 
-    public AbstractRestConnection(RestTemplate template) {
+    public AbstractRestConnection(RestTemplate template, TokenHandler tokenHandler) {
         this.template = template;
+        this.tokenHandler = tokenHandler;
     }
 
     public String ping(URI uri) {
@@ -55,7 +58,7 @@ public abstract class AbstractRestConnection {
             case UNAUTHORIZED:
                 throw new UnauthorizedException(e);
             case FORBIDDEN:
-                throw new UnauthenticatedException(e);
+                throw new UnauthenticatedException(tokenHandler.getExp(), e);
             default:
                 throw new RemoteUnavailableException(e);
             }
@@ -81,7 +84,7 @@ public abstract class AbstractRestConnection {
             case UNAUTHORIZED:
                 throw new UnauthorizedException(e);
             case FORBIDDEN:
-                throw new UnauthenticatedException(e);
+                throw new UnauthenticatedException(tokenHandler.getExp(), e);
             default:
                 throw new RemoteUnavailableException(e);
             }
@@ -108,7 +111,7 @@ public abstract class AbstractRestConnection {
             case UNAUTHORIZED:
                 throw new UnauthorizedException(e);
             case FORBIDDEN:
-                throw new UnauthenticatedException(e);
+                throw new UnauthenticatedException(tokenHandler.getExp(), e);
             default:
                 throw new RemoteUnavailableException(e);
             }

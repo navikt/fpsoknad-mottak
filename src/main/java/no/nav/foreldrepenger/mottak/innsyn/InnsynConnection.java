@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
+import no.nav.foreldrepenger.mottak.util.TokenHandler;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements Pingable {
@@ -25,8 +26,8 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     private final InnsynConfig config;
 
-    public InnsynConnection(RestTemplate template, InnsynConfig config) {
-        super(template);
+    public InnsynConnection(RestTemplate template, TokenHandler tokenHandler, InnsynConfig config) {
+        super(template, tokenHandler);
         this.config = config;
     }
 
