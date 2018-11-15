@@ -4,12 +4,15 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
+import static org.springframework.util.StreamUtils.copyToByteArray;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,13 +24,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(exclude = "vedlegg")
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
         @Type(value = ValgfrittVedlegg.class, name = "valgfritt"),
         @Type(value = PåkrevdVedlegg.class, name = "påkrevd")
 })
-@EqualsAndHashCode(exclude = "vedlegg")
 public abstract class Vedlegg {
 
     private static final Logger LOG = LoggerFactory.getLogger(Vedlegg.class);
@@ -83,6 +86,14 @@ public abstract class Vedlegg {
             return vedleggAsString.substring(0, 49) + ".... " + (vedleggAsString.length() - 50) + " more bytes";
         }
         return vedleggAsString;
+    }
+
+    protected static byte[] bytesFra(Resource vedlegg) {
+        try {
+            return copyToByteArray(vedlegg.getInputStream());
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override

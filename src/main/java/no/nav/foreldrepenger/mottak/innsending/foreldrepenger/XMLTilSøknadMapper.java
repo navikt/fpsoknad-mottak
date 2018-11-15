@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBElement;
 
@@ -22,9 +23,15 @@ import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.ArbeidsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
@@ -75,6 +82,7 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Regnskapsfoerer;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Land;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.MorsAktivitetsTyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Oppholdsaarsaker;
@@ -122,7 +130,8 @@ public class XMLTilSøknadMapper {
                 }
                 Søknad førstegangssøknad = new Søknad(søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()));
+                        tilYtelse(søknad.getOmYtelse()),
+                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
                 førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return førstegangssøknad;
@@ -133,6 +142,31 @@ public class XMLTilSøknadMapper {
             LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
             return null;
         }
+    }
+
+    private List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg> påkrevd,
+            List<no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg> valgfritt) {
+        Stream<Vedlegg> vf = valgfritt.stream()
+                .map(this::metadataFra)
+                .map(s -> new ValgfrittVedlegg(s, null));
+        Stream<Vedlegg> pk = påkrevd.stream()
+                .map(this::metadataFra)
+                .map(s -> new PåkrevdVedlegg(s, null));
+        return Stream.concat(vf, pk).collect(toList());
+
+    }
+
+    private VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg vedlegg) {
+        return new VedleggMetaData(vedlegg.getId(), tilInnsendingsType(vedlegg.getInnsendingstype()),
+                tilDokumentType(vedlegg.getSkjemanummer()));
+    }
+
+    private static DokumentType tilDokumentType(String skjemanummer) {
+        return DokumentType.valueOf(skjemanummer);
+    }
+
+    private static InnsendingsType tilInnsendingsType(Innsendingstype innsendingstype) {
+        return InnsendingsType.valueOf(innsendingstype.getKode());
     }
 
     private static boolean erEndringsSøknad(String xml) {
@@ -154,7 +188,7 @@ public class XMLTilSøknadMapper {
         if (omYtelse.getAny().size() > 1) {
             LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
         }
-        JAXBElement elem = (JAXBElement) omYtelse.getAny().get(0);
+        JAXBElement<?> elem = (JAXBElement<?>) omYtelse.getAny().get(0);
         Object førsteYtelse = elem.getValue();
         if (førsteYtelse instanceof Endringssoeknad) {
             Endringssoeknad endringsSøknad = Endringssoeknad.class.cast(førsteYtelse);

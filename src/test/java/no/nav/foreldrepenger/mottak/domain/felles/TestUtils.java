@@ -108,20 +108,12 @@ public class TestUtils {
     }
 
     public static PåkrevdVedlegg påkrevdVedlegg(String id, String name) {
-        try {
-            return new PåkrevdVedlegg(id, DokumentType.I000062, new ClassPathResource(name));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return new PåkrevdVedlegg(id, DokumentType.I000062, new ClassPathResource(name));
     }
 
     static ValgfrittVedlegg valgfrittVedlegg(String id, InnsendingsType type, String name) {
-        try {
-            return new ValgfrittVedlegg(id, type, DokumentType.I000062,
-                    new ClassPathResource(name));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return new ValgfrittVedlegg(id, type, DokumentType.I000062,
+                new ClassPathResource(name));
     }
 
     public static Adopsjon adopsjon() {

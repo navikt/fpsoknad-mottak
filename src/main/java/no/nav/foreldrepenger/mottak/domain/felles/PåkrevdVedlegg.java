@@ -1,9 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static org.springframework.util.StreamUtils.copyToByteArray;
-
-import java.io.IOException;
 
 import org.springframework.core.io.Resource;
 
@@ -19,13 +16,12 @@ import lombok.ToString;
 @Data
 public class PåkrevdVedlegg extends Vedlegg {
 
-    PåkrevdVedlegg(String id, DokumentType dokumentType, Resource vedlegg) throws IOException {
-        this(new VedleggMetaData(id, LASTET_OPP, dokumentType), copyToByteArray(vedlegg.getInputStream()));
+    PåkrevdVedlegg(String id, DokumentType dokumentType, Resource vedlegg) {
+        this(new VedleggMetaData(id, LASTET_OPP, dokumentType), bytesFra(vedlegg));
     }
 
     @JsonCreator
-    public PåkrevdVedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg)
-            throws IOException {
+    public PåkrevdVedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg) {
         super(metadata, vedlegg);
     }
 }
