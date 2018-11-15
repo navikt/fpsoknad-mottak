@@ -360,124 +360,124 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
         if (dekningsgrad != null) {
-            LOG.info("Render dekningsgrad start at " + y);
+            LOG.trace("Render dekningsgrad start at " + y);
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
-            LOG.info("Render dekningsgrad end at " + y);
+            LOG.trace("Render dekningsgrad end at " + y);
 
         }
-        LOG.info("Render fordeling start at " + y);
+        LOG.trace("Render fordeling start at " + y);
         float heaaderSize = 190;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
-                LOG.info("Render uttak start at " + y);
+                LOG.trace("Render uttak start at " + y);
                 PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = (STARTY - 190 - x);
-                LOG.info("Uttak trenger " + behov + " har " + y);
+                LOG.trace("Uttak trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.info("Nok plass til uttak");
+                    LOG.trace("Nok plass til uttak");
                     scratchcos.close();
                     y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
 
                 }
                 else {
-                    LOG.info("Ikke nok plass til uttak");
+                    LOG.trace("Ikke nok plass til uttak");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.info("Render utak end at " + y);
+                LOG.trace("Render utak end at " + y);
             }
             else if (periode instanceof GradertUttaksPeriode) {
-                LOG.info("Render gradert start at " + y);
+                LOG.trace("Render gradert start at " + y);
                 PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos,
                         STARTY - 190);
                 float behov = (STARTY - 190 - x);
-                LOG.info("Gradert trenger " + behov + " har " + y);
+                LOG.trace("Gradert trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.info("Nok plass til gradert");
+                    LOG.trace("Nok plass til gradert");
                     scratchcos.close();
                     y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
                 }
                 else {
-                    LOG.info("Ikke nok plass til gradert");
+                    LOG.trace("Ikke nok plass til gradert");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.info("Render gradert end at " + y);
+                LOG.trace("Render gradert end at " + y);
 
             }
             else if (periode instanceof OppholdsPeriode) {
-                LOG.info("Render opphold start at " + y);
+                LOG.trace("Render opphold start at " + y);
                 PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, scratchcos,
                         STARTY - 190);
                 float behov = (STARTY - 190 - x);
-                LOG.info("Opphold trenger " + behov + " har " + y);
+                LOG.trace("Opphold trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.info("Nok plass til opphold");
+                    LOG.trace("Nok plass til opphold");
                     scratchcos.close();
                     y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
                 }
                 else {
-                    LOG.info("Ikke nok plass til opphold");
+                    LOG.trace("Ikke nok plass til opphold");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
-                    LOG.info("Render opphold etter ny side end at " + y);
+                    LOG.trace("Render opphold etter ny side end at " + y);
                 }
-                LOG.info("Render opphold end at " + y);
+                LOG.trace("Render opphold end at " + y);
 
             }
             else if (periode instanceof UtsettelsesPeriode) {
-                LOG.info("Render utsettelse start at " + y);
+                LOG.trace("Render utsettelse start at " + y);
                 PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = (STARTY - 190 - x);
-                LOG.info("Utsettelse trenger " + behov + " har " + y);
+                LOG.trace("Utsettelse trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.info("Nok plass til utsettelse");
+                    LOG.trace("Nok plass til utsettelse");
                     scratchcos.close();
                     y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
                 }
                 else {
-                    LOG.info("Ikke nok plass til utsettelse");
+                    LOG.trace("Ikke nok plass til utsettelse");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.info("Render utsettelse end at " + y);
+                LOG.trace("Render utsettelse end at " + y);
 
             }
             else if (periode instanceof OverføringsPeriode) {
-                LOG.info("Render overføring start at " + y);
+                LOG.trace("Render overføring start at " + y);
                 PDPage scratch1 = newPage();
                 PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
                 float x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = (STARTY - 190 - x);
-                LOG.info("Overføring trenger " + behov + " har " + y);
+                LOG.trace("Overføring trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.info("Nok plass til overføring");
+                    LOG.trace("Nok plass til overføring");
                     scratchcos.close();
                     y = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
                 }
                 else {
-                    LOG.info("Ikke nok plass til overføring");
+                    LOG.trace("Ikke nok plass til overføring");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.info("Render overføring end at " + y);
+                LOG.trace("Render overføring end at " + y);
             }
         }
         y -= renderer.addBlankLine();
@@ -487,11 +487,11 @@ public class ForeldrepengeInfoRenderer {
     private PDPageContentStream nySide(PDDocument doc, PDPageContentStream cos, PDPage scratch,
             PDPageContentStream scratchcos, Person søker, boolean erEndring) throws IOException {
         cos.close();
-        LOG.info("Før ny side  " + STARTY);
+        LOG.trace("Før ny side  " + STARTY);
         float y = header(søker, doc, scratchcos, erEndring, STARTY);
         doc.addPage(scratch);
         cos = scratchcos;
-        LOG.info("Etter ny side  " + y);
+        LOG.trace("Etter ny side  " + y);
         return cos;
     }
 
