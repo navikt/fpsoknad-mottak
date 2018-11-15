@@ -711,6 +711,8 @@ public class ForeldrepengeInfoRenderer {
             NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
             addIfSet(attributter, "orgnummer", org.getOrgNummer());
+            addIfSet(attributter, "registrertiland", CountryCode.NO);
+
         }
         if (næring instanceof UtenlandskOrganisasjon) {
             UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
