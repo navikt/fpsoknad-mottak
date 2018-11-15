@@ -12,8 +12,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
@@ -26,13 +24,11 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
-public class ForeldrepengerPDFGenerator implements EnvironmentAware {
+public class ForeldrepengerPDFGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private final Oppslag oppslag;
     private final ForeldrepengeInfoRenderer fpRenderer;
-
-    private Environment env;
 
     public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer) {
         this.oppslag = oppslag;
@@ -330,11 +326,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
         return forhold.isEmpty() ? oppslag.getArbeidsforhold() : forhold;
     }
 
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.env = environment;
-    }
-
     private static PDPageContentStream nySide(PDDocument doc, PDPageContentStream cos, PDPage scratch,
             PDPageContentStream scratchcos) throws IOException {
         cos.close();
@@ -353,7 +344,6 @@ public class ForeldrepengerPDFGenerator implements EnvironmentAware {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer + ", env=" + env
-                + "]";
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer + "]";
     }
 }

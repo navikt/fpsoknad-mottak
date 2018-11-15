@@ -715,6 +715,7 @@ public class ForeldrepengeInfoRenderer {
         if (næring instanceof UtenlandskOrganisasjon) {
             UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
+            addIfSet(attributter, "registrertiland", org.getRegistrertILand());
         }
         attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
                 næring.getVirksomhetsTyper().stream()
