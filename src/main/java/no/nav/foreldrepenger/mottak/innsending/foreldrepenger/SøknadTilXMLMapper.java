@@ -348,6 +348,7 @@ public class SøknadTilXMLMapper {
                     .withErVarigEndring(utenlandskOrg.isErVarigEndring())
                     .withNaeringsinntektBrutto(BigInteger.valueOf(utenlandskOrg.getNæringsinntektBrutto()))
                     .withNavn(utenlandskOrg.getOrgName())
+                    .withArbeidsland(landFra(utenlandskOrg.getRegistrertILand())) // avoid bug in FPSAK
                     .withRegistrertILand(landFra(utenlandskOrg.getRegistrertILand()))
                     .withPeriode(periodeFra(utenlandskOrg.getPeriode()))
                     .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
