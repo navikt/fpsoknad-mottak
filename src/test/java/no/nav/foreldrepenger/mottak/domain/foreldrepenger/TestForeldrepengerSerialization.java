@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -43,6 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
@@ -185,8 +187,12 @@ public class TestForeldrepengerSerialization {
     }
 
     @Test
-    public void testEgenNæringUtenlandskorganisasjon() {
-        test(utenlandskEgenNæring());
+    public void testEgenNæringUtenlandskorganisasjon() throws Exception {
+        ClassPathResource res = new ClassPathResource("utenlandskOrg.json");
+        UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
+        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(org));
+        assertEquals(CountryCode.UG, org.getRegistrertILand());
+        test(utenlandskEgenNæring(), true);
     }
 
     @Test

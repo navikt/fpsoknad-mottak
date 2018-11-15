@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Builder;
@@ -20,10 +21,12 @@ public class UtenlandskOrganisasjon extends EgenNæring {
 
     @Length(max = 50)
     private String orgName;
+    @JsonAlias("arbeidsland")
     private final CountryCode registrertILand;
 
     @Builder
-    private UtenlandskOrganisasjon(CountryCode registrertILand,
+    private UtenlandskOrganisasjon(
+            CountryCode registrertILand,
             List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
             boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
