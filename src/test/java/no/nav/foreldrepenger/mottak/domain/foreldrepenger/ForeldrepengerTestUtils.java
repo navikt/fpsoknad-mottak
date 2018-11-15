@@ -31,6 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class ForeldrepengerTestUtils {
 
+    public static final Fødselsnummer NORSK_FORELDER_FNR = new Fødselsnummer("01010111111");
     public static final String ID142 = "V142";
     public static final String ID143 = "V143";
     public static final List<Vedlegg> TO_VEDLEGG = newArrayList(
@@ -132,7 +133,7 @@ public class ForeldrepengerTestUtils {
     }
 
     static NorskForelder norskForelder() {
-        return new NorskForelder(new Fødselsnummer("01010111111"), "Åge Mañana Pålsen");
+        return new NorskForelder(NORSK_FORELDER_FNR, "Åge Mañana Pålsen");
     }
 
     static Adopsjon adopsjon() {

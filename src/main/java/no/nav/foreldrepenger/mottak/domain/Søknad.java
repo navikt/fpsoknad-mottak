@@ -45,7 +45,7 @@ public class Søknad {
     public Søknad(@JsonProperty("mottattdato") LocalDateTime mottattdato, @JsonProperty("søker") Søker søker,
             @JsonProperty("ytelse") Ytelse ytelse,
             @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {
-        this.mottattdato = mottattdato;
+        this.mottattdato = mottattdato.toLocalDate().atStartOfDay();
         this.søker = søker;
         this.ytelse = ytelse;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
