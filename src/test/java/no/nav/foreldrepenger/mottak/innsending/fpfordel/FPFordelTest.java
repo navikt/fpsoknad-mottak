@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
@@ -61,9 +63,9 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
-import no.nav.foreldrepenger.mottak.innsyn.NonPollingSaksPoller;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -90,6 +92,8 @@ public class FPFordelTest {
     private RestTemplate template;
     @Mock
     private Oppslag oppslag;
+    @Mock
+    private FPInfoSaksPoller poller;
     private FPFordelConfig cfg;
 
     private ResponseEntity<FPFordelKvittering> pollReceipt202, pollReceipt200;
@@ -131,7 +135,7 @@ public class FPFordelTest {
                 pdfGenerator);
         return new FPFordelSøknadSender(
                 new FPFordelConnection(template, cfg,
-                        new FPFordelResponseHandler(template, 3, new NonPollingSaksPoller())),
+                        new FPFordelResponseHandler(template, 3, poller)),
                 konvoluttGenerator);
     }
 
@@ -211,6 +215,12 @@ public class FPFordelTest {
 
     @Test
     public void pollOnceThenOKAndFpInfoOK() throws Exception {
+        Kvittering value = new Kvittering(LeveranseStatus.PÅGÅR, null, "42");
+        value.setJournalId(JOURNALID);
+        value.setSaksNr(SAKSNR);
+        when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
+                .thenReturn(value);
+
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår(),
@@ -224,6 +234,11 @@ public class FPFordelTest {
 
     @Test
     public void pollOnceThenOkAndNoFpInfo() throws Exception {
+        Kvittering value = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK, null, "42");
+        value.setJournalId(JOURNALID);
+        value.setSaksNr(SAKSNR);
+        when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
+                .thenReturn(value);
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoNull());
@@ -233,12 +248,16 @@ public class FPFordelTest {
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
         verify(template).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
         verify(template, times(2)).getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class));
-        // verify(template).getForEntity(eq(FPINFOURI), eq(FPInfoKvittering.class));
-
     }
 
-    // @Test
+    @Test
     public void pollOnceThenOkAndFpInfoOngoing() throws Exception {
+        Kvittering value = new Kvittering(LeveranseStatus.PÅGÅR, null, "42");
+        value.setJournalId(JOURNALID);
+        value.setSaksNr(SAKSNR);
+        when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
+                .thenReturn(value);
+
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår());
@@ -247,7 +266,6 @@ public class FPFordelTest {
         assertThat(kvittering.getJournalId(), is(JOURNALID));
         assertThat(kvittering.getSaksNr(), is(SAKSNR));
         verify(template).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
-        verify(template, times(3)).getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class));
     }
 
     @Test
@@ -261,6 +279,12 @@ public class FPFordelTest {
 
     @Test
     public void pollOnceThenOKFpInfoFail() throws Exception {
+        Kvittering value = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK, null, "42");
+        value.setJournalId(JOURNALID);
+        value.setSaksNr(SAKSNR);
+        when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
+                .thenReturn(value);
+
         when(template.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(template.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoFailed());

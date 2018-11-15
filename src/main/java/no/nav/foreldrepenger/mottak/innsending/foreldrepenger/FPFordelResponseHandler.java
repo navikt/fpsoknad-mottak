@@ -23,17 +23,17 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsyn.SaksStatusPoller;
+import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 
 @Component
 public class FPFordelResponseHandler extends AbstractRestConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final int maxAntallForsøk;
-    private final SaksStatusPoller poller;
+    private final FPInfoSaksPoller poller;
 
     public FPFordelResponseHandler(RestTemplate template, @Value("${fpfordel.max:5}") int maxAntallForsøk,
-            SaksStatusPoller poller) {
+            FPInfoSaksPoller poller) {
         super(template);
         this.maxAntallForsøk = maxAntallForsøk;
         this.poller = poller;
