@@ -6,6 +6,11 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.ACCEPTED;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FAILED;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.PENDING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.REJECTED;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.RUNNING;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 
 import java.net.URI;
@@ -19,21 +24,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 
 @Service
-public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStatusPoller {
-
-    private static final Counter PENDING = Metrics.counter("fpinfo.kvitteringer.påvent");
-    private static final Counter REJECTED = Metrics.counter("fpinfo.kvitteringer.avslått");
-    private static final Counter ACCEPTED = Metrics.counter("fpinfo.kvitteringer.innvilget");
-    private static final Counter RUNNING = Metrics.counter("fpinfo.kvitteringer.pågår");
-    private static final Counter FAILED = Metrics.counter("fpinfo.kvitteringer.feilet");
+public class FPInfoSaksPoller extends AbstractRestConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPInfoSaksPoller.class);
 
@@ -44,7 +41,6 @@ public class FPInfoSaksPoller extends AbstractRestConnection implements SaksStat
         this.maxAntallForsøk = maxAntallForsøk;
     }
 
-    @Override
     public Kvittering poll(URI uri, StopWatch timer, Duration delay,
             FPSakFordeltKvittering fordeltKvittering) {
         ForsendelsesStatusKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delay.toMillis(), timer);

@@ -9,6 +9,7 @@ import io.micrometer.core.instrument.Metrics;
 
 public final class CounterRegistry {
 
+    private static final String FPINFO_KVITTERINGER = "fpinfo.kvitteringer";
     private static final String FPFORDEL_KVITTERINGER = "fpfordel.kvitteringer";
     private static final String SFPFORDEL_SEND = "fpfordel.send";
 
@@ -20,6 +21,11 @@ public final class CounterRegistry {
     public static final Counter MANUELL_KVITTERING = counter(FPFORDEL_KVITTERINGER, "gosys");
     public static final Counter FORDELT_KVITTERING = counter(FPFORDEL_KVITTERINGER, "fordelt");
     public static final Counter FEILET_KVITTERINGER = counter(FPFORDEL_KVITTERINGER, "feilet");
+    public static final Counter PENDING = counter(FPINFO_KVITTERINGER, "påvent");
+    public static final Counter REJECTED = counter(FPINFO_KVITTERINGER, "avslått");
+    public static final Counter ACCEPTED = counter(FPINFO_KVITTERINGER, "innvilget");
+    public static final Counter RUNNING = counter(FPINFO_KVITTERINGER, "pågår");
+    public static final Counter FAILED = counter(FPINFO_KVITTERINGER, "feilet");
 
     public static final Counter FPFORDEL_SEND_INITIELL = Metrics.counter("fpfordel_send_initiell");
 
