@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.oppslag;
 import java.util.List;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -34,6 +35,7 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
+    @Cacheable(cacheNames = "aktoer")
     public AktorId getAktørId(Fødselsnummer fnr) {
         return connection.getAktørId(fnr);
     }
