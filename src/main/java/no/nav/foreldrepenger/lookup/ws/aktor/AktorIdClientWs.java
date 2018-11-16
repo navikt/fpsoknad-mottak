@@ -6,6 +6,7 @@ import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
@@ -38,6 +39,7 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     @Override
+    @Cacheable(cacheNames = "aktoer")
     @Retryable(value = { SOAPFaultException.class }, maxAttempts = 3, backoff = @Backoff(delay = 500))
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
         try {
