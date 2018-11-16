@@ -19,12 +19,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
 @Validated
+@EqualsAndHashCode(exclude = "mottattdato")
 @JsonPropertyOrder({ "mottattdato", "søker", "ytelse", "begrunnelseForSenSøknad", "tilleggsopplysninger", "vedlegg" })
 public class Søknad {
     @NotNull
