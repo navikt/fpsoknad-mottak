@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.lookup.ws.aktor;
 
 import java.util.Objects;
 
+import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.retry.annotation.Retryable;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.errorhandling.TokenExpiredException;
 import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
@@ -53,9 +55,9 @@ public class AktorIdClientWs implements AktorIdClient {
                 throw new TokenExpiredException(tokenHandler.getExp(), e);
             }
             throw e;
-        } catch (Exception e) {
+        } catch (WebServiceException e) {
             ERROR_COUNTER_AKTOR.increment();
-            throw e;
+            throw new RemoteUnavailableException(e);
         }
     }
 
@@ -68,14 +70,14 @@ public class AktorIdClientWs implements AktorIdClient {
             LOG.warn("Henting av fnr har feilet", e);
             throw new NotFoundException(e);
         } catch (SOAPFaultException e) {
-            ERROR_COUNTER_AKTOR.increment();
+            ERROR_COUNTER_FNR.increment();
             if (tokenHandler.isExpired()) {
                 throw new TokenExpiredException(tokenHandler.getExp(), e);
             }
             throw e;
-        } catch (Exception ex) {
+        } catch (WebServiceException e) {
             ERROR_COUNTER_FNR.increment();
-            throw ex;
+            throw new RemoteUnavailableException(e);
         }
     }
 
