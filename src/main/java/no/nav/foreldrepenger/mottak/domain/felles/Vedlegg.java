@@ -46,7 +46,8 @@ public abstract class Vedlegg {
 
     @JsonIgnore
     public String getBeskrivelse() {
-        return Optional.ofNullable(metadata.getBeskrivelse()).orElse(getDokumentType().beskrivelse);
+        return Optional.ofNullable(metadata.getBeskrivelse())
+                .orElse(getDokumentType().beskrivelse);
     }
 
     @JsonIgnore
@@ -54,12 +55,15 @@ public abstract class Vedlegg {
         InnsendingsType type = metadata.getInnsendingsType();
         if (getStørrelse() == 0) {
             if (!SEND_SENERE.equals(type) && type != null) {
-                LOG.warn("Feil innsendingstype {}, ingen vedlegg, setter type til SEND_SENERE", type);
+                LOG.warn("Feil innsendingstype {} for {}, ingen vedlegg, setter type til SEND_SENERE", type,
+                        metadata.getDokumentType());
             }
             return SEND_SENERE;
         }
         if (type == null) {
-            LOG.info("Innsendingstype er ikke satt, setter til LASTET_OPP, siden vi har vedlegg");
+            LOG.info(
+                    "Innsendingstype for {} er ikke satt, setter til LASTET_OPP, siden vi har vedlegg med størrelse {}",
+                    metadata.getDokumentType(), getStørrelse());
             return LASTET_OPP;
         }
         return type;
@@ -77,7 +81,9 @@ public abstract class Vedlegg {
 
     @JsonIgnore
     public long getStørrelse() {
-        return vedlegg == null ? 0 : vedlegg.length;
+        return Optional.ofNullable(vedlegg)
+                .map(v -> vedlegg.length)
+                .orElse(0);
     }
 
     private String bytes() {

@@ -5,10 +5,10 @@ import static java.util.Collections.emptyList;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import wiremock.com.fasterxml.jackson.annotation.JsonCreator;
 
 @Data
 public class Opptjening {

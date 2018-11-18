@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.DOKMOT_FAILURE;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.DOKMOT_SUKSESS;
+
 import javax.jms.JMSException;
 
 import org.slf4j.Logger;
@@ -9,16 +12,10 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
-
 @Component
 public class DokmotConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotConnection.class);
-
-    private final Counter dokmotSuccess = Metrics.counter("dokmot,send", "søknad", "success");
-    private final Counter dokmotFailure = Metrics.counter("dokmot.send", "søknad", "failure");
 
     private final JmsTemplate template;
     private final DokmotQueueConfig queueConfig;
@@ -41,10 +38,10 @@ public class DokmotConnection {
     public void send(MessageCreator msg) {
         try {
             template.send(msg);
-            dokmotSuccess.increment();
+            DOKMOT_SUKSESS.increment();
         } catch (JmsException e) {
-            LOG.warn("Unable to send to DOKMOT at {}", queueConfig.loggable(), e);
-            dokmotFailure.increment();
+            LOG.warn("Feil ved sending til DOKMOT {}", queueConfig.loggable(), e);
+            DOKMOT_FAILURE.increment();
             throw new DokmotQueueUnavailableException(e, queueConfig);
         }
     }

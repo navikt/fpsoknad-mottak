@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.health;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDev;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.isPreprod;
 
 import java.util.Arrays;
 
@@ -9,62 +9,48 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotQueuePinger;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotQueueUnavailableException;
 
 @Component
-public class DokmotHealthIndicator implements HealthIndicator {
+public class DokmotHealthIndicator implements HealthIndicator, EnvironmentAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotHealthIndicator.class);
 
     private final DokmotQueuePinger pinger;
 
-    private final Counter dokmotSuccess = Metrics.counter("dokmot.health", "response", "success");
-    private final Counter dokmotFailure = Metrics.counter("dokmot.health", "response", "failure");
-
     private Environment env;
 
-    public DokmotHealthIndicator(DokmotQueuePinger pinger, Environment env) {
+    public DokmotHealthIndicator(DokmotQueuePinger pinger) {
         this.pinger = pinger;
-        this.env = env;
     }
 
     @Override
     public Health health() {
-        if (!isDev()) {
+        if (!isDev(env)) {
             try {
                 pinger.ping();
-                dokmotSuccess.increment();
-                return isPreprod() ? upWithDetails() : up();
+                return isPreprod(env) ? upWithDetails() : up();
             } catch (DokmotQueueUnavailableException e) {
-                dokmotFailure.increment();
-                LOG.warn("Could not verify health of DOKMOT {}", pinger.getQueueConfig(), e);
-                return isPreprod() ? downWithDetails(e) : down();
+                LOG.warn("Kunne ikke sjekke helsen til DOKMOT {}", pinger.getQueueConfig(), e);
+                return isPreprod(env) ? downWithDetails(e) : down();
             }
         }
-        LOG.info("In DEV mode, not verifying health of DOKMOT");
+        LOG.info(" DEV mode, sjekker ikke DOKMOT");
         return up();
     }
 
     private static Health down() {
+
         return Health.down().build();
     }
 
     private Health downWithDetails(Exception e) {
         return Health.down().withDetail("config", pinger.getQueueConfig().toString()).withException(e).build();
-    }
-
-    private boolean isPreprod() {
-        return env.acceptsProfiles(PREPROD);
-    }
-
-    private boolean isDev() {
-        return env.acceptsProfiles(DEV);
     }
 
     private static Health up() {
@@ -73,6 +59,11 @@ public class DokmotHealthIndicator implements HealthIndicator {
 
     private Health upWithDetails() {
         return Health.up().withDetail("config", pinger.getQueueConfig().loggable()).build();
+    }
+
+    @Override
+    public void setEnvironment(Environment env) {
+        this.env = env;
     }
 
     @Override

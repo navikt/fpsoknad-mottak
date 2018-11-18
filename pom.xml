@@ -132,6 +132,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-contract-wiremock</artifactId>
             <version>1.2.4.RELEASE</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
@@ -170,7 +171,7 @@
         <dependency>
             <groupId>com.neovisionaries</groupId>
             <artifactId>nv-i18n</artifactId>
-            <version>1.22</version>
+            <version>1.23</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -280,6 +281,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
     </dependencies>
 

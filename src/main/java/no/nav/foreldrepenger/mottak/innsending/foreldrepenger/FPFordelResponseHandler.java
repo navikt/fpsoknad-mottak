@@ -42,7 +42,6 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     }
 
     public Kvittering handle(ResponseEntity<FPFordelKvittering> leveranseRespons) {
-        LOG.info("Behandler respons {}", leveranseRespons);
         StopWatch timer = new StopWatch();
         timer.start();
         if (!leveranseRespons.hasBody()) {
@@ -50,6 +49,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
             FEILET_KVITTERINGER.increment();
             return new Kvittering(FP_FORDEL_MESSED_UP);
         }
+        LOG.info("Behandler respons {}", leveranseRespons.getBody());
         FPFordelKvittering fpFordelKvittering = FPFordelKvittering.class.cast(leveranseRespons.getBody());
         switch (leveranseRespons.getStatusCode()) {
         case ACCEPTED:
