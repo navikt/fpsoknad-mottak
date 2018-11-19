@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.errorhandling;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -49,64 +48,59 @@ public class OppslagExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ ConstraintViolationException.class })
     public ResponseEntity<Object> handleValidationException(ConstraintViolationException e, WebRequest req) {
         invalidRequestsCounter.increment();
-        return logAndRespond(UNPROCESSABLE_ENTITY, e, req, getRootCauseMessage(e));
+        return logAndRespond(UNPROCESSABLE_ENTITY, e, req);
     }
 
     @ExceptionHandler({ IncompleteRequestException.class })
     public ResponseEntity<Object> handleIncompleteRequestException(IncompleteRequestException e, WebRequest req) {
         invalidRequestsCounter.increment();
-        return logAndRespond(BAD_REQUEST, e, req, getRootCauseMessage(e));
+        return logAndRespond(BAD_REQUEST, e, req);
     }
 
     @ExceptionHandler({ NotFoundException.class })
     public ResponseEntity<Object> handleNotFoundException(NotFoundException e, WebRequest req) {
-        return logAndRespond(NOT_FOUND, e, req, getRootCauseMessage(e));
+        return logAndRespond(NOT_FOUND, e, req);
     }
 
     @ExceptionHandler({ OIDCUnauthorizedException.class })
     public ResponseEntity<Object> handleOIDCUnauthorizedException(OIDCUnauthorizedException e, WebRequest req) {
         unauthorizedCounter.increment();
-        return logAndRespond(UNAUTHORIZED, e, req, getRootCauseMessage(e));
-    }
-
-    @ExceptionHandler({ OIDCTokenValidatorException.class })
-    public ResponseEntity<Object> handleUnauthenticatedOIDCException(OIDCTokenValidatorException e, WebRequest req) {
-        unauthenticatedCounter.increment();
-        return logAndRespond(FORBIDDEN, e, req, getRootCauseMessage(e),
-                e.getExpiryDate() != null ? e.getExpiryDate().toString() : null);
+        return logAndRespond(UNAUTHORIZED, e, req);
     }
 
     @ExceptionHandler({ UnauthorizedException.class })
     public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e, WebRequest req) {
         unauthorizedCounter.increment();
-        return logAndRespond(UNAUTHORIZED, e, req, getRootCauseMessage(e));
+        return logAndRespond(UNAUTHORIZED, e, req);
+    }
+
+    @ExceptionHandler({ OIDCTokenValidatorException.class })
+    public ResponseEntity<Object> handleUnauthenticatedOIDCException(OIDCTokenValidatorException e, WebRequest req) {
+        unauthenticatedCounter.increment();
+        return logAndRespond(FORBIDDEN, e, req, e.getExpiryDate());
     }
 
     @ExceptionHandler({ UnauthenticatedException.class })
     public ResponseEntity<Object> handleUnauthenticatedException(UnauthenticatedException e, WebRequest req) {
         unauthenticatedCounter.increment();
-        return logAndRespond(FORBIDDEN, e, req, getRootCauseMessage(e));
+        return logAndRespond(FORBIDDEN, e, req);
     }
 
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> catchAll(Exception e, WebRequest req) {
-        return logAndRespond(INTERNAL_SERVER_ERROR, e, req, getRootCauseMessage(e));
+        return logAndRespond(INTERNAL_SERVER_ERROR, e, req);
     }
 
-    private ResponseEntity<Object> logAndRespond(HttpStatus status, Exception e, WebRequest req, String... messages) {
+    private ResponseEntity<Object> logAndRespond(HttpStatus status, Exception e, WebRequest req, Object... messages) {
         return logAndRespond(status, e, req, asList(messages));
     }
 
     private ResponseEntity<Object> logAndRespond(HttpStatus status, Exception e, WebRequest req,
-            List<String> messages) {
+            List<Object> messages) {
         LOG.warn("{}", messages, e);
         return handleExceptionInternal(e,
-                new ApiError(status, e, messages.stream().filter(s -> s != null).collect(toList())),
+                new ApiError(status, e, messages),
                 new HttpHeaders(), status, req);
-    }
-
-    private static String getRootCauseMessage(Exception e) {
-        return getMostSpecificCause(e).getMessage();
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
