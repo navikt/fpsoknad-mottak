@@ -67,13 +67,12 @@ public class FPFordelKonvoluttGenerator {
         return new HttpEntity<>(builder.build(), headers());
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Endringssøknad endringsøknad, Person søker,
-            String ref) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Endringssøknad endringsøknad, Person søker) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
 
-        builder.part(METADATA, metadata(endringsøknad, søker.aktørId, ref), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(endringsøknad, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
                 id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker), APPLICATION_PDF)

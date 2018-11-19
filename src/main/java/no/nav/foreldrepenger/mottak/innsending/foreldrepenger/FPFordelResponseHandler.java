@@ -54,7 +54,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
         switch (leveranseRespons.getStatusCode()) {
         case ACCEPTED:
             if (fpFordelKvittering instanceof FPFordelPendingKvittering) {
-                LOG.info("Søknaden er mottatt, men ikke forsøkt behandlet i FPSak");
+                LOG.info("Søknaden er mottatt, men ennå ikke forsøkt behandlet i FPSak");
                 FPFordelPendingKvittering pending = FPFordelPendingKvittering.class.cast(leveranseRespons.getBody());
                 URI pollURI = locationFra(leveranseRespons);
                 for (int i = 1; i <= maxAntallForsøk; i++) {

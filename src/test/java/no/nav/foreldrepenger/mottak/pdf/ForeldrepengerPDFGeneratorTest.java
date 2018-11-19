@@ -49,7 +49,7 @@ public class ForeldrepengerPDFGeneratorTest {
     }
 
     @Test
-    public void space() throws Exception {
+    public void førstegangssøknad() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(true), person(), arbeidsforhold()));
@@ -57,9 +57,9 @@ public class ForeldrepengerPDFGeneratorTest {
     }
 
     @Test
-    public void space1() throws Exception {
+    public void endring() throws Exception {
 
-        try (FileOutputStream fos = new FileOutputStream("/tmp/søknad1.pdf")) {
+        try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
             fos.write(gen.generate(endringssøknad(V1), person()));
         }
     }
