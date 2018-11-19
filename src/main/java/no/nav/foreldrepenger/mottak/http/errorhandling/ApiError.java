@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 
@@ -28,14 +27,19 @@ class ApiError {
     private final String uuid;
 
     ApiError(HttpStatus status, Throwable t) {
-        this(status, t, emptyList());
+        this(status, t, null);
     }
 
     ApiError(HttpStatus status, Throwable t, List<Object> objects) {
+        this(status, t, null, objects);
+    }
+
+    ApiError(HttpStatus status, Throwable t, String destination, List<Object> objects) {
         this.timestamp = LocalDateTime.now();
         this.status = status;
         this.messages = new ImmutableList.Builder<String>()
                 .add(getRootCauseMessage(t))
+                .add(destination)
                 .addAll(objects.stream()
                         .filter(s -> s != null)
                         .map(Object::toString)

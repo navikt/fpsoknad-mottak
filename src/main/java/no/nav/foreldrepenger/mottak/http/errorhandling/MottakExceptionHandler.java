@@ -20,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -60,7 +61,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { UnauthenticatedException.class })
     protected ResponseEntity<Object> handleUnauthenticated(UnauthenticatedException e, WebRequest req) {
-        return logAndHandle(FORBIDDEN, e, req, e.getExpDate());
+        return logAndHandle(FORBIDDEN, e, req, e.getExpiryDate());
     }
 
     @ExceptionHandler({ OIDCTokenValidatorException.class })
@@ -84,8 +85,20 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
             List<Object> messages) {
-        LOG.warn("{}", messages, e);
-        return handleExceptionInternal(e, new ApiError(status, e, messages), headers, status, req);
+        ApiError apiError = apiErrorFra(status, e, req, messages);
+        LOG.warn("{}", apiError.getMessages(), e);
+        return handleExceptionInternal(e, apiError, headers, status, req);
+    }
+
+    private static ApiError apiErrorFra(HttpStatus status, Exception e, WebRequest req, List<Object> messages) {
+        if (req instanceof ServletWebRequest) {
+            return new ApiError(status, e, destFra(req), messages);
+        }
+        return new ApiError(status, e, messages);
+    }
+
+    private static String destFra(WebRequest req) {
+        return ServletWebRequest.class.cast(req).getRequest().getRequestURI();
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {

@@ -27,7 +27,7 @@ public class UnauthenticatedException extends RuntimeException {
         this.expDate = expDate;
     }
 
-    public Date getExpDate() {
+    public Date getExpiryDate() {
         return expDate;
     }
 
