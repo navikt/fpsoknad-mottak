@@ -54,7 +54,7 @@ public class InnsynTjeneste implements Innsyn {
     private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
         LOG.info("Henter behandlinger");
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
-                .map(lenke -> innsynConnection.hentBehandling(lenke))
+                .map(innsynConnection::hentBehandling)
                 .map(this::tilBehandling)
                 .collect(toList());
         LOG.info("Hentet {} behandling{}", behandlinger.size(), endelse(behandlinger));
@@ -81,8 +81,8 @@ public class InnsynTjeneste implements Innsyn {
     private Sak tilSak(SakWrapper wrapper) {
         return Optional.ofNullable(wrapper)
                 .map(w -> new Sak(w.getSaksnummer(), w.getFagsakStatus(), w.getBehandlingTema(),
-                        w.getAktørId(), w.getAktørIdAnnenPart(), w.getAktørIdBarn(),
-                        hentBehandlinger(w.getBehandlingsLenker())))
+                        w.getAktørId(), w.getAktørIdAnnenPart(), w.getAktørIdBarna(),
+                        hentBehandlinger(w.getBehandlingsLenker()), w.getOpprettetTidspunkt(), w.getEndretTidspunkt()))
                 .orElse(null);
     }
 

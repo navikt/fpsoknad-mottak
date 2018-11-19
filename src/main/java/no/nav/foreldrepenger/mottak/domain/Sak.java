@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import static java.util.Collections.emptyList;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,15 +22,19 @@ public class Sak {
     private final String aktørIdAnnenPart;
     private final List<String> aktørIdBarn;
     private final List<Behandling> behandlinger;
+    private final LocalDateTime opprettet;
+    private final LocalDateTime endret;
 
     @JsonCreator
     public Sak(@JsonProperty("saksnummer") String saksnummer,
-            @JsonProperty("status") FagsakStatus fagsakStatus,
-            @JsonProperty("behandlingTema") String behandlingTema,
-            @JsonProperty("aktørId") String aktørId,
-            @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
-            @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
-            @JsonProperty("behandlinger") List<Behandling> behandlinger) {
+               @JsonProperty("status") FagsakStatus fagsakStatus,
+               @JsonProperty("behandlingTema") String behandlingTema,
+               @JsonProperty("aktørId") String aktørId,
+               @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
+               @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
+               @JsonProperty("behandlinger") List<Behandling> behandlinger,
+               @JsonProperty("opprettet") LocalDateTime opprettet,
+               @JsonProperty("endret") LocalDateTime endret) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingTema;
@@ -37,5 +42,7 @@ public class Sak {
         this.aktørIdAnnenPart = aktørIdAnnenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
         this.behandlinger = Optional.ofNullable(behandlinger).orElse(emptyList());
+        this.opprettet = opprettet;
+        this.endret = endret;
     }
 }
