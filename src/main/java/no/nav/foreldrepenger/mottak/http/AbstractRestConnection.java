@@ -53,6 +53,9 @@ public abstract class AbstractRestConnection {
             LOG.trace("POST til {}", uri);
             ResponseEntity<T> respons = template.postForEntity(uri, payload, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
+            if (respons.hasBody()) {
+                LOG.trace(CONFIDENTIAL, "Body: {}", respons.getBody());
+            }
             return respons;
         } catch (HttpStatusCodeException e) {
             HttpStatus code = e.getStatusCode();
@@ -73,12 +76,12 @@ public abstract class AbstractRestConnection {
     protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
         try {
             LOG.trace("GET fra {}", uri);
-            ResponseEntity<T> response = template.getForEntity(uri, responseType);
+            ResponseEntity<T> respons = template.getForEntity(uri, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
-            if (response.hasBody()) {
-                LOG.trace(CONFIDENTIAL, "Body: {}", response.getBody());
+            if (respons.hasBody()) {
+                LOG.trace(CONFIDENTIAL, "Body: {}", respons.getBody());
             }
-            return response;
+            return respons;
         } catch (HttpStatusCodeException e) {
             HttpStatus code = e.getStatusCode();
             LOG.warn("Fant ingen entitet på {}, status kode var {}", uri, code, e);
@@ -100,7 +103,13 @@ public abstract class AbstractRestConnection {
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
         try {
-            return getAndLog(uri, responseType);
+            LOG.trace("GET fra {}", uri);
+            T respons = template.getForObject(uri, responseType);
+            LOG.trace("Fikk respons OK for {}", uri);
+            if (respons != null) {
+                LOG.trace(CONFIDENTIAL, "{}", respons);
+            }
+            return respons;
         } catch (HttpStatusCodeException e) {
             HttpStatus code = e.getStatusCode();
             LOG.warn("Fant intet objekt på {}, status kode var {}", uri, code, e);
@@ -142,10 +151,4 @@ public abstract class AbstractRestConnection {
                 .pathSegment(path);
     }
 
-    private <T> T getAndLog(URI uri, Class<T> responseType) {
-        LOG.trace("GET fra {}", uri);
-        T respons = template.getForObject(uri, responseType);
-        LOG.trace(CONFIDENTIAL, "{}", respons);
-        return respons;
-    }
 }
