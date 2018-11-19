@@ -42,19 +42,19 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     }
 
     public URI pingEndpoint() {
-        return uri(config.getBaseURI(), config.getPingPath());
+        return uri(config.getUri(), config.getPingPath());
     }
 
     public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
         LOG.trace("Henter søknad");
         return Optional
-                .ofNullable(getForObject(URI.create(config.getBaseURI() + søknadsLenke.getHref()), SøknadWrapper.class))
+                .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadWrapper.class))
                 .orElse(null);
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
         LOG.trace("Henter saker");
-        return Optional.ofNullable(getForObject(uri(config.getBaseURI(), SAK,
+        return Optional.ofNullable(getForObject(uri(config.getUri(), SAK,
                 queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
@@ -62,7 +62,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan");
-        return Optional.ofNullable(getForObject(uri(config.getBaseURI(), UTTAKSPLAN,
+        return Optional.ofNullable(getForObject(uri(config.getUri(), UTTAKSPLAN,
                 queryParams(SAKSNUMMER, saksnummer)), UttaksPeriode[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
@@ -71,7 +71,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
         LOG.trace("Henter behandling");
         return Optional.ofNullable(
-                getForObject(URI.create(config.getBaseURI() + behandlingsLenke.getHref()), BehandlingWrapper.class))
+                getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingWrapper.class))
                 .orElse(null);
     }
 
