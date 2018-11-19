@@ -39,23 +39,11 @@ fasitResources:
       resourceType: webserviceendpoint
     - alias: Aktoer_V2
       resourceType: webserviceendpoint
-    - alias: virksomhet:Inntekt_v3
-      resourceType: webserviceendpoint
-    - alias: virksomhet:infotrygdsak_v1
-      resourceType: webserviceendpoint
     - alias: virksomhet:Person_v3
-      resourceType: webserviceendpoint
-    - alias: virksomhet:Ytelseskontrakt_v3
       resourceType: webserviceendpoint
     - alias: virksomhet:Arbeidsforhold_v3
       resourceType: webserviceendpoint
-    - alias: virksomhet:Medlemskap_v2
-      resourceType: webserviceendpoint
     - alias: virksomhet:Organisasjon_v5
-      resourceType: webserviceendpoint
-    - alias: virksomhet:Sak_v2
-      resourceType: webserviceendpoint
-    - alias: SakOgBehandling
       resourceType: webserviceendpoint
     - alias: sak.saker
       resourceType: restservice
