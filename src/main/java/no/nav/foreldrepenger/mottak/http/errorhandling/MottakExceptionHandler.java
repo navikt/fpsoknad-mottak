@@ -34,13 +34,13 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
             HttpHeaders headers, HttpStatus status, WebRequest req) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, validationErrors(e));
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers, validationErrors(e));
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
             HttpHeaders headers, HttpStatus status, WebRequest req) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
     @ExceptionHandler(value = { RemoteUnavailableException.class })
@@ -53,19 +53,14 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(NOT_FOUND, e, req);
     }
 
-    @ExceptionHandler(value = { UnauthorizedException.class })
-    protected ResponseEntity<Object> handleUnauthorized(UnauthorizedException e, WebRequest req) {
+    @ExceptionHandler({ OIDCUnauthorizedException.class, UnauthorizedException.class })
+    public ResponseEntity<Object> handleUnauthorizedException(Exception e, WebRequest req) {
         return logAndHandle(UNAUTHORIZED, e, req);
     }
 
     @ExceptionHandler(value = { UnauthenticatedException.class })
     protected ResponseEntity<Object> handleUnauthenticated(UnauthenticatedException e, WebRequest req) {
-        return logAndHandle(FORBIDDEN, e, req);
-    }
-
-    @ExceptionHandler({ OIDCUnauthorizedException.class })
-    public ResponseEntity<Object> handleOIDCUnauthorizedException(OIDCUnauthorizedException e, WebRequest req) {
-        return logAndHandle(UNAUTHORIZED, e, req);
+        return logAndHandle(FORBIDDEN, e, req, e.getExpDate());
     }
 
     @ExceptionHandler({ OIDCTokenValidatorException.class })
@@ -79,12 +74,18 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, Object... messages) {
-        return logAndHandle(status, e, req, asList(messages));
+        return logAndHandle(status, e, req, new HttpHeaders(), messages);
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, List<Object> messages) {
+    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
+            Object... messages) {
+        return logAndHandle(status, e, req, headers, asList(messages));
+    }
+
+    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
+            List<Object> messages) {
         LOG.warn("{}", messages, e);
-        return handleExceptionInternal(e, new ApiError(status, e, messages), new HttpHeaders(), status, req);
+        return handleExceptionInternal(e, new ApiError(status, e, messages), headers, status, req);
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
