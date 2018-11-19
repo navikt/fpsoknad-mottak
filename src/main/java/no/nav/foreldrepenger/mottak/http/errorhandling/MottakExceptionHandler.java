@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -34,57 +33,56 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, request, validationErrors(e));
+            HttpHeaders headers, HttpStatus status, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, validationErrors(e));
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return logAndHandle(UNPROCESSABLE_ENTITY, e, request, getRootCauseMessage(e));
+            HttpHeaders headers, HttpStatus status, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
     }
 
     @ExceptionHandler(value = { RemoteUnavailableException.class })
-    protected ResponseEntity<Object> handleRemoteUnavailable(RemoteUnavailableException e, WebRequest request) {
-        return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
+    protected ResponseEntity<Object> handleRemoteUnavailable(RemoteUnavailableException e, WebRequest req) {
+        return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
     }
 
     @ExceptionHandler(value = { NotFoundException.class })
-    protected ResponseEntity<Object> handleNotFound(RemoteUnavailableException e, WebRequest request) {
-        return logAndHandle(NOT_FOUND, e, request, getRootCauseMessage(e));
+    protected ResponseEntity<Object> handleNotFound(RemoteUnavailableException e, WebRequest req) {
+        return logAndHandle(NOT_FOUND, e, req);
     }
 
     @ExceptionHandler(value = { UnauthorizedException.class })
-    protected ResponseEntity<Object> handleUnauthorized(UnauthorizedException e, WebRequest request) {
-        return logAndHandle(UNAUTHORIZED, e, request, getRootCauseMessage(e));
+    protected ResponseEntity<Object> handleUnauthorized(UnauthorizedException e, WebRequest req) {
+        return logAndHandle(UNAUTHORIZED, e, req);
     }
 
     @ExceptionHandler(value = { UnauthenticatedException.class })
-    protected ResponseEntity<Object> handleUnauthenticated(UnauthenticatedException e, WebRequest request) {
-        return logAndHandle(FORBIDDEN, e, request, getRootCauseMessage(e));
+    protected ResponseEntity<Object> handleUnauthenticated(UnauthenticatedException e, WebRequest req) {
+        return logAndHandle(FORBIDDEN, e, req);
     }
 
     @ExceptionHandler({ OIDCUnauthorizedException.class })
     public ResponseEntity<Object> handleOIDCUnauthorizedException(OIDCUnauthorizedException e, WebRequest req) {
-        return logAndHandle(UNAUTHORIZED, e, req, getRootCauseMessage(e));
+        return logAndHandle(UNAUTHORIZED, e, req);
     }
 
     @ExceptionHandler({ OIDCTokenValidatorException.class })
     public ResponseEntity<Object> handleUnauthenticatedOIDCException(OIDCTokenValidatorException e, WebRequest req) {
-        return logAndHandle(FORBIDDEN, e, req, getRootCauseMessage(e),
-                e.getExpiryDate() != null ? e.getExpiryDate().toString() : null);
+        return logAndHandle(FORBIDDEN, e, req, e.getExpiryDate());
     }
 
     @ExceptionHandler(value = { Exception.class })
-    protected ResponseEntity<Object> handleUncaught(Exception e, WebRequest request) {
-        return logAndHandle(INTERNAL_SERVER_ERROR, e, request, getRootCauseMessage(e));
+    protected ResponseEntity<Object> handleUncaught(Exception e, WebRequest req) {
+        return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, String... messages) {
+    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, Object... messages) {
         return logAndHandle(status, e, req, asList(messages));
     }
 
-    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, List<String> messages) {
+    private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, List<Object> messages) {
         LOG.warn("{}", messages, e);
         return handleExceptionInternal(e, new ApiError(status, e, messages), new HttpHeaders(), status, req);
     }
@@ -94,10 +92,6 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(MottakExceptionHandler::errorMessage)
                 .collect(toList());
-    }
-
-    private static String getRootCauseMessage(Exception e) {
-        return getMostSpecificCause(e).getMessage();
     }
 
     private static String errorMessage(FieldError error) {
