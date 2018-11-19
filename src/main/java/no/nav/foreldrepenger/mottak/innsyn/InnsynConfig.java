@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InnsynConfig {
 
-    private static final URI DEFAULT_BASE_URI = URI.create("http://fpinfo");
+    private static final URI DEFAULT_URI = URI.create("http://fpinfo");
     private static final String DEFAULT_BASE_PATH = "fpinfo/api/dokumentforsendelse/";
     private static final String DEFAULT_PING_PATH = "fpinfo/internal/isReady";
 
@@ -24,7 +24,7 @@ public class InnsynConfig {
 
     String pingPath;
     boolean enabled;
-    URI baseUri;
+    URI uri;
     String basePath;
 
     public String getBasePath() {
@@ -35,12 +35,12 @@ public class InnsynConfig {
         this.basePath = basePath;
     }
 
-    public URI getBaseURI() {
-        return Optional.ofNullable(baseUri).orElse(DEFAULT_BASE_URI);
+    public URI getUri() {
+        return Optional.ofNullable(uri).orElse(DEFAULT_URI);
     }
 
-    public void setBaseURI(URI baseUri) {
-        this.baseUri = baseUri;
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
     public boolean isEnabled() {
@@ -61,7 +61,7 @@ public class InnsynConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", baseUri=" + baseUri
+        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", uri=" + uri
                 + ", basePath=" + basePath
                 + "]";
     }
