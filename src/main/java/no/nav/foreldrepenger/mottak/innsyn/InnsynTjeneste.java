@@ -40,7 +40,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public List<Sak> hentSaker(String aktørId) {
-        LOG.info("Henter saker for {}", aktørId);
+        LOG.info("Henter sak(er) for {}", aktørId);
         List<Sak> saker = safeStream(innsynConnection.hentSaker(aktørId))
                 .map(this::tilSak)
                 .collect(toList());
@@ -52,7 +52,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
-        LOG.info("Henter behandlinger");
+        LOG.info("Henter {} behandlinger", behandlingsLenker.size());
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
                 .map(innsynConnection::hentBehandling)
                 .map(this::tilBehandling)
@@ -65,6 +65,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad hentSøknad(Lenke søknadsLenke) {
+        LOG.info("Henter søknad");
         InnsynsSøknad søknad = Optional.ofNullable(innsynConnection.hentSøknad(søknadsLenke))
                 .map(this::tilSøknad)
                 .orElse(null);
@@ -79,6 +80,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private Sak tilSak(SakWrapper wrapper) {
+        LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
         return Optional.ofNullable(wrapper)
                 .map(w -> new Sak(w.getSaksnummer(), w.getFagsakStatus(), w.getBehandlingTema(),
                         w.getAktørId(), w.getAktørIdAnnenPart(), w.getAktørIdBarna(),
@@ -87,6 +89,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private Behandling tilBehandling(BehandlingWrapper wrapper) {
+        LOG.trace(CONFIDENTIAL, "Mapper behandling fra {}", wrapper);
         return Optional.ofNullable(wrapper)
                 .map(w -> new Behandling.BehandlingBuilder()
                         .behandlendeEnhet(wrapper.getBehandlendeEnhet())
@@ -101,6 +104,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad tilSøknad(SøknadWrapper wrapper) {
+        LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         return new InnsynsSøknad(mapper.tilSøknad(wrapper.getXml()), wrapper.getJournalpostId());
     }
 
