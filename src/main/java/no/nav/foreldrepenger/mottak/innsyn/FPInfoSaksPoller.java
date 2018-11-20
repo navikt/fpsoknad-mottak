@@ -45,6 +45,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
 
     public Kvittering poll(URI uri, StopWatch timer, Duration delay,
             FPSakFordeltKvittering fordeltKvittering) {
+
         ForsendelsesStatusKvittering forsendelsesStatus = pollForsendelsesStatus(uri, delay.toMillis(), timer);
         return forsendelsesStatus != null
                 ? forsendelsesStatusKvittering(forsendelsesStatus, fordeltKvittering)
@@ -54,7 +55,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
     private ForsendelsesStatusKvittering pollForsendelsesStatus(URI pollURI, long delayMillis,
             StopWatch timer) {
         ForsendelsesStatusKvittering kvittering = null;
-
+        waitFor(delayMillis);
         LOG.info("Poller forsendelsesstatus på {}", pollURI);
         try {
             for (int i = 1; i <= maxAntallForsøk; i++) {
