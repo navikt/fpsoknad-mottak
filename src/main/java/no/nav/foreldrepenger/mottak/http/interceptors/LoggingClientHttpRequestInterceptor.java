@@ -1,11 +1,9 @@
 package no.nav.foreldrepenger.mottak.http.interceptors;
 
-import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CONSUMER_ID;
-
 import java.io.IOException;
 
-import org.slf4j.MDC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -13,22 +11,18 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MDCValuesPropagatingClientInterceptor implements ClientHttpRequestInterceptor {
+public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingClientHttpRequestInterceptor.class);
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
 
-        propagateIfSet(request, NAV_CALL_ID, NAV_CONSUMER_ID);
+        logRequestDetails(request);
         return execution.execute(request, body);
     }
 
-    private static void propagateIfSet(HttpRequest request, String... keys) {
-        for (String key : keys) {
-            String value = MDC.get(key);
-            if (value != null) {
-                request.getHeaders().add(key, value);
-            }
-        }
+    private static void logRequestDetails(HttpRequest request) {
+        LOG.info("{} {}", request.getMethodValue(), request.getURI());
     }
 }
