@@ -38,7 +38,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
     private final int maxAntallForsøk;
 
     public FPInfoSaksPoller(RestTemplate template, TokenHandler tokenHandler,
-            @Value("${fpfordel.max:5}") int maxAntallForsøk) {
+            @Value("${fpinfo.max:5}") int maxAntallForsøk) {
         super(template, tokenHandler);
         this.maxAntallForsøk = maxAntallForsøk;
     }
@@ -54,7 +54,6 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
 
     private ForsendelsesStatusKvittering pollForsendelsesStatus(URI pollURI, long delayMillis,
             StopWatch timer) {
-        ForsendelsesStatusKvittering kvittering = null;
         waitFor(delayMillis);
         LOG.info("Poller forsendelsesstatus på {}", pollURI);
         try {
@@ -65,8 +64,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
                     LOG.warn("Fikk ingen kvittering etter polling av forsendelsesstatus");
                     return null;
                 }
-                LOG.info("Fikk respons status kode {}", respons.getStatusCode());
-                kvittering = respons.getBody();
+                ForsendelsesStatusKvittering kvittering = respons.getBody();
                 LOG.info("Fikk respons kvittering {}", kvittering);
                 switch (kvittering.getForsendelseStatus()) {
                 case AVSLÅTT:
@@ -77,14 +75,12 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
                             timer.getTime());
                     return kvittering;
                 case PÅGÅR:
-                    LOG.info("Sak pågår fremdeles etter {}ms", timer.getTime());
+                    LOG.info("Prosessering pågår fremdeles etter {}ms", timer.getTime());
                     continue;
-                default:
-                    LOG.info("Dette skal ikke skje");
                 }
             }
             stop(timer);
-            return kvittering;
+            return ForsendelsesStatusKvittering.PÅGÅR;
         } catch (Exception e) {
             stop(timer);
             LOG.warn("Kunne ikke sjekke status for forsendelse på {}", pollURI, e);

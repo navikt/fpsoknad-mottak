@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class ForsendelsesStatusKvittering {
 
+    static final ForsendelsesStatusKvittering PÅGÅR = new ForsendelsesStatusKvittering(ForsendelseStatus.PÅGÅR);
+
     private final ForsendelseStatus forsendelseStatus;
 
     @JsonCreator

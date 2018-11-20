@@ -31,13 +31,16 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final int maxAntallForsøk;
+    private final long maxMillis;
     private final FPInfoSaksPoller poller;
 
     public FPFordelResponseHandler(RestTemplate template, TokenHandler tokenHandler,
             @Value("${fpfordel.max:5}") int maxAntallForsøk,
+            @Value("${fpfordel.maxMillis:10000}") long maxMillis,
             FPInfoSaksPoller poller) {
         super(template, tokenHandler);
         this.maxAntallForsøk = maxAntallForsøk;
+        this.maxMillis = maxMillis;
         this.poller = poller;
     }
 
@@ -58,7 +61,13 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                 FPFordelPendingKvittering pending = FPFordelPendingKvittering.class.cast(leveranseRespons.getBody());
                 URI pollURI = locationFra(leveranseRespons);
                 for (int i = 1; i <= maxAntallForsøk; i++) {
-                    LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
+                    LOG.info("Poller {} for {}. gang av {}, medgått tid er {}ms av maks {}ms", pollURI, i,
+                            maxAntallForsøk,
+                            timer.getTime(), maxMillis);
+                    if (timer.getTime() > maxMillis) {
+                        LOG.info("Vi burde antagelig gi oss nå, brukt {}ms mer enn øvre grense",
+                                maxMillis + timer.getTime());
+                    }
                     ResponseEntity<FPFordelKvittering> fpInfoRespons = pollFPFordel(pollURI,
                             pending.getPollInterval().toMillis());
                     fpFordelKvittering = FPFordelKvittering.class.cast(fpInfoRespons.getBody());
