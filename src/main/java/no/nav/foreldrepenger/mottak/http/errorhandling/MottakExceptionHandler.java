@@ -50,7 +50,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = { NotFoundException.class })
-    protected ResponseEntity<Object> handleNotFound(RemoteUnavailableException e, WebRequest req) {
+    protected ResponseEntity<Object> handleNotFound(NotFoundException e, WebRequest req) {
         return logAndHandle(NOT_FOUND, e, req);
     }
 
@@ -91,10 +91,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private static ApiError apiErrorFra(HttpStatus status, Exception e, WebRequest req, List<Object> messages) {
-        if (req instanceof ServletWebRequest) {
-            return new ApiError(status, e, destFra(req), messages);
-        }
-        return new ApiError(status, e, messages);
+        return req instanceof ServletWebRequest ? new ApiError(status, e, destFra(req), messages)
+                : new ApiError(status, e, messages);
     }
 
     private static String destFra(WebRequest req) {
