@@ -27,14 +27,14 @@ public abstract class AbstractRestConnection {
     private final TokenHandler tokenHandler;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
-    public abstract boolean isEnabled();
+    protected abstract boolean isEnabled();
 
     public AbstractRestConnection(RestTemplate template, TokenHandler tokenHandler) {
         this.template = template;
         this.tokenHandler = tokenHandler;
     }
 
-    public String ping(URI uri) {
+    protected String ping(URI uri) {
         return getForEntity(uri, String.class).getBody();
     }
 
@@ -53,7 +53,7 @@ public abstract class AbstractRestConnection {
             ResponseEntity<T> respons = template.postForEntity(uri, payload, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
             if (respons.hasBody()) {
-                LOG.trace(CONFIDENTIAL, "Body: {}", respons.getBody());
+                LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
             }
             return respons;
         } catch (HttpStatusCodeException e) {
@@ -77,7 +77,7 @@ public abstract class AbstractRestConnection {
             ResponseEntity<T> respons = template.getForEntity(uri, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
             if (respons.hasBody()) {
-                LOG.trace(CONFIDENTIAL, "Body: {}", respons.getBody());
+                LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
             }
             return respons;
         } catch (HttpStatusCodeException e) {
@@ -104,7 +104,7 @@ public abstract class AbstractRestConnection {
             T respons = template.getForObject(uri, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
             if (respons != null) {
-                LOG.trace(CONFIDENTIAL, "{}", respons);
+                LOG.trace(CONFIDENTIAL, "Respons: {}", respons);
             }
             return respons;
         } catch (HttpStatusCodeException e) {
@@ -147,5 +147,4 @@ public abstract class AbstractRestConnection {
                 .fromUri(base)
                 .pathSegment(path);
     }
-
 }

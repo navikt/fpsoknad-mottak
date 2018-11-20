@@ -1,9 +1,11 @@
 package no.nav.foreldrepenger.mottak.http.errorhandling;
 
+import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
+
 public class NotFoundException extends RuntimeException {
 
     public NotFoundException(Throwable cause) {
-        this(cause.getMessage(), cause);
+        this(cause != null ? getMostSpecificCause(cause).getMessage() : null, cause);
     }
 
     public NotFoundException(String msg) {
@@ -13,5 +15,4 @@ public class NotFoundException extends RuntimeException {
     public NotFoundException(String msg, Throwable cause) {
         super(msg, cause);
     }
-
 }
