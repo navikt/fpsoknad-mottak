@@ -50,7 +50,6 @@ public abstract class AbstractRestConnection {
 
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
         try {
-            LOG.trace("POST til {}", uri);
             ResponseEntity<T> respons = template.postForEntity(uri, payload, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
             if (respons.hasBody()) {
@@ -75,7 +74,6 @@ public abstract class AbstractRestConnection {
 
     protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
         try {
-            LOG.trace("GET fra {}", uri);
             ResponseEntity<T> respons = template.getForEntity(uri, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
             if (respons.hasBody()) {
@@ -103,7 +101,6 @@ public abstract class AbstractRestConnection {
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
         try {
-            LOG.trace("GET fra {}", uri);
             T respons = template.getForObject(uri, responseType);
             LOG.trace("Fikk respons OK for {}", uri);
             if (respons != null) {
