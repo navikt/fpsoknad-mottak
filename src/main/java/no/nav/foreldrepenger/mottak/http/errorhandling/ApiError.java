@@ -4,12 +4,13 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_E
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
+import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.MDC;
-import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -65,7 +66,7 @@ class ApiError {
     }
 
     private static String getRootCauseMessage(Throwable t) {
-        return NestedExceptionUtils.getMostSpecificCause(t).getMessage();
+        return Optional.ofNullable(getMostSpecificCause(t).getMessage()).orElse("");
     }
 
     @Override
