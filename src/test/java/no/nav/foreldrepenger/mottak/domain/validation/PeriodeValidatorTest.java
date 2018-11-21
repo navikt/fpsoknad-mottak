@@ -106,6 +106,26 @@ public class PeriodeValidatorTest {
     }
 
     @Test
+    public void testLukketPeriodeMedVedleggFomFørTom() {
+        LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), now().minusDays(1), StønadskontoType.FEDREKVOTE,
+                true,
+                MorsAktivitet.ARBEID, true, 100.0d,
+                Collections.emptyList());
+        Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
+        assertFalse(constraintViolations.isEmpty());
+    }
+
+    @Test
+    public void testLukketPeriodeMedVedleggFomOgTomLike() {
+        LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), now(), StønadskontoType.FEDREKVOTE,
+                true,
+                MorsAktivitet.ARBEID, true, 100.0d,
+                Collections.emptyList());
+        Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
+        assertTrue(constraintViolations.isEmpty());
+    }
+
+    @Test
     public void testOverlappendeFortid() {
         LukketPeriode periode1 = new LukketPeriode(now().minusMonths(6), now());
         LukketPeriode periode2 = new LukketPeriode(now().minusYears(1), now().minusMonths(4));
