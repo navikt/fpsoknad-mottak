@@ -183,7 +183,7 @@ public class ForeldrepengerTestUtils {
                 .erNyOpprettet(true)
                 .næringsinntektBrutto(100_000)
                 .orgName("Norsk org")
-                .orgNummer("82828282")
+                .orgNummer("923609016")
                 .virksomhetsTyper(Collections.singletonList(FISKE))
                 .beskrivelseEndring("Ting endrer seg i Norge også")
                 .nærRelasjon(true)
