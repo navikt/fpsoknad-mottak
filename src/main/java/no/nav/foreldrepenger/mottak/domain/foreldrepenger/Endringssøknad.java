@@ -6,6 +6,8 @@ import static java.util.Arrays.asList;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,6 +17,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 public class Endringssøknad extends Søknad {
 
+    @NotNull
     private final String saksnr;
 
     public Endringssøknad(Søker søker, Fordeling fordeling, AnnenForelder annenForelder,
