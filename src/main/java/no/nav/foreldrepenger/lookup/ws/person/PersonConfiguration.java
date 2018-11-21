@@ -1,11 +1,12 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
-import no.nav.foreldrepenger.lookup.ws.WsClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import no.nav.foreldrepenger.lookup.TokenHandler;
+import no.nav.foreldrepenger.lookup.ws.WsClient;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 
 @Configuration
@@ -31,8 +32,9 @@ public class PersonConfiguration extends WsClient<PersonV3> {
 
     @Bean
     public PersonClient personKlientTpsWs(@Qualifier("personV3") PersonV3 personV3,
-            @Qualifier("healthIndicatorPerson") PersonV3 healthIndicator, Barnutvelger barnutvelger) {
-        return new PersonClientTpsWs(personV3, healthIndicator, barnutvelger);
+            @Qualifier("healthIndicatorPerson") PersonV3 healthIndicator, TokenHandler handler,
+            Barnutvelger barnutvelger) {
+        return new PersonClientTpsWs(personV3, healthIndicator, handler, barnutvelger);
     }
 
 }

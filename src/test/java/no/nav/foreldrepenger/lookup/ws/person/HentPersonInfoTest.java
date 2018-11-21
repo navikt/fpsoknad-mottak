@@ -14,13 +14,14 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import no.nav.foreldrepenger.lookup.TokenHandler;
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Aktoer;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjon;
@@ -48,9 +49,12 @@ public class HentPersonInfoTest {
     @Mock
     private PersonV3 healthIndicator;
 
+    @Mock
+    private TokenHandler tokenHandler;
+
     @Before
     public void setUp() {
-        klient = new PersonClientTpsWs(tps, healthIndicator, barnutvelger);
+        klient = new PersonClientTpsWs(tps, healthIndicator, tokenHandler, barnutvelger);
     }
 
     @Test
