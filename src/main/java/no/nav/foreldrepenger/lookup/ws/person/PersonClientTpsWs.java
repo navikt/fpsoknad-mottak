@@ -1,10 +1,31 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.lookup.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
+
+import java.util.List;
+import java.util.Objects;
+
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import no.nav.foreldrepenger.errorhandling.UnauthorizedException;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
+import no.nav.foreldrepenger.errorhandling.RemoteUnavailableException;
+import no.nav.foreldrepenger.errorhandling.TokenExpiredException;
+import no.nav.foreldrepenger.errorhandling.UnauthorizedException;
+import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
@@ -13,17 +34,6 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Objects;
-
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 public class PersonClientTpsWs implements PersonClient {
 
@@ -32,12 +42,15 @@ public class PersonClientTpsWs implements PersonClient {
     private final PersonV3 person;
     private final PersonV3 healthIndicator;
     private final Barnutvelger barnutvelger;
+    protected final TokenHandler tokenHandler;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.tps");
 
-    public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, Barnutvelger barnutvelger) {
+    public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, TokenHandler tokenHandler,
+            Barnutvelger barnutvelger) {
         this.person = Objects.requireNonNull(person);
         this.healthIndicator = healthIndicator;
+        this.tokenHandler = tokenHandler;
         this.barnutvelger = Objects.requireNonNull(barnutvelger);
     }
 
@@ -56,27 +69,24 @@ public class PersonClientTpsWs implements PersonClient {
     @Timed("lookup.person")
     public Person hentPersonInfo(ID id) {
         try {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Slår opp person fra {}", id);
-            } else {
-                LOG.info("Slår opp person");
-            }
-
+            LOG.info("Slår opp person");
+            LOG.info(CONFIDENTIAL, "Fra ID {}", id);
             HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(request).getPerson();
-            // Person p = person(id, tpsPerson, barnFor(tpsPerson)); TODO: Fjerner henting av barn inntil frontendproblematikk blir løst
+            // Person p = person(id, tpsPerson, barnFor(tpsPerson)); TODO: Fjerner henting
+            // av barn inntil frontendproblematikk blir løst
             Person p = person(id, tpsPerson, emptyList());
-
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Fant person {}", p);
-            } else {
-                LOG.info("Fant en person OK");
-            }
-
+            LOG.info(CONFIDENTIAL, "{}", p);
             return p;
-        } catch (Exception ex) {
+        } catch (SOAPFaultException e) {
             ERROR_COUNTER.increment();
-            throw new RuntimeException(ex);
+            if (tokenHandler.isExpired()) {
+                throw new TokenExpiredException(tokenHandler.getExp(), e);
+            }
+            throw e;
+        } catch (WebServiceException e) {
+            ERROR_COUNTER.increment();
+            throw new RemoteUnavailableException(e);
         }
 
     }
@@ -142,7 +152,9 @@ public class PersonClientTpsWs implements PersonClient {
 
     private HentPersonResponse hentPerson(HentPersonRequest request) {
         try {
-            return person.hentPerson(request);
+            HentPersonResponse p = person.hentPerson(request);
+            LOG.info("Fant person OK");
+            return p;
         } catch (HentPersonPersonIkkeFunnet e) {
             LOG.warn("Fant ikke person", e);
             throw new NotFoundException(e);
