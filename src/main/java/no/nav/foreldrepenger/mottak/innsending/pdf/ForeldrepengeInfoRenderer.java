@@ -302,7 +302,7 @@ public class ForeldrepengeInfoRenderer {
         }
         if (relasjonTilBarn instanceof Fødsel) {
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("fødtei", pluralize(relasjonTilBarn.getAntallBarn()), land), cos, y);
+                    txt("fødtei", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
         }
 
         if (relasjonTilBarn instanceof Adopsjon) {
