@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -23,7 +22,6 @@ import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
 
 @Data
-@Valid
 @EqualsAndHashCode(exclude = { "vedlegg" })
 @LukketPeriode
 @JsonPropertyOrder({ "fom", "tom" })

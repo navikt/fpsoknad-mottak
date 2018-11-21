@@ -5,6 +5,8 @@ import static java.util.Collections.emptyList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,9 +15,13 @@ import lombok.Data;
 @Data
 public class Opptjening {
 
+    @Valid
     private final List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold;
+    @Valid
     private final List<EgenNæring> egenNæring;
+    @Valid
     private final List<AnnenOpptjening> annenOpptjening;
+    @Valid
     private final Frilans frilans;
 
     @JsonCreator
