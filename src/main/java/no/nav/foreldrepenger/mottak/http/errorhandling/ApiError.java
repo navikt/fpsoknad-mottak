@@ -9,13 +9,12 @@ import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.assertj.core.util.Lists;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
@@ -62,18 +61,13 @@ class ApiError {
         return getMostSpecificCause(t).getMessage();
     }
 
-    private static ImmutableList<String> messages(Throwable t, List<Object> objects) {
-        Builder<String> builder = new ImmutableList.Builder<>();
-        String rootCauseMsg = getRootCauseMessage(t);
-        if (msg != null) {
-            builder.add(msg);
-        }
-        return builder
-                .addAll(objects.stream()
-                        .filter(s -> s != null)
-                        .map(Object::toString)
-                        .collect(toList()))
-                .build();
+    private static List<String> messages(Throwable t, List<Object> objects) {
+        List<Object> messages = Lists.newArrayList(objects);
+        messages.add(getRootCauseMessage(t));
+        return messages.stream()
+                .filter(s -> s != null)
+                .map(Object::toString)
+                .collect(toList());
     }
 
     @Override
