@@ -64,11 +64,11 @@ class ApiError {
 
     private static ImmutableList<String> messages(Throwable t, List<Object> objects) {
         Builder<String> builder = new ImmutableList.Builder<>();
-        String msg = getRootCauseMessage(t);
+        String rootCauseMsg = getRootCauseMessage(t);
         if (msg != null) {
             builder.add(msg);
         }
-        return builder.add(getRootCauseMessage(t))
+        return builder
                 .addAll(objects.stream()
                         .filter(s -> s != null)
                         .map(Object::toString)
