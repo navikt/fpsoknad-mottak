@@ -37,9 +37,9 @@ public class MottakConfiguration {
         CommonsRequestLoggingFilter filter = new FilteringCommonsRequestLoggingFilter();
         filter.setIncludeQueryString(true);
         filter.setIncludePayload(true);
+        filter.setIncludeClientInfo(true);
         filter.setMaxPayloadLength(10000);
         filter.setIncludeHeaders(false);
-        filter.setAfterMessagePrefix("REQUEST DATA : ");
         return filter;
     }
 
