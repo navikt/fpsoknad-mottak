@@ -57,13 +57,9 @@ class ApiError {
         return messages;
     }
 
-    private static String getRootCauseMessage(Throwable t) {
-        return getMostSpecificCause(t).getMessage();
-    }
-
     private static List<String> messages(Throwable t, List<Object> objects) {
         List<Object> messages = Lists.newArrayList(objects);
-        messages.add(getRootCauseMessage(t));
+        messages.add(getMostSpecificCause(t).getMessage());
         return messages.stream()
                 .filter(s -> s != null)
                 .map(Object::toString)
