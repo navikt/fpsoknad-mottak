@@ -9,12 +9,12 @@ import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.assertj.core.util.Lists;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.collect.Lists;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
