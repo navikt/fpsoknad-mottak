@@ -22,6 +22,7 @@ public class FramtidigOppholdsInformasjon {
     private final boolean fødselNorge;
     private final boolean norgeNeste12;
     @Opphold(fortid = false)
+    @Valid
     private final List<Utenlandsopphold> utenlandsOpphold;
 
     @JsonCreator

@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,6 +20,7 @@ public class TidligereOppholdsInformasjon {
     private final boolean boddINorge;
     private final ArbeidsInformasjon arbeidsInfo;
     @Opphold(fortid = true)
+    @Valid
     private final List<Utenlandsopphold> utenlandsOpphold;
 
     @JsonCreator
