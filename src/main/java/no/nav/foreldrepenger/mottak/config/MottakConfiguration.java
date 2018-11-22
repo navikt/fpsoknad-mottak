@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.config;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -32,12 +34,21 @@ public class MottakConfiguration {
     @Bean
     @Profile(PREPROD)
     public CommonsRequestLoggingFilter loggingFilter() {
-        CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
+        CommonsRequestLoggingFilter filter = new FilteringCommonsRequestLoggingFilter();
         filter.setIncludeQueryString(true);
         filter.setIncludePayload(true);
         filter.setMaxPayloadLength(10000);
         filter.setIncludeHeaders(false);
         filter.setAfterMessagePrefix("REQUEST DATA : ");
         return filter;
+    }
+
+    class FilteringCommonsRequestLoggingFilter extends CommonsRequestLoggingFilter {
+
+        @Override
+        protected boolean shouldLog(HttpServletRequest request) {
+            return !request.getRequestURI().contains("actuator") && logger.isDebugEnabled();
+        }
+
     }
 }
