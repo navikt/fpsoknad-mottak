@@ -80,6 +80,12 @@ public class OppslagExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndRespond(FORBIDDEN, e, req, e.getExpiryDate());
     }
 
+    @ExceptionHandler({ TokenExpiredException.class })
+    public ResponseEntity<Object> handleExpiredToken(TokenExpiredException e, WebRequest req) {
+        unauthenticatedCounter.increment();
+        return logAndRespond(FORBIDDEN, e, req, e.getExpDate());
+    }
+
     @ExceptionHandler({ UnauthenticatedException.class })
     public ResponseEntity<Object> handleUnauthenticatedException(UnauthenticatedException e, WebRequest req) {
         unauthenticatedCounter.increment();

@@ -76,7 +76,7 @@ public class PersonClientTpsWs implements PersonClient {
             // Person p = person(id, tpsPerson, barnFor(tpsPerson)); TODO: Fjerner henting
             // av barn inntil frontendproblematikk blir løst
             Person p = person(id, tpsPerson, emptyList());
-            LOG.info(CONFIDENTIAL, "{}", p);
+            LOG.info(CONFIDENTIAL, "Person er {}", p);
             return p;
         } catch (SOAPFaultException e) {
             ERROR_COUNTER.increment();

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
@@ -34,13 +35,7 @@ class ApiError {
     ApiError(HttpStatus status, Throwable t, List<Object> objects) {
         this.timestamp = LocalDateTime.now();
         this.status = status;
-        this.messages = new ImmutableList.Builder<String>()
-                .add(getRootCauseMessage(t))
-                .addAll(objects.stream()
-                        .filter(s -> s != null)
-                        .map(Object::toString)
-                        .collect(toList()))
-                .build();
+        this.messages = messages(t, objects);
         this.uuid = MDC.get(NAV_CALL_ID);
     }
 
@@ -62,6 +57,20 @@ class ApiError {
 
     private static String getRootCauseMessage(Throwable e) {
         return getMostSpecificCause(e).getMessage();
+    }
+
+    private static ImmutableList<String> messages(Throwable t, List<Object> objects) {
+        Builder<String> builder = new ImmutableList.Builder<>();
+        String msg = getRootCauseMessage(t);
+        if (msg != null) {
+            builder.add(msg);
+        }
+        return builder.add(getRootCauseMessage(t))
+                .addAll(objects.stream()
+                        .filter(s -> s != null)
+                        .map(Object::toString)
+                        .collect(toList()))
+                .build();
     }
 
     @Override
