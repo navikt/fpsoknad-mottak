@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
+import java.util.Collections;
+
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.stereotype.Component;
 
