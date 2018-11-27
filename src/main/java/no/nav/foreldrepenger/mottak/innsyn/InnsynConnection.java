@@ -46,10 +46,12 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     }
 
     public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
-        LOG.trace("Henter søknad");
-        return Optional
-                .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadWrapper.class))
-                .orElse(null);
+        if (søknadsLenke != null && søknadsLenke.getHref() != null) {
+            return Optional
+                    .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadWrapper.class))
+                    .orElse(null);
+        }
+        return null;
     }
 
     public List<SakWrapper> hentSaker(String aktørId) {
