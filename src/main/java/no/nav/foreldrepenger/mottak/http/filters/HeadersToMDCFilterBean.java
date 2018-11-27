@@ -44,7 +44,6 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         putValues(HttpServletRequest.class.cast(request));
-        LOG.trace("MDC fiter OK");
         chain.doFilter(request, response);
     }
 
