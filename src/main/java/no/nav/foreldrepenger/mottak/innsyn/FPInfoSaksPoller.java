@@ -67,6 +67,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
                 ForsendelsesStatusKvittering kvittering = respons.getBody();
                 LOG.info("Fikk respons kvittering {}", kvittering);
                 switch (kvittering.getForsendelseStatus()) {
+                case MOTTATT:
                 case AVSLÅTT:
                 case INNVILGET:
                 case PÅ_VENT:
