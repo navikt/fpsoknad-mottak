@@ -13,9 +13,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.PriorityOrdered;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -23,8 +25,10 @@ import org.springframework.web.filter.GenericFilterBean;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 
 @Component
-@Order(PriorityOrdered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class HeadersToMDCFilterBean extends GenericFilterBean {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HeadersToMDCFilterBean.class);
 
     private final CallIdGenerator generator;
     private final String applicationName;
@@ -40,6 +44,7 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         putValues(HttpServletRequest.class.cast(request));
+        LOG.trace("MDC fiter OK");
         chain.doFilter(request, response);
     }
 
