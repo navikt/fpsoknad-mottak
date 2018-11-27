@@ -242,7 +242,8 @@ public class ForeldrepengerPDFGenerator {
             }
             cos.close();
             doc.save(baos);
-            LOG.trace("Dokumentet er på {} side{}", doc.getNumberOfPages(), doc.getNumberOfPages() > 1 ? "r" : "");
+            LOG.info("Dokumentet før søknad er på {} side{}", doc.getNumberOfPages(),
+                    doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
         } catch (IOException e) {
@@ -315,6 +316,8 @@ public class ForeldrepengerPDFGenerator {
             cos.close();
             doc.addPage(page);
             doc.save(baos);
+            LOG.info("Dokumentet for endring er på {} side{}", doc.getNumberOfPages(),
+                    doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
         } catch (IOException e) {
             LOG.warn("Kunne ikke lage PDF", e);
