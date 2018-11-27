@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
-import java.util.Collections;
+import static no.nav.foreldrepenger.mottak.http.filters.FilterRegistrationUtil.always;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,6 @@ public class HeadersToMDCFilterRegistrationBean extends FilterRegistrationBean<H
 
     public HeadersToMDCFilterRegistrationBean(HeadersToMDCFilterBean headersFilter) {
         setFilter(headersFilter);
-        setUrlPatterns(Collections.singletonList("/*"));
-        // setUrlPatterns(urlPatternsFor(INNSENDING, INNSYN));
+        setUrlPatterns(always());
     }
 }
