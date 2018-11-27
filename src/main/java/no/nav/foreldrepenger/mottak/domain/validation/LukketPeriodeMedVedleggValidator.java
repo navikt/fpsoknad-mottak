@@ -15,7 +15,7 @@ public class LukketPeriodeMedVedleggValidator implements ConstraintValidator<Luk
 
     @Override
     public boolean isValid(LukketPeriodeMedVedlegg periode, ConstraintValidatorContext context) {
-        LOG.trace("Valderer periode {} ({}-{})", periode.getClass().getSimpleName(), periode.getFom(),
+        LOG.trace("Validerer periode {} ({}-{})", periode.getClass().getSimpleName(), periode.getFom(),
                 periode.getTom());
         return periode.getFom() != null && periode.getTom() != null && !periode.getFom().isAfter(periode.getTom());
     }
