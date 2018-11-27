@@ -34,13 +34,14 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
 })
 public abstract class LukketPeriodeMedVedlegg {
 
+    @NotNull
     protected final LocalDate fom;
+    @NotNull
     protected final LocalDate tom;
     protected final List<String> vedlegg;
 
     @JsonCreator
-    public LukketPeriodeMedVedlegg(@JsonProperty("fom") @NotNull LocalDate fom,
-            @JsonProperty("tom") @NotNull LocalDate tom,
+    public LukketPeriodeMedVedlegg(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         this.fom = fom;
         this.tom = tom;
