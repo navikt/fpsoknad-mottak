@@ -12,6 +12,8 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -64,6 +66,9 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 
 @Component
 public class ForeldrepengeInfoRenderer {
+
+    private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
 
     private static final float STARTY = PDFElementRenderer.calculateStartY();
@@ -79,7 +84,10 @@ public class ForeldrepengeInfoRenderer {
     public float header(Person søker, PDDocument doc, PDPageContentStream cos, boolean endring, float y)
             throws IOException {
         y -= renderer.addLogo(doc, cos, y);
-        y -= renderer.addCenteredHeading(endring ? txt("endringsøknad_fp") : txt("søknad_fp"), cos, y);
+        y -= renderer.addCenteredHeading(
+                endring ? txt("endringsøknad_fp", FMT.format(LocalDateTime.now()))
+                        : txt("søknad_fp", FMT.format(LocalDateTime.now())),
+                cos, y);
         y -= renderer.addCenteredHeadings(søker(søker), cos, y);
         y -= renderer.addDividerLine(cos, y);
         y -= renderer.addBlankLine();

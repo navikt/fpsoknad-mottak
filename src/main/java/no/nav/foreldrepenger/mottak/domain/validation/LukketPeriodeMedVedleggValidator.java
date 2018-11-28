@@ -28,10 +28,10 @@ public class LukketPeriodeMedVedleggValidator implements ConstraintValidator<Luk
         if (periode.getTom() == null) {
             return false;
         }
-        if (!erHverdag(periode.getFom())) {
+        if (!erUkedag(periode.getFom())) {
             return false;
         }
-        if (!erHverdag(periode.getTom())) {
+        if (!erUkedag(periode.getTom())) {
             return false;
         }
         if (periode.getFom().isAfter(periode.getTom())) {
@@ -40,10 +40,10 @@ public class LukketPeriodeMedVedleggValidator implements ConstraintValidator<Luk
         return true;
     }
 
-    private static boolean erHverdag(LocalDate dato) {
+    private static boolean erUkedag(LocalDate dato) {
         boolean status = !dato.getDayOfWeek().equals(SATURDAY) && !dato.getDayOfWeek().equals(SUNDAY);
         if (!status) {
-            LOG.warn("{} er IKKE en hverdag", dato);
+            LOG.warn("{} er IKKE en ukedag", dato);
         }
         return status;
     }
