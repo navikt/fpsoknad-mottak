@@ -8,8 +8,6 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
@@ -42,7 +40,8 @@ public class AktorIdClientWs implements AktorIdClient {
 
     @Override
     @Cacheable(cacheNames = "aktoer")
-    @Retryable(value = { SOAPFaultException.class }, maxAttempts = 3, backoff = @Backoff(delay = 500))
+    // @Retryable(value = { SOAPFaultException.class }, maxAttempts = 3, backoff =
+    // @Backoff(delay = 500))
     public AktorId aktorIdForFnr(Fødselsnummer fnr) {
         try {
             return new AktorId(aktoerV2.hentAktoerIdForIdent(request(fnr)).getAktoerId());
@@ -62,7 +61,8 @@ public class AktorIdClientWs implements AktorIdClient {
     }
 
     @Override
-    @Retryable(value = { SOAPFaultException.class }, maxAttempts = 3, backoff = @Backoff(delay = 500))
+    // @Retryable(value = { SOAPFaultException.class }, maxAttempts = 3, backoff =
+    // @Backoff(delay = 500))
     public Fødselsnummer fnrForAktørId(AktorId aktørId) {
         try {
             return new Fødselsnummer(aktoerV2.hentIdentForAktoerId(request(aktørId)).getIdent());
