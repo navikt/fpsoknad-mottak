@@ -508,6 +508,7 @@ public class ForeldrepengeInfoRenderer {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", overføring.getFom());
         addIfSet(attributter, "tom", overføring.getTom());
+        addIfSet(attributter, "dager", String.valueOf(overføring.dager()));
         attributter.add(txt("uttaksperiodetype", cap(overføring.getUttaksperiodeType().name())));
         attributter.add(txt("overføringsårsak", cap(overføring.getÅrsak().name())));
         return attributter;
@@ -526,6 +527,7 @@ public class ForeldrepengeInfoRenderer {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", utsettelse.getFom());
         addIfSet(attributter, "tom", utsettelse.getTom());
+        addIfSet(attributter, "dager", String.valueOf(utsettelse.dager()));
         attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
         attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
@@ -546,6 +548,7 @@ public class ForeldrepengeInfoRenderer {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", opphold.getFom());
         addIfSet(attributter, "tom", opphold.getTom());
+        addIfSet(attributter, "dager", String.valueOf(opphold.dager()));
         if (opphold.getÅrsak().key != null) {
             attributter.add(txt("oppholdsårsak", txt(opphold.getÅrsak().key)));
         }
@@ -579,6 +582,7 @@ public class ForeldrepengeInfoRenderer {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", gradert.getFom());
         addIfSet(attributter, "tom", gradert.getTom());
+        addIfSet(attributter, "dager", String.valueOf(gradert.dager()));
         attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
         addIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
@@ -598,6 +602,7 @@ public class ForeldrepengeInfoRenderer {
         ArrayList<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", uttak.getFom());
         addIfSet(attributter, "tom", uttak.getTom());
+        addIfSet(attributter, "dager", String.valueOf(uttak.dager()));
         attributter.add(txt("uttaksperiodetype", cap(uttak.getUttaksperiodeType().name())));
         addIfSet(attributter, uttak.getMorsAktivitetsType());
         if (antallBarn > 1) {

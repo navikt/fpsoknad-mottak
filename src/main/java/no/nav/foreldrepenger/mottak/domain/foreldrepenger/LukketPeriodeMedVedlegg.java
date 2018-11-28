@@ -5,12 +5,14 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static java.util.Collections.emptyList;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -46,5 +48,10 @@ public abstract class LukketPeriodeMedVedlegg {
         this.fom = fom;
         this.tom = tom;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
+    }
+
+    @JsonIgnore
+    public long dager() {
+        return ChronoUnit.DAYS.between(fom, tom) + 1;
     }
 }
