@@ -27,6 +27,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +71,31 @@ public class TestForeldrepengerSerialization {
         mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
         mapper.setSerializationInclusion(Include.NON_NULL);
         mapper.setSerializationInclusion(Include.NON_EMPTY);
+    }
+
+    @Test
+    public void testPeriodeEnDag() {
+        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
+                LocalDate.of(2019, Month.MARCH, 1), Collections.emptyList()) {
+        };
+        assertEquals(1, periode.dager());
+
+    }
+
+    @Test
+    public void testPeriodeOverHelga() {
+        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
+                LocalDate.of(2019, Month.MARCH, 4), Collections.emptyList()) {
+        };
+        assertEquals(2, periode.dager());
+    }
+
+    @Test
+    public void testPeriodeOverToHelger() {
+        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
+                LocalDate.of(2019, Month.MARCH, 11), Collections.emptyList()) {
+        };
+        assertEquals(7, periode.dager());
     }
 
     @Test

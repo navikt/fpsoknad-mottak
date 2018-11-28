@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+
+import java.time.LocalDate;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -17,6 +22,29 @@ public class LukketPeriodeMedVedleggValidator implements ConstraintValidator<Luk
     public boolean isValid(LukketPeriodeMedVedlegg periode, ConstraintValidatorContext context) {
         LOG.trace("Validerer periode {} ({}-{})", periode.getClass().getSimpleName(), periode.getFom(),
                 periode.getTom());
-        return periode.getFom() != null && periode.getTom() != null && !periode.getFom().isAfter(periode.getTom());
+        if (periode.getFom() == null) {
+            return false;
+        }
+        if (periode.getTom() == null) {
+            return false;
+        }
+        if (!erHverdag(periode.getFom())) {
+            return false;
+        }
+        if (!erHverdag(periode.getTom())) {
+            return false;
+        }
+        if (periode.getFom().isAfter(periode.getTom())) {
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean erHverdag(LocalDate dato) {
+        boolean status = !dato.getDayOfWeek().equals(SATURDAY) && !dato.getDayOfWeek().equals(SUNDAY);
+        if (!status) {
+            LOG.warn("{} er IKKE en hverdag", dato);
+        }
+        return status;
     }
 }

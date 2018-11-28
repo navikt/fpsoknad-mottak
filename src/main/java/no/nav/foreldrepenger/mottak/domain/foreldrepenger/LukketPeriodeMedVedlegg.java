@@ -66,4 +66,5 @@ public abstract class LukketPeriodeMedVedlegg {
         // adjust for starting and ending on a Sunday:
         return daysWithoutWeekends + (startW == DayOfWeek.SUNDAY ? 1 : 0) + (endW == DayOfWeek.SUNDAY ? 1 : 0);
     }
+
 }
