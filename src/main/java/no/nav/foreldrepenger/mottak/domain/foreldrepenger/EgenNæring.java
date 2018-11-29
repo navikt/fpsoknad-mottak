@@ -8,6 +8,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -30,6 +34,7 @@ public abstract class EgenNæring {
     private final List<Virksomhetstype> virksomhetsTyper;
     private final ÅpenPeriode periode;
     private final boolean nærRelasjon;
+    @Valid
     private final List<Regnskapsfører> regnskapsførere;
     private final boolean erNyOpprettet;
     private final boolean erVarigEndring;
@@ -37,6 +42,7 @@ public abstract class EgenNæring {
     private final long næringsinntektBrutto;
     private final LocalDate endringsDato;
     private final LocalDate oppstartsDato;
+    @Length(max = 100)
     private final String beskrivelseEndring;
     private final Double stillingsprosent;
     private final List<String> vedlegg;

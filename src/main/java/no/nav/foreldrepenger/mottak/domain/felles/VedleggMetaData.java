@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,6 +10,7 @@ import lombok.Data;
 @Data
 public class VedleggMetaData {
 
+    @Length(max = 2000)
     private final String beskrivelse;
     private final String id;
     private final InnsendingsType innsendingsType;

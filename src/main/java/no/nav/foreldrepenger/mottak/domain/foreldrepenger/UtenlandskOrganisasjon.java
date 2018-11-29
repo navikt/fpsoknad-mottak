@@ -19,7 +19,7 @@ import lombok.ToString;
 
 public class UtenlandskOrganisasjon extends EgenNæring {
 
-    @Length(max = 50)
+    @Length(max = 100)
     private String orgName;
     @JsonAlias("arbeidsland")
     private final CountryCode registrertILand;

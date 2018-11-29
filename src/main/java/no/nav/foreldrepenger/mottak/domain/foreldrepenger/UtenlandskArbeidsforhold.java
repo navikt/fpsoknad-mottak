@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 public class UtenlandskArbeidsforhold {
 
     private final CountryCode land;
-    @Length(max = 50)
+    @Length(max = 100)
     private final String arbeidsgiverNavn;
     @NotNull
     private final ÅpenPeriode periode;

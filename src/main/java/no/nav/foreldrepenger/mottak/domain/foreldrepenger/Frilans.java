@@ -5,6 +5,8 @@ import static java.util.Collections.emptyList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,6 +20,7 @@ public class Frilans {
     private final ÅpenPeriode periode;
     private final boolean harInntektFraFosterhjem;
     private final boolean nyOppstartet;
+    @Valid
     private final List<FrilansOppdrag> frilansOppdrag;
     private final List<String> vedlegg;
 

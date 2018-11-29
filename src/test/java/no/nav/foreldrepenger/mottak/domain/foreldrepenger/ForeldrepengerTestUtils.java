@@ -113,7 +113,7 @@ public class ForeldrepengerTestUtils {
     private static Frilans frilans(String... vedleggRefs) {
         return new Frilans(åpenPeriode(true), true, true,
                 newArrayList(
-                        new FrilansOppdrag("bror min", åpenPeriode(true)),
+                        new FrilansOppdrag("fattern", åpenPeriode(true)),
                         new FrilansOppdrag("den andre bror min", åpenPeriode(true)),
                         new FrilansOppdrag("den tredje bror min", åpenPeriode(true)),
                         new FrilansOppdrag("den fjerde ebror min", åpenPeriode(true)),

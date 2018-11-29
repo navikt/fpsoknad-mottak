@@ -11,6 +11,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -35,7 +36,9 @@ public class Søknad {
     private final Søker søker;
     @Valid
     private final Ytelse ytelse;
+    @Length(max = 2000)
     private String begrunnelseForSenSøknad;
+    @Length(max = 4000)
     private String tilleggsopplysninger;
     private final List<Vedlegg> vedlegg;
 

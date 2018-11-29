@@ -21,7 +21,7 @@ public class NorskOrganisasjon extends EgenNæring {
 
     @Orgnr
     private final String orgNummer;
-    @Length(max = 50)
+    @Length(max = 100)
     private final String orgName;
 
     @Builder
