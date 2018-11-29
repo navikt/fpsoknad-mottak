@@ -1,16 +1,10 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 @Configuration
 public class MottakConfiguration {
@@ -29,26 +23,5 @@ public class MottakConfiguration {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("kvitteringstekster");
         return messageSource;
-    }
-
-    @Bean
-    @Profile(PREPROD)
-    public CommonsRequestLoggingFilter loggingFilter() {
-        CommonsRequestLoggingFilter filter = new FilteringCommonsRequestLoggingFilter();
-        filter.setIncludeQueryString(true);
-        filter.setIncludePayload(true);
-        filter.setIncludeClientInfo(true);
-        filter.setMaxPayloadLength(10000);
-        filter.setIncludeHeaders(false);
-        return filter;
-    }
-
-    class FilteringCommonsRequestLoggingFilter extends CommonsRequestLoggingFilter {
-
-        @Override
-        protected boolean shouldLog(HttpServletRequest request) {
-            return !request.getRequestURI().contains("actuator") && logger.isDebugEnabled();
-        }
-
     }
 }
