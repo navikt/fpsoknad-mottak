@@ -21,6 +21,11 @@ public class FilteringCommonsRequestLoggingFilter extends CommonsRequestLoggingF
     }
 
     @Override
+    protected void beforeRequest(HttpServletRequest request, String message) {
+
+    }
+
+    @Override
     protected boolean shouldLog(HttpServletRequest request) {
         return !request.getRequestURI().contains("actuator") && logger.isDebugEnabled();
     }
