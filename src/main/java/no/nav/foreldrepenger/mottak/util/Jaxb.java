@@ -50,7 +50,6 @@ public final class Jaxb {
     static final Schema FP_SCHEMA_V1 = fpSchema(Version.V1);
 
     private Jaxb() {
-
     }
 
     private static final JAXBContext context(ValidationMode mode) {
