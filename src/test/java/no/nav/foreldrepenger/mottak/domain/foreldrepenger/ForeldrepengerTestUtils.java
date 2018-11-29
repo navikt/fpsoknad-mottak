@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000063;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
@@ -221,30 +223,32 @@ public class ForeldrepengerTestUtils {
     }
 
     static UttaksPeriode uttaksPeriode(String... vedleggRefs) {
-        return new UttaksPeriode(LocalDate.now().plusMonths(3), LocalDate.now().plusMonths(4), FEDREKVOTE,
+        return new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
+                FEDREKVOTE,
                 true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 75.0d, Arrays.asList(vedleggRefs));
     }
 
     static UttaksPeriode gradertPeriode(String... vedleggRefs) {
-        return new GradertUttaksPeriode(LocalDate.now().plusMonths(4), LocalDate.now().plusMonths(5),
+        return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                 FEDREKVOTE,
                 true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true, "222222",
                 Arrays.asList(vedleggRefs));
     }
 
     static OverføringsPeriode overføringsPeriode(String... vedleggRefs) {
-        return new OverføringsPeriode(LocalDate.now(), LocalDate.now().plusMonths(1),
+        return new OverføringsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
                 Overføringsårsak.ALENEOMSORG, StønadskontoType.FEDREKVOTE, Arrays.asList(vedleggRefs));
     }
 
     static OppholdsPeriode oppholdsPeriode(String... vedleggRefs) {
-        return new OppholdsPeriode(LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
+        return new OppholdsPeriode(ukeDagNær(LocalDate.now().plusMonths(1)), ukeDagNær(LocalDate.now().plusMonths(2)),
                 Oppholdsårsak.UTTAK_FEDREKVOTE_ANNEN_FORELDER,
                 Arrays.asList(vedleggRefs));
     }
 
     static UtsettelsesPeriode utsettelsesPeriode(String... vedleggRefs) {
-        return new UtsettelsesPeriode(LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(3), true, "222",
+        return new UtsettelsesPeriode(ukeDagNær(LocalDate.now().plusMonths(2)),
+                ukeDagNær(LocalDate.now().plusMonths(3)), true, "222",
                 UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, MorsAktivitet.ARBEID,
                 Arrays.asList(vedleggRefs));
     }
@@ -272,5 +276,18 @@ public class ForeldrepengerTestUtils {
         } catch (Exception e) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private static LocalDate ukeDagNær(LocalDate dato) {
+        LocalDate d = dato;
+        while (!erUkedag(d)) {
+            d = d.minusDays(1);
+        }
+        return d;
+    }
+
+    private static boolean erUkedag(LocalDate dato) {
+        return !dato.getDayOfWeek().equals(SATURDAY) && !dato.getDayOfWeek().equals(SUNDAY);
+
     }
 }
