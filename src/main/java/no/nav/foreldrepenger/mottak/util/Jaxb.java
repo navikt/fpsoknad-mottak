@@ -47,7 +47,7 @@ public final class Jaxb {
             no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
             no.nav.vedtak.felles.xml.soeknad.v1.Soeknad.class);
     private static final JAXBContext CTX_ES = contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
-    static final Schema FP_SCHEMA_V1 = fpSchema(SupportedVersion.V1);
+    // static final Schema FP_SCHEMA_V1 = fpSchema(SupportedVersion.V1);
 
     private Jaxb() {
     }
@@ -130,7 +130,7 @@ public final class Jaxb {
             case ENGANGSSTØNAD:
                 return unmarshaller;
             case FORELDREPENGER_V1:
-                unmarshaller.setSchema(FP_SCHEMA_V1);
+                // unmarshaller.setSchema(FP_SCHEMA_V1);
                 return unmarshaller;
             }
             return unmarshaller;
@@ -173,13 +173,13 @@ public final class Jaxb {
         case ENGANGSSTØNAD:
             return marshaller;
         case FORELDREPENGER_V1:
-            if (FP_SCHEMA_V1 != null) {
-                LOG.info("Kunne ha validerer XM, gjør det ikke");
-                // marshaller.setSchema(Jaxb.FP_SCHEMA_V1);
-            }
-            else {
-                LOG.info("Validerer ikke XML");
-            }
+            // if (FP_SCHEMA_V1 != null) {
+            // LOG.info("Kunne ha validerer XM, gjør det ikke");
+            // marshaller.setSchema(Jaxb.FP_SCHEMA_V1);
+            // }
+            // else {
+            LOG.info("Validerer ikke XML");
+            // }
             return marshaller;
         default:
             return marshaller;
