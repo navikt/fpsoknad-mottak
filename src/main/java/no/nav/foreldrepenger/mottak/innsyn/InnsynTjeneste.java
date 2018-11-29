@@ -92,6 +92,8 @@ public class InnsynTjeneste implements Innsyn {
         LOG.trace(CONFIDENTIAL, "Mapper behandling fra {}", wrapper);
         return Optional.ofNullable(wrapper)
                 .map(w -> new Behandling.BehandlingBuilder()
+                        .opprettetTidspunkt(wrapper.getOpprettetTidspunkt())
+                        .endretTidspunkt(wrapper.getEndretTidspunkt())
                         .behandlendeEnhet(wrapper.getBehandlendeEnhet())
                         .behandlendeEnhetNavn(wrapper.getBehandlendeEnhetNavn())
                         .status(wrapper.getStatus())

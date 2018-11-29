@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +21,15 @@ public class BehandlingWrapper {
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
+    private final LocalDateTime opprettetTidspunkt;
+    private final LocalDateTime endretTidspunkt;
     private final List<String> inntekstmeldinger;
     private final List<Lenke> lenker;
 
     @JsonCreator
     public BehandlingWrapper(
+            @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
+            @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt,
             @JsonProperty("status") String status,
             @JsonProperty("type") String type,
             @JsonProperty("tema") String tema,
@@ -33,6 +38,8 @@ public class BehandlingWrapper {
             @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
             @JsonProperty("inntekstmeldinger") List<String> inntekstmeldinger,
             @JsonProperty("lenker") List<Lenke> lenker) {
+        this.opprettetTidspunkt = opprettetTidspunkt;
+        this.endretTidspunkt = endretTidspunkt;
         this.status = status;
         this.tema = tema;
         this.type = type;
