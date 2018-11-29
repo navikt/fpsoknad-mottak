@@ -39,10 +39,6 @@ public final class Jaxb {
         ENGANGSSTØNAD, FORELDREPENGER_V1
     }
 
-    private enum Version {
-        v1
-    }
-
     private static final Logger LOG = LoggerFactory.getLogger(Jaxb.class);
     private static final JAXBContext CTX_FPV1 = contextFra(
             no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad.class,
@@ -51,7 +47,7 @@ public final class Jaxb {
             no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
             no.nav.vedtak.felles.xml.soeknad.v1.Soeknad.class);
     private static final JAXBContext CTX_ES = contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
-    static final Schema FP_SCHEMA_V1 = fpSchema(Version.v1);
+    static final Schema FP_SCHEMA_V1 = fpSchema(Version.V1);
 
     private Jaxb() {
 
