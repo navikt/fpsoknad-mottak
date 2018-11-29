@@ -47,7 +47,7 @@ public final class Jaxb {
             no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
             no.nav.vedtak.felles.xml.soeknad.v1.Soeknad.class);
     private static final JAXBContext CTX_ES = contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
-    static final Schema FP_SCHEMA_V1 = fpSchema(Version.V1);
+    static final Schema FP_SCHEMA_V1 = fpSchema(SupportedVersion.V1);
 
     private Jaxb() {
     }
@@ -56,7 +56,7 @@ public final class Jaxb {
         return mode.equals(ValidationMode.ENGANGSSTØNAD) ? CTX_ES : CTX_FPV1;
     }
 
-    private static Schema fpSchema(Version version) {
+    private static Schema fpSchema(SupportedVersion version) {
         try {
             return SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
                     .newSchema(sourcesFra(version,
@@ -197,7 +197,7 @@ public final class Jaxb {
         }
     }
 
-    private static Source[] sourcesFra(Version version, String... schemas) {
+    private static Source[] sourcesFra(SupportedVersion version, String... schemas) {
         return Arrays.stream(schemas)
                 .map(s -> version.name() + s)
                 .map(Jaxb::sourceFra)

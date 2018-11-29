@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.util;
 
-public enum Version {
+public enum SupportedVersion {
     V1
 }
