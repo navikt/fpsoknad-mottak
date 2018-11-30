@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.dto;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
