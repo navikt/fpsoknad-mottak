@@ -12,7 +12,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SakWrapper {
+import no.nav.foreldrepenger.mottak.innsyn.FagsakStatus;
+import no.nav.foreldrepenger.mottak.innsyn.Lenke;
+
+public class SakDTO {
     private static final String BEHANDLINGER = "behandlinger";
     private final String saksnummer;
     private final FagsakStatus fagsakStatus;
@@ -25,15 +28,15 @@ public class SakWrapper {
     private final LocalDateTime endretTidspunkt;
 
     @JsonCreator
-    public SakWrapper(@JsonProperty("saksnummer") String saksnummer,
-                      @JsonProperty("fagsakStatus") FagsakStatus fagsakStatus,
-                      @JsonProperty("behandlingTema") String behandlingTema,
-                      @JsonProperty("aktørId") String aktørId,
-                      @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
-                      @JsonProperty("aktørIdBarna") List<String> aktørIdBarna,
-                      @JsonProperty("lenker") List<Lenke> lenker,
-                      @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
-                      @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt) {
+    public SakDTO(@JsonProperty("saksnummer") String saksnummer,
+            @JsonProperty("fagsakStatus") FagsakStatus fagsakStatus,
+            @JsonProperty("behandlingTema") String behandlingTema,
+            @JsonProperty("aktørId") String aktørId,
+            @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
+            @JsonProperty("aktørIdBarna") List<String> aktørIdBarna,
+            @JsonProperty("lenker") List<Lenke> lenker,
+            @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
+            @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingTema;
@@ -89,7 +92,7 @@ public class SakWrapper {
     @Override
     public int hashCode() {
         return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarna, fagsakStatus, behandlingTema,
-            saksnummer, lenker);
+                saksnummer, lenker);
     }
 
     @Override
@@ -100,21 +103,24 @@ public class SakWrapper {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SakWrapper other = (SakWrapper) obj;
+        SakDTO other = (SakDTO) obj;
         if (aktørId == null) {
             if (other.aktørId != null)
                 return false;
-        } else if (!aktørId.equals(other.aktørId))
+        }
+        else if (!aktørId.equals(other.aktørId))
             return false;
         if (aktørIdAnnenPart == null) {
             if (other.aktørIdAnnenPart != null)
                 return false;
-        } else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart))
+        }
+        else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart))
             return false;
         if (aktørIdBarna == null) {
             if (other.aktørIdBarna != null)
                 return false;
-        } else if (!aktørIdBarna.equals(other.aktørIdBarna))
+        }
+        else if (!aktørIdBarna.equals(other.aktørIdBarna))
             return false;
         if (fagsakStatus != other.fagsakStatus)
             return false;
@@ -123,7 +129,8 @@ public class SakWrapper {
 
         if (saksnummer == null) {
             return other.saksnummer == null;
-        } else {
+        }
+        else {
             return saksnummer.equals(other.saksnummer);
         }
     }
@@ -131,9 +138,9 @@ public class SakWrapper {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
-            + ", behandlingTema="
-            + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarna="
-            + aktørIdBarna + ", lenker=" + lenker + "]";
+                + ", behandlingTema="
+                + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarna="
+                + aktørIdBarna + ", lenker=" + lenker + "]";
     }
 
 }

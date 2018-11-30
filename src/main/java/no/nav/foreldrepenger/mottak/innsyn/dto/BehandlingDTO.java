@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.dto;
 
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -11,9 +11,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.innsyn.Lenke;
 
 @Data
-public class BehandlingWrapper {
+public class BehandlingDTO {
     private static final String SØKNAD = "søknad";
     private final String status;
     private final String type;
@@ -27,7 +28,7 @@ public class BehandlingWrapper {
     private final List<Lenke> lenker;
 
     @JsonCreator
-    public BehandlingWrapper(
+    public BehandlingDTO(
             @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
             @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt,
             @JsonProperty("status") String status,

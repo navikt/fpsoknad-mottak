@@ -45,10 +45,10 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
         return uri(config.getUri(), config.getPingPath());
     }
 
-    public SøknadWrapper hentSøknad(Lenke søknadsLenke) {
+    public SøknadDTO hentSøknad(Lenke søknadsLenke) {
         if (søknadsLenke != null && søknadsLenke.getHref() != null) {
             return Optional
-                    .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadWrapper.class))
+                    .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
                     .orElse(null);
         }
         return null;

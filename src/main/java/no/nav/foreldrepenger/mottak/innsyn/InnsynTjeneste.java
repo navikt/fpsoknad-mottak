@@ -105,7 +105,7 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
     }
 
-    private InnsynsSøknad tilSøknad(SøknadWrapper wrapper) {
+    private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         return new InnsynsSøknad(mapper.tilSøknad(wrapper.getXml()), wrapper.getJournalpostId());
     }

@@ -1,11 +1,11 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.dto;
 
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import lombok.Data;
 
 @Data
-public class SøknadWrapper {
+public class SøknadDTO {
     private final String xml;
     private final String journalpostId;
 
