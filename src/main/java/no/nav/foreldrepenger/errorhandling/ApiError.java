@@ -65,7 +65,7 @@ class ApiError {
         if (msg != null) {
             builder.add(msg);
         }
-        return builder.add(getRootCauseMessage(t))
+        return builder
                 .addAll(objects.stream()
                         .filter(s -> s != null)
                         .map(Object::toString)
