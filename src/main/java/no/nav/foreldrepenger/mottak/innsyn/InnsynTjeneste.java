@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-
+import no.nav.foreldrepenger.mottak.innsyn.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +79,7 @@ public class InnsynTjeneste implements Innsyn {
         return søknad;
     }
 
-    private Sak tilSak(SakWrapper wrapper) {
+    private Sak tilSak(SakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
         return Optional.ofNullable(wrapper)
                 .map(w -> new Sak(w.getSaksnummer(), w.getFagsakStatus(), w.getBehandlingTema(),
@@ -88,7 +88,7 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
     }
 
-    private Behandling tilBehandling(BehandlingWrapper wrapper) {
+    private Behandling tilBehandling(BehandlingDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper behandling fra {}", wrapper);
         return Optional.ofNullable(wrapper)
                 .map(w -> new Behandling.BehandlingBuilder()
