@@ -47,7 +47,7 @@ public final class Jaxb {
             no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
             no.nav.vedtak.felles.xml.soeknad.v1.Soeknad.class);
     private static final JAXBContext CTX_ES = contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class);
-    // static final Schema FP_SCHEMA_V1 = fpSchema(SupportedVersion.V1);
+    static final Schema FP_SCHEMA_V1 = fpSchema(SupportedVersion.V1);
 
     private Jaxb() {
     }
@@ -130,7 +130,7 @@ public final class Jaxb {
             case ENGANGSSTØNAD:
                 return unmarshaller;
             case FORELDREPENGER_V1:
-                // unmarshaller.setSchema(FP_SCHEMA_V1);
+                unmarshaller.setSchema(FP_SCHEMA_V1);
                 return unmarshaller;
             }
             return unmarshaller;
@@ -199,7 +199,7 @@ public final class Jaxb {
 
     private static Source[] sourcesFra(SupportedVersion version, String... schemas) {
         return Arrays.stream(schemas)
-                .map(s -> version.name() + s)
+                .map(s -> version.name().toLowerCase() + s)
                 .map(Jaxb::sourceFra)
                 .toArray(Source[]::new);
 
