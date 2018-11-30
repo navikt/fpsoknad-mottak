@@ -5,7 +5,9 @@ import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAKSNUMMER;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.UTTAKSPLAN;
-
+import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -54,10 +56,10 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
         return null;
     }
 
-    public List<SakWrapper> hentSaker(String aktørId) {
+    public List<SakDTO> hentSaker(String aktørId) {
         LOG.trace("Henter saker");
         return Optional.ofNullable(getForObject(uri(config.getUri(), SAK,
-                queryParams(AKTOR_ID, aktørId)), SakWrapper[].class))
+                queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
@@ -70,10 +72,10 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
                 .orElse(emptyList());
     }
 
-    public BehandlingWrapper hentBehandling(Lenke behandlingsLenke) {
+    public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
         LOG.trace("Henter behandling");
         return Optional.ofNullable(
-                getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingWrapper.class))
+                getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingDTO.class))
                 .orElse(null);
     }
 
