@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import no.nav.foreldrepenger.mottak.innsyn.*;
+import no.nav.foreldrepenger.mottak.innsyn.dto.*;
 import java.util.List;
 import java.util.Optional;
 
