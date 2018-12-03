@@ -28,12 +28,14 @@ public class LukketPeriodeMedVedleggValidator implements ConstraintValidator<Luk
         if (periode.getTom() == null) {
             return false;
         }
+        /*
         if (!erUkedag(periode.getFom())) {
             return false;
         }
         if (!erUkedag(periode.getTom())) {
             return false;
         }
+        */
         if (periode.getFom().isAfter(periode.getTom())) {
             return false;
         }
