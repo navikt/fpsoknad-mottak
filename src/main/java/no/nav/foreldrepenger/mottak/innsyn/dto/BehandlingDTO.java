@@ -22,6 +22,7 @@ public class BehandlingDTO {
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
+    private final String behandlingResultatType;
     private final LocalDateTime opprettetTidspunkt;
     private final LocalDateTime endretTidspunkt;
     private final List<String> inntekstmeldinger;
