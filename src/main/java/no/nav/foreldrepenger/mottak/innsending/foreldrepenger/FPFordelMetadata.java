@@ -98,6 +98,7 @@ public class FPFordelMetadata {
         List<Del> dokumenter = newArrayList(endringsøknadsDel(id, endringssøknad),
                 endringsøknadsDel(id, endringssøknad));
         dokumenter.addAll(endringssøknad.getVedlegg().stream()
+                .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
                 .collect(toList()));
         return dokumenter;
