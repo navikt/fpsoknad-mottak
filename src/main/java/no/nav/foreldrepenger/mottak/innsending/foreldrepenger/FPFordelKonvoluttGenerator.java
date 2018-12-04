@@ -95,10 +95,16 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {
-        LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
-                vedlegg.getStørrelse());
-        builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
-                .headers(headers(vedlegg, contentId));
+        if (vedlegg.getStørrelse() > 0) {
+            LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
+                    vedlegg.getStørrelse());
+            builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
+                    .headers(headers(vedlegg, contentId));
+        }
+        else {
+            LOG.info("Vedlegg av type {} og innsendingstype {} har størrelse 0, kan ikke lastes opp",
+                    vedlegg.getDokumentType(), vedlegg.getInnsendingsType());
+        }
     }
 
     private static VedleggHeaderConsumer headers(Vedlegg vedlegg, AtomicInteger contentId) {
