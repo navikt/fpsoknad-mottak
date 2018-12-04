@@ -79,6 +79,7 @@ public class FPFordelKonvoluttGenerator {
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
         endringsøknad.getVedlegg().stream()
+                .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
         return new HttpEntity<>(builder.build(), headers());
@@ -95,16 +96,10 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {
-        if (vedlegg.getStørrelse() > 0) {
-            LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
-                    vedlegg.getStørrelse());
-            builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
-                    .headers(headers(vedlegg, contentId));
-        }
-        else {
-            LOG.warn("Vedlegg av type {} og innsendingstype {} har størrelse 0, kan ikke lastes opp",
-                    vedlegg.getDokumentType(), vedlegg.getInnsendingsType());
-        }
+        LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
+                vedlegg.getStørrelse());
+        builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
+                .headers(headers(vedlegg, contentId));
     }
 
     private static VedleggHeaderConsumer headers(Vedlegg vedlegg, AtomicInteger contentId) {
