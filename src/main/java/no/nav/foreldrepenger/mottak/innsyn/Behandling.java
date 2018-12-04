@@ -16,6 +16,7 @@ public class Behandling {
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
+    private final String behandlingResultatType;
     private final InnsynsSøknad søknad;
 
 }
