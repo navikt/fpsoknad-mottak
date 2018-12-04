@@ -102,7 +102,7 @@ public class FPFordelKonvoluttGenerator {
                     .headers(headers(vedlegg, contentId));
         }
         else {
-            LOG.info("Vedlegg av type {} og innsendingstype {} har størrelse 0, kan ikke lastes opp",
+            LOG.warn("Vedlegg av type {} og innsendingstype {} har størrelse 0, kan ikke lastes opp",
                     vedlegg.getDokumentType(), vedlegg.getInnsendingsType());
         }
     }
