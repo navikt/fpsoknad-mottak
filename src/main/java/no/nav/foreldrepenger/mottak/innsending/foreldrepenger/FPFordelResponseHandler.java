@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class FPFordelResponseHandler extends AbstractRestConnection {
@@ -34,11 +34,11 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     private final long maxMillis;
     private final FPInfoSaksPoller poller;
 
-    public FPFordelResponseHandler(RestTemplate template, TokenHandler tokenHandler,
+    public FPFordelResponseHandler(RestTemplate template, TokenHelper tokenHelper,
             @Value("${fpfordel.max:5}") int maxAntallForsøk,
             @Value("${fpfordel.maxMillis:10000}") long maxMillis,
             FPInfoSaksPoller poller) {
-        super(template, tokenHandler);
+        super(template, tokenHelper);
         this.maxAntallForsøk = maxAntallForsøk;
         this.maxMillis = maxMillis;
         this.poller = poller;

@@ -18,7 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection implements Pingable {
@@ -27,8 +27,8 @@ public class OppslagConnection extends AbstractRestConnection implements Pingabl
 
     private final OppslagConfig cfg;
 
-    public OppslagConnection(RestTemplate template, TokenHandler tokenHandler, OppslagConfig config) {
-        super(template, tokenHandler);
+    public OppslagConnection(RestTemplate template, TokenHelper tokenHelper, OppslagConfig config) {
+        super(template, tokenHelper);
         this.cfg = config;
     }
 

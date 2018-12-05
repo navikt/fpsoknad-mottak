@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class FPFordelConnection extends AbstractRestConnection implements Pingable {
@@ -17,9 +17,9 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
     private final FPFordelConfig config;
     private final FPFordelResponseHandler responseHandler;
 
-    public FPFordelConnection(RestTemplate template, TokenHandler tokenHandler, FPFordelConfig config,
+    public FPFordelConnection(RestTemplate template, TokenHelper tokenHelper, FPFordelConfig config,
             FPFordelResponseHandler responseHandler) {
-        super(template, tokenHandler);
+        super(template, tokenHelper);
         this.config = config;
         this.responseHandler = responseHandler;
     }

@@ -22,7 +22,7 @@ import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class TokenHandlerTest {
+public class TokenHelperTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("42");
     @Mock
@@ -32,47 +32,47 @@ public class TokenHandlerTest {
     @Mock
     private OIDCClaims claims;
 
-    private TokenHandler tokenHandler;
+    private TokenHelper tokenHelper;
 
     @Before
     public void before() {
         when(holder.getOIDCValidationContext()).thenReturn(context);
         when(context.getClaims(eq(ISSUER))).thenReturn(claims);
-        tokenHandler = new TokenHandler(holder);
+        tokenHelper = new TokenHelper(holder);
     }
 
     @Test
     public void testExtractorOK() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().subject(FNR.getFnr()).build());
-        assertEquals(FNR, tokenHandler.autentisertBruker());
-        assertTrue(tokenHandler.erAutentisert());
+        assertEquals(FNR, tokenHelper.autentisertBruker());
+        assertTrue(tokenHelper.erAutentisert());
     }
 
     @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoContext() {
         when(holder.getOIDCValidationContext()).thenReturn(null);
-        assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.autentisertBruker();
+        assertFalse(tokenHelper.erAutentisert());
+        tokenHelper.autentisertBruker();
     }
 
     @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoClaims() {
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
-        assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.autentisertBruker();
+        assertFalse(tokenHelper.erAutentisert());
+        tokenHelper.autentisertBruker();
     }
 
     @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoClaimset() {
         when(claims.getClaimSet()).thenReturn(null);
-        assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.autentisertBruker();
+        assertFalse(tokenHelper.erAutentisert());
+        tokenHelper.autentisertBruker();
     }
 
     @Test(expected = UnauthenticatedException.class)
     public void testExtractorNoSubject() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().build());
-        assertFalse(tokenHandler.erAutentisert());
-        tokenHandler.autentisertBruker();
+        assertFalse(tokenHelper.erAutentisert());
+        tokenHelper.autentisertBruker();
     }
 }

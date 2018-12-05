@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Order(HIGHEST_PRECEDENCE)
 @Component
@@ -29,17 +29,17 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(IDToMDCFilterBean.class);
 
     private final Oppslag oppslag;
-    private final TokenHandler handler;
+    private final TokenHelper tokenHelper;
 
-    public IDToMDCFilterBean(TokenHandler handler, Oppslag oppslag) {
-        this.handler = handler;
+    public IDToMDCFilterBean(TokenHelper tokenHelper, Oppslag oppslag) {
+        this.tokenHelper = tokenHelper;
         this.oppslag = oppslag;
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        if (handler.erAutentisert()) {
+        if (tokenHelper.erAutentisert()) {
             copyHeadersToMDC();
         }
         chain.doFilter(req, res);
@@ -48,7 +48,7 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     private void copyHeadersToMDC() {
         try {
             if (isDevOrPreprod(getEnvironment())) {
-                MDC.put(NAV_USER_ID, handler.autentisertBruker().getFnr());
+                MDC.put(NAV_USER_ID, tokenHelper.autentisertBruker().getFnr());
             }
             MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
         } catch (Exception e) {
@@ -58,6 +58,6 @@ public class IDToMDCFilterBean extends GenericFilterBean {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", handler=" + handler + "]";
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", tokenHelper=" + tokenHelper + "]";
     }
 }

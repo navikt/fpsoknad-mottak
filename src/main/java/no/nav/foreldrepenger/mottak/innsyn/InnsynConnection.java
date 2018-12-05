@@ -5,9 +5,7 @@ import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAKSNUMMER;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.UTTAKSPLAN;
-import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
-import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
+
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +18,10 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements Pingable {
@@ -28,8 +29,8 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     private final InnsynConfig config;
 
-    public InnsynConnection(RestTemplate template, TokenHandler tokenHandler, InnsynConfig config) {
-        super(template, tokenHandler);
+    public InnsynConnection(RestTemplate template, TokenHelper tokenHelper, InnsynConfig config) {
+        super(template, tokenHelper);
         this.config = config;
     }
 

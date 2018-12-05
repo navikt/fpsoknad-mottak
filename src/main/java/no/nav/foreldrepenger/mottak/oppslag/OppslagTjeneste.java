@@ -10,18 +10,18 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagTjeneste implements Oppslag {
 
     private final OppslagConnection connection;
-    private final TokenHandler extractor;
+    private final TokenHelper tokenHelper;
 
-    public OppslagTjeneste(OppslagConnection connection, TokenHandler extractor) {
+    public OppslagTjeneste(OppslagConnection connection, TokenHelper tokenHelper) {
         this.connection = connection;
-        this.extractor = extractor;
+        this.tokenHelper = tokenHelper;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public AktorId getAktørId() {
-        return getAktørId(extractor.autentisertBruker());
+        return getAktørId(tokenHelper.autentisertBruker());
     }
 
     @Override
@@ -52,6 +52,6 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", extractor=" + extractor + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
     }
 }

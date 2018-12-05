@@ -12,16 +12,16 @@ import org.springframework.web.client.HttpClientErrorException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 //TODO, not yet used
 public class StatusCodeConvertingResponseErrorHandler extends DefaultResponseErrorHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(StatusCodeConvertingResponseErrorHandler.class);
-    private final TokenHandler tokenHandler;
+    private final TokenHelper tokenHelper;
 
-    public StatusCodeConvertingResponseErrorHandler(TokenHandler tokenHandler) {
-        this.tokenHandler = tokenHandler;
+    public StatusCodeConvertingResponseErrorHandler(TokenHelper tokenHelper) {
+        this.tokenHelper = tokenHelper;
     }
 
     @Override
@@ -31,10 +31,10 @@ public class StatusCodeConvertingResponseErrorHandler extends DefaultResponseErr
         case NOT_FOUND:
             throw new NotFoundException(res.getStatusText(), new HttpClientErrorException(code));
         case UNAUTHORIZED:
-            throw new UnauthorizedException(res.getStatusText(), tokenHandler.getExp(),
+            throw new UnauthorizedException(res.getStatusText(), tokenHelper.getExp(),
                     new HttpClientErrorException(code));
         case FORBIDDEN:
-            throw new UnauthenticatedException(res.getStatusText(), tokenHandler.getExp(),
+            throw new UnauthenticatedException(res.getStatusText(), tokenHelper.getExp(),
                     new HttpClientErrorException(code));
         default:
             super.handleError(res, code);
@@ -43,6 +43,6 @@ public class StatusCodeConvertingResponseErrorHandler extends DefaultResponseErr
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [tokenHandler=" + tokenHandler + "]";
+        return getClass().getSimpleName() + " [tokenHandler=" + tokenHelper + "]";
     }
 }

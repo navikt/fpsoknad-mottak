@@ -18,19 +18,19 @@ import org.springframework.web.util.UriComponentsBuilder;
 import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
-import no.nav.foreldrepenger.mottak.util.TokenHandler;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 public abstract class AbstractRestConnection {
 
     private final RestTemplate template;
-    private final TokenHandler tokenHandler;
+    private final TokenHelper tokenHelper;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
     protected abstract boolean isEnabled();
 
-    public AbstractRestConnection(RestTemplate template, TokenHandler tokenHandler) {
+    public AbstractRestConnection(RestTemplate template, TokenHelper tokenHelper) {
         this.template = template;
-        this.tokenHandler = tokenHandler;
+        this.tokenHelper = tokenHelper;
     }
 
     protected String ping(URI uri) {
@@ -60,9 +60,9 @@ public abstract class AbstractRestConnection {
             LOG.warn("Kunne ikke poste entitet til {}, status kode var {}", uri, code, e);
             switch (code) {
             case UNAUTHORIZED:
-                throw new UnauthorizedException(tokenHandler.getExp(), e);
+                throw new UnauthorizedException(tokenHelper.getExp(), e);
             case FORBIDDEN:
-                throw new UnauthenticatedException(tokenHandler.getExp(), e);
+                throw new UnauthenticatedException(tokenHelper.getExp(), e);
             default:
                 throw e;
             }
@@ -87,9 +87,9 @@ public abstract class AbstractRestConnection {
             case NOT_FOUND:
                 throw new NotFoundException(e);
             case UNAUTHORIZED:
-                throw new UnauthorizedException(tokenHandler.getExp(), e);
+                throw new UnauthorizedException(tokenHelper.getExp(), e);
             case FORBIDDEN:
-                throw new UnauthenticatedException(tokenHandler.getExp(), e);
+                throw new UnauthenticatedException(tokenHelper.getExp(), e);
             default:
                 throw e;
             }
@@ -119,9 +119,9 @@ public abstract class AbstractRestConnection {
                 LOG.trace("Returnerer null");
                 return null;
             case UNAUTHORIZED:
-                throw new UnauthorizedException(tokenHandler.getExp(), e);
+                throw new UnauthorizedException(tokenHelper.getExp(), e);
             case FORBIDDEN:
-                throw new UnauthenticatedException(tokenHandler.getExp(), e);
+                throw new UnauthenticatedException(tokenHelper.getExp(), e);
             default:
                 throw e;
             }
@@ -146,5 +146,10 @@ public abstract class AbstractRestConnection {
         return UriComponentsBuilder
                 .fromUri(base)
                 .pathSegment(path);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [template=" + template + ", tokenHelper=" + tokenHelper + "]";
     }
 }

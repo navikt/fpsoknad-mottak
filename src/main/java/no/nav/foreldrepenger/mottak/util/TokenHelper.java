@@ -20,11 +20,11 @@ import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.oidc.context.TokenContext;
 
 @Component
-public class TokenHandler {
+public class TokenHelper {
 
     private final OIDCRequestContextHolder ctxHolder;
 
-    public TokenHandler(OIDCRequestContextHolder ctxHolder) {
+    public TokenHelper(OIDCRequestContextHolder ctxHolder) {
         this.ctxHolder = ctxHolder;
     }
 
