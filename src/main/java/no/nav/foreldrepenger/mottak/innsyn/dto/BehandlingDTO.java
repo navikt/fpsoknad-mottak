@@ -22,6 +22,7 @@ public class BehandlingDTO {
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
+    private final String behandlingResultatType;
     private final LocalDateTime opprettetTidspunkt;
     private final LocalDateTime endretTidspunkt;
     private final List<String> inntekstmeldinger;
@@ -37,6 +38,7 @@ public class BehandlingDTO {
             @JsonProperty("årsak") String årsak,
             @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
             @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
+            @JsonProperty("behandlingResultatType") String behandlingResultatType,
             @JsonProperty("inntekstmeldinger") List<String> inntekstmeldinger,
             @JsonProperty("lenker") List<Lenke> lenker) {
         this.opprettetTidspunkt = opprettetTidspunkt;
@@ -47,6 +49,7 @@ public class BehandlingDTO {
         this.årsak = årsak;
         this.behandlendeEnhet = behandlendeEnhet;
         this.behandlendeEnhetNavn = behandlendeEnhetNavn;
+        this.behandlingResultatType = behandlingResultatType;
         this.inntekstmeldinger = Optional.ofNullable(inntekstmeldinger).orElse(emptyList());
         this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
     }
