@@ -31,7 +31,8 @@ public class StatusCodeConvertingResponseErrorHandler extends DefaultResponseErr
         case NOT_FOUND:
             throw new NotFoundException(res.getStatusText(), new HttpClientErrorException(code));
         case UNAUTHORIZED:
-            throw new UnauthorizedException(res.getStatusText(), new HttpClientErrorException(code));
+            throw new UnauthorizedException(res.getStatusText(), tokenHandler.getExp(),
+                    new HttpClientErrorException(code));
         case FORBIDDEN:
             throw new UnauthenticatedException(res.getStatusText(), tokenHandler.getExp(),
                     new HttpClientErrorException(code));

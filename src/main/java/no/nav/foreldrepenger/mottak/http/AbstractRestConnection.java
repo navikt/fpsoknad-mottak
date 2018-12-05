@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
-import no.nav.foreldrepenger.mottak.http.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
 import no.nav.foreldrepenger.mottak.util.TokenHandler;
@@ -61,14 +60,15 @@ public abstract class AbstractRestConnection {
             LOG.warn("Kunne ikke poste entitet til {}, status kode var {}", uri, code, e);
             switch (code) {
             case UNAUTHORIZED:
-                throw new UnauthorizedException(e);
+                throw new UnauthorizedException(tokenHandler.getExp(), e);
             case FORBIDDEN:
                 throw new UnauthenticatedException(tokenHandler.getExp(), e);
             default:
-                throw new RemoteUnavailableException(e);
+                throw e;
             }
         } catch (RestClientException e) {
-            throw new RemoteUnavailableException(e);
+            LOG.warn("FKUnne ikke poste til {}", uri, e);
+            throw e;
         }
     }
 
@@ -87,15 +87,15 @@ public abstract class AbstractRestConnection {
             case NOT_FOUND:
                 throw new NotFoundException(e);
             case UNAUTHORIZED:
-                throw new UnauthorizedException(e);
+                throw new UnauthorizedException(tokenHandler.getExp(), e);
             case FORBIDDEN:
                 throw new UnauthenticatedException(tokenHandler.getExp(), e);
             default:
-                throw new RemoteUnavailableException(e);
+                throw e;
             }
         } catch (RestClientException e) {
             LOG.warn("Fant ingen entitet på {}", uri, e);
-            throw new RemoteUnavailableException(e);
+            throw e;
         }
     }
 
@@ -119,15 +119,15 @@ public abstract class AbstractRestConnection {
                 LOG.trace("Returnerer null");
                 return null;
             case UNAUTHORIZED:
-                throw new UnauthorizedException(e);
+                throw new UnauthorizedException(tokenHandler.getExp(), e);
             case FORBIDDEN:
                 throw new UnauthenticatedException(tokenHandler.getExp(), e);
             default:
-                throw new RemoteUnavailableException(e);
+                throw e;
             }
         } catch (RestClientException e) {
             LOG.warn("Fant intet objekt på {}", uri, e);
-            throw new RemoteUnavailableException(uri, e);
+            throw e;
         }
     }
 

@@ -20,10 +20,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotQueueUnavailableException;
 import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 
@@ -31,6 +34,12 @@ import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedExcept
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
+
+    @ResponseBody
+    @ExceptionHandler(HttpStatusCodeException.class)
+    public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
+        return logAndHandle(e.getStatusCode(), e, request);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
@@ -44,8 +53,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
-    @ExceptionHandler(value = { RemoteUnavailableException.class })
-    protected ResponseEntity<Object> handleRemoteUnavailable(RemoteUnavailableException e, WebRequest req) {
+    @ExceptionHandler(value = { DokmotQueueUnavailableException.class })
+    protected ResponseEntity<Object> handleRemoteUnavailable(DokmotQueueUnavailableException e, WebRequest req) {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
     }
 
@@ -54,8 +63,13 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(NOT_FOUND, e, req);
     }
 
-    @ExceptionHandler({ OIDCUnauthorizedException.class, UnauthorizedException.class })
-    public ResponseEntity<Object> handleUnauthorizedException(Exception e, WebRequest req) {
+    @ExceptionHandler({ UnauthorizedException.class })
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e, WebRequest req) {
+        return logAndHandle(UNAUTHORIZED, e, req, e.getExpiryDate());
+    }
+
+    @ExceptionHandler({ OIDCUnauthorizedException.class })
+    public ResponseEntity<Object> handleUnauthorizedException(OIDCUnauthorizedException e, WebRequest req) {
         return logAndHandle(UNAUTHORIZED, e, req);
     }
 
