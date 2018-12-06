@@ -8,6 +8,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 public final class DateUtil {
 
+    private DateUtil() {
+
+    }
+
     public static LocalDate toLocalDate(XMLGregorianCalendar cal) {
         return LocalDate.of(cal.getYear(), cal.getMonth(), cal.getDay());
     }
