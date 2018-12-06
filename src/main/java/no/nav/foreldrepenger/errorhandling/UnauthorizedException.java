@@ -1,17 +1,33 @@
 package no.nav.foreldrepenger.errorhandling;
 
+import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
+
+import java.util.Date;
+
 public class UnauthorizedException extends RuntimeException {
 
-    public UnauthorizedException(Throwable cause) {
-        this(cause.getMessage(), cause);
-    }
+    private final Date expDate;
 
     public UnauthorizedException(String msg) {
-        this(msg, null);
+        this(msg, null, null);
     }
 
-    public UnauthorizedException(String msg, Throwable cause) {
+    public UnauthorizedException(Throwable cause) {
+        this(null, null, cause);
+
+    }
+
+    public UnauthorizedException(Date expDate, Throwable cause) {
+        this(cause != null ? getMostSpecificCause(cause).getMessage() : null, expDate, cause);
+    }
+
+    public UnauthorizedException(String msg, Date expDate, Throwable cause) {
         super(msg, cause);
+        this.expDate = expDate;
+    }
+
+    public Date getExpiryDate() {
+        return expDate;
     }
 
 }

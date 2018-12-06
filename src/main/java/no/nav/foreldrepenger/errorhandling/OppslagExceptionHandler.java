@@ -15,6 +15,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -38,6 +40,11 @@ public class OppslagExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Counter invalidRequestsCounter = Metrics.counter("errors.request.invalid");
     private static final Counter unauthorizedCounter = Metrics.counter("errors.lookup.unauthorized");
     private static final Counter unauthenticatedCounter = Metrics.counter("errors.lookup.unauthenticated");
+
+    @ExceptionHandler(HttpStatusCodeException.class)
+    public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
+        return logAndRespond(e.getStatusCode(), e, request, getRootCauseMessage(e));
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
@@ -83,7 +90,7 @@ public class OppslagExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ TokenExpiredException.class })
     public ResponseEntity<Object> handleExpiredToken(TokenExpiredException e, WebRequest req) {
         unauthenticatedCounter.increment();
-        return logAndRespond(FORBIDDEN, e, req, e.getExpDate());
+        return logAndRespond(FORBIDDEN, e, req, e.getExpiryDate());
     }
 
     @ExceptionHandler({ UnauthenticatedException.class })
@@ -107,6 +114,10 @@ public class OppslagExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e,
                 new ApiError(status, e, messages),
                 new HttpHeaders(), status, req);
+    }
+
+    private String getRootCauseMessage(Throwable t) {
+        return NestedExceptionUtils.getMostSpecificCause(t).getMessage();
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {

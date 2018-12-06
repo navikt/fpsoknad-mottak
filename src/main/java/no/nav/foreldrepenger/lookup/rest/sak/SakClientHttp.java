@@ -7,6 +7,7 @@ import static java.util.Comparator.comparing;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -19,24 +20,23 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.foreldrepenger.lookup.rest.AbstractRestConnection;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
-public class SakClientHttp implements SakClient {
+public class SakClientHttp extends AbstractRestConnection implements SakClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SakClientHttp.class);
-
-    private final RestTemplate restTemplate;
 
     private final String sakBaseUrl;
 
     private final StsClient stsClient;
 
-    public SakClientHttp(String sakBaseUrl, RestTemplate restTemplate, StsClient stsClient) {
+    public SakClientHttp(String sakBaseUrl, RestOperations restOperations, StsClient stsClient) {
+        super(restOperations);
         this.sakBaseUrl = sakBaseUrl;
-        this.restTemplate = restTemplate;
         this.stsClient = stsClient;
     }
 
@@ -52,7 +52,7 @@ public class SakClientHttp implements SakClient {
         headers.setAccept(singletonList(APPLICATION_JSON));
         HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
 
-        ResponseEntity<List<RemoteSak>> response = restTemplate.exchange(
+        ResponseEntity<List<RemoteSak>> response = operations.exchange(
                 sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
                 HttpMethod.GET,
                 requestEntity,
@@ -85,9 +85,19 @@ public class SakClientHttp implements SakClient {
     }
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [restTemplate=" + restTemplate + ", sakBaseUrl=" + sakBaseUrl
-                + ", stsClient=" + stsClient + "]";
+    protected boolean isEnabled() {
+        // TODO
+        return true;
     }
 
+    @Override
+    protected URI pingURI() {
+        // TODO
+        return URI.create("http://www.vg.no");
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [sakBaseUrl=" + sakBaseUrl + ", stsClient=" + stsClient + "]";
+    }
 }
