@@ -9,7 +9,6 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
-import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
 import no.nav.foreldrepenger.mottak.util.TokenHelper;
@@ -28,8 +27,6 @@ public class StatusCodeConvertingResponseErrorHandler extends DefaultResponseErr
     protected void handleError(ClientHttpResponse res, HttpStatus code) throws IOException {
         LOG.info("Handling error code {}", code);
         switch (code) {
-        case NOT_FOUND:
-            throw new NotFoundException(res.getStatusText(), new HttpClientErrorException(code));
         case UNAUTHORIZED:
             throw new UnauthorizedException(res.getStatusText(), tokenHelper.getExp(),
                     new HttpClientErrorException(code));
@@ -43,6 +40,6 @@ public class StatusCodeConvertingResponseErrorHandler extends DefaultResponseErr
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [tokenHandler=" + tokenHelper + "]";
+        return getClass().getSimpleName() + " [tokenHelper=" + tokenHelper + "]";
     }
 }

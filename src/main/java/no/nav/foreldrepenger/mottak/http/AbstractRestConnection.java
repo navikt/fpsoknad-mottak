@@ -15,7 +15,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import no.nav.foreldrepenger.mottak.http.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
 import no.nav.foreldrepenger.mottak.util.TokenHelper;
@@ -85,7 +84,7 @@ public abstract class AbstractRestConnection {
             LOG.warn("Fant ingen entitet på {}, status kode var {}", uri, code, e);
             switch (code) {
             case NOT_FOUND:
-                throw new NotFoundException(e);
+                throw e;
             case UNAUTHORIZED:
                 throw new UnauthorizedException(tokenHelper.getExp(), e);
             case FORBIDDEN:
@@ -114,7 +113,7 @@ public abstract class AbstractRestConnection {
             case NOT_FOUND:
                 if (doThrow) {
                     LOG.trace("kaster NotFoundException videre");
-                    throw new NotFoundException(e);
+                    throw e;
                 }
                 LOG.trace("Returnerer null");
                 return null;
