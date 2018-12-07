@@ -4,22 +4,16 @@ import static java.time.LocalDate.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestOperations;
 
 import io.micrometer.core.annotation.Timed;
@@ -45,26 +39,33 @@ public class SakClientHttp extends AbstractRestConnection implements SakClient {
     public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
         LOG.trace("henter saker på " + sakBaseUrl);
 
-        String samlToken = stsClient.exchangeForSamlToken(oidcToken);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Saml " + encode(samlToken));
-        headers.setContentType(APPLICATION_JSON);
-        headers.setAccept(singletonList(APPLICATION_JSON));
-        HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-
-        ResponseEntity<List<RemoteSak>> response = operations.exchange(
-                sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
-                HttpMethod.GET,
-                requestEntity,
-                new ParameterizedTypeReference<List<RemoteSak>>() {
-                });
-        if (response.getStatusCode() != HttpStatus.OK) {
-            throw new RuntimeException("Error while querying Sak, got status " + response.getStatusCode());
-        }
-        List<RemoteSak> saker = Optional.ofNullable(response.getBody()).orElse(emptyList());
-
+        /*
+         * String samlToken = stsClient.exchangeForSamlToken(oidcToken); HttpHeaders
+         * headers = new HttpHeaders(); headers.set("Authorization", "Saml " +
+         * encode(samlToken)); headers.setContentType(APPLICATION_JSON);
+         * headers.setAccept(singletonList(APPLICATION_JSON)); HttpEntity<String>
+         * requestEntity = new HttpEntity<>("", headers);
+         *
+         */
+        List<RemoteSak> saker = Optional.ofNullable(
+                getForObject(URI.create(sakBaseUrl + "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR"),
+                        RemoteSak[].class))
+                .map(Arrays::asList)
+                .orElse(emptyList());
+        /*
+         * ResponseEntity<List<RemoteSak>> response = operations.exchange( sakBaseUrl +
+         * "?aktoerId=" + aktor.getAktør() + "&applikasjon=IT01&tema=FOR",
+         * HttpMethod.GET, requestEntity, new
+         * ParameterizedTypeReference<List<RemoteSak>>() { }); if
+         * (response.getStatusCode() != HttpStatus.OK) { throw new
+         * RuntimeException("Error while querying Sak, got status " +
+         * response.getStatusCode()); } List<RemoteSak> saker =
+         * Optional.ofNullable(response.getBody()).orElse(emptyList());
+         */
         LOG.info("Fant {} sak(er)", saker.size());
-        LOG.trace("{}", saker);
+        if (!saker.isEmpty()) {
+            LOG.trace("{}", saker);
+        }
 
         Sak sisteSak = saker.stream()
                 .map(RemoteSakMapper::map)
