@@ -1,20 +1,14 @@
 package no.nav.foreldrepenger.lookup.rest.sak;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.lookup.TokenHandler;
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorIdClient;
-import no.nav.foreldrepenger.lookup.ws.person.Fødselsnummer;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 
 @RestController
@@ -33,17 +27,15 @@ public class SakController {
         this.aktorClient = aktorClient;
     }
 
-    @RequestMapping(method = { RequestMethod.GET }, value = SAK)
-    public ResponseEntity<List<Sak>> cases() {
-        String oidcToken = tokenHandler.getToken();
-        Fødselsnummer fnr = tokenHandler.autentisertBruker();
-        final AktorId aktorId = aktorClient.aktorIdForFnr(fnr);
-        return ok(sakClient.sakerFor(aktorId, oidcToken));
-
+    @GetMapping(SAK)
+    public List<Sak> saker() {
+        return sakClient.sakerFor(aktorClient.aktorIdForFnr(tokenHandler.autentisertBruker()));
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [sakClient=" + sakClient + "]";
+        return getClass().getSimpleName() + " [sakClient=" + sakClient + ", aktorClient=" + aktorClient
+                + ", tokenHandler=" + tokenHandler + "]";
     }
+
 }

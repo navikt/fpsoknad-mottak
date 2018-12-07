@@ -33,8 +33,8 @@ public class SakConfiguration {
     private String servicePwd;
 
     @Bean
-    public SakClientHttp sakClient(RestOperations restOperations, StsClient stsClient) {
-        return new SakClientHttp(sakBaseUrl, restOperations, stsClient);
+    public SakClientHttp sakClient(RestOperations restOperations, StsClient stsClient, TokenHandler tokenHandler) {
+        return new SakClientHttp(sakBaseUrl, restOperations, stsClient, tokenHandler);
     }
 
     @Bean

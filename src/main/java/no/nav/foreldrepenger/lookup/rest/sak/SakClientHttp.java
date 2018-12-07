@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestOperations;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.rest.AbstractRestConnection;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
@@ -34,18 +35,22 @@ public class SakClientHttp extends AbstractRestConnection implements SakClient {
 
     private final StsClient stsClient;
 
-    public SakClientHttp(String sakBaseUrl, RestOperations restOperations, StsClient stsClient) {
+    private final TokenHandler tokenHandler;
+
+    public SakClientHttp(String sakBaseUrl, RestOperations restOperations, StsClient stsClient,
+            TokenHandler tokenHandler) {
         super(restOperations);
         this.sakBaseUrl = sakBaseUrl;
         this.stsClient = stsClient;
+        this.tokenHandler = tokenHandler;
     }
 
     @Override
     @Timed("lookup.sak")
-    public List<Sak> sakerFor(AktorId aktor, String oidcToken) {
+    public List<Sak> sakerFor(AktorId aktor) {
         LOG.trace("henter saker på " + sakBaseUrl);
 
-        String samlToken = stsClient.exchangeForSamlToken(oidcToken);
+        String samlToken = stsClient.exchangeForSamlToken(tokenHandler.getToken());
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Saml " + encode(samlToken));
         headers.setContentType(APPLICATION_JSON);
