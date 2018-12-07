@@ -17,12 +17,11 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.rest.sak.StsClient;
 
-@Component
+//@Component
 @Order(HIGHEST_PRECEDENCE)
 public class OIDCToSAMLTokenExchangingClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
     private static final Logger LOG = LoggerFactory
