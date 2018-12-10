@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,19 +40,55 @@ public class PDFElementRenderer {
         return MEDIABOX.getUpperRightY() - MARGIN;
     }
 
+    int characterLimitInCos(PDFont font, int fontSize, int marginOffset) {
+        float maxLineWidth = MEDIABOX.getWidth() - 2 * MARGIN - marginOffset;
+        float avgCharWidth = font.getAverageFontWidth() / 1000 * fontSize;
+        return Math.round(maxLineWidth / avgCharWidth);
+    }
+
+    List<String> splitLineIfNecessary(String str, int maxLength) {
+        List<String> lineList = new ArrayList<>();
+        if (str.length() > maxLength) {
+            String candidateLine = str.substring(0, maxLength);
+            boolean noSpaceOrLastSpaceInFirstHalf = candidateLine.lastIndexOf(" ") < maxLength / 2;
+            int lastSpace = candidateLine.lastIndexOf(" ");
+            String line;
+            String remainingStr;
+
+            if (noSpaceOrLastSpaceInFirstHalf) {
+                line = str.substring(0, maxLength) + "-";
+                remainingStr = str.substring(maxLength);
+            } else {
+                line = str.substring(0, lastSpace);
+                remainingStr = str.substring(lastSpace + 1);
+            }
+            lineList.add(line);
+            lineList.addAll(splitLineIfNecessary(remainingStr, maxLength));
+
+            return lineList;
+        }
+        return Arrays.asList(str);
+    }
+
     public float addLineOfRegularText(String line, PDPageContentStream cos, float startY) throws IOException {
         return addLineOfRegularText(0, line, cos, startY);
     }
 
     public float addLineOfRegularText(int marginOffset, String line, PDPageContentStream cos, float startY)
             throws IOException {
-        cos.beginText();
-        cos.setFont(FONTPLAIN, FONTPLAINSIZE);
-        cos.newLineAtOffset(MARGIN + marginOffset, startY);
-        cos.showText(Optional.ofNullable(line).orElse(""));
-        cos.endText();
-        return FONTPLAINHEIGHT;
+        List<String> lines = splitLineIfNecessary(line, characterLimitInCos(FONTPLAIN, FONTPLAINSIZE, marginOffset));
+        int lineNumber = 0;
+        for (String singleLine : lines) {
+            cos.beginText();
+            cos.setFont(FONTPLAIN, FONTPLAINSIZE);
+            cos.newLineAtOffset(MARGIN + marginOffset, startY - lineNumber * FONTPLAINSIZE);
+            cos.showText(Optional.ofNullable(singleLine).orElse(""));
+            cos.endText();
+            lineNumber++;
+        }
+        return FONTPLAINHEIGHT * lines.size();
     }
+
 
     public float addLinesOfRegularText(List<String> lines, PDPageContentStream cos, float startY)
             throws IOException {
