@@ -114,7 +114,7 @@ public class ForeldrepengerTestUtils {
         return new Frilans(åpenPeriode(true), true, true,
                 newArrayList(
                         new FrilansOppdrag("fattern", åpenPeriode(true)),
-                        new FrilansOppdrag("den andre bror min", åpenPeriode(true)),
+                        new FrilansOppdrag("den andre bror min og samtidig en fryktelig lang tekst som straks må bryte over til ny linje", åpenPeriode(true)),
                         new FrilansOppdrag("den tredje bror min", åpenPeriode(true)),
                         new FrilansOppdrag("den fjerde ebror min", åpenPeriode(true)),
                         new FrilansOppdrag("far min", åpenPeriode(true))),
@@ -169,7 +169,7 @@ public class ForeldrepengerTestUtils {
                 .næringsinntektBrutto(100_000)
                 .orgName("Utenlandsk org")
                 .virksomhetsTyper(Collections.singletonList(FISKE))
-                .beskrivelseEndring("Endringer skjer fort i verdens største land (utlandet)")
+                .beskrivelseEndring("Endringer skjer fort i verdens største land (utlandet) og ikke minst skjer det mye med linjebryting")
                 .nærRelasjon(true)
                 .endringsDato(LocalDate.now()).build();
     }

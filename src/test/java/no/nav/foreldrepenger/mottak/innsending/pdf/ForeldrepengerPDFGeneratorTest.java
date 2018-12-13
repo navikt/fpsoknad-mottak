@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.pdf;
+package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;

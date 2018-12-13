@@ -96,7 +96,7 @@ public class SøknadTextFormatter {
     public String periode(ÅpenPeriode periode) {
         StringBuilder sb = new StringBuilder("fra og med " + dato(periode.getFom()));
         if (periode.getTom() != null) {
-            sb.append(periode.getTom() != null ? " til og med" + dato(periode.getTom()) : " pågående");
+            sb.append(periode.getTom() != null ? " til og med " + dato(periode.getTom()) : " pågående");
         }
         return sb.toString();
     }
