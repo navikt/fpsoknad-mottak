@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -463,7 +464,7 @@ public class XMLTilSøknadMapper {
             LOG.debug("Periode er utsetelsesperiode");
             Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
             return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), utsettelse.isErArbeidstaker(),
-                    utsettelse.getVirksomhetsnummer(),
+                    Collections.singletonList(utsettelse.getVirksomhetsnummer()),
                     tilÅrsak(utsettelse.getAarsak()),
                     tilStønadKontoType(utsettelse.getUtsettelseAv()),
                     null,
@@ -481,8 +482,8 @@ public class XMLTilSøknadMapper {
                     gradering.getSamtidigUttakProsent(),
                     gradering.getArbeidtidProsent(),
                     gradering.isErArbeidstaker(),
-                    gradering.isArbeidsforholdSomSkalGraderes(), gradering.getVirksomhetsnummer().toString(), // TODO
-                                                                                                              // strange
+                    gradering.isArbeidsforholdSomSkalGraderes(),
+                    Collections.singletonList(gradering.getVirksomhetsnummer().toString()),
                     emptyList());
         }
 
