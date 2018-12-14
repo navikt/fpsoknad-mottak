@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = "morsAktivitetsType")
+@EqualsAndHashCode(callSuper = true, exclude = { "morsAktivitetsType", "virksomhetsnummer" })
 @ToString(callSuper = true)
 public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
 
