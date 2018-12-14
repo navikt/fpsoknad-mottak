@@ -581,8 +581,11 @@ public class SøknadTilXMLMapper {
         }
         if (periode instanceof GradertUttaksPeriode) {
             GradertUttaksPeriode gradertPeriode = GradertUttaksPeriode.class.cast(periode);
-            Gradering gradering = new Gradering()
-                    .withFom(gradertPeriode.getFom())
+            Gradering gradering = new Gradering();
+            if (!CollectionUtils.isEmpty(gradertPeriode.getVirksomhetsnummer())) {
+                gradering.withVirksomhetsnummer(gradertPeriode.getVirksomhetsnummer().get(0));
+            }
+            gradering.withFom(gradertPeriode.getFom())
                     .withTom(gradertPeriode.getTom())
                     .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(gradertPeriode.isØnskerSamtidigUttak())
@@ -590,7 +593,6 @@ public class SøknadTilXMLMapper {
                     .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                     .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
                     .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
-                    .withVirksomhetsnummer(gradertPeriode.getVirksomhetsnummer())
                     .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                     .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
             return gradertPeriode.isØnskerSamtidigUttak()
