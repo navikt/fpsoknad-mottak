@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.domain.Søknad.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.mottak.domain.SøknadSender.DUAL;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,14 +17,14 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
-@Qualifier("dual")
+@Qualifier(DUAL)
 public class DualSøknadSender implements VersjonerbarSøknadSender {
 
     private final SøknadSender dokmot;
     private final VersjonerbarSøknadSender fpfordel;
 
-    public DualSøknadSender(@Qualifier("dokmot") SøknadSender dokmot,
-            @Qualifier("fpfordel") VersjonerbarSøknadSender fpfordel) {
+    public DualSøknadSender(@Qualifier(DOKMOT) SøknadSender dokmot,
+            @Qualifier(FPFORDEL) VersjonerbarSøknadSender fpfordel) {
         this.dokmot = dokmot;
         this.fpfordel = fpfordel;
     }

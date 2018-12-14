@@ -65,7 +65,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ UnauthorizedException.class })
     public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e, WebRequest req) {
-        return logAndHandle(UNAUTHORIZED, e, req, e.getExpiryDate());
+        return logAndHandle(UNAUTHORIZED, e, req, e.getExpDate());
     }
 
     @ExceptionHandler({ OIDCUnauthorizedException.class })
@@ -75,7 +75,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { UnauthenticatedException.class })
     protected ResponseEntity<Object> handleUnauthenticated(UnauthenticatedException e, WebRequest req) {
-        return logAndHandle(FORBIDDEN, e, req, e.getExpiryDate());
+        return logAndHandle(FORBIDDEN, e, req, e.getExpDate());
     }
 
     @ExceptionHandler({ OIDCTokenValidatorException.class })

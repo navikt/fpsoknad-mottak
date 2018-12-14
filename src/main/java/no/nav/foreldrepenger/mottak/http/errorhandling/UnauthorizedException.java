@@ -1,28 +1,26 @@
 package no.nav.foreldrepenger.mottak.http.errorhandling;
 
-import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
-
 import java.util.Date;
 
-public class UnauthorizedException extends RuntimeException {
+public class UnauthorizedException extends TokenExpiryAwareException {
 
-    private final Date expDate;
+    public UnauthorizedException(Throwable cause) {
+        this(null, null, cause);
+    }
 
     public UnauthorizedException(String msg) {
         this(msg, null, null);
     }
 
     public UnauthorizedException(Date expDate, Throwable cause) {
-        this(cause != null ? getMostSpecificCause(cause).getMessage() : null, expDate, cause);
+        this(null, expDate, cause);
+    }
+
+    public UnauthorizedException(String msg, Date expDate) {
+        this(msg, expDate, null);
     }
 
     public UnauthorizedException(String msg, Date expDate, Throwable cause) {
-        super(msg, cause);
-        this.expDate = expDate;
+        super(msg, expDate, cause);
     }
-
-    public Date getExpiryDate() {
-        return expDate;
-    }
-
 }

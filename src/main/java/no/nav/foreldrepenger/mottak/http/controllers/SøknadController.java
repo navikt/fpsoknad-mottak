@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
+import static no.nav.foreldrepenger.mottak.domain.SøknadSender.DUAL;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -46,38 +47,39 @@ public class SøknadController {
     private final Oppslag oppslag;
     private final VersjonerbarSøknadSender sender;
 
-    public SøknadController(@Qualifier("dual") VersjonerbarSøknadSender sender, Oppslag oppslag, Innsyn innsyn) {
+    public SøknadController(@Qualifier(DUAL) VersjonerbarSøknadSender sender, Oppslag oppslag,
+            Innsyn innsyn) {
         this.sender = sender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
     }
 
-    @PostMapping(value = "/send")
+    @PostMapping("/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
         return sender.send(søknad, oppslag.getSøker());
     }
 
-    @PostMapping(value = "/sendV2")
+    @PostMapping("/sendV2")
     public Kvittering sendV2(@Valid @RequestBody Søknad søknad) {
         return sender.send(søknad, oppslag.getSøker(), V2);
     }
 
-    @PostMapping(value = "/ettersend")
+    @PostMapping("/ettersend")
     public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
         return sender.send(ettersending, oppslag.getSøker());
     }
 
-    @PostMapping(value = "/endre")
-    public Kvittering send(@Valid @RequestBody Endringssøknad endringsSøknad) {
-        return sender.send(endringsSøknad, oppslag.getSøker());
+    @PostMapping("/endre")
+    public Kvittering send(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return sender.send(endringssøknad, oppslag.getSøker());
     }
 
-    @PostMapping(value = "/endreV2")
+    @PostMapping("/endreV2")
     public Kvittering sendV2(@Valid @RequestBody Endringssøknad endringsSøknad) {
         return sender.send(endringsSøknad, oppslag.getSøker(), V2);
     }
 
-    @GetMapping(value = "/ping")
+    @GetMapping("/ping")
     @Unprotected
     public String ping(@RequestParam(name = "navn", defaultValue = "jordboer") String navn) {
         LOG.info("Jeg ble pinget");

@@ -5,6 +5,9 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 
 public interface SøknadSender {
+    String DOKMOT = "dokmot";
+    String FPFORDEL = "fpfordel";
+    String DUAL = "dual";
 
     Kvittering send(Søknad søknad, Person søker);
 

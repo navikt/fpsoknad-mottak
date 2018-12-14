@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
-import org.springframework.web.client.HttpClientErrorException;
 
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthorizedException;
@@ -28,11 +27,9 @@ public class StatusCodeConvertingResponseErrorHandler extends DefaultResponseErr
         LOG.info("Handling error code {}", code);
         switch (code) {
         case UNAUTHORIZED:
-            throw new UnauthorizedException(res.getStatusText(), tokenHelper.getExp(),
-                    new HttpClientErrorException(code));
+            throw new UnauthorizedException(res.getStatusText(), tokenHelper.getExp());
         case FORBIDDEN:
-            throw new UnauthenticatedException(res.getStatusText(), tokenHelper.getExp(),
-                    new HttpClientErrorException(code));
+            throw new UnauthenticatedException(res.getStatusText(), tokenHelper.getExp());
         default:
             super.handleError(res, code);
         }

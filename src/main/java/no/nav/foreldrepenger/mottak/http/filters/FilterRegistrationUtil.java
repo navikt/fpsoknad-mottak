@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.http.filters;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 final class FilterRegistrationUtil {
@@ -19,6 +18,6 @@ final class FilterRegistrationUtil {
     }
 
     static List<String> always() {
-        return Collections.singletonList("/*");
+        return urlPatternsFor("");
     }
 }

@@ -41,9 +41,9 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
     public MultipartMixedAwareMessageConverter() {
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         stringHttpMessageConverter.setWriteAcceptCharset(false);
-        this.partConverters.add(new ByteArrayHttpMessageConverter());
-        this.partConverters.add(stringHttpMessageConverter);
-        this.partConverters.add(new ResourceHttpMessageConverter());
+        partConverters.add(new ByteArrayHttpMessageConverter());
+        partConverters.add(stringHttpMessageConverter);
+        partConverters.add(new ResourceHttpMessageConverter());
         applyDefaultCharset();
     }
 
@@ -222,6 +222,12 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         private byte[] getBytes(String name) {
             return name.getBytes(this.charset);
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [multipartCharset=" + multipartCharset + ", charset=" + charset
+                + ", partConverters=" + partConverters + "]";
     }
 
 }
