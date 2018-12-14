@@ -575,7 +575,6 @@ public class SøknadTilXMLMapper {
                     .withFom(utsettelsesPeriode.getFom())
                     .withTom(utsettelsesPeriode.getTom())
                     .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
-                    .withVirksomhetsnummer(utsettelsesPeriode.getVirksomhetsnummer())
                     .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType()))
                     .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
                     .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));

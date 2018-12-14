@@ -114,7 +114,9 @@ public class ForeldrepengerTestUtils {
         return new Frilans(åpenPeriode(true), true, true,
                 newArrayList(
                         new FrilansOppdrag("fattern", åpenPeriode(true)),
-                        new FrilansOppdrag("den andre bror min og samtidig en fryktelig lang tekst som straks må bryte over til ny linje", åpenPeriode(true)),
+                        new FrilansOppdrag(
+                                "den andre bror min og samtidig en fryktelig lang tekst som straks må bryte over til ny linje",
+                                åpenPeriode(true)),
                         new FrilansOppdrag("den tredje bror min", åpenPeriode(true)),
                         new FrilansOppdrag("den fjerde ebror min", åpenPeriode(true)),
                         new FrilansOppdrag("far min", åpenPeriode(true))),
@@ -169,7 +171,8 @@ public class ForeldrepengerTestUtils {
                 .næringsinntektBrutto(100_000)
                 .orgName("Utenlandsk org")
                 .virksomhetsTyper(Collections.singletonList(FISKE))
-                .beskrivelseEndring("Endringer skjer fort i verdens største land (utlandet) og ikke minst skjer det mye med linjebryting")
+                .beskrivelseEndring(
+                        "Endringer skjer fort i verdens største land (utlandet) og ikke minst skjer det mye med linjebryting")
                 .nærRelasjon(true)
                 .endringsDato(LocalDate.now()).build();
     }
@@ -231,7 +234,8 @@ public class ForeldrepengerTestUtils {
     static UttaksPeriode gradertPeriode(String... vedleggRefs) {
         return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                 FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true, "222222",
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                Collections.singletonList("222222"),
                 Arrays.asList(vedleggRefs));
     }
 
@@ -248,7 +252,7 @@ public class ForeldrepengerTestUtils {
 
     static UtsettelsesPeriode utsettelsesPeriode(String... vedleggRefs) {
         return new UtsettelsesPeriode(ukeDagNær(LocalDate.now().plusMonths(2)),
-                ukeDagNær(LocalDate.now().plusMonths(3)), true, "222",
+                ukeDagNær(LocalDate.now().plusMonths(3)), true, Collections.singletonList("222"),
                 UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, MorsAktivitet.ARBEID,
                 Arrays.asList(vedleggRefs));
     }
