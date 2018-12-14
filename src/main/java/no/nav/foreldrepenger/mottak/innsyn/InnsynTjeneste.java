@@ -1,31 +1,40 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONERBAR;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import no.nav.foreldrepenger.mottak.innsyn.dto.*;
+
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.XMLTilSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
+import no.nav.foreldrepenger.mottak.util.DokumentAnalysator;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
 
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
 
-    private final XMLTilSøknadMapper mapper;
+    private final XMLMapper mapper;
     private final InnsynConnection innsynConnection;
+    private final DokumentAnalysator analysator;
 
-    public InnsynTjeneste(InnsynConnection innsynConnection, XMLTilSøknadMapper mapper) {
+    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(VERSJONERBAR) XMLMapper mapper,
+            DokumentAnalysator analysator) {
         this.innsynConnection = innsynConnection;
         this.mapper = mapper;
+        this.analysator = analysator;
     }
 
     @Override
@@ -106,8 +115,10 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
-        LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
-        return new InnsynsSøknad(mapper.tilSøknad(wrapper.getXml()), wrapper.getJournalpostId());
+        Versjon versjon = analysator.versjon(wrapper.getXml());
+        LOG.trace(CONFIDENTIAL, "Mapper søknad versjon {} fra {}", versjon.name(), wrapper);
+        return new InnsynsSøknad(versjon, mapper.tilSøknad(wrapper.getXml()),
+                wrapper.getJournalpostId());
     }
 
     private static String endelse(List<?> liste) {

@@ -12,12 +12,15 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "virksomhetsnummer" })
+@ToString(callSuper = true, exclude = { "virksomhetsnummer" })
 public class GradertUttaksPeriode extends UttaksPeriode {
     private final double arbeidstidProsent;
     private final boolean erArbeidstaker;
-    private final String virksomhetsnummer;
+    // V1
+    private final List<String> virksomhetsnummer;
+    // V2
+    private final Arbeidsgiver arbeidsgiver;
     private final boolean arbeidsForholdSomskalGraderes;
 
     @Builder
@@ -31,14 +34,15 @@ public class GradertUttaksPeriode extends UttaksPeriode {
             @JsonProperty("arbeidstidProsent") double arbeidstidProsent,
             @JsonProperty("erArbeidstaker") boolean erArbeidstaker,
             @JsonProperty("arbeidsForholdSomskalGraderes") boolean arbeidsForholdSomskalGraderes,
-            @JsonProperty("virksomhetsnummer") String virksomhetsnummer,
+            @JsonProperty("virksomhetsnummer") List<String> virksomhetsnummer,
+            @JsonProperty("arbeidsgiver") Arbeidsgiver arbeidsgiver,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         super(fom, tom, uttaksperiodeType, ønskerSamtidigUttak, morsAktivitetsType, ønskerFlerbarnsdager,
                 samtidigUttakProsent, vedlegg);
         this.arbeidstidProsent = arbeidstidProsent;
         this.erArbeidstaker = erArbeidstaker;
         this.virksomhetsnummer = virksomhetsnummer;
+        this.arbeidsgiver = arbeidsgiver;
         this.arbeidsForholdSomskalGraderes = arbeidsForholdSomskalGraderes;
     }
-
 }

@@ -11,7 +11,6 @@ import static no.nav.foreldrepenger.mottak.innsending.engangsstønad.ArkivVarian
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.slf4j.MDC;
@@ -20,8 +19,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.util.Jaxb;
-import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
+import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
@@ -43,9 +41,11 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private static final String KANAL = "NAV_NO";
 
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
+    private final JAXBESV1Helper jaxb;
 
-    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
-        this.søknadGenerator = Objects.requireNonNull(generator);
+    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator, JAXBESV1Helper jaxb) {
+        this.søknadGenerator = generator;
+        this.jaxb = jaxb;
     }
 
     public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
@@ -55,8 +55,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
             boolean inkluderVedlegg) {
-        return Jaxb.marshal(dokmotModelFra(søknad, søker, inkluderVedlegg),
-                ValidationMode.ENGANGSSTØNAD);
+        return jaxb.marshal(dokmotModelFra(søknad, søker, inkluderVedlegg));
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,

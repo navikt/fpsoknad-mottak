@@ -14,11 +14,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ForeldrepengerSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DefaultVersjonerbarDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1DomainMapper;
+import no.nav.foreldrepenger.mottak.innsyn.V1XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.VersjonerbarXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class JaxbTest {
+public class JAXBFPV1HelperTest {
 
     private static final AktorId SØKER = new AktorId("42");
 
@@ -26,18 +30,20 @@ public class JaxbTest {
 
     @Mock
     private Oppslag oppslag;
-    private ForeldrepengerSøknadMapper mapper;
+    private DefaultVersjonerbarDomainMapper domainMapper;
+    private XMLMapper xmlMapper;
 
     @Before
     public void before() {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
-        mapper = new ForeldrepengerSøknadMapper(oppslag);
+        domainMapper = new DefaultVersjonerbarDomainMapper(new V1DomainMapper(oppslag));
+        xmlMapper = new VersjonerbarXMLMapper(new V1XMLMapper(oppslag));
     }
 
     @Test
     public void testFørstegangssøknadRoundtrip() {
-        Søknad søknad = søknadMedToVedlegg();
-        assertEquals(søknad, mapper.tilSøknad(mapper.tilXML(søknad, SØKER)));
+        Søknad søknad = søknadMedToVedlegg(Versjon.V1);
+        assertEquals(søknad, xmlMapper.tilSøknad(domainMapper.tilXML(søknad, SØKER, Versjon.V1)));
     }
 }

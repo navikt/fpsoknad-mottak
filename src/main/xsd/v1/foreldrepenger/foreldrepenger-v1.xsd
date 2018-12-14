@@ -6,9 +6,9 @@
             xmlns:ut="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1"
             xmlns:kv="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1"
             elementFormDefault="qualified">
-    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" schemaLocation="../uttak/uttak.xsd"/>
-    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles.xsd"/>
-    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk.xsd"/>
+    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1" schemaLocation="../uttak/uttak-v1.xsd"/>
+    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1" schemaLocation="../felles/felles-v1.xsd"/>
+    <xsd:import namespace="urn:no:nav:vedtak:felles:xml:soeknad:kodeverk:v1" schemaLocation="../kodeverk/kodeverk-v1.xsd"/>
     <xsd:complexType name="AnnenOpptjening">
         <xsd:sequence>
             <xsd:element name="type" type="kv:AnnenOpptjeningTyper"/>

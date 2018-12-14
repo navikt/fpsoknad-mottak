@@ -38,6 +38,7 @@ import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters
@@ -70,30 +71,30 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testSøknadNorge() throws Exception {
-        Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(),
+        Søknad engangssøknad = engangssøknad(Versjon.V1, false, fødsel(), norskForelder(Versjon.V1),
                 påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
         test(engangssøknad, true);
     }
 
     @Test
     public void testEngangsstønadNorge() {
-        Engangsstønad engangstønad = engangstønad(false, termin(), norskForelder());
+        Engangsstønad engangstønad = engangstønad(Versjon.V1, false, termin(), norskForelder(Versjon.V1));
         test(engangstønad, false);
     }
 
     @Test
     public void testEngangsstønadUtland() {
-        test(TestUtils.engangstønad(true, termin(), utenlandskForelder()), false);
+        test(TestUtils.engangstønad(Versjon.V1, true, termin(), utenlandskForelder()), false);
     }
 
     @Test
     public void testEngangsstønadUkjentFar() {
-        test(engangstønad(true, termin(), ukjentForelder()), false);
+        test(engangstønad(Versjon.V1, true, termin(), ukjentForelder()), false);
     }
 
     @Test
     public void testNorskAnnenForelder() {
-        test(norskForelder(), false);
+        test(norskForelder(Versjon.V1), false);
     }
 
     @Test
@@ -108,12 +109,12 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testMedlemsskap() {
-        test(TestUtils.medlemsskap(), false);
+        test(TestUtils.medlemsskap(Versjon.V1), false);
     }
 
     @Test
     public void testMedlemsskapUtland() {
-        test(TestUtils.medlemsskap(true));
+        test(TestUtils.medlemsskap(Versjon.V1, true));
     }
 
     @Test

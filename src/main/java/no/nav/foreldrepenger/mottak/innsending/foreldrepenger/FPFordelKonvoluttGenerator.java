@@ -28,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 public class FPFordelKonvoluttGenerator {
@@ -39,23 +40,24 @@ public class FPFordelKonvoluttGenerator {
     static final String METADATA = "metadata";
     private static final String CONTENT_ID = "Content-ID";
     private final FPFordelMetdataGenerator metadataGenerator;
-    private final ForeldrepengerSøknadMapper søknadGenerator;
+    private final VersjonerbarDomainMapper søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            ForeldrepengerSøknadMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
+            VersjonerbarDomainMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.søknadGenerator = søknadGenerator;
         this.pdfGenerator = pdfGenerator;
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker, Versjon versjon) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         LOG.trace("Genererer payload");
         builder.part(METADATA, metadata(søknad, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId, versjon), APPLICATION_XML).header(
+                CONTENT_ID,
                 id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
@@ -67,13 +69,15 @@ public class FPFordelKonvoluttGenerator {
         return new HttpEntity<>(builder.build(), headers());
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Endringssøknad endringsøknad, Person søker) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Endringssøknad endringsøknad, Person søker,
+            Versjon versjon) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
 
         builder.part(METADATA, metadata(endringsøknad, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId), APPLICATION_XML).header(CONTENT_ID,
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, versjon), APPLICATION_XML).header(
+                CONTENT_ID,
                 id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
@@ -144,14 +148,14 @@ public class FPFordelKonvoluttGenerator {
         return pdfGenerator.generate(søknad, søker);
     }
 
-    private String xmlHovedDokument(Søknad søknad, AktorId søker) {
-        String hovedDokument = søknadGenerator.tilXML(søknad, søker);
+    private String xmlHovedDokument(Søknad søknad, AktorId søker, Versjon versjon) {
+        String hovedDokument = søknadGenerator.tilXML(søknad, søker, versjon);
         LOG.debug(CONFIDENTIAL, "Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }
 
-    private String xmlHovedDokument(Endringssøknad endringssøknad, AktorId søker) {
-        String hovedDokument = søknadGenerator.tilXML(endringssøknad, søker);
+    private String xmlHovedDokument(Endringssøknad endringssøknad, AktorId søker, Versjon versjon) {
+        String hovedDokument = søknadGenerator.tilXML(endringssøknad, søker, versjon);
         LOG.debug(CONFIDENTIAL, "Hoveddokument endringssøknad er {}", hovedDokument);
         return hovedDokument;
     }

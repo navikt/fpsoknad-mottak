@@ -24,12 +24,16 @@ import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Data
 @Validated
 @EqualsAndHashCode(exclude = "mottattdato")
 @JsonPropertyOrder({ "mottattdato", "søker", "ytelse", "begrunnelseForSenSøknad", "tilleggsopplysninger", "vedlegg" })
 public class Søknad {
+
+    public static final Versjon DEFAULT_VERSJON = Versjon.V1;
+
     @NotNull
     private final LocalDateTime mottattdato;
     @Valid

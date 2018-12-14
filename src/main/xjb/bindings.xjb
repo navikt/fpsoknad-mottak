@@ -17,7 +17,7 @@
 
 
     <jaxb:bindings
-        schemaLocation="../xsd/v1/foreldrepenger/foreldrepenger.xsd"
+        schemaLocation="../xsd/v1/foreldrepenger/foreldrepenger-v1.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='Foreldrepenger']">
@@ -27,7 +27,7 @@
     </jaxb:bindings>
 
     <jaxb:bindings
-        schemaLocation="../xsd/v1/soeknad-fpfordel.xsd"
+        schemaLocation="../xsd/v1/soeknad-v1.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='Soeknad']">
@@ -37,7 +37,7 @@
     </jaxb:bindings>
 
     <jaxb:bindings
-        schemaLocation="../xsd/v1/endringssoeknad-fpfordel.xsd"
+        schemaLocation="../xsd/v1/endringssoeknad-v1.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='Endringssoeknad']">

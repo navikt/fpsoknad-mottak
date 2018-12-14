@@ -23,6 +23,7 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.utsettelsesPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.uttaksPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.åpenPeriode;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -110,28 +111,28 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEndringssøknad() {
-        test(endringssøknad(), true);
+        test(endringssøknad(V1), true);
+        // test(endringssøknad(V2), true);
     }
 
     @Test
     public void testForeldrepenger() {
-        test(foreldrePenger(false), true);
+        test(foreldrePenger(V1, false), true);
     }
 
     @Test
     public void testSøknad() {
-        test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(false), true);
-        // test(foreldrepengeSøknadUtenVedlegg(), true);
+        test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(V1, false), true);
     }
 
     @Test
     public void testOpptjening() {
-        test(opptjening());
+        test(opptjening(V1));
     }
 
     @Test
     public void testRettigheter() {
-        test(rettigheter());
+        test(rettigheter(V1));
     }
 
     @Test
@@ -146,47 +147,47 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUtenlandskForelder() {
-        test(utenlandskForelder());
+        test(utenlandskForelder(V1));
     }
 
     @Test
     public void testNorskForelder() {
-        test(norskForelder());
+        test(norskForelder(V1));
     }
 
     @Test
     public void testFordeling() {
-        test(fordeling());
+        test(fordeling(V1));
     }
 
     @Test
     public void testUttaksPeride() {
-        test(uttaksPeriode(), true);
+        test(uttaksPeriode(V1), true);
     }
 
     @Test
     public void testGradertPeriode() {
-        test(gradertPeriode(), true);
+        test(gradertPeriode(V1), true);
     }
 
     @Test
     public void testOverføringsperiode() {
-        test(overføringsPeriode(), true);
+        test(overføringsPeriode(V1), true);
     }
 
     @Test
     public void testOppholdsPeriode() {
-        test(oppholdsPeriode());
+        test(oppholdsPeriode(V1));
     }
 
     @Test
     public void testUtsettelsesPeriode() {
-        test(utsettelsesPeriode());
+        test(utsettelsesPeriode(V1));
     }
 
     @Test
     public void testÅpenPeriode() {
-        test(åpenPeriode());
+        test(åpenPeriode(V1));
     }
 
     @Test
@@ -196,22 +197,22 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testOmsorgsovertagelsse() {
-        test(omsorgsovertakelse());
+        test(omsorgsovertakelse(V1));
     }
 
     @Test
     public void testTermin() {
-        test(termin());
+        test(termin(V1));
     }
 
     @Test
     public void testAnnenOpptjening() {
-        test(annenOpptjening());
+        test(annenOpptjening(V1));
     }
 
     @Test
     public void testUtenlandskrbeidsforhold() {
-        test(utenlandskArbeidsforhold(), true);
+        test(utenlandskArbeidsforhold(V1), true);
     }
 
     @Test
@@ -220,12 +221,12 @@ public class TestForeldrepengerSerialization {
         UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(org));
         assertEquals(CountryCode.UG, org.getRegistrertILand());
-        test(utenlandskEgenNæring(), true);
+        test(utenlandskEgenNæring(V1), true);
     }
 
     @Test
     public void testEgenNæringNorskorganisasjon() {
-        test(norskEgenNæring());
+        test(norskEgenNæring(V1));
     }
 
     private void test(Object object, boolean print) {

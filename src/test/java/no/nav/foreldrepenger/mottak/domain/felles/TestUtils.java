@@ -24,6 +24,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class TestUtils {
 
@@ -34,24 +35,25 @@ public class TestUtils {
                 bytes[3] == 0x46;
     }
 
-    public static Søknad engangssøknad(boolean utland) throws IOException {
-        return engangssøknad(utland, termin(), norskForelder());
+    public static Søknad engangssøknad(Versjon v, boolean utland) throws IOException {
+        return engangssøknad(v, utland, termin(), norskForelder(v));
     }
 
-    public static Søknad engangssøknad(RelasjonTilBarn relasjon) throws IOException {
-        return engangssøknad(false, relasjon, norskForelder());
+    public static Søknad engangssøknad(Versjon v, RelasjonTilBarn relasjon) throws IOException {
+        return engangssøknad(v, false, relasjon, norskForelder(v));
     }
 
-    public static Søknad engangssøknad(boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
+    public static Søknad engangssøknad(Versjon v, boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
             Vedlegg... vedlegg) throws IOException {
-        Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(utland, relasjon, annenForelder), vedlegg);
+        Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(v, utland, relasjon, annenForelder), vedlegg);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
     }
 
-    public static Engangsstønad engangstønad(boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder) {
-        Engangsstønad stønad = new Engangsstønad(medlemsskap(utland), relasjon);
+    public static Engangsstønad engangstønad(Versjon v, boolean utland, RelasjonTilBarn relasjon,
+            AnnenForelder annenForelder) {
+        Engangsstønad stønad = new Engangsstønad(medlemsskap(v, utland), relasjon);
         stønad.setAnnenForelder(annenForelder);
         return stønad;
     }
@@ -60,7 +62,7 @@ public class TestUtils {
         return new Utenlandsopphold(CountryCode.SE, varighet());
     }
 
-    public static NorskForelder norskForelder() {
+    public static NorskForelder norskForelder(Versjon v) {
         return new NorskForelder(true, farnavn(), fnr());
     }
 
@@ -68,11 +70,11 @@ public class TestUtils {
         return new UtenlandskForelder(true, farnavn(), "123456", CountryCode.SE);
     }
 
-    public static Medlemsskap medlemsskap() {
-        return medlemsskap(false);
+    public static Medlemsskap medlemsskap(Versjon v) {
+        return medlemsskap(v, false);
     }
 
-    public static Medlemsskap medlemsskap(boolean utland) {
+    public static Medlemsskap medlemsskap(Versjon v, boolean utland) {
         if (utland) {
             return new Medlemsskap(tidligereOppHoldIUtlandet(), framtidigOppHoldIUtlandet());
         }
@@ -185,7 +187,7 @@ public class TestUtils {
     }
 
     static LocalDate forrigeMåned() {
-        return nå().minus(enMåned());
+        return nå().minusMonths(1);
     }
 
     static Period enMåned() {

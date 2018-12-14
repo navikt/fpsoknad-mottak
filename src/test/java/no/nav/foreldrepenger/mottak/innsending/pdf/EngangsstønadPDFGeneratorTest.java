@@ -14,9 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
-import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
-import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, EngangsstønadPDFGenerator.class,
@@ -29,14 +27,14 @@ public class EngangsstønadPDFGeneratorTest {
 
     @Test
     public void signature() throws Exception {
-        assertTrue(hasPdfSignature(gen.generate(engangssøknad(true), person())));
+        assertTrue(hasPdfSignature(gen.generate(engangssøknad(Versjon.V1, true), person())));
     }
 
     @Test
     public void space() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
-            fos.write(gen.generate(engangssøknad(true), person()));
+            fos.write(gen.generate(engangssøknad(Versjon.V1, true), person()));
         }
     }
 }

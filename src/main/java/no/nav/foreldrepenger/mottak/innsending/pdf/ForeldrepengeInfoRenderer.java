@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
@@ -538,7 +539,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "dager", String.valueOf(utsettelse.dager()));
         attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
         attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
-        addIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
+        addListIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
         attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
         return attributter;
     }
@@ -592,7 +593,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "tom", gradert.getTom());
         addIfSet(attributter, "dager", String.valueOf(gradert.dager()));
         attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
-        addIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
+        addListIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
         attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
         addIfSet(attributter, gradert.getMorsAktivitetsType());
@@ -811,6 +812,13 @@ public class ForeldrepengeInfoRenderer {
             addIfSet(attributter, "fom", periode.getFom());
             addIfSet(attributter, "tom", periode.getTom());
         }
+    }
+
+    private void addListIfSet(List<String> attributter, String key, List<String> values) {
+        if (CollectionUtils.isEmpty(values)) {
+            return;
+        }
+        addIfSet(attributter, key, Joiner.on(",").join(values));
     }
 
     private void addMoneyIfSet(List<String> attributter, String key, Long sum) {

@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg.LASTET_OPP;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
@@ -31,7 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
-import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
+import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
@@ -53,9 +52,11 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 public class DokmotEngangsstønadXMLGenerator {
 
     private final EngangsstønadPDFGenerator pdfGenerator;
+    private final JAXBESV1Helper jaxb;
 
-    public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator) {
+    public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator, JAXBESV1Helper jaxb) {
         this.pdfGenerator = pdfGenerator;
+        this.jaxb = jaxb;
     }
 
     public byte[] tilPdf(Søknad søknad, Person søker) {
@@ -67,7 +68,7 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     public String tilXML(SoeknadsskjemaEngangsstoenad model) {
-        return marshal(model, ValidationMode.ENGANGSSTØNAD);
+        return jaxb.marshal(model);
     }
 
     public SoeknadsskjemaEngangsstoenad tilDokmotModel(Søknad søknad, Person søker) {

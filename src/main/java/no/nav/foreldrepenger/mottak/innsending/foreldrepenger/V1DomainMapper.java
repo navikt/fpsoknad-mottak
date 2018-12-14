@@ -1,17 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.marshal;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.marshalToElement;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode.FORELDREPENGER_V1;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -60,7 +60,10 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.http.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.JAXBFPV1Helper;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -83,7 +86,6 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilans;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilansoppdrag;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Regnskapsfoerer;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
@@ -109,32 +111,39 @@ import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class SøknadTilXMLMapper {
+public class V1DomainMapper implements DomainMapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SøknadTilXMLMapper.class);
-    public static final String UKJENT_KODEVERKSVERDI = "-";
+    private static final JAXBFPV1Helper JAXB = new JAXBFPV1Helper();
+    private static final Logger LOG = LoggerFactory.getLogger(V1DomainMapper.class);
 
-    private static final ObjectFactory FP_FACTORY = new ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory FP_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory FELLES_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.felles.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory SØKNAD_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.v1.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory UTTAK_FACTORY = new no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory ENDRING_FACTORY = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory UTTAK_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.uttak.v1.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory ENDRING_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory();
 
     private final Oppslag oppslag;
 
-    public SøknadTilXMLMapper(Oppslag oppslag) {
+    public V1DomainMapper(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
+    @Override
+    public Versjon versjon() {
+        return V1;
+    }
+
+    @Override
     public String tilXML(Søknad søknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(søknad, søker)), FORELDREPENGER_V1);
+        return JAXB.marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(søknad, søker)));
     }
 
+    @Override
     public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(endringssøknad, søker)), FORELDREPENGER_V1);
+        return JAXB.marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(endringssøknad, søker)));
     }
 
-    private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
+    private Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
         LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
         return new Soeknad()
                 .withMottattDato(LocalDate.now())
@@ -144,12 +153,13 @@ public class SøknadTilXMLMapper {
                 .withOmYtelse(ytelseFra(endringsøknad));
     }
 
-    private static OmYtelse ytelseFra(Endringssøknad endringssøknad) {
-        return new OmYtelse().withAny(endringssøknadFra(endringssøknad));
+    private OmYtelse ytelseFra(Endringssøknad endringssøknad) {
+        return new OmYtelse()
+                .withAny(endringssøknadFra(endringssøknad));
     }
 
-    private static JAXBElement<Endringssoeknad> endringssøknadFra(Endringssøknad endringssøknad) {
-        return ENDRING_FACTORY.createEndringssoeknad(new Endringssoeknad()
+    private JAXBElement<Endringssoeknad> endringssøknadFra(Endringssøknad endringssøknad) {
+        return ENDRING_FACTORY_V1.createEndringssoeknad(new Endringssoeknad()
                 .withFordeling(fordelingFra(endringssøknad))
                 .withSaksnummer(endringssøknad.getSaksnr()));
     }
@@ -169,7 +179,7 @@ public class SøknadTilXMLMapper {
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
-                .map(SøknadTilXMLMapper::vedleggFra)
+                .map(V1DomainMapper::vedleggFra)
                 .collect(toList());
     }
 
@@ -202,12 +212,13 @@ public class SøknadTilXMLMapper {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
-        return new OmYtelse().withAny(marshalToElement(foreldrePengerFra(ytelse), FORELDREPENGER_V1));
+        return new OmYtelse()
+                .withAny(JAXB.marshalToElement(foreldrePengerFra(ytelse)));
     }
 
     private JAXBElement<Foreldrepenger> foreldrePengerFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse) {
-        return FP_FACTORY.createForeldrepenger(new Foreldrepenger()
+        return FP_FACTORY_V1.createForeldrepenger(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
@@ -218,12 +229,11 @@ public class SøknadTilXMLMapper {
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn())));
     }
 
-    private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
+    private Fordeling fordelingFra(Endringssøknad endringssøknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(endringssøknad.getYtelse());
         LOG.debug(CONFIDENTIAL, "Genererer fordeling endringssøknad XML fra {}", ytelse.getFordeling());
         return fordelingFra(ytelse.getFordeling());
-
     }
 
     private static boolean erAnnenForelderUkjent(
@@ -245,7 +255,7 @@ public class SøknadTilXMLMapper {
         return dekningsgrad.withKodeverk(dekningsgrad.getKodeverk());
     }
 
-    private static Opptjening opptjeningFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening opptjening) {
+    private Opptjening opptjeningFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening opptjening) {
         if (opptjening == null) {
             return null;
         }
@@ -274,13 +284,13 @@ public class SøknadTilXMLMapper {
 
     private static List<JAXBElement<Object>> frilansVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY.createFrilansVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V1.createFrilansVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
         return safeStream(frilansOppdrag)
-                .map(SøknadTilXMLMapper::frilansOppdragFra)
+                .map(V1DomainMapper::frilansOppdragFra)
                 .collect(toList());
     }
 
@@ -292,21 +302,21 @@ public class SøknadTilXMLMapper {
 
     private static List<EgenNaering> egenNæringFra(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
-                .map(SøknadTilXMLMapper::egenNæringFra)
+                .map(V1DomainMapper::egenNæringFra)
                 .collect(toList());
     }
 
     private static List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforholdFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         return safeStream(utenlandskArbeidsforhold)
-                .map(SøknadTilXMLMapper::utenlandskArbeidsforholdFra)
+                .map(V1DomainMapper::utenlandskArbeidsforholdFra)
                 .collect(toList());
     }
 
-    private static List<AnnenOpptjening> annenOpptjeningFra(
+    private List<AnnenOpptjening> annenOpptjeningFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
-                .map(SøknadTilXMLMapper::annenOpptjeningFra)
+                .map(this::annenOpptjeningFra)
                 .collect(toList());
     }
 
@@ -359,14 +369,14 @@ public class SøknadTilXMLMapper {
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V1.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype> typer) {
         return safeStream(typer)
-                .map(SøknadTilXMLMapper::virksomhetsTypeFra)
+                .map(V1DomainMapper::virksomhetsTypeFra)
                 .collect(toList());
     }
 
@@ -396,7 +406,7 @@ public class SøknadTilXMLMapper {
                 .withNavn(regnskapsfører.getNavn());
     }
 
-    private static AnnenOpptjening annenOpptjeningFra(
+    private AnnenOpptjening annenOpptjeningFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening annenOpptjening) {
         LOG.debug(CONFIDENTIAL, "Genererer annen opptjening XML fra {}", annenOpptjening);
 
@@ -408,7 +418,7 @@ public class SøknadTilXMLMapper {
 
     private static List<JAXBElement<Object>> annenOpptjeningVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V1.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -430,14 +440,29 @@ public class SøknadTilXMLMapper {
 
     private static List<JAXBElement<Object>> utenlandsArbeidsforholdVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V1.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
-    private static AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
+    private AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
+        if (!lovligVerdiForVersjon(type)) {
+            throw new VersionMismatchException(type.getClass().getSimpleName(), type.name(), versjon(),
+                    lovligeVerdier());
+        }
         return Optional.ofNullable(type)
                 .map(s -> annenOpptjeningTypeFra(s.name()))
                 .orElse(null);
+    }
+
+    private String lovligeVerdier() {
+        return Arrays.stream(AnnenOpptjeningType.values())
+                .filter(a -> lovligVerdiForVersjon(a))
+                .map(s -> s.name())
+                .collect(joining(","));
+    }
+
+    private boolean lovligVerdiForVersjon(AnnenOpptjeningType type) {
+        return type.versjoner.contains(versjon());
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {
@@ -499,7 +524,7 @@ public class SøknadTilXMLMapper {
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
                         safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
-                .map(SøknadTilXMLMapper::utenlandOppholdFra)
+                .map(V1DomainMapper::utenlandOppholdFra)
                 .collect(toList());
     }
 
@@ -523,7 +548,7 @@ public class SøknadTilXMLMapper {
         return land.withKodeverk(land.getKodeverk());
     }
 
-    private static Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling fordeling) {
+    private Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling fordeling) {
         LOG.debug(CONFIDENTIAL, "Genererer fordeling XML fra {}", fordeling);
         if (fordeling == null) {
             return null;
@@ -534,21 +559,21 @@ public class SøknadTilXMLMapper {
                 .withAnnenForelderErInformert(fordeling.isErAnnenForelderInformert());
     }
 
-    private static List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioderFra(
+    private List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioderFra(
             List<LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
-                .map(SøknadTilXMLMapper::lukkerPeriodeFra)
+                .map(this::lukkerPeriodeFra)
                 .collect(toList());
 
     }
 
     private static List<JAXBElement<Object>> lukketPeriodeVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> UTTAK_FACTORY.createLukketPeriodeMedVedleggVedlegg(new Vedlegg().withId(s)))
+                .map(s -> UTTAK_FACTORY_V1.createLukketPeriodeMedVedleggVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg lukkerPeriodeFra(
+    private no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg lukkerPeriodeFra(
             LukketPeriodeMedVedlegg periode) {
         LOG.debug(CONFIDENTIAL, "Genererer periode XML fra {}", periode);
         if (periode instanceof OverføringsPeriode) {
@@ -575,15 +600,23 @@ public class SøknadTilXMLMapper {
                     .withFom(utsettelsesPeriode.getFom())
                     .withTom(utsettelsesPeriode.getTom())
                     .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
-                    .withVirksomhetsnummer(utsettelsesPeriode.getVirksomhetsnummer())
                     .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType()))
                     .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
                     .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
         }
         if (periode instanceof GradertUttaksPeriode) {
             GradertUttaksPeriode gradertPeriode = GradertUttaksPeriode.class.cast(periode);
-            Gradering gradering = new Gradering()
-                    .withFom(gradertPeriode.getFom())
+            Gradering gradering = new Gradering();
+
+            if (gradertPeriode.getArbeidsgiver() != null) {
+                throw new VersionMismatchException(gradertPeriode.getArbeidsgiver().getClass().getSimpleName(),
+                        gradertPeriode.getArbeidsgiver(), versjon());
+            }
+
+            if (!CollectionUtils.isEmpty(gradertPeriode.getVirksomhetsnummer())) {
+                gradering.withVirksomhetsnummer(gradertPeriode.getVirksomhetsnummer().get(0));
+            }
+            gradering.withFom(gradertPeriode.getFom())
                     .withTom(gradertPeriode.getTom())
                     .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
                     .withOenskerSamtidigUttak(gradertPeriode.isØnskerSamtidigUttak())
@@ -591,7 +624,6 @@ public class SøknadTilXMLMapper {
                     .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                     .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
                     .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
-                    .withVirksomhetsnummer(gradertPeriode.getVirksomhetsnummer())
                     .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                     .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
             return gradertPeriode.isØnskerSamtidigUttak()
@@ -797,4 +829,5 @@ public class SøknadTilXMLMapper {
     public String toString() {
         return getClass().getSimpleName() + " [oppslag=" + oppslag + "]";
     }
+
 }

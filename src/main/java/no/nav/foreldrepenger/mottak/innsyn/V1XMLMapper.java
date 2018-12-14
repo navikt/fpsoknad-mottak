@@ -1,14 +1,16 @@
-package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
+package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshalToElement;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -58,8 +60,10 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
-import no.nav.foreldrepenger.mottak.util.LatterligEnkelDokumentTypeAnalysator;
+import no.nav.foreldrepenger.mottak.util.DefaultDokumentTypeAnalysator;
+import no.nav.foreldrepenger.mottak.util.DokumentAnalysator;
+import no.nav.foreldrepenger.mottak.util.JAXBFPV1Helper;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -100,35 +104,48 @@ import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class XMLTilSøknadMapper {
+public class V1XMLMapper extends AbstractXMLMapper {
 
-    private static final String UKJENT_KODEVERKSVERDI = "-";
+    private static final JAXBFPV1Helper JAXB = new JAXBFPV1Helper();
 
-    private static final Logger LOG = LoggerFactory.getLogger(XMLTilSøknadMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(V1XMLMapper.class);
 
-    private final Oppslag oppslag;
-
-    public XMLTilSøknadMapper(Oppslag oppslag) {
-        this.oppslag = oppslag;
+    public V1XMLMapper(Oppslag oppslag) {
+        this(oppslag, new DefaultDokumentTypeAnalysator());
     }
 
+    @Inject
+    public V1XMLMapper(Oppslag oppslag, DokumentAnalysator analysator) {
+        super(oppslag, analysator);
+    }
+
+    @Override
+    public Versjon versjon() {
+        return V1;
+    }
+
+    @Override
     public Søknad tilSøknad(String xml) {
         if (xml == null) {
             LOG.debug("Ingen søknad ble funnet");
             return null;
         }
         try {
-            Soeknad søknad = unmarshalToElement(xml, Soeknad.class, ValidationMode.FORELDREPENGER_V1).getValue();
+            Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
             if (søknad != null) {
-                if (erEndringsSøknad(xml)) {
-                    Endringssøknad endringssøknad = new Endringssøknad(søknad.getMottattDato().atStartOfDay(),
+                if (erEndring(xml)) {
+                    LOG.info("Dette er en endringssøknad");
+                    Endringssøknad endringssøknad = new Endringssøknad(
+                            søknad.getMottattDato().atStartOfDay(),
                             tilSøker(søknad.getSoeker()),
                             tilYtelse(søknad.getOmYtelse()).getFordeling(), "42");
                     endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                     endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                     return endringssøknad;
                 }
-                Søknad førstegangssøknad = new Søknad(søknad.getMottattDato().atStartOfDay(),
+                LOG.info("Dette er en førstegangssøknad");
+                Søknad førstegangssøknad = new Søknad(
+                        søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),
                         tilYtelse(søknad.getOmYtelse()),
                         tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
@@ -157,7 +174,9 @@ public class XMLTilSøknadMapper {
     }
 
     private VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg vedlegg) {
-        return new VedleggMetaData(vedlegg.getId(), tilInnsendingsType(vedlegg.getInnsendingstype()),
+        return new VedleggMetaData(
+                vedlegg.getId(),
+                tilInnsendingsType(vedlegg.getInnsendingstype()),
                 tilDokumentType(vedlegg.getSkjemanummer()));
     }
 
@@ -167,17 +186,6 @@ public class XMLTilSøknadMapper {
 
     private static InnsendingsType tilInnsendingsType(Innsendingstype innsendingstype) {
         return InnsendingsType.valueOf(innsendingstype.getKode());
-    }
-
-    private static boolean erEndringsSøknad(String xml) {
-        boolean erEndring = LatterligEnkelDokumentTypeAnalysator.erEndringssøknad(xml);
-        if (erEndring) {
-            LOG.info("Dette er en endringssøknad");
-        }
-        else {
-            LOG.info("Dette er en færstegangssøknad");
-        }
-        return erEndring;
     }
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
@@ -217,33 +225,41 @@ public class XMLTilSøknadMapper {
         if (rettigheter == null) {
             return null;
         }
-        LOG.debug("Genererer rettigheter modell");
 
-        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(rettigheter.isHarAnnenForelderRett(),
-                rettigheter.isHarOmsorgForBarnetIPeriodene(), rettigheter.isHarAleneomsorgForBarnet(), null);
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(
+                rettigheter.isHarAnnenForelderRett(),
+                rettigheter.isHarOmsorgForBarnetIPeriodene(),
+                rettigheter.isHarAleneomsorgForBarnet(),
+                null);
     }
 
     private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
         if (relasjonTilBarnet == null) {
             return null;
         }
-        LOG.debug("Genererer relasjon til barn modell");
-
         if (relasjonTilBarnet instanceof Foedsel) {
             Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
-            return new Fødsel(fødsel.getAntallBarn(), fødsel.getFoedselsdato());
+            return new Fødsel(
+                    fødsel.getAntallBarn(),
+                    fødsel.getFoedselsdato());
         }
         if (relasjonTilBarnet instanceof Termin) {
             Termin termin = Termin.class.cast(relasjonTilBarnet);
-            return new FremtidigFødsel(termin.getAntallBarn(), termin.getTermindato(), termin.getUtstedtdato(),
+            return new FremtidigFødsel(
+                    termin.getAntallBarn(),
+                    termin.getTermindato(),
+                    termin.getUtstedtdato(),
                     emptyList());
-
         }
         if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon) {
             no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon.class
                     .cast(relasjonTilBarnet);
-            return new Adopsjon(adopsjon.getAntallBarn(), adopsjon.getOmsorgsovertakelsesdato(),
-                    adopsjon.isAdopsjonAvEktefellesBarn(), emptyList(), adopsjon.getAnkomstdato(),
+            return new Adopsjon(
+                    adopsjon.getAntallBarn(),
+                    adopsjon.getOmsorgsovertakelsesdato(),
+                    adopsjon.isAdopsjonAvEktefellesBarn(),
+                    emptyList(),
+                    adopsjon.getAnkomstdato(),
                     adopsjon.getFoedselsdato());
         }
         throw new IllegalArgumentException("Ikke"
@@ -254,11 +270,10 @@ public class XMLTilSøknadMapper {
         if (opptjening == null) {
             return null;
         }
-        LOG.debug("Genererer opptjening modell");
-
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening(
                 tilUtenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
-                tilEgenNæring(opptjening.getEgenNaering()), tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
+                tilEgenNæring(opptjening.getEgenNaering()),
+                tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
                 tilFrilans(opptjening.getFrilans()));
     }
 
@@ -266,8 +281,8 @@ public class XMLTilSøknadMapper {
         if (frilans == null) {
             return null;
         }
-        LOG.debug("Genererer frilans  modell");
-        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans(tilÅpenPeriode(frilans.getPeriode()),
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Frilans(
+                tilÅpenPeriode(frilans.getPeriode()),
                 frilans.isHarInntektFraFosterhjem(),
                 frilans.isErNyoppstartet(),
                 tilFrilansOppdrag(frilans.getFrilansoppdrag()),
@@ -279,27 +294,34 @@ public class XMLTilSøknadMapper {
     }
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
-        return safeStream(frilansoppdrag).map(XMLTilSøknadMapper::tilFrilansOppdrag).collect(toList());
+        return safeStream(frilansoppdrag)
+                .map(V1XMLMapper::tilFrilansOppdrag)
+                .collect(toList());
     }
 
     private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
         if (frilansoppdrag == null) {
             return null;
         }
-        return new FrilansOppdrag(frilansoppdrag.getOppdragsgiver(), tilÅpenPeriode(frilansoppdrag.getPeriode()));
+        return new FrilansOppdrag(
+                frilansoppdrag.getOppdragsgiver(),
+                tilÅpenPeriode(frilansoppdrag.getPeriode()));
     }
 
     private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
         if (periode == null) {
             return null;
         }
-        LOG.debug("Genererer åpen periode modell");
-        return new ÅpenPeriode(periode.getFom(), periode.getTom());
+        return new ÅpenPeriode(
+                periode.getFom(),
+                periode.getTom());
     }
 
     private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
             List<AnnenOpptjening> annenOpptjening) {
-        return safeStream(annenOpptjening).map(XMLTilSøknadMapper::tilAnnenOpptjening).collect(toList());
+        return safeStream(annenOpptjening)
+                .map(V1XMLMapper::tilAnnenOpptjening)
+                .collect(toList());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening tilAnnenOpptjening(
@@ -307,23 +329,22 @@ public class XMLTilSøknadMapper {
         if (annenOpptjening == null) {
             return null;
         }
-        LOG.debug("Genererer annen opptjening modell");
-
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening(
                 AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
-                tilÅpenPeriode(annenOpptjening.getPeriode()), emptyList());
+                tilÅpenPeriode(annenOpptjening.getPeriode()),
+                emptyList());
     }
 
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
-        return safeStream(egenNaering).map(XMLTilSøknadMapper::tilEgenNæring).collect(toList());
+        return safeStream(egenNaering)
+                .map(V1XMLMapper::tilEgenNæring)
+                .collect(toList());
     }
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
         if (egenNæring == null) {
             return null;
         }
-        LOG.debug("Genererer egen næring modell");
-
         if (egenNæring instanceof NorskOrganisasjon) {
             NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskOrganisasjon.builder()
@@ -358,8 +379,7 @@ public class XMLTilSøknadMapper {
                     .virksomhetsTyper(tilVirksomhetsTyper(utenlandskOrg.getVirksomhetstype()))
                     .build();
         }
-        throw new IllegalArgumentException("Ikke"
-                + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
+        throw new IllegalArgumentException("Ikke-støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
     }
 
     private static CountryCode tilLand(Land land) {
@@ -371,14 +391,15 @@ public class XMLTilSøknadMapper {
     }
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
-        return virksomhetstype.stream().map(XMLTilSøknadMapper::tilVirksomhetsType).collect(toList());
+        return virksomhetstype.stream()
+                .map(V1XMLMapper::tilVirksomhetsType)
+                .collect(toList());
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
         if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
-        LOG.debug("Genererer virksomhetstype modell");
         return Virksomhetstype.valueOf(type.getKode());
     }
 
@@ -386,43 +407,55 @@ public class XMLTilSøknadMapper {
         if (regnskapsfoerer == null) {
             return emptyList();
         }
-        LOG.debug("Genererer regnskaåsfører modell");
         return singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
     }
 
     private static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
-        return utenlandskArbeidsforhold.stream().map(XMLTilSøknadMapper::tilUtenlandskArbeidsforhold).collect(toList());
+        return utenlandskArbeidsforhold.stream()
+                .map(V1XMLMapper::tilUtenlandskArbeidsforhold)
+                .collect(toList());
 
     }
 
     private static UtenlandskArbeidsforhold tilUtenlandskArbeidsforhold(
             no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold arbeidforhold) {
-        return new UtenlandskArbeidsforhold(arbeidforhold.getArbeidsgiversnavn(),
-                tilÅpenPeriode(arbeidforhold.getPeriode()), null, tilLand(arbeidforhold.getArbeidsland()));
+        return new UtenlandskArbeidsforhold(
+                arbeidforhold.getArbeidsgiversnavn(),
+                tilÅpenPeriode(arbeidforhold.getPeriode()),
+                null,
+                tilLand(arbeidforhold.getArbeidsland()));
 
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
-        LOG.debug("Genererer medlemsskap modell");
-        return new Medlemsskap(tilTidligereOpphold(medlemskap), tilFremtidigOpphold(medlemskap));
+        return new Medlemsskap(
+                tilTidligereOpphold(medlemskap),
+                tilFremtidigOpphold(medlemskap));
     }
 
     private static TidligereOppholdsInformasjon tilTidligereOpphold(Medlemskap medlemskap) {
-        return new TidligereOppholdsInformasjon(true, ArbeidsInformasjon.ARBEIDET_I_NORGE, emptyList()); // TODO
+        return new TidligereOppholdsInformasjon(
+                true,
+                ArbeidsInformasjon.ARBEIDET_I_NORGE,
+                emptyList()); // TODO
     }
 
     private static FramtidigOppholdsInformasjon tilFremtidigOpphold(Medlemskap medlemskap) {
-        return new FramtidigOppholdsInformasjon(true, true, emptyList()); // TODO
+        return new FramtidigOppholdsInformasjon(
+                true,
+                true,
+                emptyList()); // TODO
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling tilFordeling(Fordeling fordeling) {
         if (fordeling == null) {
             return null;
         }
-        LOG.debug("Genererer fordeling modell");
-        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling(fordeling.isAnnenForelderErInformert(),
-                tilÅrsak(fordeling.getOenskerKvoteOverfoert()), tilPerioder(fordeling.getPerioder()));
+        return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling(
+                fordeling.isAnnenForelderErInformert(),
+                tilÅrsak(fordeling.getOenskerKvoteOverfoert()),
+                tilPerioder(fordeling.getPerioder()));
     }
 
     private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
@@ -434,7 +467,9 @@ public class XMLTilSøknadMapper {
 
     private static List<LukketPeriodeMedVedlegg> tilPerioder(
             List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioder) {
-        return safeStream(perioder).map(XMLTilSøknadMapper::tilLukketPeriode).collect(toList());
+        return safeStream(perioder)
+                .map(V1XMLMapper::tilLukketPeriode)
+                .collect(toList());
     }
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(
@@ -443,27 +478,30 @@ public class XMLTilSøknadMapper {
         if (periode == null) {
             return null;
         }
-        LOG.debug("Genererer lukket periode modell");
         if (periode instanceof Overfoeringsperiode) {
             Overfoeringsperiode overføringsPeriode = Overfoeringsperiode.class.cast(periode);
-            LOG.debug("Periode er overføringsperiode");
-            return new OverføringsPeriode(overføringsPeriode.getFom(), overføringsPeriode.getTom(),
+            return new OverføringsPeriode(
+                    overføringsPeriode.getFom(),
+                    overføringsPeriode.getTom(),
                     tilÅrsak(overføringsPeriode.getAarsak()),
                     tilStønadKontoType(overføringsPeriode.getOverfoeringAv()),
                     emptyList());
         }
         if (periode instanceof Oppholdsperiode) {
-            LOG.debug("Periode er oppholdsperiode");
             Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
-            return new OppholdsPeriode(oppholdsPeriode.getFom(), oppholdsPeriode.getTom(),
+            return new OppholdsPeriode(
+                    oppholdsPeriode.getFom(),
+                    oppholdsPeriode.getTom(),
                     tilÅrsak(oppholdsPeriode.getAarsak()),
                     emptyList());
         }
         if (periode instanceof Utsettelsesperiode) {
-            LOG.debug("Periode er utsetelsesperiode");
             Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
-            return new UtsettelsesPeriode(utsettelse.getFom(), utsettelse.getTom(), utsettelse.isErArbeidstaker(),
-                    utsettelse.getVirksomhetsnummer(),
+            return new UtsettelsesPeriode(
+                    utsettelse.getFom(),
+                    utsettelse.getTom(),
+                    utsettelse.isErArbeidstaker(),
+                    null,
                     tilÅrsak(utsettelse.getAarsak()),
                     tilStønadKontoType(utsettelse.getUtsettelseAv()),
                     null,
@@ -471,9 +509,10 @@ public class XMLTilSøknadMapper {
         }
 
         if (periode instanceof Gradering) {
-            LOG.debug("Periode er gradert periode");
             Gradering gradering = Gradering.class.cast(periode);
-            return new GradertUttaksPeriode(gradering.getFom(), gradering.getTom(),
+            return new GradertUttaksPeriode(
+                    gradering.getFom(),
+                    gradering.getTom(),
                     tilStønadKontoType(gradering.getType()),
                     gradering.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()),
@@ -481,15 +520,17 @@ public class XMLTilSøknadMapper {
                     gradering.getSamtidigUttakProsent(),
                     gradering.getArbeidtidProsent(),
                     gradering.isErArbeidstaker(),
-                    gradering.isArbeidsforholdSomSkalGraderes(), gradering.getVirksomhetsnummer().toString(), // TODO
-                                                                                                              // strange
+                    gradering.isArbeidsforholdSomSkalGraderes(),
+                    Collections.singletonList(gradering.getVirksomhetsnummer().toString()),
+                    null,
                     emptyList());
         }
 
         if (periode instanceof Uttaksperiode) {
-            LOG.debug("Periode er uttaksperiode");
             Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
-            return new UttaksPeriode(uttaksperiode.getFom(), uttaksperiode.getTom(),
+            return new UttaksPeriode(
+                    uttaksperiode.getFom(),
+                    uttaksperiode.getTom(),
                     tilStønadKontoType(uttaksperiode.getType()),
                     uttaksperiode.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
@@ -504,7 +545,6 @@ public class XMLTilSøknadMapper {
         if (morsAktivitetIPerioden == null || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
-        LOG.debug("Genererer mors aktivitet modell");
         return MorsAktivitet.valueOf(morsAktivitetIPerioden.getKode());
     }
 
@@ -512,7 +552,6 @@ public class XMLTilSøknadMapper {
         if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
-        LOG.debug("Genererer stønadskontotype  modell");
         return StønadskontoType.valueOf(type.getKode());
     }
 
@@ -520,7 +559,6 @@ public class XMLTilSøknadMapper {
         if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
-        LOG.debug("Genererer utsettelsesårsak  modell");
         return UtsettelsesÅrsak.valueOf(aarsak.getKode());
     }
 
@@ -528,7 +566,6 @@ public class XMLTilSøknadMapper {
         if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
-        LOG.debug("Genererer oppholdsårsak  modell");
         return Oppholdsårsak.valueOf(aarsak.getKode());
     }
 
@@ -537,7 +574,6 @@ public class XMLTilSøknadMapper {
         if (dekningsgrad == null) {
             return null;
         }
-        LOG.debug("Genererer dekningsgrad modell");
         return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad
                 .fraKode(dekningsgrad.getDekningsgrad().getKode());
     }
@@ -547,32 +583,27 @@ public class XMLTilSøknadMapper {
         if (annenForelder == null) {
             return null;
         }
-        LOG.debug("Genererer annen forelder modell");
         if (annenForelder instanceof UkjentForelder) {
-            LOG.debug("Annen forelder er ukjent");
             return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder();
         }
         if (annenForelder instanceof AnnenForelderMedNorskIdent) {
-            LOG.debug("Annen forelder er norsk");
             AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
-            return new NorskForelder(oppslag.getFnr(new AktorId(norskForelder.getAktoerId())), null);
+            return new NorskForelder(
+                    oppslag.getFnr(new AktorId(norskForelder.getAktoerId())),
+                    null);
         }
         if (annenForelder instanceof AnnenForelderUtenNorskIdent) {
-            LOG.debug("Annen forelder er utenlandsk");
             AnnenForelderUtenNorskIdent utenlandsForelder = AnnenForelderUtenNorskIdent.class.cast(annenForelder);
-            return new UtenlandskForelder(utenlandsForelder.getUtenlandskPersonidentifikator(),
-                    tilLand(utenlandsForelder.getLand()), null);
+            return new UtenlandskForelder(
+                    utenlandsForelder.getUtenlandskPersonidentifikator(),
+                    tilLand(utenlandsForelder.getLand()),
+                    null);
         }
         throw new IllegalArgumentException();
     }
 
     private static Søker tilSøker(Bruker søker) {
-        LOG.debug("Genererer søker model");
         return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + "]";
-    }
 }

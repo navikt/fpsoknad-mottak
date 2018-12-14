@@ -14,9 +14,9 @@ import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConver
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -67,8 +67,12 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.innsyn.V1XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.V2XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.LatterligEnkelDokumentTypeAnalysator;
+import no.nav.foreldrepenger.mottak.util.DefaultDokumentTypeAnalysator;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureJsonTesters
@@ -76,6 +80,8 @@ import no.nav.foreldrepenger.mottak.util.LatterligEnkelDokumentTypeAnalysator;
         PDFElementRenderer.class,
         ForeldrepengerPDFGenerator.class, TestConfig.class })
 public class TestFPFordelSerialization {
+
+    private static final DefaultDokumentTypeAnalysator ANALYSATOR = new DefaultDokumentTypeAnalysator();
 
     @Mock
     private Oppslag oppslag;
@@ -87,8 +93,12 @@ public class TestFPFordelSerialization {
     @Inject
     ForeldrepengeInfoRenderer fpRenderer;
 
-    private static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
-    private static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
+    private XMLMapper v1XMLMapper, v2XMLMapper;
+
+    private DomainMapper v1DomainMapper, v2DomainMapper;
+
+    private static final ValgfrittVedlegg VEDLEGG1 = opplastetVedlegg(ID142, I500002);
+    private static final ValgfrittVedlegg VEDLEGG2 = opplastetVedlegg(ID143, I500005);
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
@@ -109,6 +119,12 @@ public class TestFPFordelSerialization {
 
     @Before
     public void before() {
+
+        v1XMLMapper = new V1XMLMapper(oppslag);
+        v2XMLMapper = new V2XMLMapper(oppslag);
+        v1DomainMapper = new V1DomainMapper(oppslag);
+        v2DomainMapper = new V2DomainMapper(oppslag);
+
         konvoluttGenerator = konvoluttGenerator();
         when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
@@ -131,63 +147,38 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testEndringssøknadRoundtrip() throws Exception {
+    public void testEndringssøknadRoundtripV1() throws Exception {
 
-        AktorId aktørId = new AktorId("42");
-        ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
-        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(V1, V2);
-        String xml = mapper.tilXML(original, aktørId);
-        System.out.println(xml);
-        assertTrue(LatterligEnkelDokumentTypeAnalysator.erEndringssøknad(xml));
-        /*
-         * Endringssøknad rekonstruert =
-         * Endringssøknad.class.cast(mapper.tilSøknad(xml));
-         * assertNotNull(rekonstruert);
-         * assertThat(Foreldrepenger.class.cast(rekonstruert.getYtelse()).getFordeling()
-         * ) .isEqualTo(Foreldrepenger.class.cast(original.getYtelse()).getFordeling());
-         *
-         * assertThat(rekonstruert.getMottattdato().toLocalDate()).isEqualTo(original.
-         * getMottattdato().toLocalDate());
-         * assertThat(rekonstruert.getSaksnr()).isEqualTo(original.getSaksnr());
-         * assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());
-         * System.out.println(Foreldrepenger.class.cast(rekonstruert.getYtelse()).
-         * getFordeling());
-         */
+        Endringssøknad original = ForeldrepengerTestUtils.endringssøknad(V1, VEDLEGG1, VEDLEGG2);
+        String xml = v1DomainMapper.tilXML(original, AKTØRID);
+        assertEquals(ANALYSATOR.type(xml), SøknadType.ENDRING);
+        assertEquals(ANALYSATOR.versjon(xml), V1);
+        // assertEquals(original, v1mapper.tilSøknad(xml));
     }
 
     @Test
-    public void testSøknadRoundtrip() throws Exception {
-        AktorId aktørId = new AktorId("42");
-        ForeldrepengerSøknadMapper mapper = new ForeldrepengerSøknadMapper(oppslag);
-        Søknad original = ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg();
-        System.out.println(original.getVedlegg());
-        String xml = mapper.tilXML(original, aktørId);
-        System.out.println(xml);
-        assertFalse(LatterligEnkelDokumentTypeAnalysator.erEndringssøknad(xml));
-        /*
-         * Søknad rekonstruert = mapper.tilSøknad(xml); assertNotNull(rekonstruert);
-         * assertThat(rekonstruert.getBegrunnelseForSenSøknad()).isEqualTo(original.
-         * getBegrunnelseForSenSøknad());
-         * assertThat(rekonstruert.getSøker()).isEqualTo(original.getSøker());
-         * assertThat(rekonstruert.getTilleggsopplysninger()).isEqualTo(original.
-         * getTilleggsopplysninger()); Foreldrepenger originalYtelse =
-         * Foreldrepenger.class.cast(original.getYtelse()); Foreldrepenger
-         * rekonstruertYtelse = Foreldrepenger.class.cast(rekonstruert.getYtelse());
-         * assertThat(rekonstruertYtelse.getDekningsgrad()).isEqualTo(originalYtelse.
-         * getDekningsgrad());
-         * assertThat(rekonstruertYtelse.getRelasjonTilBarn()).isEqualTo(originalYtelse.
-         * getRelasjonTilBarn());
-         * assertThat(rekonstruertYtelse.getAnnenForelder()).isEqualTo(originalYtelse.
-         * getAnnenForelder());
-         * assertThat(rekonstruertYtelse.getFordeling()).isEqualTo(originalYtelse.
-         * getFordeling());
-         */
+    public void testSøknadRoundtripV1() throws Exception {
+        Søknad original = ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1);
+        String xml = v1DomainMapper.tilXML(original, AKTØRID);
+        assertEquals(ANALYSATOR.versjon(xml), V1);
+        assertEquals(original, v1XMLMapper.tilSøknad(xml));
+    }
+
+    @Test
+    public void testSøknadRoundtripV2() throws Exception {
+        VersjonerbarDomainMapper dm = new DefaultVersjonerbarDomainMapper(v2DomainMapper);
+        Søknad original = ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V2);
+        String xml = v2DomainMapper.tilXML(original, AKTØRID);
+        assertEquals(ANALYSATOR.versjon(xml), V2);
+        assertEquals(original, v2XMLMapper.tilSøknad(xml));
     }
 
     @Test
     public void testKonvolutt() throws Exception {
-        Søknad søknad = søknad(false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person());
+        Søknad søknad = søknad(V1, false,
+                valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
+                Versjon.V1);
         assertEquals(3, konvolutt.getBody().size());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         List<HttpEntity<?>> hoveddokumenter = konvolutt.getBody().get(HOVEDDOKUMENT);
@@ -204,7 +195,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEttersending() throws Exception {
-        Ettersending es = new Ettersending("42", V1, V2);
+        Ettersending es = new Ettersending("42", VEDLEGG1, VEDLEGG2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         assertEquals(1, metadata.size());
@@ -217,9 +208,10 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEndring() throws Exception {
-        Endringssøknad es = ForeldrepengerTestUtils.endringssøknad(V1, V2);
+        Endringssøknad es = ForeldrepengerTestUtils.endringssøknad(V1, VEDLEGG1, VEDLEGG2);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(es));
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
+                Versjon.V1);
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         assertEquals(1, metadata.size());
         List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
@@ -231,7 +223,7 @@ public class TestFPFordelSerialization {
     private FPFordelKonvoluttGenerator konvoluttGenerator() {
         return new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
-                new ForeldrepengerSøknadMapper(oppslag),
+                new DefaultVersjonerbarDomainMapper(new V1DomainMapper(oppslag)),
                 new ForeldrepengerPDFGenerator(oppslag, fpRenderer));
     }
 
