@@ -24,7 +24,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(exclude = "vedlegg")
+@EqualsAndHashCode(exclude = { "mottattdato", "vedlegg" })
+
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({

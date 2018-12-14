@@ -22,10 +22,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
 
 @Data
 @EqualsAndHashCode(exclude = { "vedlegg" })
+@ToString(exclude = { "vedlegg" })
 @LukketPeriode
 @JsonPropertyOrder({ "fom", "tom" })
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")

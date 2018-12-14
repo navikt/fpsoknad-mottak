@@ -37,7 +37,7 @@ public class JaxbTest {
 
     @Test
     public void testFørstegangssøknadRoundtrip() {
-        Søknad søknad = søknadMedToVedlegg();
-        assertEquals(søknad, mapper.tilSøknad(mapper.tilXML(søknad, SØKER)));
+        Søknad fraSøknad = søknadMedToVedlegg();
+        assertEquals(mapper.tilSøknad(mapper.tilXML(fraSøknad, SØKER)), fraSøknad);
     }
 }
