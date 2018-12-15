@@ -5,11 +5,10 @@ import java.net.URI;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class FPFordelConnection extends AbstractRestConnection implements Pingable {
@@ -17,9 +16,9 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
     private final FPFordelConfig config;
     private final FPFordelResponseHandler responseHandler;
 
-    public FPFordelConnection(RestTemplate template, TokenHelper tokenHelper, FPFordelConfig config,
+    public FPFordelConnection(RestOperations restOperations, FPFordelConfig config,
             FPFordelResponseHandler responseHandler) {
-        super(template, tokenHelper);
+        super(restOperations);
         this.config = config;
         this.responseHandler = responseHandler;
     }

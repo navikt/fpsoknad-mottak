@@ -1,26 +1,16 @@
 package no.nav.foreldrepenger.mottak.http.errorhandling;
 
-import java.util.Date;
-
-public class UnauthenticatedException extends TokenExpiryAwareException {
+public class UnauthenticatedException extends RuntimeException {
 
     public UnauthenticatedException(Throwable cause) {
-        this(null, null, cause);
+        this(null, null);
     }
 
     public UnauthenticatedException(String msg) {
-        this(msg, null, null);
+        this(msg, null);
     }
 
-    public UnauthenticatedException(Date expDate, Throwable cause) {
-        this(null, expDate, cause);
-    }
-
-    public UnauthenticatedException(String msg, Date expDate) {
-        this(msg, expDate, null);
-    }
-
-    public UnauthenticatedException(String msg, Date expDate, Throwable cause) {
-        super(msg, expDate, cause);
+    public UnauthenticatedException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

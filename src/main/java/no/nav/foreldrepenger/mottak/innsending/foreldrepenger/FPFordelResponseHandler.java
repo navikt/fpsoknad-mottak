@@ -18,13 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class FPFordelResponseHandler extends AbstractRestConnection {
@@ -34,11 +33,11 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     private final long maxMillis;
     private final FPInfoSaksPoller poller;
 
-    public FPFordelResponseHandler(RestTemplate template, TokenHelper tokenHelper,
+    public FPFordelResponseHandler(RestOperations restOperations,
             @Value("${fpfordel.max:5}") int maxAntallForsøk,
             @Value("${fpfordel.maxMillis:10000}") long maxMillis,
             FPInfoSaksPoller poller) {
-        super(template, tokenHelper);
+        super(restOperations);
         this.maxAntallForsøk = maxAntallForsøk;
         this.maxMillis = maxMillis;
         this.poller = poller;

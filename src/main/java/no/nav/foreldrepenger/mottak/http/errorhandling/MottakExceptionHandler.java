@@ -10,6 +10,8 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -27,17 +29,24 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotQueueUnavailableException;
+import no.nav.foreldrepenger.mottak.util.TokenHelper;
 import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @Inject
+    private TokenHelper tokenHelper;
+
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
 
     @ResponseBody
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
+        if (e.getStatusCode().equals(UNAUTHORIZED) || e.getStatusCode().equals(FORBIDDEN)) {
+            return logAndHandle(e.getStatusCode(), e, request, tokenHelper.getExp());
+        }
         return logAndHandle(e.getStatusCode(), e, request);
     }
 
@@ -63,19 +72,9 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(NOT_FOUND, e, req);
     }
 
-    @ExceptionHandler({ UnauthorizedException.class })
-    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e, WebRequest req) {
-        return logAndHandle(UNAUTHORIZED, e, req, e.getExpDate());
-    }
-
     @ExceptionHandler({ OIDCUnauthorizedException.class })
     public ResponseEntity<Object> handleUnauthorizedException(OIDCUnauthorizedException e, WebRequest req) {
         return logAndHandle(UNAUTHORIZED, e, req);
-    }
-
-    @ExceptionHandler(value = { UnauthenticatedException.class })
-    protected ResponseEntity<Object> handleUnauthenticated(UnauthenticatedException e, WebRequest req) {
-        return logAndHandle(FORBIDDEN, e, req, e.getExpDate());
     }
 
     @ExceptionHandler({ OIDCTokenValidatorException.class })

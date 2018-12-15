@@ -14,14 +14,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements Pingable {
@@ -29,8 +28,8 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     private final InnsynConfig config;
 
-    public InnsynConnection(RestTemplate template, TokenHelper tokenHelper, InnsynConfig config) {
-        super(template, tokenHelper);
+    public InnsynConnection(RestOperations restOperations, InnsynConfig config) {
+        super(restOperations);
         this.config = config;
     }
 
