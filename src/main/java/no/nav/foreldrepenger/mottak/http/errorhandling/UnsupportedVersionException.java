@@ -4,7 +4,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class UnsupportedVersionException extends VersionException {
 
-    public UnsupportedVersionException(Versjon v) {
-        super(v);
+    public UnsupportedVersionException(Versjon versjon) {
+        super(versjon);
     }
 }

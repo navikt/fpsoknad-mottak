@@ -4,14 +4,18 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public abstract class VersionException extends RuntimeException {
 
-    private final Versjon v;
+    private final Versjon versjon;
 
-    public VersionException(Versjon v) {
-        this(null, v);
+    public VersionException(Versjon versjon) {
+        this(null, versjon);
     }
 
-    public VersionException(String msg, Versjon v) {
+    public VersionException(String msg, Versjon versjon) {
         super(msg);
-        this.v = v;
+        this.versjon = versjon;
+    }
+
+    public Versjon getVersjon() {
+        return versjon;
     }
 }

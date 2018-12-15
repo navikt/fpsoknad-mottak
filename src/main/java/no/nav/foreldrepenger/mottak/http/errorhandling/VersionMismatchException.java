@@ -14,9 +14,9 @@ public class VersionMismatchException extends VersionException {
 
     private static String txt(String name, Object verdi, Versjon v, String lovligeVerdier) {
         if (lovligeVerdier == null) {
-            return "element " + name + " med  verdi " + verdi + " er ikke støttet for versjon " + v.name();
+            return "Element " + name + " med  verdi " + verdi + " er ikke støttet for versjon " + v.name();
         }
-        return "element " + name + " med  verdi " + verdi + " er ikke støttet for versjon " + v.name()
+        return "Element " + name + " med  verdi " + verdi + " er ikke støttet for versjon " + v.name()
                 + ", lovlige verdier er " + lovligeVerdier;
     }
 }

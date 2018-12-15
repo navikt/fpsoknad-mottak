@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
@@ -65,11 +64,6 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = { DokmotQueueUnavailableException.class })
     protected ResponseEntity<Object> handleRemoteUnavailable(DokmotQueueUnavailableException e, WebRequest req) {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
-    }
-
-    @ExceptionHandler(value = { NotFoundException.class })
-    protected ResponseEntity<Object> handleNotFound(NotFoundException e, WebRequest req) {
-        return logAndHandle(NOT_FOUND, e, req);
     }
 
     @ExceptionHandler({ OIDCUnauthorizedException.class })
