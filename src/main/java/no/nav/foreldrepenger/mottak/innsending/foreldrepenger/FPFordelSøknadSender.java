@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
-import static no.nav.foreldrepenger.mottak.domain.Søknad.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.mottak.domain.SøknadSender.FPFORDEL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
@@ -20,15 +20,15 @@ import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.VersjonerbarSøknadSender;
+import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
-@Qualifier("fpfordel")
-public class FPFordelSøknadSender implements VersjonerbarSøknadSender {
+@Qualifier(FPFORDEL)
+public class FPFordelSøknadSender implements SøknadSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
 
@@ -46,16 +46,6 @@ public class FPFordelSøknadSender implements VersjonerbarSøknadSender {
     }
 
     @Override
-    public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
-        return send(endringsSøknad, søker, DEFAULT_VERSJON);
-    }
-
-    @Override
-    public Kvittering send(Søknad søknad, Person søker) {
-        return send(søknad, søker, DEFAULT_VERSJON);
-    }
-
-    @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker, Versjon versjon) {
         return send(ENDRING, konvoluttGenerator.payload(endringsSøknad, søker, versjon));
     }
@@ -66,7 +56,7 @@ public class FPFordelSøknadSender implements VersjonerbarSøknadSender {
     }
 
     @Override
-    public Kvittering send(Ettersending ettersending, Person søker) {
+    public Kvittering send(Ettersending ettersending, Person søker, Versjon versjon) {
         return send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker));
     }
 

@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,8 +38,8 @@ public class SøknadTextFormatter {
     private final Locale locale;
 
     @Inject
-    public SøknadTextFormatter(@Qualifier("landkoder") MessageSource landkoder,
-            @Qualifier("kvitteringstekster") MessageSource kvitteringstekster) {
+    public SøknadTextFormatter(@Qualifier(LANDKODER) MessageSource landkoder,
+            @Qualifier(KVITTERINGSTEKSTER) MessageSource kvitteringstekster) {
         this(landkoder, kvitteringstekster, CountryCode.NO.toLocale());
     }
 

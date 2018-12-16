@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.VersjonerbarSøknadSender;
+import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
@@ -45,9 +45,9 @@ public class SøknadController {
 
     private final Innsyn innsyn;
     private final Oppslag oppslag;
-    private final VersjonerbarSøknadSender sender;
+    private final SøknadSender sender;
 
-    public SøknadController(@Qualifier(DUAL) VersjonerbarSøknadSender sender, Oppslag oppslag,
+    public SøknadController(@Qualifier(DUAL) SøknadSender sender, Oppslag oppslag,
             Innsyn innsyn) {
         this.sender = sender;
         this.oppslag = oppslag;

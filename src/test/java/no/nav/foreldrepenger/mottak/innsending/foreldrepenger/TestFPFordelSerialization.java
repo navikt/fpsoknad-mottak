@@ -166,7 +166,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtripV2() throws Exception {
-        VersjonerbarDomainMapper dm = new DefaultVersjonerbarDomainMapper(v2DomainMapper);
+        VersjonsBevisstDomainMapper dm = new DefaultVersjonsBevisstDomainMapper(v2DomainMapper);
         Søknad original = ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V2);
         String xml = v2DomainMapper.tilXML(original, AKTØRID);
         assertEquals(ANALYSATOR.versjon(xml), V2);
@@ -223,7 +223,7 @@ public class TestFPFordelSerialization {
     private FPFordelKonvoluttGenerator konvoluttGenerator() {
         return new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(mapper),
-                new DefaultVersjonerbarDomainMapper(new V1DomainMapper(oppslag)),
+                new DefaultVersjonsBevisstDomainMapper(new V1DomainMapper(oppslag)),
                 new ForeldrepengerPDFGenerator(oppslag, fpRenderer));
     }
 

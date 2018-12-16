@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
-public interface Versjonerbar {
+public interface VersjonsBevisst {
     Versjon versjon();
 
 }

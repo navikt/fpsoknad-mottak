@@ -9,7 +9,7 @@ public class AnalyseResultat {
         this.resultat = Pair.of(type, versjon);
     }
 
-    public Versjon getVersjon() {
+    public Versjon versjon() {
         return resultat.getSecond();
     }
 
@@ -19,6 +19,6 @@ public class AnalyseResultat {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [versjon=" + getVersjon() + ", søknadType=" + type() + "]";
+        return getClass().getSimpleName() + " [versjon=" + versjon() + ", søknadType=" + type() + "]";
     }
 }

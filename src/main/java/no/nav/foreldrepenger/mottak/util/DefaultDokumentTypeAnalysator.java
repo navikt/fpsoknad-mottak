@@ -8,7 +8,6 @@ import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.springframework.stereotype.Component;
@@ -20,20 +19,12 @@ public final class DefaultDokumentTypeAnalysator implements DokumentAnalysator {
 
     @Override
     public AnalyseResultat analyser(String xml) {
-        String unescapedXML = unescapeHtml4(xml);
-        int ix = unescapedXML.indexOf("omYtelse>") + 1;
-        String shortxml = unescapedXML.substring(ix + "omYtelse>".length());
-        int begin = shortxml.indexOf("<");
-        int end = shortxml.indexOf(">");
-        String value = shortxml.substring(begin + 1, end);
-        Versjon v = Versjon.fraNamespace(namespaceFra(xml));
-        return value.contains("endringssoeknad") ? new AnalyseResultat(ENDRING, v)
-                : new AnalyseResultat(INITIELL, v);
+        return new AnalyseResultat(typeFra(xml), versjonFra(xml));
     }
 
     @Override
     public Versjon versjon(String xml) {
-        return analyser(xml).getVersjon();
+        return analyser(xml).versjon();
     }
 
     @Override
@@ -41,23 +32,27 @@ public final class DefaultDokumentTypeAnalysator implements DokumentAnalysator {
         return analyser(xml).type();
     }
 
-    public static String namespaceFra(Source xmlSource) {
+    private static Versjon versjonFra(String xml) {
         try {
-            XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(xmlSource);
-            while (!xmlStreamReader.isStartElement()) {
-                xmlStreamReader.next();
+            XMLStreamReader reader = XMLInputFactory.newInstance()
+                    .createXMLStreamReader(new StreamSource(new StringReader(xml)));
+            while (!reader.isStartElement()) {
+                reader.next();
             }
-            return xmlStreamReader.getNamespaceURI();
+            return Versjon.fraNamespace(reader.getNamespaceURI());
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public static String namespaceFra(String xml) {
-        try (final StringReader reader = new StringReader(xml)) {
-            return namespaceFra(new StreamSource(reader));
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
+    private SøknadType typeFra(String xml) {
+        String unescapedXML = unescapeHtml4(xml);
+        int ix = unescapedXML.indexOf("omYtelse>") + 1;
+        String shortxml = unescapedXML.substring(ix + "omYtelse>".length());
+        int begin = shortxml.indexOf("<");
+        int end = shortxml.indexOf(">");
+        String value = shortxml.substring(begin + 1, end);
+        SøknadType type = value.contains("endringssoeknad") ? ENDRING : INITIELL;
+        return type;
     }
 }

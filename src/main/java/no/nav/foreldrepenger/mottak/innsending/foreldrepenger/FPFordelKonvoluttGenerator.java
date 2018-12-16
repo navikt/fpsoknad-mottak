@@ -40,11 +40,11 @@ public class FPFordelKonvoluttGenerator {
     static final String METADATA = "metadata";
     private static final String CONTENT_ID = "Content-ID";
     private final FPFordelMetdataGenerator metadataGenerator;
-    private final VersjonerbarDomainMapper søknadGenerator;
+    private final VersjonsBevisstDomainMapper søknadGenerator;
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            VersjonerbarDomainMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
+            VersjonsBevisstDomainMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.søknadGenerator = søknadGenerator;
         this.pdfGenerator = pdfGenerator;

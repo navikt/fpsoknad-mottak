@@ -40,8 +40,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.innsending.DualSøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonerbarDomainMapper;
-import no.nav.foreldrepenger.mottak.innsyn.VersjonerbarXMLMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
+import no.nav.foreldrepenger.mottak.innsyn.VersjonsAvhengigXMLMapper;
 import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -68,9 +68,9 @@ public class TestFPFordelRoundtripSerialization {
     @Autowired
     CallIdGenerator refGenerator;
     @Autowired
-    VersjonerbarDomainMapper søknadXMLGenerator;
+    VersjonsBevisstDomainMapper søknadXMLGenerator;
     @Autowired
-    VersjonerbarXMLMapper xmlMapper;
+    VersjonsAvhengigXMLMapper xmlMapper;
 
     @Autowired
     FPFordelKonvoluttGenerator konvoluttGenerator;

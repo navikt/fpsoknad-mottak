@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,10 +35,6 @@ public abstract class AbstractRestConnection {
         return queryParams;
     }
 
-    protected <T> T getForObject(URI uri, Class<T> responseType) {
-        return getForObject(uri, responseType, false);
-    }
-
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
         ResponseEntity<T> respons = restOperations.postForEntity(uri, payload, responseType);
         if (respons.hasBody()) {
@@ -47,23 +43,27 @@ public abstract class AbstractRestConnection {
         return respons;
     }
 
-    protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
-        ResponseEntity<T> respons = restOperations.getForEntity(uri, responseType);
-        if (respons.hasBody()) {
-            LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
-        }
-        return respons;
+    protected <T> T getForObject(URI uri, Class<T> responseType) {
+        return getForObject(uri, responseType, false);
     }
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
+        return getForEntity(uri, responseType, doThrow).getBody();
+    }
+
+    protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
+        return getForEntity(uri, responseType, true);
+    }
+
+    protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType, boolean doThrow) {
         try {
-            T respons = restOperations.getForObject(uri, responseType);
-            if (respons != null) {
-                LOG.trace(CONFIDENTIAL, "Respons: {}", respons);
+            ResponseEntity<T> respons = restOperations.getForEntity(uri, responseType);
+            if (respons.hasBody()) {
+                LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
             }
             return respons;
-        } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode().equals(NOT_FOUND) && !doThrow) {
+        } catch (HttpClientErrorException e) {
+            if (NOT_FOUND.equals(e.getStatusCode()) && !doThrow) {
                 return null;
             }
             throw e;

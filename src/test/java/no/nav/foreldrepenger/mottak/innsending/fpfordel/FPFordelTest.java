@@ -48,7 +48,7 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DefaultVersjonerbarDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DefaultVersjonsBevisstDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
@@ -60,7 +60,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelResponseHa
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelSøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonerbarDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
@@ -138,7 +138,7 @@ public class FPFordelTest {
         ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
         ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(oppslag, jalla);
 
-        VersjonerbarDomainMapper søknadGenerator = new DefaultVersjonerbarDomainMapper(new V1DomainMapper(oppslag));
+        VersjonsBevisstDomainMapper søknadGenerator = new DefaultVersjonsBevisstDomainMapper(new V1DomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(new ObjectMapper()),
                 søknadGenerator,

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.mottak.util.Versjon.ALL;
 
 import java.util.List;
 
@@ -15,32 +16,22 @@ import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionExcepti
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public class DefaultVersjonerbarDomainMapper implements VersjonerbarDomainMapper {
+public class DefaultVersjonsBevisstDomainMapper implements VersjonsBevisstDomainMapper {
 
     private final List<DomainMapper> mappers;
 
-    public DefaultVersjonerbarDomainMapper(DomainMapper... mappers) {
+    public DefaultVersjonsBevisstDomainMapper(DomainMapper... mappers) {
         this(asList(mappers));
     }
 
     @Inject
-    public DefaultVersjonerbarDomainMapper(List<DomainMapper> mappers) {
+    public DefaultVersjonsBevisstDomainMapper(List<DomainMapper> mappers) {
         this.mappers = mappers;
     }
 
     @Override
     public Versjon versjon() {
-        return Versjon.ALL;
-    }
-
-    @Override
-    public String tilXML(Søknad søknad, AktorId søker) {
-        return tilXML(søknad, søker, versjon());
-    }
-
-    @Override
-    public String tilXML(Endringssøknad endringssøknad, AktorId søker) {
-        return tilXML(endringssøknad, søker, versjon());
+        return ALL;
     }
 
     @Override

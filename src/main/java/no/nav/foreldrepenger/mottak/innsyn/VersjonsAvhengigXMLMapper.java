@@ -19,21 +19,21 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 @Qualifier(VERSJONERBAR)
-public class VersjonerbarXMLMapper implements XMLMapper {
+public class VersjonsAvhengigXMLMapper implements XMLMapper {
 
     private final List<XMLMapper> mappers;
     private final DokumentAnalysator analysator;
 
-    public VersjonerbarXMLMapper(XMLMapper... mappers) {
+    public VersjonsAvhengigXMLMapper(XMLMapper... mappers) {
         this(new DefaultDokumentTypeAnalysator(), mappers);
     }
 
-    public VersjonerbarXMLMapper(DokumentAnalysator analysator, XMLMapper... mappers) {
+    public VersjonsAvhengigXMLMapper(DokumentAnalysator analysator, XMLMapper... mappers) {
         this(analysator, asList(mappers));
     }
 
     @Inject
-    public VersjonerbarXMLMapper(DokumentAnalysator analysator, List<XMLMapper> mappers) {
+    public VersjonsAvhengigXMLMapper(DokumentAnalysator analysator, List<XMLMapper> mappers) {
         this.mappers = mappers;
         this.analysator = analysator;
     }
