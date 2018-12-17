@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONERBAR;
+import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -30,7 +30,7 @@ public class InnsynTjeneste implements Innsyn {
     private final InnsynConnection innsynConnection;
     private final DokumentAnalysator analysator;
 
-    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(VERSJONERBAR) XMLMapper mapper,
+    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(VERSJONSBEVISST) XMLMapper mapper,
             DokumentAnalysator analysator) {
         this.innsynConnection = innsynConnection;
         this.mapper = mapper;

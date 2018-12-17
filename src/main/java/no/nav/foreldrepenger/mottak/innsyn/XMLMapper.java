@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.mottak.util.VersjonsBevisst;
 
 public interface XMLMapper extends VersjonsBevisst {
 
-    String VERSJONERBAR = "multiple";
+    String VERSJONSBEVISST = "multiple";
 
     Søknad tilSøknad(String xml);
 

@@ -24,6 +24,7 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.uttaksPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.åpenPeriode;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -168,6 +169,8 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testGradertPeriode() {
         test(gradertPeriode(V1), true);
+        test(gradertPeriode(V2), true);
+
     }
 
     @Test
