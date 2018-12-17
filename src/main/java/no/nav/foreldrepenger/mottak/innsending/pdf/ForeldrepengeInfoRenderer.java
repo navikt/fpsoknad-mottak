@@ -593,6 +593,9 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "tom", gradert.getTom());
         addIfSet(attributter, "dager", String.valueOf(gradert.dager()));
         attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
+        if (gradert.getArbeidsgiver() != null) {
+            addIfSet(attributter, "arbeidsgiver", gradert.getArbeidsgiver().getId());
+        }
         addListIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
         attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
@@ -608,7 +611,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<String> uttaksData(UttaksPeriode uttak, int antallBarn) {
-        ArrayList<String> attributter = new ArrayList<>();
+        List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", uttak.getFom());
         addIfSet(attributter, "tom", uttak.getTom());
         addIfSet(attributter, "dager", String.valueOf(uttak.dager()));

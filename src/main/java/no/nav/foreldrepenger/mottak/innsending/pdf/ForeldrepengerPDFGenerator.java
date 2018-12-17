@@ -51,7 +51,7 @@ public class ForeldrepengerPDFGenerator {
             LOG.trace("Y ved start {}", y);
             y = fpRenderer.header(søker, doc, cos, false, y);
             float headerSize = yTop - y;
-            LOG.trace("Heaader trenger  {}", headerSize);
+            LOG.trace("Header trenger  {}", headerSize);
 
             if (stønad.getRelasjonTilBarn() != null) {
                 LOG.trace("Y før relasjon til barn {}", y);
@@ -265,7 +265,7 @@ public class ForeldrepengerPDFGenerator {
             y = fpRenderer.header(søker, doc, cos, true,
                     y);
             float headerSize = yTop - y;
-            LOG.trace("Heaader trenger  {}", headerSize);
+            LOG.trace("Header trenger  {}", headerSize);
 
             if (stønad.getRelasjonTilBarn() != null) {
                 LOG.trace("Y før relasjon til barn {}", y);
