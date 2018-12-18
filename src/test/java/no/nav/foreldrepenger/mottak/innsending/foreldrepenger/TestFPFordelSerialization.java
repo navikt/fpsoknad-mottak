@@ -10,7 +10,6 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.TestForeldrepengerSerialization.test;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
@@ -19,6 +18,7 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.alleVersjoner;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -27,7 +27,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -90,8 +89,9 @@ public class TestFPFordelSerialization {
     @Inject
     ForeldrepengeInfoRenderer fpRenderer;
     @Inject
-    ObjectMapper mapper;
-
+    ObjectMapper objectMapper;
+    @Inject
+    FPFordelKonvoluttGenerator gen;
     private VersjonsBevisstXMLMapper v12XMLMapper;
     private VersjonsBevisstDomainMapper v12DomainMapper;
 
@@ -117,33 +117,14 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testGosysKvittering() throws Exception {
-        test(new FPFordelGosysKvittering("42"), true, mapper);
-    }
-
-    @Test
-    public void testPollKvittering() throws Exception {
-        test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), true, mapper);
-    }
-
-    @Test
-    public void testFordeltKvittering() throws Exception {
-        test(new FPSakFordeltKvittering("123", "456"), true, mapper);
-    }
-
-    @Test
     public void testEndringssøknadRoundtripV1() throws Exception {
         testEndringssøknadRoundtrip(V1);
     }
 
     @Test
-    public void testSøknadRoundtripV1() throws Exception {
-        testSøknadRoundtrip(V1);
-    }
-
-    @Test
-    public void testSøknadRoundtripV2() throws Exception {
-        testSøknadRoundtrip(V2);
+    public void testSøknadRoundtrip() throws Exception {
+        alleVersjoner().stream()
+                .forEach(v -> testSøknadRoundtrip(v));
     }
 
     @Test(expected = VersionMismatchException.class)
@@ -152,23 +133,15 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testKonvoluttV1() throws Exception {
-        testKonvolutt(V1);
+    public void testKonvolutt() throws Exception {
+        alleVersjoner().stream()
+                .forEach(v -> testKonvolutt(v));
     }
 
     @Test
-    public void testKonvoluttV2() throws Exception {
-        testKonvolutt(V2);
-    }
-
-    @Test
-    public void testKonvoluttEndringV1() throws Exception {
-        testKonvoluttEndring(V1);
-    }
-
-    @Test
-    public void testKonvoluttEndringV2() throws Exception {
-        testKonvoluttEndring(V2);
+    public void testKonvoluttEndring() throws Exception {
+        alleVersjoner().stream()
+                .forEach(v -> testKonvoluttEndring(v));
     }
 
     @Test
@@ -184,7 +157,7 @@ public class TestFPFordelSerialization {
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
     }
 
-    private void testSøknadRoundtrip(Versjon v) throws Exception {
+    private void testSøknadRoundtrip(Versjon v) {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
         assertEquals(ANALYSATOR.versjon(xml), v);
@@ -192,7 +165,7 @@ public class TestFPFordelSerialization {
         assertEquals(original, v12XMLMapper.tilSøknad(xml));
     }
 
-    private void testKonvolutt(Versjon v) throws Exception {
+    private void testKonvolutt(Versjon v) {
         Søknad søknad = søknad(v, false,
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
@@ -211,7 +184,7 @@ public class TestFPFordelSerialization {
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
     }
 
-    private void testKonvoluttEndring(Versjon v) throws Exception {
+    private void testKonvoluttEndring(Versjon v) {
         Endringssøknad es = endringssøknad(v, VEDLEGG1, VEDLEGG2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(), v);
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
@@ -232,7 +205,7 @@ public class TestFPFordelSerialization {
 
     private FPFordelKonvoluttGenerator konvoluttGenerator() {
         return new FPFordelKonvoluttGenerator(
-                new FPFordelMetdataGenerator(mapper),
+                new FPFordelMetdataGenerator(objectMapper),
                 v12DomainMapper,
                 new ForeldrepengerPDFGenerator(oppslag, fpRenderer));
     }

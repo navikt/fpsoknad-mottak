@@ -7,6 +7,7 @@ import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
@@ -40,19 +41,23 @@ public final class DefaultDokumentTypeAnalysator implements DokumentAnalysator {
                 reader.next();
             }
             return Versjon.fraNamespace(reader.getNamespaceURI());
-        } catch (Exception e) {
+        } catch (XMLStreamException e) {
             throw new IllegalStateException(e);
         }
     }
 
     private SøknadType typeFra(String xml) {
-        String unescapedXML = unescapeHtml4(xml);
-        int ix = unescapedXML.indexOf("omYtelse>") + 1;
-        String shortxml = unescapedXML.substring(ix + "omYtelse>".length());
-        int begin = shortxml.indexOf("<");
-        int end = shortxml.indexOf(">");
-        String value = shortxml.substring(begin + 1, end);
-        SøknadType type = value.contains("endringssoeknad") ? ENDRING : INITIELL;
-        return type;
+        try {
+            String unescapedXML = unescapeHtml4(xml);
+            int ix = unescapedXML.indexOf("omYtelse>") + 1;
+            String shortxml = unescapedXML.substring(ix + "omYtelse>".length());
+            int begin = shortxml.indexOf("<");
+            int end = shortxml.indexOf(">");
+            String value = shortxml.substring(begin + 1, end);
+            SøknadType type = value.contains("endringssoeknad") ? ENDRING : INITIELL;
+            return type;
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

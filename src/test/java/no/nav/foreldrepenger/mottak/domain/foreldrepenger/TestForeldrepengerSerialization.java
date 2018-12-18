@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
@@ -53,6 +54,9 @@ import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -72,6 +76,21 @@ public class TestForeldrepengerSerialization {
         mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
         mapper.setSerializationInclusion(Include.NON_NULL);
         mapper.setSerializationInclusion(Include.NON_EMPTY);
+    }
+
+    @Test
+    public void testGosysKvittering() throws Exception {
+        test(new FPFordelGosysKvittering("42"), true, mapper);
+    }
+
+    @Test
+    public void testPollKvittering() throws Exception {
+        test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), true, mapper);
+    }
+
+    @Test
+    public void testFordeltKvittering() throws Exception {
+        test(new FPSakFordeltKvittering("123", "456"), true, mapper);
     }
 
     @Test
