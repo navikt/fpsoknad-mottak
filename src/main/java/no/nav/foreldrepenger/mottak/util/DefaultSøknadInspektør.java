@@ -37,7 +37,7 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
 
     private static Versjon versjonFra(String xml) {
         try {
-            if (xml.contains("soeknadsskjemaEngangsstoenad")) {
+            if (xml.contains("engangsstønad")) {
                 return V1;
             }
             XMLStreamReader reader = XMLInputFactory.newInstance()
@@ -55,7 +55,7 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
         try {
 
             String unescapedXML = unescapeHtml4(xml);
-            if (unescapedXML.contains("soeknadsskjemaEngangsstoenad")) {
+            if (unescapedXML.contains("engangsstønad")) {
                 return ENGANGSSØKNAD;
             }
             int ix = unescapedXML.indexOf("omYtelse>") + 1;
