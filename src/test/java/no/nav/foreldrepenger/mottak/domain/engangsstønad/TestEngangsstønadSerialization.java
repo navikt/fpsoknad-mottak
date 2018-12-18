@@ -24,7 +24,6 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -65,7 +64,7 @@ public class TestEngangsstønadSerialization {
     }
 
     @Test
-    public void testVedlegg() throws IOException {
+    public void testVedlegg() {
         test(påkrevdVedlegg("terminbekreftelse.pdf"), false);
     }
 
@@ -118,12 +117,12 @@ public class TestEngangsstønadSerialization {
     }
 
     @Test
-    public void testFnr() throws JsonProcessingException {
+    public void testFnr() {
         test(new Fødselsnummer("03016536325"), false);
     }
 
     @Test
-    public void testAktør() throws JsonProcessingException {
+    public void testAktør() {
         test(new AktorId("111111111"), false);
     }
 

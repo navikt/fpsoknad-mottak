@@ -18,14 +18,11 @@ import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import java.io.IOException;
 import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -51,8 +48,6 @@ import no.nav.security.oidc.test.support.JwtTokenGenerator;
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = { DEV, PREPROD })
 public class TestFPFordelRoundtripSerialization {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TestFPFordelRoundtripSerialization.class);
 
     @Autowired
     private TestRestTemplate template;
@@ -93,7 +88,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testFPForeldrepengerSøknadXMLV1() throws IOException {
+    public void testFPForeldrepengerSøknadXMLV1() {
         Versjon versjon = V1;
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
         assertEquals(original,
@@ -103,7 +98,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testFPForeldrepengerSøknadXMLV2() throws IOException {
+    public void testFPForeldrepengerSøknadXMLV2() {
         Versjon versjon = V2;
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
         assertEquals(original, xmlMapper
@@ -111,7 +106,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testFPSøknadSendV1() throws IOException {
+    public void testFPSøknadSendV1() {
         Versjon versjon = V1;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
         Kvittering kvittering = sender.send(søknad, TestUtils.person(), versjon);
@@ -119,7 +114,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testFPSøknadSendV2() throws IOException {
+    public void testFPSøknadSendV2() {
         Versjon versjon = V2;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
         Kvittering kvittering = sender.send(søknad, TestUtils.person(), versjon);
@@ -127,7 +122,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testESSøknadFødselMedNorskFar() throws IOException {
+    public void testESSøknadFødselMedNorskFar() {
         Versjon versjon = V1;
         Søknad engangssøknad = engangssøknad(versjon, false, fødsel(), norskForelder(versjon),
                 påkrevdVedlegg(ID142));
@@ -138,7 +133,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testESSøknadSend() throws IOException {
+    public void testESSøknadSend() {
         Versjon versjon = V1;
         Søknad engangssøknad = engangssøknad(versjon, false, fødsel(), norskForelder(versjon),
                 påkrevdVedlegg(ID142));
@@ -147,7 +142,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testSøknadFødselFramtidShouldNotValidate() throws IOException {
+    public void testSøknadFødselFramtidShouldNotValidate() {
         Versjon versjon = V1;
         assertEquals(UNPROCESSABLE_ENTITY_422, template.postForEntity(INNSENDING_PREPROD + "/søknad",
                 engangssøknad(versjon, false, fødsel(nesteMåned()), norskForelder(versjon),

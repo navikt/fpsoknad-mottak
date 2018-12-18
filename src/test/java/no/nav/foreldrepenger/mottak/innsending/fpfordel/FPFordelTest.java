@@ -69,8 +69,6 @@ import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
-import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.TokenHelper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -109,11 +107,9 @@ public class FPFordelTest {
     private ResponseEntity<FPFordelKvittering> fordeltReceipt;
 
     private FPFordelSøknadSender sender;
-    private SøknadInspektør analysator;
 
     @Before
     public void before() {
-        analysator = new DefaultSøknadInspektør();
         cfg = new FPFordelConfig();
         cfg.setEnabled(true);
         cfg.setUri(URI.create(FPFORDELURIBASE));
@@ -138,7 +134,8 @@ public class FPFordelTest {
         ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
         ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(oppslag, jalla);
 
-        VersjonsBevisstDomainMapper søknadGenerator = new DefaultVersjonsBevisstDomainMapper(new V1DomainMapper(oppslag));
+        VersjonsBevisstDomainMapper søknadGenerator = new DefaultVersjonsBevisstDomainMapper(
+                new V1DomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(new ObjectMapper()),
                 søknadGenerator,
@@ -233,7 +230,8 @@ public class FPFordelTest {
 
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår(),
+        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(
+                fpinfoPågår(),
                 fpinfoPågår(),
                 fpinfoInnvilget());
         Kvittering kvittering = sender.send(foreldrepengeSøknad(Versjon.V1), person());
@@ -251,7 +249,8 @@ public class FPFordelTest {
                 .thenReturn(value);
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoNull());
+        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
+                .thenReturn(fpinfoNull());
         Kvittering kvittering = sender.send(foreldrepengeSøknad(Versjon.V1), person());
         assertThat(kvittering.getLeveranseStatus(), is(SENDT_OG_FORSØKT_BEHANDLET_FPSAK));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
@@ -270,7 +269,8 @@ public class FPFordelTest {
 
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoPågår());
+        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
+                .thenReturn(fpinfoPågår());
         Kvittering kvittering = sender.send(foreldrepengeSøknad(Versjon.V1), person());
         assertThat(kvittering.getLeveranseStatus(), is(PÅGÅR));
         assertThat(kvittering.getJournalId(), is(JOURNALID));
@@ -297,7 +297,8 @@ public class FPFordelTest {
 
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
-        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(fpinfoFailed());
+        when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
+                .thenReturn(fpinfoFailed());
         Kvittering kvittering = sender.send(foreldrepengeSøknad(Versjon.V1), person());
         assertThat(kvittering.getLeveranseStatus(), is(SENDT_OG_FORSØKT_BEHANDLET_FPSAK));
         assertThat(kvittering.getJournalId(), is(JOURNALID));

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -35,16 +34,16 @@ public class TestUtils {
                 bytes[3] == 0x46;
     }
 
-    public static Søknad engangssøknad(Versjon v, boolean utland) throws IOException {
+    public static Søknad engangssøknad(Versjon v, boolean utland) {
         return engangssøknad(v, utland, termin(), norskForelder(v));
     }
 
-    public static Søknad engangssøknad(Versjon v, RelasjonTilBarn relasjon) throws IOException {
+    public static Søknad engangssøknad(Versjon v, RelasjonTilBarn relasjon) {
         return engangssøknad(v, false, relasjon, norskForelder(v));
     }
 
     public static Søknad engangssøknad(Versjon v, boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
-            Vedlegg... vedlegg) throws IOException {
+            Vedlegg... vedlegg) {
         Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(v, utland, relasjon, annenForelder), vedlegg);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
