@@ -32,6 +32,10 @@ node {
         committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
         changelog = sh(script: 'git log `git describe --tags --abbrev=0`..HEAD --oneline', returnStdout: true)
         releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
+        echo 'Changelog ${changelog}'
+        echo 'commitHash ${commitHash}'
+        echo 'commitHashShort ${commitHashShort}'
+        echo 'commitUrl ${commitUrl}'
         echo 'Notifying github..'
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
         echo 'Notofied github OK..'
