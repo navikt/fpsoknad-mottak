@@ -15,13 +15,8 @@ public class FPFordelMetdataGenerator {
     }
 
     public String generateMetadata(FPFordelMetadata metadata) {
-        return generateMetadata(metadata, true);
-    }
-
-    String generateMetadata(FPFordelMetadata metadata, boolean pretty) {
         try {
-            return pretty ? mapper.writerWithDefaultPrettyPrinter().writeValueAsString(metadata)
-                    : mapper.writeValueAsString(metadata);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(metadata);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }
