@@ -2,38 +2,46 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
 
 public enum Versjon {
 
-    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1"), V2("urn:no:nav:vedtak:felles:xml:soeknad:v2"), ALL;
+    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1", "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
+            "urn:no:nav:vedtak:felles:xml:soeknad:v2"), ALL;
 
     public static final String VERSION_PROPERTY = "contract.version";
-    public final String namespace;
+    public final List<String> namespaces;
 
     Versjon() {
-        this(null);
+        this(Collections.emptyList());
     }
 
-    Versjon(String namespace) {
-        this.namespace = namespace;
+    Versjon(String... namespaces) {
+        this(Arrays.asList(namespaces));
+    }
+
+    Versjon(List<String> namespaces) {
+        this.namespaces = namespaces;
     }
 
     public static Versjon fraNamespace(String namespace) {
         return Arrays.stream(Versjon.values())
-                .filter(v -> namespace.equals(v.namespace))
+                .filter(v -> v.namespaces.contains(namespace))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedVersionException(namespace));
     }
 
-    public static List<String> alleNameapaces() {
-        return Arrays.stream(Versjon.values())
-                .filter(v -> v.namespace != null)
-                .map(v -> v.namespace)
-                .collect(toList());
+    public static List<String> alleNamespaces() {
+        List<String> namespaces = new ArrayList<>();
+        for (Versjon v : Versjon.values()) {
+            namespaces.addAll(v.namespaces);
+        }
+        return namespaces;
     }
 
     public static List<Versjon> alleVersjoner() {

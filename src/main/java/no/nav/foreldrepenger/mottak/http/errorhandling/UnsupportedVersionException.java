@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http.errorhandling;
 
-import static no.nav.foreldrepenger.mottak.util.Versjon.alleNameapaces;
+import static no.nav.foreldrepenger.mottak.util.Versjon.alleNamespaces;
 
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -11,6 +11,6 @@ public class UnsupportedVersionException extends VersionException {
     }
 
     public UnsupportedVersionException(String namespace) {
-        super("Namespace " + namespace + " er ikke støttet. lovlige verdier er " + alleNameapaces());
+        super("Namespace " + namespace + " er ikke støttet. lovlige verdier er " + alleNamespaces());
     }
 }

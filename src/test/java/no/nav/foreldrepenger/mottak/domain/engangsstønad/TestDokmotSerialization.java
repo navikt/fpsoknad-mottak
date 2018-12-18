@@ -30,11 +30,15 @@ import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.SøknadInspeksjonResultat;
+import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
@@ -63,6 +67,8 @@ public class TestDokmotSerialization {
     DokmotEngangsstønadXMLGenerator søknadXMLGenerator;
     @Autowired
     DokmotEngangsstønadXMLKonvoluttGenerator søknadXMLKonvoluttGenerator;
+
+    private static final SøknadInspektør INSPEKTOR = new DefaultSøknadInspektør();
 
     @Test
     public void testSøknadUtlandXML() throws Exception {
@@ -103,7 +109,10 @@ public class TestDokmotSerialization {
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         Person søker = person();
         serialize(søknad, true, mapper);
-        System.out.println(søknadXMLGenerator.tilXML(søknad, søker));
+        SøknadInspeksjonResultat resultat = INSPEKTOR.inspiser(søknadXMLGenerator.tilXML(søknad, søker));
+        assertEquals(SøknadType.ENGANGSSØKNAD, resultat.type());
+        assertEquals(Versjon.V1, resultat.versjon());
+
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         SoeknadsskjemaEngangsstoenad unmarshalled = jaxb.unmarshal(søknadXMLGenerator.tilXML(søknad, søker),
                 SoeknadsskjemaEngangsstoenad.class);
