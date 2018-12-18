@@ -111,7 +111,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEndringssøknad() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(endringssøknad(v), true);
         }
 
@@ -120,14 +120,14 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testForeldrepenger() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(foreldrePenger(v, false), true);
         }
     }
 
     @Test
     public void testSøknad() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), true);
         }
 
@@ -135,7 +135,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testOpptjening() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(opptjening(v));
         }
 
@@ -143,7 +143,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testRettigheter() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(rettigheter(v));
         }
     }
@@ -160,14 +160,14 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUtenlandskForelder() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(utenlandskForelder(v));
         }
     }
 
     @Test
     public void testNorskForelder() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(norskForelder(v));
         }
 
@@ -175,42 +175,42 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testFordeling() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(fordeling(v));
         }
     }
 
     @Test
     public void testUttaksPeride() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(uttaksPeriode(v), true);
         }
     }
 
     @Test
     public void testGradertPeriode() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(gradertPeriode(v), true);
         }
     }
 
     @Test
     public void testOverføringsperiode() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(overføringsPeriode(v), true);
         }
     }
 
     @Test
     public void testOppholdsPeriode() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(oppholdsPeriode(v));
         }
     }
 
     @Test
     public void testUtsettelsesPeriode() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(utsettelsesPeriode(v));
         }
 
@@ -218,7 +218,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testÅpenPeriode() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(åpenPeriode(v));
         }
     }
@@ -230,7 +230,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testOmsorgsovertagelsse() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(omsorgsovertakelse(v));
         }
 
@@ -238,21 +238,21 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testTermin() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(termin(v));
         }
     }
 
     @Test
     public void testAnnenOpptjening() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(annenOpptjening(v));
         }
     }
 
     @Test
     public void testUtenlandskrbeidsforhold() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(utenlandskArbeidsforhold(v), true);
         }
     }
@@ -262,14 +262,14 @@ public class TestForeldrepengerSerialization {
         ClassPathResource res = new ClassPathResource("utenlandskOrg.json");
         UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
         assertEquals(CountryCode.UG, org.getRegistrertILand());
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(utenlandskEgenNæring(v), true);
         }
     }
 
     @Test
     public void testEgenNæringNorskorganisasjon() {
-        for (Versjon v : Versjon.concreteValues()) {
+        for (Versjon v : Versjon.alleVersjoner()) {
             test(norskEgenNæring(v));
         }
     }

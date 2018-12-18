@@ -12,7 +12,7 @@ public enum Versjon {
     V1("urn:no:nav:vedtak:felles:xml:soeknad:v1"), V2("urn:no:nav:vedtak:felles:xml:soeknad:v2"), ALL;
 
     public static final String VERSION_PROPERTY = "contract.version";
-    public String namespace;
+    public final String namespace;
 
     Versjon() {
         this(null);
@@ -29,14 +29,14 @@ public enum Versjon {
                 .orElseThrow(() -> new UnsupportedVersionException(namespace));
     }
 
-    public static List<String> namespaces() {
+    public static List<String> alleNameapaces() {
         return Arrays.stream(Versjon.values())
-                .filter(s -> s.namespace != null)
-                .map(s -> s.namespace)
+                .filter(v -> v.namespace != null)
+                .map(v -> v.namespace)
                 .collect(toList());
     }
 
-    public static List<Versjon> concreteValues() {
+    public static List<Versjon> alleVersjoner() {
         return Arrays.stream(values())
                 .filter(v -> !ALL.equals(v))
                 .collect(toList());
