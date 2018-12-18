@@ -5,6 +5,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.Arrays;
 import java.util.List;
 
+import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
+
 public enum Versjon {
 
     V1("urn:no:nav:vedtak:felles:xml:soeknad:v1"), V2("urn:no:nav:vedtak:felles:xml:soeknad:v2"), ALL;
@@ -21,12 +23,17 @@ public enum Versjon {
     }
 
     public static Versjon fraNamespace(String namespace) {
-        for (Versjon v : Versjon.values()) {
-            if (namespace.equals(v.namespace)) {
-                return v;
-            }
-        }
-        throw new IllegalArgumentException("Fant ingen versjon for  namespace " + namespace);
+        return Arrays.stream(Versjon.values())
+                .filter(v -> namespace.equals(v.namespace))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedVersionException(namespace));
+    }
+
+    public static List<String> namespaces() {
+        return Arrays.stream(Versjon.values())
+                .filter(s -> s.namespace != null)
+                .map(s -> s.namespace)
+                .collect(toList());
     }
 
     public static List<Versjon> concreteValues() {

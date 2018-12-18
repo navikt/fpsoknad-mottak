@@ -71,10 +71,8 @@ public class TestFPFordelRoundtripSerialization {
     VersjonsBevisstDomainMapper søknadXMLGenerator;
     @Autowired
     VersjonsBevisstXMLMapper xmlMapper;
-
     @Autowired
     FPFordelKonvoluttGenerator konvoluttGenerator;
-
     @Autowired
     DualSøknadSender sender;
 
