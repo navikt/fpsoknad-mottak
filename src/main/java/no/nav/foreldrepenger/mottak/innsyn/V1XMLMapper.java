@@ -522,7 +522,6 @@ public class V1XMLMapper extends AbstractXMLMapper {
                     gradering.isErArbeidstaker(),
                     gradering.isArbeidsforholdSomSkalGraderes(),
                     Collections.singletonList(gradering.getVirksomhetsnummer().toString()),
-                    null,
                     emptyList());
         }
 

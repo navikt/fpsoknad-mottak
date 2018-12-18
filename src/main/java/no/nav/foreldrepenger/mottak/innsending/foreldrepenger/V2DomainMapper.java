@@ -37,8 +37,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsgiverPerson;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsgiverVirksomhet;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
@@ -612,10 +610,6 @@ public class V2DomainMapper implements DomainMapper {
         }
         if (periode instanceof GradertUttaksPeriode) {
             GradertUttaksPeriode gradertPeriode = GradertUttaksPeriode.class.cast(periode);
-            if (!CollectionUtils.isEmpty(gradertPeriode.getVirksomhetsnummer())) {
-                throw new VersionMismatchException(gradertPeriode.getVirksomhetsnummer().getClass().getSimpleName(),
-                        gradertPeriode.getVirksomhetsnummer(), versjon());
-            }
             Gradering gradering = new Gradering()
                     .withFom(gradertPeriode.getFom())
                     .withTom(gradertPeriode.getTom())
@@ -625,7 +619,7 @@ public class V2DomainMapper implements DomainMapper {
                     .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                     .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
                     .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
-                    .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getArbeidsgiver()))
+                    .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getVirksomhetsnummer()))
                     .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                     .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
             return gradertPeriode.isØnskerSamtidigUttak()
@@ -648,20 +642,21 @@ public class V2DomainMapper implements DomainMapper {
         throw new IllegalArgumentException("Vil aldri skje");
     }
 
-    private static Arbeidsgiver arbeidsGiverFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Arbeidsgiver arbeidsgiver) {
-        if (arbeidsgiver == null) {
+    private static Arbeidsgiver arbeidsGiverFra(List<String> arbeidsgiver) {
+        if (CollectionUtils.isEmpty(arbeidsgiver)) {
             return null;
         }
-        if (arbeidsgiver instanceof ArbeidsgiverPerson) {
+        String id = arbeidsgiver.get(0);
+        switch (id.length()) {
+        case 11:
             return new Person()
-                    .withIdentifikator(arbeidsgiver.getId());
-        }
-        if (arbeidsgiver instanceof ArbeidsgiverVirksomhet) {
+                    .withIdentifikator(id);
+        case 9:
             return new Virksomhet()
-                    .withIdentifikator(arbeidsgiver.getId());
+                    .withIdentifikator(id);
+        default:
+            throw new IllegalArgumentException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
         }
-        throw new IllegalArgumentException("Vil aldri skje");
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {

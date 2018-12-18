@@ -6,7 +6,9 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -35,9 +37,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Arbeidsgiver;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsgiverPerson;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ArbeidsgiverVirksomhet;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
@@ -96,14 +95,13 @@ import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Overfoeringsaarsaker;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Utsettelsesaarsaker;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Uttaksperiodetyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Virksomhetstyper;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Arbeidsgiver;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Fordeling;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Gradering;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Oppholdsperiode;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Overfoeringsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Person;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Utsettelsesperiode;
 import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Uttaksperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Virksomhet;
 import no.nav.vedtak.felles.xml.soeknad.v2.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
 
@@ -525,7 +523,6 @@ public class V2XMLMapper extends AbstractXMLMapper {
                     gradering.getArbeidtidProsent(),
                     gradering.isErArbeidstaker(),
                     gradering.isArbeidsforholdSomSkalGraderes(),
-                    null,
                     tilArbeidsgiver(gradering.getArbeidsgiver()),
                     emptyList());
         }
@@ -545,14 +542,11 @@ public class V2XMLMapper extends AbstractXMLMapper {
         throw new IllegalArgumentException();
     }
 
-    private static Arbeidsgiver tilArbeidsgiver(no.nav.vedtak.felles.xml.soeknad.uttak.v2.Arbeidsgiver arbeidsgiver) {
-        if (arbeidsgiver instanceof Person) {
-            return new ArbeidsgiverPerson(arbeidsgiver.getIdentifikator());
-        }
-        if (arbeidsgiver instanceof Virksomhet) {
-            return new ArbeidsgiverVirksomhet(arbeidsgiver.getIdentifikator());
-        }
-        throw new IllegalArgumentException();
+    private static List<String> tilArbeidsgiver(Arbeidsgiver arbeidsgiver) {
+        return Optional.ofNullable(arbeidsgiver)
+                .map(Arbeidsgiver::getIdentifikator)
+                .map(Collections::singletonList)
+                .orElse(emptyList());
     }
 
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {

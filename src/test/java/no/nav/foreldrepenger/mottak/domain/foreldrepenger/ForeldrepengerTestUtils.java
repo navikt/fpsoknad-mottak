@@ -244,13 +244,13 @@ public class ForeldrepengerTestUtils {
             return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                     FEDREKVOTE,
                     true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
-                    Collections.singletonList("222222"), null,
+                    Collections.singletonList("22222222222"),
                     Arrays.asList(vedleggRefs));
         case V2:
             return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                     FEDREKVOTE,
-                    true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true, null,
-                    new ArbeidsgiverPerson("22222222222"),
+                    true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                    Collections.singletonList("22222222222"),
                     Arrays.asList(vedleggRefs));
         default:
             throw new UnsupportedVersionException(v);

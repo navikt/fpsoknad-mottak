@@ -608,11 +608,6 @@ public class V1DomainMapper implements DomainMapper {
             GradertUttaksPeriode gradertPeriode = GradertUttaksPeriode.class.cast(periode);
             Gradering gradering = new Gradering();
 
-            if (gradertPeriode.getArbeidsgiver() != null) {
-                throw new VersionMismatchException(gradertPeriode.getArbeidsgiver().getClass().getSimpleName(),
-                        gradertPeriode.getArbeidsgiver(), versjon());
-            }
-
             if (!CollectionUtils.isEmpty(gradertPeriode.getVirksomhetsnummer())) {
                 gradering.withVirksomhetsnummer(gradertPeriode.getVirksomhetsnummer().get(0));
             }

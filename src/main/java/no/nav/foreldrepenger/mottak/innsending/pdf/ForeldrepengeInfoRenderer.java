@@ -593,10 +593,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "tom", gradert.getTom());
         addIfSet(attributter, "dager", String.valueOf(gradert.dager()));
         attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
-        if (gradert.getArbeidsgiver() != null) {
-            addIfSet(attributter, "arbeidsgiver", gradert.getArbeidsgiver().getId());
-        }
-        addListIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
+        addListIfSet(attributter, "arbeidsgiver", gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
         attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
         addIfSet(attributter, gradert.getMorsAktivitetsType());
