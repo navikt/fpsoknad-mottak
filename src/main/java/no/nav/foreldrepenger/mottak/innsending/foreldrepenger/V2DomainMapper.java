@@ -684,7 +684,7 @@ public class V2DomainMapper implements DomainMapper {
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(UtsettelsesÅrsak årsak) {
         return Optional.ofNullable(årsak)
                 .map(s -> utsettelsesÅrsakFra(s.name()))
-                .orElseThrow(() -> new IllegalArgumentException("Utsettelsesårsak må være satt"));
+                .orElse(null);
     }
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(String årsak) {
