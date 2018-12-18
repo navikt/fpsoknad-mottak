@@ -44,7 +44,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
         if (e.getStatusCode().equals(UNAUTHORIZED) || e.getStatusCode().equals(FORBIDDEN)) {
-            return logAndHandle(e.getStatusCode(), e, request, tokenHelper.getExp());
+            return logAndHandle(e.getStatusCode(), e, request, tokenHelper.getExpiryDate());
         }
         return logAndHandle(e.getStatusCode(), e, request);
     }
