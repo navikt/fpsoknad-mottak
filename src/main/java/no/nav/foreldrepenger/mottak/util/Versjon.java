@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.Arrays;
+import java.util.List;
+
 public enum Versjon {
 
     V1("urn:no:nav:vedtak:felles:xml:soeknad:v1"), V2("urn:no:nav:vedtak:felles:xml:soeknad:v2"), ALL;
@@ -22,5 +27,11 @@ public enum Versjon {
             }
         }
         throw new IllegalArgumentException("Fant ingen versjon for  namespace " + namespace);
+    }
+
+    public static List<Versjon> concreteValues() {
+        return Arrays.stream(values())
+                .filter(v -> !ALL.equals(v))
+                .collect(toList());
     }
 }
