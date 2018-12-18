@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.SøknadSender.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DEFAULT_VERSJON;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;

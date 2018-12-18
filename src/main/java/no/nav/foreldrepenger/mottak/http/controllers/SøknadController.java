@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
-import static no.nav.foreldrepenger.mottak.domain.SøknadSender.DUAL;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DUAL;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;

@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import java.io.StringReader;
@@ -35,6 +37,9 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
 
     private static Versjon versjonFra(String xml) {
         try {
+            if (xml.contains("soeknadsskjemaEngangsstoenad")) {
+                return V1;
+            }
             XMLStreamReader reader = XMLInputFactory.newInstance()
                     .createXMLStreamReader(new StreamSource(new StringReader(xml)));
             while (!reader.isStartElement()) {
@@ -48,7 +53,11 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
 
     private SøknadType typeFra(String xml) {
         try {
+
             String unescapedXML = unescapeHtml4(xml);
+            if (unescapedXML.contains("soeknadsskjemaEngangsstoenad")) {
+                return ENGANGSSØKNAD;
+            }
             int ix = unescapedXML.indexOf("omYtelse>") + 1;
             String shortxml = unescapedXML.substring(ix + "omYtelse>".length());
             int begin = shortxml.indexOf("<");

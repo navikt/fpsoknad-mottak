@@ -59,10 +59,11 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
-import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBFPV1Helper;
+import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
@@ -115,8 +116,8 @@ public class V1XMLMapper extends AbstractXMLMapper {
     }
 
     @Inject
-    public V1XMLMapper(Oppslag oppslag, SøknadInspektør analysator) {
-        super(oppslag, analysator);
+    public V1XMLMapper(Oppslag oppslag, SøknadInspektør inspektør) {
+        super(oppslag, inspektør);
     }
 
     @Override
@@ -133,7 +134,8 @@ public class V1XMLMapper extends AbstractXMLMapper {
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
             if (søknad != null) {
-                if (erEndring(xml)) {
+                switch (type(xml)) {
+                case ENDRING:
                     LOG.info("Dette er en endringssøknad");
                     Endringssøknad endringssøknad = new Endringssøknad(
                             søknad.getMottattDato().atStartOfDay(),
@@ -142,16 +144,21 @@ public class V1XMLMapper extends AbstractXMLMapper {
                     endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                     endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                     return endringssøknad;
+
+                case INITIELL:
+                    LOG.info("Dette er en førstegangssøknad");
+                    Søknad førstegangssøknad = new Søknad(
+                            søknad.getMottattDato().atStartOfDay(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse()),
+                            tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
+                    førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    return førstegangssøknad;
+                case ENGANGSSØKNAD:
+                    LOG.info("Dette er en engangsstønad, ikke håndtert");
+                    return null;
                 }
-                LOG.info("Dette er en førstegangssøknad");
-                Søknad førstegangssøknad = new Søknad(
-                        søknad.getMottattDato().atStartOfDay(),
-                        tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()),
-                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
-                førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return førstegangssøknad;
             }
             LOG.debug("Ingen søknad kunne unmarshalles");
             return null;

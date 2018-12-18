@@ -103,6 +103,7 @@ public class TestDokmotSerialization {
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         Person søker = person();
         serialize(søknad, true, mapper);
+        System.out.println(søknadXMLGenerator.tilXML(søknad, søker));
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         SoeknadsskjemaEngangsstoenad unmarshalled = jaxb.unmarshal(søknadXMLGenerator.tilXML(søknad, søker),
                 SoeknadsskjemaEngangsstoenad.class);

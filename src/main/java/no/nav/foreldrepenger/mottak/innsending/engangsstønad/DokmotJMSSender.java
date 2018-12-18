@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
-import static no.nav.foreldrepenger.mottak.domain.SøknadSender.DOKMOT;
 import static no.nav.foreldrepenger.mottak.http.Constants.CALL_ID;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DOKMOT;
 
 import javax.jms.TextMessage;
 
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
