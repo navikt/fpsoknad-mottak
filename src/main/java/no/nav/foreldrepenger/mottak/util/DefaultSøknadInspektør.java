@@ -16,21 +16,21 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 
 @Component
-public final class DefaultDokumentTypeAnalysator implements DokumentAnalysator {
+public final class DefaultSøknadInspektør implements SøknadInspektør {
 
     @Override
-    public AnalyseResultat analyser(String xml) {
-        return new AnalyseResultat(typeFra(xml), versjonFra(xml));
+    public SøknadInspeksjonResultat inspiser(String xml) {
+        return new SøknadInspeksjonResultat(typeFra(xml), versjonFra(xml));
     }
 
     @Override
     public Versjon versjon(String xml) {
-        return analyser(xml).versjon();
+        return inspiser(xml).versjon();
     }
 
     @Override
     public SøknadType type(String xml) {
-        return analyser(xml).type();
+        return inspiser(xml).type();
     }
 
     private static Versjon versjonFra(String xml) {

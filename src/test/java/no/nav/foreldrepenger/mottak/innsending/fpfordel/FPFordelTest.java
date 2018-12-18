@@ -69,8 +69,8 @@ import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DefaultDokumentTypeAnalysator;
-import no.nav.foreldrepenger.mottak.util.DokumentAnalysator;
+import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.TokenHelper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -109,11 +109,11 @@ public class FPFordelTest {
     private ResponseEntity<FPFordelKvittering> fordeltReceipt;
 
     private FPFordelSøknadSender sender;
-    private DokumentAnalysator analysator;
+    private SøknadInspektør analysator;
 
     @Before
     public void before() {
-        analysator = new DefaultDokumentTypeAnalysator();
+        analysator = new DefaultSøknadInspektør();
         cfg = new FPFordelConfig();
         cfg.setEnabled(true);
         cfg.setUri(URI.create(FPFORDELURIBASE));

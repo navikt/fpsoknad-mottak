@@ -60,8 +60,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DefaultDokumentTypeAnalysator;
-import no.nav.foreldrepenger.mottak.util.DokumentAnalysator;
+import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBFPV1Helper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
@@ -111,11 +111,11 @@ public class V1XMLMapper extends AbstractXMLMapper {
     private static final Logger LOG = LoggerFactory.getLogger(V1XMLMapper.class);
 
     public V1XMLMapper(Oppslag oppslag) {
-        this(oppslag, new DefaultDokumentTypeAnalysator());
+        this(oppslag, new DefaultSøknadInspektør());
     }
 
     @Inject
-    public V1XMLMapper(Oppslag oppslag, DokumentAnalysator analysator) {
+    public V1XMLMapper(Oppslag oppslag, SøknadInspektør analysator) {
         super(oppslag, analysator);
     }
 

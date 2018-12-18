@@ -67,7 +67,8 @@ import no.nav.foreldrepenger.mottak.innsyn.V1XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.V2XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.VersjonsBevisstXMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DefaultDokumentTypeAnalysator;
+import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringRunner.class)
@@ -77,7 +78,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
         ForeldrepengerPDFGenerator.class, TestConfig.class })
 public class TestFPFordelSerialization {
 
-    private static final DefaultDokumentTypeAnalysator ANALYSATOR = new DefaultDokumentTypeAnalysator();
+    private static final SøknadInspektør INSPEKTØR = new DefaultSøknadInspektør();
 
     @Mock
     private Oppslag oppslag;
@@ -90,8 +91,7 @@ public class TestFPFordelSerialization {
     ForeldrepengeInfoRenderer fpRenderer;
     @Inject
     ObjectMapper objectMapper;
-    @Inject
-    FPFordelKonvoluttGenerator gen;
+
     private VersjonsBevisstXMLMapper v12XMLMapper;
     private VersjonsBevisstDomainMapper v12DomainMapper;
 
@@ -160,8 +160,8 @@ public class TestFPFordelSerialization {
     private void testSøknadRoundtrip(Versjon v) {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
-        assertEquals(ANALYSATOR.versjon(xml), v);
-        assertEquals(ANALYSATOR.type(xml), INITIELL);
+        assertEquals(INSPEKTØR.versjon(xml), v);
+        assertEquals(INSPEKTØR.type(xml), INITIELL);
         assertEquals(original, v12XMLMapper.tilSøknad(xml));
     }
 
@@ -198,8 +198,8 @@ public class TestFPFordelSerialization {
     public void testEndringssøknadRoundtrip(Versjon v) throws Exception {
         Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
         String xml = v12DomainMapper.tilXML(original, AKTØRID);
-        assertEquals(ANALYSATOR.type(xml), ENDRING);
-        assertEquals(ANALYSATOR.versjon(xml), v);
+        assertEquals(INSPEKTØR.type(xml), ENDRING);
+        assertEquals(INSPEKTØR.versjon(xml), v);
         // assertEquals(original, v12XMLMapper.tilSøknad(xml));
     }
 

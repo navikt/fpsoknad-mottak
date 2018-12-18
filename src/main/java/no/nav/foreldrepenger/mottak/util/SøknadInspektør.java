@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.util;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 
-public interface DokumentAnalysator {
+public interface SøknadInspektør {
 
-    AnalyseResultat analyser(String xml);
+    SøknadInspeksjonResultat inspiser(String xml);
 
     Versjon versjon(String xml);
 

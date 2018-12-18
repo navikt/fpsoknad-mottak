@@ -2,10 +2,10 @@ package no.nav.foreldrepenger.mottak.util;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 
-public class AnalyseResultat {
+public class SøknadInspeksjonResultat {
     private final Pair<SøknadType, Versjon> resultat;
 
-    public AnalyseResultat(SøknadType type, Versjon versjon) {
+    public SøknadInspeksjonResultat(SøknadType type, Versjon versjon) {
         this.resultat = Pair.of(type, versjon);
     }
 

@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
-import no.nav.foreldrepenger.mottak.util.DefaultDokumentTypeAnalysator;
-import no.nav.foreldrepenger.mottak.util.DokumentAnalysator;
+import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
@@ -22,18 +22,18 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class VersjonsBevisstXMLMapper implements XMLMapper {
 
     private final List<XMLMapper> mappers;
-    private final DokumentAnalysator analysator;
+    private final SøknadInspektør analysator;
 
     public VersjonsBevisstXMLMapper(XMLMapper... mappers) {
-        this(new DefaultDokumentTypeAnalysator(), mappers);
+        this(new DefaultSøknadInspektør(), mappers);
     }
 
-    public VersjonsBevisstXMLMapper(DokumentAnalysator analysator, XMLMapper... mappers) {
+    public VersjonsBevisstXMLMapper(SøknadInspektør analysator, XMLMapper... mappers) {
         this(analysator, asList(mappers));
     }
 
     @Inject
-    public VersjonsBevisstXMLMapper(DokumentAnalysator analysator, List<XMLMapper> mappers) {
+    public VersjonsBevisstXMLMapper(SøknadInspektør analysator, List<XMLMapper> mappers) {
         this.mappers = mappers;
         this.analysator = analysator;
     }

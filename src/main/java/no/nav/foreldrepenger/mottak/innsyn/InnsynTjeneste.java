@@ -18,7 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.util.DokumentAnalysator;
+import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
@@ -28,10 +28,10 @@ public class InnsynTjeneste implements Innsyn {
 
     private final XMLMapper mapper;
     private final InnsynConnection innsynConnection;
-    private final DokumentAnalysator analysator;
+    private final SøknadInspektør analysator;
 
     public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(VERSJONSBEVISST) XMLMapper mapper,
-            DokumentAnalysator analysator) {
+            SøknadInspektør analysator) {
         this.innsynConnection = innsynConnection;
         this.mapper = mapper;
         this.analysator = analysator;
