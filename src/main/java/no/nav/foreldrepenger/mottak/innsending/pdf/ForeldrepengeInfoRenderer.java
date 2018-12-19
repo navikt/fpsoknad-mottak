@@ -281,9 +281,9 @@ public class ForeldrepengeInfoRenderer {
         if (!frilans.getFrilansOppdrag().isEmpty()) {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
             List<String> oppdrag = frilans.getFrilansOppdrag().stream()
-                    .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
-                    .collect(toList());
-            y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
+                .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
+                .collect(toList());
+            y -= renderer.addBulletList(INDENT, normalize(oppdrag), cos, y);
             y -= renderer.addBlankLine();
         }
         else {
@@ -897,15 +897,25 @@ public class ForeldrepengeInfoRenderer {
         return textFormatter.fromMessageSource(key, normalize(values));
     }
 
+    protected static List<String> normalize(List<String> values) {
+        return stream(normalize(values.toArray()))
+            .map(Object::toString)
+            .collect(toList());
+    }
+
     private static Object[] normalize(Object[] values) {
         return stream(values)
-                .map(Object::toString)
-                .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
-                .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
-                .map(s -> Normalizer.normalize(s, NFD))
-                .map(s -> s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""))
-                .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
-                .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
-                .toArray();
+            .map(Object::toString)
+            .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
+            .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
+            .map(s -> Normalizer.normalize(s, NFD)) // vurder bytte til NFKD (ligaturer bl.a)
+            .map(s -> s.replaceAll("\u0141", "L"))
+            .map(s -> s.replaceAll("\u0142", "l"))
+            .map(s -> s.replaceAll("[\\p{Blank}\u00A0]", " ")) //replace tab/no-break space with space
+            .map(s -> s.replaceAll("[\u202D\uFFFD]", "")) //strip left-to-right-operator/not defined
+            .map(s -> s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""))
+            .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
+            .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
+            .toArray();
     }
 }
