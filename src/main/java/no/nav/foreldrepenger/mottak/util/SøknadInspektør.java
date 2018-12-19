@@ -4,10 +4,10 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 
 public interface SøknadInspektør {
 
-    SøknadInspeksjonResultat inspiser(String xml);
-
     Versjon versjon(String xml);
 
-    SøknadType type(String xml);
+    SøknadType type(no.nav.vedtak.felles.xml.soeknad.v1.Soeknad søknad);
+
+    SøknadType type(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad);
 
 }

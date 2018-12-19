@@ -1,17 +1,19 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
-import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.UKJENT;
 
 import java.io.StringReader;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
@@ -19,19 +21,63 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 @Component
 public final class DefaultSøknadInspektør implements SøknadInspektør {
 
-    @Override
-    public SøknadInspeksjonResultat inspiser(String xml) {
-        return new SøknadInspeksjonResultat(typeFra(xml), versjonFra(xml));
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultSøknadInspektør.class);
 
     @Override
     public Versjon versjon(String xml) {
-        return inspiser(xml).versjon();
+        return versjonFra(xml);
     }
 
     @Override
-    public SøknadType type(String xml) {
-        return inspiser(xml).type();
+    public SøknadType type(no.nav.vedtak.felles.xml.soeknad.v1.Soeknad søknad) {
+        return typeFra(søknad);
+    }
+
+    @Override
+    public SøknadType type(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad) {
+        return typeFra(søknad);
+
+    }
+
+    private SøknadType typeFra(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad) {
+        no.nav.vedtak.felles.xml.soeknad.v2.OmYtelse omYtelse = søknad.getOmYtelse();
+        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
+            LOG.warn("Ingen ytelse i søknaden");
+            return UKJENT;
+        }
+        if (omYtelse.getAny().size() > 1) {
+            LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
+        }
+        Object førsteYtelse = ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
+        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad) {
+            return ENDRING;
+        }
+
+        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Foreldrepenger) {
+            return INITIELL;
+        }
+        return UKJENT;
+    }
+
+    private static SøknadType typeFra(no.nav.vedtak.felles.xml.soeknad.v1.Soeknad søknad) {
+        no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse omYtelse = søknad.getOmYtelse();
+        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
+            LOG.warn("Ingen ytelse i søknaden");
+            return UKJENT;
+        }
+        if (omYtelse.getAny().size() > 1) {
+            LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
+        }
+        Object førsteYtelse = ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
+        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad) {
+            return ENDRING;
+        }
+
+        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger) {
+            return INITIELL;
+        }
+        return UKJENT;
+
     }
 
     private static Versjon versjonFra(String xml) {
@@ -43,25 +89,6 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
             }
             return Versjon.fraNamespace(reader.getNamespaceURI());
         } catch (XMLStreamException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private SøknadType typeFra(String xml) {
-        try {
-
-            String unescapedXML = unescapeHtml4(xml);
-            if (unescapedXML.contains("soeknadsskjemaEngangsstoenad")) {
-                return ENGANGSSØKNAD;
-            }
-            int ix = unescapedXML.indexOf("omYtelse>") + 1;
-            String shortxml = unescapedXML.substring(ix + "omYtelse>".length());
-            int begin = shortxml.indexOf("<");
-            int end = shortxml.indexOf(">");
-            String value = shortxml.substring(begin + 1, end);
-            SøknadType type = value.contains("endringssoeknad") ? ENDRING : INITIELL;
-            return type;
-        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }

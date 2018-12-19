@@ -14,8 +14,6 @@ import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConver
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static no.nav.foreldrepenger.mottak.util.Versjon.alleVersjoner;
@@ -161,7 +159,6 @@ public class TestFPFordelSerialization {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
         assertEquals(INSPEKTØR.versjon(xml), v);
-        assertEquals(INSPEKTØR.type(xml), INITIELL);
         assertEquals(original, v12XMLMapper.tilSøknad(xml));
     }
 
@@ -198,7 +195,6 @@ public class TestFPFordelSerialization {
     public void testEndringssøknadRoundtrip(Versjon v) throws Exception {
         Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
         String xml = v12DomainMapper.tilXML(original, AKTØRID);
-        assertEquals(INSPEKTØR.type(xml), ENDRING);
         assertEquals(INSPEKTØR.versjon(xml), v);
         // assertEquals(original, v12XMLMapper.tilSøknad(xml));
     }

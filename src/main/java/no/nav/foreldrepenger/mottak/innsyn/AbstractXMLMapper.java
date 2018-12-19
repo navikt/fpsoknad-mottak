@@ -16,8 +16,12 @@ public abstract class AbstractXMLMapper implements XMLMapper, VersjonsBevisst {
         this.inspektør = inspektør;
     }
 
-    protected SøknadType type(String xml) {
-        return inspektør.inspiser(xml).type();
+    protected SøknadType type(no.nav.vedtak.felles.xml.soeknad.v1.Soeknad søknad) {
+        return inspektør.type(søknad);
+    }
+
+    protected SøknadType type(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad) {
+        return inspektør.type(søknad);
     }
 
     @Override

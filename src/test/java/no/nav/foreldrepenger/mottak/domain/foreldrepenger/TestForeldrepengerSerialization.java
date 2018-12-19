@@ -133,8 +133,6 @@ public class TestForeldrepengerSerialization {
         for (Versjon v : Versjon.alleVersjoner()) {
             test(endringssøknad(v), true);
         }
-
-        // test(endringssøknad(V2), true);
     }
 
     @Test

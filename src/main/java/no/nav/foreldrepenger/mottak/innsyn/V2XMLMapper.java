@@ -134,36 +134,31 @@ public class V2XMLMapper extends AbstractXMLMapper {
         }
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
-            if (søknad != null) {
-                switch (type(xml)) {
-                case ENDRING:
-                    LOG.info("Dette er en endringssøknad");
-                    Endringssøknad endringssøknad = new Endringssøknad(
-                            søknad.getMottattDato().atStartOfDay(),
-                            tilSøker(søknad.getSoeker()),
-                            tilYtelse(søknad.getOmYtelse()).getFordeling(),
-                            "42");
-                    endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                    endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                    return endringssøknad;
-
-                case INITIELL:
-                    LOG.info("Dette er en førstegangssøknad");
-                    Søknad førstegangssøknad = new Søknad(
-                            søknad.getMottattDato().atStartOfDay(),
-                            tilSøker(søknad.getSoeker()),
-                            tilYtelse(søknad.getOmYtelse()),
-                            tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
-                    førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                    førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                    return førstegangssøknad;
-                default:
-                    LOG.info("Dette er en engangssøknad, ikke håndtert");
-                    return null;
-                }
+            switch (type(søknad)) {
+            case ENDRING:
+                LOG.info("Dette er en endringssøknad");
+                Endringssøknad endringssøknad = new Endringssøknad(
+                        søknad.getMottattDato().atStartOfDay(),
+                        tilSøker(søknad.getSoeker()),
+                        tilYtelse(søknad.getOmYtelse()).getFordeling(),
+                        "42");
+                endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return endringssøknad;
+            case INITIELL:
+                LOG.info("Dette er en førstegangssøknad");
+                Søknad førstegangssøknad = new Søknad(
+                        søknad.getMottattDato().atStartOfDay(),
+                        tilSøker(søknad.getSoeker()),
+                        tilYtelse(søknad.getOmYtelse()),
+                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
+                førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return førstegangssøknad;
+            default:
+                LOG.warn("Ukjent søknad");
+                return null;
             }
-            LOG.debug("Ingen søknad kunne unmarshalles");
-            return null;
         } catch (Exception e) {
             LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
             return null;
