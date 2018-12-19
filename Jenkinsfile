@@ -65,7 +65,7 @@ node {
         sh "${mvn} versions:revert"
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'success', "Build #${env.BUILD_NUMBER} has finished")
     }
-
+}
     
   def notifyGithub(owner, repo, context, sha, state, description) {
     def postBody = [
@@ -87,5 +87,5 @@ node {
             """
         }
     }
-  }
+  
 }
