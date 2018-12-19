@@ -1,23 +1,5 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.lookup.EnvUtil.CONFIDENTIAL;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
-
-import java.util.List;
-import java.util.Objects;
-
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.soap.SOAPFaultException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
@@ -34,6 +16,19 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.soap.SOAPFaultException;
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.lookup.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 public class PersonClientTpsWs implements PersonClient {
 
@@ -73,9 +68,7 @@ public class PersonClientTpsWs implements PersonClient {
             LOG.info(CONFIDENTIAL, "Fra ID {}", id);
             HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(request).getPerson();
-            // Person p = person(id, tpsPerson, barnFor(tpsPerson)); TODO: Fjerner henting
-            // av barn inntil frontendproblematikk blir løst
-            Person p = person(id, tpsPerson, emptyList());
+            Person p = person(id, tpsPerson, barnFor(tpsPerson));
             LOG.info(CONFIDENTIAL, "Person er {}", p);
             return p;
         } catch (SOAPFaultException e) {
@@ -92,7 +85,7 @@ public class PersonClientTpsWs implements PersonClient {
     }
 
     private List<Barn> barnFor(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
-        PersonIdent id = PersonIdent.class.cast(person.getAktoer());
+        PersonIdent id = (PersonIdent) person.getAktoer();
         String idType = id.getIdent().getType().getValue();
         switch (idType) {
         case RequestUtils.FNR:
@@ -119,7 +112,7 @@ public class PersonClientTpsWs implements PersonClient {
     }
 
     private Barn hentBarn(Familierelasjon rel, Fødselsnummer fnrSøker) {
-        NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
+        NorskIdent id = ((PersonIdent) rel.getTilPerson().getAktoer()).getIdent();
         if (RequestUtils.isFnr(id)) {
             Fødselsnummer fnrBarn = new Fødselsnummer(id.getIdent());
             no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsBarn = hentPerson(
@@ -141,7 +134,7 @@ public class PersonClientTpsWs implements PersonClient {
     }
 
     private Fødselsnummer toFødselsnummer(Familierelasjon rel) {
-        NorskIdent id = PersonIdent.class.cast(rel.getTilPerson().getAktoer()).getIdent();
+        NorskIdent id = ((PersonIdent) rel.getTilPerson().getAktoer()).getIdent();
         if (RequestUtils.isFnr(id)) {
             return new Fødselsnummer(id.getIdent());
         }
