@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,11 +36,10 @@ public enum Versjon {
     }
 
     public static List<String> alleNamespaces() {
-        List<String> namespaces = new ArrayList<>();
-        for (Versjon v : Versjon.values()) {
-            namespaces.addAll(v.namespaces);
-        }
-        return namespaces;
+        return Arrays.stream(Versjon.values())
+                .map(v -> v.namespaces)
+                .flatMap(v -> v.stream())
+                .collect(toList());
     }
 
     public static List<Versjon> alleVersjoner() {
