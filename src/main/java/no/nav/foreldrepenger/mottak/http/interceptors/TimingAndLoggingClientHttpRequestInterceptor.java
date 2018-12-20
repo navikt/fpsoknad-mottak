@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
 import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
 import java.io.IOException;
+import java.net.URI;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
@@ -24,17 +26,18 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
 
-        LOG.info("{} - {}", request.getMethodValue(), request.getURI());
+        URI uri = UriComponentsBuilder.fromHttpRequest(request).replaceQuery(null).build().toUri();
+        LOG.info("{} - {}", request.getMethodValue(), uri);
         StopWatch timer = new StopWatch();
         timer.start();
         ClientHttpResponse respons = execution.execute(request, body);
         timer.stop();
         if (hasError(respons.getStatusCode())) {
-            LOG.warn("{} - {} - ({}). Dette tok {}ms", request.getMethodValue(), request.getURI(),
+            LOG.warn("{} - {} - ({}). Dette tok {}ms", request.getMethodValue(), uri,
                     respons.getStatusCode(), timer.getTime(MILLISECONDS));
         }
         else {
-            LOG.info("{} - {} - ({}). Dette tok {}ms", request.getMethodValue(), request.getURI(),
+            LOG.info("{} - {} - ({}). Dette tok {}ms", request.getMethodValue(), uri,
                     respons.getStatusCode(), timer.getTime(MILLISECONDS));
         }
         return respons;
