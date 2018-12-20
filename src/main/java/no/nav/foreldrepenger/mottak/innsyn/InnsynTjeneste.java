@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
@@ -115,18 +117,15 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
-        Versjon versjon = inspektør.versjon(wrapper.getXml());
-        if (inspektør.erEngangsstønad(wrapper.getXml())) {
-            LOG.info("Dette er en engangsstønad, mappes ikke foreløpig");
+        String xml = wrapper.getXml();
+        Versjon versjon = inspektør.versjon(xml);
+        if (inspektør.erEngangsstønad(xml)) {
+            LOG.warn("Dette er en engangsstønad, mappes ikke foreløpig");
             return new InnsynsSøknad(versjon, null, wrapper.getJournalpostId());
         }
         LOG.trace(CONFIDENTIAL, "Mapper søknad versjon {} fra {}", versjon.name(), wrapper);
-        return new InnsynsSøknad(versjon, mapper.tilSøknad(wrapper.getXml()),
-                wrapper.getJournalpostId());
-    }
-
-    private static String endelse(List<?> liste) {
-        return liste.size() == 1 ? "" : "er";
+        Søknad søknad = mapper.tilSøknad(xml);
+        return new InnsynsSøknad(versjon, søknad, wrapper.getJournalpostId());
     }
 
     @Override

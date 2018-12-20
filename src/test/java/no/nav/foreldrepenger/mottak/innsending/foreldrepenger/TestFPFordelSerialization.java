@@ -18,6 +18,7 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static no.nav.foreldrepenger.mottak.util.Versjon.alleVersjoner;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -160,6 +161,7 @@ public class TestFPFordelSerialization {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
         System.out.println(xml);
+        assertFalse(INSPEKTØR.erEngangsstønad(xml));
         assertEquals(INSPEKTØR.versjon(xml), v);
         Søknad respons = v12XMLMapper.tilSøknad(xml);
         assertEquals(original, respons);
@@ -169,6 +171,7 @@ public class TestFPFordelSerialization {
         Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
         assertEquals(INSPEKTØR.versjon(xml), v);
+        assertFalse(INSPEKTØR.erEngangsstønad(xml));
         System.out.println(xml);
         Endringssøknad respons = Endringssøknad.class.cast(v12XMLMapper.tilSøknad(xml));
         Fordeling priginalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class

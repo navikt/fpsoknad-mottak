@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
@@ -106,12 +105,11 @@ public class TestDokmotSerialization {
         Søknad søknad = engangssøknad(Versjon.V1, true, termin(), utenlandskForelder(),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         Person søker = person();
-        serialize(søknad, true, mapper);
-        Versjon v = INSPEKTOR.versjon(søknadXMLGenerator.tilXML(søknad, søker));
-        assertEquals(Versjon.V1, v);
-
+        String xml = søknadXMLGenerator.tilXML(søknad, søker);
+        assertEquals(Versjon.V1, INSPEKTOR.versjon(xml));
+        assertTrue(INSPEKTOR.erEngangsstønad(xml));
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
-        SoeknadsskjemaEngangsstoenad unmarshalled = jaxb.unmarshal(søknadXMLGenerator.tilXML(søknad, søker),
+        SoeknadsskjemaEngangsstoenad unmarshalled = jaxb.unmarshal(xml,
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
         assertEquals(dokmotModel.getSoknadsvalg().getFoedselEllerAdopsjon(),
