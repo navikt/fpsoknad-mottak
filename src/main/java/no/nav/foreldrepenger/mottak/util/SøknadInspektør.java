@@ -10,4 +10,6 @@ public interface SøknadInspektør {
 
     SøknadType type(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad);
 
+    boolean erEngangsstønad(String xml);
+
 }

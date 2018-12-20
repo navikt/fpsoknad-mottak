@@ -15,7 +15,7 @@ public enum Versjon {
             "urn:no:nav:vedtak:felles:xml:soeknad:v2"), ALL;
 
     public static final String VERSION_PROPERTY = "contract.version";
-    public final List<String> namespaces;
+    private final List<String> namespaces;
 
     private Versjon() {
         this(emptyList());

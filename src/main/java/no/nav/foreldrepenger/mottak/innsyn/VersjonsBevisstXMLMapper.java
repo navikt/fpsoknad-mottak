@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class VersjonsBevisstXMLMapper implements XMLMapper {
 
     private final List<XMLMapper> mappers;
-    private final SøknadInspektør analysator;
+    private final SøknadInspektør inspektør;
 
     public VersjonsBevisstXMLMapper(XMLMapper... mappers) {
         this(new DefaultSøknadInspektør(), mappers);
@@ -33,9 +33,9 @@ public class VersjonsBevisstXMLMapper implements XMLMapper {
     }
 
     @Inject
-    public VersjonsBevisstXMLMapper(SøknadInspektør analysator, List<XMLMapper> mappers) {
+    public VersjonsBevisstXMLMapper(SøknadInspektør inspektør, List<XMLMapper> mappers) {
         this.mappers = mappers;
-        this.analysator = analysator;
+        this.inspektør = inspektør;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class VersjonsBevisstXMLMapper implements XMLMapper {
     }
 
     private XMLMapper mapper(String xml) {
-        Versjon versjon = analysator.versjon(xml);
+        Versjon versjon = inspektør.versjon(xml);
         return mappers.stream()
                 .filter(s -> s.versjon().equals(versjon))
                 .findFirst()
@@ -58,6 +58,6 @@ public class VersjonsBevisstXMLMapper implements XMLMapper {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mappers=" + mappers + ", analysator=" + analysator + "]";
+        return getClass().getSimpleName() + " [mappers=" + mappers + ", inspektør=" + inspektør + "]";
     }
 }

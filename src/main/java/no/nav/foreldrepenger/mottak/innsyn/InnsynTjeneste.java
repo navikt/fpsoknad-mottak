@@ -28,13 +28,13 @@ public class InnsynTjeneste implements Innsyn {
 
     private final XMLMapper mapper;
     private final InnsynConnection innsynConnection;
-    private final SøknadInspektør analysator;
+    private final SøknadInspektør inspektør;
 
     public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(VERSJONSBEVISST) XMLMapper mapper,
-            SøknadInspektør analysator) {
+            SøknadInspektør inspektør) {
         this.innsynConnection = innsynConnection;
         this.mapper = mapper;
-        this.analysator = analysator;
+        this.inspektør = inspektør;
     }
 
     @Override
@@ -115,7 +115,11 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
-        Versjon versjon = analysator.versjon(wrapper.getXml());
+        Versjon versjon = inspektør.versjon(wrapper.getXml());
+        if (inspektør.erEngangsstønad(wrapper.getXml())) {
+            LOG.info("Dette er en engangsstønad, mappes ikke foreløpig");
+            return new InnsynsSøknad(versjon, null, wrapper.getJournalpostId());
+        }
         LOG.trace(CONFIDENTIAL, "Mapper søknad versjon {} fra {}", versjon.name(), wrapper);
         return new InnsynsSøknad(versjon, mapper.tilSøknad(wrapper.getXml()),
                 wrapper.getJournalpostId());
@@ -127,7 +131,8 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mapper=" + mapper + ", innsynConnection=" + innsynConnection + "]";
+        return getClass().getSimpleName() + " [mapper=" + mapper + ", innsynConnection=" + innsynConnection
+                + ", inspektør=" + inspektør + "]";
     }
 
 }

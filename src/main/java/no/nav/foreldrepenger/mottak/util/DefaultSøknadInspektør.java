@@ -29,6 +29,11 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
     }
 
     @Override
+    public boolean erEngangsstønad(String xml) {
+        return namespaceFra(xml).startsWith("http");
+    }
+
+    @Override
     public SøknadType type(no.nav.vedtak.felles.xml.soeknad.v1.Soeknad søknad) {
         return typeFra(søknad);
     }
@@ -36,7 +41,6 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
     @Override
     public SøknadType type(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad) {
         return typeFra(søknad);
-
     }
 
     private SøknadType typeFra(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad) {
@@ -48,12 +52,12 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
         if (omYtelse.getAny().size() > 1) {
             LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
         }
-        Object førsteYtelse = ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
-        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad) {
+        Object ytelse = ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
+        if (ytelse instanceof no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad) {
             return ENDRING;
         }
 
-        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Foreldrepenger) {
+        if (ytelse instanceof no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Foreldrepenger) {
             return INITIELL;
         }
         return UKJENT;
@@ -68,26 +72,29 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
         if (omYtelse.getAny().size() > 1) {
             LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
         }
-        Object førsteYtelse = ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
-        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad) {
+        Object ytelse = ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
+        if (ytelse instanceof no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad) {
             return ENDRING;
         }
 
-        if (førsteYtelse instanceof no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger) {
+        if (ytelse instanceof no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger) {
             return INITIELL;
         }
         return UKJENT;
-
     }
 
     private static Versjon versjonFra(String xml) {
+        return Versjon.fraNamespace(namespaceFra(xml));
+    }
+
+    private static String namespaceFra(String xml) {
         try {
             XMLStreamReader reader = XMLInputFactory.newInstance()
                     .createXMLStreamReader(new StreamSource(new StringReader(xml)));
             while (!reader.isStartElement()) {
                 reader.next();
             }
-            return Versjon.fraNamespace(reader.getNamespaceURI());
+            return reader.getNamespaceURI();
         } catch (XMLStreamException e) {
             throw new IllegalStateException(e);
         }

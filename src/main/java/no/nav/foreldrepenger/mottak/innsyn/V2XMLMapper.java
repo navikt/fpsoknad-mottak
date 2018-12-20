@@ -136,7 +136,6 @@ public class V2XMLMapper extends AbstractXMLMapper {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
             switch (type(søknad)) {
             case ENDRING:
-                LOG.info("Dette er en endringssøknad");
                 Endringssøknad endringssøknad = new Endringssøknad(
                         søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),
@@ -145,7 +144,6 @@ public class V2XMLMapper extends AbstractXMLMapper {
                 endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return endringssøknad;
             case INITIELL:
-                LOG.info("Dette er en førstegangssøknad");
                 Søknad førstegangssøknad = new Søknad(
                         søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),
