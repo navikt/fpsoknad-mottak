@@ -159,6 +159,7 @@ public class TestFPFordelSerialization {
     private void testSøknadRoundtrip(Versjon v) {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
+        System.out.println(xml);
         assertEquals(INSPEKTØR.versjon(xml), v);
         Søknad respons = v12XMLMapper.tilSøknad(xml);
         assertEquals(original, respons);

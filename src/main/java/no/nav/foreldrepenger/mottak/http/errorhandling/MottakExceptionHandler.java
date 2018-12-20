@@ -71,6 +71,16 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
     }
 
+    @ExceptionHandler({ VersionException.class })
+    public ResponseEntity<Object> handleVersionException(VersionException e, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, e.getVersjon());
+    }
+
+    @ExceptionHandler({ UnexpectedInputException.class })
+    public ResponseEntity<Object> handleIncompleteException(UnexpectedInputException e, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
+    }
+
     @ExceptionHandler({ OIDCTokenValidatorException.class })
     public ResponseEntity<Object> handleUnauthenticatedOIDCException(OIDCTokenValidatorException e, WebRequest req) {
         return logAndHandle(FORBIDDEN, e, req, e.getExpiryDate());

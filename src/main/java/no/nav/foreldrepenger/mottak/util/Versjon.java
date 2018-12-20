@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
@@ -16,34 +17,34 @@ public enum Versjon {
     public static final String VERSION_PROPERTY = "contract.version";
     public final List<String> namespaces;
 
-    Versjon() {
-        this(Collections.emptyList());
+    private Versjon() {
+        this(emptyList());
     }
 
-    Versjon(String... namespaces) {
-        this(Arrays.asList(namespaces));
+    private Versjon(String... namespaces) {
+        this(asList(namespaces));
     }
 
-    Versjon(List<String> namespaces) {
+    private Versjon(List<String> namespaces) {
         this.namespaces = namespaces;
     }
 
     public static Versjon fraNamespace(String namespace) {
-        return Arrays.stream(Versjon.values())
+        return stream(values())
                 .filter(v -> v.namespaces.contains(namespace))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedVersionException(namespace));
     }
 
     public static List<String> alleNamespaces() {
-        return Arrays.stream(Versjon.values())
+        return stream(values())
                 .map(v -> v.namespaces)
                 .flatMap(v -> v.stream())
                 .collect(toList());
     }
 
     public static List<Versjon> alleVersjoner() {
-        return Arrays.stream(values())
+        return stream(values())
                 .filter(v -> !ALL.equals(v))
                 .collect(toList());
     }

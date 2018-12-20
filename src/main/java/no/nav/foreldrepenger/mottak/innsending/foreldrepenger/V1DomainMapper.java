@@ -60,6 +60,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.http.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JAXBFPV1Helper;
@@ -207,7 +208,7 @@ public class V1DomainMapper implements DomainMapper {
         case LASTET_OPP:
             return innsendingsTypeMedKodeverk(LASTET_OPP);
         default:
-            throw new IllegalArgumentException("Innsendingstype " + innsendingsType + " foreløpig kke støttet");
+            throw new UnexpectedInputException("Innsendingstype " + innsendingsType + " foreløpig kke støttet");
         }
     }
 
@@ -364,7 +365,7 @@ public class V1DomainMapper implements DomainMapper {
                     .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()));
         }
-        throw new IllegalArgumentException("Vil aldri skje");
+        throw new UnexpectedInputException("Vil aldri skje");
     }
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
@@ -638,13 +639,13 @@ public class V1DomainMapper implements DomainMapper {
                     .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
                     .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
         }
-        throw new IllegalArgumentException("Vil aldri skje");
+        throw new UnexpectedInputException("Vil aldri skje");
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
         return Optional.ofNullable(type)
                 .map(s -> uttaksperiodeTypeFra(s.name()))
-                .orElseThrow(() -> new IllegalArgumentException("Stønadskontotype må være satt"));
+                .orElseThrow(() -> new UnexpectedInputException("Stønadskontotype må være satt"));
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(String type) {
@@ -666,7 +667,7 @@ public class V1DomainMapper implements DomainMapper {
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(UtsettelsesÅrsak årsak) {
         return Optional.ofNullable(årsak)
                 .map(s -> utsettelsesÅrsakFra(s.name()))
-                .orElseThrow(() -> new IllegalArgumentException("Utsettelsesårsak må være satt"));
+                .orElseThrow(() -> new UnexpectedInputException("Utsettelsesårsak må være satt"));
     }
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(String årsak) {
@@ -677,7 +678,7 @@ public class V1DomainMapper implements DomainMapper {
     private static Oppholdsaarsaker oppholdsÅrsakFra(Oppholdsårsak årsak) {
         return Optional.ofNullable(årsak)
                 .map(s -> oppholdsÅrsakFra(s.name()))
-                .orElseThrow(() -> new IllegalArgumentException("Oppholdsårsak må være satt"));
+                .orElseThrow(() -> new UnexpectedInputException("Oppholdsårsak må være satt"));
     }
 
     private static Oppholdsaarsaker oppholdsÅrsakFra(String årsak) {
@@ -688,7 +689,7 @@ public class V1DomainMapper implements DomainMapper {
     private static Overfoeringsaarsaker påkrevdOverføringsÅrsakFra(Overføringsårsak årsak) {
         return Optional.ofNullable(årsak)
                 .map(s -> overføringsÅrsakFra(s.name()))
-                .orElseThrow(() -> new IllegalArgumentException("Oppholdsårsak må være satt"));
+                .orElseThrow(() -> new UnexpectedInputException("Oppholdsårsak må være satt"));
     }
 
     private static Overfoeringsaarsaker valgfriOverføringsÅrsakFra(Overføringsårsak årsak) {
@@ -795,7 +796,7 @@ public class V1DomainMapper implements DomainMapper {
                     .withBeskrivelse("Omsorgsovertakelse");
         }
 
-        throw new IllegalArgumentException(
+        throw new UnexpectedInputException(
                 "Relasjon " + relasjonTilBarn.getClass().getSimpleName() + " er ikke støttet");
     }
 
