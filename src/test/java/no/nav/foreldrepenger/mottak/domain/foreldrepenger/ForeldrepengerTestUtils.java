@@ -81,7 +81,7 @@ public class ForeldrepengerTestUtils {
                 fordeling(v, vedleggRefs(vedlegg)), norskForelder(v),
                 fødsel(v),
                 rettigheter(v),
-                "42", vedlegg);
+                "42" + v.name().toLowerCase(), vedlegg);
     }
 
     private static String[] vedleggRefs(Vedlegg... vedlegg) {

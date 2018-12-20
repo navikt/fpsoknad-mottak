@@ -149,7 +149,7 @@ public class V2DomainMapper implements DomainMapper {
     private Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
         LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
         return new Soeknad()
-                .withMottattDato(LocalDate.now())
+                .withMottattDato(endringsøknad.getMottattdato().toLocalDate())
                 .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(endringsøknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(endringsøknad.getPåkrevdeVedlegg()))

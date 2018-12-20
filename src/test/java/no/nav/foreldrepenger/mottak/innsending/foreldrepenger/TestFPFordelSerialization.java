@@ -55,6 +55,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.http.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
@@ -115,12 +116,12 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testEndringssøknadRoundtripV1() throws Exception {
-        testEndringssøknadRoundtrip(V1);
+    public void testEndringssøknadRoundtrip() {
+        alleVersjoner().stream().forEach(v -> testEndringssøknadRoundtrip(v));
     }
 
     @Test
-    public void testSøknadRoundtrip() throws Exception {
+    public void testSøknadRoundtrip() {
         alleVersjoner().stream()
                 .forEach(v -> testSøknadRoundtrip(v));
     }
@@ -131,19 +132,19 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testKonvolutt() throws Exception {
+    public void testKonvolutt() {
         alleVersjoner().stream()
                 .forEach(v -> testKonvolutt(v));
     }
 
     @Test
-    public void testKonvoluttEndring() throws Exception {
+    public void testKonvoluttEndring() {
         alleVersjoner().stream()
                 .forEach(v -> testKonvoluttEndring(v));
     }
 
     @Test
-    public void testKonvoluttEttersending() throws Exception {
+    public void testKonvoluttEttersending() {
         Ettersending es = new Ettersending("42", VEDLEGG1, VEDLEGG2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
@@ -159,7 +160,22 @@ public class TestFPFordelSerialization {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
         assertEquals(INSPEKTØR.versjon(xml), v);
-        assertEquals(original, v12XMLMapper.tilSøknad(xml));
+        Søknad respons = v12XMLMapper.tilSøknad(xml);
+        assertEquals(original, respons);
+    }
+
+    public void testEndringssøknadRoundtrip(Versjon v) {
+        Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
+        String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
+        assertEquals(INSPEKTØR.versjon(xml), v);
+        System.out.println(xml);
+        Endringssøknad respons = Endringssøknad.class.cast(v12XMLMapper.tilSøknad(xml));
+        Fordeling priginalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(original.getYtelse()).getFordeling();
+        Fordeling responsFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(respons.getYtelse()).getFordeling();
+        assertEquals(priginalFordeling, responsFordeling);
+        assertEquals(original.getSaksnr(), respons.getSaksnr());
     }
 
     private void testKonvolutt(Versjon v) {
@@ -190,13 +206,6 @@ public class TestFPFordelSerialization {
         assertEquals(2, vedlegg.size());
         assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
-    }
-
-    public void testEndringssøknadRoundtrip(Versjon v) throws Exception {
-        Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
-        String xml = v12DomainMapper.tilXML(original, AKTØRID);
-        assertEquals(INSPEKTØR.versjon(xml), v);
-        // assertEquals(original, v12XMLMapper.tilSøknad(xml));
     }
 
     private FPFordelKonvoluttGenerator konvoluttGenerator() {

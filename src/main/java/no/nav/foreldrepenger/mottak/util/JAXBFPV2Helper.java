@@ -1,9 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import org.xml.sax.SAXException;
 public final class JAXBFPV2Helper extends AbstractJaxb {
 
     private static final Logger LOG = LoggerFactory.getLogger(JAXBFPV2Helper.class);
+    private static final Versjon VERSJON = V2;
 
     public JAXBFPV2Helper() {
         super(contextFra(
@@ -22,21 +22,20 @@ public final class JAXBFPV2Helper extends AbstractJaxb {
                 no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.ObjectFactory.class,
                 no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.ObjectFactory.class,
                 no.nav.vedtak.felles.xml.soeknad.v2.Soeknad.class),
-                fpSchema(Versjon.V2));
+                schema());
     }
 
     @Override
-    Versjon version() {
-        return Versjon.V2;
+    public Versjon versjon() {
+        return VERSJON;
     }
 
-    private static Schema fpSchema(Versjon version) {
+    private static Schema schema() {
         try {
-            return SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
-                    .newSchema(sourcesFra(version,
-                            "/foreldrepenger/foreldrepenger-v2.xsd",
-                            "/endringssoeknad-v2.xsd",
-                            "/soeknad-v2.xsd"));
+            return SCHEMA_FACTORY.newSchema(sourcesFra(VERSJON,
+                    "/foreldrepenger/foreldrepenger-v2.xsd",
+                    "/endringssoeknad-v2.xsd",
+                    "/soeknad-v2.xsd"));
         } catch (SAXException e) {
             LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller");
             return null;

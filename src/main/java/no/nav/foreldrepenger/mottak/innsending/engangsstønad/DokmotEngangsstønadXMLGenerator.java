@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000062;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon.FOEDSEL;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Innsendingsvalg.LASTET_OPP;
 import static no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Stoenadstype.ENGANGSSTOENADMOR;
@@ -19,7 +21,6 @@ import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
@@ -31,6 +32,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.util.VersjonsBevisst;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
@@ -49,14 +52,18 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 
 @Service
-public class DokmotEngangsstønadXMLGenerator {
+public class DokmotEngangsstønadXMLGenerator implements VersjonsBevisst {
 
     private final EngangsstønadPDFGenerator pdfGenerator;
-    private final JAXBESV1Helper jaxb;
+    private static final JAXBESV1Helper JAXB = new JAXBESV1Helper();
 
-    public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator, JAXBESV1Helper jaxb) {
+    public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator) {
         this.pdfGenerator = pdfGenerator;
-        this.jaxb = jaxb;
+    }
+
+    @Override
+    public Versjon versjon() {
+        return V1;
     }
 
     public byte[] tilPdf(Søknad søknad, Person søker) {
@@ -68,13 +75,10 @@ public class DokmotEngangsstønadXMLGenerator {
     }
 
     public String tilXML(SoeknadsskjemaEngangsstoenad model) {
-        return jaxb.marshal(model);
+        return JAXB.marshal(model);
     }
 
     public SoeknadsskjemaEngangsstoenad tilDokmotModel(Søknad søknad, Person søker) {
-
-        // Mor er bruker i dette use-caset, derfor setter vi ikke opplysninger om mor,
-        // samme som Team Søknad gjør
         Engangsstønad ytelse = Engangsstønad.class.cast(søknad.getYtelse());
         return new SoeknadsskjemaEngangsstoenad()
                 .withBruker(brukerFra(søker.fnr))
@@ -97,7 +101,7 @@ public class DokmotEngangsstønadXMLGenerator {
 
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
-                .withSkjemanummer(DokumentType.I000062.name())
+                .withSkjemanummer(I000062.name())
                 .withInnsendingsvalg(LASTET_OPP)
                 .withErPaakrevdISoeknadsdialog(vedlegg instanceof PåkrevdVedlegg);
     }
@@ -251,4 +255,5 @@ public class DokmotEngangsstønadXMLGenerator {
     public String toString() {
         return getClass().getSimpleName() + " [pdfGenerator=" + pdfGenerator + "]";
     }
+
 }

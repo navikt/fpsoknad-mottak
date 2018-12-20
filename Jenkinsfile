@@ -38,7 +38,7 @@ node {
         echo 'commitUrl ${commitUrl}'
         echo 'Notifying github..'
         notifyGithub(repo, application, 'continuous-integration/jenkins', commitHash, 'pending', "Build #${env.BUILD_NUMBER} has started")
-        echo 'Notofied github OK..'
+        echo 'Notified github OK..'
         currentBuild.displayName = "${releaseVersion}"
     }
 

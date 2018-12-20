@@ -1,9 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 @Component
 public final class JAXBFPV1Helper extends AbstractJaxb {
 
-    private static final Versjon VERSJON = Versjon.V1;
+    private static final Versjon VERSJON = V1;
 
     private static final Logger LOG = LoggerFactory.getLogger(JAXBFPV1Helper.class);
 
@@ -25,22 +24,15 @@ public final class JAXBFPV1Helper extends AbstractJaxb {
         super(contextFra(
                 Endringssoeknad.class,
                 Foreldrepenger.class,
-                /*
-                 * no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory.class,
-                 * no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
-                 */
+                no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory.class,
+                no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
                 Soeknad.class),
                 schema());
     }
 
-    @Override
-    Versjon version() {
-        return VERSJON;
-    }
-
     private static Schema schema() {
         try {
-            return SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
+            return SCHEMA_FACTORY
                     .newSchema(sourcesFra(VERSJON,
                             "/foreldrepenger/foreldrepenger-v1.xsd",
                             "/endringssoeknad-v1.xsd",
@@ -51,4 +43,8 @@ public final class JAXBFPV1Helper extends AbstractJaxb {
         }
     }
 
+    @Override
+    public Versjon versjon() {
+        return VERSJON;
+    }
 }

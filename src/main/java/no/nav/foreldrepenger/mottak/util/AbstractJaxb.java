@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
@@ -20,22 +21,23 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public abstract class AbstractJaxb {
+public abstract class AbstractJaxb implements VersjonsBevisst {
 
     private final JAXBContext context;
     private final Schema schema;
+
+    protected static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
     public AbstractJaxb(JAXBContext context, Schema schema) {
         this.context = context;
         this.schema = schema;
     }
-
-    abstract Versjon version();
 
     protected static JAXBContext contextFra(Class<?>... classes) {
         try {
@@ -80,7 +82,7 @@ public abstract class AbstractJaxb {
 
     public <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz) {
         try {
-
+            Object u = unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
             return (JAXBElement<T>) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);

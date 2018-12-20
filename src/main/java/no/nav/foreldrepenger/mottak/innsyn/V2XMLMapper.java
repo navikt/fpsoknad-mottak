@@ -140,8 +140,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
                 Endringssøknad endringssøknad = new Endringssøknad(
                         søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()).getFordeling(),
-                        "42");
+                        tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
                 endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return endringssøknad;
@@ -191,7 +190,15 @@ public class V2XMLMapper extends AbstractXMLMapper {
         return InnsendingsType.valueOf(innsendingstype.getKode());
     }
 
-    private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
+    private static String saksnummer(OmYtelse omYtelse) {
+        Object ytelse = ytelse(omYtelse);
+        if (ytelse instanceof Endringssoeknad) {
+            return Endringssoeknad.class.cast(ytelse).getSaksnummer();
+        }
+        throw new IllegalStateException(ytelse.getClass().getSimpleName() + " er ikke en endringssøknad");
+    }
+
+    private static Object ytelse(OmYtelse omYtelse) {
         if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
@@ -199,8 +206,12 @@ public class V2XMLMapper extends AbstractXMLMapper {
         if (omYtelse.getAny().size() > 1) {
             LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
         }
-        JAXBElement<?> elem = (JAXBElement<?>) omYtelse.getAny().get(0);
-        Object førsteYtelse = elem.getValue();
+        return ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
+    }
+
+    private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
+
+        Object førsteYtelse = ytelse(omYtelse);
         if (førsteYtelse instanceof Endringssoeknad) {
             Endringssoeknad søknad = Endringssoeknad.class.cast(førsteYtelse);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()

@@ -58,7 +58,7 @@ public class TestFPFordelRoundtripSerialization {
     @Autowired
     ObjectMapper mapper;
 
-    private static final JAXBESV1Helper JAXB_ES = new JAXBESV1Helper();
+    private static final JAXBESV1Helper JAXB = new JAXBESV1Helper();
 
     @Autowired
     CallIdGenerator refGenerator;
@@ -126,7 +126,7 @@ public class TestFPFordelRoundtripSerialization {
         Versjon versjon = V1;
         Søknad engangssøknad = engangssøknad(versjon, false, fødsel(), norskForelder(versjon),
                 påkrevdVedlegg(ID142));
-        SoeknadsskjemaEngangsstoenad response = JAXB_ES.unmarshal(
+        SoeknadsskjemaEngangsstoenad response = JAXB.unmarshal(
                 template.postForObject(INNSENDING_PREPROD + "/søknadES", engangssøknad, String.class),
                 SoeknadsskjemaEngangsstoenad.class);
         assertEquals(engangssøknad.getBegrunnelseForSenSøknad(), response.getOpplysningerOmBarn().getBegrunnelse());

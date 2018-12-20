@@ -13,7 +13,7 @@ public final class JAXBESV1Helper extends AbstractJaxb {
     }
 
     @Override
-    Versjon version() {
+    public Versjon versjon() {
         return Versjon.V1;
     }
 }

@@ -246,7 +246,7 @@ public class ForeldrepengerPDFGenerator {
                     doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.warn("Kunne ikke lage PDF", e);
             throw new PDFException("Kunne ikke lage PDF", e);
         }
@@ -319,7 +319,7 @@ public class ForeldrepengerPDFGenerator {
             LOG.info("Dokumentet for endring er på {} side{}", doc.getNumberOfPages(),
                     doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.warn("Kunne ikke lage PDF", e);
             throw new PDFException("Kunne ikke lage PDF", e);
         }

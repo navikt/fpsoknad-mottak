@@ -143,14 +143,34 @@ public class V1DomainMapper implements DomainMapper {
         return JAXB.marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(endringssøknad, søker)));
     }
 
+    public Soeknad tilModell(Søknad søknad, AktorId søker) {
+        LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", søknad);
+        return new Soeknad()
+                .withMottattDato(søknad.getMottattdato().toLocalDate())
+                .withSoeker(søkerFra(søker, søknad.getSøker()))
+                .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
+                .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
+                .withOmYtelse(ytelseFra(søknad))
+                .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
+                .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
+    }
+
     private Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
         LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
         return new Soeknad()
-                .withMottattDato(LocalDate.now())
+                .withMottattDato(endringsøknad.getMottattdato().toLocalDate())
                 .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(endringsøknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(endringsøknad.getPåkrevdeVedlegg()))
                 .withOmYtelse(ytelseFra(endringsøknad));
+    }
+
+    private OmYtelse ytelseFra(Søknad søknad) {
+        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(søknad.getYtelse());
+        LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
+        return new OmYtelse()
+                .withAny(JAXB.marshalToElement(foreldrePengerFra(ytelse)));
     }
 
     private OmYtelse ytelseFra(Endringssøknad endringssøknad) {
@@ -162,18 +182,6 @@ public class V1DomainMapper implements DomainMapper {
         return ENDRING_FACTORY_V1.createEndringssoeknad(new Endringssoeknad()
                 .withFordeling(fordelingFra(endringssøknad))
                 .withSaksnummer(endringssøknad.getSaksnr()));
-    }
-
-    public Soeknad tilModell(Søknad søknad, AktorId søker) {
-        LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", søknad);
-        return new Soeknad()
-                .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
-                .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
-                .withSoeker(søkerFra(søker, søknad.getSøker()))
-                .withOmYtelse(ytelseFra(søknad))
-                .withMottattDato(søknad.getMottattdato().toLocalDate())
-                .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
-                .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
 
     private static List<Vedlegg> vedleggFra(
@@ -206,14 +214,6 @@ public class V1DomainMapper implements DomainMapper {
     private static Innsendingstype innsendingsTypeMedKodeverk(InnsendingsType type) {
         Innsendingstype typeMedKodeverk = new Innsendingstype().withKode(type.name());
         return typeMedKodeverk.withKodeverk(typeMedKodeverk.getKodeverk());
-    }
-
-    private OmYtelse ytelseFra(Søknad søknad) {
-        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                .cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
-        return new OmYtelse()
-                .withAny(JAXB.marshalToElement(foreldrePengerFra(ytelse)));
     }
 
     private JAXBElement<Foreldrepenger> foreldrePengerFra(
