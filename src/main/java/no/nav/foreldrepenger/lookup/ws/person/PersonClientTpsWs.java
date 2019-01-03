@@ -52,23 +52,6 @@ public class PersonClientTpsWs implements PersonClient {
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.tps");
 
-    private static Retry retry() {
-
-        Retry retry = RetryRegistry.of(RetryConfig.custom()
-                .retryOnException(throwable -> API.Match(throwable).of(
-                        API.Case($(Predicates.instanceOf(SOAPFaultException.class)), true),
-                        API.Case($(), false)))
-                .maxAttempts(2)
-                .build()).retry("tpsPerson");
-        retry.getEventPublisher()
-                .onRetry(event -> LOG.info("Prøver igjen for {}. gang av {}", event.getNumberOfRetryAttempts(),
-                        RETRY.getRetryConfig().getMaxAttempts()))
-                .onSuccess(event -> LOG.info("Hentet person OK"))
-                .onError(event -> LOG.warn("Kunne ikke hente person OK etter {} forsøk",
-                        event.getNumberOfRetryAttempts(), event.getLastThrowable()));
-        return retry;
-    }
-
     public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, TokenHandler tokenHandler,
             Barnutvelger barnutvelger) {
         this.person = Objects.requireNonNull(person);
@@ -184,6 +167,23 @@ public class PersonClientTpsWs implements PersonClient {
             LOG.warn("Sikkerhetsbegrensning ved oppslag.", e);
             throw new UnauthorizedException(e);
         }
+    }
+
+    private static Retry retry() {
+
+        Retry retry = RetryRegistry.of(RetryConfig.custom()
+                .retryOnException(throwable -> API.Match(throwable).of(
+                        API.Case($(Predicates.instanceOf(SOAPFaultException.class)), true),
+                        API.Case($(), false)))
+                .maxAttempts(2)
+                .build()).retry("tpsPerson");
+        retry.getEventPublisher()
+                .onRetry(event -> LOG.info("Prøver igjen for {}. gang av {}", event.getNumberOfRetryAttempts(),
+                        RETRY.getRetryConfig().getMaxAttempts()))
+                .onSuccess(event -> LOG.info("Hentet person OK"))
+                .onError(event -> LOG.warn("Kunne ikke hente person OK etter {} forsøk",
+                        event.getNumberOfRetryAttempts(), event.getLastThrowable()));
+        return retry;
     }
 
     @Override
