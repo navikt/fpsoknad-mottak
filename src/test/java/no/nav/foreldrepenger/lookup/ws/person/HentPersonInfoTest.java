@@ -28,9 +28,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import no.nav.foreldrepenger.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
+import no.nav.tjeneste.virksomhet.person.v3.binding.HentPersonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.binding.PersonV3;
+import no.nav.tjeneste.virksomhet.person.v3.feil.PersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Aktoer;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Familierelasjoner;
@@ -71,6 +74,16 @@ public class HentPersonInfoTest {
         when(tps.hentPerson(any())).thenReturn(response(barn("11111898765", "FNR")));
         klient.hentPersonInfo(id());
         verify(tps, times(2)).hentPerson(any());
+    }
+
+    @Test
+    public void testPersonIkkeFunnetTriggerIngenRetry() throws Exception {
+        when(tps.hentPerson(any()))
+                .thenThrow(new HentPersonPersonIkkeFunnet("Fant ikke", new PersonIkkeFunnet()));
+        assertThrows(NotFoundException.class, () -> {
+            klient.hentPersonInfo(id());
+        });
+        verify(tps).hentPerson(any());
     }
 
     @Test

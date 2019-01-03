@@ -78,7 +78,7 @@ public class PersonClientTpsWs implements PersonClient {
             HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
             LOG.info("Slår opp person");
             LOG.info(CONFIDENTIAL, "Fra ID {}", id);
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = tpsPerson(request);
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = tpsPersonWithRetry(request);
             Person p = person(id, tpsPerson, barnFor(tpsPerson));
             LOG.info(CONFIDENTIAL, "Person er {}", p);
             return p;
@@ -94,7 +94,7 @@ public class PersonClientTpsWs implements PersonClient {
         }
     }
 
-    private no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson(HentPersonRequest request) {
+    private no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPersonWithRetry(HentPersonRequest request) {
         return Retry.decorateSupplier(RETRY, () -> hentPerson(request)).get().getPerson();
     }
 
@@ -129,15 +129,15 @@ public class PersonClientTpsWs implements PersonClient {
         NorskIdent id = ((PersonIdent) rel.getTilPerson().getAktoer()).getIdent();
         if (RequestUtils.isFnr(id)) {
             Fødselsnummer fnrBarn = new Fødselsnummer(id.getIdent());
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsBarn = hentPerson(
-                    RequestUtils.request(fnrBarn, FAMILIERELASJONER)).getPerson();
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsBarn = tpsPersonWithRetry(
+                    RequestUtils.request(fnrBarn, FAMILIERELASJONER));
 
             AnnenForelder annenForelder = tpsBarn.getHarFraRolleI().stream()
                     .filter(this::isForelder)
                     .map(this::toFødselsnummer)
                     .filter(Objects::nonNull)
                     .filter(fnr -> !fnr.equals(fnrSøker))
-                    .map(fnr -> tpsPerson(RequestUtils.request(fnr)))
+                    .map(fnr -> tpsPersonWithRetry(RequestUtils.request(fnr)))
                     .map(PersonMapper::annenForelder)
                     .findFirst()
                     .orElse(null);
