@@ -9,6 +9,9 @@ public class SøknadDTO {
     private final String xml;
     private final String journalpostId;
 
+    public String getXml() {
+        return unescapeHtml4(xml);
+    }
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [xml=" + unescapeHtml4(xml) + ", journalpostId=" + journalpostId + "]";
