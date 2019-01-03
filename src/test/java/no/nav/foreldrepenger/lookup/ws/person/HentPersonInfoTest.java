@@ -76,7 +76,6 @@ public class HentPersonInfoTest {
     @Test
     public void testRetryUntilFail() throws Exception {
         when(tps.hentPerson(any()))
-                .thenThrow(soapFault())
                 .thenThrow(soapFault());
         assertThrows(SOAPFaultException.class, () -> {
             klient.hentPersonInfo(id());
