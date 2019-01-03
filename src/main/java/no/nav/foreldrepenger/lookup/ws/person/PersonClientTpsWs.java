@@ -1,8 +1,31 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
+import static io.vavr.API.$;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.lookup.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
+import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.BANKKONTO;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.FAMILIERELASJONER;
+import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.KOMMUNIKASJON;
+
+import java.util.List;
+import java.util.Objects;
+
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
+import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
+import io.vavr.API;
+import io.vavr.Predicates;
 import no.nav.foreldrepenger.errorhandling.NotFoundException;
 import no.nav.foreldrepenger.errorhandling.RemoteUnavailableException;
 import no.nav.foreldrepenger.errorhandling.TokenExpiredException;
@@ -16,23 +39,11 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.PersonIdent;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonRequest;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.soap.SOAPFaultException;
-import java.util.List;
-import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.lookup.EnvUtil.CONFIDENTIAL;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.barn;
-import static no.nav.foreldrepenger.lookup.ws.person.PersonMapper.person;
-import static no.nav.tjeneste.virksomhet.person.v3.informasjon.Informasjonsbehov.*;
 
 public class PersonClientTpsWs implements PersonClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersonClientTpsWs.class);
+    private static final Retry RETRY = retry();
 
     private final PersonV3 person;
     private final PersonV3 healthIndicator;
@@ -40,6 +51,23 @@ public class PersonClientTpsWs implements PersonClient {
     protected final TokenHandler tokenHandler;
 
     private static final Counter ERROR_COUNTER = Metrics.counter("errors.lookup.tps");
+
+    private static Retry retry() {
+
+        Retry retry = RetryRegistry.of(RetryConfig.custom()
+                .retryOnException(throwable -> API.Match(throwable).of(
+                        API.Case($(Predicates.instanceOf(SOAPFaultException.class)), true),
+                        API.Case($(), false)))
+                .maxAttempts(2)
+                .build()).retry("tpsPerson");
+        retry.getEventPublisher()
+                .onRetry(event -> LOG.info("Prøver igjen for {}. gang av {}", event.getNumberOfRetryAttempts(),
+                        RETRY.getRetryConfig().getMaxAttempts()))
+                .onSuccess(event -> LOG.info("Hentet person OK"))
+                .onError(event -> LOG.warn("Kunne ikke hente person OK etter {} forsøk",
+                        event.getNumberOfRetryAttempts(), event.getLastThrowable()));
+        return retry;
+    }
 
     public PersonClientTpsWs(PersonV3 person, PersonV3 healthIndicator, TokenHandler tokenHandler,
             Barnutvelger barnutvelger) {
@@ -64,10 +92,10 @@ public class PersonClientTpsWs implements PersonClient {
     @Timed("lookup.person")
     public Person hentPersonInfo(ID id) {
         try {
+            HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
             LOG.info("Slår opp person");
             LOG.info(CONFIDENTIAL, "Fra ID {}", id);
-            HentPersonRequest request = RequestUtils.request(id.getFnr(), KOMMUNIKASJON, BANKKONTO, FAMILIERELASJONER);
-            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = hentPerson(request).getPerson();
+            no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson = tpsPerson(request);
             Person p = person(id, tpsPerson, barnFor(tpsPerson));
             LOG.info(CONFIDENTIAL, "Person er {}", p);
             return p;
@@ -81,7 +109,10 @@ public class PersonClientTpsWs implements PersonClient {
             ERROR_COUNTER.increment();
             throw new RemoteUnavailableException(e);
         }
+    }
 
+    private no.nav.tjeneste.virksomhet.person.v3.informasjon.Person tpsPerson(HentPersonRequest request) {
+        return Retry.decorateSupplier(RETRY, () -> hentPerson(request)).get().getPerson();
     }
 
     private List<Barn> barnFor(no.nav.tjeneste.virksomhet.person.v3.informasjon.Person person) {
@@ -123,7 +154,7 @@ public class PersonClientTpsWs implements PersonClient {
                     .map(this::toFødselsnummer)
                     .filter(Objects::nonNull)
                     .filter(fnr -> !fnr.equals(fnrSøker))
-                    .map(fnr -> hentPerson(RequestUtils.request(fnr)).getPerson())
+                    .map(fnr -> tpsPerson(RequestUtils.request(fnr)))
                     .map(PersonMapper::annenForelder)
                     .findFirst()
                     .orElse(null);
@@ -145,9 +176,7 @@ public class PersonClientTpsWs implements PersonClient {
 
     private HentPersonResponse hentPerson(HentPersonRequest request) {
         try {
-            HentPersonResponse p = person.hentPerson(request);
-            LOG.info("Fant person OK");
-            return p;
+            return person.hentPerson(request);
         } catch (HentPersonPersonIkkeFunnet e) {
             LOG.warn("Fant ikke person", e);
             throw new NotFoundException(e);

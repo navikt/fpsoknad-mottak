@@ -2,13 +2,18 @@ package no.nav.foreldrepenger.lookup.ws.person;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Navn {
 
     private final String fornavn;
     private final String mellomnavn;
     private final String etternavn;
 
-    public Navn(String fornavn, String mellomnavn, String etternavn) {
+    @JsonCreator
+    public Navn(@JsonProperty("fornavn") String fornavn, @JsonProperty("mellomnavn") String mellomnavn,
+            @JsonProperty("etternavn") String etternavn) {
         this.fornavn = fornavn;
         this.mellomnavn = mellomnavn;
         this.etternavn = etternavn;
@@ -32,7 +37,7 @@ public class Navn {
         }
         Navn other = (Navn) obj;
         return Objects.equals(this.fornavn, other.fornavn) && Objects.equals(this.mellomnavn, other.mellomnavn)
-            && Objects.equals(this.etternavn, other.etternavn);
+                && Objects.equals(this.etternavn, other.etternavn);
     }
 
     public String getFornavn() {
@@ -50,7 +55,7 @@ public class Navn {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [fornavn=" + fornavn + ", mellomnavn=" + mellomnavn + ", etternavn="
-            + etternavn + "]";
+                + etternavn + "]";
     }
 
 }
