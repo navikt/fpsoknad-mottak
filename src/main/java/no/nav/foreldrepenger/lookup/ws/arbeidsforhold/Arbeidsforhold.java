@@ -4,15 +4,21 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
 
     private String arbeidsgiverId;
     private String arbeidsgiverIdType;
     private Double stillingsprosent;
-
     private String arbeidsgiverNavn;
 
-    public Arbeidsforhold(String arbeidsgiverId, String arbeidsgiverIdType, Double stillingsprosent, LocalDate from, Optional<LocalDate> to) {
+    @JsonCreator
+    public Arbeidsforhold(@JsonProperty("arbeidsgiverId") String arbeidsgiverId,
+            @JsonProperty("arbeidsgiverIdType") String arbeidsgiverIdType,
+            @JsonProperty("stillingsprosent") Double stillingsprosent, @JsonProperty("from") LocalDate from,
+            @JsonProperty("to") Optional<LocalDate> to) {
         super(from, to);
         this.arbeidsgiverId = arbeidsgiverId;
         this.arbeidsgiverIdType = arbeidsgiverIdType;
@@ -51,7 +57,8 @@ public class Arbeidsforhold extends TidsAvgrensetBrukerInfo {
             return false;
         }
         Arbeidsforhold that = (Arbeidsforhold) o;
-        return Objects.equals(arbeidsgiverId, that.arbeidsgiverId) && Objects.equals(arbeidsgiverIdType, that.arbeidsgiverIdType);
+        return Objects.equals(arbeidsgiverId, that.arbeidsgiverId)
+                && Objects.equals(arbeidsgiverIdType, that.arbeidsgiverIdType);
     }
 
     @Override

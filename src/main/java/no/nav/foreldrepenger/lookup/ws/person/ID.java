@@ -1,15 +1,19 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
-import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
-
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
 
 public class ID {
 
     private final AktorId aktorId;
     private final Fødselsnummer fnr;
 
-    public ID(AktorId aktorId, Fødselsnummer fnr) {
+    @JsonCreator
+    public ID(@JsonProperty("aktorId") AktorId aktorId, @JsonProperty("fnr") Fødselsnummer fnr) {
         this.aktorId = aktorId;
         this.fnr = fnr;
     }
@@ -24,11 +28,13 @@ public class ID {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ID id = (ID) o;
         return Objects.equals(aktorId, id.aktorId) &&
-            Objects.equals(fnr, id.fnr);
+                Objects.equals(fnr, id.fnr);
     }
 
     @Override
@@ -39,8 +45,8 @@ public class ID {
     @Override
     public String toString() {
         return "ID{" +
-            "aktorId=" + aktorId +
-            ", fnr=" + fnr +
-            '}';
+                "aktorId=" + aktorId +
+                ", fnr=" + fnr +
+                '}';
     }
 }

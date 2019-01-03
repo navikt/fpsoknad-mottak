@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.lookup.ws.person;
 
 import static java.time.LocalDate.now;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,12 +14,19 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPFault;
+import javax.xml.ws.soap.SOAPFaultException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.foreldrepenger.lookup.TokenHandler;
 import no.nav.foreldrepenger.lookup.ws.aktor.AktorId;
@@ -35,6 +43,7 @@ import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personidenter;
 import no.nav.tjeneste.virksomhet.person.v3.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v3.meldinger.HentPersonResponse;
 
+@ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
 public class HentPersonInfoTest {
 
@@ -52,7 +61,7 @@ public class HentPersonInfoTest {
     @Mock
     private TokenHandler tokenHandler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         klient = new PersonClientTpsWs(tps, healthIndicator, tokenHandler, barnutvelger);
     }
@@ -60,9 +69,27 @@ public class HentPersonInfoTest {
     @Test
     public void testHentingAvPersonMedBarnSkalKallePåTpsToGanger() throws Exception {
         when(tps.hentPerson(any())).thenReturn(response(barn("11111898765", "FNR")));
-
         klient.hentPersonInfo(id());
         verify(tps, times(2)).hentPerson(any());
+    }
+
+    @Test
+    public void testRetryUntilFail() throws Exception {
+        when(tps.hentPerson(any()))
+                .thenThrow(soapFault());
+        assertThrows(SOAPFaultException.class, () -> {
+            klient.hentPersonInfo(id());
+        });
+        verify(tps, times(2)).hentPerson(any());
+    }
+
+    @Test
+    public void testFailThenOK() throws Exception {
+        when(tps.hentPerson(any()))
+                .thenThrow(soapFault())
+                .thenReturn(response(barn("11111898765", "FNR")));
+        klient.hentPersonInfo(id());
+        verify(tps, times(3)).hentPerson(any());
     }
 
     @Test
@@ -70,13 +97,11 @@ public class HentPersonInfoTest {
         when(tps.hentPerson(any())).thenReturn(response(barn("11111800000", "FDAT")));
 
         klient.hentPersonInfo(id());
-        verify(tps, times(1)).hentPerson(any());
+        verify(tps).hentPerson(any());
     }
 
     private ID id() {
-        Fødselsnummer fnr = new Fødselsnummer("fnr");
-        AktorId aktorId = new AktorId("aktør");
-        return new ID(aktorId, fnr);
+        return new ID(new AktorId("aktør"), new Fødselsnummer("fnr"));
     }
 
     private HentPersonResponse response(Familierelasjon rel) {
@@ -118,6 +143,14 @@ public class HentPersonInfoTest {
         }
         foedselsdato.setFoedselsdato(xcal);
         return foedselsdato;
+    }
+
+    private SOAPFaultException soapFault() throws SOAPException {
+        SOAPFactory soapFactory = SOAPFactory.newInstance();
+        SOAPFault soapFault = soapFactory.createFault(
+                "Your custom message",
+                new QName("http://schemas.xmlsoap.org/soap/envelope/", "Client"));
+        return new SOAPFaultException(soapFault);
     }
 
     private Personnavn navn() {
