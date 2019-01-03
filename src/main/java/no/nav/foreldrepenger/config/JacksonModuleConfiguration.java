@@ -22,7 +22,7 @@ public class JacksonModuleConfiguration {
         return new Jdk8Module();
     }
 
-    @Bean
+    // @Bean
     public Module parameterNamesModule() {
         return new ParameterNamesModule(JsonCreator.Mode.PROPERTIES);
     }
