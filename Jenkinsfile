@@ -127,15 +127,6 @@ node {
         }
     }
 
-    stage("Tag") {
-        withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088']) {
-            withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
-                sh("git tag -a ${releaseVersion} -m ${releaseVersion}")
-                sh("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
-            }
-        }
-    }
-
     stage('Deploy to Prod') {
         try {
             timeout(time: 5, unit: 'MINUTES') {
@@ -153,6 +144,13 @@ node {
             timeout(time: 15, unit: 'MINUTES') {
                 input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
             }
+
+            // Tag production release
+            withCredentials([string(credentialsId: 'OAUTH_TOKEN', variable: 'token')]) {
+                sh("git tag -a ${releaseVersion} -m ${releaseVersion}")
+                sh("git push https://${token}:x-oauth-basic@github.com/${repo}/${application}.git --tags")
+            }
+
             slackSend([
                 color  : 'good',
                 message: "${application} version ${releaseVersion} has been deployed to production."
