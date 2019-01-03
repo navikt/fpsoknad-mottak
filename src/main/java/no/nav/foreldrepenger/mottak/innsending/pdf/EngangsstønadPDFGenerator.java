@@ -10,9 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.KjentForelder;
@@ -44,9 +42,9 @@ public class EngangsstønadPDFGenerator {
         Engangsstønad stønad = Engangsstønad.class.cast(søknad.getYtelse());
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
         final PDPage page = newPage();
-        try (PDDocument doc = new PDDocument();
-                PDPageContentStream cos = new PDPageContentStream(doc, page);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (FontAwarePDDocument doc = new FontAwarePDDocument();
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            FontAwareCos cos = new FontAwareCos(doc, page);
             float y = PDFElementRenderer.calculateStartY();
 
             y -= header(søker, stønad, doc, cos, y);
@@ -77,7 +75,7 @@ public class EngangsstønadPDFGenerator {
         }
     }
 
-    private float omBarn(Person søker, Søknad søknad, Engangsstønad stønad, PDPageContentStream cos, float y)
+    private float omBarn(Person søker, Søknad søknad, Engangsstønad stønad, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("ombarn"), cos, y);
@@ -94,7 +92,7 @@ public class EngangsstønadPDFGenerator {
         return startY - y;
     }
 
-    private float header(Person søker, Engangsstønad stønad, PDDocument doc, PDPageContentStream cos, float y)
+    private float header(Person søker, Engangsstønad stønad, FontAwarePDDocument doc, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addLogo(doc, cos, y);
@@ -189,7 +187,7 @@ public class EngangsstønadPDFGenerator {
         return stønad.getRelasjonTilBarn() instanceof Fødsel;
     }
 
-    private float tilknytning(Medlemsskap medlemsskap, PDPageContentStream cos, float y) throws IOException {
+    private float tilknytning(Medlemsskap medlemsskap, FontAwareCos cos, float y) throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilknytning"), cos, y);
         y -= renderer.addLineOfRegularText(textFormatter.fromMessageSource("siste12"), cos, y);
