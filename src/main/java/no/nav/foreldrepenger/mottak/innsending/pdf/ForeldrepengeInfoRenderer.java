@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.text.Normalizer.Form.NFD;
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
@@ -10,7 +8,6 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -281,7 +278,7 @@ public class ForeldrepengeInfoRenderer {
             List<String> oppdrag = frilans.getFrilansOppdrag().stream()
                 .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
                 .collect(toList());
-            y -= renderer.addBulletList(INDENT, normalize(oppdrag), cos, y);
+            y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
             y -= renderer.addBlankLine();
         }
         else {
@@ -892,28 +889,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private String txt(String key, Object... values) {
-        return textFormatter.fromMessageSource(key, normalize(values));
+        return textFormatter.fromMessageSource(key, values);
     }
 
-    protected static List<String> normalize(List<String> values) {
-        return stream(normalize(values.toArray()))
-            .map(Object::toString)
-            .collect(toList());
-    }
-
-    private static Object[] normalize(Object[] values) {
-        return stream(values)
-            .map(Object::toString)
-            .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
-            .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
-            .map(s -> Normalizer.normalize(s, NFD)) // vurder bytte til NFKD (ligaturer bl.a)
-            .map(s -> s.replaceAll("\u0141", "L"))
-            .map(s -> s.replaceAll("\u0142", "l"))
-            .map(s -> s.replaceAll("[\\p{Blank}\u00A0]", " ")) //replace tab/no-break space with space
-            .map(s -> s.replaceAll("[\u202D\uFFFD]", "")) //strip left-to-right-operator/not defined
-            .map(s -> s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""))
-            .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
-            .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
-            .toArray();
-    }
 }

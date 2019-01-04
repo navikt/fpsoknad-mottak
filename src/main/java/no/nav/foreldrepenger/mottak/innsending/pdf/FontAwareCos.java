@@ -7,33 +7,33 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import java.io.IOException;
 
 public class FontAwareCos {
-    private FontAwarePDDocument doc;
-    private final PDFont regularFont;
-    private final PDFont boldFont;
-    private PDPage page;
-    private PDPageContentStream cos;
-    public final int REGULARFONTSIZE = 12;
-    public final int REGULARFONTHEIGHT;
-    public final int HEADINGFONTSIZE = 13;
-    public final int HEADINGFONTHEIGHT;
+    final PDFont REGULARFONT;
+    final PDFont HEADINGFONT;
+    final int REGULARFONTHEIGHT;
+    final int HEADINGFONTHEIGHT;
+    final int REGULARFONTSIZE = 11;
+    private final PDPageContentStream cos;
+    private final int HEADINGFONTSIZE = 12;
 
 
     public FontAwareCos(FontAwarePDDocument doc, PDPage page) throws IOException {
-        this.doc = doc;
-        this.page = page;
         this.cos = new PDPageContentStream(doc, page);
-        this.regularFont = doc.getRegularFont();
-        this.boldFont = doc.getBoldFont();
-        REGULARFONTHEIGHT = fontHeight(regularFont, REGULARFONTSIZE);
-        HEADINGFONTHEIGHT = fontHeight(boldFont, HEADINGFONTSIZE);
+        this.REGULARFONT = doc.REGULARFONT;
+        this.HEADINGFONT = doc.BOLDFONT;
+        this.REGULARFONTHEIGHT = fontHeight(REGULARFONT, REGULARFONTSIZE);
+        this.HEADINGFONTHEIGHT = fontHeight(HEADINGFONT, HEADINGFONTSIZE);
+    }
+
+    private static int fontHeight(PDFont font, int size) {
+        return Math.round((font.getFontDescriptor().getFontBoundingBox().getHeight()) / 1000 * size);
     }
 
     public void useRegularFont() throws IOException {
-        setFont(regularFont, REGULARFONTSIZE);
+        setFont(REGULARFONT, REGULARFONTSIZE);
     }
 
-    public void useBoldFont() throws IOException {
-        setFont(boldFont, HEADINGFONTSIZE);
+    public void useHeadingFont() throws IOException {
+        setFont(HEADINGFONT, HEADINGFONTSIZE);
     }
 
     public PDPageContentStream getCos() {
@@ -64,20 +64,8 @@ public class FontAwareCos {
         cos.setFont(font, fontSize);
     }
 
-    public PDFont getRegularFont() {
-        return regularFont;
-    }
-
-    private static int fontHeight(PDFont font, int size) {
-        return Math.round((font.getFontDescriptor().getFontBoundingBox().getHeight()) / 1000 * size);
-    }
-
-    public float boldTextWidth(String string) throws IOException {
-        return textWidth(string, boldFont, HEADINGFONTSIZE);
-    }
-
-    public float plainTextWidth(String string) throws  IOException {
-        return textWidth(string, regularFont, REGULARFONTSIZE);
+    public float headingTextWidth(String string) throws IOException {
+        return textWidth(string, HEADINGFONT, HEADINGFONTSIZE);
     }
 
     private float textWidth(String string, PDFont font, int fontSize) throws IOException {

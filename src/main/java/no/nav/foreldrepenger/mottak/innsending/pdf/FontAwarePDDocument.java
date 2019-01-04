@@ -7,19 +7,11 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 
 public class FontAwarePDDocument extends PDDocument {
-    private final PDType0Font regularFont;
-    private final PDType0Font boldFont;
+    public static PDType0Font REGULARFONT;
+    public static PDType0Font BOLDFONT;
 
     public FontAwarePDDocument() throws IOException {
-        boldFont = PDType0Font.load(this, new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
-        regularFont = PDType0Font.load(this, new ClassPathResource("/pdf/NotoSans-Regular.ttf").getInputStream());
-    }
-
-    public PDType0Font getRegularFont() {
-        return regularFont;
-    }
-
-    public PDType0Font getBoldFont() {
-        return boldFont;
+        BOLDFONT = PDType0Font.load(this, new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
+        REGULARFONT = PDType0Font.load(this, new ClassPathResource("/pdf/NotoSans-Regular.ttf").getInputStream());
     }
 }

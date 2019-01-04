@@ -1,24 +1,32 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.text.Normalizer.Form.NFD;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
 @Component
 public class PDFElementRenderer {
+
+    public static final Logger LOG = LoggerFactory.getLogger(PDFElementRenderer.class);
 
     private static final byte[] NAV_LOGO = logo();
 
@@ -66,10 +74,11 @@ public class PDFElementRenderer {
 
     public float addLineOfRegularText(int marginOffset, String line, FontAwareCos cos, float startY)
             throws IOException {
-        List<String> lines = splitLineIfNecessary(line,
-            characterLimitInCos(cos.getRegularFont(),
-                cos.REGULARFONTSIZE,
-                marginOffset));
+        String encodableLine = normalizeAndRemoveNonencodableChars(line, cos.REGULARFONT);
+        List<String> lines = splitLineIfNecessary(
+            encodableLine,
+            characterLimitInCos(cos.REGULARFONT, cos.REGULARFONTSIZE, marginOffset)
+        );
         int lineNumber = 0;
         for (String singleLine : lines) {
             cos.beginText();
@@ -82,6 +91,44 @@ public class PDFElementRenderer {
         return cos.REGULARFONTHEIGHT * lines.size();
     }
 
+    private String normalizeAndRemoveNonencodableChars(String str, PDFont font) throws IOException {
+        return removeNonencodableChars(normalizeString(str), font);
+    }
+
+    private String removeNonencodableChars(String string, PDFont font) throws IOException {
+        StringBuilder encodable = new StringBuilder();
+        for (char character : string.toCharArray()) {
+            if (isCharacterEncodeable(character, font)) {
+                encodable.append(character);
+            }
+        }
+        return encodable.toString();
+    }
+
+    private boolean isCharacterEncodeable(char character, PDFont font) throws IOException {
+        try {
+            font.encode(Character.toString(character));
+            return true;
+        }
+        catch (IllegalArgumentException e) {  // likely non-existence of glyph
+            LOG.info(String.format(
+                "No glyph for %x in font %s, character has been dropped from pdf.",
+                (int) character, font.toString()));
+            return false;
+        }
+    }
+
+    private static String normalizeString(String str) {
+        return Stream.of(str)
+            .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
+            .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
+            .map(s -> Normalizer.normalize(s, NFD))
+            .map(s -> s.replaceAll("[\\p{Blank}\u00A0]", " ")) //replace tab/no-break space with space
+            .map(s -> s.replaceAll("[\u202D\uFFFD]", "")) //strip left-to-right-operator/not defined
+            .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
+            .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
+            .collect(Collectors.joining());
+    }
 
     public float addLinesOfRegularText(List<String> lines, FontAwareCos cos, float startY)
             throws IOException {
@@ -122,11 +169,11 @@ public class PDFElementRenderer {
 
     public float addCenteredHeading(String heading, FontAwareCos cos, float startY) throws IOException {
         cos.beginText();
-        cos.useBoldFont();
-        float titleWidth = cos.boldTextWidth(heading);
+        cos.useHeadingFont();
+        float titleWidth = cos.headingTextWidth(heading);
         float startX = (MEDIABOX.getWidth() - titleWidth) / 2;
         cos.newLineAtOffset(startX, startY);
-        cos.showText(heading);
+        cos.showText(normalizeAndRemoveNonencodableChars(heading, cos.HEADINGFONT));
         cos.endText();
         return cos.HEADINGFONTHEIGHT;
     }
@@ -141,7 +188,7 @@ public class PDFElementRenderer {
 
     public float addLeftHeading(String heading, FontAwareCos cos, float startY) throws IOException {
         cos.beginText();
-        cos.useBoldFont();
+        cos.useHeadingFont();
         float startX = MARGIN;
         cos.newLineAtOffset(startX, startY);
         cos.showText(heading);
