@@ -18,7 +18,6 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static no.nav.foreldrepenger.mottak.util.Versjon.alleVersjoner;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -68,6 +67,7 @@ import no.nav.foreldrepenger.mottak.innsyn.V2XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.VersjonsBevisstXMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.SøknadInspeksjonResultat;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -118,7 +118,8 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testEndringssøknadRoundtrip() {
-        alleVersjoner().stream().forEach(v -> testEndringssøknadRoundtrip(v));
+        alleVersjoner().stream()
+                .forEach(v -> testEndringssøknadRoundtrip(v));
     }
 
     @Test
@@ -161,8 +162,10 @@ public class TestFPFordelSerialization {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
         System.out.println(xml);
-        assertFalse(INSPEKTØR.erEngangsstønad(xml));
-        assertEquals(INSPEKTØR.versjon(xml), v);
+        SøknadInspeksjonResultat inspiser = INSPEKTØR.inspiser(xml);
+        assertEquals(inspiser.versjon(), v);
+        assertEquals(inspiser.type(), SøknadType.INITIELL);
+
         Søknad respons = v12XMLMapper.tilSøknad(xml);
         assertEquals(original, respons);
     }
@@ -170,8 +173,9 @@ public class TestFPFordelSerialization {
     public void testEndringssøknadRoundtrip(Versjon v) {
         Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
-        assertEquals(INSPEKTØR.versjon(xml), v);
-        assertFalse(INSPEKTØR.erEngangsstønad(xml));
+        SøknadInspeksjonResultat inspiser = INSPEKTØR.inspiser(xml);
+        assertEquals(inspiser.versjon(), v);
+        assertEquals(inspiser.type(), SøknadType.ENDRING);
         System.out.println(xml);
         Endringssøknad respons = Endringssøknad.class.cast(v12XMLMapper.tilSøknad(xml));
         Fordeling priginalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class

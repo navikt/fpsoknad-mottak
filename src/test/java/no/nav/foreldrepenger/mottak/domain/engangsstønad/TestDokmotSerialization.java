@@ -31,12 +31,14 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtil
 import no.nav.foreldrepenger.mottak.http.Constants;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.SøknadInspeksjonResultat;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
@@ -111,8 +113,9 @@ public class TestDokmotSerialization {
         Person søker = person();
         String xml = søknadXMLGenerator.tilXML(søknad, søker);
         System.out.println(xml);
-        assertEquals(Versjon.V1, INSPEKTOR.versjon(xml));
-        assertTrue(INSPEKTOR.erEngangsstønad(xml));
+        SøknadInspeksjonResultat inspiser = INSPEKTOR.inspiser(xml);
+        assertEquals(Versjon.V1, inspiser.versjon());
+        assertEquals(SøknadType.ENGANGSSØKNAD, inspiser.type());
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         SoeknadsskjemaEngangsstoenad unmarshalled = jaxb.unmarshal(xml,
                 SoeknadsskjemaEngangsstoenad.class);

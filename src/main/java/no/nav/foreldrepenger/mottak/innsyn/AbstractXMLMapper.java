@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.SøknadInspeksjonResultat;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.VersjonsBevisst;
 
@@ -19,16 +20,10 @@ public abstract class AbstractXMLMapper implements XMLMapper, VersjonsBevisst {
         this.inspektør = inspektør;
     }
 
-    protected SøknadType type(no.nav.vedtak.felles.xml.soeknad.v1.Soeknad søknad) {
-        SøknadType type = inspektør.type(søknad);
-        LOG.info("Dette er en søknad av type {} for versjon V1", type);
-        return type;
-    }
-
-    protected SøknadType type(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad) {
-        SøknadType type = inspektør.type(søknad);
-        LOG.info("Dette er en søknad av type {} for versjon V2", type);
-        return type;
+    protected SøknadType type(String xml) {
+        SøknadInspeksjonResultat resultat = inspektør.inspiser(xml);
+        LOG.info("Dette er en søknad av type {} og versjon {}", resultat.type(), resultat.versjon());
+        return resultat.type();
     }
 
     @Override

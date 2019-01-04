@@ -134,7 +134,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
         }
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
-            switch (type(søknad)) {
+            switch (type(xml)) {
             case ENDRING:
                 Endringssøknad endringssøknad = new Endringssøknad(
                         søknad.getMottattDato().atStartOfDay(),
