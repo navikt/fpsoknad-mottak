@@ -62,7 +62,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
-        LOG.info("Henter {} behandlinger", behandlingsLenker.size());
+        LOG.info("Henter {} behandling{}", behandlingsLenker.size(), endelse(behandlingsLenker));
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
                 .map(innsynConnection::hentBehandling)
                 .map(this::tilBehandling)
