@@ -15,7 +15,7 @@ public class FilteringCommonsRequestLoggingFilter extends CommonsRequestLoggingF
     public FilteringCommonsRequestLoggingFilter() {
         setIncludeQueryString(true);
         setIncludePayload(true);
-        setIncludeClientInfo(true);
+        setIncludeClientInfo(false);
         setMaxPayloadLength(10000);
         setIncludeHeaders(false);
     }

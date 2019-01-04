@@ -57,7 +57,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     }
 
     public List<SakDTO> hentSaker(String aktørId) {
-        LOG.trace("Henter saker");
+        LOG.trace("Henter saker for {}", aktørId);
         return Optional.ofNullable(getForObject(uri(config.getUri(), SAK,
                 queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
                 .map(Arrays::asList)
@@ -65,7 +65,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     }
 
     public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
-        LOG.trace("Henter uttaksplan");
+        LOG.trace("Henter uttaksplan for sak {}", saksnummer);
         return Optional.ofNullable(getForObject(uri(config.getUri(), UTTAKSPLAN,
                 queryParams(SAKSNUMMER, saksnummer)), UttaksPeriode[].class))
                 .map(Arrays::asList)
@@ -73,7 +73,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     }
 
     public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
-        LOG.trace("Henter behandling");
+        LOG.trace("Henter behandling fra {}", behandlingsLenke.getHref());
         return Optional.ofNullable(
                 getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingDTO.class))
                 .orElse(null);

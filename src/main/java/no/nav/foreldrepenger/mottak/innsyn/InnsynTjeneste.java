@@ -121,6 +121,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
+        LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         String xml = wrapper.getXml();
         Versjon versjon = inspektør.versjon(xml);
         if (inspektør.erEngangsstønad(xml)) {
