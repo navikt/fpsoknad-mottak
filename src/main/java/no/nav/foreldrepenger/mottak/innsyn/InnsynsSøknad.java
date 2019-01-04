@@ -31,4 +31,10 @@ public class InnsynsSøknad {
     public String getJournalpostId() {
         return journalpostId;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [versjon=" + versjon + ", søknad=" + søknad + ", journalpostId="
+                + journalpostId + "]";
+    }
 }
