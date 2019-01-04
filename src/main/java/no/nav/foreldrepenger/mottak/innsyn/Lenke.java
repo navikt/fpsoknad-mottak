@@ -2,13 +2,18 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Lenke {
 
     private final String href;
     private final String rel;
     private final String type;
 
-    public Lenke(String href, String rel, String type) {
+    @JsonCreator
+    public Lenke(@JsonProperty("href") String href, @JsonProperty("rel") String rel,
+            @JsonProperty("type") String type) {
         this.href = href;
         this.rel = rel;
         this.type = type;
