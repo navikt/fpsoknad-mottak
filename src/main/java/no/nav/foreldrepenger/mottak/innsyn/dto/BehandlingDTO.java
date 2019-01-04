@@ -106,4 +106,13 @@ public class BehandlingDTO {
                 .filter(s -> s.getRel().equals(SØKNAD))
                 .findFirst().orElse(null);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", tema=" + tema + ", årsak="
+                + årsak + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
+                + ", behandlingResultatType=" + behandlingResultatType + ", opprettetTidspunkt=" + opprettetTidspunkt
+                + ", endretTidspunkt=" + endretTidspunkt + ", inntekstmeldinger=" + inntekstmeldinger + ", lenker="
+                + lenker + "]";
+    }
 }
