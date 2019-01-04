@@ -11,8 +11,8 @@ public final class JAXBESV1Helper extends AbstractJaxb {
 
     public JAXBESV1Helper() {
         super(contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class), VERSJON,
-                "/dokmot/konvolutt-dokmot-v1.xsd",
-                "/dokmot/engangsstoenad-dokmot-v1.xsd");
+                "/engangsstoenad/konvolutt-dokmot-v1.xsd",
+                "/engangsstoenad/engangsstoenad-dokmot-v1.xsd");
     }
 
     @Override
