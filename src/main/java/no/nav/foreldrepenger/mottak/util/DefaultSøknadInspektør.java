@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 
 @Component
@@ -84,7 +85,7 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
     }
 
     private static Versjon versjonFra(String xml) {
-        return Versjon.fraNamespace(namespaceFra(xml));
+        return Versjon.namespaceFra(namespaceFra(xml));
     }
 
     private static String namespaceFra(String xml) {
@@ -96,7 +97,7 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
             }
             return reader.getNamespaceURI();
         } catch (XMLStreamException e) {
-            throw new IllegalStateException(e);
+            throw new UnsupportedVersionException(e);
         }
     }
 }

@@ -15,7 +15,11 @@ public abstract class VersionException extends RuntimeException {
     }
 
     public VersionException(String msg, Versjon versjon) {
-        super(msg);
+        this(msg, versjon, null);
+    }
+
+    public VersionException(String msg, Versjon versjon, Throwable cause) {
+        super(msg, cause);
         this.versjon = versjon;
     }
 

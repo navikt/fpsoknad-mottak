@@ -93,6 +93,8 @@ public class FPFordelSøknadSender implements SøknadSender {
             FPFORDEL_SEND_INITIELL.increment();
             FP_FØRSTEGANG.increment();
             break;
+        default:
+            break;
         }
     }
 

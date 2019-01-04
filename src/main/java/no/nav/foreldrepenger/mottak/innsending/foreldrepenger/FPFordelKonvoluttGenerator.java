@@ -55,7 +55,7 @@ public class FPFordelKonvoluttGenerator {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         LOG.trace("Genererer payload");
-        builder.part(METADATA, metadata(søknad, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(søknad, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId, versjon), APPLICATION_XML).header(
                 CONTENT_ID,
                 id(id));
@@ -75,7 +75,7 @@ public class FPFordelKonvoluttGenerator {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
 
-        builder.part(METADATA, metadata(endringsøknad, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(endringsøknad, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, versjon), APPLICATION_XML).header(
                 CONTENT_ID,
                 id(id));
@@ -89,10 +89,14 @@ public class FPFordelKonvoluttGenerator {
         return new HttpEntity<>(builder.build(), headers());
     }
 
+    private static String callId() {
+        return MDC.get(NAV_CALL_ID);
+    }
+
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Ettersending ettersending, Person søker) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        builder.part(METADATA, metadata(ettersending, søker.aktørId, MDC.get(NAV_CALL_ID)), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(ettersending, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
         ettersending.getVedlegg().stream()
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
@@ -93,8 +92,13 @@ public class InnsynTjeneste implements Innsyn {
     private Sak tilSak(SakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
         return Optional.ofNullable(wrapper)
-                .map(w -> new Sak(w.getSaksnummer(), w.getFagsakStatus(), w.getBehandlingTema(),
-                        w.getAktørId(), w.getAktørIdAnnenPart(), w.getAktørIdBarna(),
+                .map(w -> new Sak(
+                        w.getSaksnummer(),
+                        w.getFagsakStatus(),
+                        w.getBehandlingTema(),
+                        w.getAktørId(),
+                        w.getAktørIdAnnenPart(),
+                        w.getAktørIdBarna(),
                         hentBehandlinger(w.getBehandlingsLenker()), w.getOpprettetTidspunkt(), w.getEndretTidspunkt()))
                 .orElse(null);
     }
@@ -103,15 +107,15 @@ public class InnsynTjeneste implements Innsyn {
         LOG.trace(CONFIDENTIAL, "Mapper behandling fra {}", wrapper);
         return Optional.ofNullable(wrapper)
                 .map(w -> new Behandling.BehandlingBuilder()
-                        .opprettetTidspunkt(wrapper.getOpprettetTidspunkt())
-                        .endretTidspunkt(wrapper.getEndretTidspunkt())
-                        .behandlendeEnhet(wrapper.getBehandlendeEnhet())
-                        .behandlendeEnhetNavn(wrapper.getBehandlendeEnhetNavn())
-                        .status(wrapper.getStatus())
-                        .årsak(wrapper.getÅrsak())
-                        .tema(wrapper.getTema())
-                        .type(wrapper.getType())
-                        .søknad(hentSøknad(wrapper.getSøknadsLenke()))
+                        .opprettetTidspunkt(w.getOpprettetTidspunkt())
+                        .endretTidspunkt(w.getEndretTidspunkt())
+                        .behandlendeEnhet(w.getBehandlendeEnhet())
+                        .behandlendeEnhetNavn(w.getBehandlendeEnhetNavn())
+                        .status(w.getStatus())
+                        .årsak(w.getÅrsak())
+                        .tema(w.getTema())
+                        .type(w.getType())
+                        .søknad(hentSøknad(w.getSøknadsLenke()))
                         .build())
                 .orElse(null);
     }
@@ -123,9 +127,8 @@ public class InnsynTjeneste implements Innsyn {
             LOG.warn("Dette er en engangsstønad, mappes ikke foreløpig");
             return new InnsynsSøknad(versjon, null, wrapper.getJournalpostId());
         }
-        LOG.trace(CONFIDENTIAL, "Mapper søknad versjon {} fra {}", versjon.name(), wrapper);
-        Søknad søknad = mapper.tilSøknad(xml);
-        return new InnsynsSøknad(versjon, søknad, wrapper.getJournalpostId());
+        return new InnsynsSøknad(versjon, mapper.tilSøknad(xml), wrapper.getJournalpostId());
+
     }
 
     @Override

@@ -117,8 +117,8 @@ public class V2XMLMapper extends AbstractXMLMapper {
     }
 
     @Inject
-    public V2XMLMapper(Oppslag oppslag, SøknadInspektør analysator) {
-        super(oppslag, analysator);
+    public V2XMLMapper(Oppslag oppslag, SøknadInspektør inspektør) {
+        super(oppslag, inspektør);
     }
 
     @Override

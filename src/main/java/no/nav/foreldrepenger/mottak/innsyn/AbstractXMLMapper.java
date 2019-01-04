@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.mottak.util.VersjonsBevisst;
 public abstract class AbstractXMLMapper implements XMLMapper, VersjonsBevisst {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractXMLMapper.class);
-    protected static final String UKJENT_KODEVERKSVERDI = "-";
     protected final Oppslag oppslag;
     private final SøknadInspektør inspektør;
 
@@ -21,12 +20,14 @@ public abstract class AbstractXMLMapper implements XMLMapper, VersjonsBevisst {
     }
 
     protected SøknadType type(no.nav.vedtak.felles.xml.soeknad.v1.Soeknad søknad) {
-        return inspektør.type(søknad);
+        SøknadType type = inspektør.type(søknad);
+        LOG.info("Dette er en søknad av type {} for versjon V1", type);
+        return type;
     }
 
     protected SøknadType type(no.nav.vedtak.felles.xml.soeknad.v2.Soeknad søknad) {
         SøknadType type = inspektør.type(søknad);
-        LOG.info("Dette er en søknad av type {}", type);
+        LOG.info("Dette er en søknad av type {} for versjon V2", type);
         return type;
     }
 

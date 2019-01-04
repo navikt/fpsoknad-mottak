@@ -23,20 +23,34 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public abstract class AbstractJaxb implements VersjonsBevisst {
+
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractJaxb.class);
 
     private final JAXBContext context;
     private final Schema schema;
 
     protected static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
-    public AbstractJaxb(JAXBContext context, Schema schema) {
+    public AbstractJaxb(JAXBContext context, Versjon versjon, String... xsds) {
         this.context = context;
-        this.schema = schema;
+        this.schema = schema(versjon, xsds);
+    }
+
+    private static Schema schema(Versjon versjon, String... xsds) {
+        try {
+            return SCHEMA_FACTORY.newSchema(sourcesFra(versjon, xsds));
+        } catch (SAXException e) {
+            LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller");
+            return null;
+        }
     }
 
     protected static JAXBContext contextFra(Class<?>... classes) {
@@ -82,7 +96,6 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
 
     public <T> JAXBElement<T> unmarshalToElement(String xml, Class<T> clazz) {
         try {
-            Object u = unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
             return (JAXBElement<T>) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             throw new IllegalArgumentException(e);
@@ -104,10 +117,10 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
 
     private Marshaller marshaller() {
         try {
-            Marshaller marshaller1 = context.createMarshaller();
-            marshaller1.setProperty(JAXB_FORMATTED_OUTPUT, true);
-            marshaller1.setEventHandler(new DefaultValidationEventHandler());
-            return marshaller1;
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setEventHandler(new DefaultValidationEventHandler());
+            return marshaller;
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

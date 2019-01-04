@@ -12,8 +12,9 @@ public class SøknadDTO {
     public String getXml() {
         return unescapeHtml4(xml);
     }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [xml=" + unescapeHtml4(xml) + ", journalpostId=" + journalpostId + "]";
+        return getClass().getSimpleName() + " [xml=" + getXml() + ", journalpostId=" + journalpostId + "]";
     }
 }

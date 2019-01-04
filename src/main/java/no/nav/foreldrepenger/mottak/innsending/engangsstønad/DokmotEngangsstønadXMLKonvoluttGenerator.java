@@ -41,11 +41,10 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private static final String KANAL = "NAV_NO";
 
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
-    private final JAXBESV1Helper jaxb;
+    private static final JAXBESV1Helper JAXB = new JAXBESV1Helper();
 
-    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator, JAXBESV1Helper jaxb) {
+    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
         this.søknadGenerator = generator;
-        this.jaxb = jaxb;
     }
 
     public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
@@ -55,7 +54,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
             boolean inkluderVedlegg) {
-        return jaxb.marshal(dokmotModelFra(søknad, søker, inkluderVedlegg));
+        return JAXB.marshal(dokmotModelFra(søknad, søker, inkluderVedlegg));
     }
 
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
@@ -96,13 +95,18 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
         return new Hoveddokument()
                 .withDokumenttypeId(I000003.name())
                 .withDokumentinnholdListe(
-                        Stream.concat(Stream.of(hovedskjemaInnhold), alternativeRepresentasjonerInnhold)
+                        Stream.concat(
+                                Stream.of(hovedskjemaInnhold),
+                                alternativeRepresentasjonerInnhold)
                                 .collect(toList()));
     }
 
     private static List<no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg> dokmotVedleggListe(Søknad søknad) {
-        return Stream.concat(søknad.getPåkrevdeVedlegg().stream(), søknad.getFrivilligeVedlegg().stream())
-                .map(DokmotEngangsstønadXMLKonvoluttGenerator::dokmotVedlegg).collect(toList());
+        return Stream.concat(
+                søknad.getPåkrevdeVedlegg().stream(),
+                søknad.getFrivilligeVedlegg().stream())
+                .map(DokmotEngangsstønadXMLKonvoluttGenerator::dokmotVedlegg)
+                .collect(toList());
     }
 
     private static no.nav.melding.virksomhet.dokumentforsendelse.v1.Vedlegg dokmotVedlegg(Vedlegg vedlegg) {

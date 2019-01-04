@@ -11,6 +11,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedl
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.jboss.logging.MDC;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.mottak.http.Constants;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
@@ -73,9 +75,11 @@ public class TestDokmotSerialization {
 
     @Test
     public void testKonvoluttXML() throws Exception {
+        MDC.put(Constants.NAV_CALL_ID, "42");
         Søknad engangssøknad = engangssøknad(Versjon.V1, true, fødsel(), norskForelder(Versjon.V1),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person());
+        System.out.println(konvolutt);
         Dokumentforsendelse unmarshalled = jaxb.unmarshal(konvolutt, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
         assertTrue(hasPdfSignature(pdf.getDokument()));
@@ -106,6 +110,7 @@ public class TestDokmotSerialization {
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         Person søker = person();
         String xml = søknadXMLGenerator.tilXML(søknad, søker);
+        System.out.println(xml);
         assertEquals(Versjon.V1, INSPEKTOR.versjon(xml));
         assertTrue(INSPEKTOR.erEngangsstønad(xml));
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);

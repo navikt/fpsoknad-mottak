@@ -29,7 +29,7 @@ public enum Versjon {
         this.namespaces = namespaces;
     }
 
-    public static Versjon fraNamespace(String namespace) {
+    public static Versjon namespaceFra(String namespace) {
         return stream(values())
                 .filter(v -> v.namespaces.contains(namespace))
                 .findFirst()

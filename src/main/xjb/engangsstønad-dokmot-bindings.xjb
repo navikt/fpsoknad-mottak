@@ -8,7 +8,7 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
         version="2.0">
 
-    <jaxb:bindings schemaLocation="../xsd/engangsstønad-dokmot.xsd" node="/xsd:schema">
+    <jaxb:bindings schemaLocation="../xsd/v1/dokmot/engangsstoenad-dokmot-v1.xsd" node="/xsd:schema">
     <jaxb:bindings node="xs:complexType[@name='SoeknadsskjemaEngangsstoenad']">
 			<annox:annotate>
 				<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="soeknadsskjemaEngangsstoenad" namespace="http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"/>
