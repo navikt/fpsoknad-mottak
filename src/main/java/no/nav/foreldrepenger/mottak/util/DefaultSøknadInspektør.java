@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.util;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.UKJENT;
 
 import java.io.StringReader;
 
@@ -71,10 +72,10 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
                 }
             }
             LOG.warn("Fant ingen kjente tags i søknaden, ukjent type");
-            return SøknadType.UKJENT;
+            return UKJENT;
         } catch (Exception e) {
             LOG.warn("Noe gikk galt ved søk etter kjente tags i søknaden, ukjent type", e);
-            return SøknadType.UKJENT;
+            return UKJENT;
         }
     }
 
