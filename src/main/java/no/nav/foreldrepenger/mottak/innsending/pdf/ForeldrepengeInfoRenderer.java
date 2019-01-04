@@ -537,7 +537,9 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", utsettelse.getFom());
         addIfSet(attributter, "tom", utsettelse.getTom());
         addIfSet(attributter, "dager", String.valueOf(utsettelse.dager()));
-        attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
+        if (utsettelse.getUttaksperiodeType() != null) {
+            attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
+        }
         attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addListIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
         attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
