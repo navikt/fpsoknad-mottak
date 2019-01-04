@@ -21,6 +21,8 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 @Component
 public final class DefaultSøknadInspektør implements SøknadInspektør {
 
+    private static final String ENDRINGSSOEKNAD = "endringssoeknad";
+    private static final String FORELDREPENGER = "foreldrepenger";
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSøknadInspektør.class);
 
     @Override
@@ -29,10 +31,7 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
     }
 
     private SøknadType typeFra(String xml) {
-        if (erEngangsstønad(xml)) {
-            return ENGANGSSØKNAD;
-        }
-        return traverse(xml);
+        return erEngangsstønad(xml) ? ENGANGSSØKNAD : fpTypeFra(xml);
     }
 
     private boolean erEngangsstønad(String xml) {
@@ -56,17 +55,17 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
         }
     }
 
-    private static SøknadType traverse(String xml) {
+    private static SøknadType fpTypeFra(String xml) {
         try {
             XMLStreamReader reader = XMLInputFactory.newInstance()
                     .createXMLStreamReader(new StreamSource(new StringReader(xml)));
             while (reader.hasNext()) {
                 reader.next();
                 if (reader.getEventType() == XMLStreamReader.START_ELEMENT) {
-                    if (reader.getLocalName().equals("foreldrepenger")) {
+                    if (reader.getLocalName().equals(FORELDREPENGER)) {
                         return INITIELL;
                     }
-                    if (reader.getLocalName().equals("endringssoeknad")) {
+                    if (reader.getLocalName().equals(ENDRINGSSOEKNAD)) {
                         return ENDRING;
                     }
                 }
