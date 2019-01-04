@@ -605,7 +605,7 @@ public class V2DomainMapper implements DomainMapper {
                     .withTom(utsettelsesPeriode.getTom())
                     .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
                     .withMorsAktivitetIPerioden(morsAktivitetFra(utsettelsesPeriode.getMorsAktivitetsType()))
-                    .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType()))
+                    .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType(), true))
                     .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
                     .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
         }
@@ -661,6 +661,15 @@ public class V2DomainMapper implements DomainMapper {
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
+        return uttaksperiodeTypeFra(type, false);
+    }
+
+    private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type, boolean optional) {
+        if (optional) {
+            return Optional.ofNullable(type)
+                    .map(s -> uttaksperiodeTypeFra(s.name()))
+                    .orElse(null);
+        }
         return Optional.ofNullable(type)
                 .map(s -> uttaksperiodeTypeFra(s.name()))
                 .orElseThrow(() -> new UnexpectedInputException("Stønadskontotype må være satt"));
