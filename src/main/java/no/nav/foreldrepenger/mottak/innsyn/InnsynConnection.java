@@ -49,6 +49,7 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     public SøknadDTO hentSøknad(Lenke søknadsLenke) {
         if (søknadsLenke != null && søknadsLenke.getHref() != null) {
+            LOG.trace("Henter søknad fra {}", søknadsLenke);
             return Optional
                     .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
                     .orElse(null);

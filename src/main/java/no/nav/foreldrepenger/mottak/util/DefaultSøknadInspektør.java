@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
@@ -7,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType
 
 import java.io.StringReader;
 
+import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -62,7 +64,7 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
                     .createXMLStreamReader(new StreamSource(new StringReader(xml)));
             while (reader.hasNext()) {
                 reader.next();
-                if (reader.getEventType() == XMLStreamReader.START_ELEMENT) {
+                if (reader.getEventType() == START_ELEMENT) {
                     if (reader.getLocalName().equals(FORELDREPENGER)) {
                         return INITIELL;
                     }
@@ -73,7 +75,7 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
             }
             LOG.warn("Fant ingen kjente tags i søknaden, ukjent type");
             return UKJENT;
-        } catch (Exception e) {
+        } catch (XMLStreamException | FactoryConfigurationError e) {
             LOG.warn("Noe gikk galt ved søk etter kjente tags i søknaden, ukjent type", e);
             return UKJENT;
         }
