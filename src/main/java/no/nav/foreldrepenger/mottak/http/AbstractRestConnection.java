@@ -48,7 +48,18 @@ public abstract class AbstractRestConnection {
     }
 
     protected <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
-        return getForEntity(uri, responseType, doThrow).getBody();
+        try {
+            T respons = restOperations.getForObject(uri, responseType);
+            if (respons != null) {
+                LOG.trace(CONFIDENTIAL, "Respons: {}", respons);
+            }
+            return respons;
+        } catch (HttpClientErrorException e) {
+            if (NOT_FOUND.equals(e.getStatusCode()) && !doThrow) {
+                return null;
+            }
+            throw e;
+        }
     }
 
     protected <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
