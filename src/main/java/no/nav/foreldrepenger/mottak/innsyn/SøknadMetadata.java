@@ -16,7 +16,7 @@ public class SøknadMetadata {
     private final String journalpostId;
 
     @JsonCreator
-    public SøknadMetadata(@JsonProperty("resultat") SøknadEgenskaper egenskaper,
+    public SøknadMetadata(@JsonProperty("egenskaper") SøknadEgenskaper egenskaper,
             @JsonProperty("journalpostId") String journalpostId) {
         this.egenskaper = egenskaper;
         this.journalpostId = journalpostId;
