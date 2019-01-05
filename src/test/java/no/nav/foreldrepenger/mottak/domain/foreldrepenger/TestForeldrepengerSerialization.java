@@ -154,6 +154,11 @@ public class TestForeldrepengerSerialization {
     }
 
     @Test
+    public void testStønadskontoType() {
+        test(StønadskontoType.IKKE_SATT, true);
+    }
+
+    @Test
     public void testVedleggMetadata() {
         test(new VedleggMetaData("42", InnsendingsType.LASTET_OPP, DokumentType.I000002));
     }
