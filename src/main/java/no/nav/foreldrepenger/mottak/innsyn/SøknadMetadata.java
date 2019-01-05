@@ -65,6 +65,10 @@ public class SøknadMetadata {
         return egenskaper.getType();
     }
 
+    public SøknadEgenskaper getEgenskaper() {
+        return egenskaper;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [egenskaper=" + egenskaper + ", journalpostId=" + journalpostId + "]";
