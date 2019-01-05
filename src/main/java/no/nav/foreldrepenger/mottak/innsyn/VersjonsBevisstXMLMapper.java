@@ -49,7 +49,7 @@ public class VersjonsBevisstXMLMapper implements XMLMapper {
     }
 
     private XMLMapper mapper(String xml) {
-        Versjon versjon = inspektør.inspiser(xml).versjon();
+        Versjon versjon = inspektør.inspiser(xml).getVersjon();
         return mappers.stream()
                 .filter(s -> s.versjon().equals(versjon))
                 .findFirst()

@@ -67,7 +67,7 @@ import no.nav.foreldrepenger.mottak.innsyn.V2XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.VersjonsBevisstXMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
-import no.nav.foreldrepenger.mottak.util.SøknadInspeksjonResultat;
+import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -162,9 +162,9 @@ public class TestFPFordelSerialization {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
         System.out.println(xml);
-        SøknadInspeksjonResultat inspiser = INSPEKTØR.inspiser(xml);
-        assertEquals(inspiser.versjon(), v);
-        assertEquals(inspiser.type(), SøknadType.INITIELL);
+        SøknadEgenskaper inspiser = INSPEKTØR.inspiser(xml);
+        assertEquals(inspiser.getVersjon(), v);
+        assertEquals(inspiser.getType(), SøknadType.INITIELL);
 
         Søknad respons = v12XMLMapper.tilSøknad(xml);
         assertEquals(original, respons);
@@ -173,9 +173,9 @@ public class TestFPFordelSerialization {
     public void testEndringssøknadRoundtrip(Versjon v) {
         Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
-        SøknadInspeksjonResultat inspiser = INSPEKTØR.inspiser(xml);
-        assertEquals(inspiser.versjon(), v);
-        assertEquals(inspiser.type(), SøknadType.ENDRING);
+        SøknadEgenskaper inspiser = INSPEKTØR.inspiser(xml);
+        assertEquals(inspiser.getVersjon(), v);
+        assertEquals(inspiser.getType(), SøknadType.ENDRING);
         System.out.println(xml);
         Endringssøknad respons = Endringssøknad.class.cast(v12XMLMapper.tilSøknad(xml));
         Fordeling priginalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class

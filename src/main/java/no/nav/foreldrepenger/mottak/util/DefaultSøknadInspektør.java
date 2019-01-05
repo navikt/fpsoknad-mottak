@@ -29,8 +29,8 @@ public final class DefaultSøknadInspektør implements SøknadInspektør {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSøknadInspektør.class);
 
     @Override
-    public SøknadInspeksjonResultat inspiser(String xml) {
-        return new SøknadInspeksjonResultat(typeFra(xml), versjonFra(xml));
+    public SøknadEgenskaper inspiser(String xml) {
+        return new SøknadEgenskaper(typeFra(xml), versjonFra(xml));
     }
 
     private SøknadType typeFra(String xml) {

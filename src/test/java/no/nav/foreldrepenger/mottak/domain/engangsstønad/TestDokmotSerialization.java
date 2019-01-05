@@ -38,7 +38,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
-import no.nav.foreldrepenger.mottak.util.SøknadInspeksjonResultat;
+import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
@@ -113,9 +113,9 @@ public class TestDokmotSerialization {
         Person søker = person();
         String xml = søknadXMLGenerator.tilXML(søknad, søker);
         System.out.println(xml);
-        SøknadInspeksjonResultat inspiser = INSPEKTOR.inspiser(xml);
-        assertEquals(Versjon.V1, inspiser.versjon());
-        assertEquals(SøknadType.ENGANGSSØKNAD, inspiser.type());
+        SøknadEgenskaper inspiser = INSPEKTOR.inspiser(xml);
+        assertEquals(Versjon.V1, inspiser.getVersjon());
+        assertEquals(SøknadType.ENGANGSSØKNAD, inspiser.getType());
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         SoeknadsskjemaEngangsstoenad unmarshalled = jaxb.unmarshal(xml,
                 SoeknadsskjemaEngangsstoenad.class);

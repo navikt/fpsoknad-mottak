@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.util.SøknadInspeksjonResultat;
+import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 
 @Service
@@ -125,8 +125,8 @@ public class InnsynTjeneste implements Innsyn {
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         String xml = wrapper.getXml();
-        SøknadInspeksjonResultat resultat = inspektør.inspiser(xml);
-        if (resultat.type().equals(ENGANGSSØKNAD)) {
+        SøknadEgenskaper resultat = inspektør.inspiser(xml);
+        if (resultat.getType().equals(ENGANGSSØKNAD)) {
             LOG.warn("Dette er en engangsstønad, mappes ikke foreløpig");
             return new InnsynsSøknad(metadata(resultat, wrapper.getJournalpostId()), null);
         }
@@ -135,7 +135,7 @@ public class InnsynTjeneste implements Innsyn {
 
     }
 
-    private static SøknadMetadata metadata(SøknadInspeksjonResultat resultat, String journalpostId) {
+    private static SøknadMetadata metadata(SøknadEgenskaper resultat, String journalpostId) {
         return new SøknadMetadata(resultat, journalpostId);
     }
 

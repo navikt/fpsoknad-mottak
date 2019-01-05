@@ -50,6 +50,9 @@ import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
+import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -156,6 +159,16 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testStønadskontoType() {
         test(StønadskontoType.IKKE_SATT, true);
+    }
+
+    @Test
+    public void testSøknadMetadata() {
+        test(new SøknadMetadata(new SøknadEgenskaper(SøknadType.INITIELL, Versjon.V1), "42"), true);
+    }
+
+    @Test
+    public void testSøknadInspeksjon() {
+        test(new SøknadEgenskaper(SøknadType.INITIELL, Versjon.V1), true);
     }
 
     @Test
