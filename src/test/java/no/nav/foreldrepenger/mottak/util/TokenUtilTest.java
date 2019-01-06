@@ -22,7 +22,7 @@ import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class TokenHelperTest {
+public class TokenUtilTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("42");
     @Mock
@@ -32,13 +32,13 @@ public class TokenHelperTest {
     @Mock
     private OIDCClaims claims;
 
-    private TokenHelper tokenHelper;
+    private TokenUtil tokenHelper;
 
     @Before
     public void before() {
         when(holder.getOIDCValidationContext()).thenReturn(context);
         when(context.getClaims(eq(ISSUER))).thenReturn(claims);
-        tokenHelper = new TokenHelper(holder);
+        tokenHelper = new TokenUtil(holder);
     }
 
     @Test

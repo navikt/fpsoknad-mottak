@@ -5,9 +5,9 @@ import java.net.URI;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public final class URIUtils {
+public final class URIUtil {
 
-    private URIUtils() {
+    private URIUtil() {
 
     }
 

@@ -20,11 +20,11 @@ import no.nav.security.oidc.context.TokenContext;
 import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 
 @Component
-public class TokenHelper {
+public class TokenUtil {
 
     private final OIDCRequestContextHolder ctxHolder;
 
-    public TokenHelper(OIDCRequestContextHolder ctxHolder) {
+    public TokenUtil(OIDCRequestContextHolder ctxHolder) {
         this.ctxHolder = ctxHolder;
     }
 

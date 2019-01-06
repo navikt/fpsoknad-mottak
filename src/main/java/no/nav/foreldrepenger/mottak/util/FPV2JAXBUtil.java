@@ -2,11 +2,11 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
-public final class JAXBFPV2Helper extends AbstractJaxb {
+public final class FPV2JAXBUtil extends AbstractJAXBUtil {
 
     private static final Versjon VERSJON = V2;
 
-    public JAXBFPV2Helper() {
+    public FPV2JAXBUtil() {
         super(contextFra(
                 no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad.class,
                 no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Foreldrepenger.class,

@@ -69,7 +69,7 @@ import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -99,7 +99,7 @@ public class FPFordelTest {
     @Mock
     private FPInfoSaksPoller poller;
     @Mock
-    private TokenHelper tokenHelper;
+    private TokenUtil tokenHelper;
     private FPFordelConfig cfg;
 
     private ResponseEntity<FPFordelKvittering> pollReceipt202, pollReceipt200;

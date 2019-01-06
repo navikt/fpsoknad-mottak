@@ -39,7 +39,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
-import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
@@ -49,7 +49,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class, JAXBESV1Helper.class,
+@ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class, ESV1JAXBUtil.class,
         DokmotEngangsstønadXMLGenerator.class,
         DokmotEngangsstønadXMLKonvoluttGenerator.class,
         CallIdGenerator.class,
@@ -61,7 +61,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {
     @Autowired
-    JAXBESV1Helper jaxb;
+    ESV1JAXBUtil jaxb;
     @Autowired
     ObjectMapper mapper;
     @Autowired

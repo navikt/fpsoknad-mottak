@@ -6,11 +6,11 @@ import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
-public final class JAXBFPV1Helper extends AbstractJaxb {
+public final class FPV1JAXBUtil extends AbstractJAXBUtil {
 
     private static final Versjon VERSJON = V1;
 
-    public JAXBFPV1Helper() {
+    public FPV1JAXBUtil() {
         super(contextFra(
                 Endringssoeknad.class,
                 Foreldrepenger.class,

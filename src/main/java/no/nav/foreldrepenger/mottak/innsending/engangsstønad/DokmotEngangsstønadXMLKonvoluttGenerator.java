@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
@@ -41,7 +41,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     private static final String KANAL = "NAV_NO";
 
     private final DokmotEngangsstønadXMLGenerator søknadGenerator;
-    private static final JAXBESV1Helper JAXB = new JAXBESV1Helper();
+    private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
     public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
         this.søknadGenerator = generator;

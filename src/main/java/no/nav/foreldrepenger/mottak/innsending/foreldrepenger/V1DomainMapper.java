@@ -63,7 +63,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.http.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.JAXBFPV1Helper;
+import no.nav.foreldrepenger.mottak.util.FPV1JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
@@ -114,7 +114,7 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 @Component
 public class V1DomainMapper implements DomainMapper {
 
-    private static final JAXBFPV1Helper JAXB = new JAXBFPV1Helper();
+    private static final FPV1JAXBUtil JAXB = new FPV1JAXBUtil();
     private static final Logger LOG = LoggerFactory.getLogger(V1DomainMapper.class);
 
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory FP_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.ObjectFactory();

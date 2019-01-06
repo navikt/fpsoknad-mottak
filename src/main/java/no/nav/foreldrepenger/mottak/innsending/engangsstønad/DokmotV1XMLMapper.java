@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.innsyn.AbstractXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge;
 @Component
 public class DokmotV1XMLMapper extends AbstractXMLMapper {
 
-    private static final JAXBESV1Helper JAXB = new JAXBESV1Helper();
+    private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotV1XMLMapper.class);
 

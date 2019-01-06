@@ -39,7 +39,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
-import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
@@ -58,7 +58,7 @@ public class TestFPFordelRoundtripSerialization {
     @Autowired
     ObjectMapper mapper;
 
-    private static final JAXBESV1Helper JAXB = new JAXBESV1Helper();
+    private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
     @Autowired
     CallIdGenerator refGenerator;

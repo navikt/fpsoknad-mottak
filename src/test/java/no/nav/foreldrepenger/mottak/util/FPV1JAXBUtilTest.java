@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class JAXBFPV1HelperTest {
+public class FPV1JAXBUtilTest {
 
     private static final AktorId SØKER = new AktorId("42");
 

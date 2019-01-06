@@ -10,16 +10,16 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagTjeneste implements Oppslag {
 
     private final OppslagConnection connection;
-    private final TokenHelper tokenHelper;
+    private final TokenUtil tokenHelper;
 
-    public OppslagTjeneste(OppslagConnection connection, TokenHelper tokenHelper) {
+    public OppslagTjeneste(OppslagConnection connection, TokenUtil tokenHelper) {
         this.connection = connection;
         this.tokenHelper = tokenHelper;
     }

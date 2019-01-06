@@ -28,7 +28,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFException;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 
@@ -36,7 +36,7 @@ import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedExcept
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Inject
-    private TokenHelper tokenHelper;
+    private TokenUtil tokenHelper;
 
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
 

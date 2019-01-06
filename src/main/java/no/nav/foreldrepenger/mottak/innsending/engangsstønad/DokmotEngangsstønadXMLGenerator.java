@@ -30,7 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
-import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
+import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.KanIkkeOppgiFar;
@@ -52,7 +52,7 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 public class DokmotEngangsstønadXMLGenerator {
 
     private final EngangsstønadPDFGenerator pdfGenerator;
-    private static final JAXBESV1Helper JAXB = new JAXBESV1Helper();
+    private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
     public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator) {
         this.pdfGenerator = pdfGenerator;

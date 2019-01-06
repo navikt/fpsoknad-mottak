@@ -30,16 +30,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public abstract class AbstractJaxb {
+public abstract class AbstractJAXBUtil {
 
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractJaxb.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractJAXBUtil.class);
 
     private final JAXBContext context;
     private final Schema schema;
 
     protected static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
-    public AbstractJaxb(JAXBContext context, Versjon versjon, String... xsds) {
+    public AbstractJAXBUtil(JAXBContext context, Versjon versjon, String... xsds) {
         this.context = context;
         this.schema = schema(versjon, xsds);
     }
@@ -138,14 +138,14 @@ public abstract class AbstractJaxb {
     private static Source[] sourcesFra(Versjon version, String... schemas) {
         return Arrays.stream(schemas)
                 .map(s -> version.name().toLowerCase() + s)
-                .map(AbstractJaxb::sourceFra)
+                .map(AbstractJAXBUtil::sourceFra)
                 .toArray(Source[]::new);
 
     }
 
     private static Source sourceFra(String re) {
         try {
-            URL url = AbstractJaxb.class.getClassLoader().getResource(re);
+            URL url = AbstractJAXBUtil.class.getClassLoader().getResource(re);
             return new StreamSource(inputStreamFra(new UrlResource(url)), url.toExternalForm());
         } catch (Exception e) {
             throw new IllegalArgumentException(e);

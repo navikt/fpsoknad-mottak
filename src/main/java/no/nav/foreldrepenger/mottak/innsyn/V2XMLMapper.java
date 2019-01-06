@@ -65,7 +65,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.JAXBFPV2Helper;
+import no.nav.foreldrepenger.mottak.util.FPV2JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelder;
@@ -112,7 +112,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(V2XMLMapper.class);
 
-    private static final JAXBFPV2Helper JAXB = new JAXBFPV2Helper();
+    private static final FPV2JAXBUtil JAXB = new FPV2JAXBUtil();
 
     public V2XMLMapper(Oppslag oppslag) {
         this(oppslag, new XMLStreamSøknadInspektør());
