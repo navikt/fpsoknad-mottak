@@ -2,14 +2,13 @@ package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.http.Constants.CALL_ID;
-import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DOKMOT;
+import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 
 import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +41,7 @@ public class DokmotJMSSender implements SøknadSender {
             connection.send(session -> {
                 TextMessage msg = session.createTextMessage(generator.tilXML(søknad, søker));
                 LOG.info("Sender SøknadsXML til DOKMOT");
-                msg.setStringProperty(CALL_ID, MDC.get(NAV_CALL_ID));
+                msg.setStringProperty(CALL_ID, callId());
                 return msg;
             });
             return new Kvittering(LeveranseStatus.PÅ_VENT);
