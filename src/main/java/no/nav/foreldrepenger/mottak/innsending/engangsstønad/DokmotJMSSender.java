@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 
 import javax.jms.TextMessage;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,12 +53,12 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Override
     public Kvittering send(Endringssøknad endringsøknad, Person søker, Versjon versjon) {
-        throw new IllegalArgumentException("Sending av endringssøknad via DOKMOT er ikke støttet");
+        throw new NotImplementedException("Sending av endringssøknad via DOKMOT er ikke støttet");
     }
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker, Versjon versjon) {
-        throw new IllegalArgumentException("Ettersending for engangsstønad via DOKMOT er ikke støttet");
+        throw new NotImplementedException("Ettersending for engangsstønad via DOKMOT er ikke støttet");
     }
 
     @Override
