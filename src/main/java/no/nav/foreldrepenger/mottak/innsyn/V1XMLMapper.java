@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -59,8 +60,9 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBFPV1Helper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -111,7 +113,7 @@ public class V1XMLMapper extends AbstractXMLMapper {
     private static final Logger LOG = LoggerFactory.getLogger(V1XMLMapper.class);
 
     public V1XMLMapper(Oppslag oppslag) {
-        this(oppslag, new DefaultSøknadInspektør());
+        this(oppslag, new XMLStreamSøknadInspektør());
     }
 
     @Inject
@@ -122,6 +124,11 @@ public class V1XMLMapper extends AbstractXMLMapper {
     @Override
     public Versjon versjon() {
         return V1;
+    }
+
+    @Override
+    public List<SøknadType> typer() {
+        return Lists.newArrayList(SøknadType.ENDRING, SøknadType.INITIELL);
     }
 
     @Override

@@ -22,9 +22,4 @@ public final class JAXBFPV1Helper extends AbstractJaxb {
                 "/endringssoeknad-v1.xsd",
                 "/soeknad-v1.xsd");
     }
-
-    @Override
-    public Versjon versjon() {
-        return VERSJON;
-    }
 }

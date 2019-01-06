@@ -40,13 +40,13 @@ public class FPFordelKonvoluttGenerator {
     static final String METADATA = "metadata";
     private static final String CONTENT_ID = "Content-ID";
     private final FPFordelMetdataGenerator metadataGenerator;
-    private final VersjonsBevisstDomainMapper søknadGenerator;
+    private final VersjonsBevisstDomainMapper domainMapper;
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            VersjonsBevisstDomainMapper søknadGenerator, ForeldrepengerPDFGenerator pdfGenerator) {
+            VersjonsBevisstDomainMapper domainMapper, ForeldrepengerPDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
-        this.søknadGenerator = søknadGenerator;
+        this.domainMapper = domainMapper;
         this.pdfGenerator = pdfGenerator;
     }
 
@@ -153,21 +153,21 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private String xmlHovedDokument(Søknad søknad, AktorId søker, Versjon versjon) {
-        String hovedDokument = søknadGenerator.tilXML(søknad, søker, versjon);
+        String hovedDokument = domainMapper.tilXML(søknad, søker, versjon);
         LOG.debug(CONFIDENTIAL, "Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }
 
     private String xmlHovedDokument(Endringssøknad endringssøknad, AktorId søker, Versjon versjon) {
-        String hovedDokument = søknadGenerator.tilXML(endringssøknad, søker, versjon);
+        String hovedDokument = domainMapper.tilXML(endringssøknad, søker, versjon);
         LOG.debug(CONFIDENTIAL, "Hoveddokument endringssøknad er {}", hovedDokument);
         return hovedDokument;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [metadataGenerator=" + metadataGenerator + ", søknadGenerator="
-                + søknadGenerator + ", pdfGenerator=" + pdfGenerator + "]";
+        return getClass().getSimpleName() + " [metadataGenerator=" + metadataGenerator + ", domainMapper="
+                + domainMapper + ", pdfGenerator=" + pdfGenerator + "]";
     }
 
     private static final class VedleggHeaderConsumer implements Consumer<HttpHeaders> {

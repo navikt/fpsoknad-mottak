@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Versjon.ALL;
 
 import java.util.List;
@@ -16,22 +17,30 @@ import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionExcepti
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public class DefaultVersjonsBevisstDomainMapper implements VersjonsBevisstDomainMapper {
+public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
 
     private final List<DomainMapper> mappers;
 
-    public DefaultVersjonsBevisstDomainMapper(DomainMapper... mappers) {
+    public DelegerendeDomainMapper(DomainMapper... mappers) {
         this(asList(mappers));
     }
 
     @Inject
-    public DefaultVersjonsBevisstDomainMapper(List<DomainMapper> mappers) {
+    public DelegerendeDomainMapper(List<DomainMapper> mappers) {
         this.mappers = mappers;
     }
 
     @Override
     public Versjon versjon() {
         return ALL;
+    }
+
+    @Override
+    public List<SøknadType> typer() {
+        return mappers.stream()
+                .map(m -> m.typer())
+                .flatMap(s -> s.stream())
+                .collect(toList());
     }
 
     @Override

@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public abstract class AbstractJaxb implements VersjonsBevisst {
+public abstract class AbstractJaxb {
 
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractJaxb.class);
 
@@ -44,19 +44,11 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
         this.schema = schema(versjon, xsds);
     }
 
-    private static Schema schema(Versjon versjon, String... xsds) {
-        try {
-            return SCHEMA_FACTORY.newSchema(sourcesFra(versjon, xsds));
-        } catch (SAXException e) {
-            LOG.warn("Noe gikk galt med konfigurasjon av validering, bruker ikke-validerende marshaller");
-            return null;
-        }
-    }
-
     protected static JAXBContext contextFra(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
         } catch (JAXBException e) {
+            LOG.warn("Noe gikk galt med konfigurasjon av kontekst", e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -67,7 +59,7 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
             marshaller().marshal(model, res);
             return ((Document) res.getNode()).getDocumentElement();
         } catch (JAXBException e) {
-            e.printStackTrace();
+            LOG.warn("Noe gikk galt ved marshalling til element", e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -78,6 +70,7 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
             marshaller().marshal(model, sw);
             return sw.toString();
         } catch (JAXBException e) {
+            LOG.warn("Noe gikk galt ved marshalling", e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -90,6 +83,7 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
         try {
             return (T) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
+            LOG.warn("Noe gikk galt ved unmarshalling til klasse {}", clazz, e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -98,7 +92,17 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
         try {
             return (JAXBElement<T>) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
+            LOG.warn("Noe gikk galt ved unmarshalling til klasse {}", clazz, e);
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static Schema schema(Versjon versjon, String... xsds) {
+        try {
+            return SCHEMA_FACTORY.newSchema(sourcesFra(versjon, xsds));
+        } catch (SAXException e) {
+            LOG.warn("Noe gikk galt med konfigurasjon av skjema for validering, bruker ikke-validerende marshaller", e);
+            return null;
         }
     }
 
@@ -111,6 +115,7 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
             }
             return unmarshaller;
         } catch (JAXBException e) {
+            LOG.warn("Noe gikk galt ved konstruksjon av unmarshaller", e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -120,13 +125,17 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
             marshaller.setEventHandler(new DefaultValidationEventHandler());
+            if (schema != null) {
+                // marshaller.setSchema(schema);
+            }
             return marshaller;
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            LOG.warn("Noe gikk galt ved konstruksjon av marshaller", e);
+            throw new IllegalArgumentException(e);
         }
     }
 
-    protected static Source[] sourcesFra(Versjon version, String... schemas) {
+    private static Source[] sourcesFra(Versjon version, String... schemas) {
         return Arrays.stream(schemas)
                 .map(s -> version.name().toLowerCase() + s)
                 .map(AbstractJaxb::sourceFra)
@@ -134,24 +143,29 @@ public abstract class AbstractJaxb implements VersjonsBevisst {
 
     }
 
-    protected static Source sourceFra(String re) {
+    private static Source sourceFra(String re) {
         try {
             URL url = AbstractJaxb.class.getClassLoader().getResource(re);
             return new StreamSource(inputStreamFra(new UrlResource(url)), url.toExternalForm());
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
-    protected static InputStream inputStreamFra(UrlResource res) {
+    private static InputStream inputStreamFra(UrlResource res) {
         try {
             if (!res.exists()) {
-                throw new IllegalStateException("Ressursen  " + res + " finnes ikke");
+                throw new IllegalArgumentException("Ressursen  " + res + " finnes ikke");
             }
             return res.getInputStream();
         } catch (IOException e) {
-            throw new IllegalStateException("Ingen input stream for " + res, e);
+            throw new IllegalArgumentException("Ingen input stream for " + res, e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [context=" + context + ", schema=" + schema + "]";
     }
 
 }

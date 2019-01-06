@@ -14,10 +14,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DefaultVersjonsBevisstDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.V1XMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.VersjonsBevisstXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
@@ -30,15 +30,15 @@ public class JAXBFPV1HelperTest {
 
     @Mock
     private Oppslag oppslag;
-    private DefaultVersjonsBevisstDomainMapper domainMapper;
+    private DelegerendeDomainMapper domainMapper;
     private XMLMapper xmlMapper;
 
     @Before
     public void before() {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
-        domainMapper = new DefaultVersjonsBevisstDomainMapper(new V1DomainMapper(oppslag));
-        xmlMapper = new VersjonsBevisstXMLMapper(new V1XMLMapper(oppslag));
+        domainMapper = new DelegerendeDomainMapper(new V1DomainMapper(oppslag));
+        xmlMapper = new DelegerendeXMLMapper(new V1XMLMapper(oppslag));
     }
 
     @Test

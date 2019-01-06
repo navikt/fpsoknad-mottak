@@ -50,8 +50,8 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     public SøknadDTO hentSøknad(Lenke søknadsLenke) {
         if (søknadsLenke != null && søknadsLenke.getHref() != null) {
             LOG.trace("Henter søknad fra {}", søknadsLenke);
-            return Optional
-                    .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
+            return Optional.ofNullable(
+                    getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
                     .orElse(null);
         }
         return null;
@@ -59,16 +59,17 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     public List<SakDTO> hentSaker(String aktørId) {
         LOG.trace("Henter saker for {}", aktørId);
-        return Optional.ofNullable(getForObject(uri(config.getUri(), SAK,
-                queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
+        return Optional.ofNullable(
+                getForObject(uri(config.getUri(), SAK, queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
 
     public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan for sak {}", saksnummer);
-        return Optional.ofNullable(getForObject(uri(config.getUri(), UTTAKSPLAN,
-                queryParams(SAKSNUMMER, saksnummer)), UttaksPeriode[].class))
+        return Optional.ofNullable(
+                getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)),
+                        UttaksPeriode[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }

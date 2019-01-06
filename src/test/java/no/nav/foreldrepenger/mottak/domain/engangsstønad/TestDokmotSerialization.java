@@ -36,7 +36,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
-import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBESV1Helper;
 import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
@@ -69,7 +69,7 @@ public class TestDokmotSerialization {
     @Autowired
     DokmotEngangsstønadXMLKonvoluttGenerator søknadXMLKonvoluttGenerator;
 
-    private static final SøknadInspektør INSPEKTOR = new DefaultSøknadInspektør();
+    private static final SøknadInspektør INSPEKTOR = new XMLStreamSøknadInspektør();
 
     @Test
     public void testSøknadUtlandXML() throws Exception {

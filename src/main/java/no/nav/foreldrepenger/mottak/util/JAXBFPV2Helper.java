@@ -19,8 +19,4 @@ public final class JAXBFPV2Helper extends AbstractJaxb {
                 "/soeknad-v2.xsd");
     }
 
-    @Override
-    public Versjon versjon() {
-        return VERSJON;
-    }
 }

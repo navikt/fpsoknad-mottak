@@ -23,11 +23,11 @@ import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionExcepti
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 
 @Component
-public final class DefaultSøknadInspektør implements SøknadInspektør {
+public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultSøknadInspektør.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XMLStreamSøknadInspektør.class);
 
     @Override
     public SøknadEgenskaper inspiser(String xml) {

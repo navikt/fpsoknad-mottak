@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -60,8 +61,9 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.JAXBFPV2Helper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -113,7 +115,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
     private static final JAXBFPV2Helper JAXB = new JAXBFPV2Helper();
 
     public V2XMLMapper(Oppslag oppslag) {
-        this(oppslag, new DefaultSøknadInspektør());
+        this(oppslag, new XMLStreamSøknadInspektør());
     }
 
     @Inject
@@ -124,6 +126,11 @@ public class V2XMLMapper extends AbstractXMLMapper {
     @Override
     public Versjon versjon() {
         return V2;
+    }
+
+    @Override
+    public List<SøknadType> typer() {
+        return Lists.newArrayList(SøknadType.ENDRING, SøknadType.INITIELL);
     }
 
     @Override

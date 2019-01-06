@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -20,7 +19,6 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 
 @Service
@@ -125,18 +123,9 @@ public class InnsynTjeneste implements Innsyn {
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         String xml = wrapper.getXml();
-        SøknadEgenskaper resultat = inspektør.inspiser(xml);
-        if (resultat.getType().equals(ENGANGSSØKNAD)) {
-            LOG.warn("Dette er en engangsstønad, mappes ikke foreløpig");
-            return new InnsynsSøknad(metadata(resultat, wrapper.getJournalpostId()), null);
-        }
-        return new InnsynsSøknad(metadata(resultat, wrapper.getJournalpostId()),
+        return new InnsynsSøknad(new SøknadMetadata(inspektør.inspiser(xml), wrapper.getJournalpostId()),
                 mapper.tilSøknad(xml));
 
-    }
-
-    private static SøknadMetadata metadata(SøknadEgenskaper resultat, String journalpostId) {
-        return new SøknadMetadata(resultat, journalpostId);
     }
 
     @Override

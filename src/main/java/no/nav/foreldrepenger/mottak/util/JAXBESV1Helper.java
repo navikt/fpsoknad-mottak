@@ -14,9 +14,4 @@ public final class JAXBESV1Helper extends AbstractJaxb {
                 "/engangsstoenad/konvolutt-dokmot-v1.xsd",
                 "/engangsstoenad/engangsstoenad-dokmot-v1.xsd");
     }
-
-    @Override
-    public Versjon versjon() {
-        return VERSJON;
-    }
 }

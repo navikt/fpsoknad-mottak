@@ -62,11 +62,11 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.V1XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.V2XMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.VersjonsBevisstXMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -78,7 +78,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
         ForeldrepengerPDFGenerator.class, TestConfig.class })
 public class TestFPFordelSerialization {
 
-    private static final SøknadInspektør INSPEKTØR = new DefaultSøknadInspektør();
+    private static final SøknadInspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
     @Mock
     private Oppslag oppslag;
@@ -92,7 +92,7 @@ public class TestFPFordelSerialization {
     @Inject
     ObjectMapper objectMapper;
 
-    private VersjonsBevisstXMLMapper v12XMLMapper;
+    private DelegerendeXMLMapper v12XMLMapper;
     private VersjonsBevisstDomainMapper v12DomainMapper;
 
     private static final ValgfrittVedlegg VEDLEGG1 = opplastetVedlegg(ID142, I500002);
@@ -104,10 +104,10 @@ public class TestFPFordelSerialization {
 
     @Before
     public void before() {
-        v12XMLMapper = new VersjonsBevisstXMLMapper(
+        v12XMLMapper = new DelegerendeXMLMapper(
                 new V1XMLMapper(oppslag),
                 new V2XMLMapper(oppslag));
-        v12DomainMapper = new DefaultVersjonsBevisstDomainMapper(
+        v12DomainMapper = new DelegerendeDomainMapper(
                 new V2DomainMapper(oppslag),
                 new V1DomainMapper(oppslag));
         konvoluttGenerator = konvoluttGenerator();
@@ -161,11 +161,9 @@ public class TestFPFordelSerialization {
     private void testSøknadRoundtrip(Versjon v) {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
-        System.out.println(xml);
         SøknadEgenskaper inspiser = INSPEKTØR.inspiser(xml);
         assertEquals(inspiser.getVersjon(), v);
         assertEquals(inspiser.getType(), SøknadType.INITIELL);
-
         Søknad respons = v12XMLMapper.tilSøknad(xml);
         assertEquals(original, respons);
     }
@@ -176,13 +174,12 @@ public class TestFPFordelSerialization {
         SøknadEgenskaper inspiser = INSPEKTØR.inspiser(xml);
         assertEquals(inspiser.getVersjon(), v);
         assertEquals(inspiser.getType(), SøknadType.ENDRING);
-        System.out.println(xml);
         Endringssøknad respons = Endringssøknad.class.cast(v12XMLMapper.tilSøknad(xml));
-        Fordeling priginalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        Fordeling originalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(original.getYtelse()).getFordeling();
         Fordeling responsFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(respons.getYtelse()).getFordeling();
-        assertEquals(priginalFordeling, responsFordeling);
+        assertEquals(originalFordeling, responsFordeling);
         assertEquals(original.getSaksnr(), respons.getSaksnr());
     }
 

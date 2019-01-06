@@ -48,7 +48,7 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DefaultVersjonsBevisstDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
@@ -134,7 +134,7 @@ public class FPFordelTest {
         ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
         ForeldrepengerPDFGenerator pdfGenerator = new ForeldrepengerPDFGenerator(oppslag, jalla);
 
-        VersjonsBevisstDomainMapper søknadGenerator = new DefaultVersjonsBevisstDomainMapper(
+        VersjonsBevisstDomainMapper søknadGenerator = new DelegerendeDomainMapper(
                 new V1DomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(new ObjectMapper()),

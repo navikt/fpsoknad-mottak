@@ -135,6 +135,11 @@ public class V1DomainMapper implements DomainMapper {
     }
 
     @Override
+    public List<SøknadType> typer() {
+        return Lists.newArrayList(SøknadType.ENDRING, SøknadType.INITIELL);
+    }
+
+    @Override
     public String tilXML(Søknad søknad, AktorId søker) {
         return JAXB.marshal(SØKNAD_FACTORY_V1.createSoeknad(tilModell(søknad, søker)));
     }

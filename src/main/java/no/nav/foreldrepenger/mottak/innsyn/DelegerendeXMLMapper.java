@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
 import static no.nav.foreldrepenger.mottak.util.Versjon.ALL;
 
@@ -13,27 +14,29 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
-import no.nav.foreldrepenger.mottak.util.DefaultSøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.util.XMLStreamSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 @Qualifier(VERSJONSBEVISST)
-public class VersjonsBevisstXMLMapper implements XMLMapper {
+public class DelegerendeXMLMapper implements XMLMapper {
 
     private final List<XMLMapper> mappers;
     private final SøknadInspektør inspektør;
 
-    public VersjonsBevisstXMLMapper(XMLMapper... mappers) {
-        this(new DefaultSøknadInspektør(), mappers);
+    public DelegerendeXMLMapper(XMLMapper... mappers) {
+        this(new XMLStreamSøknadInspektør(), mappers);
     }
 
-    public VersjonsBevisstXMLMapper(SøknadInspektør analysator, XMLMapper... mappers) {
+    public DelegerendeXMLMapper(SøknadInspektør analysator, XMLMapper... mappers) {
         this(analysator, asList(mappers));
     }
 
     @Inject
-    public VersjonsBevisstXMLMapper(SøknadInspektør inspektør, List<XMLMapper> mappers) {
+    public DelegerendeXMLMapper(SøknadInspektør inspektør, List<XMLMapper> mappers) {
         this.mappers = mappers;
         this.inspektør = inspektør;
     }
@@ -48,12 +51,20 @@ public class VersjonsBevisstXMLMapper implements XMLMapper {
         return ALL;
     }
 
-    private XMLMapper mapper(String xml) {
-        Versjon versjon = inspektør.inspiser(xml).getVersjon();
+    @Override
+    public List<SøknadType> typer() {
         return mappers.stream()
-                .filter(s -> s.versjon().equals(versjon))
+                .map(m -> m.typer())
+                .flatMap(s -> s.stream())
+                .collect(toList());
+    }
+
+    private XMLMapper mapper(String xml) {
+        SøknadEgenskaper egenskaper = inspektør.inspiser(xml);
+        return mappers.stream()
+                .filter(mapper -> mapper.kanMappe(egenskaper))
                 .findFirst()
-                .orElseThrow(() -> new UnsupportedVersionException(versjon));
+                .orElseThrow(() -> new UnsupportedVersionException(egenskaper));
     }
 
     @Override
