@@ -4,6 +4,7 @@ import static java.util.Collections.singletonList;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.inject.Inject;
