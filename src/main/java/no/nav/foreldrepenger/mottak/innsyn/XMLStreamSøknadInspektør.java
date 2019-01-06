@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 public final class XMLStreamSøknadInspektør implements SøknadInspektør {

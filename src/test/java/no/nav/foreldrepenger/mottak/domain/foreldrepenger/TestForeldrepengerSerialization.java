@@ -51,8 +51,8 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvitt
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
-import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringJUnit4ClassRunner.class)

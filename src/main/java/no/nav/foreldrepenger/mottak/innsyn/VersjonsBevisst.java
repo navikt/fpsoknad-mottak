@@ -1,8 +1,9 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.innsyn;
 
 import java.util.List;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public interface VersjonsBevisst {
     Versjon versjon();

@@ -5,9 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
-import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
-import no.nav.foreldrepenger.mottak.util.VersjonsBevisst;
 
 public abstract class AbstractXMLMapper implements XMLMapper, VersjonsBevisst {
 

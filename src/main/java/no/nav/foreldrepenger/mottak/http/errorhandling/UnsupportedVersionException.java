@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.errorhandling;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
-import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class UnsupportedVersionException extends VersionException {

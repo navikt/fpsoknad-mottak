@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.innsyn;
 
 public interface SøknadInspektør {
 

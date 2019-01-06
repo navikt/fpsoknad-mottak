@@ -15,9 +15,6 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
-import no.nav.foreldrepenger.mottak.util.XMLStreamSøknadInspektør;
-import no.nav.foreldrepenger.mottak.util.SøknadEgenskaper;
-import no.nav.foreldrepenger.mottak.util.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
