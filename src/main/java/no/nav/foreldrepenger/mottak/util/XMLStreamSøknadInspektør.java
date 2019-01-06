@@ -61,6 +61,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     }
 
     private static SøknadType fpTypeFra(String xml) {
+
         try {
             XMLStreamReader reader = XMLInputFactory.newInstance()
                     .createXMLStreamReader(new StreamSource(new StringReader(xml)));
@@ -75,6 +76,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                     }
                 }
             }
+
             LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type", asList(INITIELL, ENDRING));
             return UKJENT;
         } catch (XMLStreamException | FactoryConfigurationError e) {
