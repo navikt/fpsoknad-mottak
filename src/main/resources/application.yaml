@@ -10,8 +10,6 @@ info.app:
     version: '@project.version@'
     build.time:  '@timestamp@'
 
-contract.version: V2
-
 management:
     endpoints.web.exposure.include:  info, health, metrics, prometheus
     health :
