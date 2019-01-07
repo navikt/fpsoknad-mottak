@@ -8,11 +8,9 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.util.UriComponentsBuilder;
 
 public abstract class AbstractRestConnection {
 
@@ -27,12 +25,6 @@ public abstract class AbstractRestConnection {
 
     protected String ping(URI uri) {
         return getForObject(uri, String.class);
-    }
-
-    protected static HttpHeaders queryParams(String key, String value) {
-        HttpHeaders queryParams = new HttpHeaders();
-        queryParams.add(key, value);
-        return queryParams;
     }
 
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
@@ -81,23 +73,6 @@ public abstract class AbstractRestConnection {
             }
             throw e;
         }
-    }
-
-    protected static URI uri(URI base, String path) {
-        return uri(base, path, null);
-    }
-
-    protected static URI uri(URI base, String path, HttpHeaders queryParams) {
-        return builder(base, path)
-                .queryParams(queryParams)
-                .build()
-                .toUri();
-    }
-
-    private static UriComponentsBuilder builder(URI base, String path) {
-        return UriComponentsBuilder
-                .fromUri(base)
-                .pathSegment(path);
     }
 
     @Override

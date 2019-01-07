@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 
@@ -26,7 +27,8 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
     }
 
     public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        return responseHandler.handle(postForEntity(uri(), payload, FPFordelKvittering.class));
+        return responseHandler.handle(
+                postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class));
     }
 
     @Override
@@ -44,18 +46,13 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
         return config.isEnabled();
     }
 
-    private URI uri() {
-        return uri(config.getUri(), config.getBasePath());
+    @Override
+    public String name() {
+        return FPFORDEL_SENDER;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [config=" + config + ", responseHandler=" + responseHandler + "]";
     }
-
-    @Override
-    public String name() {
-        return FPFORDEL_SENDER;
-    }
-
 }

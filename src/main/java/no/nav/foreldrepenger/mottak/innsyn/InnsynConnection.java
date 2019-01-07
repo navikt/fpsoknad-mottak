@@ -5,6 +5,8 @@ import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAKSNUMMER;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.UTTAKSPLAN;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 import java.util.Arrays;

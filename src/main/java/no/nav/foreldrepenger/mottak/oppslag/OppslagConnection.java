@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
 import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 import java.util.Arrays;
