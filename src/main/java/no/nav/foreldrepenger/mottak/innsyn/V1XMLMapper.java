@@ -208,7 +208,7 @@ public class V1XMLMapper extends AbstractXMLMapper {
             return null;
         }
         if (omYtelse.getAny().size() > 1) {
-            LOG.warn("Fikk {} ytelser i søknaden, forventet  1, behandler kun den første", omYtelse.getAny().size());
+            LOG.warn("Fikk {} ytelser i søknaden, forventet 1, behandler kun den første", omYtelse.getAny().size());
         }
         return ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
     }

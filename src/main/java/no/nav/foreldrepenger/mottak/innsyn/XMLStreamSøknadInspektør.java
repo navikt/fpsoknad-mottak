@@ -32,7 +32,10 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
     @Override
     public SøknadEgenskaper inspiser(String xml) {
-        return new SøknadEgenskaper(typeFra(xml), versjonFra(xml));
+        SøknadEgenskaper egenskaper = new SøknadEgenskaper(typeFra(xml), versjonFra(xml));
+        LOG.info("Dette er en søknad av type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
+        return egenskaper;
+
     }
 
     private SøknadType typeFra(String xml) {
