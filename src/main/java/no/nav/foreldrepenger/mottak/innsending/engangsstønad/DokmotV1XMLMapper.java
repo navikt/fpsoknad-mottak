@@ -56,6 +56,7 @@ public class DokmotV1XMLMapper extends AbstractXMLMapper {
 
     @Override
     public Søknad tilSøknad(String xml) {
+        // TODO incomplete
         if (xml == null) {
             LOG.debug("Ingen søknad ble funnet");
             return null;
@@ -73,17 +74,6 @@ public class DokmotV1XMLMapper extends AbstractXMLMapper {
             søknad.getVedleggListe();
             Engangsstønad ytelse = new Engangsstønad(medlemsskapFra(søknad.getTilknytningNorge()),
                     relasjonFra(søknad.getOpplysningerOmBarn()));
-            /*
-             * return new SoeknadsskjemaEngangsstoenad() .withBruker(brukerFra(søker.fnr))
-             * .withOpplysningerOmBarn(barnFra(søknad, ytelse))
-             * .withSoknadsvalg(søknadsvalgFra(søknad, ytelse))
-             * .withTilknytningNorge(tilknytningFra(ytelse.getMedlemsskap(),
-             * ytelse.getRelasjonTilBarn() instanceof FremtidigFødsel))
-             * .withOpplysningerOmFar(farFra(ytelse.getAnnenForelder()))
-             * .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
-             * .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(),
-             * søknad.getFrivilligeVedlegg()));
-             */
             Søknad engangssøknad = new Søknad(LocalDateTime.now(), null, ytelse);
             engangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             return engangssøknad;

@@ -1,9 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
@@ -139,7 +142,7 @@ public class V2DomainMapper implements DomainMapper {
 
     @Override
     public List<SøknadType> typer() {
-        return Lists.newArrayList(SøknadType.ENDRING, SøknadType.INITIELL);
+        return newArrayList(ENDRING, INITIELL);
     }
 
     @Override
