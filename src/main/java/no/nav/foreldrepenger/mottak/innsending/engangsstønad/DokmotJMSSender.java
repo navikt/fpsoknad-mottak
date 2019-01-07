@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.http.Constants.CALL_ID;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DOKMOT;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DOKMOT_SENDER;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 
 import javax.jms.TextMessage;
@@ -23,7 +23,7 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
-@Qualifier(DOKMOT)
+@Qualifier(DOKMOT_SENDER)
 public class DokmotJMSSender implements SøknadSender {
 
     private final DokmotConnection connection;

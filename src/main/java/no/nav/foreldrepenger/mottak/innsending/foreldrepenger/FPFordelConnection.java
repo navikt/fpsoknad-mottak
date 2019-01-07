@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
+
 import java.net.URI;
 
 import org.springframework.http.HttpEntity;
@@ -53,7 +55,7 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
 
     @Override
     public String name() {
-        return "fpfordel";
+        return FPFORDEL_SENDER;
     }
 
 }

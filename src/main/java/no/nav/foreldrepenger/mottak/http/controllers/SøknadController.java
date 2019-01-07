@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DUAL;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -47,7 +47,7 @@ public class SøknadController {
     private final Oppslag oppslag;
     private final SøknadSender sender;
 
-    public SøknadController(@Qualifier(DUAL) SøknadSender sender, Oppslag oppslag,
+    public SøknadController(@Qualifier(ROUTING_SENDER) SøknadSender sender, Oppslag oppslag,
             Innsyn innsyn) {
         this.sender = sender;
         this.oppslag = oppslag;
