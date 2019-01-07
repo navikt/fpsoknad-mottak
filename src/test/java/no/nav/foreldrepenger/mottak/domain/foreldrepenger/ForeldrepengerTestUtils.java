@@ -118,7 +118,7 @@ public class ForeldrepengerTestUtils {
                                 "den andre bror min og samtidig en fryktelig lang tekst som straks må bryte over til ny linje",
                                 åpenPeriode(true)),
                         new FrilansOppdrag("\u202Darbeidsgiver\u00A0med " + "\u0141" + "tegn\tsom normali\uFFFDseres", åpenPeriode(true)),
-                        new FrilansOppdrag("den fjerde bror min", åpenPeriode(true)),
+                        new FrilansOppdrag("den fjerde bror min med \u2e84\u2e87 tegn som ikke kan encodes", åpenPeriode(true)),
                         new FrilansOppdrag("far min", åpenPeriode(true))),
                 Arrays.asList(vedleggRefs));
 

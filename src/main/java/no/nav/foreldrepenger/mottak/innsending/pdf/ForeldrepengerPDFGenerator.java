@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -43,10 +42,10 @@ public class ForeldrepengerPDFGenerator {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (FontAwarePDDocument doc = new FontAwarePDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = newPage();
             doc.addPage(page);
-            PDPageContentStream cos = new PDPageContentStream(doc, page);
+            FontAwareCos cos = new FontAwareCos(doc, page);
             float y = yTop;
             LOG.trace("Y ved start {}", y);
             y = fpRenderer.header(søker, doc, cos, false, y);
@@ -56,7 +55,7 @@ public class ForeldrepengerPDFGenerator {
             if (stønad.getRelasjonTilBarn() != null) {
                 LOG.trace("Y før relasjon til barn {}", y);
                 PDPage scratch1 = newPage();
-                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                 float size = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), scratchcos,
@@ -91,7 +90,7 @@ public class ForeldrepengerPDFGenerator {
             if (opptjening != null) {
                 LOG.trace("Y før opptjening {}", y);
                 PDPage scratch = newPage();
-                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch);
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                 float size = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, scratchcos, startY);
@@ -111,7 +110,7 @@ public class ForeldrepengerPDFGenerator {
                 if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
                     LOG.trace("Y før utenlandsk arbeidsforhold {}", y);
                     PDPage scratch1 = newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                     size = fpRenderer.utenlandskeArbeidsforholdOpptjening(
@@ -139,7 +138,7 @@ public class ForeldrepengerPDFGenerator {
                 if (!opptjening.getAnnenOpptjening().isEmpty()) {
                     LOG.trace("Y før annen opptjening {}", y);
                     PDPage scratch1 = newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                     size = fpRenderer.annenOpptjening(opptjening.getAnnenOpptjening(), søknad.getVedlegg(),
@@ -166,7 +165,7 @@ public class ForeldrepengerPDFGenerator {
                 if (!opptjening.getEgenNæring().isEmpty()) {
                     LOG.trace("Y før egen næring {}", y);
                     PDPage scratch1 = newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                     size = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
@@ -189,7 +188,7 @@ public class ForeldrepengerPDFGenerator {
                 if (opptjening.getFrilans() != null) {
                     LOG.trace("Y før frilans {}", y);
                     PDPage scratch1 = newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                     size = fpRenderer.frilansOpptjening(opptjening.getFrilans(),
@@ -212,7 +211,7 @@ public class ForeldrepengerPDFGenerator {
                 if (stønad.getMedlemsskap() != null) {
                     LOG.trace("Y før medlemsskap {}", y);
                     PDPage scratch1 = newPage();
-                    scratchcos = new PDPageContentStream(doc, scratch1);
+                    scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                     size = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), scratchcos,
@@ -256,10 +255,10 @@ public class ForeldrepengerPDFGenerator {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (FontAwarePDDocument doc = new FontAwarePDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = newPage();
             doc.addPage(page);
-            PDPageContentStream cos = new PDPageContentStream(doc, page);
+            FontAwareCos cos = new FontAwareCos(doc, page);
             float y = yTop;
             LOG.trace("Y ved start {}", y);
             y = fpRenderer.header(søker, doc, cos, true,
@@ -270,7 +269,7 @@ public class ForeldrepengerPDFGenerator {
             if (stønad.getRelasjonTilBarn() != null) {
                 LOG.trace("Y før relasjon til barn {}", y);
                 PDPage scratch1 = newPage();
-                PDPageContentStream scratchcos = new PDPageContentStream(doc, scratch1);
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos,
                         true, startY);
@@ -329,8 +328,8 @@ public class ForeldrepengerPDFGenerator {
         return forhold.isEmpty() ? oppslag.getArbeidsforhold() : forhold;
     }
 
-    private static PDPageContentStream nySide(PDDocument doc, PDPageContentStream cos, PDPage scratch,
-            PDPageContentStream scratchcos) throws IOException {
+    private static FontAwareCos nySide(PDDocument doc, FontAwareCos cos, PDPage scratch,
+            FontAwareCos scratchcos) throws IOException {
         cos.close();
         doc.addPage(scratch);
         cos = scratchcos;

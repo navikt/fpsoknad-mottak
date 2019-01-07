@@ -72,5 +72,6 @@ public class ForeldrepengerPDFGeneratorTest {
                         Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
                 new Arbeidsforhold("5678", "", LocalDate.now().minusDays(100),
                         Optional.of(LocalDate.now()), 80.0, "TGD"));
+
     }
 }
