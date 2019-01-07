@@ -21,7 +21,7 @@ public class DualSøknadSender implements SøknadSender {
     private final SøknadSender fpfordel;
 
     public DualSøknadSender(@Qualifier(DOKMOT_SENDER) SøknadSender dokmot,
-            @Qualifier(FPFORDEL) SøknadSender fpfordel) {
+            @Qualifier(FPFORDEL_SENDER) SøknadSender fpfordel) {
         this.dokmot = dokmot;
         this.fpfordel = fpfordel;
     }
