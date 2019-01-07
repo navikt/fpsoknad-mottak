@@ -56,7 +56,7 @@ public abstract class AbstractRestConnection {
             return respons;
         } catch (HttpClientErrorException e) {
             if (NOT_FOUND.equals(e.getStatusCode()) && !doThrow) {
-                LOG.trace("Fant intet objekt, returnerer null");
+                LOG.info("Fant intet objekt, returnerer null");
                 return null;
             }
             throw e;
@@ -76,7 +76,7 @@ public abstract class AbstractRestConnection {
             return respons;
         } catch (HttpClientErrorException e) {
             if (NOT_FOUND.equals(e.getStatusCode()) && !doThrow) {
-                LOG.trace("Fant ingen entity, returnerer null");
+                LOG.info("Fant ingen entity, returnerer null");
                 return null;
             }
             throw e;
