@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter;
 import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
@@ -16,12 +15,10 @@ public class RestClientConfiguration {
     @Bean
     public RestOperations restTemplate(ClientHttpRequestInterceptor... interceptors) {
 
-        RestTemplate template = new RestTemplateBuilder()
+        return new RestTemplateBuilder()
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
+                .additionalMessageConverters(new MultipartMixedAwareMessageConverter())
                 .build();
-        template.getMessageConverters().add(new MultipartMixedAwareMessageConverter());
-        return template;
     }
-
 }
