@@ -8,16 +8,14 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter;
 import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 
 @Configuration
 public class RestClientConfiguration {
 
     @Bean
-    public RestTemplate restTemplate(FPFordelConfig cfg, ClientHttpRequestInterceptor... interceptors) {
+    public RestTemplate restTemplate(ClientHttpRequestInterceptor... interceptors) {
 
         RestTemplate template = new RestTemplateBuilder()
-                .rootUri(cfg.getUri().toString())
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
                 .build();
