@@ -73,7 +73,7 @@ public class PDFElementRenderer {
     }
 
     public float addLineOfRegularText(int marginOffset, String line, FontAwareCos cos, float startY)
-            throws IOException {
+        throws IOException {
         String encodableLine = normalizeAndRemoveNonencodableChars(line, cos.REGULARFONT);
         List<String> lines = splitLineIfNecessary(
             encodableLine,
@@ -91,7 +91,7 @@ public class PDFElementRenderer {
         return cos.REGULARFONTHEIGHT * lines.size();
     }
 
-    private String normalizeAndRemoveNonencodableChars(String str, PDFont font) throws IOException {
+    String normalizeAndRemoveNonencodableChars(String str, PDFont font) throws IOException {
         return removeNonencodableChars(normalizeString(str), font);
     }
 
@@ -109,8 +109,7 @@ public class PDFElementRenderer {
         try {
             font.encode(Character.toString(character));
             return true;
-        }
-        catch (IllegalArgumentException e) {  // likely non-existence of glyph
+        } catch (IllegalArgumentException e) {  // likely non-existence of glyph
             LOG.info(String.format(
                 "No glyph for %x in font %s, character has been dropped from pdf.",
                 (int) character, font.toString()));
@@ -131,13 +130,13 @@ public class PDFElementRenderer {
     }
 
     public float addLinesOfRegularText(List<String> lines, FontAwareCos cos, float startY)
-            throws IOException {
+        throws IOException {
         return addLinesOfRegularText(0, lines, cos, startY);
 
     }
 
     public float addLinesOfRegularText(int marginOffset, List<String> lines, FontAwareCos cos, float startY)
-            throws IOException {
+        throws IOException {
         float yTotal = 0;
         for (String line : lines) {
             yTotal += addLineOfRegularText(marginOffset, line, cos, startY - yTotal);
@@ -150,7 +149,7 @@ public class PDFElementRenderer {
     }
 
     public float addLMultilineBulletpoint(int offset, List<String> lines, FontAwareCos cos, float startY)
-            throws IOException {
+        throws IOException {
         float yTotal = addBulletPoint(offset, lines.get(0), cos, startY);
         for (String line : lines.subList(1, lines.size())) {
             yTotal += addLineOfRegularText("  " + line, cos, startY - yTotal);
@@ -159,7 +158,7 @@ public class PDFElementRenderer {
     }
 
     public float addBulletList(int offset, List<String> lines, FontAwareCos cos, float startY)
-            throws IOException {
+        throws IOException {
         float yTotal = 0;
         for (String line : lines) {
             yTotal += addBulletPoint(offset, line, cos, startY - yTotal);

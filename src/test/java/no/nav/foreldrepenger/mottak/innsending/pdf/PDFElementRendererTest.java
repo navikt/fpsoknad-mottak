@@ -54,7 +54,8 @@ public class PDFElementRendererTest {
                 "ikke-eksisterende  glypher erstattes med space" +
                 "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes";
 
-        assertEquals(cleanText, new PDFElementRenderer().normalizeAndRemoveNonencodableChars(dirtyText, font));
+        PDFElementRenderer renderer = new PDFElementRenderer();
+        assertEquals(cleanText, renderer.normalizeAndRemoveNonencodableChars(dirtyText, font));
     }
 
 }
