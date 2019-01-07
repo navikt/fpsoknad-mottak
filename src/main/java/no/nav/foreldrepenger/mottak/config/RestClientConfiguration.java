@@ -17,7 +17,7 @@ public class RestClientConfiguration {
 
         return new RestTemplateBuilder()
                 .requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(interceptors)
+                .additionalInterceptors(interceptors)
                 .additionalMessageConverters(new MultipartMixedAwareMessageConverter())
                 .build();
     }
