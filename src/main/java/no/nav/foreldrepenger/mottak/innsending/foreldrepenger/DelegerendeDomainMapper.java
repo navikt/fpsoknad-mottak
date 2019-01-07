@@ -58,7 +58,7 @@ public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
         return mappers.stream()
                 .filter(s -> s.versjon().equals(versjon))
                 .findFirst()
-                .orElseThrow(() -> new UnsupportedVersionException(versjon));
+                .orElseThrow(() -> new UnsupportedVersionException("Versjon " + versjon + " ikke støttet", versjon));
     }
 
     @Override

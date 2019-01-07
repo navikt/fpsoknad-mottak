@@ -11,7 +11,16 @@ public class UnsupportedVersionException extends VersionException {
     }
 
     public UnsupportedVersionException(Versjon versjon) {
-        this(versjon, null);
+        this(null, versjon, null, null);
+
+    }
+
+    public UnsupportedVersionException(String msg) {
+        this(msg, null, null, null);
+    }
+
+    public UnsupportedVersionException(String msg, Versjon versjon) {
+        this(msg, versjon, null, null);
     }
 
     public UnsupportedVersionException(Versjon versjon, SøknadType type) {
@@ -20,10 +29,6 @@ public class UnsupportedVersionException extends VersionException {
 
     public UnsupportedVersionException(Throwable cause) {
         this(null, null, null, cause);
-    }
-
-    public UnsupportedVersionException(String msg) {
-        this(msg, null, null, null);
     }
 
     public UnsupportedVersionException(String msg, Versjon versjon, SøknadType type, Throwable cause) {
