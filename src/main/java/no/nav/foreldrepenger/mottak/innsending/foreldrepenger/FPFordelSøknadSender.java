@@ -57,7 +57,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker, Versjon versjon) {
-        return send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker,versjon));
+        return send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker));
     }
 
     private Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
