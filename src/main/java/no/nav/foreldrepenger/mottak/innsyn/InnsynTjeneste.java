@@ -1,31 +1,39 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import no.nav.foreldrepenger.mottak.innsyn.dto.*;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
+
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.XMLTilSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
 
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
 
-    private final XMLTilSøknadMapper mapper;
+    private final XMLMapper mapper;
     private final InnsynConnection innsynConnection;
+    private final SøknadInspektør inspektør;
 
-    public InnsynTjeneste(InnsynConnection innsynConnection, XMLTilSøknadMapper mapper) {
+    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(VERSJONSBEVISST) XMLMapper mapper,
+            SøknadInspektør inspektør) {
         this.innsynConnection = innsynConnection;
         this.mapper = mapper;
+        this.inspektør = inspektør;
     }
 
     @Override
@@ -51,8 +59,8 @@ public class InnsynTjeneste implements Innsyn {
         return saker;
     }
 
-    private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker) {
-        LOG.info("Henter {} behandlinger", behandlingsLenker.size());
+    private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker, String saksnr) {
+        LOG.info("Henter {} behandling{} for sak {}", behandlingsLenker.size(), endelse(behandlingsLenker), saksnr);
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
                 .map(innsynConnection::hentBehandling)
                 .map(this::tilBehandling)
@@ -82,9 +90,15 @@ public class InnsynTjeneste implements Innsyn {
     private Sak tilSak(SakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
         return Optional.ofNullable(wrapper)
-                .map(w -> new Sak(w.getSaksnummer(), w.getFagsakStatus(), w.getBehandlingTema(),
-                        w.getAktørId(), w.getAktørIdAnnenPart(), w.getAktørIdBarna(),
-                        hentBehandlinger(w.getBehandlingsLenker()), w.getOpprettetTidspunkt(), w.getEndretTidspunkt()))
+                .map(w -> new Sak(
+                        w.getSaksnummer(),
+                        w.getFagsakStatus(),
+                        w.getBehandlingTema(),
+                        w.getAktørId(),
+                        w.getAktørIdAnnenPart(),
+                        w.getAktørIdBarna(),
+                        hentBehandlinger(w.getBehandlingsLenker(), w.getSaksnummer()), w.getOpprettetTidspunkt(),
+                        w.getEndretTidspunkt()))
                 .orElse(null);
     }
 
@@ -92,31 +106,31 @@ public class InnsynTjeneste implements Innsyn {
         LOG.trace(CONFIDENTIAL, "Mapper behandling fra {}", wrapper);
         return Optional.ofNullable(wrapper)
                 .map(w -> new Behandling.BehandlingBuilder()
-                        .opprettetTidspunkt(wrapper.getOpprettetTidspunkt())
-                        .endretTidspunkt(wrapper.getEndretTidspunkt())
-                        .behandlendeEnhet(wrapper.getBehandlendeEnhet())
-                        .behandlendeEnhetNavn(wrapper.getBehandlendeEnhetNavn())
-                        .status(wrapper.getStatus())
-                        .årsak(wrapper.getÅrsak())
-                        .tema(wrapper.getTema())
-                        .type(wrapper.getType())
-                        .søknad(hentSøknad(wrapper.getSøknadsLenke()))
+                        .opprettetTidspunkt(w.getOpprettetTidspunkt())
+                        .endretTidspunkt(w.getEndretTidspunkt())
+                        .behandlendeEnhet(w.getBehandlendeEnhet())
+                        .behandlendeEnhetNavn(w.getBehandlendeEnhetNavn())
+                        .status(w.getStatus())
+                        .årsak(w.getÅrsak())
+                        .tema(w.getTema())
+                        .type(w.getType())
+                        .søknad(hentSøknad(w.getSøknadsLenke()))
                         .build())
                 .orElse(null);
     }
 
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
-        return new InnsynsSøknad(mapper.tilSøknad(wrapper.getXml()), wrapper.getJournalpostId());
-    }
+        String xml = wrapper.getXml();
+        return new InnsynsSøknad(new SøknadMetadata(inspektør.inspiser(xml), wrapper.getJournalpostId()),
+                mapper.tilSøknad(xml));
 
-    private static String endelse(List<?> liste) {
-        return liste.size() == 1 ? "" : "er";
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mapper=" + mapper + ", innsynConnection=" + innsynConnection + "]";
+        return getClass().getSimpleName() + " [mapper=" + mapper + ", innsynConnection=" + innsynConnection
+                + ", inspektør=" + inspektør + "]";
     }
 
 }

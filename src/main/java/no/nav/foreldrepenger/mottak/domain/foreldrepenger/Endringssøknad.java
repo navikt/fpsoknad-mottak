@@ -11,10 +11,17 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
+@Data
+
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class Endringssøknad extends Søknad {
 
     @NotNull
@@ -48,15 +55,6 @@ public class Endringssøknad extends Søknad {
         super(mottattDato, søker, new Foreldrepenger(annenForelder, fødsel, rettigheter, null, null, fordeling, null),
                 vedlegg);
         this.saksnr = saksnr;
-    }
-
-    public String getSaksnr() {
-        return saksnr;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [saksnr=" + saksnr + ", getYtelse()=" + getYtelse() + "]";
     }
 
 }

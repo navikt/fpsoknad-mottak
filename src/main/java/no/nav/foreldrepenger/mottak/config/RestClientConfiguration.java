@@ -4,25 +4,21 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter;
 import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 
 @Configuration
 public class RestClientConfiguration {
 
     @Bean
-    public RestTemplate restTemplate(FPFordelConfig cfg, ClientHttpRequestInterceptor... interceptors) {
+    public RestOperations restTemplate(ClientHttpRequestInterceptor... interceptors) {
 
-        RestTemplate template = new RestTemplateBuilder()
-                .rootUri(cfg.getUri().toString())
+        return new RestTemplateBuilder()
                 .requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(interceptors)
+                .additionalInterceptors(interceptors)
+                .additionalMessageConverters(new MultipartMixedAwareMessageConverter())
                 .build();
-        template.getMessageConverters().add(new MultipartMixedAwareMessageConverter());
-        return template;
     }
-
 }

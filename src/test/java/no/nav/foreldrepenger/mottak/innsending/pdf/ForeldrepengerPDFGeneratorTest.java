@@ -25,10 +25,7 @@ import com.google.common.collect.Lists;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
-import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
-import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
-import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
@@ -45,14 +42,14 @@ public class ForeldrepengerPDFGeneratorTest {
 
     @Test
     public void signature() throws Exception {
-        assertTrue(hasPdfSignature(gen.generate(foreldrepengeSøknad(), person())));
+        assertTrue(hasPdfSignature(gen.generate(foreldrepengeSøknad(Versjon.V2), person())));
     }
 
     @Test
     public void førstegangssøknad() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
-            fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(true), person(), arbeidsforhold()));
+            fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(Versjon.V2, true), person(), arbeidsforhold()));
         }
     }
 
@@ -60,7 +57,7 @@ public class ForeldrepengerPDFGeneratorTest {
     public void endring() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
-            fos.write(gen.generate(endringssøknad(V1), person()));
+            fos.write(gen.generate(endringssøknad(Versjon.V1, V1), person()));
         }
     }
 

@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
@@ -10,7 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.context.annotation.Profile;
@@ -30,12 +28,10 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
-import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadTilXMLMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.oidc.api.Unprotected;
 
 @Unprotected
@@ -46,34 +42,40 @@ public class SøknadPreprodController {
 
     public static final String INNSENDING_PREPROD = "/preprod";
 
-    private final DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator;
-    private final DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator;
-    private final SøknadTilXMLMapper søknadMapper;
-    private final FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator;
-    @Inject
-    ForeldrepengerPDFGenerator pdfGenerator;
+    private final DokmotEngangsstønadXMLGenerator esDomainMapper;
+    private final VersjonsBevisstDomainMapper fpDomainMapper;
+    private final ForeldrepengerPDFGenerator pdfGenerator;
 
-    public SøknadPreprodController(DokmotEngangsstønadXMLGenerator dokmotSøknadGenerator,
-            DokmotEngangsstønadXMLKonvoluttGenerator dokmotKonvoluttGenerator,
-            SøknadTilXMLMapper søknadMapper, FPFordelKonvoluttGenerator fpfordelKonvoluttGenerator) {
-        this.dokmotSøknadGenerator = dokmotSøknadGenerator;
-        this.dokmotKonvoluttGenerator = dokmotKonvoluttGenerator;
-        this.søknadMapper = søknadMapper;
-        this.fpfordelKonvoluttGenerator = fpfordelKonvoluttGenerator;
+    public SøknadPreprodController(VersjonsBevisstDomainMapper fpDomainMapper,
+            DokmotEngangsstønadXMLGenerator esDomainMapper, ForeldrepengerPDFGenerator pdfGenerator) {
+        this.fpDomainMapper = fpDomainMapper;
+        this.esDomainMapper = esDomainMapper;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @PostMapping("/søknad")
-    public ResponseEntity<String> søknad(@Valid @RequestBody Søknad søknad) {
-        return isForeldrepenger(søknad)
-                ? ok().body(fpSøknad(søknad))
-                : ok().body(esSøknad(søknad, søker()));
+    public String FPsøknadV1(@Valid @RequestBody Søknad søknad) {
+        return fpSøknad(søknad, Versjon.V1);
+    }
+
+    @PostMapping("/søknadES")
+    public String ESsøknad(@Valid @RequestBody Søknad søknad) {
+        return esSøknad(søknad);
+    }
+
+    @PostMapping("/søknadV2")
+    public String FPsøknadV2(@Valid @RequestBody Søknad søknad) {
+        return fpSøknad(søknad, Versjon.V2);
     }
 
     @PostMapping("/endringssøknad")
-    public ResponseEntity<String> endringssøknad(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return isForeldrepenger(endringssøknad)
-                ? ok().body(fpEndringsSøknad(endringssøknad))
-                : ok().body(esSøknad(endringssøknad, søker()));
+    public String FPendringssøknadV1(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return fpEndringsSøknad(endringssøknad, Versjon.V1);
+    }
+
+    @PostMapping("/endringssøknadV2")
+    public String FPendringssøknadV2(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return fpEndringsSøknad(endringssøknad, Versjon.V2);
     }
 
     @PostMapping(path = "/pdfEndring", produces = APPLICATION_PDF_VALUE)
@@ -90,35 +92,16 @@ public class SøknadPreprodController {
                 .body(pdfGenerator.generate(søknad, søker(), arbeidsforhold()));
     }
 
-    @PostMapping(path = "/konvolutt", produces = { APPLICATION_XML_VALUE, APPLICATION_JSON_VALUE })
-    public ResponseEntity<Object> konvolutt(@Valid @RequestBody Søknad søknad) {
-        return isForeldrepenger(søknad)
-                ? ok().body(fpKonvolutt(søknad, søker()))
-                : ok().body(esKonvolutt(søknad, søker()));
+    private String fpSøknad(Søknad søknad, Versjon v) {
+        return fpDomainMapper.tilXML(søknad, new AktorId("42"), v);
     }
 
-    private String esSøknad(Søknad søknad, Person søker) {
-        return dokmotSøknadGenerator.tilXML(søknad, søker);
+    private String esSøknad(Søknad søknad) {
+        return esDomainMapper.tilXML(søknad, søker());
     }
 
-    private String fpSøknad(Søknad søknad) {
-        return søknadMapper.tilXML(søknad, new AktorId("42"));
-    }
-
-    private String fpEndringsSøknad(Endringssøknad endringssøknad) {
-        return søknadMapper.tilXML(endringssøknad, new AktorId("42"));
-    }
-
-    private String esKonvolutt(Søknad søknad, Person søker) {
-        return dokmotKonvoluttGenerator.tilXML(søknad, søker);
-    }
-
-    private Object fpKonvolutt(Søknad søknad, Person søker) {
-        return fpfordelKonvoluttGenerator.payload(søknad, søker);
-    }
-
-    private static boolean isForeldrepenger(Søknad søknad) {
-        return søknad.getYtelse() instanceof Foreldrepenger;
+    private String fpEndringsSøknad(Endringssøknad endringssøknad, Versjon v) {
+        return fpDomainMapper.tilXML(endringssøknad, new AktorId("42"), v);
     }
 
     private static Person søker() {
@@ -146,8 +129,8 @@ public class SøknadPreprodController {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [dokmotSøknadGenerator=" + dokmotSøknadGenerator
-                + ", dokmotKonvoluttGenerator=" + dokmotKonvoluttGenerator + ", søknadMapper="
-                + søknadMapper + ", fpfordelKonvoluttGenerator=" + fpfordelKonvoluttGenerator + "]";
+        return getClass().getSimpleName() + " [esDomainMapper=" + esDomainMapper + ", fpDomainMapper=" + fpDomainMapper
+                + ", pdfGenerator=" + pdfGenerator + "]";
     }
+
 }

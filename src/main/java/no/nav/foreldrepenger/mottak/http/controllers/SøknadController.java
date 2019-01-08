@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -21,17 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 
-@RestController
 @RequestMapping(path = SøknadController.INNSENDING, produces = APPLICATION_JSON_VALUE)
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
+@RestController
 public class SøknadController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SøknadController.class);
@@ -45,28 +47,39 @@ public class SøknadController {
     private final Oppslag oppslag;
     private final SøknadSender sender;
 
-    public SøknadController(@Qualifier("dual") SøknadSender sender, Oppslag oppslag, Innsyn innsyn) {
+    public SøknadController(@Qualifier(ROUTING_SENDER) SøknadSender sender, Oppslag oppslag,
+            Innsyn innsyn) {
         this.sender = sender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
     }
 
-    @PostMapping(value = "/send")
+    @PostMapping("/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
         return sender.send(søknad, oppslag.getSøker());
     }
 
-    @PostMapping(value = "/ettersend")
+    @PostMapping("/sendV2")
+    public Kvittering sendV2(@Valid @RequestBody Søknad søknad) {
+        return sender.send(søknad, oppslag.getSøker(), V2);
+    }
+
+    @PostMapping("/ettersend")
     public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
         return sender.send(ettersending, oppslag.getSøker());
     }
 
-    @PostMapping(value = "/endre")
-    public Kvittering send(@Valid @RequestBody Endringssøknad endringsSøknad) {
-        return sender.send(endringsSøknad, oppslag.getSøker());
+    @PostMapping("/endre")
+    public Kvittering send(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return sender.send(endringssøknad, oppslag.getSøker());
     }
 
-    @GetMapping(value = "/ping")
+    @PostMapping("/endreV2")
+    public Kvittering sendV2(@Valid @RequestBody Endringssøknad endringsSøknad) {
+        return sender.send(endringsSøknad, oppslag.getSøker(), V2);
+    }
+
+    @GetMapping("/ping")
     @Unprotected
     public String ping(@RequestParam(name = "navn", defaultValue = "jordboer") String navn) {
         LOG.info("Jeg ble pinget");

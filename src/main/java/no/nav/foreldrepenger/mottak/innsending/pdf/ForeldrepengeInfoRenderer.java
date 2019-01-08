@@ -135,8 +135,7 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    float annenOpptjening(List<AnnenOpptjening> annenOpptjening, List<Vedlegg> vedlegg, FontAwareCos cos,
-                          float y)
+    float annenOpptjening(List<AnnenOpptjening> annenOpptjening, List<Vedlegg> vedlegg, FontAwareCos cos, float y)
         throws IOException {
         if (CollectionUtils.isEmpty(annenOpptjening)) {
             return y;
@@ -521,7 +520,9 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", utsettelse.getFom());
         addIfSet(attributter, "tom", utsettelse.getTom());
         addIfSet(attributter, "dager", String.valueOf(utsettelse.dager()));
-        attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
+        if (utsettelse.getUttaksperiodeType() != null) {
+            attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
+        }
         attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addListIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
         attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
@@ -577,7 +578,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "tom", gradert.getTom());
         addIfSet(attributter, "dager", String.valueOf(gradert.dager()));
         attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
-        addListIfSet(attributter, "virksomhetsnummer", gradert.getVirksomhetsnummer());
+        addListIfSet(attributter, "arbeidsgiver", gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
         attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
         addIfSet(attributter, gradert.getMorsAktivitetsType());

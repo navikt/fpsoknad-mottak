@@ -8,20 +8,22 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
 public class MottakConfiguration {
+    public static final String LANDKODER = "landkoder";
+    public static final String KVITTERINGSTEKSTER = "kvitteringstekster";
 
     @Bean
-    @Qualifier("landkoder")
+    @Qualifier(LANDKODER)
     public MessageSource landkoder() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("landkoder");
+        messageSource.setBasename(LANDKODER);
         return messageSource;
     }
 
     @Bean
-    @Qualifier("kvitteringstekster")
+    @Qualifier(KVITTERINGSTEKSTER)
     public MessageSource kvitteringstekster() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("kvitteringstekster");
+        messageSource.setBasename(KVITTERINGSTEKSTER);
         return messageSource;
     }
 }

@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
@@ -18,13 +20,14 @@ import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.SøknadSender;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
-@Qualifier("fpfordel")
+@Qualifier(FPFORDEL_SENDER)
 public class FPFordelSøknadSender implements SøknadSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
@@ -43,17 +46,17 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering send(Endringssøknad endringsSøknad, Person søker) {
-        return send(ENDRING, konvoluttGenerator.payload(endringsSøknad, søker));
+    public Kvittering send(Endringssøknad endringsSøknad, Person søker, Versjon versjon) {
+        return send(ENDRING, konvoluttGenerator.payload(endringsSøknad, søker, versjon));
     }
 
     @Override
-    public Kvittering send(Søknad søknad, Person søker) {
-        return send(INITIELL, konvoluttGenerator.payload(søknad, søker));
+    public Kvittering send(Søknad søknad, Person søker, Versjon versjon) {
+        return send(INITIELL, konvoluttGenerator.payload(søknad, søker, versjon));
     }
 
     @Override
-    public Kvittering send(Ettersending ettersending, Person søker) {
+    public Kvittering send(Ettersending ettersending, Person søker, Versjon versjon) {
         return send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker));
     }
 
@@ -62,7 +65,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             return doSend(type, payload);
         }
         LOG.info("Sending av {} til FPFordel er deaktivert, ingenting å sende", type);
-        return Kvittering.IKKE_SENDT;
+        return IKKE_SENDT;
     }
 
     private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
@@ -86,10 +89,11 @@ public class FPFordelSøknadSender implements SøknadSender {
         case ETTERSENDING:
             FP_ETTERSSENDING.increment();
             break;
-
         case INITIELL:
             FPFORDEL_SEND_INITIELL.increment();
             FP_FØRSTEGANG.increment();
+            break;
+        default:
             break;
         }
     }

@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
 import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -10,7 +12,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
@@ -18,7 +20,6 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection implements Pingable {
@@ -27,8 +28,8 @@ public class OppslagConnection extends AbstractRestConnection implements Pingabl
 
     private final OppslagConfig cfg;
 
-    public OppslagConnection(RestTemplate template, TokenHelper tokenHelper, OppslagConfig config) {
-        super(template, tokenHelper);
+    public OppslagConnection(RestOperations restOperations, OppslagConfig config) {
+        super(restOperations);
         this.cfg = config;
     }
 

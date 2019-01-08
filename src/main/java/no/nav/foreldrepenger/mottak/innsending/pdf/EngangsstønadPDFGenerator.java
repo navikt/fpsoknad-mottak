@@ -43,7 +43,7 @@ public class EngangsstønadPDFGenerator {
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
         final PDPage page = newPage();
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = PDFElementRenderer.calculateStartY();
 
@@ -142,14 +142,15 @@ public class EngangsstønadPDFGenerator {
 
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
         if (erFremtidigFødsel(stønad)) {
-           return textFormatter.fromMessageSource("terminføderi",
+            return textFormatter.fromMessageSource("terminføderi",
                     textFormatter.countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()),
-                    stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");   
+                    stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         }
         else {
             Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
             boolean inNorway = !stønad.getMedlemsskap().varUtenlands(fødsel.getFødselsdato().get(0));
-            return textFormatter.fromMessageSource("fødtei", fødsel.getAntallBarn() > 1 ? "a" : "et", textFormatter.countryName(inNorway));
+            return textFormatter.fromMessageSource("fødtei", fødsel.getAntallBarn() > 1 ? "a" : "et",
+                    textFormatter.countryName(inNorway));
         }
 
     }

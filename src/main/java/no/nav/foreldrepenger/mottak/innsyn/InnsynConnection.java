@@ -5,6 +5,8 @@ import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAKSNUMMER;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.UTTAKSPLAN;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -14,14 +16,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements Pingable {
@@ -29,8 +30,8 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     private final InnsynConfig config;
 
-    public InnsynConnection(RestTemplate template, TokenHelper tokenHelper, InnsynConfig config) {
-        super(template, tokenHelper);
+    public InnsynConnection(RestOperations restOperations, InnsynConfig config) {
+        super(restOperations);
         this.config = config;
     }
 
@@ -50,31 +51,33 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
 
     public SøknadDTO hentSøknad(Lenke søknadsLenke) {
         if (søknadsLenke != null && søknadsLenke.getHref() != null) {
-            return Optional
-                    .ofNullable(getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
+            LOG.trace("Henter søknad fra {}", søknadsLenke);
+            return Optional.ofNullable(
+                    getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
                     .orElse(null);
         }
         return null;
     }
 
     public List<SakDTO> hentSaker(String aktørId) {
-        LOG.trace("Henter saker");
-        return Optional.ofNullable(getForObject(uri(config.getUri(), SAK,
-                queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
+        LOG.trace("Henter saker for {}", aktørId);
+        return Optional.ofNullable(
+                getForObject(uri(config.getUri(), SAK, queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
 
     public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
-        LOG.trace("Henter uttaksplan");
-        return Optional.ofNullable(getForObject(uri(config.getUri(), UTTAKSPLAN,
-                queryParams(SAKSNUMMER, saksnummer)), UttaksPeriode[].class))
+        LOG.trace("Henter uttaksplan for sak {}", saksnummer);
+        return Optional.ofNullable(
+                getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)),
+                        UttaksPeriode[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
 
     public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
-        LOG.trace("Henter behandling");
+        LOG.trace("Henter behandling fra {}", behandlingsLenke.getHref());
         return Optional.ofNullable(
                 getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingDTO.class))
                 .orElse(null);

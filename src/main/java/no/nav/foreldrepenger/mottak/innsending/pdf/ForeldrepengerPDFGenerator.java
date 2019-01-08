@@ -42,7 +42,8 @@ public class ForeldrepengerPDFGenerator {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (FontAwarePDDocument doc = new FontAwarePDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (FontAwarePDDocument doc = new FontAwarePDDocument();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = newPage();
             doc.addPage(page);
             FontAwareCos cos = new FontAwareCos(doc, page);
@@ -245,7 +246,7 @@ public class ForeldrepengerPDFGenerator {
                     doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.warn("Kunne ikke lage PDF", e);
             throw new PDFException("Kunne ikke lage PDF", e);
         }
@@ -255,7 +256,8 @@ public class ForeldrepengerPDFGenerator {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (FontAwarePDDocument doc = new FontAwarePDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (FontAwarePDDocument doc = new FontAwarePDDocument();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = newPage();
             doc.addPage(page);
             FontAwareCos cos = new FontAwareCos(doc, page);
@@ -264,7 +266,7 @@ public class ForeldrepengerPDFGenerator {
             y = fpRenderer.header(søker, doc, cos, true,
                     y);
             float headerSize = yTop - y;
-            LOG.trace("Heaader trenger  {}", headerSize);
+            LOG.trace("Header trenger  {}", headerSize);
 
             if (stønad.getRelasjonTilBarn() != null) {
                 LOG.trace("Y før relasjon til barn {}", y);
@@ -318,7 +320,7 @@ public class ForeldrepengerPDFGenerator {
             LOG.info("Dokumentet for endring er på {} side{}", doc.getNumberOfPages(),
                     doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.warn("Kunne ikke lage PDF", e);
             throw new PDFException("Kunne ikke lage PDF", e);
         }

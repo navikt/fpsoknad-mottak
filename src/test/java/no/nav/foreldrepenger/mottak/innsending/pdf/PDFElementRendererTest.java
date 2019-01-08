@@ -1,16 +1,15 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class PDFElementRendererTest {
 
@@ -43,13 +42,11 @@ public class PDFElementRendererTest {
         PDDocument pdf = new PDDocument();
         PDFont font = PDType0Font.load(pdf, new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
 
-        String dirtyText =
-            "Left-to-right override strippes \u202D helt ut av teksten" +
+        String dirtyText = "Left-to-right override strippes \u202D helt ut av teksten" +
                 "Tab\tog andre blanke tegn\u00A0erstattes med space" +
                 "ikke-eksisterende \u2f8a glypher erstattes med space" +
                 "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes\uFFFD";
-        String cleanText =
-            "Left-to-right override strippes  helt ut av teksten" +
+        String cleanText = "Left-to-right override strippes  helt ut av teksten" +
                 "Tab og andre blanke tegn erstattes med space" +
                 "ikke-eksisterende  glypher erstattes med space" +
                 "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes";

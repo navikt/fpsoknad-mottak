@@ -27,11 +27,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -41,18 +41,19 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.config.CustomSerializerModule;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters
@@ -63,14 +64,19 @@ public class TestForeldrepengerSerialization {
     @Autowired
     ObjectMapper mapper;
 
-    @Before
-    public void init() {
-        mapper.registerModule(new CustomSerializerModule());
-        mapper.registerModule(new JavaTimeModule());
-        mapper.registerModule(new Jdk8Module());
-        mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
-        mapper.setSerializationInclusion(Include.NON_NULL);
-        mapper.setSerializationInclusion(Include.NON_EMPTY);
+    @Test
+    public void testGosysKvittering() throws Exception {
+        test(new FPFordelGosysKvittering("42"), true, mapper);
+    }
+
+    @Test
+    public void testPollKvittering() throws Exception {
+        test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), true, mapper);
+    }
+
+    @Test
+    public void testFordeltKvittering() throws Exception {
+        test(new FPSakFordeltKvittering("123", "456"), true, mapper);
     }
 
     @Test
@@ -110,33 +116,59 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEndringssøknad() {
-        test(endringssøknad(), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(endringssøknad(v), true);
+        }
     }
 
     @Test
     public void testForeldrepenger() {
-        test(foreldrePenger(false), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(foreldrePenger(v, false), true);
+        }
     }
 
     @Test
     public void testSøknad() {
-        test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(false), true);
-        // test(foreldrepengeSøknadUtenVedlegg(), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), true);
+        }
+
     }
 
     @Test
     public void testOpptjening() {
-        test(opptjening());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(opptjening(v));
+        }
+
     }
 
     @Test
     public void testRettigheter() {
-        test(rettigheter());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(rettigheter(v));
+        }
     }
 
     @Test
     public void testUkjentForelder() {
         test(new UkjentForelder());
+    }
+
+    @Test
+    public void testStønadskontoType() {
+        test(StønadskontoType.IKKE_SATT, true);
+    }
+
+    @Test
+    public void testSøknadMetadata() {
+        test(new SøknadMetadata(new SøknadEgenskaper(SøknadType.INITIELL, Versjon.V1), "42"), true);
+    }
+
+    @Test
+    public void testSøknadInspeksjon() {
+        test(new SøknadEgenskaper(SøknadType.INITIELL, Versjon.V1), true);
     }
 
     @Test
@@ -146,47 +178,67 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUtenlandskForelder() {
-        test(utenlandskForelder());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(utenlandskForelder(v));
+        }
     }
 
     @Test
     public void testNorskForelder() {
-        test(norskForelder());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(norskForelder(v));
+        }
+
     }
 
     @Test
     public void testFordeling() {
-        test(fordeling());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(fordeling(v));
+        }
     }
 
     @Test
     public void testUttaksPeride() {
-        test(uttaksPeriode(), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(uttaksPeriode(v), true);
+        }
     }
 
     @Test
     public void testGradertPeriode() {
-        test(gradertPeriode(), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(gradertPeriode(v), true);
+        }
     }
 
     @Test
     public void testOverføringsperiode() {
-        test(overføringsPeriode(), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(overføringsPeriode(v), true);
+        }
     }
 
     @Test
     public void testOppholdsPeriode() {
-        test(oppholdsPeriode());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(oppholdsPeriode(v));
+        }
     }
 
     @Test
     public void testUtsettelsesPeriode() {
-        test(utsettelsesPeriode());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(utsettelsesPeriode(v));
+        }
+
     }
 
     @Test
     public void testÅpenPeriode() {
-        test(åpenPeriode());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(åpenPeriode(v));
+        }
     }
 
     @Test
@@ -196,36 +248,48 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testOmsorgsovertagelsse() {
-        test(omsorgsovertakelse());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(omsorgsovertakelse(v));
+        }
+
     }
 
     @Test
     public void testTermin() {
-        test(termin());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(termin(v));
+        }
     }
 
     @Test
     public void testAnnenOpptjening() {
-        test(annenOpptjening());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(annenOpptjening(v));
+        }
     }
 
     @Test
     public void testUtenlandskrbeidsforhold() {
-        test(utenlandskArbeidsforhold(), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(utenlandskArbeidsforhold(v), true);
+        }
     }
 
     @Test
     public void testEgenNæringUtenlandskorganisasjon() throws Exception {
         ClassPathResource res = new ClassPathResource("utenlandskOrg.json");
         UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(org));
         assertEquals(CountryCode.UG, org.getRegistrertILand());
-        test(utenlandskEgenNæring(), true);
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(utenlandskEgenNæring(v), true);
+        }
     }
 
     @Test
     public void testEgenNæringNorskorganisasjon() {
-        test(norskEgenNæring());
+        for (Versjon v : Versjon.alleVersjoner()) {
+            test(norskEgenNæring(v));
+        }
     }
 
     private void test(Object object, boolean print) {

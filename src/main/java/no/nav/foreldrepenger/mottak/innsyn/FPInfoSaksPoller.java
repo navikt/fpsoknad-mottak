@@ -22,13 +22,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.util.TokenHelper;
 
 @Service
 public class FPInfoSaksPoller extends AbstractRestConnection {
@@ -37,9 +36,8 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
 
     private final int maxAntallForsøk;
 
-    public FPInfoSaksPoller(RestTemplate template, TokenHelper tokenHelper,
-            @Value("${fpinfo.max:5}") int maxAntallForsøk) {
-        super(template, tokenHelper);
+    public FPInfoSaksPoller(RestOperations RestOperations, @Value("${fpinfo.max:5}") int maxAntallForsøk) {
+        super(RestOperations);
         this.maxAntallForsøk = maxAntallForsøk;
     }
 

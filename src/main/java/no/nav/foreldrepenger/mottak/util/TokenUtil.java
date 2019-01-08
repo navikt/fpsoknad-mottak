@@ -13,18 +13,18 @@ import org.springframework.stereotype.Component;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.http.errorhandling.UnauthenticatedException;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.oidc.context.TokenContext;
+import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 
 @Component
-public class TokenHelper {
+public class TokenUtil {
 
     private final OIDCRequestContextHolder ctxHolder;
 
-    public TokenHelper(OIDCRequestContextHolder ctxHolder) {
+    public TokenUtil(OIDCRequestContextHolder ctxHolder) {
         this.ctxHolder = ctxHolder;
     }
 
@@ -32,7 +32,7 @@ public class TokenHelper {
         return getSubject() != null;
     }
 
-    public Date getExp() {
+    public Date getExpiryDate() {
         return Optional.ofNullable(claimSet())
                 .map(JWTClaimsSet::getExpirationTime)
                 .orElse(null);
@@ -50,8 +50,8 @@ public class TokenHelper {
                 .orElseThrow(unauthenticated("Fant ikke subject"));
     }
 
-    private static Supplier<? extends UnauthenticatedException> unauthenticated(String msg) {
-        return () -> new UnauthenticatedException(msg);
+    private static Supplier<? extends OIDCTokenValidatorException> unauthenticated(String msg) {
+        return () -> new OIDCTokenValidatorException(msg);
     }
 
     private JWTClaimsSet claimSet() {

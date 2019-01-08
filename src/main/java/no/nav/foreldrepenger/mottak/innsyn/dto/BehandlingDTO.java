@@ -10,11 +10,10 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
 import no.nav.foreldrepenger.mottak.innsyn.Lenke;
 
-@Data
 public class BehandlingDTO {
+
     private static final String SØKNAD = "søknad";
     private final String status;
     private final String type;
@@ -54,9 +53,66 @@ public class BehandlingDTO {
         this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
     }
 
+    public static String getSøknad() {
+        return SØKNAD;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTema() {
+        return tema;
+    }
+
+    public String getÅrsak() {
+        return årsak;
+    }
+
+    public String getBehandlendeEnhet() {
+        return behandlendeEnhet;
+    }
+
+    public String getBehandlendeEnhetNavn() {
+        return behandlendeEnhetNavn;
+    }
+
+    public String getBehandlingResultatType() {
+        return behandlingResultatType;
+    }
+
+    public LocalDateTime getOpprettetTidspunkt() {
+        return opprettetTidspunkt;
+    }
+
+    public LocalDateTime getEndretTidspunkt() {
+        return endretTidspunkt;
+    }
+
+    public List<String> getInntekstmeldinger() {
+        return inntekstmeldinger;
+    }
+
+    public List<Lenke> getLenker() {
+        return lenker;
+    }
+
     public Lenke getSøknadsLenke() {
         return safeStream(getLenker())
                 .filter(s -> s.getRel().equals(SØKNAD))
                 .findFirst().orElse(null);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", tema=" + tema + ", årsak="
+                + årsak + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
+                + ", behandlingResultatType=" + behandlingResultatType + ", opprettetTidspunkt=" + opprettetTidspunkt
+                + ", endretTidspunkt=" + endretTidspunkt + ", inntekstmeldinger=" + inntekstmeldinger + ", lenker="
+                + lenker + "]";
     }
 }

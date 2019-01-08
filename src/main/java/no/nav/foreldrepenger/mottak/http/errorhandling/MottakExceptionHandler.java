@@ -4,11 +4,12 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +27,25 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotQueueUnavailableException;
+import no.nav.foreldrepenger.mottak.innsending.pdf.PDFException;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @Inject
+    private TokenUtil tokenHelper;
+
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
 
     @ResponseBody
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
+        if (e.getStatusCode().equals(UNAUTHORIZED) || e.getStatusCode().equals(FORBIDDEN)) {
+            return logAndHandle(e.getStatusCode(), e, request, tokenHelper.getExpiryDate());
+        }
         return logAndHandle(e.getStatusCode(), e, request);
     }
 
@@ -53,29 +61,24 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
-    @ExceptionHandler(value = { DokmotQueueUnavailableException.class })
-    protected ResponseEntity<Object> handleRemoteUnavailable(DokmotQueueUnavailableException e, WebRequest req) {
-        return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
-    }
-
-    @ExceptionHandler(value = { NotFoundException.class })
-    protected ResponseEntity<Object> handleNotFound(NotFoundException e, WebRequest req) {
-        return logAndHandle(NOT_FOUND, e, req);
-    }
-
-    @ExceptionHandler({ UnauthorizedException.class })
-    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e, WebRequest req) {
-        return logAndHandle(UNAUTHORIZED, e, req, e.getExpiryDate());
-    }
-
     @ExceptionHandler({ OIDCUnauthorizedException.class })
     public ResponseEntity<Object> handleUnauthorizedException(OIDCUnauthorizedException e, WebRequest req) {
         return logAndHandle(UNAUTHORIZED, e, req);
     }
 
-    @ExceptionHandler(value = { UnauthenticatedException.class })
-    protected ResponseEntity<Object> handleUnauthenticated(UnauthenticatedException e, WebRequest req) {
-        return logAndHandle(FORBIDDEN, e, req, e.getExpiryDate());
+    @ExceptionHandler({ PDFException.class })
+    public ResponseEntity<Object> handlePDFException(PDFException e, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
+    }
+
+    @ExceptionHandler({ VersionException.class })
+    public ResponseEntity<Object> handleVersionException(VersionException e, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req, e.getVersjon());
+    }
+
+    @ExceptionHandler({ UnexpectedInputException.class })
+    public ResponseEntity<Object> handleIncompleteException(UnexpectedInputException e, WebRequest req) {
+        return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
     }
 
     @ExceptionHandler({ OIDCTokenValidatorException.class })

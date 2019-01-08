@@ -1,3 +1,4 @@
+
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.text.Normalizer.Form.NFD;
@@ -73,12 +74,11 @@ public class PDFElementRenderer {
     }
 
     public float addLineOfRegularText(int marginOffset, String line, FontAwareCos cos, float startY)
-        throws IOException {
+            throws IOException {
         String encodableLine = normalizeAndRemoveNonencodableChars(line, cos.REGULARFONT);
         List<String> lines = splitLineIfNecessary(
-            encodableLine,
-            characterLimitInCos(cos.REGULARFONT, cos.REGULARFONTSIZE, marginOffset)
-        );
+                encodableLine,
+                characterLimitInCos(cos.REGULARFONT, cos.REGULARFONTSIZE, marginOffset));
         int lineNumber = 0;
         for (String singleLine : lines) {
             cos.beginText();
@@ -109,10 +109,10 @@ public class PDFElementRenderer {
         try {
             font.encode(Character.toString(character));
             return true;
-        } catch (IllegalArgumentException e) {  // likely non-existence of glyph
+        } catch (IllegalArgumentException e) { // likely non-existence of glyph
             LOG.info(String.format(
-                "No glyph for %x in font %s, character has been dropped from pdf.",
-                (int) character, font.toString()));
+                    "No glyph for %x in font %s, character has been dropped from pdf.",
+                    (int) character, font.toString()));
             return false;
         }
     }

@@ -60,8 +60,6 @@ public abstract class LukketPeriodeMedVedlegg {
 
     private static long arbeidsdager(final LocalDate start, final LocalDate end) {
         final DayOfWeek startW = start.getDayOfWeek();
-        final DayOfWeek endW = end.getDayOfWeek();
-
         final long days = ChronoUnit.DAYS.between(start, end);
         final long daysWithoutWeekends = days - 2 * ((days + startW.getValue()) / 7);
 

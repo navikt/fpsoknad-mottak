@@ -30,6 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 @EqualsAndHashCode(exclude = "mottattdato")
 @JsonPropertyOrder({ "mottattdato", "søker", "ytelse", "begrunnelseForSenSøknad", "tilleggsopplysninger", "vedlegg" })
 public class Søknad {
+
     @NotNull
     private final LocalDateTime mottattdato;
     @Valid

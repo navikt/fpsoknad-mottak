@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "virksomhetsnummer" })
+@ToString(callSuper = true, exclude = { "virksomhetsnummer" })
 public class GradertUttaksPeriode extends UttaksPeriode {
     private final double arbeidstidProsent;
     private final boolean erArbeidstaker;
@@ -40,5 +40,4 @@ public class GradertUttaksPeriode extends UttaksPeriode {
         this.virksomhetsnummer = virksomhetsnummer;
         this.arbeidsForholdSomskalGraderes = arbeidsForholdSomskalGraderes;
     }
-
 }

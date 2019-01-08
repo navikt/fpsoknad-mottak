@@ -5,14 +5,13 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
-import static no.nav.foreldrepenger.mottak.util.Jaxb.unmarshal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.jboss.logging.MDC;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +28,19 @@ import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.mottak.http.Constants;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
-import no.nav.foreldrepenger.mottak.util.Jaxb.ValidationMode;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
+import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Bruker;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -44,7 +49,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class,
+@ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class, ESV1JAXBUtil.class,
         DokmotEngangsstønadXMLGenerator.class,
         DokmotEngangsstønadXMLKonvoluttGenerator.class,
         CallIdGenerator.class,
@@ -52,9 +57,11 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         ForeldrepengeInfoRenderer.class,
         SøknadTextFormatter.class,
         SpringOIDCRequestContextHolder.class })
+
 @AutoConfigureJsonTesters
 public class TestDokmotSerialization {
-
+    @Autowired
+    ESV1JAXBUtil jaxb;
     @Autowired
     ObjectMapper mapper;
     @Autowired
@@ -62,22 +69,25 @@ public class TestDokmotSerialization {
     @Autowired
     DokmotEngangsstønadXMLKonvoluttGenerator søknadXMLKonvoluttGenerator;
 
+    private static final SøknadInspektør INSPEKTOR = new XMLStreamSøknadInspektør();
+
     @Test
     public void testSøknadUtlandXML() throws Exception {
     }
 
     @Test
     public void testKonvoluttXML() throws Exception {
-        Søknad engangssøknad = engangssøknad(true, fødsel(), norskForelder(),
+        MDC.put(Constants.NAV_CALL_ID, "42");
+        Søknad engangssøknad = engangssøknad(Versjon.V1, true, fødsel(), norskForelder(Versjon.V1),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person());
-        Dokumentforsendelse unmarshalled = unmarshal(konvolutt, Dokumentforsendelse.class,
-                ValidationMode.ENGANGSSTØNAD);
+        System.out.println(konvolutt);
+        Dokumentforsendelse unmarshalled = jaxb.unmarshal(konvolutt, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
         assertTrue(hasPdfSignature(pdf.getDokument()));
         Dokumentinnhold søknadsXML = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(1);
-        SoeknadsskjemaEngangsstoenad deserializedSøknadModel = unmarshal(søknadsXML.getDokument(),
-                SoeknadsskjemaEngangsstoenad.class, ValidationMode.ENGANGSSTØNAD);
+        SoeknadsskjemaEngangsstoenad deserializedSøknadModel = jaxb.unmarshal(søknadsXML.getDokument(),
+                SoeknadsskjemaEngangsstoenad.class);
         assertEquals(deserializedSøknadModel.getOpplysningerOmBarn().getAntallBarn(), 1);
         assertEquals(deserializedSøknadModel.getSoknadsvalg().getFoedselEllerAdopsjon(), FoedselEllerAdopsjon.FOEDSEL);
     }
@@ -85,7 +95,7 @@ public class TestDokmotSerialization {
     @Test
     public void testDokmotModelTransformation() throws Exception {
         ValgfrittVedlegg valgfrittVedlegg = valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP);
-        Søknad søknad = engangssøknad(true, termin(), norskForelder(), valgfrittVedlegg);
+        Søknad søknad = engangssøknad(Versjon.V1, true, termin(), norskForelder(Versjon.V1), valgfrittVedlegg);
         Person søker = person();
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
         Bruker bruker = Bruker.class.cast(dokmotModel.getBruker());
@@ -98,13 +108,17 @@ public class TestDokmotSerialization {
 
     @Test
     public void testDokmotMarshalling() throws Exception {
-        Søknad søknad = engangssøknad(true, termin(), utenlandskForelder(),
+        Søknad søknad = engangssøknad(Versjon.V1, true, termin(), utenlandskForelder(),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         Person søker = person();
-        serialize(søknad, true, mapper);
+        String xml = søknadXMLGenerator.tilXML(søknad, søker);
+        System.out.println(xml);
+        SøknadEgenskaper inspiser = INSPEKTOR.inspiser(xml);
+        assertEquals(Versjon.V1, inspiser.getVersjon());
+        assertEquals(SøknadType.ENGANGSSØKNAD, inspiser.getType());
         SoeknadsskjemaEngangsstoenad dokmotModel = søknadXMLGenerator.tilDokmotModel(søknad, søker);
-        SoeknadsskjemaEngangsstoenad unmarshalled = unmarshal(søknadXMLGenerator.tilXML(søknad, søker),
-                SoeknadsskjemaEngangsstoenad.class, ValidationMode.ENGANGSSTØNAD);
+        SoeknadsskjemaEngangsstoenad unmarshalled = jaxb.unmarshal(xml,
+                SoeknadsskjemaEngangsstoenad.class);
         assertEquals(dokmotModel.getSoknadsvalg().getStoenadstype(), unmarshalled.getSoknadsvalg().getStoenadstype());
         assertEquals(dokmotModel.getSoknadsvalg().getFoedselEllerAdopsjon(),
                 unmarshalled.getSoknadsvalg().getFoedselEllerAdopsjon());
