@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +58,11 @@ public class SøknadPreprodController {
     @PostMapping("/søknad")
     public String FPsøknadV1(@Valid @RequestBody Søknad søknad) {
         return fpSøknad(søknad, Versjon.V1);
+    }
+
+    @GetMapping(value = "/test", produces = APPLICATION_JSON_VALUE)
+    public AktorId test() {
+        return new AktorId("42");
     }
 
     @PostMapping("/søknadES")

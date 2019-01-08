@@ -88,6 +88,11 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
+    public void test1() {
+        assertEquals(new AktorId("42"), template.getForObject(INNSENDING_PREPROD + "/test", AktorId.class));
+    }
+
+    @Test
     public void testFPForeldrepengerSøknadXMLV1() {
         Versjon versjon = V1;
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
