@@ -15,7 +15,7 @@ public class RestClientConfiguration {
 
     @Bean
     public RestOperations restTemplate(ClientHttpRequestInterceptor... interceptors) {
-
+        ;
         RestTemplate template = new RestTemplateBuilder()
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
