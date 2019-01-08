@@ -7,13 +7,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,9 +36,6 @@ import no.nav.security.oidc.api.Unprotected;
 public class SøknadController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SøknadController.class);
-
-    @Inject
-    Environment env;
 
     public static final String INNSENDING = "/mottak";
 
