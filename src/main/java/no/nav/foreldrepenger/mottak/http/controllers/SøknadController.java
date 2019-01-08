@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -56,27 +57,27 @@ public class SøknadController {
 
     @PostMapping("/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
-        return sender.send(søknad, oppslag.getSøker());
+        return sender.send(søknad, oppslag.getSøker(), V2);
     }
 
-    @PostMapping("/sendV2")
+    @PostMapping("/sendV1")
     public Kvittering sendV2(@Valid @RequestBody Søknad søknad) {
-        return sender.send(søknad, oppslag.getSøker(), V2);
+        return sender.send(søknad, oppslag.getSøker(), V1);
     }
 
     @PostMapping("/ettersend")
     public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
-        return sender.send(ettersending, oppslag.getSøker());
+        return sender.send(ettersending, oppslag.getSøker(), V2);
     }
 
     @PostMapping("/endre")
     public Kvittering send(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sender.send(endringssøknad, oppslag.getSøker());
+        return sender.send(endringssøknad, oppslag.getSøker(), V2);
     }
 
-    @PostMapping("/endreV2")
+    @PostMapping("/endreV1")
     public Kvittering sendV2(@Valid @RequestBody Endringssøknad endringsSøknad) {
-        return sender.send(endringsSøknad, oppslag.getSøker(), V2);
+        return sender.send(endringsSøknad, oppslag.getSøker(), V1);
     }
 
     @GetMapping("/ping")
