@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class SøknadController {
 
     @PostMapping("/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
-        return sender.send(søknad, oppslag.getSøker(), V2);
+        return sender.send(søknad, oppslag.getSøker(), DEFAULT_VERSJON);
     }
 
     @PostMapping("/sendV1")
@@ -67,12 +67,12 @@ public class SøknadController {
 
     @PostMapping("/ettersend")
     public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
-        return sender.send(ettersending, oppslag.getSøker(), V2);
+        return sender.send(ettersending, oppslag.getSøker(), DEFAULT_VERSJON);
     }
 
     @PostMapping("/endre")
     public Kvittering send(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sender.send(endringssøknad, oppslag.getSøker(), V2);
+        return sender.send(endringssøknad, oppslag.getSøker(), DEFAULT_VERSJON);
     }
 
     @PostMapping("/endreV1")
