@@ -81,11 +81,12 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                 }
             }
 
-            LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type", asList(INITIELL, ENDRING));
+            LOG.warn("Fant ingen av de kjente tags {} i søknaden {}, kan ikke fastslå type",
+                    asList(FORELDREPENGER, ENDRINGSSOEKNAD),xml);
             return UKJENT;
         } catch (XMLStreamException | FactoryConfigurationError e) {
             LOG.warn("Feil ved søk etter kjente tags {} i søknaden {}, kan ikke fastslå type",
-                    asList(INITIELL, ENDRING), xml, e);
+                    asList(FORELDREPENGER, ENDRINGSSOEKNAD), xml, e);
             return UKJENT;
         }
     }
