@@ -501,6 +501,13 @@ public class ForeldrepengeInfoRenderer {
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("overføring"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(overføring), cos, y);
+        if (!vedlegg.isEmpty()) {
+            LOG.debug("Overføringsperiode har {} vedlegg med type(r) {}", vedlegg.size(),
+                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
+        }
+        else {
+            LOG.debug("Oveføringsperiode har ingen vedlegg");
+        }
         y = renderVedlegg(vedlegg, overføring.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -520,6 +527,13 @@ public class ForeldrepengeInfoRenderer {
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse), cos, y);
+        if (!vedlegg.isEmpty()) {
+            LOG.debug("UtsettelsesPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
+                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
+        }
+        else {
+            LOG.debug("UtsettelsesPeriode har ingen vedlegg");
+        }
         y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -545,6 +559,13 @@ public class ForeldrepengeInfoRenderer {
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("opphold"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(opphold, antallBarn), cos, y);
+        if (!vedlegg.isEmpty()) {
+            LOG.debug("OppholdsPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
+                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
+        }
+        else {
+            LOG.debug("OppholdsPeriode har ingen vedlegg");
+        }
         y = renderVedlegg(vedlegg, opphold.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -569,6 +590,13 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addBulletPoint(txt("uttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn), cos, y);
+        if (!vedlegg.isEmpty()) {
+            LOG.debug("UttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
+                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
+        }
+        else {
+            LOG.debug("UttaksPeriode har ingen vedlegg");
+        }
         y = renderVedlegg(vedlegg, uttak.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -579,6 +607,13 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn), cos, y);
+        if (!vedlegg.isEmpty()) {
+            LOG.debug("GradertUttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
+                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
+        }
+        else {
+            LOG.debug("GradertUttaksPeriode har ingen vedlegg");
+        }
         y = renderVedlegg(vedlegg, gradert.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
