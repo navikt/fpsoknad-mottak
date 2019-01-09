@@ -33,7 +33,12 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     @Override
     public SøknadEgenskaper inspiser(String xml) {
         SøknadEgenskaper egenskaper = new SøknadEgenskaper(typeFra(xml), versjonFra(xml));
-        LOG.info("Dette er en søknad av type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
+        if (egenskaper.getType().equals(UKJENT)) {
+            LOG.warn("Søknad er type {} og versjon {} {}", egenskaper.getType(), egenskaper.getVersjon(), xml);
+        }
+        else {
+            LOG.info("Søknad er type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
+        }
         return egenskaper;
 
     }
@@ -42,7 +47,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
         return erEngangsstønad(xml) ? ENGANGSSØKNAD : fpTypeFra(xml);
     }
 
-    private boolean erEngangsstønad(String xml) {
+    private static boolean erEngangsstønad(String xml) {
         return namespaceFra(xml).startsWith("http");
     }
 
@@ -81,8 +86,8 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                 }
             }
 
-            LOG.warn("Fant ingen av de kjente tags {} i søknaden {}, kan ikke fastslå type",
-                    asList(FORELDREPENGER, ENDRINGSSOEKNAD),xml);
+            LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type",
+                    asList(FORELDREPENGER, ENDRINGSSOEKNAD));
             return UKJENT;
         } catch (XMLStreamException | FactoryConfigurationError e) {
             LOG.warn("Feil ved søk etter kjente tags {} i søknaden {}, kan ikke fastslå type",
