@@ -82,7 +82,7 @@ public class TestUtils {
 
     static TidligereOppholdsInformasjon tidligereOppHoldIUtlandet() {
         List<Utenlandsopphold> utenlandOpphold = new ArrayList<>();
-        utenlandOpphold.add(new Utenlandsopphold(CountryCode.SE,
+        utenlandOpphold.add(new Utenlandsopphold(CountryCode.AT,
                 new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now().minusMonths(6).minusDays(1))));
         utenlandOpphold.add(new Utenlandsopphold(CountryCode.FI,
                 new LukketPeriode(LocalDate.now().minusMonths(6), LocalDate.now())));
