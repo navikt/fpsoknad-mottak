@@ -60,7 +60,8 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker, String saksnr) {
-        LOG.info("Henter {} behandling{} for sak {}", behandlingsLenker.size(), endelse(behandlingsLenker), saksnr);
+        LOG.info("Henter {} behandling{} for sak {} fra {}", behandlingsLenker.size(), endelse(behandlingsLenker),
+                saksnr, behandlingsLenker);
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
                 .map(innsynConnection::hentBehandling)
                 .map(this::tilBehandling)
@@ -73,7 +74,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad hentSøknad(Lenke søknadsLenke) {
-        LOG.info("Henter søknad");
+        LOG.info("Henter søknad fra {}", søknadsLenke);
         InnsynsSøknad søknad = Optional.ofNullable(innsynConnection.hentSøknad(søknadsLenke))
                 .map(this::tilSøknad)
                 .orElse(null);

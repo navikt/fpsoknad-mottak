@@ -25,6 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StreamUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -134,6 +136,15 @@ public class TestFPFordelSerialization {
     }
 
     @Test
+    public void testInspektør() throws Exception {
+        SøknadInspektør inspektør = new XMLStreamSøknadInspektør();
+        String xml = StreamUtils.copyToString(new ClassPathResource("v1response.xml").getInputStream(),
+                Charset.defaultCharset());
+        SøknadEgenskaper egenskaper = inspektør.inspiser(xml);
+        System.out.println(egenskaper);
+    }
+
+    @Test
     public void testKonvolutt() {
         alleVersjoner().stream()
                 .forEach(v -> testKonvolutt(v));
@@ -161,6 +172,7 @@ public class TestFPFordelSerialization {
     private void testSøknadRoundtrip(Versjon v) {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
         String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
+        System.out.println(xml);
         SøknadEgenskaper inspiser = INSPEKTØR.inspiser(xml);
         assertEquals(inspiser.getVersjon(), v);
         assertEquals(inspiser.getType(), SøknadType.INITIELL);

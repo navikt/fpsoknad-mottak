@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:soeknad xmlns:ns2="urn:no:nav:vedtak:felles:xml:soeknad:v1">
+    <mottattDato>2018-07-06</mottattDato>
+    <omYtelse xsi:type="ns4:Foreldrepenger" xmlns:ns4="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <annenForelder xsi:type="ns5:UkjentForelder" xmlns:ns5="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1"/>
+        <rettigheter>
+            <harAnnenForelderRett>false</harAnnenForelderRett>
+            <harOmsorgForBarnetIPeriodene>true</harOmsorgForBarnetIPeriodene>
+            <harAleneomsorgForBarnet>true</harAleneomsorgForBarnet>
+        </rettigheter>
+        <relasjonTilBarnet xsi:type="ns5:Termin" xmlns:ns5="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1">
+            <antallBarn>1</antallBarn>
+            <termindato>2018-07-31</termindato>
+            <utstedtdato>2018-07-01</utstedtdato>
+        </relasjonTilBarnet>
+        <medlemskap>
+            <oppholdNorge>
+                <periode>
+                    <fom>2017-07-06</fom>
+                    <tom>2018-07-06</tom>
+                </periode>
+            </oppholdNorge>
+            <oppholdNorge>
+                <periode>
+                    <fom>2018-07-07</fom>
+                    <tom>2019-07-06</tom>
+                </periode>
+            </oppholdNorge>
+            <iNorgeVedFoedselstidspunkt>true</iNorgeVedFoedselstidspunkt>
+        </medlemskap>
+        <opptjening/>
+        <fordeling>
+            <annenForelderErInformert>false</annenForelderErInformert>
+            <perioder xsi:type="ns5:Uttaksperiode" xmlns:ns5="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
+                <fom>2018-07-09</fom>
+                <tom>2018-07-29</tom>
+                <type kodeverk="UTTAK_PERIODE_TYPE" kode="FORELDREPENGER_FØR_FØDSEL"/>
+                <oenskerSamtidigUttak>false</oenskerSamtidigUttak>
+                <morsAktivitetIPerioden kodeverk="MORS_AKTIVITET" kode="-"/>
+            </perioder>
+            <perioder xsi:type="ns5:Uttaksperiode" xmlns:ns5="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1">
+                <fom>2018-07-30</fom>
+                <tom>2019-08-25</tom>
+                <type kodeverk="UTTAK_PERIODE_TYPE" kode="FORELDREPENGER"/>
+                <oenskerSamtidigUttak>false</oenskerSamtidigUttak>
+                <morsAktivitetIPerioden kodeverk="MORS_AKTIVITET" kode="-"/>
+            </perioder>
+            <oenskerKvoteOverfoert kodeverk="OVERFOERING_AARSAK_TYPE" kode="-"/>
+        </fordeling>
+        <dekningsgrad>
+            <dekningsgrad kodeverk="IKKE_DEFINERT" kode="100"/>
+        </dekningsgrad>
+    </omYtelse>
+    <soeker>
+        <aktoerId>1000104312026</aktoerId>
+        <soeknadsrolle kodeverk="FORELDRE_TYPE" kode="MOR"/>
+    </soeker>
+</ns2:soeknad>

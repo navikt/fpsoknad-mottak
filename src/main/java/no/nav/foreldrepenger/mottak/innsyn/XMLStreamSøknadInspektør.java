@@ -28,6 +28,8 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
+    private static final String OMYTELSE = "omYtelse";
+
     private static final Logger LOG = LoggerFactory.getLogger(XMLStreamSøknadInspektør.class);
 
     @Override
@@ -40,11 +42,10 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
             LOG.info("Søknad er type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
         }
         return egenskaper;
-
     }
 
-    private SøknadType typeFra(String xml) {
-        return erEngangsstønad(xml) ? ENGANGSSØKNAD : fpTypeFra(xml);
+    private static SøknadType typeFra(String xml) {
+        return !erEngangsstønad(xml) ? fpTypeFra(xml) : ENGANGSSØKNAD;
     }
 
     private static boolean erEngangsstønad(String xml) {
@@ -64,7 +65,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
             }
             return reader.getNamespaceURI();
         } catch (XMLStreamException e) {
-            LOG.warn("Kunne ikke hente namespace fra XML");
+            LOG.warn("Kunne ikke hente namespace fra XML {}", xml);
             throw new UnsupportedVersionException(e);
         }
     }
@@ -77,10 +78,32 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
             while (reader.hasNext()) {
                 reader.next();
                 if (reader.getEventType() == START_ELEMENT) {
-                    if (reader.getLocalName().equals(FORELDREPENGER)) {
+                    if (reader.getLocalName().equals(OMYTELSE)) {
+                        if (reader.getAttributeCount() > 0) {
+                            String type = reader.getAttributeValue(reader.getAttributeName(0).getNamespaceURI(),
+                                    "type");
+                            if (type != null) {
+                                if (type.toLowerCase().contains(FORELDREPENGER.toLowerCase())) {
+                                    return INITIELL;
+                                }
+                                if (type.toLowerCase().contains(ENDRINGSSOEKNAD.toLowerCase())) {
+                                    return ENDRING;
+                                }
+                            }
+                        }
+                        if (reader.getAttributeName(0).getLocalPart().equalsIgnoreCase(FORELDREPENGER)) {
+                            LOG.warn("Fant type INITIELL fra attributt på OMYTELSE");
+                            return INITIELL;
+                        }
+                        if (reader.getAttributeName(0).getLocalPart().equalsIgnoreCase(ENDRINGSSOEKNAD)) {
+                            LOG.warn("Fant type ENDRING fra attributt på OMYTELSE");
+                            return ENDRING;
+                        }
+                    }
+                    if (reader.getLocalName().equalsIgnoreCase(FORELDREPENGER)) {
                         return INITIELL;
                     }
-                    if (reader.getLocalName().equals(ENDRINGSSOEKNAD)) {
+                    if (reader.getLocalName().equalsIgnoreCase(ENDRINGSSOEKNAD)) {
                         return ENDRING;
                     }
                 }
