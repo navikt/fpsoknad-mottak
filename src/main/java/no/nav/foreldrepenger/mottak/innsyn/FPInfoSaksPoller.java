@@ -113,6 +113,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
             ACCEPTED.increment();
             return kvitteringMedType(INNVILGET, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
+        case MOTTATT:
         case PÅ_VENT:
             PENDING.increment();
             return kvitteringMedType(PÅ_VENT, fordeltKvittering.getJournalpostId(),
