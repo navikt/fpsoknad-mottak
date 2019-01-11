@@ -145,6 +145,16 @@ public class TestFPFordelSerialization {
     }
 
     @Test
+    public void testInspektørV2Engangs() throws Exception {
+        SøknadInspektør inspektør = new XMLStreamSøknadInspektør();
+        String xml = StreamUtils.copyToString(new ClassPathResource("v2engangs.xml").getInputStream(),
+                Charset.defaultCharset());
+        SøknadEgenskaper egenskaper = inspektør.inspiser(xml);
+        assertEquals(Versjon.V2, egenskaper.getVersjon());
+        assertEquals(SøknadType.ENGANGSSØKNAD, egenskaper.getType());
+    }
+
+    @Test
     public void testKonvolutt() {
         alleVersjoner().stream()
                 .forEach(v -> testKonvolutt(v));

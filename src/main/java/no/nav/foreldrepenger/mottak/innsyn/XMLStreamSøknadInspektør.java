@@ -30,6 +30,8 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
+    private static final String ENGANGSSOEKNAD = "engangsstønad";
+
     private static final String OMYTELSE = "omYtelse";
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLStreamSøknadInspektør.class);
@@ -48,10 +50,10 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     }
 
     private static SøknadType typeFra(String xml) {
-        return !erEngangsstønad(xml) ? fpTypeFra(xml) : ENGANGSSØKNAD;
+        return !erEngangsstønadV1(xml) ? fpTypeFra(xml) : ENGANGSSØKNAD;
     }
 
-    private static boolean erEngangsstønad(String xml) {
+    private static boolean erEngangsstønadV1(String xml) {
         return namespaceFra(xml).startsWith("http");
     }
 
@@ -89,20 +91,14 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                                     "type");
                             if (type != null) {
                                 if (type.toLowerCase().contains(FORELDREPENGER.toLowerCase())) {
+                                    LOG.warn("Fant type INITIELL fra attributt på OMYTELSE");
                                     return INITIELL;
                                 }
                                 if (type.toLowerCase().contains(ENDRINGSSOEKNAD.toLowerCase())) {
+                                    LOG.warn("Fant type ENDRING fra attributt på OMYTELSE");
                                     return ENDRING;
                                 }
                             }
-                        }
-                        if (reader.getAttributeName(0).getLocalPart().equalsIgnoreCase(FORELDREPENGER)) {
-                            LOG.warn("Fant type INITIELL fra attributt på OMYTELSE");
-                            return INITIELL;
-                        }
-                        if (reader.getAttributeName(0).getLocalPart().equalsIgnoreCase(ENDRINGSSOEKNAD)) {
-                            LOG.warn("Fant type ENDRING fra attributt på OMYTELSE");
-                            return ENDRING;
                         }
                     }
                     if (reader.getLocalName().equalsIgnoreCase(FORELDREPENGER)) {
@@ -110,6 +106,9 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENDRINGSSOEKNAD)) {
                         return ENDRING;
+                    }
+                    if (reader.getLocalName().equalsIgnoreCase(ENGANGSSOEKNAD)) {
+                        return ENGANGSSØKNAD;
                     }
                 }
             }
