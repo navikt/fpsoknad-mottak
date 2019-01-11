@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.util.EnvUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
@@ -37,7 +38,8 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     public SøknadEgenskaper inspiser(String xml) {
         SøknadEgenskaper egenskaper = new SøknadEgenskaper(typeFra(xml), versjonFra(xml));
         if (egenskaper.getType().equals(UKJENT)) {
-            LOG.warn("Søknad er type {} og versjon {} {}", egenskaper.getType(), egenskaper.getVersjon(), xml);
+            LOG.warn("Søknad er type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
+            LOG.warn(EnvUtil.CONFIDENTIAL, "XML er {}", xml);
         }
         else {
             LOG.info("Søknad er type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
