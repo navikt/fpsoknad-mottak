@@ -6,7 +6,7 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;

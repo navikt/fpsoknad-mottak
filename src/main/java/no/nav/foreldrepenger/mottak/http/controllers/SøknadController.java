@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.controllers;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

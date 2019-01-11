@@ -17,6 +17,8 @@ public enum Versjon {
     public static final String VERSION_PROPERTY = "contract.version";
     private final List<String> namespaces;
 
+    public static final Versjon DEFAULT_VERSJON = V2;
+
     private Versjon() {
         this(emptyList());
     }

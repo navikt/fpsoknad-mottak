@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -13,7 +13,6 @@ public interface SøknadSender {
     String DOKMOT_SENDER = "dokmot";
     String FPFORDEL_SENDER = "fpfordel";
     String ROUTING_SENDER = "routing";
-    Versjon DEFAULT_VERSJON = V2;
 
     Kvittering send(Søknad søknad, Person søker, Versjon versjon);
 
