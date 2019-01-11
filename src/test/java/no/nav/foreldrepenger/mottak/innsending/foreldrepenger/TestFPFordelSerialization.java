@@ -136,18 +136,19 @@ public class TestFPFordelSerialization {
     }
 
     @Test
-    public void testInspektør() throws Exception {
+    public void testInspektørFPV1() throws Exception {
         SøknadInspektør inspektør = new XMLStreamSøknadInspektør();
-        String xml = StreamUtils.copyToString(new ClassPathResource("v1response.xml").getInputStream(),
+        String xml = StreamUtils.copyToString(new ClassPathResource("v1fp.xml").getInputStream(),
                 Charset.defaultCharset());
         SøknadEgenskaper egenskaper = inspektør.inspiser(xml);
-        System.out.println(egenskaper);
+        assertEquals(Versjon.V1, egenskaper.getVersjon());
+        assertEquals(SøknadType.INITIELL, egenskaper.getType());
     }
 
     @Test
-    public void testInspektørV2Engangs() throws Exception {
+    public void testInspektørESV2() throws Exception {
         SøknadInspektør inspektør = new XMLStreamSøknadInspektør();
-        String xml = StreamUtils.copyToString(new ClassPathResource("v2engangs.xml").getInputStream(),
+        String xml = StreamUtils.copyToString(new ClassPathResource("v2es.xml").getInputStream(),
                 Charset.defaultCharset());
         SøknadEgenskaper egenskaper = inspektør.inspiser(xml);
         assertEquals(Versjon.V2, egenskaper.getVersjon());
