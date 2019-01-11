@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.UKJENT;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 
 import java.io.StringReader;
 
@@ -65,7 +66,9 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
             }
             return reader.getNamespaceURI();
         } catch (XMLStreamException e) {
-            LOG.warn("Kunne ikke hente namespace fra XML {}", xml);
+            LOG.warn("Kunne ikke hente namespace fra XML");
+            LOG.warn(CONFIDENTIAL, "XML er {}", xml);
+
             throw new UnsupportedVersionException(e);
         }
     }
@@ -113,8 +116,9 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                     asList(FORELDREPENGER, ENDRINGSSOEKNAD));
             return UKJENT;
         } catch (XMLStreamException | FactoryConfigurationError e) {
-            LOG.warn("Feil ved søk etter kjente tags {} i søknaden {}, kan ikke fastslå type",
-                    asList(FORELDREPENGER, ENDRINGSSOEKNAD), xml, e);
+            LOG.warn("Feil ved søk etter kjente tags i søknaden {}, kan ikke fastslå type",
+                    asList(FORELDREPENGER, ENDRINGSSOEKNAD), e);
+            LOG.warn(CONFIDENTIAL, "XML er {}", xml);
             return UKJENT;
         }
     }
