@@ -7,6 +7,7 @@ public enum DokumentType {
     I000006("Utsettelse eller gradert uttak av foreldrepenger (fleksibelt uttak)"),
     I000007("Inntektsopplysninger om selvstendig næringsdrivende og/eller frilansere som skal ha foreldrepenger eller svangerskapspenger"),
     I000026("Inntektsopplysninger for arbeidstaker som skal ha sykepenger, foreldrepenger, svangerskapspenger, pleie-/opplæringspenger"),
+    I000036("Bekreftelse på avtalt ferie"),
     I000037("Mor er innlagt i helseinstitusjon"),
     I000038("Mor er i arbeid, tar utdanning eller er for syk til å ta seg av barnet"),
     I000039("Tjenestebevis"),
