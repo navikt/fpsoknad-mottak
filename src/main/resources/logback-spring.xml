@@ -23,7 +23,6 @@
     </turboFilter>
  </springProfile>
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
-    <logger name="no.nav.foreldrepenger.mottak.innsending.pdf" level="warn" />
 
      <springProfile name="dev,preprod">
         <logger name="org.springframework.web.client.HttpMessageConverterExtractor" level="TRACE" />
