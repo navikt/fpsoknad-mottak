@@ -205,6 +205,7 @@ public class PDFElementRenderer {
 
     public float addLogo(PDDocument doc, FontAwareCos cos, float startY) throws IOException {
         PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, NAV_LOGO, "logo");
+        ximage.getSoftMask();
         float startX = (MEDIABOX.getWidth() - ximage.getWidth()) / 2;
         float offsetTop = 40;
         startY -= ximage.getHeight() / 2 + offsetTop;
