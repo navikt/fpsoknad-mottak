@@ -34,6 +34,7 @@ public class FontAwarePDDocument extends PDDocument {
         try {
             DublinCoreSchema dc = xmp.createAndAddDublinCoreSchema();
             dc.setTitle("Søknad om foreldrepenger eller engangsstønad");
+            dc.addCreator("NAV");
 
             PDFAIdentificationSchema id = xmp.createAndAddPFAIdentificationSchema();
             id.setPart(1);
