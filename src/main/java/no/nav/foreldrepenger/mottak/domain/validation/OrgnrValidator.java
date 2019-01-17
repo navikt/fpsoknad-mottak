@@ -10,7 +10,9 @@ public class OrgnrValidator implements ConstraintValidator<Orgnr, String> {
     @Override
     public boolean isValid(String orgnr, ConstraintValidatorContext context) {
         if (orgnr == null) {
+            return true;
         }
+
         if (orgnr.length() != 9) {
             return false;
         }
