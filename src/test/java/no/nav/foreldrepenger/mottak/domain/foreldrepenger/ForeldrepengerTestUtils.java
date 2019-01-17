@@ -30,7 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
+import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class ForeldrepengerTestUtils {

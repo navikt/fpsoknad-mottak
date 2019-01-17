@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
+import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component

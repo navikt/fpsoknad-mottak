@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http.controllers;
+package no.nav.foreldrepenger.mottak.innsyn;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
-import no.nav.foreldrepenger.mottak.innsyn.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 

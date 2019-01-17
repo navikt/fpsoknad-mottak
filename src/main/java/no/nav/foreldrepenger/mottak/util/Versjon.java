@@ -7,7 +7,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
+import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 
 public enum Versjon {
 

@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.http.errorhandling.UnsupportedVersionException;
+import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;

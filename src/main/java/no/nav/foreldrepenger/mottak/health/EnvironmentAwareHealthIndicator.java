@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http.health;
+package no.nav.foreldrepenger.mottak.health;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
 

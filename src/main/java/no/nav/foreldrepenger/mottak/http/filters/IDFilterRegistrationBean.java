@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
-import static no.nav.foreldrepenger.mottak.http.controllers.InnsynController.INNSYN;
-import static no.nav.foreldrepenger.mottak.http.controllers.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.http.filters.FilterRegistrationUtil.urlPatternsFor;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDING;
+import static no.nav.foreldrepenger.mottak.innsyn.InnsynController.INNSYN;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.stereotype.Component;

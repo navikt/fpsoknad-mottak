@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.http.controllers;
+package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

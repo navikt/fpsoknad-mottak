@@ -8,8 +8,8 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ID142;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
-import static no.nav.foreldrepenger.mottak.http.controllers.SøknadController.INNSENDING;
-import static no.nav.foreldrepenger.mottak.http.controllers.SøknadPreprodController.INNSENDING_PREPROD;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDING;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadPreprodController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
