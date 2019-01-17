@@ -48,8 +48,7 @@ public class FontAwarePDDocument extends PDDocument {
             metadata.importXMPMetadata(baos.toByteArray());
             doc.getDocumentCatalog().setMetadata(metadata);
 
-            InputStream colorProfile = FontAwarePDDocument.class.getResourceAsStream(
-                "/pdf/sRGB.icc");
+            InputStream colorProfile = new ClassPathResource("/pdf/sRGB.icc").getInputStream();
             PDOutputIntent intent = new PDOutputIntent(doc, colorProfile);
             intent.setInfo("sRGB IEC61966-2.1");
             intent.setOutputCondition("sRGB IEC61966-2.1");
