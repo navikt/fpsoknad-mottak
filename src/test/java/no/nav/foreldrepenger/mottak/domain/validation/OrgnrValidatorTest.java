@@ -33,7 +33,7 @@ public class OrgnrValidatorTest {
 
     @Test
     public void testNull() {
-        assertFalse(validator.validate(new TestClass(null)).isEmpty());
+        assertTrue(validator.validate(new TestClass(null)).isEmpty());
     }
 
     @Test
