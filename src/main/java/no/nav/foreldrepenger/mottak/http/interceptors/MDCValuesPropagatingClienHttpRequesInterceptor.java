@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.http.interceptors;
 
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CONSUMER_ID;
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(HIGHEST_PRECEDENCE)
+@Order(LOWEST_PRECEDENCE)
 public class MDCValuesPropagatingClienHttpRequesInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
