@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.http.filters;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_AKTØR_ID;
 import static no.nav.foreldrepenger.mottak.http.Constants.NAV_USER_ID;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
-@Order(HIGHEST_PRECEDENCE)
+@Order(LOWEST_PRECEDENCE)
 @Component
 public class IDToMDCFilterBean extends GenericFilterBean {
 
