@@ -58,7 +58,7 @@ public class FontAwarePDDocument extends PDDocument {
             doc.getDocumentCatalog().addOutputIntent(intent);
         }
         catch(Exception e) {
-           LOG.warn("Setting PDF metadata failed, ignoring error. " + e);
+           LOG.warn("Setting PDF metadata failed, ignoring error. ", e);
         }
     }
 }
