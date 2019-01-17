@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.http.Constants.ISSUER;
+import static no.nav.foreldrepenger.mottak.Constants.ISSUER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 
 import java.util.Date;

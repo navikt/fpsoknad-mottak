@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.http.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
 
 import org.slf4j.MDC;
 

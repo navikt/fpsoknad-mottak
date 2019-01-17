@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class Behandling {
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
     private final String behandlingResultatType;
+    private final List<String> inntekstmeldinger;
     private final InnsynsSøknad søknad;
 
 }

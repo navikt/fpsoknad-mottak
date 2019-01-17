@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
+import static no.nav.foreldrepenger.mottak.Constants.CALL_ID;
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
-import static no.nav.foreldrepenger.mottak.http.Constants.CALL_ID;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.DOKMOT_SENDER;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 

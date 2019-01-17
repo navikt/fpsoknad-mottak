@@ -36,7 +36,7 @@ import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedExcept
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Inject
-    private TokenUtil tokenHelper;
+    private TokenUtil tokenUtil;
 
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
 
@@ -44,7 +44,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
         if (e.getStatusCode().equals(UNAUTHORIZED) || e.getStatusCode().equals(FORBIDDEN)) {
-            return logAndHandle(e.getStatusCode(), e, request, tokenHelper.getExpiryDate());
+            return logAndHandle(e.getStatusCode(), e, request, tokenUtil.getExpiryDate());
         }
         return logAndHandle(e.getStatusCode(), e, request);
     }
@@ -103,7 +103,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
             List<Object> messages) {
         ApiError apiError = apiErrorFra(status, e, req, messages);
-        LOG.warn("{}", apiError.getMessages(), e);
+        LOG.warn("{} [{}] ", status, apiError.getMessages(), e);
         return handleExceptionInternal(e, apiError, headers, status, req);
     }
 

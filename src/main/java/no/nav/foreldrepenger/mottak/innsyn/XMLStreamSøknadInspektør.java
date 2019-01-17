@@ -9,6 +9,7 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 
 import java.io.StringReader;
+import java.util.List;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -30,6 +31,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
+    private static final List<? extends Object> KJENTE_TAGS = asList(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSØKNAD);
     private static final String ENGANGSSOEKNAD = "engangsstønad";
 
     private static final String OMYTELSE = "omYtelse";
@@ -40,7 +42,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     public SøknadEgenskaper inspiser(String xml) {
         SøknadEgenskaper egenskaper = new SøknadEgenskaper(typeFra(xml), versjonFra(xml));
         if (egenskaper.getType().equals(UKJENT)) {
-            LOG.warn("Søknad er type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
+            LOG.warn("Søknad er av type {} og versjon er {}", egenskaper.getType(), egenskaper.getVersjon());
             LOG.warn(EnvUtil.CONFIDENTIAL, "XML er {}", xml);
         }
         else {
@@ -91,11 +93,11 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                                     "type");
                             if (type != null) {
                                 if (type.toLowerCase().contains(FORELDREPENGER.toLowerCase())) {
-                                    LOG.warn("Fant type INITIELL fra attributt på OMYTELSE");
+                                    LOG.debug("Fant type INITIELL fra attributt på OMYTELSE");
                                     return INITIELL;
                                 }
                                 if (type.toLowerCase().contains(ENDRINGSSOEKNAD.toLowerCase())) {
-                                    LOG.warn("Fant type ENDRING fra attributt på OMYTELSE");
+                                    LOG.debug("Fant type ENDRING fra attributt på OMYTELSE");
                                     return ENDRING;
                                 }
                             }
@@ -113,12 +115,10 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                 }
             }
 
-            LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type",
-                    asList(FORELDREPENGER, ENDRINGSSOEKNAD));
+            LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type", KJENTE_TAGS);
             return UKJENT;
         } catch (XMLStreamException | FactoryConfigurationError e) {
-            LOG.warn("Feil ved søk etter kjente tags i søknaden {}, kan ikke fastslå type",
-                    asList(FORELDREPENGER, ENDRINGSSOEKNAD), e);
+            LOG.warn("Feil ved søk etter kjente tags i søknaden {}, kan ikke fastslå type", KJENTE_TAGS, e);
             LOG.warn(CONFIDENTIAL, "XML er {}", xml);
             return UKJENT;
         }

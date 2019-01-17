@@ -115,6 +115,7 @@ public class InnsynTjeneste implements Innsyn {
                         .årsak(w.getÅrsak())
                         .tema(w.getTema())
                         .type(w.getType())
+                        .inntekstmeldinger(w.getInntekstmeldinger())
                         .søknad(hentSøknad(w.getSøknadsLenke()))
                         .build())
                 .orElse(null);
