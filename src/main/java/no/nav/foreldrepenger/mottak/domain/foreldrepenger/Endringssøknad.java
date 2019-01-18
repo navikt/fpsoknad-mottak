@@ -19,7 +19,6 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 @Data
-
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class Endringssøknad extends Søknad {

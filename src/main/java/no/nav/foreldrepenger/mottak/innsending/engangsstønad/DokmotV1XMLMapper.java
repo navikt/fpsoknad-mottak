@@ -84,12 +84,12 @@ public class DokmotV1XMLMapper extends AbstractXMLMapper {
         }
     }
 
-    private RelasjonTilBarn relasjonFra(OpplysningerOmBarn opplysningerOmBarn) {
+    private static RelasjonTilBarn relasjonFra(OpplysningerOmBarn opplysningerOmBarn) {
         opplysningerOmBarn.getAntallBarn();
         return null;
     }
 
-    private Medlemsskap medlemsskapFra(TilknytningNorge tilknytningNorge) {
+    private static Medlemsskap medlemsskapFra(TilknytningNorge tilknytningNorge) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -31,9 +31,8 @@ public class PDFElementRendererTest {
         assertEquals("est4", linesB.get(1));
     }
 
-    private List<String> splitLine(String str, int maxLength) {
-        PDFElementRenderer renderer = new PDFElementRenderer();
-        return renderer.splitLineIfNecessary(str, maxLength);
+    private static List<String> splitLine(String str, int maxLength) {
+        return new PDFElementRenderer().splitLineIfNecessary(str, maxLength);
     }
 
     @Test

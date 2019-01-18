@@ -57,7 +57,8 @@ public class PDFElementRenderer {
             if (noSpaceOrLastSpaceInFirstHalf) {
                 line = str.substring(0, maxLength) + "-";
                 remainingStr = str.substring(maxLength);
-            } else {
+            }
+            else {
                 line = str.substring(0, lastSpace);
                 remainingStr = str.substring(lastSpace + 1);
             }
@@ -95,7 +96,7 @@ public class PDFElementRenderer {
         return removeNonencodableChars(normalizeString(str), font);
     }
 
-    private String removeNonencodableChars(String string, PDFont font) throws IOException {
+    private static String removeNonencodableChars(String string, PDFont font) throws IOException {
         StringBuilder encodable = new StringBuilder();
         for (char character : string.toCharArray()) {
             if (isCharacterEncodeable(character, font)) {
@@ -105,7 +106,7 @@ public class PDFElementRenderer {
         return encodable.toString();
     }
 
-    private boolean isCharacterEncodeable(char character, PDFont font) throws IOException {
+    private static boolean isCharacterEncodeable(char character, PDFont font) throws IOException {
         try {
             font.encode(Character.toString(character));
             return true;
@@ -119,24 +120,24 @@ public class PDFElementRenderer {
 
     private static String normalizeString(String str) {
         return Stream.of(str)
-            .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
-            .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
-            .map(s -> Normalizer.normalize(s, NFD))
-            .map(s -> s.replaceAll("[\\p{Blank}\u00A0]", " ")) //replace tab/no-break space with space
-            .map(s -> s.replaceAll("[\u202D\uFFFD]", "")) //strip left-to-right-operator/not defined
-            .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
-            .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
-            .collect(Collectors.joining());
+                .map(s -> s.replaceAll("å", "xxxxxxxxxx"))
+                .map(s -> s.replaceAll("Å", "XXXXXXXXXX"))
+                .map(s -> Normalizer.normalize(s, NFD))
+                .map(s -> s.replaceAll("[\\p{Blank}\u00A0]", " ")) // replace tab/no-break space with space
+                .map(s -> s.replaceAll("[\u202D\uFFFD]", "")) // strip left-to-right-operator/not defined
+                .map(s -> s.replaceAll("xxxxxxxxxx", "å"))
+                .map(s -> s.replaceAll("XXXXXXXXXX", "Å"))
+                .collect(Collectors.joining());
     }
 
     public float addLinesOfRegularText(List<String> lines, FontAwareCos cos, float startY)
-        throws IOException {
+            throws IOException {
         return addLinesOfRegularText(0, lines, cos, startY);
 
     }
 
     public float addLinesOfRegularText(int marginOffset, List<String> lines, FontAwareCos cos, float startY)
-        throws IOException {
+            throws IOException {
         float yTotal = 0;
         for (String line : lines) {
             yTotal += addLineOfRegularText(marginOffset, line, cos, startY - yTotal);
@@ -149,7 +150,7 @@ public class PDFElementRenderer {
     }
 
     public float addLMultilineBulletpoint(int offset, List<String> lines, FontAwareCos cos, float startY)
-        throws IOException {
+            throws IOException {
         float yTotal = addBulletPoint(offset, lines.get(0), cos, startY);
         for (String line : lines.subList(1, lines.size())) {
             yTotal += addLineOfRegularText("  " + line, cos, startY - yTotal);
@@ -158,7 +159,7 @@ public class PDFElementRenderer {
     }
 
     public float addBulletList(int offset, List<String> lines, FontAwareCos cos, float startY)
-        throws IOException {
+            throws IOException {
         float yTotal = 0;
         for (String line : lines) {
             yTotal += addBulletPoint(offset, line, cos, startY - yTotal);

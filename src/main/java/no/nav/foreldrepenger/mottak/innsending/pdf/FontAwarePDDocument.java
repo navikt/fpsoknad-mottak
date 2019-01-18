@@ -1,21 +1,19 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-
 import org.apache.xmpbox.XMPMetadata;
 import org.apache.xmpbox.schema.DublinCoreSchema;
 import org.apache.xmpbox.schema.PDFAIdentificationSchema;
 import org.apache.xmpbox.xml.XmpSerializer;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 public class FontAwarePDDocument extends PDDocument {
     public static PDType0Font REGULARFONT;
@@ -28,7 +26,7 @@ public class FontAwarePDDocument extends PDDocument {
         setPdfMetadata(this);
     }
 
-    private void setPdfMetadata(PDDocument doc) throws IOException {
+    private static void setPdfMetadata(PDDocument doc) throws IOException {
         XMPMetadata xmp = XMPMetadata.createXMPMetadata();
 
         try {
@@ -40,24 +38,21 @@ public class FontAwarePDDocument extends PDDocument {
             id.setPart(1);
             id.setConformance("B");
 
-            XmpSerializer serializer = new XmpSerializer();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            serializer.serialize(xmp, baos, true);
+            new XmpSerializer().serialize(xmp, baos, true);
 
             PDMetadata metadata = new PDMetadata(doc);
             metadata.importXMPMetadata(baos.toByteArray());
             doc.getDocumentCatalog().setMetadata(metadata);
 
-            InputStream colorProfile = new ClassPathResource("/pdf/sRGB.icc").getInputStream();
-            PDOutputIntent intent = new PDOutputIntent(doc, colorProfile);
+            PDOutputIntent intent = new PDOutputIntent(doc, new ClassPathResource("/pdf/sRGB.icc").getInputStream());
             intent.setInfo("sRGB IEC61966-2.1");
             intent.setOutputCondition("sRGB IEC61966-2.1");
             intent.setOutputConditionIdentifier("sRGB IEC61966-2.1");
             intent.setRegistryName("http://www.color.org");
             doc.getDocumentCatalog().addOutputIntent(intent);
-        }
-        catch(Exception e) {
-           LOG.warn("Setting PDF metadata failed, ignoring error. ", e);
+        } catch (Exception e) {
+            LOG.warn("Setting PDF metadata failed, ignoring error. ", e);
         }
     }
 }

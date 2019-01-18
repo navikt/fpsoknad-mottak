@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import java.io.IOException;
+
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-
-import java.io.IOException;
 
 public class FontAwareCos {
     final PDFont REGULARFONT;
@@ -14,7 +14,6 @@ public class FontAwareCos {
     final int REGULARFONTSIZE = 11;
     private final PDPageContentStream cos;
     private final int HEADINGFONTSIZE = 12;
-
 
     public FontAwareCos(FontAwarePDDocument doc, PDPage page) throws IOException {
         this.cos = new PDPageContentStream(doc, page);
@@ -68,7 +67,7 @@ public class FontAwareCos {
         return textWidth(string, HEADINGFONT, HEADINGFONTSIZE);
     }
 
-    private float textWidth(String string, PDFont font, int fontSize) throws IOException {
+    private static float textWidth(String string, PDFont font, int fontSize) throws IOException {
         return font.getStringWidth(string) / 1000 * fontSize;
     }
 }
