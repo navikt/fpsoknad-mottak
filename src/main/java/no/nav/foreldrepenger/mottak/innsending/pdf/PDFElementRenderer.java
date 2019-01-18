@@ -205,11 +205,11 @@ public class PDFElementRenderer {
 
     public float addLogo(PDDocument doc, FontAwareCos cos, float startY) throws IOException {
         PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, NAV_LOGO, "logo");
-        float startX = (MEDIABOX.getWidth() - ximage.getWidth()) / 2;
+        float startX = (MEDIABOX.getWidth() - 99) / 2;
         float offsetTop = 40;
-        startY -= ximage.getHeight() / 2 + offsetTop;
-        cos.getCos().drawImage(ximage, startX, startY, ximage.getWidth(), ximage.getHeight());
-        return ximage.getHeight() + offsetTop;
+        startY -= 62 / 2 + offsetTop;
+        cos.getCos().drawImage(ximage, startX, startY, 99, 62);
+        return 62 + offsetTop;
     }
 
     public float addBlankLine() {
@@ -218,7 +218,7 @@ public class PDFElementRenderer {
 
     private static byte[] logo() {
         try {
-            return StreamUtils.copyToByteArray(new ClassPathResource("/pdf/nav-logo.png").getInputStream());
+            return StreamUtils.copyToByteArray(new ClassPathResource("/pdf/nav-logo_alphaless.png").getInputStream());
         } catch (IOException ex) {
             throw new RuntimeException("Error while reading image", ex);
         }

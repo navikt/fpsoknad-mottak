@@ -242,7 +242,7 @@ public class ForeldrepengerPDFGenerator {
             }
             cos.close();
             doc.save(baos);
-            LOG.info("Dokumentet før søknad er på {} side{}", doc.getNumberOfPages(),
+            LOG.trace("Dokumentet før søknad er på {} side{}", doc.getNumberOfPages(),
                     doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
@@ -315,9 +315,8 @@ public class ForeldrepengerPDFGenerator {
 
             }
             cos.close();
-            doc.addPage(page);
             doc.save(baos);
-            LOG.info("Dokumentet for endring er på {} side{}", doc.getNumberOfPages(),
+            LOG.trace("Dokumentet for endring er på {} side{}", doc.getNumberOfPages(),
                     doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
         } catch (Exception e) {
@@ -334,8 +333,7 @@ public class ForeldrepengerPDFGenerator {
             FontAwareCos scratchcos) throws IOException {
         cos.close();
         doc.addPage(scratch);
-        cos = scratchcos;
-        return cos;
+        return scratchcos;
     }
 
     private static float nesteSideStart(float headerSize, float behov) {
