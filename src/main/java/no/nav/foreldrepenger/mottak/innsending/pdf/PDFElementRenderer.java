@@ -76,20 +76,20 @@ public class PDFElementRenderer {
 
     public float addLineOfRegularText(int marginOffset, String line, FontAwareCos cos, float startY)
             throws IOException {
-        String encodableLine = normalizeAndRemoveNonencodableChars(line, cos.REGULARFONT);
+        String encodableLine = normalizeAndRemoveNonencodableChars(line, cos.fontRegular);
         List<String> lines = splitLineIfNecessary(
                 encodableLine,
-                characterLimitInCos(cos.REGULARFONT, cos.REGULARFONTSIZE, marginOffset));
+                characterLimitInCos(cos.fontRegular, cos.REGULARFONTSIZE, marginOffset));
         int lineNumber = 0;
         for (String singleLine : lines) {
             cos.beginText();
             cos.useRegularFont();
-            cos.newLineAtOffset(MARGIN + marginOffset, startY - lineNumber * cos.REGULARFONTHEIGHT);
+            cos.newLineAtOffset(MARGIN + marginOffset, startY - lineNumber * cos.fontHeightRegular);
             cos.showText(Optional.ofNullable(singleLine).orElse(""));
             cos.endText();
             lineNumber++;
         }
-        return cos.REGULARFONTHEIGHT * lines.size();
+        return cos.fontHeightRegular * lines.size();
     }
 
     String normalizeAndRemoveNonencodableChars(String str, PDFont font) throws IOException {
@@ -173,9 +173,9 @@ public class PDFElementRenderer {
         float titleWidth = cos.headingTextWidth(heading);
         float startX = (MEDIABOX.getWidth() - titleWidth) / 2;
         cos.newLineAtOffset(startX, startY);
-        cos.showText(normalizeAndRemoveNonencodableChars(heading, cos.HEADINGFONT));
+        cos.showText(normalizeAndRemoveNonencodableChars(heading, cos.fontHeading));
         cos.endText();
-        return cos.HEADINGFONTHEIGHT;
+        return cos.fontHeightHeading;
     }
 
     public float addCenteredHeadings(List<String> headings, FontAwareCos cos, float startY) throws IOException {
@@ -193,7 +193,7 @@ public class PDFElementRenderer {
         cos.newLineAtOffset(startX, startY);
         cos.showText(heading);
         cos.endText();
-        return cos.HEADINGFONTHEIGHT;
+        return cos.fontHeightHeading;
     }
 
     public float addDividerLine(FontAwareCos cos, float startY) throws IOException {

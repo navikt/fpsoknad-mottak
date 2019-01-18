@@ -7,20 +7,20 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
 public class FontAwareCos {
-    final PDFont REGULARFONT;
-    final PDFont HEADINGFONT;
-    final int REGULARFONTHEIGHT;
-    final int HEADINGFONTHEIGHT;
+    final PDFont fontRegular;
+    final PDFont fontHeading;
+    final int fontHeightRegular;
+    final int fontHeightHeading;
     final int REGULARFONTSIZE = 11;
     private final PDPageContentStream cos;
     private final int HEADINGFONTSIZE = 12;
 
     public FontAwareCos(FontAwarePDDocument doc, PDPage page) throws IOException {
         this.cos = new PDPageContentStream(doc, page);
-        this.REGULARFONT = FontAwarePDDocument.REGULARFONT;
-        this.HEADINGFONT = FontAwarePDDocument.BOLDFONT;
-        this.REGULARFONTHEIGHT = fontHeight(REGULARFONT, REGULARFONTSIZE);
-        this.HEADINGFONTHEIGHT = fontHeight(HEADINGFONT, HEADINGFONTSIZE);
+        this.fontRegular = doc.getRegularFont();
+        this.fontHeading = doc.getBoldFont();
+        this.fontHeightRegular = fontHeight(fontRegular, REGULARFONTSIZE);
+        this.fontHeightHeading = fontHeight(fontHeading, HEADINGFONTSIZE);
     }
 
     private static int fontHeight(PDFont font, int size) {
@@ -28,11 +28,11 @@ public class FontAwareCos {
     }
 
     public void useRegularFont() throws IOException {
-        setFont(REGULARFONT, REGULARFONTSIZE);
+        setFont(fontRegular, REGULARFONTSIZE);
     }
 
     public void useHeadingFont() throws IOException {
-        setFont(HEADINGFONT, HEADINGFONTSIZE);
+        setFont(fontHeading, HEADINGFONTSIZE);
     }
 
     public PDPageContentStream getCos() {
@@ -64,7 +64,7 @@ public class FontAwareCos {
     }
 
     public float headingTextWidth(String string) throws IOException {
-        return textWidth(string, HEADINGFONT, HEADINGFONTSIZE);
+        return textWidth(string, fontHeading, HEADINGFONTSIZE);
     }
 
     private static float textWidth(String string, PDFont font, int fontSize) throws IOException {
