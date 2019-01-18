@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-
 public class FontAwarePDDocument extends PDDocument {
     private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
 
     private static final Resource regularFontResource = streamFra("/pdf/NotoSans-Regular.ttf");
     private static final Resource boldFontResource = streamFra("/pdf/NotoSans-Bold.ttf");
+    private static final Resource iccProfile = streamFra("/pdf/sRGB.icc");
 
     private PDFont regularFont;
     private PDFont boldFont;
@@ -75,7 +75,7 @@ public class FontAwarePDDocument extends PDDocument {
             metadata.importXMPMetadata(baos.toByteArray());
             doc.getDocumentCatalog().setMetadata(metadata);
 
-            InputStream colorProfile = new ClassPathResource("/pdf/sRGB.icc").getInputStream();
+            InputStream colorProfile = iccProfile.getInputStream();
             PDOutputIntent intent = new PDOutputIntent(doc, colorProfile);
             intent.setInfo("sRGB IEC61966-2.1");
             intent.setOutputCondition("sRGB IEC61966-2.1");
