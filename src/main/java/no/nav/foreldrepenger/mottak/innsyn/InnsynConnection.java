@@ -45,13 +45,14 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
         return ping(pingEndpoint());
     }
 
+    @Override
     public URI pingEndpoint() {
         return uri(config.getUri(), config.getPingPath());
     }
 
     public SøknadDTO hentSøknad(Lenke søknadsLenke) {
         if (søknadsLenke != null && søknadsLenke.getHref() != null) {
-            LOG.trace("Henter søknad fra {}", søknadsLenke);
+            LOG.trace("Henter søknad fra {}", søknadsLenke.getHref());
             return Optional.ofNullable(
                     getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
                     .orElse(null);
@@ -84,13 +85,12 @@ public class InnsynConnection extends AbstractRestConnection implements Pingable
     }
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [config=" + config + "]";
-    }
-
-    @Override
     public String name() {
         return "fpinfo";
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [config=" + config + "]";
+    }
 }

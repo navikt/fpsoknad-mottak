@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -13,20 +12,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge;
 
 @Component
 public class DokmotV1XMLMapper extends AbstractXMLMapper {
+
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, singletonList(ENGANGSSØKNAD));
 
     private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
@@ -42,13 +42,8 @@ public class DokmotV1XMLMapper extends AbstractXMLMapper {
     }
 
     @Override
-    public Versjon versjon() {
-        return V1;
-    }
-
-    @Override
-    public List<SøknadType> typer() {
-        return singletonList(ENGANGSSØKNAD);
+    public MapperEgenskaper mapperEgenskaper() {
+        return EGENSKAPER;
     }
 
     @Override

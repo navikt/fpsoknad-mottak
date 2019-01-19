@@ -20,8 +20,8 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DelegerendeDomainM
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V2DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.V1XMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.V2XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.V1ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
@@ -42,7 +42,7 @@ public class MapperRoundtripTest {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
         domainMapper = new DelegerendeDomainMapper(new V1DomainMapper(oppslag), new V2DomainMapper(oppslag));
-        xmlMapper = new DelegerendeXMLMapper(new V1XMLMapper(oppslag), new V2XMLMapper(oppslag));
+        xmlMapper = new DelegerendeXMLMapper(new V1ForeldrepengerXMLMapper(oppslag), new V2ForeldrepengerXMLMapper(oppslag));
     }
 
     @Test

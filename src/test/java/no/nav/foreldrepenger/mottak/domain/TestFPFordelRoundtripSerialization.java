@@ -142,7 +142,7 @@ public class TestFPFordelRoundtripSerialization {
         Versjon versjon = V1;
         Søknad engangssøknad = engangssøknad(versjon, false, fødsel(), norskForelder(versjon),
                 påkrevdVedlegg(ID142));
-        Kvittering kvittering = sender.send(engangssøknad, TestUtils.person());
+        Kvittering kvittering = sender.send(engangssøknad, TestUtils.person(), versjon);
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 

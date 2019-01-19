@@ -38,31 +38,40 @@ public class Lenke {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Lenke other = (Lenke) obj;
         if (href == null) {
-            if (other.href != null)
+            if (other.href != null) {
                 return false;
+            }
         }
-        else if (!href.equals(other.href))
+        else if (!href.equals(other.href)) {
             return false;
+        }
         if (rel == null) {
-            if (other.rel != null)
+            if (other.rel != null) {
                 return false;
+            }
         }
-        else if (!rel.equals(other.rel))
+        else if (!rel.equals(other.rel)) {
             return false;
+        }
         if (type == null) {
-            if (other.type != null)
+            if (other.type != null) {
                 return false;
+            }
         }
-        else if (!type.equals(other.type))
+        else if (!type.equals(other.type)) {
             return false;
+        }
         return true;
     }
 

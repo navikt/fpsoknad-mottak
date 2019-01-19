@@ -43,7 +43,7 @@ public class EngangsstønadPDFGenerator {
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
         final PDPage page = newPage();
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = PDFElementRenderer.calculateStartY();
 

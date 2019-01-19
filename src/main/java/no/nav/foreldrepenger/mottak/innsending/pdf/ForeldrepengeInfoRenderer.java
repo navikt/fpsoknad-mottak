@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -227,33 +226,23 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private static List<Arbeidsforhold> sorterArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
-        Collections.sort(arbeidsforhold, new Comparator<Arbeidsforhold>() {
-
-            @Override
-            public int compare(Arbeidsforhold o1, Arbeidsforhold o2) {
-                if (o1.getFrom() != null && o2.getFrom() != null) {
-                    return o1.getFrom().compareTo(o2.getFrom());
-                }
-                return 0;
+        Collections.sort(arbeidsforhold, (o1, o2) -> {
+            if (o1.getFrom() != null && o2.getFrom() != null) {
+                return o1.getFrom().compareTo(o2.getFrom());
             }
-
+            return 0;
         });
         return arbeidsforhold;
     }
 
     private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
-        Collections.sort(arbeidsforhold, new Comparator<UtenlandskArbeidsforhold>() {
-
-            @Override
-            public int compare(UtenlandskArbeidsforhold o1, UtenlandskArbeidsforhold o2) {
-                if (o1.getPeriode() != null && o2.getPeriode() != null
-                        && o1.getPeriode().getFom() != null
-                        && o2.getPeriode().getFom() != null) {
-                    return o1.getPeriode().getFom().compareTo(o2.getPeriode().getFom());
-                }
-                return 0;
+        Collections.sort(arbeidsforhold, (o1, o2) -> {
+            if (o1.getPeriode() != null && o2.getPeriode() != null
+                    && o1.getPeriode().getFom() != null
+                    && o2.getPeriode().getFom() != null) {
+                return o1.getPeriode().getFom().compareTo(o2.getPeriode().getFom());
             }
-
+            return 0;
         });
         return arbeidsforhold;
     }
@@ -377,7 +366,7 @@ public class ForeldrepengeInfoRenderer {
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
-                float behov = (STARTY - 190 - x);
+                float behov = STARTY - 190 - x;
                 LOG.trace("Uttak trenger " + behov + " har " + y);
                 if (behov < y) {
                     LOG.trace("Nok plass til uttak");
@@ -399,7 +388,7 @@ public class ForeldrepengeInfoRenderer {
                 float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos,
                         STARTY - 190);
-                float behov = (STARTY - 190 - x);
+                float behov = STARTY - 190 - x;
                 LOG.trace("Gradert trenger " + behov + " har " + y);
                 if (behov < y) {
                     LOG.trace("Nok plass til gradert");
@@ -421,7 +410,7 @@ public class ForeldrepengeInfoRenderer {
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, scratchcos,
                         STARTY - 190);
-                float behov = (STARTY - 190 - x);
+                float behov = STARTY - 190 - x;
                 LOG.trace("Opphold trenger " + behov + " har " + y);
                 if (behov < y) {
                     LOG.trace("Nok plass til opphold");
@@ -444,7 +433,7 @@ public class ForeldrepengeInfoRenderer {
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
-                float behov = (STARTY - 190 - x);
+                float behov = STARTY - 190 - x;
                 LOG.trace("Utsettelse trenger " + behov + " har " + y);
                 if (behov < y) {
                     LOG.trace("Nok plass til utsettelse");
@@ -466,7 +455,7 @@ public class ForeldrepengeInfoRenderer {
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
-                float behov = (STARTY - 190 - x);
+                float behov = STARTY - 190 - x;
                 LOG.trace("Overføring trenger " + behov + " har " + y);
                 if (behov < y) {
                     LOG.trace("Nok plass til overføring");
@@ -657,15 +646,7 @@ public class ForeldrepengeInfoRenderer {
 
     private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
         Collections.sort(perioder,
-                new Comparator<LukketPeriodeMedVedlegg>() {
-
-                    @Override
-                    public int compare(LukketPeriodeMedVedlegg o1,
-                            LukketPeriodeMedVedlegg o2) {
-                        return o1.getFom().compareTo(o2.getFom());
-                    }
-
-                });
+                (o1, o2) -> o1.getFom().compareTo(o2.getFom()));
         return perioder;
     }
 

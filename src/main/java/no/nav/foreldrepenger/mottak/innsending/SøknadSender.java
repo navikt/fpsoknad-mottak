@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
-
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -19,17 +17,4 @@ public interface SøknadSender {
     Kvittering send(Ettersending ettersending, Person søker, Versjon versjon);
 
     Kvittering send(Endringssøknad endringsøknad, Person søker, Versjon versjon);
-
-    default Kvittering send(Søknad søknad, Person søker) {
-        return send(søknad, søker, DEFAULT_VERSJON);
-    }
-
-    default Kvittering send(Ettersending søknad, Person søker) {
-        return send(søknad, søker, DEFAULT_VERSJON);
-    }
-
-    default Kvittering send(Endringssøknad søknad, Person søker) {
-        return send(søknad, søker, DEFAULT_VERSJON);
-    }
-
 }

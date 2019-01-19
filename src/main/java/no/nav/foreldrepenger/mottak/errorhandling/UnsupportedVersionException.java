@@ -7,12 +7,15 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class UnsupportedVersionException extends VersionException {
 
     public UnsupportedVersionException(SøknadEgenskaper egenskaper) {
-        this(egenskaper.getVersjon(), egenskaper.getType());
+        this(null, egenskaper);
+    }
+
+    public UnsupportedVersionException(String msg, SøknadEgenskaper egenskaper) {
+        this(null, egenskaper.getVersjon(), egenskaper.getType(), null);
     }
 
     public UnsupportedVersionException(Versjon versjon) {
         this(null, versjon, null, null);
-
     }
 
     public UnsupportedVersionException(String msg) {

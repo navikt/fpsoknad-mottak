@@ -4,21 +4,20 @@ import static java.util.Collections.singletonList;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 public class V2EngangsstønadXMLMapper extends AbstractXMLMapper {
+
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, singletonList(ENGANGSSØKNAD));
 
     private static final Logger LOG = LoggerFactory.getLogger(V2EngangsstønadXMLMapper.class);
 
@@ -32,13 +31,8 @@ public class V2EngangsstønadXMLMapper extends AbstractXMLMapper {
     }
 
     @Override
-    public Versjon versjon() {
-        return V2;
-    }
-
-    @Override
-    public List<SøknadType> typer() {
-        return singletonList(ENGANGSSØKNAD);
+    public MapperEgenskaper mapperEgenskaper() {
+        return EGENSKAPER;
     }
 
     @Override

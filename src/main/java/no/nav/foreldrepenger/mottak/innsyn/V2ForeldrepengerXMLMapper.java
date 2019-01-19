@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
@@ -63,10 +64,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.FPV2JAXBUtil;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderMedNorskIdent;
@@ -108,29 +107,25 @@ import no.nav.vedtak.felles.xml.soeknad.v2.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
 
 @Component
-public class V2XMLMapper extends AbstractXMLMapper {
+public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, newArrayList(ENDRING, INITIELL));
 
-    private static final Logger LOG = LoggerFactory.getLogger(V2XMLMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(V2ForeldrepengerXMLMapper.class);
 
     private static final FPV2JAXBUtil JAXB = new FPV2JAXBUtil();
 
-    public V2XMLMapper(Oppslag oppslag) {
+    public V2ForeldrepengerXMLMapper(Oppslag oppslag) {
         this(oppslag, new XMLStreamSøknadInspektør());
     }
 
     @Inject
-    public V2XMLMapper(Oppslag oppslag, SøknadInspektør inspektør) {
+    public V2ForeldrepengerXMLMapper(Oppslag oppslag, SøknadInspektør inspektør) {
         super(oppslag, inspektør);
     }
 
     @Override
-    public Versjon versjon() {
-        return V2;
-    }
-
-    @Override
-    public List<SøknadType> typer() {
-        return newArrayList(ENDRING, INITIELL);
+    public MapperEgenskaper mapperEgenskaper() {
+        return EGENSKAPER;
     }
 
     @Override
@@ -313,7 +308,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
         return safeStream(frilansoppdrag)
-                .map(V2XMLMapper::tilFrilansOppdrag)
+                .map(V2ForeldrepengerXMLMapper::tilFrilansOppdrag)
                 .collect(toList());
     }
 
@@ -338,7 +333,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
     private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
             List<AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
-                .map(V2XMLMapper::tilAnnenOpptjening)
+                .map(V2ForeldrepengerXMLMapper::tilAnnenOpptjening)
                 .collect(toList());
     }
 
@@ -355,7 +350,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
 
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
         return safeStream(egenNaering)
-                .map(V2XMLMapper::tilEgenNæring)
+                .map(V2ForeldrepengerXMLMapper::tilEgenNæring)
                 .collect(toList());
     }
 
@@ -411,7 +406,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
         return virksomhetstype.stream()
-                .map(V2XMLMapper::tilVirksomhetsType)
+                .map(V2ForeldrepengerXMLMapper::tilVirksomhetsType)
                 .collect(toList());
     }
 
@@ -434,7 +429,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
     private static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         return utenlandskArbeidsforhold.stream()
-                .map(V2XMLMapper::tilUtenlandskArbeidsforhold)
+                .map(V2ForeldrepengerXMLMapper::tilUtenlandskArbeidsforhold)
                 .collect(toList());
     }
 
@@ -487,7 +482,7 @@ public class V2XMLMapper extends AbstractXMLMapper {
     private static List<LukketPeriodeMedVedlegg> tilPerioder(
             List<no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
-                .map(V2XMLMapper::tilLukketPeriode)
+                .map(V2ForeldrepengerXMLMapper::tilLukketPeriode)
                 .collect(toList());
     }
 
@@ -631,4 +626,8 @@ public class V2XMLMapper extends AbstractXMLMapper {
         return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [mapperEgenskaper=" + mapperEgenskaper() + "]";
+    }
 }

@@ -29,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
@@ -67,7 +68,6 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.FPV1JAXBUtil;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -116,6 +116,7 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
 public class V1DomainMapper implements DomainMapper {
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, newArrayList(ENDRING, INITIELL));
 
     private static final FPV1JAXBUtil JAXB = new FPV1JAXBUtil();
     private static final Logger LOG = LoggerFactory.getLogger(V1DomainMapper.class);
@@ -133,13 +134,8 @@ public class V1DomainMapper implements DomainMapper {
     }
 
     @Override
-    public Versjon versjon() {
-        return V1;
-    }
-
-    @Override
-    public List<SøknadType> typer() {
-        return newArrayList(ENDRING, INITIELL);
+    public MapperEgenskaper mapperEgenskaper() {
+        return EGENSKAPER;
     }
 
     @Override

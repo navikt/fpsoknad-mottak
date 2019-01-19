@@ -67,8 +67,8 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.V1XMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.V2XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.V1ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -107,8 +107,8 @@ public class TestFPFordelSerialization {
     @Before
     public void before() {
         v12XMLMapper = new DelegerendeXMLMapper(
-                new V1XMLMapper(oppslag),
-                new V2XMLMapper(oppslag));
+                new V1ForeldrepengerXMLMapper(oppslag),
+                new V2ForeldrepengerXMLMapper(oppslag));
         v12DomainMapper = new DelegerendeDomainMapper(
                 new V2DomainMapper(oppslag),
                 new V1DomainMapper(oppslag));

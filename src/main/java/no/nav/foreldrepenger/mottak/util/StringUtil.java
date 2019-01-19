@@ -12,7 +12,7 @@ public final class StringUtil {
 
     public static String endelse(List<?> liste) {
         if (CollectionUtils.isEmpty(liste)) {
-            return ("er");
+            return "er";
         }
         return liste.size() == 1 ? "" : "er";
     }

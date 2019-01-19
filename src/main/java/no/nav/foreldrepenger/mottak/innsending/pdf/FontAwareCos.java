@@ -17,14 +17,14 @@ public class FontAwareCos {
 
     public FontAwareCos(FontAwarePDDocument doc, PDPage page) throws IOException {
         this.cos = new PDPageContentStream(doc, page);
-        this.REGULARFONT = doc.REGULARFONT;
-        this.HEADINGFONT = doc.BOLDFONT;
+        this.REGULARFONT = FontAwarePDDocument.REGULARFONT;
+        this.HEADINGFONT = FontAwarePDDocument.BOLDFONT;
         this.REGULARFONTHEIGHT = fontHeight(REGULARFONT, REGULARFONTSIZE);
         this.HEADINGFONTHEIGHT = fontHeight(HEADINGFONT, HEADINGFONTSIZE);
     }
 
     private static int fontHeight(PDFont font, int size) {
-        return Math.round((font.getFontDescriptor().getFontBoundingBox().getHeight()) / 1000 * size);
+        return Math.round(font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * size);
     }
 
     public void useRegularFont() throws IOException {

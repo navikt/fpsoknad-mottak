@@ -63,7 +63,7 @@ public class DokmotJMSSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [dokmotTemplate=" + connection + ", generator=" + generator + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator + "]";
     }
 
 }

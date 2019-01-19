@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import java.util.List;
+
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-
-import java.util.List;
 
 public interface Oppslag {
 

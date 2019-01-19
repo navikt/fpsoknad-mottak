@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import no.nav.foreldrepenger.mottak.VersjonsBevisst;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
@@ -14,13 +15,11 @@ public abstract class AbstractXMLMapper implements XMLMapper, VersjonsBevisst {
     }
 
     protected SøknadType type(String xml) {
-        return inspektør.inspiser(xml).getType();
+        return inspektør.type(xml);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [versjon = " + versjon() + ", oppslag=" + oppslag + ", inspektør="
-                + inspektør + "]";
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", inspektør=" + inspektør + "]";
     }
-
 }

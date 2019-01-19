@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import no.nav.foreldrepenger.mottak.VersjonsBevisst;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
 public interface XMLMapper extends VersjonsBevisst {

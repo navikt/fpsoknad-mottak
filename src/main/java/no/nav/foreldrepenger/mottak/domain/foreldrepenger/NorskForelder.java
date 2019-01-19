@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

@@ -76,7 +76,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             return kvittering;
         } catch (Exception e) {
             FP_SENDFEIL.increment();
-            throw (e);
+            throw e;
         }
     }
 

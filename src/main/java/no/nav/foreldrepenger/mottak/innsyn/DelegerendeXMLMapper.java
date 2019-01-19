@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
-import static no.nav.foreldrepenger.mottak.util.Versjon.ALL;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
@@ -44,24 +44,27 @@ public class DelegerendeXMLMapper implements XMLMapper {
     }
 
     @Override
-    public Versjon versjon() {
-        return ALL;
-    }
-
-    @Override
-    public List<SøknadType> typer() {
-        return mappers.stream()
-                .map(m -> m.typer())
+    public MapperEgenskaper mapperEgenskaper() {
+        return new MapperEgenskaper(Versjon.ALL, mappers.stream()
+                .map(m -> m.mapperEgenskaper().getTyper())
                 .flatMap(s -> s.stream())
-                .collect(toList());
+                .collect(toList()));
     }
 
     private XMLMapper mapper(String xml) {
-        SøknadEgenskaper egenskaper = inspektør.inspiser(xml);
+        SøknadEgenskaper søknadEgenskaper = inspektør.inspiser(xml);
         return mappers.stream()
-                .filter(mapper -> mapper.kanMappe(egenskaper))
+                .filter(mapper -> mapper.kanMappe(søknadEgenskaper))
                 .findFirst()
-                .orElseThrow(() -> new UnsupportedVersionException(egenskaper));
+                .orElseThrow(
+                        () -> new UnsupportedVersionException("Fant ingen mapper blant " + mapperNames(),
+                                søknadEgenskaper));
+    }
+
+    private String mapperNames() {
+        return mappers.stream()
+                .map(m -> m.getClass().getSimpleName().getClass().getSimpleName())
+                .collect(joining(","));
     }
 
     @Override

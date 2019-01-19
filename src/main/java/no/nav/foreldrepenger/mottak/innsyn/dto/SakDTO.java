@@ -97,35 +97,46 @@ public class SakDTO {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         SakDTO other = (SakDTO) obj;
         if (aktørId == null) {
-            if (other.aktørId != null)
+            if (other.aktørId != null) {
                 return false;
+            }
         }
-        else if (!aktørId.equals(other.aktørId))
+        else if (!aktørId.equals(other.aktørId)) {
             return false;
+        }
         if (aktørIdAnnenPart == null) {
-            if (other.aktørIdAnnenPart != null)
+            if (other.aktørIdAnnenPart != null) {
                 return false;
+            }
         }
-        else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart))
+        else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart)) {
             return false;
+        }
         if (aktørIdBarna == null) {
-            if (other.aktørIdBarna != null)
+            if (other.aktørIdBarna != null) {
                 return false;
+            }
         }
-        else if (!aktørIdBarna.equals(other.aktørIdBarna))
+        else if (!aktørIdBarna.equals(other.aktørIdBarna)) {
             return false;
-        if (fagsakStatus != other.fagsakStatus)
+        }
+        if (fagsakStatus != other.fagsakStatus) {
             return false;
-        if (!behandlingTema.equals(other.behandlingTema))
+        }
+        if (!behandlingTema.equals(other.behandlingTema)) {
             return false;
+        }
 
         if (saksnummer == null) {
             return other.saksnummer == null;

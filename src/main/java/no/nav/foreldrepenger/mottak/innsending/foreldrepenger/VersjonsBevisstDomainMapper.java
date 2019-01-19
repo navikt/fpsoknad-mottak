@@ -13,10 +13,12 @@ public interface VersjonsBevisstDomainMapper extends DomainMapper {
 
     String tilXML(Endringssøknad endringssøknad, AktorId søker, Versjon versjon);
 
+    @Override
     default String tilXML(Søknad søknad, AktorId søker) {
         return tilXML(søknad, søker, DEFAULT_VERSJON);
     }
 
+    @Override
     default String tilXML(Endringssøknad endringssøknad, AktorId søker) {
         return tilXML(endringssøknad, søker, DEFAULT_VERSJON);
     }

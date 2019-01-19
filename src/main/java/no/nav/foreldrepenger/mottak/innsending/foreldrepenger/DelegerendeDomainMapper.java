@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.Versjon.ALL;
 
 import java.util.List;
 
@@ -10,6 +9,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
@@ -31,16 +31,11 @@ public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
     }
 
     @Override
-    public Versjon versjon() {
-        return ALL;
-    }
-
-    @Override
-    public List<SøknadType> typer() {
-        return mappers.stream()
-                .map(m -> m.typer())
+    public MapperEgenskaper mapperEgenskaper() {
+        return new MapperEgenskaper(Versjon.ALL, mappers.stream()
+                .map(m -> m.mapperEgenskaper().getTyper())
                 .flatMap(s -> s.stream())
-                .collect(toList());
+                .collect(toList()));
     }
 
     @Override
@@ -51,7 +46,6 @@ public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
     @Override
     public String tilXML(Endringssøknad endringssøknad, AktorId søker, Versjon versjon) {
         return mapper(versjon).tilXML(endringssøknad, søker);
-
     }
 
     private DomainMapper mapper(Versjon versjon) {

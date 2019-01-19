@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
-public enum ArkivVariant {
+enum ArkivVariant {
     ARKIV, ORIGINAL
 }
