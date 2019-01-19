@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
+package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.singletonList;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
@@ -18,9 +18,6 @@ import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
-import no.nav.foreldrepenger.mottak.innsyn.AbstractXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
