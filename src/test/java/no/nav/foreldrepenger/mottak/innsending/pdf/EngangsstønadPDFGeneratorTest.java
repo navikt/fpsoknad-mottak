@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
 

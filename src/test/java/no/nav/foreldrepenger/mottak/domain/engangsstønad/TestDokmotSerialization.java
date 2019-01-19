@@ -8,8 +8,8 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.utenlandskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 

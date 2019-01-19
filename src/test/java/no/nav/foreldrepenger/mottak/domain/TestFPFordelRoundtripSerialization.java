@@ -15,7 +15,7 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Collections;

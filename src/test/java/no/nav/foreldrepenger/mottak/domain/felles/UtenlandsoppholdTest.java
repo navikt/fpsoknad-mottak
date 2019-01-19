@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static com.neovisionaries.i18n.CountryCode.FI;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.List;

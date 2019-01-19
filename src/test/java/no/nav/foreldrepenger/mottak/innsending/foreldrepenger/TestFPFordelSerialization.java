@@ -17,7 +17,7 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKon
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static no.nav.foreldrepenger.mottak.util.Versjon.alleVersjoner;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
