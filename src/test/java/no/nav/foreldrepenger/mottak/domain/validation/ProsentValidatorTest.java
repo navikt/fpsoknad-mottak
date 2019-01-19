@@ -11,8 +11,8 @@ import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 
@@ -35,7 +35,7 @@ public class ProsentValidatorTest {
 
     private static Validator validator;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }

@@ -4,14 +4,18 @@ import static no.nav.foreldrepenger.mottak.Constants.ISSUER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
@@ -21,7 +25,9 @@ import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = LENIENT)
 public class TokenUtilTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("42");
@@ -34,7 +40,7 @@ public class TokenUtilTest {
 
     private TokenUtil tokenHelper;
 
-    @Before
+    @BeforeEach
     public void before() {
         when(holder.getOIDCValidationContext()).thenReturn(context);
         when(context.getClaims(eq(ISSUER))).thenReturn(claims);
@@ -48,31 +54,31 @@ public class TokenUtilTest {
         assertTrue(tokenHelper.erAutentisert());
     }
 
-    @Test(expected = OIDCTokenValidatorException.class)
+    @Test
     public void testExtractorNoContext() {
         when(holder.getOIDCValidationContext()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        tokenHelper.autentisertBruker();
+        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
-    @Test(expected = OIDCTokenValidatorException.class)
+    @Test
     public void testExtractorNoClaims() {
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        tokenHelper.autentisertBruker();
+        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
-    @Test(expected = OIDCTokenValidatorException.class)
+    @Test
     public void testExtractorNoClaimset() {
         when(claims.getClaimSet()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        tokenHelper.autentisertBruker();
+        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
-    @Test(expected = OIDCTokenValidatorException.class)
+    @Test
     public void testExtractorNoSubject() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().build());
         assertFalse(tokenHelper.erAutentisert());
-        tokenHelper.autentisertBruker();
+        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 }

@@ -6,12 +6,15 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -25,7 +28,9 @@ import no.nav.foreldrepenger.mottak.innsyn.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = LENIENT)
 public class MapperRoundtripTest {
 
     private static final AktorId SØKER = new AktorId("42");
@@ -37,12 +42,13 @@ public class MapperRoundtripTest {
     private DelegerendeDomainMapper domainMapper;
     private XMLMapper xmlMapper;
 
-    @Before
+    @BeforeEach
     public void before() {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
         domainMapper = new DelegerendeDomainMapper(new V1DomainMapper(oppslag), new V2DomainMapper(oppslag));
-        xmlMapper = new DelegerendeXMLMapper(new V1ForeldrepengerXMLMapper(oppslag), new V2ForeldrepengerXMLMapper(oppslag));
+        xmlMapper = new DelegerendeXMLMapper(new V1ForeldrepengerXMLMapper(oppslag),
+                new V2ForeldrepengerXMLMapper(oppslag));
     }
 
     @Test

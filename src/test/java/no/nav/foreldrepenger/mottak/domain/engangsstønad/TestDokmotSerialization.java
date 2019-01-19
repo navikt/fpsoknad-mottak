@@ -11,13 +11,14 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedl
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import javax.inject.Inject;
+
 import org.jboss.logging.MDC;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,7 +49,7 @@ import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentinnhold;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, EngangsstønadPDFGenerator.class, ESV1JAXBUtil.class,
         DokmotEngangsstønadXMLGenerator.class,
         DokmotEngangsstønadXMLKonvoluttGenerator.class,
@@ -56,15 +57,15 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         PDFElementRenderer.class,
         ForeldrepengeInfoRenderer.class,
         SøknadTextFormatter.class,
+        ObjectMapper.class,
         SpringOIDCRequestContextHolder.class })
 
-@AutoConfigureJsonTesters
 public class TestDokmotSerialization {
     @Autowired
     ESV1JAXBUtil jaxb;
     @Autowired
     ObjectMapper mapper;
-    @Autowired
+    @Inject
     DokmotEngangsstønadXMLGenerator søknadXMLGenerator;
     @Autowired
     DokmotEngangsstønadXMLKonvoluttGenerator søknadXMLKonvoluttGenerator;
@@ -72,16 +73,11 @@ public class TestDokmotSerialization {
     private static final SøknadInspektør INSPEKTOR = new XMLStreamSøknadInspektør();
 
     @Test
-    public void testSøknadUtlandXML() throws Exception {
-    }
-
-    @Test
     public void testKonvoluttXML() throws Exception {
         MDC.put(Constants.NAV_CALL_ID, "42");
         Søknad engangssøknad = engangssøknad(Versjon.V1, true, fødsel(), norskForelder(Versjon.V1),
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         String konvolutt = søknadXMLKonvoluttGenerator.tilXML(engangssøknad, person());
-        System.out.println(konvolutt);
         Dokumentforsendelse unmarshalled = jaxb.unmarshal(konvolutt, Dokumentforsendelse.class);
         Dokumentinnhold pdf = unmarshalled.getHoveddokument().getDokumentinnholdListe().get(0);
         assertTrue(hasPdfSignature(pdf.getDokument()));
@@ -112,7 +108,6 @@ public class TestDokmotSerialization {
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         Person søker = person();
         String xml = søknadXMLGenerator.tilXML(søknad, søker);
-        System.out.println(xml);
         SøknadEgenskaper inspiser = INSPEKTOR.inspiser(xml);
         assertEquals(Versjon.V1, inspiser.getVersjon());
         assertEquals(SøknadType.ENGANGSSØKNAD, inspiser.getType());

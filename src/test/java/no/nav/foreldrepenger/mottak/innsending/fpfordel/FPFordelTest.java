@@ -16,6 +16,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -30,15 +31,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,7 +76,10 @@ import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@MockitoSettings(strictness = LENIENT)
+
 public class FPFordelTest {
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
@@ -109,7 +115,7 @@ public class FPFordelTest {
 
     private FPFordelSøknadSender sender;
 
-    @Before
+    @BeforeEach
     public void before() {
         cfg = new FPFordelConfig();
         cfg.setEnabled(true);

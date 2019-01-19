@@ -32,14 +32,14 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
@@ -55,8 +55,8 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureJsonTesters
+@ExtendWith(SpringExtension.class)
 public class TestForeldrepengerSerialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestForeldrepengerSerialization.class);

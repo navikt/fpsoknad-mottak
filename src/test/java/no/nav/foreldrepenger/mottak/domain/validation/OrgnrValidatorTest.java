@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 
@@ -16,7 +16,7 @@ public class OrgnrValidatorTest {
     private static final String NAV = "999263550";
     private static Validator validator;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }

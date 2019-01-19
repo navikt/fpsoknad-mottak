@@ -18,8 +18,10 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static no.nav.foreldrepenger.mottak.util.Versjon.alleVersjoner;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
@@ -32,15 +34,16 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 
@@ -73,10 +76,11 @@ import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-@RunWith(SpringRunner.class)
-@AutoConfigureJsonTesters
+@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@MockitoSettings(strictness = LENIENT)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
-        PDFElementRenderer.class,
+        PDFElementRenderer.class, ObjectMapper.class,
         ForeldrepengerPDFGenerator.class, TestConfig.class })
 public class TestFPFordelSerialization {
 
@@ -104,7 +108,7 @@ public class TestFPFordelSerialization {
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
     private static final List<Arbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
-    @Before
+    @BeforeEach
     public void before() {
         v12XMLMapper = new DelegerendeXMLMapper(
                 new V1ForeldrepengerXMLMapper(oppslag),
@@ -130,9 +134,10 @@ public class TestFPFordelSerialization {
                 .forEach(v -> testSøknadRoundtrip(v));
     }
 
-    @Test(expected = VersionMismatchException.class)
+    @Test
     public void testFeilMapper() throws Exception {
-        v12DomainMapper.tilXML(søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1), AKTØRID, V2);
+        assertThrows(VersionMismatchException.class,
+                () -> v12DomainMapper.tilXML(søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1), AKTØRID, V2));
     }
 
     @Test

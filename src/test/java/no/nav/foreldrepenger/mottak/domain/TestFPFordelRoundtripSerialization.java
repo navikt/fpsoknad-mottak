@@ -20,15 +20,13 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,7 +43,6 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEnga
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
-@RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = { DEV, PREPROD })
 public class TestFPFordelRoundtripSerialization {
 
@@ -71,7 +68,7 @@ public class TestFPFordelRoundtripSerialization {
     @Autowired
     DualSøknadSender sender;
 
-    @Before
+    @BeforeEach
     public void setAuthoriztion() {
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
                 execution) -> {

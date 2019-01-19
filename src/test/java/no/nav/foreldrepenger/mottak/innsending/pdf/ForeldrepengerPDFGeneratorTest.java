@@ -13,12 +13,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.google.common.collect.Lists;
 
@@ -28,13 +28,13 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
         PDFElementRenderer.class,
         ForeldrepengerPDFGenerator.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 
-@ActiveProfiles("dev")
+@ActiveProfiles()
 public class ForeldrepengerPDFGeneratorTest {
 
     @Autowired
