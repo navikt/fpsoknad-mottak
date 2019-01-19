@@ -20,3 +20,4 @@ no.nav.security.oidc:
     selvbetjening.cookie_name: localhost-idtoken
 
 server.port: 9001
+spring.http.log-request-details : true
