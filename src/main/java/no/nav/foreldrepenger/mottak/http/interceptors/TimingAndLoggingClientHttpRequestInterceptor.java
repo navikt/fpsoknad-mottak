@@ -18,9 +18,17 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
+
 @Component
 public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
     private static final Logger LOG = LoggerFactory.getLogger(TimingAndLoggingClientHttpRequestInterceptor.class);
+
+    private final TokenUtil tokenUtil;
+
+    public TimingAndLoggingClientHttpRequestInterceptor(TokenUtil tokenUtil) {
+        this.tokenUtil = tokenUtil;
+    }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
@@ -33,8 +41,8 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
         ClientHttpResponse respons = execution.execute(request, body);
         timer.stop();
         if (hasError(respons.getStatusCode())) {
-            LOG.warn("{} - {} - ({}). Dette tok {}ms", request.getMethodValue(), uri,
-                    respons.getStatusCode(), timer.getTime(MILLISECONDS));
+            LOG.warn("{} - {} - ({}). Dette tok {}ms. ({})", request.getMethodValue(), request.getURI(),
+                    respons.getRawStatusCode(), timer.getTime(MILLISECONDS), tokenUtil.getExpiryDate());
         }
         else {
             LOG.info("{} - {} - ({}). Dette tok {}ms", request.getMethodValue(), uri,
@@ -45,5 +53,10 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
 
     protected boolean hasError(HttpStatus code) {
         return code.series() == CLIENT_ERROR || code.series() == SERVER_ERROR;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [tokenUtil=" + tokenUtil + "]";
     }
 }
