@@ -1,0 +1,55 @@
+package no.nav.foreldrepenger.mottak.innsending.varsel;
+
+import com.ibm.mq.jms.MQQueueConnectionFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.support.destination.DynamicDestinationResolver;
+
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+
+import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
+import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
+import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_ENCODING;
+import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
+
+@Configuration
+public class VarselConfiguration {
+
+    private static final int UTF_8_WITH_PUA = 1208;
+
+    @Bean
+    public JmsTemplate varselTemplate(VarselQueueConfig cfg, ConnectionFactory cf) {
+        JmsTemplate jmsTemplate = new JmsTemplate(cf);
+        jmsTemplate.setDefaultDestinationName(cfg.getQueueName());
+        jmsTemplate.setDestinationResolver(new DynamicDestinationResolver());
+        return jmsTemplate;
+    }
+
+    @Bean(name = "varselMQ")
+    public MQQueueConnectionFactory varselConnectionFactory(VarselQueueConfig cfg) throws JMSException {
+        MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
+        System.out.println("mq-oppsettklasse: " + cfg.loggable().toString());
+
+//        "varsel.queueName=DEV.QUEUE.1",
+//            "varsel.port=1414",
+//            "varsel.channelname=DEV.APP.SVRCONN",
+//            "varsel.hostname=localhost",
+//            "varsel.name=QM1"}) // Avhenger av at man har satt opp mq container lokalt
+        cf.setQueueManager("QM1");
+        cf.setChannel("DEV.APP.SVRCONN");
+        cf.setPort(1414);
+        cf.setHostName("localhost");
+        //cf.setHostName(cfg.getHostname());
+        cf.setTransportType(WMQ_CM_CLIENT);
+        cf.setCCSID(UTF_8_WITH_PUA);
+        //cf.setPort(cfg.getPort());
+        //cf.setChannel(cfg.getChannelname());
+        //cf.setQueueManager(cfg.getName());
+        cf.setIntProperty(JMS_IBM_ENCODING, MQENC_NATIVE);
+        cf.setIntProperty(JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
+        return cf;
+    }
+
+}

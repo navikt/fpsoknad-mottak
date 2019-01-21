@@ -180,4 +180,16 @@
         </jaxb:bindings>
     </jaxb:bindings>
 
+    <jaxb:bindings
+        schemaLocation="../xsd/v1/varseltjeneste/varsel-v1.xsd"
+        node="/xs:schema">
+        <jaxb:bindings
+            node="//xs:complexType[@name='Varsel']">
+            <annox:annotateClass>
+                @javax.xml.bind.annotation.XmlRootElement
+            </annox:annotateClass>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
+
 </jaxb:bindings>

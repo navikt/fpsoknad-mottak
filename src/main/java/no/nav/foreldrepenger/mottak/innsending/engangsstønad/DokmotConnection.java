@@ -7,12 +7,14 @@ import javax.jms.JMSException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
 @Component
+@Qualifier("dokmotConnection")
 public class DokmotConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotConnection.class);
@@ -20,7 +22,7 @@ public class DokmotConnection {
     private final JmsTemplate template;
     private final DokmotQueueConfig queueConfig;
 
-    public DokmotConnection(JmsTemplate template, DokmotQueueConfig queueConfig) {
+    public DokmotConnection(@Qualifier("dokmotTemplate") JmsTemplate template, DokmotQueueConfig queueConfig) {
         this.template = template;
         this.queueConfig = queueConfig;
     }

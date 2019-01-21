@@ -8,6 +8,7 @@ import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -30,9 +31,8 @@ public class DokmotConfiguration {
         return jmsTemplate;
     }
 
-    @Bean
+    @Bean(name = "dokmotMQ")
     public MQQueueConnectionFactory connectionFactory(DokmotQueueConfig cfg) throws JMSException {
-
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
         cf.setHostName(cfg.getHostname());
         cf.setTransportType(WMQ_CM_CLIENT);
@@ -48,7 +48,7 @@ public class DokmotConfiguration {
     @Bean
     @Primary
     ConnectionFactory userCredentialsConnectionFactoryAdapter(DokmotQueueConfig cfg,
-            MQQueueConnectionFactory delegate) {
+            @Qualifier("dokmotMQ") MQQueueConnectionFactory delegate) {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(cfg.getUsername());
         cf.setTargetConnectionFactory(delegate);

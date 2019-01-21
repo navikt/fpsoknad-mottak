@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -7,7 +8,7 @@ public class DokmotQueuePinger {
 
     private final DokmotConnection connection;
 
-    public DokmotQueuePinger(DokmotConnection connection) {
+    public DokmotQueuePinger(@Qualifier("dokmotConnection") DokmotConnection connection) {
         this.connection = connection;
     }
 
