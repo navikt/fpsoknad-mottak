@@ -8,10 +8,18 @@ import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 public class PDFElementRendererTest {
+
+    private static PDFElementRenderer renderer;
+
+    @BeforeAll
+    public static void beforeAll() {
+        renderer = new PDFElementRenderer();
+    }
 
     @Test
     public void softLineBreakOnSpace() {
@@ -32,14 +40,13 @@ public class PDFElementRendererTest {
     }
 
     private static List<String> splitLine(String str, int maxLength) {
-        return new PDFElementRenderer().splitLineIfNecessary(str, maxLength);
+        return renderer.splitLineIfNecessary(str, maxLength);
     }
 
     @Test
     public void charsNotRepresentedInFontGlyphStrippedOrReplaced() throws IOException {
 
-        PDDocument pdf = new PDDocument();
-        PDFont font = PDType0Font.load(pdf, new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
+        PDFont font = PDType0Font.load(new PDDocument(), new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
 
         String dirtyText = "Left-to-right override strippes \u202D helt ut av teksten" +
                 "Tab\tog andre blanke tegn\u00A0erstattes med space" +
@@ -50,7 +57,6 @@ public class PDFElementRendererTest {
                 "ikke-eksisterende  glypher erstattes med space" +
                 "Albert Åberg og/å Prøysen beholder sine nordiske tegn, mens replacement character fjernes";
 
-        PDFElementRenderer renderer = new PDFElementRenderer();
         assertEquals(cleanText, renderer.normalizeAndRemoveNonencodableChars(dirtyText, font));
     }
 

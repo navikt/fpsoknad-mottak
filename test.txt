@@ -1,2 +1,0 @@
-<ValgfrittVedlegg(super=ValgfrittVedleggmetadata=VedleggMetaData(beskrivelse=Ettersendelse til søknad om foreldrepenger ved adopsjon, id=V142, innsendingsType=LASTET_OPP, dokumentType=I500002)vedlegg=[37, 80, 68, 70, 45, 49, 46, 52, 13, 10, 37, -30,.... 493348 more bytes)>
-<ValgfrittVedlegg(super=ValgfrittVedleggmetadata=VedleggMetaData(beskrivelse=Ettersendelse til søknad om foreldrepenger ved adopsjon, id=V142, innsendingsType=LASTET_OPP, dokumentType=I500002)vedlegg=null)>
