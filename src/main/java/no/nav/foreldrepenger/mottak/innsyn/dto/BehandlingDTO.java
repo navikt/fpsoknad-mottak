@@ -24,7 +24,7 @@ public class BehandlingDTO {
     private final String behandlingResultatType;
     private final LocalDateTime opprettetTidspunkt;
     private final LocalDateTime endretTidspunkt;
-    private final List<String> inntekstmeldinger;
+    private final List<String> inntektsmeldinger;
     private final List<Lenke> lenker;
 
     @JsonCreator
@@ -38,7 +38,7 @@ public class BehandlingDTO {
             @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
             @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
             @JsonProperty("behandlingResultatType") String behandlingResultatType,
-            @JsonProperty("inntekstmeldinger") List<String> inntekstmeldinger,
+            @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger,
             @JsonProperty("lenker") List<Lenke> lenker) {
         this.opprettetTidspunkt = opprettetTidspunkt;
         this.endretTidspunkt = endretTidspunkt;
@@ -49,7 +49,7 @@ public class BehandlingDTO {
         this.behandlendeEnhet = behandlendeEnhet;
         this.behandlendeEnhetNavn = behandlendeEnhetNavn;
         this.behandlingResultatType = behandlingResultatType;
-        this.inntekstmeldinger = Optional.ofNullable(inntekstmeldinger).orElse(emptyList());
+        this.inntektsmeldinger = Optional.ofNullable(inntektsmeldinger).orElse(emptyList());
         this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
     }
 
@@ -93,8 +93,8 @@ public class BehandlingDTO {
         return endretTidspunkt;
     }
 
-    public List<String> getInntekstmeldinger() {
-        return inntekstmeldinger;
+    public List<String> getInntektsmeldinger() {
+        return inntektsmeldinger;
     }
 
     public List<Lenke> getLenker() {
@@ -112,7 +112,7 @@ public class BehandlingDTO {
         return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", tema=" + tema + ", årsak="
                 + årsak + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
                 + ", behandlingResultatType=" + behandlingResultatType + ", opprettetTidspunkt=" + opprettetTidspunkt
-                + ", endretTidspunkt=" + endretTidspunkt + ", inntekstmeldinger=" + inntekstmeldinger + ", lenker="
+                + ", endretTidspunkt=" + endretTidspunkt + ", inntektsmeldinger=" + inntektsmeldinger + ", lenker="
                 + lenker + "]";
     }
 }

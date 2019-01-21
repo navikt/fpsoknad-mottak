@@ -18,7 +18,7 @@ public class Behandling {
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
     private final String behandlingResultatType;
-    private final List<String> inntekstmeldinger;
+    private final List<String> inntektsmeldinger;
     private final InnsynsSøknad søknad;
 
 }
