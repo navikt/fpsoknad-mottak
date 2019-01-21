@@ -177,7 +177,6 @@
             <artifactId>com.ibm.mq.allclient</artifactId>
             <version>8.0.0.6</version>
         </dependency>
-
         <dependency>
             <groupId>com.neovisionaries</groupId>
             <artifactId>nv-i18n</artifactId>
@@ -281,7 +280,7 @@
         <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
-            <version>1.0.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
