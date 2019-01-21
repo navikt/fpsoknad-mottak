@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.xmpbox.XMPMetadata;
@@ -14,16 +12,48 @@ import org.apache.xmpbox.xml.XmpSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 public class FontAwarePDDocument extends PDDocument {
-    public static PDType0Font REGULARFONT;
-    public static PDType0Font BOLDFONT;
     private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
 
+    private static final Resource regularFontResource = ressursFra("/pdf/NotoSans-Regular.ttf");
+    private static final Resource boldFontResource = ressursFra("/pdf/NotoSans-Bold.ttf");
+    private static final Resource iccProfile = ressursFra("/pdf/sRGB.icc");
+
+    private PDFont regularFont;
+    private PDFont boldFont;
+
     public FontAwarePDDocument() throws IOException {
-        BOLDFONT = PDType0Font.load(this, new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
-        REGULARFONT = PDType0Font.load(this, new ClassPathResource("/pdf/NotoSans-Regular.ttf").getInputStream());
+        regularFont = load(regularFontResource);
+        boldFont = load(boldFontResource);
         setPdfMetadata(this);
+    }
+
+    private static Resource ressursFra(String s) {
+        return new ClassPathResource(s);
+    }
+
+    public PDFont getRegularFont() {
+        return regularFont;
+    }
+
+    public PDFont getBoldFont() {
+        return boldFont;
+    }
+
+    private synchronized PDFont load(Resource res) throws IOException {
+        try (InputStream is = res.getInputStream()) {
+            return PDType0Font.load(this, is);
+        } catch (IOException e) {
+            LOG.warn("Kunne ikke lese InputStream under lasting av fonter", e);
+            throw e;
+        }
     }
 
     private static void setPdfMetadata(PDDocument doc) throws IOException {
@@ -45,7 +75,8 @@ public class FontAwarePDDocument extends PDDocument {
             metadata.importXMPMetadata(baos.toByteArray());
             doc.getDocumentCatalog().setMetadata(metadata);
 
-            PDOutputIntent intent = new PDOutputIntent(doc, new ClassPathResource("/pdf/sRGB.icc").getInputStream());
+            InputStream colorProfile = iccProfile.getInputStream();
+            PDOutputIntent intent = new PDOutputIntent(doc, colorProfile);
             intent.setInfo("sRGB IEC61966-2.1");
             intent.setOutputCondition("sRGB IEC61966-2.1");
             intent.setOutputConditionIdentifier("sRGB IEC61966-2.1");
