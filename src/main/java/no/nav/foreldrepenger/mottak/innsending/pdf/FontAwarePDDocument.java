@@ -22,9 +22,9 @@ import java.io.InputStream;
 public class FontAwarePDDocument extends PDDocument {
     private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
 
-    private static final Resource regularFontResource = streamFra("/pdf/NotoSans-Regular.ttf");
-    private static final Resource boldFontResource = streamFra("/pdf/NotoSans-Bold.ttf");
-    private static final Resource iccProfile = streamFra("/pdf/sRGB.icc");
+    private static final Resource regularFontResource = ressursFra("/pdf/NotoSans-Regular.ttf");
+    private static final Resource boldFontResource = ressursFra("/pdf/NotoSans-Bold.ttf");
+    private static final Resource iccProfile = ressursFra("/pdf/sRGB.icc");
 
     private PDFont regularFont;
     private PDFont boldFont;
@@ -35,7 +35,7 @@ public class FontAwarePDDocument extends PDDocument {
         setPdfMetadata(this);
     }
 
-    private static Resource streamFra(String s) {
+    private static Resource ressursFra(String s) {
         return new ClassPathResource(s);
     }
 
