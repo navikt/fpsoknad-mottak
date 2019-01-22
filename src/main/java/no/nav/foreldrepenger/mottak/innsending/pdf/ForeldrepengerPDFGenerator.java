@@ -48,13 +48,10 @@ public class ForeldrepengerPDFGenerator {
             doc.addPage(page);
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = yTop;
-            LOG.trace("Y ved start {}", y);
             y = fpRenderer.header(søker, doc, cos, false, y);
             float headerSize = yTop - y;
-            LOG.trace("Heaader trenger  {}", headerSize);
 
             if (stønad.getRelasjonTilBarn() != null) {
-                LOG.trace("Y før relasjon til barn {}", y);
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
@@ -63,33 +60,26 @@ public class ForeldrepengerPDFGenerator {
                         startY);
                 float behov = startY - size;
                 if (behov <= y) {
-                    LOG.trace("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
                     scratchcos.close();
                     y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
                 }
                 else {
-                    LOG.trace("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
-                            doc.getNumberOfPages(), behov, y);
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
-                LOG.trace("Y etter relasjon til barn {}", y);
             }
 
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
-                LOG.trace("Y før annen  forelder {}", y);
                 y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
                         stønad.getRettigheter(), cos,
                         y);
-                LOG.trace("Y etter annen forelder {}", y);
 
             }
 
             Opptjening opptjening = stønad.getOpptjening();
             List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
             if (opptjening != null) {
-                LOG.trace("Y før opptjening {}", y);
                 PDPage scratch = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch);
                 float startY = STARTY;
@@ -98,18 +88,13 @@ public class ForeldrepengerPDFGenerator {
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    LOG.trace("Nok plass til opptjening, trenger {}, har {}", behov, y);
                     y = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, cos, y);
                 }
                 else {
-                    LOG.trace("Trenger ny side. IKKE nok plass til opptjening på side {}, trenger {}, har {}",
-                            doc.getNumberOfPages(),
-                            behov, y);
                     cos = nySide(doc, cos, scratch, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
                 if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
-                    LOG.trace("Y før utenlandsk arbeidsforhold {}", y);
                     PDPage scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
@@ -120,24 +105,18 @@ public class ForeldrepengerPDFGenerator {
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.trace("Nok plass til utenlandsk arbeidsforhold, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.utenlandskeArbeidsforholdOpptjening(
                                 opptjening.getUtenlandskArbeidsforhold(),
                                 søknad.getVedlegg(), cos, y);
                     }
                     else {
-                        LOG.trace(
-                                "Trenger ny side. IKKE nok plass til utenlandsk arbeidsforhold på side {}, trenger {}, har {}",
-                                doc.getNumberOfPages(),
-                                behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
                 }
 
                 if (!opptjening.getAnnenOpptjening().isEmpty()) {
-                    LOG.trace("Y før annen opptjening {}", y);
                     PDPage scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
@@ -146,25 +125,18 @@ public class ForeldrepengerPDFGenerator {
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.trace("Nok plass til annen opptjening, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.annenOpptjening(
                                 opptjening.getAnnenOpptjening(),
                                 søknad.getVedlegg(), cos, y);
                     }
                     else {
-                        LOG.trace(
-                                "Trenger ny side. IKKE nok plass til annen opptjening på side {}, trenger {}, har {}",
-                                doc.getNumberOfPages(),
-                                behov,
-                                y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
                 }
 
                 if (!opptjening.getEgenNæring().isEmpty()) {
-                    LOG.trace("Y før egen næring {}", y);
                     PDPage scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
@@ -172,22 +144,16 @@ public class ForeldrepengerPDFGenerator {
                     size = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.trace("Nok plass til egen næring, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
                     }
                     else {
-                        LOG.trace(
-                                "Trenger ny side. IKKE nok plass til egen næring på side {}, trenger {}, har {}",
-                                doc.getNumberOfPages(),
-                                behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
                 }
 
                 if (opptjening.getFrilans() != null) {
-                    LOG.trace("Y før frilans {}", y);
                     PDPage scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
@@ -196,21 +162,16 @@ public class ForeldrepengerPDFGenerator {
                             scratchcos, startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.trace("Nok plass til frilans, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.frilansOpptjening(opptjening.getFrilans(), cos, y);
                     }
                     else {
-                        LOG.trace("Trenger ny side. IKKE nok plass til frilans på side {}, trenger {}, har {}",
-                                doc.getNumberOfPages(),
-                                behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
                 }
 
                 if (stønad.getMedlemsskap() != null) {
-                    LOG.trace("Y før medlemsskap {}", y);
                     PDPage scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
@@ -219,15 +180,10 @@ public class ForeldrepengerPDFGenerator {
                             startY);
                     behov = startY - size;
                     if (behov <= y) {
-                        LOG.trace("Nok plass til medlemsskap, trenger {}, har {}", behov, y);
                         scratchcos.close();
                         y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), cos, y);
                     }
                     else {
-                        LOG.trace(
-                                "Trenger ny side. IKKE nok plass til medlemsskap på side {}, trenger {}, har {}",
-                                doc.getNumberOfPages(),
-                                behov, y);
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
@@ -242,7 +198,7 @@ public class ForeldrepengerPDFGenerator {
             }
             cos.close();
             doc.save(baos);
-            LOG.trace("Dokumentet før søknad er på {} side{}", doc.getNumberOfPages(),
+            LOG.trace("Dokumentet er på {} side{}", doc.getNumberOfPages(),
                     doc.getNumberOfPages() > 1 ? "r" : "");
             return baos.toByteArray();
 
@@ -262,14 +218,11 @@ public class ForeldrepengerPDFGenerator {
             doc.addPage(page);
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = yTop;
-            LOG.trace("Y ved start {}", y);
             y = fpRenderer.header(søker, doc, cos, true,
                     y);
             float headerSize = yTop - y;
-            LOG.trace("Header trenger  {}", headerSize);
 
             if (stønad.getRelasjonTilBarn() != null) {
-                LOG.trace("Y før relasjon til barn {}", y);
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
@@ -279,40 +232,29 @@ public class ForeldrepengerPDFGenerator {
                         scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
-                    LOG.trace("Nok plass til relasjon til barn, trenger {}, har {}", behov, y);
                     scratchcos.close();
                     y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(),
                             cos, y);
                 }
                 else {
-                    LOG.trace("Trenger ny side. IKKE nok plass til relasjon på side {}, trenger {}, har {}",
-                            doc.getNumberOfPages(), behov, y);
                     cos = nySide(doc, cos, scratch1,
                             scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
-                LOG.trace("Y etter relasjon til barn {}", y);
-
             }
 
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
-                LOG.trace("Y før annen  forelder {}", y);
                 y = fpRenderer.annenForelder(annenForelder,
                         stønad.getFordeling().isErAnnenForelderInformert(), stønad.getRettigheter(),
                         cos, y);
-                LOG.trace("Y etter forelder {}", y);
-
             }
 
             if (stønad.getFordeling() != null) {
-                LOG.trace("Y før fordeling {}", y);
                 cos = fpRenderer.fordeling(doc, søker, stønad.getFordeling(), stønad.getDekningsgrad(),
                         søknad.getVedlegg(),
                         stønad.getRelasjonTilBarn().getAntallBarn(), true,
                         cos, y);
-                LOG.trace("Y etter fordeling {}", y);
-
             }
             cos.close();
             doc.save(baos);
