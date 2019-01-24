@@ -1,0 +1,18 @@
+package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+
+@Data
+public class Arbeidsforhold {
+    private final String id;
+    private final LocalDate førsteFraværsdag;
+    private final Inntekt inntekt;
+    private final List<LukketPeriode> avtaltFeriePerioder;
+    private final List<UtsettelsesPeriode> utsettelsesPerioder;
+    private final List<GraderingsPeriode> graderingsPerioder;
+
+}

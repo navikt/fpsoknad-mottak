@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 public enum Versjon {
 
     V1("urn:no:nav:vedtak:felles:xml:soeknad:v1", "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
-            "urn:no:nav:vedtak:felles:xml:soeknad:v2"), ALL;
+            "urn:no:nav:vedtak:felles:xml:soeknad:v2"), V6, ALL;
 
     public static final String VERSION_PROPERTY = "contract.version";
     private final List<String> namespaces;
@@ -48,6 +48,7 @@ public enum Versjon {
     public static List<Versjon> alleVersjoner() {
         return stream(values())
                 .filter(v -> !ALL.equals(v))
+                .filter(v -> !V6.equals(v))
                 .collect(toList());
     }
 }
