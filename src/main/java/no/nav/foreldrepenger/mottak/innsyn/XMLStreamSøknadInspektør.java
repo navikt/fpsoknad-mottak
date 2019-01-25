@@ -11,9 +11,7 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import java.io.StringReader;
 import java.util.List;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.util.EnvUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -29,10 +26,10 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @Component
 public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
+    private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
-    private static final List<? extends Object> KJENTE_TAGS = asList(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSØKNAD);
-    private static final String ENGANGSSOEKNAD = "engangsstønad";
+    private static final List<String> KJENTE_TAGS = asList(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSOEKNAD);
 
     private static final String OMYTELSE = "omYtelse";
 
@@ -56,7 +53,8 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     }
 
     private static boolean erEngangsstønadV1(String xml) {
-        return namespaceFra(xml).startsWith("http");
+        String namespace = namespaceFra(xml);
+        return namespace != null && namespace.startsWith("http");
     }
 
     private static Versjon versjonFra(String xml) {
@@ -71,11 +69,10 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                 reader.next();
             }
             return reader.getNamespaceURI();
-        } catch (XMLStreamException e) {
+        } catch (Exception e) {
             LOG.warn("Kunne ikke hente namespace fra XML");
             LOG.warn(CONFIDENTIAL, "XML er {}", xml);
-
-            throw new UnsupportedVersionException(e);
+            return null;
         }
     }
 
@@ -117,7 +114,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
             LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type", KJENTE_TAGS);
             return UKJENT;
-        } catch (XMLStreamException | FactoryConfigurationError e) {
+        } catch (Exception e) {
             LOG.warn("Feil ved søk etter kjente tags i søknaden {}, kan ikke fastslå type", KJENTE_TAGS, e);
             LOG.warn(CONFIDENTIAL, "XML er {}", xml);
             return UKJENT;

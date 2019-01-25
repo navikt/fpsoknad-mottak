@@ -74,7 +74,6 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad hentSøknad(Lenke søknadsLenke) {
-        LOG.info("Henter søknad fra {}", søknadsLenke);
         InnsynsSøknad søknad = Optional.ofNullable(innsynConnection.hentSøknad(søknadsLenke))
                 .map(this::tilSøknad)
                 .orElse(null);
