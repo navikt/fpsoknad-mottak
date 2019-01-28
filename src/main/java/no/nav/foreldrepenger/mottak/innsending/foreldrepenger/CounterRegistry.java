@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
@@ -18,9 +18,9 @@ public final class CounterRegistry {
     public static final Counter DOKMOT_FAILURE = Metrics.counter(DOKMOT_SEND, "søknad", "failure");
 
     public static final Counter FP_SENDFEIL = fpcounter(FPFORDEL_SEND, "feil");
-    public static final Counter FP_FØRSTEGANG = fpcounter(FPFORDEL_SEND, INITIELL.name());
-    public static final Counter FP_ENDRING = fpcounter(FPFORDEL_SEND, ENDRING.name());
-    public static final Counter FP_ETTERSSENDING = fpcounter(FPFORDEL_SEND, ETTERSENDING.name());
+    public static final Counter FP_FØRSTEGANG = fpcounter(FPFORDEL_SEND, INITIELL_FORELDREPENGER.name());
+    public static final Counter FP_ENDRING = fpcounter(FPFORDEL_SEND, ENDRING_FORELDREPENGER.name());
+    public static final Counter FP_ETTERSSENDING = fpcounter(FPFORDEL_SEND, ETTERSENDING_FORELDREPENGER.name());
     public static final Counter GITTOPP_KVITTERING = fpcounter(FPFORDEL_KVITTERINGER, "gittopp");
     public static final Counter MANUELL_KVITTERING = fpcounter(FPFORDEL_KVITTERINGER, "gosys");
     public static final Counter FORDELT_KVITTERING = fpcounter(FPFORDEL_KVITTERINGER, "fordelt");

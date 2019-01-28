@@ -29,7 +29,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Aktoer;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.FoedselEllerAdopsjon;
@@ -49,18 +48,9 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.Vedlegg;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.VedleggListe;
 
 @Service
-public class DokmotEngangsstønadXMLGenerator {
+public class DokmotEngangsstønadDomainMapper {
 
-    private final EngangsstønadPDFGenerator pdfGenerator;
     private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
-
-    public DokmotEngangsstønadXMLGenerator(EngangsstønadPDFGenerator pdfGenerator) {
-        this.pdfGenerator = pdfGenerator;
-    }
-
-    public byte[] tilPdf(Søknad søknad, Person søker) {
-        return pdfGenerator.generate(søknad, søker);
-    }
 
     public String tilXML(Søknad søknad, Person person) {
         return tilXML(tilDokmotModel(søknad, person));
@@ -87,7 +77,7 @@ public class DokmotEngangsstønadXMLGenerator {
             List<ValgfrittVedlegg> valgfrieVedlegg) {
         return new VedleggListe()
                 .withVedlegg(Stream.concat(påkrevdeVedlegg.stream(), valgfrieVedlegg.stream())
-                        .map(DokmotEngangsstønadXMLGenerator::vedleggFra)
+                        .map(DokmotEngangsstønadDomainMapper::vedleggFra)
                         .collect(toList()));
     }
 
@@ -132,7 +122,7 @@ public class DokmotEngangsstønadXMLGenerator {
         return new TidligereOppholdUtenlands()
                 .withUtenlandsopphold(tidligere.getUtenlandsOpphold()
                         .stream()
-                        .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
+                        .map(DokmotEngangsstønadDomainMapper::utenlandsoppholdFra)
                         .collect(toList()));
     }
 
@@ -140,7 +130,7 @@ public class DokmotEngangsstønadXMLGenerator {
         return new FremtidigOppholdUtenlands()
                 .withUtenlandsopphold(framtid.getUtenlandsOpphold()
                         .stream()
-                        .map(DokmotEngangsstønadXMLGenerator::utenlandsoppholdFra)
+                        .map(DokmotEngangsstønadDomainMapper::utenlandsoppholdFra)
                         .collect(toList()));
     }
 
@@ -242,10 +232,4 @@ public class DokmotEngangsstønadXMLGenerator {
     private static String mellomnavn(String mellomnavn) {
         return mellomnavn == null ? "" : mellomnavn + " ";
     }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [pdfGenerator=" + pdfGenerator + "]";
-    }
-
 }

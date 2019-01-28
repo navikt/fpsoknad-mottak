@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Behandlingstema;
@@ -39,11 +40,14 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private static final String KANAL = "NAV_NO";
 
-    private final DokmotEngangsstønadXMLGenerator søknadGenerator;
+    private final EngangsstønadPDFGenerator pdfGenerator;
+    private final DokmotEngangsstønadDomainMapper søknadGenerator;
     private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
-    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadXMLGenerator generator) {
+    public DokmotEngangsstønadXMLKonvoluttGenerator(DokmotEngangsstønadDomainMapper generator,
+            EngangsstønadPDFGenerator pdfGenerator) {
         this.søknadGenerator = generator;
+        this.pdfGenerator = pdfGenerator;
     }
 
     public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
@@ -83,7 +87,7 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     private Hoveddokument hoveddokument(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
         Dokumentinnhold hovedskjemaInnhold = new Dokumentinnhold()
-                .withDokument(søknadGenerator.tilPdf(søknad, søker))
+                .withDokument(pdfGenerator.generate(søknad, søker))
                 .withArkivfiltype(new Arkivfiltyper().withValue(PDFA.name()))
                 .withVariantformat(new Variantformater().withValue(ARKIV.name()));
         Stream<Dokumentinnhold> alternativeRepresentasjonerInnhold = Collections.singletonList(new Dokumentinnhold()
@@ -121,7 +125,8 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [søknadGenerator=" + søknadGenerator + "]";
+        return getClass().getSimpleName() + " [pdfGenerator=" + pdfGenerator + ", søknadGenerator="
+                + søknadGenerator + "]";
     }
 
 }

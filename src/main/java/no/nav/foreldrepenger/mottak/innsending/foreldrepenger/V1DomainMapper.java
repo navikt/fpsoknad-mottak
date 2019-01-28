@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -68,6 +67,7 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.FPV1JAXBUtil;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -116,7 +116,7 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
 public class V1DomainMapper implements DomainMapper {
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, newArrayList(ENDRING, INITIELL));
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, ENDRING_FORELDREPENGER, INITIELL_FORELDREPENGER);
 
     private static final FPV1JAXBUtil JAXB = new FPV1JAXBUtil();
     private static final Logger LOG = LoggerFactory.getLogger(V1DomainMapper.class);
@@ -449,9 +449,9 @@ public class V1DomainMapper implements DomainMapper {
                 .collect(toList());
     }
 
-    private AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
+    private static AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
         if (!lovligVerdiForVersjon(type)) {
-            throw new VersionMismatchException(type.getClass().getSimpleName(), type.name(), versjon(),
+            throw new VersionMismatchException(type.getClass().getSimpleName(), type.name(), Versjon.V1,
                     lovligeVerdier());
         }
         return Optional.ofNullable(type)
@@ -459,15 +459,15 @@ public class V1DomainMapper implements DomainMapper {
                 .orElse(null);
     }
 
-    private String lovligeVerdier() {
+    private static String lovligeVerdier() {
         return Arrays.stream(AnnenOpptjeningType.values())
                 .filter(a -> lovligVerdiForVersjon(a))
                 .map(s -> s.name())
                 .collect(joining(","));
     }
 
-    private boolean lovligVerdiForVersjon(AnnenOpptjeningType type) {
-        return type.versjoner.contains(versjon());
+    private static boolean lovligVerdiForVersjon(AnnenOpptjeningType type) {
+        return type.versjoner.contains(Versjon.V1);
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {

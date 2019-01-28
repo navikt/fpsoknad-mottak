@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
+import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
@@ -29,7 +29,7 @@ public class InnsynTjeneste implements Innsyn {
     private final InnsynConnection innsynConnection;
     private final SøknadInspektør inspektør;
 
-    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(VERSJONSBEVISST) XMLMapper mapper,
+    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(DELEGERENDE) XMLMapper mapper,
             SøknadInspektør inspektør) {
         this.innsynConnection = innsynConnection;
         this.mapper = mapper;
@@ -123,8 +123,9 @@ public class InnsynTjeneste implements Innsyn {
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         String xml = wrapper.getXml();
-        return new InnsynsSøknad(new SøknadMetadata(inspektør.inspiser(xml), wrapper.getJournalpostId()),
-                mapper.tilSøknad(xml));
+        SøknadEgenskap egenskaper = inspektør.inspiser(xml);
+        return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
+                mapper.tilSøknad(xml, egenskaper));
 
     }
 

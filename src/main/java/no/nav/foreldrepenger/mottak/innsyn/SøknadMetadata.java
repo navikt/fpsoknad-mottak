@@ -11,11 +11,11 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class SøknadMetadata {
 
-    private final SøknadEgenskaper egenskaper;
+    private final SøknadEgenskap egenskaper;
     private final String journalpostId;
 
     @JsonCreator
-    public SøknadMetadata(@JsonProperty("egenskaper") SøknadEgenskaper egenskaper,
+    public SøknadMetadata(@JsonProperty("egenskaper") SøknadEgenskap egenskaper,
             @JsonProperty("journalpostId") String journalpostId) {
         this.egenskaper = egenskaper;
         this.journalpostId = journalpostId;
@@ -71,7 +71,7 @@ public class SøknadMetadata {
         return egenskaper.getType();
     }
 
-    public SøknadEgenskaper getEgenskaper() {
+    public SøknadEgenskap getEgenskaper() {
         return egenskaper;
     }
 

@@ -7,9 +7,9 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegi
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_SENDFEIL;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,17 +47,17 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker, Versjon versjon) {
-        return send(ENDRING, konvoluttGenerator.payload(endringsSøknad, søker, versjon));
+        return send(ENDRING_FORELDREPENGER, konvoluttGenerator.payload(endringsSøknad, søker, versjon));
     }
 
     @Override
     public Kvittering send(Søknad søknad, Person søker, Versjon versjon) {
-        return send(INITIELL, konvoluttGenerator.payload(søknad, søker, versjon));
+        return send(INITIELL_FORELDREPENGER, konvoluttGenerator.payload(søknad, søker, versjon));
     }
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker, Versjon versjon) {
-        return send(ETTERSENDING, konvoluttGenerator.payload(ettersending, søker));
+        return send(ETTERSENDING_FORELDREPENGER, konvoluttGenerator.payload(ettersending, søker));
     }
 
     private Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
@@ -83,13 +83,13 @@ public class FPFordelSøknadSender implements SøknadSender {
     private static void logAndCount(SøknadType type) {
         LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
         switch (type) {
-        case ENDRING:
+        case ENDRING_FORELDREPENGER:
             FP_ENDRING.increment();
             break;
-        case ETTERSENDING:
+        case ETTERSENDING_FORELDREPENGER:
             FP_ETTERSSENDING.increment();
             break;
-        case INITIELL:
+        case INITIELL_FORELDREPENGER:
             FPFORDEL_SEND_INITIELL.increment();
             FP_FØRSTEGANG.increment();
             break;

@@ -2,16 +2,16 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.UKJENT;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 
 import java.io.StringReader;
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
@@ -20,12 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
-import no.nav.foreldrepenger.mottak.util.EnvUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 public final class XMLStreamSøknadInspektør implements SøknadInspektør {
 
+    private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
     private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
@@ -36,51 +36,51 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     private static final Logger LOG = LoggerFactory.getLogger(XMLStreamSøknadInspektør.class);
 
     @Override
-    public SøknadEgenskaper inspiser(String xml) {
-        SøknadEgenskaper egenskaper = new SøknadEgenskaper(typeFra(xml), versjonFra(xml));
-        if (egenskaper.getType().equals(UKJENT)) {
-            LOG.warn("Søknad er av type {} og versjon er {}", egenskaper.getType(), egenskaper.getVersjon());
-            LOG.warn(EnvUtil.CONFIDENTIAL, "XML er {}", xml);
-        }
-        else {
-            LOG.info("Søknad er type {} og versjon {}", egenskaper.getType(), egenskaper.getVersjon());
-        }
-        return egenskaper;
-    }
-
-    private static SøknadType typeFra(String xml) {
-        return !erEngangsstønadV1(xml) ? fpTypeFra(xml) : ENGANGSSØKNAD;
-    }
-
-    private static boolean erEngangsstønadV1(String xml) {
+    public SøknadEgenskap inspiser(String xml) {
         String namespace = namespaceFra(xml);
+        SøknadEgenskap egenskap = new SøknadEgenskap(versjonFra(namespace), typeFra(xml, namespace));
+        if (egenskap.erUkjent()) {
+            LOG.warn("Søknad {} kunne ikke analyseres", xml);
+            return SøknadEgenskap.UKJENT;
+        }
+        LOG.info("Søknad har egenskap {}", egenskap);
+        return egenskap;
+    }
+
+    private static SøknadType typeFra(String xml, String namespace) {
+        return !erEngangsstønadV1Dokmot(namespace) ? fpTypeFra(xml) : INITIELL_ENGANGSSTØNAD;
+    }
+
+    private static boolean erEngangsstønadV1Dokmot(String namespace) {
         return namespace != null && namespace.startsWith("http");
     }
 
-    private static Versjon versjonFra(String xml) {
-        return Versjon.namespaceFra(namespaceFra(xml));
+    private static Versjon versjonFra(String namespace) {
+        return Versjon.namespaceFra(namespace);
     }
 
     private static String namespaceFra(String xml) {
+        if (xml == null) {
+            return null;
+        }
         try {
-            XMLStreamReader reader = XMLInputFactory.newInstance()
-                    .createXMLStreamReader(new StreamSource(new StringReader(xml)));
+            XMLStreamReader reader = createReader(xml);
             while (!reader.isStartElement()) {
                 reader.next();
             }
             return reader.getNamespaceURI();
         } catch (Exception e) {
-            LOG.warn("Kunne ikke hente namespace fra XML");
-            LOG.warn(CONFIDENTIAL, "XML er {}", xml);
+            LOG.warn("Kunne ikke hente namespace fra {}", xml);
             return null;
         }
     }
 
     private static SøknadType fpTypeFra(String xml) {
-
+        if (xml == null) {
+            return UKJENT;
+        }
         try {
-            XMLStreamReader reader = XMLInputFactory.newInstance()
-                    .createXMLStreamReader(new StreamSource(new StringReader(xml)));
+            XMLStreamReader reader = createReader(xml);
             while (reader.hasNext()) {
                 reader.next();
                 if (reader.getEventType() == START_ELEMENT) {
@@ -91,23 +91,23 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                             if (type != null) {
                                 if (type.toLowerCase().contains(FORELDREPENGER.toLowerCase())) {
                                     LOG.debug("Fant type INITIELL fra attributt på OMYTELSE");
-                                    return INITIELL;
+                                    return INITIELL_FORELDREPENGER;
                                 }
                                 if (type.toLowerCase().contains(ENDRINGSSOEKNAD.toLowerCase())) {
                                     LOG.debug("Fant type ENDRING fra attributt på OMYTELSE");
-                                    return ENDRING;
+                                    return ENDRING_FORELDREPENGER;
                                 }
                             }
                         }
                     }
                     if (reader.getLocalName().equalsIgnoreCase(FORELDREPENGER)) {
-                        return INITIELL;
+                        return INITIELL_FORELDREPENGER;
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENDRINGSSOEKNAD)) {
-                        return ENDRING;
+                        return ENDRING_FORELDREPENGER;
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENGANGSSOEKNAD)) {
-                        return ENGANGSSØKNAD;
+                        return INITIELL_ENGANGSSTØNAD;
                     }
                 }
             }
@@ -115,10 +115,12 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
             LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type", KJENTE_TAGS);
             return UKJENT;
         } catch (Exception e) {
-            LOG.warn("Feil ved søk etter kjente tags i søknaden {}, kan ikke fastslå type", KJENTE_TAGS, e);
-            LOG.warn(CONFIDENTIAL, "XML er {}", xml);
+            LOG.warn("Feil ved søk etter kjente tags {} i {} , kan ikke fastslå type", KJENTE_TAGS, xml, e);
             return UKJENT;
         }
     }
 
+    private static XMLStreamReader createReader(String xml) throws XMLStreamException {
+        return FACTORY.createXMLStreamReader(new StreamSource(new StringReader(xml)));
+    }
 }

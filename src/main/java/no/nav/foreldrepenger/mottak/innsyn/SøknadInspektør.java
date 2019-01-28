@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public interface SøknadInspektør {
 
-    SøknadEgenskaper inspiser(String xml);
+    SøknadEgenskap inspiser(String xml);
 
     default SøknadType type(String xml) {
         return inspiser(xml).getType();

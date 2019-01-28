@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import no.nav.foreldrepenger.mottak.VersjonsBevisst;
+import no.nav.foreldrepenger.mottak.EgenskapsBevisst;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 
-public interface XMLMapper extends VersjonsBevisst {
+public interface XMLMapper extends EgenskapsBevisst {
 
-    String VERSJONSBEVISST = "versjonbevisst";
+    String DELEGERENDE = "delegerende";
     String UKJENT_KODEVERKSVERDI = "-";
 
-    Søknad tilSøknad(String xml);
-
+    Søknad tilSøknad(String xml, SøknadEgenskap egenskap);
 }

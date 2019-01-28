@@ -1,74 +1,63 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.VERSJONSBEVISST;
+import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.DELEGERENDE;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-@Qualifier(VERSJONSBEVISST)
+@Qualifier(DELEGERENDE)
 public class DelegerendeXMLMapper implements XMLMapper {
 
     private final List<XMLMapper> mappers;
-    private final SøknadInspektør inspektør;
+
+    private static final Logger LOG = LoggerFactory.getLogger(DelegerendeXMLMapper.class);
 
     public DelegerendeXMLMapper(XMLMapper... mappers) {
-        this(new XMLStreamSøknadInspektør(), mappers);
-    }
-
-    public DelegerendeXMLMapper(SøknadInspektør analysator, XMLMapper... mappers) {
-        this(analysator, asList(mappers));
+        this(asList(mappers));
     }
 
     @Inject
-    public DelegerendeXMLMapper(SøknadInspektør inspektør, List<XMLMapper> mappers) {
+    public DelegerendeXMLMapper(List<XMLMapper> mappers) {
         this.mappers = mappers;
-        this.inspektør = inspektør;
     }
 
     @Override
-    public Søknad tilSøknad(String xml) {
-        return mapper(xml).tilSøknad(xml);
+    public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
+        return mapper(xml, egenskap).tilSøknad(xml, egenskap);
     }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(Versjon.ALL, mappers.stream()
-                .map(m -> m.mapperEgenskaper().getTyper())
-                .flatMap(s -> s.stream())
+        return new MapperEgenskaper(mappers.stream()
+                .map(m -> m.mapperEgenskaper())
+                .map(e -> e.getSøknadEgenskaper())
+                .flatMap(e -> e.stream())
                 .collect(toList()));
     }
 
-    private XMLMapper mapper(String xml) {
-        SøknadEgenskaper søknadEgenskaper = inspektør.inspiser(xml);
-        return mappers.stream()
-                .filter(mapper -> mapper.kanMappe(søknadEgenskaper))
+    private XMLMapper mapper(String xml, SøknadEgenskap egenskap) {
+        XMLMapper m = mappers.stream()
+                .filter(mapper -> mapper.kanMappe(egenskap))
                 .findFirst()
-                .orElseThrow(
-                        () -> new UnsupportedVersionException("Fant ingen mapper blant " + mapperNames(),
-                                søknadEgenskaper));
-    }
-
-    private String mapperNames() {
-        return mappers.stream()
-                .map(m -> m.getClass().getSimpleName().getClass().getSimpleName())
-                .collect(joining(","));
+                .orElse(new UkjentXMLMapper());
+        LOG.info("Bruker mapper {}", m.getClass().getSimpleName());
+        return m;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mappers=" + mappers + ", inspektør=" + inspektør + "]";
+        return getClass().getSimpleName() + " [mappers=" + mappers + "]";
     }
 }

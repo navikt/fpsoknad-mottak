@@ -35,7 +35,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     private final FPInfoSaksPoller poller;
 
     public FPFordelResponseHandler(RestOperations restOperations,
-            @Value("${fpfordel.max:5}") int maxAntallForsøk,
+            @Value("${fpfordel.max:10}") int maxAntallForsøk,
             @Value("${fpfordel.maxMillis:10000}") long maxMillis,
             FPInfoSaksPoller poller) {
         super(restOperations);

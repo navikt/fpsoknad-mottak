@@ -37,6 +37,8 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
@@ -93,18 +95,18 @@ public class TestFPFordelRoundtripSerialization {
     public void testFPForeldrepengerSøknadXMLV1() {
         Versjon versjon = V1;
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        assertEquals(original,
-                xmlMapper
-                        .tilSøknad(template.postForObject(INNSENDING_PREPROD + "/søknad", original, String.class,
-                                versjon)));
+        String xml = template.postForObject(INNSENDING_PREPROD + "/søknad", original, String.class);
+        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
+        assertEquals(original, xmlMapper.tilSøknad(xml, egenskaper));
     }
 
     @Test
     public void testFPForeldrepengerSøknadXMLV2() {
         Versjon versjon = V2;
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        assertEquals(original, xmlMapper
-                .tilSøknad(template.postForObject(INNSENDING_PREPROD + "/søknadV2", original, String.class, versjon)));
+        String xml = template.postForObject(INNSENDING_PREPROD + "/søknadV2", original, String.class);
+        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
+        assertEquals(original, xmlMapper.tilSøknad(xml, egenskaper));
     }
 
     @Test

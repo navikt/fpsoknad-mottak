@@ -30,7 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadXMLGenerator;
+import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -44,12 +44,12 @@ public class SøknadPreprodController {
 
     public static final String INNSENDING_PREPROD = "/preprod";
 
-    private final DokmotEngangsstønadXMLGenerator esDomainMapper;
+    private final DokmotEngangsstønadDomainMapper esDomainMapper;
     private final VersjonsBevisstDomainMapper fpDomainMapper;
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
     public SøknadPreprodController(VersjonsBevisstDomainMapper fpDomainMapper,
-            DokmotEngangsstønadXMLGenerator esDomainMapper, ForeldrepengerPDFGenerator pdfGenerator) {
+            DokmotEngangsstønadDomainMapper esDomainMapper, ForeldrepengerPDFGenerator pdfGenerator) {
         this.fpDomainMapper = fpDomainMapper;
         this.esDomainMapper = esDomainMapper;
         this.pdfGenerator = pdfGenerator;

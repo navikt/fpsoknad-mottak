@@ -1,11 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
@@ -13,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -107,19 +105,15 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 @Component
 public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, newArrayList(ENDRING, INITIELL));
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, ENDRING_FORELDREPENGER,
+            INITIELL_FORELDREPENGER);
 
     private static final FPV1JAXBUtil JAXB = new FPV1JAXBUtil();
 
     private static final Logger LOG = LoggerFactory.getLogger(V1ForeldrepengerXMLMapper.class);
 
     public V1ForeldrepengerXMLMapper(Oppslag oppslag) {
-        this(oppslag, new XMLStreamSøknadInspektør());
-    }
-
-    @Inject
-    public V1ForeldrepengerXMLMapper(Oppslag oppslag, SøknadInspektør inspektør) {
-        super(oppslag, inspektør);
+        super(oppslag);
     }
 
     @Override
@@ -128,15 +122,15 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     @Override
-    public Søknad tilSøknad(String xml) {
+    public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
         if (xml == null) {
             LOG.debug("Ingen søknad ble funnet");
             return null;
         }
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
-            switch (type(xml)) {
-            case ENDRING:
+            switch (egenskap.getType()) {
+            case ENDRING_FORELDREPENGER:
                 Endringssøknad endringssøknad = new Endringssøknad(
                         søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),
@@ -144,7 +138,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return endringssøknad;
-            case INITIELL:
+            case INITIELL_FORELDREPENGER:
                 Søknad førstegangssøknad = new Søknad(
                         søknad.getMottattDato().atStartOfDay(),
                         tilSøker(søknad.getSoeker()),

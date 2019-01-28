@@ -1,12 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static java.util.Collections.singletonList;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENGANGSSØKNAD;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.time.LocalDateTime;
-
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,29 +14,19 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge;
 
 @Component
-public class DokmotV1XMLMapper extends AbstractXMLMapper {
+public class DokmotV1XMLMapper implements XMLMapper {
 
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, singletonList(ENGANGSSØKNAD));
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD);
 
     private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
     private static final Logger LOG = LoggerFactory.getLogger(DokmotV1XMLMapper.class);
-
-    public DokmotV1XMLMapper(Oppslag oppslag) {
-        this(oppslag, new XMLStreamSøknadInspektør());
-    }
-
-    @Inject
-    public DokmotV1XMLMapper(Oppslag oppslag, SøknadInspektør inspektør) {
-        super(oppslag, inspektør);
-    }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
@@ -47,7 +34,7 @@ public class DokmotV1XMLMapper extends AbstractXMLMapper {
     }
 
     @Override
-    public Søknad tilSøknad(String xml) {
+    public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
         // TODO incomplete
         if (xml == null) {
             LOG.debug("Ingen søknad ble funnet");

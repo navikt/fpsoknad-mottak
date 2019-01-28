@@ -22,9 +22,11 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DelegerendeDomainM
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V2DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,11 +67,15 @@ public class MapperRoundtripTest {
 
     private void roundTripInitiell(Versjon v) {
         Søknad søknad = søknadMedToVedlegg(v);
-        assertEquals(søknad, xmlMapper.tilSøknad(domainMapper.tilXML(søknad, SØKER, v)));
+        String xml = domainMapper.tilXML(søknad, SØKER, v);
+        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
+        assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
     }
 
     private void roundTripEndring(Versjon v) {
         Endringssøknad søknad = endringssøknad(v);
-        assertEquals(søknad, xmlMapper.tilSøknad(domainMapper.tilXML(søknad, SØKER, v)));
+        String xml = domainMapper.tilXML(søknad, SØKER, v);
+        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
+        assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
     }
 }

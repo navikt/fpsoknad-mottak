@@ -1,17 +1,12 @@
 package no.nav.foreldrepenger.mottak;
 
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-public interface VersjonsBevisst {
+public interface EgenskapsBevisst {
 
     MapperEgenskaper mapperEgenskaper();
 
-    default boolean kanMappe(SøknadEgenskaper søknadEgenskaper) {
-        return mapperEgenskaper().kanMappe(søknadEgenskaper);
-    }
-
-    default Versjon versjon() {
-        return mapperEgenskaper().getVersjon();
+    default boolean kanMappe(SøknadEgenskap egenskap) {
+        return mapperEgenskaper().kanMappe(egenskap);
     }
 }

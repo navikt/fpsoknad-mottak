@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -14,6 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
@@ -32,10 +33,14 @@ public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(Versjon.ALL, mappers.stream()
-                .map(m -> m.mapperEgenskaper().getTyper())
-                .flatMap(s -> s.stream())
-                .collect(toList()));
+        List<SøknadEgenskap> e = new ArrayList<>();
+        for (DomainMapper mapper : mappers) {
+            MapperEgenskaper mapperEgenskaper = mapper.mapperEgenskaper();
+            List<SøknadEgenskap> søknadEgenskaper = mapperEgenskaper.getSøknadEgenskaper();
+            e.addAll(søknadEgenskaper);
+        }
+        return new MapperEgenskaper(e);
+
     }
 
     @Override
@@ -50,7 +55,7 @@ public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
 
     private DomainMapper mapper(Versjon versjon) {
         return mappers.stream()
-                .filter(s -> s.versjon().equals(versjon))
+                .filter(s -> s.kanMappe(versjon))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedVersionException("Versjon " + versjon + " ikke støttet", versjon));
     }

@@ -1,16 +1,16 @@
 package no.nav.foreldrepenger.mottak.errorhandling;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class UnsupportedVersionException extends VersionException {
 
-    public UnsupportedVersionException(SøknadEgenskaper egenskaper) {
+    public UnsupportedVersionException(SøknadEgenskap egenskaper) {
         this(null, egenskaper);
     }
 
-    public UnsupportedVersionException(String msg, SøknadEgenskaper egenskaper) {
+    public UnsupportedVersionException(String msg, SøknadEgenskap egenskaper) {
         this(null, egenskaper.getVersjon(), egenskaper.getType(), null);
     }
 

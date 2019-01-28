@@ -51,7 +51,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvitt
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -163,12 +163,12 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testSøknadMetadata() {
-        test(new SøknadMetadata(new SøknadEgenskaper(SøknadType.INITIELL, Versjon.V1), "42"), true);
+        test(new SøknadMetadata(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), "42"), true);
     }
 
     @Test
     public void testSøknadInspeksjon() {
-        test(new SøknadEgenskaper(SøknadType.INITIELL, Versjon.V1), true);
+        test(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), true);
     }
 
     @Test
