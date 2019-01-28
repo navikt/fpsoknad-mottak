@@ -10,7 +10,13 @@ public final class ESV1JAXBUtil extends AbstractJAXBUtil {
     private static final Versjon VERSJON = V1;
 
     public ESV1JAXBUtil() {
-        super(contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class), VERSJON,
+        this(false, false);
+    }
+
+    public ESV1JAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
+        super(contextFra(SoeknadsskjemaEngangsstoenad.class, Dokumentforsendelse.class),
+                VERSJON,
+                validateMarshalling, validateUnmarshalling,
                 "/engangsstoenad/konvolutt-dokmot-v1.xsd",
                 "/engangsstoenad/engangsstoenad-dokmot-v1.xsd");
     }

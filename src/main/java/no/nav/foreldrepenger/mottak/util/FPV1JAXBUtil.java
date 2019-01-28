@@ -11,6 +11,10 @@ public final class FPV1JAXBUtil extends AbstractJAXBUtil {
     private static final Versjon VERSJON = V1;
 
     public FPV1JAXBUtil() {
+        this(false, false);
+    }
+
+    public FPV1JAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
         super(contextFra(
                 Endringssoeknad.class,
                 Foreldrepenger.class,
@@ -18,6 +22,7 @@ public final class FPV1JAXBUtil extends AbstractJAXBUtil {
                 no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.ObjectFactory.class,
                 Soeknad.class),
                 VERSJON,
+                validateMarshalling, validateUnmarshalling,
                 "/foreldrepenger/foreldrepenger-v1.xsd",
                 "/endringssoeknad-v1.xsd",
                 "/soeknad-v1.xsd");

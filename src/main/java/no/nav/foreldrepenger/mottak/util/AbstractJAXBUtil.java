@@ -37,12 +37,17 @@ public abstract class AbstractJAXBUtil {
 
     private final JAXBContext context;
     private final Schema schema;
+    private final boolean validateMarshalling;
+    private final boolean validateUnarshalling;
 
     protected static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
-    public AbstractJAXBUtil(JAXBContext context, Versjon versjon, String... xsds) {
+    public AbstractJAXBUtil(JAXBContext context, Versjon versjon, boolean validateMarhsalling,
+            boolean validateUnmarshalling, String... xsds) {
         this.context = context;
         this.schema = schema(versjon, xsds);
+        this.validateMarshalling = validateMarhsalling;
+        this.validateUnarshalling = validateUnmarshalling;
     }
 
     protected static JAXBContext contextFra(Class<?>... classes) {
@@ -115,7 +120,7 @@ public abstract class AbstractJAXBUtil {
         try {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler(new DefaultValidationEventHandler());
-            if (schema != null) {
+            if (schema != null && validateUnarshalling) {
                 unmarshaller.setSchema(schema);
             }
             return unmarshaller;
@@ -130,8 +135,8 @@ public abstract class AbstractJAXBUtil {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
             marshaller.setEventHandler(new DefaultValidationEventHandler());
-            if (schema != null) {
-                // marshaller.setSchema(schema);
+            if (schema != null && validateMarshalling) {
+                marshaller.setSchema(schema);
             }
             return marshaller;
         } catch (Exception e) {
