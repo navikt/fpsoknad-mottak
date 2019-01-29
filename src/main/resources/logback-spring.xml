@@ -25,11 +25,8 @@
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
 
      <springProfile name="dev,preprod">
-        <logger name="org.springframework.web.client.HttpMessageConverterExtractor" level="TRACE" />
-        <logger name="org.springframework.web.client" level="info" />
+        <logger name="no.nav.security.spring.oidc.validation" level="trace"/>
         <logger name="no.nav.foreldrepenger" level="trace" />
-        <logger name="no.nav.security" level="info" />
-        <logger name="org.apache.fontbox" level="info" />  
     </springProfile>
 </configuration>
 
