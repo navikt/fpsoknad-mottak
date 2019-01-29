@@ -36,7 +36,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
 
     private final int maxAntallForsøk;
 
-    public FPInfoSaksPoller(RestOperations RestOperations, @Value("${fpinfo.max:5}") int maxAntallForsøk) {
+    public FPInfoSaksPoller(RestOperations RestOperations, @Value("${fpinfo.max:10}") int maxAntallForsøk) {
         super(RestOperations);
         this.maxAntallForsøk = maxAntallForsøk;
     }
