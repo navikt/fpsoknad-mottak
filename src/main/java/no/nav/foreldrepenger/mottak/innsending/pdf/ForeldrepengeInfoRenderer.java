@@ -361,15 +361,12 @@ public class ForeldrepengeInfoRenderer {
         float heaaderSize = 190;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
-                LOG.trace("Render uttak start at " + y);
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = STARTY - 190 - x;
-                LOG.trace("Uttak trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.trace("Nok plass til uttak");
                     scratchcos.close();
                     y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
@@ -382,16 +379,13 @@ public class ForeldrepengeInfoRenderer {
                 LOG.trace("Render utak end at " + y);
             }
             else if (periode instanceof GradertUttaksPeriode) {
-                LOG.trace("Render gradert start at " + y);
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos,
                         STARTY - 190);
                 float behov = STARTY - 190 - x;
-                LOG.trace("Gradert trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.trace("Nok plass til gradert");
                     scratchcos.close();
                     y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
@@ -401,7 +395,6 @@ public class ForeldrepengeInfoRenderer {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.trace("Render gradert end at " + y);
 
             }
             else if (periode instanceof OppholdsPeriode) {
@@ -411,7 +404,6 @@ public class ForeldrepengeInfoRenderer {
                 float x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, scratchcos,
                         STARTY - 190);
                 float behov = STARTY - 190 - x;
-                LOG.trace("Opphold trenger " + behov + " har " + y);
                 if (behov < y) {
                     LOG.trace("Nok plass til opphold");
                     scratchcos.close();
@@ -419,22 +411,17 @@ public class ForeldrepengeInfoRenderer {
                             y);
                 }
                 else {
-                    LOG.trace("Ikke nok plass til opphold");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
-                    LOG.trace("Render opphold etter ny side end at " + y);
                 }
-                LOG.trace("Render opphold end at " + y);
 
             }
             else if (periode instanceof UtsettelsesPeriode) {
-                LOG.trace("Render utsettelse start at " + y);
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = STARTY - 190 - x;
-                LOG.trace("Utsettelse trenger " + behov + " har " + y);
                 if (behov < y) {
                     LOG.trace("Nok plass til utsettelse");
                     scratchcos.close();
@@ -442,33 +429,26 @@ public class ForeldrepengeInfoRenderer {
                             y);
                 }
                 else {
-                    LOG.trace("Ikke nok plass til utsettelse");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.trace("Render utsettelse end at " + y);
 
             }
             else if (periode instanceof OverføringsPeriode) {
-                LOG.trace("Render overføring start at " + y);
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = STARTY - 190 - x;
-                LOG.trace("Overføring trenger " + behov + " har " + y);
                 if (behov < y) {
-                    LOG.trace("Nok plass til overføring");
                     scratchcos.close();
                     y = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
                 }
                 else {
-                    LOG.trace("Ikke nok plass til overføring");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.trace("Render overføring end at " + y);
             }
         }
         y -= renderer.addBlankLine();
@@ -478,11 +458,9 @@ public class ForeldrepengeInfoRenderer {
     private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
             FontAwareCos scratchcos, Person søker, boolean erEndring) throws IOException {
         cos.close();
-        LOG.trace("Før ny side  " + STARTY);
         float y = header(søker, doc, scratchcos, erEndring, STARTY);
         doc.addPage(scratch);
         cos = scratchcos;
-        LOG.trace("Etter ny side  " + y);
         return cos;
     }
 
