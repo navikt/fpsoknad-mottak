@@ -13,6 +13,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,21 +43,23 @@ public class IDToMDCFilterBean extends GenericFilterBean {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         if (tokenUtil.erAutentisert()) {
-            copyHeadersToMDC();
+            copyHeadersToMDC(HttpServletRequest.class.cast(req));
         }
         chain.doFilter(req, res);
     }
 
-    private void copyHeadersToMDC() {
+    private void copyHeadersToMDC(HttpServletRequest req) {
         try {
+            String fnr = tokenUtil.getSubject();
             if (isDevOrPreprod(getEnvironment())) {
-                MDC.put(NAV_USER_ID, tokenUtil.autentisertBruker().getFnr());
+                toMDC(NAV_USER_ID, fnr);
             }
             toMDC(NAV_TOKEN_EXPIRY_ID, tokenUtil.getExpiryDate());
             MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
 
         } catch (Exception e) {
-            LOG.warn("Noe gikk feil ved oppslag av aktørid, MDC-verdier er inkomplette", e);
+            LOG.warn("Noe gikk galt ved setting av MDC-verdier for request {}, MDC-verdier er inkomplette",
+                    req.getRequestURI(), e);
         }
     }
 
