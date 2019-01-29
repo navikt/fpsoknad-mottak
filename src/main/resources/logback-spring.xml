@@ -25,7 +25,7 @@
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
 
      <springProfile name="dev,preprod">
-        <logger name="no.nav.security.spring.oidc.validation" level="trace"/>
+        <logger name="no.nav.security.spring.oidc" level="trace"/>
         <logger name="no.nav.foreldrepenger" level="trace" />
     </springProfile>
 </configuration>
