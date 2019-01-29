@@ -352,12 +352,10 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
         if (dekningsgrad != null) {
-            LOG.trace("Render dekningsgrad start at " + y);
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
             LOG.trace("Render dekningsgrad end at " + y);
 
         }
-        LOG.trace("Render fordeling start at " + y);
         float heaaderSize = 190;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
@@ -372,11 +370,9 @@ public class ForeldrepengeInfoRenderer {
                             y);
                 }
                 else {
-                    LOG.trace("Ikke nok plass til uttak");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
-                LOG.trace("Render utak end at " + y);
             }
             else if (periode instanceof GradertUttaksPeriode) {
                 PDPage scratch1 = newPage();
@@ -391,7 +387,6 @@ public class ForeldrepengeInfoRenderer {
                             y);
                 }
                 else {
-                    LOG.trace("Ikke nok plass til gradert");
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (heaaderSize + behov);
                 }
