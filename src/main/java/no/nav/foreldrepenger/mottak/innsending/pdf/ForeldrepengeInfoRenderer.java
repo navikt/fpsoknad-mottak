@@ -400,7 +400,6 @@ public class ForeldrepengeInfoRenderer {
                         STARTY - 190);
                 float behov = STARTY - 190 - x;
                 if (behov < y) {
-                    LOG.trace("Nok plass til opphold");
                     scratchcos.close();
                     y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
@@ -418,7 +417,6 @@ public class ForeldrepengeInfoRenderer {
                         scratchcos, STARTY - 190);
                 float behov = STARTY - 190 - x;
                 if (behov < y) {
-                    LOG.trace("Nok plass til utsettelse");
                     scratchcos.close();
                     y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn, cos,
                             y);
