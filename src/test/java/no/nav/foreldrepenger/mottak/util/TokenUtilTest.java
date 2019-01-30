@@ -48,7 +48,7 @@ public class TokenUtilTest {
     @Test
     public void testExtractorOK() {
         when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().subject(FNR.getFnr()).build());
-        assertEquals(FNR, tokenHelper.autentisertBruker());
+        assertEquals(FNR.getFnr(), tokenHelper.autentisertBruker());
         assertTrue(tokenHelper.erAutentisert());
     }
 
