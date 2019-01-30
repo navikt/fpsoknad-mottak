@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.http.filters;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.toMDC;
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 import java.io.IOException;
 
@@ -22,22 +22,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
-@Order(HIGHEST_PRECEDENCE)
+@Order(LOWEST_PRECEDENCE)
 public class HeadersToMDCFilterBean extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(HeadersToMDCFilterBean.class);
 
     private final CallIdGenerator generator;
     private final String applicationName;
-    private final TokenUtil tokenUtil;
 
     @Inject
-    public HeadersToMDCFilterBean(CallIdGenerator generator, TokenUtil tokenUtil,
+    public HeadersToMDCFilterBean(CallIdGenerator generator,
             @Value("${spring.application.name:fpsoknad-mottak}") String applicationName) {
         this.generator = generator;
-        this.tokenUtil = tokenUtil;
         this.applicationName = applicationName;
     }
 
@@ -60,8 +57,7 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [generator=" + generator + ", applicationName=" + applicationName
-                + ", tokenUtil=" + tokenUtil + "]";
+        return getClass().getSimpleName() + " [generator=" + generator + ", applicationName=" + applicationName + "]";
     }
 
 }

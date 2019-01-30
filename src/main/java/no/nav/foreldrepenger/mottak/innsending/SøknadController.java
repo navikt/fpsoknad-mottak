@@ -55,7 +55,7 @@ public class SøknadController {
     }
 
     @PostMapping("/sendV1")
-    public Kvittering sendV2(@Valid @RequestBody Søknad søknad) {
+    public Kvittering sendV1(@Valid @RequestBody Søknad søknad) {
         return sender.send(søknad, oppslag.getSøker(), V1);
     }
 
@@ -70,7 +70,7 @@ public class SøknadController {
     }
 
     @PostMapping("/endreV1")
-    public Kvittering sendV2(@Valid @RequestBody Endringssøknad endringsSøknad) {
+    public Kvittering sendV1(@Valid @RequestBody Endringssøknad endringsSøknad) {
         return sender.send(endringsSøknad, oppslag.getSøker(), V1);
     }
 
