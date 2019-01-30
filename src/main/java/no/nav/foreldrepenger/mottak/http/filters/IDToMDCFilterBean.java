@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
-import static no.nav.foreldrepenger.mottak.Constants.NAV_AKTØR_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_TOKEN_EXPIRY_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_USER_ID;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.isDevOrPreprod;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -55,7 +53,7 @@ public class IDToMDCFilterBean extends GenericFilterBean {
                 toMDC(NAV_USER_ID, fnr);
             }
             toMDC(NAV_TOKEN_EXPIRY_ID, tokenUtil.getExpiryDate());
-            MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
+            // MDC.put(NAV_AKTØR_ID, oppslag.getAktørId().getId());
 
         } catch (Exception e) {
             LOG.warn("Noe gikk galt ved setting av MDC-verdier for request {}, MDC-verdier er inkomplette",
