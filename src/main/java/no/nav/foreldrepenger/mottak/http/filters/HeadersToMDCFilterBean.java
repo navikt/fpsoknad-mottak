@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.http.filters;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.toMDC;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
 
 @Component
-@Order(LOWEST_PRECEDENCE)
+@Order(HIGHEST_PRECEDENCE)
 public class HeadersToMDCFilterBean extends GenericFilterBean {
     private static final Logger LOG = LoggerFactory.getLogger(HeadersToMDCFilterBean.class);
 

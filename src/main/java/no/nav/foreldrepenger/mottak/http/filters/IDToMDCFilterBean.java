@@ -17,14 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Order(HIGHEST_PRECEDENCE)
-@Component
+// @Component
 public class IDToMDCFilterBean extends GenericFilterBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(IDToMDCFilterBean.class);
