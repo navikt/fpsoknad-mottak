@@ -7,9 +7,8 @@ import static no.nav.foreldrepenger.mottak.innsyn.InnsynController.INNSYN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class IDFilterRegistrationBean extends FilterRegistrationBean<IDToMDCFilterBean> {
     private static final Logger LOG = LoggerFactory.getLogger(HeadersToMDCFilterRegistrationBean.class);
 
