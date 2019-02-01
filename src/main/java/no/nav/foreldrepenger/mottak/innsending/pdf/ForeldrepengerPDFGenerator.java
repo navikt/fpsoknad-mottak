@@ -77,6 +77,27 @@ public class ForeldrepengerPDFGenerator {
 
             }
 
+            if (søknad.getTilleggsopplysninger() != null) {
+                PDPage scratch1 = newPage();
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                float startY = STARTY;
+                startY = fpRenderer.header(søker, doc, scratchcos,
+                    true, startY);
+                float size = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
+                    scratchcos, startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    scratchcos.close();
+                    y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
+                        cos, y);
+                }
+                else {
+                    cos = nySide(doc, cos, scratch1,
+                        scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+
             Opptjening opptjening = stønad.getOpptjening();
             List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
             if (opptjening != null) {
@@ -248,6 +269,27 @@ public class ForeldrepengerPDFGenerator {
                 y = fpRenderer.annenForelder(annenForelder,
                         stønad.getFordeling().isErAnnenForelderInformert(), stønad.getRettigheter(),
                         cos, y);
+            }
+
+            if (søknad.getTilleggsopplysninger() != null) {
+                PDPage scratch1 = newPage();
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                float startY = STARTY;
+                startY = fpRenderer.header(søker, doc, scratchcos,
+                    true, startY);
+                float size = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
+                    scratchcos, startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    scratchcos.close();
+                    y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
+                        cos, y);
+                }
+                else {
+                    cos = nySide(doc, cos, scratch1,
+                        scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
             }
 
             if (stønad.getFordeling() != null) {

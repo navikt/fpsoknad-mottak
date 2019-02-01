@@ -356,7 +356,7 @@ public class ForeldrepengeInfoRenderer {
             LOG.trace("Render dekningsgrad end at " + y);
 
         }
-        float heaaderSize = 190;
+        float headerSize = 190;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
                 PDPage scratch1 = newPage();
@@ -371,7 +371,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
-                    y = STARTY - (heaaderSize + behov);
+                    y = STARTY - (headerSize + behov);
                 }
             }
             else if (periode instanceof GradertUttaksPeriode) {
@@ -388,7 +388,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
-                    y = STARTY - (heaaderSize + behov);
+                    y = STARTY - (headerSize + behov);
                 }
 
             }
@@ -406,7 +406,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
-                    y = STARTY - (heaaderSize + behov);
+                    y = STARTY - (headerSize + behov);
                 }
 
             }
@@ -423,7 +423,7 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
-                    y = STARTY - (heaaderSize + behov);
+                    y = STARTY - (headerSize + behov);
                 }
 
             }
@@ -440,12 +440,20 @@ public class ForeldrepengeInfoRenderer {
                 }
                 else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
-                    y = STARTY - (heaaderSize + behov);
+                    y = STARTY - (headerSize + behov);
                 }
             }
         }
         y -= renderer.addBlankLine();
         return cos;
+    }
+
+    public float renderTilleggsopplysninger(String tilleggsopplysninger, FontAwareCos cos, float y)
+        throws IOException {
+        y -= renderer.addLeftHeading(txt("tilleggsopplysninger"), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, tilleggsopplysninger, cos, y);
+        y -= renderer.addBlankLine();
+        return y;
     }
 
     private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
