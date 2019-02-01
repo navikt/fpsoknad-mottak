@@ -37,7 +37,7 @@ public class BehandlingDTO {
             @JsonProperty("årsak") String årsak,
             @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
             @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
-            @JsonProperty("behandlingResultatType") String behandlingResultatType,
+            @JsonProperty("behandlingResultat") String behandlingResultatType,
             @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger,
             @JsonProperty("lenker") List<Lenke> lenker) {
         this.opprettetTidspunkt = opprettetTidspunkt;
