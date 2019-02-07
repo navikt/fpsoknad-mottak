@@ -57,6 +57,16 @@
         </jaxb:bindings>
     </jaxb:bindings>
 
+<jaxb:bindings
+        schemaLocation="../xsd/v2/engangsstoenad/engangsstoenad-v2.xsd"
+        node="/xs:schema">
+        <jaxb:bindings
+            node="//xs:complexType[@name='Engangsstønad']">
+            <annox:annotateClass>
+                @javax.xml.bind.annotation.XmlRootElement
+            </annox:annotateClass>
+        </jaxb:bindings>
+    </jaxb:bindings>
 
 
     <jaxb:bindings

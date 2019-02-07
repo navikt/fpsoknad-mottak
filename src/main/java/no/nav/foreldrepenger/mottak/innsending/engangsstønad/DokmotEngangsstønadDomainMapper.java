@@ -232,4 +232,5 @@ public class DokmotEngangsstønadDomainMapper {
     private static String mellomnavn(String mellomnavn) {
         return mellomnavn == null ? "" : mellomnavn + " ";
     }
+
 }

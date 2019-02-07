@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,10 +12,14 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class MapperEgenskaper {
-    private final List<SøknadEgenskap> søknadEgenskaper;
+    private final List<SøknadEgenskap> mapperEgenskaper;
 
     public MapperEgenskaper(Versjon versjon, SøknadType type) {
         this(new SøknadEgenskap(versjon, type));
+    }
+
+    public MapperEgenskaper(SøknadType... typer) {
+        this(DEFAULT_VERSJON, typer);
     }
 
     public MapperEgenskaper(Versjon versjon, SøknadType... typer) {
@@ -25,20 +30,20 @@ public class MapperEgenskaper {
         this(singletonList(egenskap));
     }
 
-    public MapperEgenskaper(List<SøknadEgenskap> søknadEgenskaper) {
-        this.søknadEgenskaper = søknadEgenskaper;
+    public MapperEgenskaper(List<SøknadEgenskap> mapperEgenskaper) {
+        this.mapperEgenskaper = mapperEgenskaper;
     }
 
     public List<SøknadEgenskap> getSøknadEgenskaper() {
-        return søknadEgenskaper;
+        return mapperEgenskaper;
     }
 
     public boolean kanMappe(SøknadEgenskap egenskap) {
-        return søknadEgenskaper.contains(egenskap);
+        return mapperEgenskaper.contains(egenskap);
     }
 
     public boolean kanMappe(Versjon versjon) {
-        return søknadEgenskaper.stream()
+        return mapperEgenskaper.stream()
                 .map(e -> e.getVersjon())
                 .filter(v -> v.equals(versjon))
                 .findFirst()
@@ -53,7 +58,7 @@ public class MapperEgenskaper {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [søknadEgenskaper=" + søknadEgenskaper + "]";
+        return getClass().getSimpleName() + " [mapperEgenskaper=" + mapperEgenskaper + "]";
     }
 
 }

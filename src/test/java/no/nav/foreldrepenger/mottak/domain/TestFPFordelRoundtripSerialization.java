@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static no.nav.foreldrepenger.mottak.Mappable.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
@@ -10,6 +11,8 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadPreprodController.INNSENDING_PREPROD;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -23,6 +26,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -32,19 +36,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.innsending.DualSøknadSender;
+import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
-import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.ESV1JAXBUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class }, properties = {
+        "engangstønad.destinasjon=DOKMOT" })
 @ActiveProfiles(profiles = { DEV, PREPROD })
 public class TestFPFordelRoundtripSerialization {
 
@@ -62,13 +67,17 @@ public class TestFPFordelRoundtripSerialization {
     @Autowired
     CallIdGenerator refGenerator;
     @Autowired
-    VersjonsBevisstDomainMapper søknadXMLGenerator;
+    @Qualifier(DELEGERENDE)
+    DomainMapper søknadXMLGenerator;
     @Autowired
-    DelegerendeXMLMapper xmlMapper;
+    @Qualifier(DELEGERENDE)
+    XMLMapper xmlMapper;
     @Autowired
     FPFordelKonvoluttGenerator konvoluttGenerator;
+
     @Autowired
-    DualSøknadSender sender;
+    @Qualifier(ROUTING_SENDER)
+    SøknadSender sender;
 
     @BeforeEach
     public void setAuthoriztion() {
@@ -113,7 +122,8 @@ public class TestFPFordelRoundtripSerialization {
     public void testFPSøknadSendV1() {
         Versjon versjon = V1;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        Kvittering kvittering = sender.send(søknad, TestUtils.person(), versjon);
+        Kvittering kvittering = sender.send(søknad, TestUtils.person(),
+                new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
@@ -121,7 +131,8 @@ public class TestFPFordelRoundtripSerialization {
     public void testFPSøknadSendV2() {
         Versjon versjon = V2;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        Kvittering kvittering = sender.send(søknad, TestUtils.person(), versjon);
+        Kvittering kvittering = sender.send(søknad, TestUtils.person(),
+                new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
@@ -137,11 +148,10 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testESSøknadSend() {
-        Versjon versjon = V1;
-        Søknad engangssøknad = engangssøknad(versjon, false, fødsel(), norskForelder(versjon),
+    public void testESSøknadSendFPFordel() {
+        Søknad engangssøknad = engangssøknad(V2, false, fødsel(), norskForelder(V2),
                 påkrevdVedlegg(ID142));
-        Kvittering kvittering = sender.send(engangssøknad, TestUtils.person(), versjon);
+        Kvittering kvittering = template.postForObject(INNSENDING + "/send", engangssøknad, Kvittering.class);
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 

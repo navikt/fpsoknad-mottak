@@ -31,8 +31,10 @@ import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.DokmotEngangsstønadDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.VersjonsBevisstDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DelegerendeDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.oidc.api.Unprotected;
 
@@ -45,10 +47,10 @@ public class SøknadPreprodController {
     public static final String INNSENDING_PREPROD = "/preprod";
 
     private final DokmotEngangsstønadDomainMapper esDomainMapper;
-    private final VersjonsBevisstDomainMapper fpDomainMapper;
+    private final DelegerendeDomainMapper fpDomainMapper;
     private final ForeldrepengerPDFGenerator pdfGenerator;
 
-    public SøknadPreprodController(VersjonsBevisstDomainMapper fpDomainMapper,
+    public SøknadPreprodController(DelegerendeDomainMapper fpDomainMapper,
             DokmotEngangsstønadDomainMapper esDomainMapper, ForeldrepengerPDFGenerator pdfGenerator) {
         this.fpDomainMapper = fpDomainMapper;
         this.esDomainMapper = esDomainMapper;
@@ -100,7 +102,8 @@ public class SøknadPreprodController {
     }
 
     private String fpSøknad(Søknad søknad, Versjon v) {
-        return fpDomainMapper.tilXML(søknad, new AktorId("42"), v);
+        return fpDomainMapper.tilXML(søknad, new AktorId("42"),
+                new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
     }
 
     private String esSøknad(Søknad søknad) {
@@ -108,7 +111,8 @@ public class SøknadPreprodController {
     }
 
     private String fpEndringsSøknad(Endringssøknad endringssøknad, Versjon v) {
-        return fpDomainMapper.tilXML(endringssøknad, new AktorId("42"), v);
+        return fpDomainMapper.tilXML(endringssøknad, new AktorId("42"),
+                new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
     }
 
     private static Person søker() {

@@ -1,24 +1,26 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.Mappable.DELEGERENDE;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
+import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedEgenskapException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
+@Qualifier(DELEGERENDE)
+public class DelegerendeDomainMapper implements DomainMapper {
 
     private final List<DomainMapper> mappers;
 
@@ -33,31 +35,28 @@ public class DelegerendeDomainMapper implements VersjonsBevisstDomainMapper {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        List<SøknadEgenskap> e = new ArrayList<>();
-        for (DomainMapper mapper : mappers) {
-            MapperEgenskaper mapperEgenskaper = mapper.mapperEgenskaper();
-            List<SøknadEgenskap> søknadEgenskaper = mapperEgenskaper.getSøknadEgenskaper();
-            e.addAll(søknadEgenskaper);
-        }
-        return new MapperEgenskaper(e);
-
+        return new MapperEgenskaper(mappers.stream()
+                .map(m -> m.mapperEgenskaper())
+                .map(e -> e.getSøknadEgenskaper())
+                .flatMap(e -> e.stream())
+                .collect(toList()));
     }
 
     @Override
-    public String tilXML(Søknad søknad, AktorId søker, Versjon versjon) {
-        return mapper(versjon).tilXML(søknad, søker);
+    public String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
+        return mapper(egenskap).tilXML(søknad, søker, egenskap);
     }
 
     @Override
-    public String tilXML(Endringssøknad endringssøknad, AktorId søker, Versjon versjon) {
-        return mapper(versjon).tilXML(endringssøknad, søker);
+    public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
+        return mapper(egenskap).tilXML(endringssøknad, søker, egenskap);
     }
 
-    private DomainMapper mapper(Versjon versjon) {
+    private DomainMapper mapper(SøknadEgenskap egenskap) {
         return mappers.stream()
-                .filter(s -> s.kanMappe(versjon))
+                .filter(mapper -> mapper.kanMappe(egenskap))
                 .findFirst()
-                .orElseThrow(() -> new UnsupportedVersionException("Versjon " + versjon + " ikke støttet", versjon));
+                .orElseThrow(() -> new UnsupportedEgenskapException(egenskap));
     }
 
     @Override

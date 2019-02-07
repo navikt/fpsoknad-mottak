@@ -1,7 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.Mappable.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
@@ -14,6 +17,7 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -26,8 +30,9 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
 public class FPFordelKonvoluttGenerator {
@@ -39,26 +44,29 @@ public class FPFordelKonvoluttGenerator {
     static final String METADATA = "metadata";
     private static final String CONTENT_ID = "Content-ID";
     private final FPFordelMetdataGenerator metadataGenerator;
-    private final VersjonsBevisstDomainMapper domainMapper;
-    private final ForeldrepengerPDFGenerator pdfGenerator;
+    private final DomainMapper domainMapper;
+    private final ForeldrepengerPDFGenerator foreldrepengerPDFGenerator;
+    private final EngangsstønadPDFGenerator engangsstønadPDFGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            VersjonsBevisstDomainMapper domainMapper, ForeldrepengerPDFGenerator pdfGenerator) {
+            @Qualifier(DELEGERENDE) DomainMapper domainMapper, ForeldrepengerPDFGenerator foreldrepengerPDFGenerator,
+            EngangsstønadPDFGenerator engangsstønadPDFGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.domainMapper = domainMapper;
-        this.pdfGenerator = pdfGenerator;
+        this.foreldrepengerPDFGenerator = foreldrepengerPDFGenerator;
+        this.engangsstønadPDFGenerator = engangsstønadPDFGenerator;
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker, Versjon versjon) {
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker,
+            SøknadEgenskap egenskap) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         LOG.trace("Genererer payload med oversendelsesid {}", callId());
-        builder.part(METADATA, metadata(søknad, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId, versjon), APPLICATION_XML).header(
-                CONTENT_ID,
-                id(id));
-        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker), APPLICATION_PDF)
+        builder.part(METADATA, metadata(søknad, egenskap, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId, egenskap), APPLICATION_XML)
+                .header(CONTENT_ID, id(id));
+        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap.getType()), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
         søknad.getVedlegg().stream()
@@ -69,16 +77,16 @@ public class FPFordelKonvoluttGenerator {
     }
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Endringssøknad endringsøknad, Person søker,
-            Versjon versjon) {
+            SøknadEgenskap egenskap) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
 
-        builder.part(METADATA, metadata(endringsøknad, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, versjon), APPLICATION_XML).header(
+        builder.part(METADATA, metadata(endringsøknad, egenskap, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, egenskap), APPLICATION_XML).header(
                 CONTENT_ID,
                 id(id));
-        builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker), APPLICATION_PDF)
+        builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap.getType()), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
         endringsøknad.getVedlegg().stream()
@@ -119,16 +127,17 @@ public class FPFordelKonvoluttGenerator {
         return headers;
     }
 
-    private String metadata(Endringssøknad endringssøknad, AktorId aktørId, String ref) {
+    private String metadata(Endringssøknad endringssøknad, SøknadEgenskap egenskap, AktorId aktørId, String ref) {
         String metadata = metadataGenerator
-                .generateMetadata(new FPFordelMetadata(endringssøknad, aktørId, ref));
+                .generateMetadata(new FPFordelMetadata(endringssøknad, egenskap.getType(), aktørId, ref));
         LOG.debug("Metadata for endringssøknad er {}", metadata);
         return metadata;
 
     }
 
-    private String metadata(Søknad søknad, AktorId aktørId, String ref) {
-        String metadata = metadataGenerator.generateMetadata(new FPFordelMetadata(søknad, aktørId, ref));
+    private String metadata(Søknad søknad, SøknadEgenskap egenskap, AktorId aktørId, String ref) {
+        String metadata = metadataGenerator
+                .generateMetadata(new FPFordelMetadata(søknad, egenskap.getType(), aktørId, ref));
         LOG.debug("Metadata for førstegangssøknad er {}", metadata);
         return metadata;
     }
@@ -139,22 +148,28 @@ public class FPFordelKonvoluttGenerator {
         return metadata;
     }
 
-    private byte[] pdfHovedDokument(Søknad søknad, Person søker) {
-        return pdfGenerator.generate(søknad, søker);
+    private byte[] pdfHovedDokument(Søknad søknad, Person søker, SøknadType type) {
+        if (type.equals(INITIELL_FORELDREPENGER)) {
+            return foreldrepengerPDFGenerator.generate(søknad, søker);
+        }
+        return engangsstønadPDFGenerator.generate(søknad, søker);
     }
 
-    private byte[] pdfHovedDokument(Endringssøknad søknad, Person søker) {
-        return pdfGenerator.generate(søknad, søker);
+    private byte[] pdfHovedDokument(Endringssøknad endringssøknad, Person søker, SøknadType type) {
+        if (type.equals(ENDRING_FORELDREPENGER)) {
+            return foreldrepengerPDFGenerator.generate(endringssøknad, søker);
+        }
+        return engangsstønadPDFGenerator.generate(endringssøknad, søker);
     }
 
-    private String xmlHovedDokument(Søknad søknad, AktorId søker, Versjon versjon) {
-        String hovedDokument = domainMapper.tilXML(søknad, søker, versjon);
+    private String xmlHovedDokument(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
+        String hovedDokument = domainMapper.tilXML(søknad, søker, egenskap);
         LOG.debug(CONFIDENTIAL, "Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }
 
-    private String xmlHovedDokument(Endringssøknad endringssøknad, AktorId søker, Versjon versjon) {
-        String hovedDokument = domainMapper.tilXML(endringssøknad, søker, versjon);
+    private String xmlHovedDokument(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
+        String hovedDokument = domainMapper.tilXML(endringssøknad, søker, egenskap);
         LOG.debug(CONFIDENTIAL, "Hoveddokument endringssøknad er {}", hovedDokument);
         return hovedDokument;
     }
@@ -162,7 +177,7 @@ public class FPFordelKonvoluttGenerator {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [metadataGenerator=" + metadataGenerator + ", domainMapper="
-                + domainMapper + ", pdfGenerator=" + pdfGenerator + "]";
+                + domainMapper + ", pdfGenerator=" + foreldrepengerPDFGenerator + "]";
     }
 
     private static final class VedleggHeaderConsumer implements Consumer<HttpHeaders> {

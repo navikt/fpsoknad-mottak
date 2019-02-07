@@ -1,12 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500005;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ID142;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ID143;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
@@ -61,6 +60,8 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
+import no.nav.foreldrepenger.mottak.innsending.engangsstønad.V2EngangsstønadDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
@@ -71,6 +72,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.UkjentXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.V2ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -93,32 +95,19 @@ public class TestFPFordelSerialization {
     @Inject
     ObjectMapper objectMapper;
 
-    private DelegerendeXMLMapper v12XMLMapper;
-    private VersjonsBevisstDomainMapper v12DomainMapper;
-
-    private static final ValgfrittVedlegg VEDLEGG1 = opplastetVedlegg(ID142, I500002);
-    private static final ValgfrittVedlegg VEDLEGG2 = opplastetVedlegg(ID143, I500005);
+    private XMLMapper v12XMLMapper;
+    private DomainMapper v12DomainMapper;
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
     private static final List<Arbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
-    private FPFordelKonvoluttGenerator konvoluttGenerator() {
-        return new FPFordelKonvoluttGenerator(new FPFordelMetdataGenerator(objectMapper),
-                v12DomainMapper, new ForeldrepengerPDFGenerator(oppslag,
-                        new ForeldrepengeInfoRenderer(new PDFElementRenderer(),
-                                new SøknadTextFormatter(cfg.landkoder(), cfg.kvitteringstekster()))));
-    }
-
     @BeforeEach
     public void before() {
-        v12XMLMapper = new DelegerendeXMLMapper(
-                new UkjentXMLMapper(),
-                new V1ForeldrepengerXMLMapper(oppslag),
+        v12XMLMapper = new DelegerendeXMLMapper(new UkjentXMLMapper(), new V1ForeldrepengerXMLMapper(oppslag),
                 new V2ForeldrepengerXMLMapper(oppslag));
-        v12DomainMapper = new DelegerendeDomainMapper(
-                new V2DomainMapper(oppslag),
-                new V1DomainMapper(oppslag));
+        v12DomainMapper = new DelegerendeDomainMapper(new V2ForeldrepengerDomainMapper(oppslag),
+                new V1ForeldrepengerDomainMapper(oppslag), new V2EngangsstønadDomainMapper(oppslag));
         konvoluttGenerator = konvoluttGenerator();
         when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
@@ -132,6 +121,14 @@ public class TestFPFordelSerialization {
     }
 
     @Test
+    public void testESFpFordel() {
+        Søknad engangstønad = engangssøknad(V2, false, termin(), norskForelder(V2), ForeldrepengerTestUtils.V3);
+        String xml = v12DomainMapper.tilXML(engangstønad, AKTØRID,
+                new SøknadEgenskap(SøknadType.INITIELL_ENGANGSSTØNAD));
+        System.out.println(xml);
+    }
+
+    @Test
     public void testSøknadRoundtrip() {
         alleVersjoner().stream()
                 .forEach(v -> testSøknadRoundtrip(v));
@@ -140,24 +137,27 @@ public class TestFPFordelSerialization {
     @Test
     public void testFeilMapper() throws Exception {
         assertThrows(VersionMismatchException.class,
-                () -> v12DomainMapper.tilXML(søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1), AKTØRID, V2));
+                () -> v12DomainMapper.tilXML(søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1), AKTØRID,
+                        new SøknadEgenskap(V2, SøknadType.ENDRING_FORELDREPENGER)));
     }
 
     @Test
     public void testKonvolutt() {
-        alleVersjoner().stream()
+        alleVersjoner()
+                .stream()
                 .forEach(v -> testKonvolutt(v));
     }
 
     @Test
     public void testKonvoluttEndring() {
-        alleVersjoner().stream()
+        alleVersjoner()
+                .stream()
                 .forEach(v -> testKonvoluttEndring(v));
     }
 
     @Test
     public void testKonvoluttEttersending() {
-        Ettersending es = new Ettersending("42", VEDLEGG1, VEDLEGG2);
+        Ettersending es = new Ettersending("42", ForeldrepengerTestUtils.V1, ForeldrepengerTestUtils.V2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         assertEquals(1, metadata.size());
@@ -169,9 +169,9 @@ public class TestFPFordelSerialization {
     }
 
     private void testSøknadRoundtrip(Versjon v) {
-        v12XMLMapper.mapperEgenskaper();
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
-        String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
+        String xml = v12DomainMapper.tilXML(original, AKTØRID,
+                new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
         SøknadEgenskap inspiser = INSPEKTØR.inspiser(xml);
         assertEquals(inspiser.getVersjon(), v);
         assertEquals(inspiser.getType(), SøknadType.INITIELL_FORELDREPENGER);
@@ -180,8 +180,9 @@ public class TestFPFordelSerialization {
     }
 
     public void testEndringssøknadRoundtrip(Versjon v) {
-        Endringssøknad original = endringssøknad(v, VEDLEGG1, VEDLEGG2);
-        String xml = v12DomainMapper.tilXML(original, AKTØRID, v);
+        Endringssøknad original = endringssøknad(v, ForeldrepengerTestUtils.V1, ForeldrepengerTestUtils.V2);
+        String xml = v12DomainMapper.tilXML(original, AKTØRID,
+                new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
         SøknadEgenskap inspiser = INSPEKTØR.inspiser(xml);
         assertEquals(inspiser.getVersjon(), v);
         assertEquals(inspiser.getType(), SøknadType.ENDRING_FORELDREPENGER);
@@ -198,7 +199,7 @@ public class TestFPFordelSerialization {
         Søknad søknad = søknad(v, false,
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
-                v);
+                new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(3, konvolutt.getBody().size());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         List<HttpEntity<?>> hoveddokumenter = konvolutt.getBody().get(HOVEDDOKUMENT);
@@ -214,8 +215,10 @@ public class TestFPFordelSerialization {
     }
 
     private void testKonvoluttEndring(Versjon v) {
-        Endringssøknad es = endringssøknad(v, VEDLEGG1, VEDLEGG2);
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(), v);
+        Endringssøknad es = endringssøknad(v, ForeldrepengerTestUtils.V1, ForeldrepengerTestUtils.V2);
+
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
+                new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
         assertEquals(1, metadata.size());
@@ -241,5 +244,17 @@ public class TestFPFordelSerialization {
 
     private static void assertMediaType(HttpEntity<?> entity, String type) {
         assertEquals(entity.getHeaders().get(CONTENT_TYPE).get(0), type);
+    }
+
+    private FPFordelKonvoluttGenerator konvoluttGenerator() {
+        PDFElementRenderer renderer = new PDFElementRenderer();
+        SøknadTextFormatter textFormatter = new SøknadTextFormatter(cfg.landkoder(), cfg.kvitteringstekster());
+        ForeldrepengeInfoRenderer fpRenderer = new ForeldrepengeInfoRenderer(renderer,
+                textFormatter);
+        ForeldrepengerPDFGenerator foreldrepengerPDFGenerator = new ForeldrepengerPDFGenerator(oppslag,
+                fpRenderer);
+        EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(textFormatter, renderer);
+        return new FPFordelKonvoluttGenerator(new FPFordelMetdataGenerator(objectMapper),
+                v12DomainMapper, foreldrepengerPDFGenerator, es);
     }
 }

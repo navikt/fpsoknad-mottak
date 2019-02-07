@@ -7,7 +7,6 @@ import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 
 import javax.jms.TextMessage;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,7 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
 @Qualifier(DOKMOT_SENDER)
@@ -37,7 +36,7 @@ public class DokmotJMSSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering send(Søknad søknad, Person søker, Versjon versjon) {
+    public Kvittering send(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         if (connection.isEnabled()) {
             connection.send(session -> {
                 TextMessage msg = session.createTextMessage(generator.tilXML(søknad, søker));
@@ -52,13 +51,13 @@ public class DokmotJMSSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering send(Endringssøknad endringsøknad, Person søker, Versjon versjon) {
-        throw new NotImplementedException("Sending av endringssøknad via DOKMOT er ikke støttet");
+    public Kvittering send(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
+        throw new UnsupportedOperationException("Sending av endringssøknad via DOKMOT er ikke støttet");
     }
 
     @Override
-    public Kvittering send(Ettersending ettersending, Person søker, Versjon versjon) {
-        throw new NotImplementedException("Ettersending for engangsstønad via DOKMOT er ikke støttet");
+    public Kvittering send(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
+        throw new UnsupportedOperationException("Ettersending for engangsstønad via DOKMOT er ikke støttet");
     }
 
     @Override

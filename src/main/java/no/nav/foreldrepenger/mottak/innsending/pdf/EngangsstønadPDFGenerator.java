@@ -33,7 +33,7 @@ public class EngangsstønadPDFGenerator {
     private final PDFElementRenderer renderer;
 
     @Inject
-    private EngangsstønadPDFGenerator(SøknadTextFormatter textFormatter, PDFElementRenderer renderer) {
+    public EngangsstønadPDFGenerator(SøknadTextFormatter textFormatter, PDFElementRenderer renderer) {
         this.textFormatter = textFormatter;
         this.renderer = renderer;
     }

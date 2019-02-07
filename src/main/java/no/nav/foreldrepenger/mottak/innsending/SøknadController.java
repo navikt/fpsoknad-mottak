@@ -1,6 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
+import static no.nav.foreldrepenger.mottak.innsending.engangsstønad.EngangsstønadDestinasjon.DOKMOT;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -12,6 +17,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +30,12 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.innsending.engangsstønad.EngangsstønadDestinasjon;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 
@@ -41,37 +51,29 @@ public class SøknadController {
     private final Innsyn innsyn;
     private final Oppslag oppslag;
     private final SøknadSender sender;
+    private final EngangsstønadDestinasjon destinasjon;
 
     public SøknadController(@Qualifier(ROUTING_SENDER) SøknadSender sender, Oppslag oppslag,
-            Innsyn innsyn) {
+            Innsyn innsyn, @Value("${engangstønad.destinasjon:DOKMOT}") EngangsstønadDestinasjon destinasjon) {
         this.sender = sender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
+        this.destinasjon = destinasjon;
     }
 
     @PostMapping("/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
-        return sender.send(søknad, oppslag.getSøker(), DEFAULT_VERSJON);
-    }
-
-    @PostMapping("/sendV1")
-    public Kvittering sendV1(@Valid @RequestBody Søknad søknad) {
-        return sender.send(søknad, oppslag.getSøker(), V1);
+        return sender.send(søknad, oppslag.getSøker(), søknadEgenskapFra(søknad));
     }
 
     @PostMapping("/ettersend")
     public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
-        return sender.send(ettersending, oppslag.getSøker(), DEFAULT_VERSJON);
+        return sender.send(ettersending, oppslag.getSøker(), ETTERSENDING_FORELDREPENGER);
     }
 
     @PostMapping("/endre")
     public Kvittering send(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sender.send(endringssøknad, oppslag.getSøker(), DEFAULT_VERSJON);
-    }
-
-    @PostMapping("/endreV1")
-    public Kvittering sendV1(@Valid @RequestBody Endringssøknad endringsSøknad) {
-        return sender.send(endringsSøknad, oppslag.getSøker(), V1);
+        return sender.send(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
     }
 
     @GetMapping("/ping")
@@ -87,10 +89,19 @@ public class SøknadController {
 
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() +
-                " [sender=" + sender + ", innsynTjeneste=" + innsyn + ", oppslag=" + oppslag + "]";
+    private SøknadEgenskap søknadEgenskapFra(Søknad søknad) {
+        return søknad.getYtelse() instanceof Foreldrepenger
+                ? INITIELL_FORELDREPENGER
+                : new SøknadEgenskap(versjonFraDestinasjon(), INITIELL_ENGANGSSTØNAD);
     }
 
+    private Versjon versjonFraDestinasjon() {
+        return DOKMOT.equals(destinasjon) ? V1 : DEFAULT_VERSJON;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + ", sender=" + sender
+                + ", destinasjon=" + destinasjon + "]";
+    }
 }

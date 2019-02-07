@@ -42,6 +42,10 @@ public class TestUtils {
         return engangssøknad(v, false, relasjon, norskForelder(v));
     }
 
+    public static Søknad engangssøknad(Versjon v, Vedlegg... vedlegg) {
+        return engangssøknad(v, true, termin(), norskForelder(v), vedlegg);
+    }
+
     public static Søknad engangssøknad(Versjon v, boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
             Vedlegg... vedlegg) {
         Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(v, utland, relasjon, annenForelder), vedlegg);
@@ -210,7 +214,7 @@ public class TestUtils {
     }
 
     static Fødselsnummer fnr() {
-        return new Fødselsnummer("01010133333");
+        return new Fødselsnummer("01010111111");
     }
 
     public static Navn navnUtenMellomnavn() {

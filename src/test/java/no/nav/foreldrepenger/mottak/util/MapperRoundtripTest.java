@@ -19,8 +19,9 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DelegerendeDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V2DomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1ForeldrepengerDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V2ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.V1ForeldrepengerXMLMapper;
@@ -46,7 +47,7 @@ public class MapperRoundtripTest {
     public void before() {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
-        domainMapper = new DelegerendeDomainMapper(new V1DomainMapper(oppslag), new V2DomainMapper(oppslag));
+        domainMapper = new DelegerendeDomainMapper(new V1ForeldrepengerDomainMapper(oppslag), new V2ForeldrepengerDomainMapper(oppslag));
         xmlMapper = new DelegerendeXMLMapper(new V1ForeldrepengerXMLMapper(oppslag),
                 new V2ForeldrepengerXMLMapper(oppslag));
     }
@@ -67,14 +68,14 @@ public class MapperRoundtripTest {
 
     private void roundTripInitiell(Versjon v) {
         Søknad søknad = søknadMedToVedlegg(v);
-        String xml = domainMapper.tilXML(søknad, SØKER, v);
+        String xml = domainMapper.tilXML(søknad, SØKER, new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
         SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
         assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
     }
 
     private void roundTripEndring(Versjon v) {
         Endringssøknad søknad = endringssøknad(v);
-        String xml = domainMapper.tilXML(søknad, SØKER, v);
+        String xml = domainMapper.tilXML(søknad, SØKER, new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
         SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
         assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
     }

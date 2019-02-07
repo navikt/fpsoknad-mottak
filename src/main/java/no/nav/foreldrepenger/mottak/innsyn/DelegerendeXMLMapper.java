@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsyn.XMLMapper.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.Mappable.DELEGERENDE;
 
 import java.util.List;
 

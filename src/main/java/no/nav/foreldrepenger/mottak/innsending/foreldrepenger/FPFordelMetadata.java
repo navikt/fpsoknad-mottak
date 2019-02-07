@@ -4,9 +4,11 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000003;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +20,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
@@ -43,16 +47,16 @@ public class FPFordelMetadata {
         this(ettersendingsDeler(ettersending), aktorId, ref, ettersending.getSaksnr());
     }
 
-    public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref) {
-        this(søknad, aktorId, ref, null);
+    public FPFordelMetadata(Søknad søknad, SøknadType søknadType, AktorId aktorId, String ref) {
+        this(søknad, søknadType, aktorId, ref, null);
     }
 
-    public FPFordelMetadata(Endringssøknad endringssøknad, AktorId aktorId, String ref) {
-        this(endringssøknadsDeler(endringssøknad), aktorId, ref, endringssøknad.getSaksnr());
+    public FPFordelMetadata(Endringssøknad endringssøknad, SøknadType søknadType, AktorId aktorId, String ref) {
+        this(endringssøknadsDeler(endringssøknad, søknadType), aktorId, ref, endringssøknad.getSaksnr());
     }
 
-    public FPFordelMetadata(Søknad søknad, AktorId aktorId, String ref, String saksnr) {
-        this(søknadsDeler(søknad), aktorId, ref, saksnr);
+    public FPFordelMetadata(Søknad søknad, SøknadType søknadType, AktorId aktorId, String ref, String saksnr) {
+        this(søknadsDeler(søknad, søknadType), aktorId, ref, saksnr);
     }
 
     public FPFordelMetadata(List<Del> deler, AktorId aktorId, String ref, String saksnr) {
@@ -83,9 +87,9 @@ public class FPFordelMetadata {
         return brukerId;
     }
 
-    private static List<Del> søknadsDeler(Søknad søknad) {
+    private static List<Del> søknadsDeler(Søknad søknad, SøknadType søknadType) {
         final AtomicInteger id = new AtomicInteger(1);
-        List<Del> dokumenter = newArrayList(søknadsDel(id, søknad), søknadsDel(id, søknad));
+        List<Del> dokumenter = newArrayList(søknadsDel(id, søknad, søknadType), søknadsDel(id, søknad, søknadType));
         dokumenter.addAll(søknad.getVedlegg().stream()
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
@@ -93,10 +97,10 @@ public class FPFordelMetadata {
         return dokumenter;
     }
 
-    private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad) {
+    private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad, SøknadType søknadType) {
         final AtomicInteger id = new AtomicInteger(1);
-        List<Del> dokumenter = newArrayList(endringsøknadsDel(id, endringssøknad),
-                endringsøknadsDel(id, endringssøknad));
+        List<Del> dokumenter = newArrayList(endringsøknadsDel(id, endringssøknad, søknadType),
+                endringsøknadsDel(id, endringssøknad, søknadType));
         dokumenter.addAll(endringssøknad.getVedlegg().stream()
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
@@ -111,19 +115,46 @@ public class FPFordelMetadata {
                 .collect(toList());
     }
 
-    private static Del søknadsDel(final AtomicInteger id, Søknad søknad) {
-        return new Del(dokumentTypeFraRelasjon(søknad), id.getAndIncrement());
+    private static Del søknadsDel(final AtomicInteger id, Søknad søknad, SøknadType søknadType) {
+        return new Del(dokumentTypeFraRelasjon(søknad, søknadType), id.getAndIncrement());
     }
 
-    private static Del endringsøknadsDel(final AtomicInteger id, Endringssøknad søknad) {
-        return new Del(I000050, id.getAndIncrement());
+    private static Del endringsøknadsDel(final AtomicInteger id, Endringssøknad søknad, SøknadType søknadType) {
+        if (søknadType.equals(ENDRING_FORELDREPENGER)) {
+            return new Del(I000050, id.getAndIncrement());
+        }
+        throw new UnsupportedOperationException("Søknad av type " + søknadType + " foreløpig ikke støttet");
     }
 
     private static Del vedleggsDel(Vedlegg vedlegg, final AtomicInteger id) {
         return new Del(vedlegg.getDokumentType(), id.getAndIncrement());
     }
 
-    private static DokumentType dokumentTypeFraRelasjon(Søknad søknad) {
+    private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType søknadType) {
+        if (søknad.getYtelse() instanceof Foreldrepenger) {
+            return dokumentTypeFraRelasjonForForeldrepenger(søknad);
+        }
+        if (søknad.getYtelse() instanceof Engangsstønad) {
+            return dokumentTypeFraRelasjonForEngangsstønad(søknad);
+        }
+        throw new UnsupportedOperationException(
+                "Ytelse av type " + søknad.getYtelse().getClass().getSimpleName() + " ikke støttet");
+    }
+
+    private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
+        RelasjonTilBarn relasjon = Engangsstønad.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
+        if (relasjon instanceof no.nav.foreldrepenger.mottak.domain.felles.Fødsel
+                || relasjon instanceof no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel) {
+            return I000003;
+        }
+        if (relasjon instanceof no.nav.foreldrepenger.mottak.domain.felles.Omsorgsovertakelse
+                || relasjon instanceof no.nav.foreldrepenger.mottak.domain.felles.Adopsjon) {
+            return I000003; // DOTO separate type ?
+        }
+        throw new IllegalArgumentException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
+    }
+
+    private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
         RelasjonTilBarnMedVedlegg relasjon = Foreldrepenger.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;

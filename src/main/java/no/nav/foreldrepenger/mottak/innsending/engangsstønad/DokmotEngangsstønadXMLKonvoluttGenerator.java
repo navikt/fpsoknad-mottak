@@ -51,11 +51,10 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     }
 
     public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
-
-        return toXML(søknad, søker, true);
+        return tilXML(søknad, søker, true);
     }
 
-    public String toXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
+    public String tilXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
             boolean inkluderVedlegg) {
         return JAXB.marshal(dokmotModelFra(søknad, søker, inkluderVedlegg));
     }
@@ -63,10 +62,6 @@ public class DokmotEngangsstønadXMLKonvoluttGenerator {
     public Dokumentforsendelse dokmotModelFra(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker,
             boolean inkluderVedlegg) {
         return dokumentForsendelseFra(søknad, søker);
-    }
-
-    public String toSøknadsXML(Søknad søknad, no.nav.foreldrepenger.mottak.domain.felles.Person søker) {
-        return søknadGenerator.tilXML(søknad, søker);
     }
 
     private Dokumentforsendelse dokumentForsendelseFra(Søknad søknad,

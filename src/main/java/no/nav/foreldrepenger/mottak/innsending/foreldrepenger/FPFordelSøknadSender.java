@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.ES_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
@@ -24,7 +25,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
 @Qualifier(FPFORDEL_SENDER)
@@ -46,17 +47,17 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering send(Endringssøknad endringsSøknad, Person søker, Versjon versjon) {
-        return send(ENDRING_FORELDREPENGER, konvoluttGenerator.payload(endringsSøknad, søker, versjon));
+    public Kvittering send(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
+        return send(ENDRING_FORELDREPENGER, konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
     }
 
     @Override
-    public Kvittering send(Søknad søknad, Person søker, Versjon versjon) {
-        return send(INITIELL_FORELDREPENGER, konvoluttGenerator.payload(søknad, søker, versjon));
+    public Kvittering send(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        return send(INITIELL_FORELDREPENGER, konvoluttGenerator.payload(søknad, søker, egenskap));
     }
 
     @Override
-    public Kvittering send(Ettersending ettersending, Person søker, Versjon versjon) {
+    public Kvittering send(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
         return send(ETTERSENDING_FORELDREPENGER, konvoluttGenerator.payload(ettersending, søker));
     }
 
@@ -70,8 +71,8 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         try {
-            logAndCount(type);
             Kvittering kvittering = connection.send(payload);
+            logAndCount(type);
             LOG.info("Returnerer kvittering {}", kvittering);
             return kvittering;
         } catch (Exception e) {
@@ -81,8 +82,11 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private static void logAndCount(SøknadType type) {
-        LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
+        LOG.info("Sendte {} til FPFordel", type.name().toLowerCase());
         switch (type) {
+        case INITIELL_ENGANGSSTØNAD:
+            ES_FØRSTEGANG.increment();
+            break;
         case ENDRING_FORELDREPENGER:
             FP_ENDRING.increment();
             break;

@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000062;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000063;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500005;
@@ -30,7 +31,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class ForeldrepengerTestUtils {
@@ -38,11 +38,14 @@ public class ForeldrepengerTestUtils {
     public static final Fødselsnummer NORSK_FORELDER_FNR = new Fødselsnummer("01010111111");
     public static final String ID142 = "V142";
     public static final String ID143 = "V143";
+    public static final String ID144 = "V144";
+
     public static final List<Vedlegg> TO_VEDLEGG = newArrayList(
             TestUtils.valgfrittVedlegg(ID142, InnsendingsType.LASTET_OPP),
             TestUtils.valgfrittVedlegg(ID143, InnsendingsType.LASTET_OPP));
     public static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
     public static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
+    public static final ValgfrittVedlegg V3 = opplastetVedlegg(ID144, I000062);
 
     private static final ValgfrittVedlegg IKKE_OPPLASTETV1 = ikkeOpplastet(ID142, I000063);
     private static final ValgfrittVedlegg IKKE_OPPLASTETV2 = ikkeOpplastet(ID143, I000063);
@@ -119,8 +122,10 @@ public class ForeldrepengerTestUtils {
                         new FrilansOppdrag(
                                 "den andre bror min og samtidig en fryktelig lang tekst som straks må bryte over til ny linje",
                                 åpenPeriode(v, true)),
-                        new FrilansOppdrag("\u202Darbeidsgiver\u00A0med " + "\u0141" + "tegn\tsom normali\uFFFDseres", åpenPeriode(v, true)),
-                        new FrilansOppdrag("den fjerde bror min med \u2e84\u2e87 tegn som ikke kan encodes", åpenPeriode(v, true)),
+                        new FrilansOppdrag("\u202Darbeidsgiver\u00A0med " + "\u0141" + "tegn\tsom normali\uFFFDseres",
+                                åpenPeriode(v, true)),
+                        new FrilansOppdrag("den fjerde bror min med \u2e84\u2e87 tegn som ikke kan encodes",
+                                åpenPeriode(v, true)),
                         new FrilansOppdrag("far min", åpenPeriode(v, true))),
                 Arrays.asList(vedleggRefs));
 
@@ -256,7 +261,7 @@ public class ForeldrepengerTestUtils {
                     Collections.singletonList("22222222222"),
                     Arrays.asList(vedleggRefs));
         default:
-            throw new UnsupportedVersionException(v);
+            throw new IllegalStateException(v.toString());
         }
 
     }
