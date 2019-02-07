@@ -201,7 +201,7 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
             return new AnnenForelderMedNorskIdent()
                     .withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
         }
-        return new AnnenForelderMedNorskIdent();
+        return null;
     }
 
     private static AnnenForelder ukjentForelder() {
