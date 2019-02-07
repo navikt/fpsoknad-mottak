@@ -54,7 +54,7 @@ public class SøknadController {
     private final EngangsstønadDestinasjon destinasjon;
 
     public SøknadController(@Qualifier(ROUTING_SENDER) SøknadSender sender, Oppslag oppslag,
-            Innsyn innsyn, @Value("${engangstønad.destinasjon:DOKMOT}") EngangsstønadDestinasjon destinasjon) {
+            Innsyn innsyn, @Value("${engangs.destinasjon:DOKMOT}") EngangsstønadDestinasjon destinasjon) {
         this.sender = sender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;

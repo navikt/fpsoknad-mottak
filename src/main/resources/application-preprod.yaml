@@ -4,5 +4,5 @@ management :
      health.show-details : always
      security.enabled : false
 spring.http.log-request-details : true
-                    
+engangs.destinasjon : FPFORDEL
        
