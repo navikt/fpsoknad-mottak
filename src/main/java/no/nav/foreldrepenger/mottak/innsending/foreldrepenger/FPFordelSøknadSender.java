@@ -11,6 +11,8 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegi
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING_FORELDREPENGER;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 
 @Service
 @Qualifier(FPFORDEL_SENDER)
@@ -37,6 +40,11 @@ public class FPFordelSøknadSender implements SøknadSender {
     private final FPFordelKonvoluttGenerator konvoluttGenerator;
     private final SøknadInspektør inspektør;
 
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator) {
+        this(connection, konvoluttGenerator, new XMLStreamSøknadInspektør());
+    }
+
+    @Inject
     public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator,
             SøknadInspektør inspektør) {
         this.connection = connection;

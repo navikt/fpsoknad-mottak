@@ -63,7 +63,7 @@ public class SøknadInspektørTest {
 
     @Test
     public void testNullXML() throws Exception {
-        SøknadEgenskap egenskaper = inspektør.inspiser(null);
+        SøknadEgenskap egenskaper = inspektør.inspiser((String) null);
         assertEquals(UKJENT, egenskaper);
         assertTrue(mapper.kanMappe(egenskaper));
         assertNull(mapper.tilSøknad(null, egenskaper));

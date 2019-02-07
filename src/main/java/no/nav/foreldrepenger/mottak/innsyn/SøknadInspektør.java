@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_ENGANGSSTØNAD;
+
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
@@ -13,7 +15,7 @@ public interface SøknadInspektør {
     default SøknadEgenskap inspiser(Søknad søknad) {
         Ytelse ytelse = søknad.getYtelse();
         return ytelse instanceof Foreldrepenger ? SøknadEgenskap.INITIELL_FORELDREPENGER
-                : new SøknadEgenskap(SøknadType.INITIELL_ENGANGSSTØNAD);
+                : new SøknadEgenskap(INITIELL_ENGANGSSTØNAD);
     }
 
     default SøknadType type(Søknad søknad) {
