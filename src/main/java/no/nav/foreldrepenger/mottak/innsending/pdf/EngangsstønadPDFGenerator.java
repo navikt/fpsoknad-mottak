@@ -149,8 +149,9 @@ public class EngangsstønadPDFGenerator {
         else {
             Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
             boolean inNorway = !stønad.getMedlemsskap().varUtenlands(fødsel.getFødselsdato().get(0));
-            return textFormatter.fromMessageSource("fødtei", fødsel.getAntallBarn() > 1 ? "a" : "et",
-                    textFormatter.countryName(inNorway));
+            return textFormatter.fromMessageSource("fødtei",
+                    textFormatter.countryName(inNorway),
+                    fødsel.getAntallBarn() > 1 ? "a" : "et");
         }
 
     }
