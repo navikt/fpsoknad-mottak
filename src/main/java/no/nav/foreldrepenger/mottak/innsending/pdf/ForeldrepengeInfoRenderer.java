@@ -471,9 +471,7 @@ public class ForeldrepengeInfoRenderer {
             LOG.debug("Overføringsperiode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
         }
-        else {
-            LOG.debug("Oveføringsperiode har ingen vedlegg");
-        }
+
         y = renderVedlegg(vedlegg, overføring.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -496,9 +494,6 @@ public class ForeldrepengeInfoRenderer {
         if (!vedlegg.isEmpty()) {
             LOG.debug("UtsettelsesPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
-        }
-        else {
-            LOG.debug("UtsettelsesPeriode har ingen vedlegg");
         }
         y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
@@ -529,9 +524,7 @@ public class ForeldrepengeInfoRenderer {
             LOG.debug("OppholdsPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
         }
-        else {
-            LOG.debug("OppholdsPeriode har ingen vedlegg");
-        }
+
         y = renderVedlegg(vedlegg, opphold.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -560,9 +553,6 @@ public class ForeldrepengeInfoRenderer {
             LOG.debug("UttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
         }
-        else {
-            LOG.debug("UttaksPeriode har ingen vedlegg");
-        }
         y = renderVedlegg(vedlegg, uttak.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -577,9 +567,7 @@ public class ForeldrepengeInfoRenderer {
             LOG.debug("GradertUttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
         }
-        else {
-            LOG.debug("GradertUttaksPeriode har ingen vedlegg");
-        }
+
         y = renderVedlegg(vedlegg, gradert.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
