@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,11 @@ public class ForeldrepengerPDFGeneratorTest {
     public void førstegangssøknad() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
-            fos.write(gen.generate(søknadMedEttIkkeOpplastedVedlegg(Versjon.V2, true), person(), arbeidsforhold()));
+            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(Versjon.V2, true);
+            søknad.setTilleggsopplysninger("Begrunnelse for å søke om utsettelse, " +
+                "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
+                "mulighet til å søke om utsettelse.");
+            fos.write(gen.generate(søknad, person(), arbeidsforhold()));
         }
     }
 
@@ -57,7 +63,11 @@ public class ForeldrepengerPDFGeneratorTest {
     public void endring() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
-            fos.write(gen.generate(endringssøknad(Versjon.V1, V1), person()));
+            Endringssøknad endringssøknad = endringssøknad(Versjon.V1, V1);
+            endringssøknad.setTilleggsopplysninger("Begrunnelse for å søke om utsettelse, " +
+                "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
+                "mulighet til å søke om utsettelse.");
+            fos.write(gen.generate(endringssøknad, person()));
         }
     }
 

@@ -110,6 +110,7 @@ public class InnsynTjeneste implements Innsyn {
                         .endretTidspunkt(w.getEndretTidspunkt())
                         .behandlendeEnhet(w.getBehandlendeEnhet())
                         .behandlendeEnhetNavn(w.getBehandlendeEnhetNavn())
+                        .behandlingResultat(w.getBehandlingResultat())
                         .status(w.getStatus())
                         .årsak(w.getÅrsak())
                         .tema(w.getTema())
