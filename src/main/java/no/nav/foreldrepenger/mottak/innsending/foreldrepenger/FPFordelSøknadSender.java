@@ -10,7 +10,6 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegi
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_SENDFEIL;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +25,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 
 @Service
 @Qualifier(FPFORDEL_SENDER)
@@ -35,10 +35,13 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator konvoluttGenerator;
+    private final SøknadInspektør inspektør;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator,
+            SøknadInspektør inspektør) {
         this.connection = connection;
         this.konvoluttGenerator = konvoluttGenerator;
+        this.inspektør = inspektør;
     }
 
     public void ping() {
@@ -53,7 +56,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return send(INITIELL_FORELDREPENGER, konvoluttGenerator.payload(søknad, søker, egenskap));
+        return send(inspektør.type(søknad), konvoluttGenerator.payload(søknad, søker, egenskap));
     }
 
     @Override
