@@ -353,7 +353,6 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("perioder"), cos, y);
         if (dekningsgrad != null) {
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
-            LOG.trace("Render dekningsgrad end at " + y);
 
         }
         float headerSize = 190;
@@ -393,7 +392,6 @@ public class ForeldrepengeInfoRenderer {
 
             }
             else if (periode instanceof OppholdsPeriode) {
-                LOG.trace("Render opphold start at " + y);
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, antallBarn, scratchcos,
@@ -449,7 +447,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float renderTilleggsopplysninger(String tilleggsopplysninger, FontAwareCos cos, float y)
-        throws IOException {
+            throws IOException {
         y -= renderer.addLeftHeading(txt("tilleggsopplysninger"), cos, y);
         y -= renderer.addLineOfRegularText(INDENT, tilleggsopplysninger, cos, y);
         y -= renderer.addBlankLine();
