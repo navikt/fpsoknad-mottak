@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Filtype;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.innsending.engangsstønad.mappers.DokmotEngangsstønadDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Arkivfiltyper;

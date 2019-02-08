@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
+package no.nav.foreldrepenger.mottak.innsending;
 
 import no.nav.foreldrepenger.mottak.Mappable;
 import no.nav.foreldrepenger.mottak.domain.AktorId;

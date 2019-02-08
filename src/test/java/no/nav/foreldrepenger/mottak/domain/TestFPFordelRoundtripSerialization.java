@@ -12,7 +12,7 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadPreprodController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -36,8 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
+import no.nav.foreldrepenger.mottak.innsending.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;

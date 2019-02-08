@@ -6,11 +6,11 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.ACCEPTED;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FAILED;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.PENDING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.REJECTED;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.RUNNING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ACCEPTED;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FAILED;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.PENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.REJECTED;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.RUNNING;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 
 import java.net.URI;

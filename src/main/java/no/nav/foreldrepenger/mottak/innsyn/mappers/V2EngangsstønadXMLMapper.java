@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
 import org.slf4j.Logger;

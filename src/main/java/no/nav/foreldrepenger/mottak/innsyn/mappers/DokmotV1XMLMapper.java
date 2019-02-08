@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.time.LocalDateTime;

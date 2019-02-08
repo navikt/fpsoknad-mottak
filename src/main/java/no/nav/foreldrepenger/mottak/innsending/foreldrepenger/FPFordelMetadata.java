@@ -8,7 +8,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000003;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +32,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @JsonPropertyOrder({ "forsendelsesId", "saksnummer", "brukerId", "forsendelseMottatt", "filer" })
 public class FPFordelMetadata {
@@ -131,10 +132,10 @@ public class FPFordelMetadata {
     }
 
     private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType søknadType) {
-        if (søknad.getYtelse() instanceof Foreldrepenger) {
+        if (søknadType.erForeldrepenger()) {
             return dokumentTypeFraRelasjonForForeldrepenger(søknad);
         }
-        if (søknad.getYtelse() instanceof Engangsstønad) {
+        if (søknadType.erEngangsstønad()) {
             return dokumentTypeFraRelasjonForEngangsstønad(søknad);
         }
         throw new UnsupportedOperationException(

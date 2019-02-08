@@ -2,14 +2,14 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.ES_FØRSTEGANG;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FPFORDEL_SEND_INITIELL;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ENDRING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_ETTERSSENDING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_FØRSTEGANG;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FP_SENDFEIL;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType.ETTERSENDING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ETTERSENDING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FPFORDEL_SEND_INITIELL;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 
 import javax.inject.Inject;
 
@@ -26,6 +26,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;

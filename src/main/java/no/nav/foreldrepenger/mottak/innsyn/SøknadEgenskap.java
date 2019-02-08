@@ -6,7 +6,7 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Pair;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 

@@ -7,7 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 

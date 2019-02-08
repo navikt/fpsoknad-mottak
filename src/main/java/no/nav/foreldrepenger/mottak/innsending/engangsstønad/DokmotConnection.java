@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
 
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.DOKMOT_FAILURE;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.DOKMOT_SUKSESS;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.DOKMOT_FAILURE;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.DOKMOT_SUKSESS;
 
 import javax.jms.JMSException;
 

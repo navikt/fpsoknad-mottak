@@ -3,10 +3,10 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FEILET_KVITTERINGER;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.FORDELT_KVITTERING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.GITTOPP_KVITTERING;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.MANUELL_KVITTERING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.GITTOPP_KVITTERING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.MANUELL_KVITTERING;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 import static org.springframework.http.HttpHeaders.LOCATION;
 

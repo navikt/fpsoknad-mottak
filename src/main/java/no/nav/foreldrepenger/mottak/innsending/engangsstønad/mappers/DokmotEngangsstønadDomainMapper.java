@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.engangsstønad;
+package no.nav.foreldrepenger.mottak.innsending.engangsstønad.mappers;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000062;

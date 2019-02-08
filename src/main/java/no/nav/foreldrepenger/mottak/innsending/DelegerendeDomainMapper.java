@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
+package no.nav.foreldrepenger.mottak.innsending;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
