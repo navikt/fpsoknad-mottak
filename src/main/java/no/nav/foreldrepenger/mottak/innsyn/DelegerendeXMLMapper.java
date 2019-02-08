@@ -22,6 +22,8 @@ public class DelegerendeXMLMapper implements XMLMapper {
 
     private final List<XMLMapper> mappers;
 
+    private final MapperEgenskaper mapperEgenskaper;
+
     private static final Logger LOG = LoggerFactory.getLogger(DelegerendeXMLMapper.class);
 
     public DelegerendeXMLMapper(XMLMapper... mappers) {
@@ -31,6 +33,7 @@ public class DelegerendeXMLMapper implements XMLMapper {
     @Inject
     public DelegerendeXMLMapper(List<XMLMapper> mappers) {
         this.mappers = mappers;
+        this.mapperEgenskaper = mapperEgenskaper(mappers);
     }
 
     @Override
@@ -40,11 +43,7 @@ public class DelegerendeXMLMapper implements XMLMapper {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(mappers.stream()
-                .map(m -> m.mapperEgenskaper())
-                .map(e -> e.getSøknadEgenskaper())
-                .flatMap(e -> e.stream())
-                .collect(toList()));
+        return mapperEgenskaper;
     }
 
     private XMLMapper mapper(String xml, SøknadEgenskap egenskap) {
@@ -56,8 +55,16 @@ public class DelegerendeXMLMapper implements XMLMapper {
         return m;
     }
 
+    private static MapperEgenskaper mapperEgenskaper(List<XMLMapper> mappers) {
+        return new MapperEgenskaper(mappers.stream()
+                .map(e -> e.mapperEgenskaper())
+                .map(e -> e.getSøknadEgenskaper())
+                .flatMap(e -> e.stream())
+                .collect(toList()));
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mappers=" + mappers + "]";
+        return getClass().getSimpleName() + " [mappers=" + mappers + ", mapperEgenskaper=" + mapperEgenskaper + "]";
     }
 }
