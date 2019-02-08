@@ -24,9 +24,9 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V1Foreldre
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V2ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V1ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 

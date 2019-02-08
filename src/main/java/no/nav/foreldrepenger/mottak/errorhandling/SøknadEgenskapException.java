@@ -4,15 +4,15 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-public abstract class EgenskapException extends RuntimeException {
+public abstract class SøknadEgenskapException extends RuntimeException {
 
     private final SøknadEgenskap egenskap;
 
-    public EgenskapException(SøknadEgenskap egenskap) {
+    public SøknadEgenskapException(SøknadEgenskap egenskap) {
         this(null, egenskap, null);
     }
 
-    public EgenskapException(String msg, SøknadEgenskap egenskap, Throwable cause) {
+    public SøknadEgenskapException(String msg, SøknadEgenskap egenskap, Throwable cause) {
         super(msg, cause);
         this.egenskap = egenskap;
     }

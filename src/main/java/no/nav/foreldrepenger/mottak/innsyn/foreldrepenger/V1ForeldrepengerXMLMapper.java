@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn.mappers;
+package no.nav.foreldrepenger.mottak.innsyn.foreldrepenger;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -6,11 +6,10 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBElement;
@@ -63,58 +62,59 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.AbstractXMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.jaxb.FPV2JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderMedNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Periode;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Rettigheter;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.SoekersRelasjonTilBarnet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Termin;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.UkjentForelder;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.AnnenOpptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Dekningsgrad;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.EgenNaering;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Frilans;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Frilansoppdrag;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.NorskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Opptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Regnskapsfoerer;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Innsendingstype;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Land;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.MorsAktivitetsTyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Oppholdsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Overfoeringsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Utsettelsesaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Uttaksperiodetyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Virksomhetstyper;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Arbeidsgiver;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Fordeling;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Gradering;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Oppholdsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Overfoeringsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Utsettelsesperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Uttaksperiode;
-import no.nav.vedtak.felles.xml.soeknad.v2.OmYtelse;
-import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
+import no.nav.foreldrepenger.mottak.util.jaxb.FPV1JAXBUtil;
+import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderUtenNorskIdent;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Bruker;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Foedsel;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Medlemskap;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Periode;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Rettigheter;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.SoekersRelasjonTilBarnet;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.Termin;
+import no.nav.vedtak.felles.xml.soeknad.felles.v1.UkjentForelder;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.AnnenOpptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Dekningsgrad;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.EgenNaering;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilans;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Frilansoppdrag;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.NorskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Opptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Regnskapsfoerer;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Innsendingstype;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Land;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.MorsAktivitetsTyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Oppholdsaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Overfoeringsaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Utsettelsesaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Uttaksperiodetyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v1.Virksomhetstyper;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Fordeling;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Gradering;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Oppholdsperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Overfoeringsperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Utsettelsesperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v1.Uttaksperiode;
+import no.nav.vedtak.felles.xml.soeknad.v1.OmYtelse;
+import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, ENDRING_FORELDREPENGER,
+public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
+
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
 
-    private static final Logger LOG = LoggerFactory.getLogger(V2ForeldrepengerXMLMapper.class);
+    private static final FPV1JAXBUtil JAXB = new FPV1JAXBUtil();
 
-    private static final FPV2JAXBUtil JAXB = new FPV2JAXBUtil();
+    private static final Logger LOG = LoggerFactory.getLogger(V1ForeldrepengerXMLMapper.class);
 
-    public V2ForeldrepengerXMLMapper(Oppslag oppslag) {
+    public V1ForeldrepengerXMLMapper(Oppslag oppslag) {
         super(oppslag);
     }
 
@@ -159,8 +159,8 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         }
     }
 
-    private List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg> påkrevd,
-            List<no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg> valgfritt) {
+    private List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg> påkrevd,
+            List<no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg> valgfritt) {
         Stream<Vedlegg> vf = valgfritt.stream()
                 .map(this::metadataFra)
                 .map(s -> new ValgfrittVedlegg(s, null));
@@ -168,9 +168,10 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 .map(this::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
         return Stream.concat(vf, pk).collect(toList());
+
     }
 
-    private VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg vedlegg) {
+    private VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg vedlegg) {
         return new VedleggMetaData(
                 vedlegg.getId(),
                 tilInnsendingsType(vedlegg.getInnsendingstype()),
@@ -205,28 +206,28 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
-
-        Object førsteYtelse = ytelse(omYtelse);
-        if (førsteYtelse instanceof Endringssoeknad) {
-            Endringssoeknad søknad = Endringssoeknad.class.cast(førsteYtelse);
+        Object ytelse = ytelse(omYtelse);
+        if (ytelse instanceof Endringssoeknad) {
+            Endringssoeknad endringsSøknad = Endringssoeknad.class.cast(ytelse);
+            endringsSøknad.getSaksnummer();
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                    .fordeling(tilFordeling(søknad.getFordeling()))
+                    .fordeling(tilFordeling(endringsSøknad.getFordeling()))
                     .build();
         }
 
-        if (førsteYtelse instanceof Foreldrepenger) {
-            Foreldrepenger søknad = Foreldrepenger.class.cast(førsteYtelse);
+        if (ytelse instanceof Foreldrepenger) {
+            Foreldrepenger foreldrepengeSøknad = Foreldrepenger.class.cast(ytelse);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                    .annenForelder(tilAnnenForelder(søknad.getAnnenForelder()))
-                    .dekningsgrad(tilDekningsgrad(søknad.getDekningsgrad()))
-                    .fordeling(tilFordeling(søknad.getFordeling()))
-                    .medlemsskap(tilMedlemsskap(søknad.getMedlemskap()))
-                    .opptjening(tilOpptjening(søknad.getOpptjening()))
-                    .relasjonTilBarn(tilRelasjonTilBarn(søknad.getRelasjonTilBarnet()))
-                    .rettigheter(tilRettigheter(søknad.getRettigheter()))
+                    .annenForelder(tilAnnenForelder(foreldrepengeSøknad.getAnnenForelder()))
+                    .dekningsgrad(tilDekningsgrad(foreldrepengeSøknad.getDekningsgrad()))
+                    .fordeling(tilFordeling(foreldrepengeSøknad.getFordeling()))
+                    .medlemsskap(tilMedlemsskap(foreldrepengeSøknad.getMedlemskap()))
+                    .opptjening(tilOpptjening(foreldrepengeSøknad.getOpptjening()))
+                    .relasjonTilBarn(tilRelasjonTilBarn(foreldrepengeSøknad.getRelasjonTilBarnet()))
+                    .rettigheter(tilRettigheter(foreldrepengeSøknad.getRettigheter()))
                     .build();
         }
-        throw new NotImplementedException("Ukjent type " + førsteYtelse.getClass().getSimpleName());
+        throw new NotImplementedException("Ukjent type " + ytelse.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
@@ -234,6 +235,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (rettigheter == null) {
             return null;
         }
+
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(
                 rettigheter.isHarAnnenForelderRett(),
                 rettigheter.isHarOmsorgForBarnetIPeriodene(),
@@ -259,8 +261,8 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     termin.getUtstedtdato(),
                     emptyList());
         }
-        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v2.Adopsjon) {
-            no.nav.vedtak.felles.xml.soeknad.felles.v2.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v2.Adopsjon.class
+        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon) {
+            no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon.class
                     .cast(relasjonTilBarnet);
             return new Adopsjon(
                     adopsjon.getAntallBarn(),
@@ -303,7 +305,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
         return safeStream(frilansoppdrag)
-                .map(V2ForeldrepengerXMLMapper::tilFrilansOppdrag)
+                .map(V1ForeldrepengerXMLMapper::tilFrilansOppdrag)
                 .collect(toList());
     }
 
@@ -328,7 +330,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
             List<AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
-                .map(V2ForeldrepengerXMLMapper::tilAnnenOpptjening)
+                .map(V1ForeldrepengerXMLMapper::tilAnnenOpptjening)
                 .collect(toList());
     }
 
@@ -345,7 +347,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
         return safeStream(egenNaering)
-                .map(V2ForeldrepengerXMLMapper::tilEgenNæring)
+                .map(V1ForeldrepengerXMLMapper::tilEgenNæring)
                 .collect(toList());
     }
 
@@ -387,8 +389,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .virksomhetsTyper(tilVirksomhetsTyper(utenlandskOrg.getVirksomhetstype()))
                     .build();
         }
-        throw new IllegalArgumentException("Ikke"
-                + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
+        throw new IllegalArgumentException("Ikke-støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
     }
 
     private static CountryCode tilLand(Land land) {
@@ -401,7 +402,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
         return virksomhetstype.stream()
-                .map(V2ForeldrepengerXMLMapper::tilVirksomhetsType)
+                .map(V1ForeldrepengerXMLMapper::tilVirksomhetsType)
                 .collect(toList());
     }
 
@@ -416,25 +417,25 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (regnskapsfoerer == null) {
             return emptyList();
         }
-        return singletonList(new Regnskapsfører(
-                regnskapsfoerer.getNavn(),
-                regnskapsfoerer.getTelefon()));
+        return singletonList(new Regnskapsfører(regnskapsfoerer.getNavn(), regnskapsfoerer.getTelefon()));
     }
 
     private static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
-            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
+            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         return utenlandskArbeidsforhold.stream()
-                .map(V2ForeldrepengerXMLMapper::tilUtenlandskArbeidsforhold)
+                .map(V1ForeldrepengerXMLMapper::tilUtenlandskArbeidsforhold)
                 .collect(toList());
+
     }
 
     private static UtenlandskArbeidsforhold tilUtenlandskArbeidsforhold(
-            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold arbeidforhold) {
+            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.UtenlandskArbeidsforhold arbeidforhold) {
         return new UtenlandskArbeidsforhold(
                 arbeidforhold.getArbeidsgiversnavn(),
                 tilÅpenPeriode(arbeidforhold.getPeriode()),
                 null,
                 tilLand(arbeidforhold.getArbeidsland()));
+
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
@@ -475,14 +476,14 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static List<LukketPeriodeMedVedlegg> tilPerioder(
-            List<no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg> perioder) {
+            List<no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
-                .map(V2ForeldrepengerXMLMapper::tilLukketPeriode)
+                .map(V1ForeldrepengerXMLMapper::tilLukketPeriode)
                 .collect(toList());
     }
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(
-            no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg periode) {
+            no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg periode) {
 
         if (periode == null) {
             return null;
@@ -510,10 +511,10 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     utsettelse.getFom(),
                     utsettelse.getTom(),
                     utsettelse.isErArbeidstaker(),
-                    null,
+                    null, // TODO SJEKK OM VIRKSOMHETSNUMMER SKAL VÆRE MED
                     tilÅrsak(utsettelse.getAarsak()),
                     tilStønadKontoType(utsettelse.getUtsettelseAv()),
-                    tilMorsAktivitet(utsettelse.getMorsAktivitetIPerioden()),
+                    null,
                     emptyList());
         }
 
@@ -530,7 +531,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     gradering.getArbeidtidProsent(),
                     gradering.isErArbeidstaker(),
                     gradering.isArbeidsforholdSomSkalGraderes(),
-                    tilArbeidsgiver(gradering.getArbeidsgiver()),
+                    Collections.singletonList(gradering.getVirksomhetsnummer().toString()),
                     emptyList());
         }
 
@@ -547,13 +548,6 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     emptyList());
         }
         throw new IllegalArgumentException();
-    }
-
-    private static List<String> tilArbeidsgiver(Arbeidsgiver arbeidsgiver) {
-        return Optional.ofNullable(arbeidsgiver)
-                .map(Arbeidsgiver::getIdentifikator)
-                .map(Collections::singletonList)
-                .orElse(emptyList());
     }
 
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
@@ -625,4 +619,5 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     public String toString() {
         return getClass().getSimpleName() + " [mapperEgenskaper=" + mapperEgenskaper() + "]";
     }
+
 }

@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.errorhandling;
 
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-public class UnsupportedEgenskapException extends EgenskapException {
+public class UnsupportedEgenskapException extends SøknadEgenskapException {
 
     public UnsupportedEgenskapException(SøknadEgenskap egenskap) {
         this(null, egenskap);

@@ -71,8 +71,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
     }
 
-    @ExceptionHandler({ EgenskapException.class })
-    public ResponseEntity<Object> handleVersionException(EgenskapException e, WebRequest req) {
+    @ExceptionHandler({ SøknadEgenskapException.class })
+    public ResponseEntity<Object> handleVersionException(SøknadEgenskapException e, WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, e.getVersjon());
     }
 

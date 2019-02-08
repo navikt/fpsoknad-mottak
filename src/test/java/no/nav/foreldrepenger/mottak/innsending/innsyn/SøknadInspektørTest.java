@@ -25,11 +25,11 @@ import org.springframework.core.io.ClassPathResource;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.engangsstønad.DokmotV1XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V1ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.DokmotV1XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.UkjentXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)
