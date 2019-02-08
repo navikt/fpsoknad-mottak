@@ -1,7 +1,8 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.util.jaxb;
 
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v1.Foreldrepenger;
 import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;

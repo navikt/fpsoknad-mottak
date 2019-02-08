@@ -22,12 +22,12 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DelegerendeDomainM
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V1ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.V2ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.mottak.innsyn.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.V1ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.V2ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)

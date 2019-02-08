@@ -1,7 +1,8 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.util.jaxb;
 
 import static no.nav.foreldrepenger.mottak.util.Versjon.V20180924;
 
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.InntektsmeldingM;
 
 public final class InntektsmeldingJAXBUtil extends AbstractJAXBUtil {

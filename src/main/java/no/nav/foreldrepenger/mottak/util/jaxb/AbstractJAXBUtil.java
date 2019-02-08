@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.util.jaxb;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
@@ -30,6 +30,8 @@ import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public abstract class AbstractJAXBUtil {
 

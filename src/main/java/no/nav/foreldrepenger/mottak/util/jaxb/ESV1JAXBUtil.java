@@ -1,7 +1,8 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.util.jaxb;
 
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
+import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.melding.virksomhet.dokumentforsendelse.v1.Dokumentforsendelse;
 

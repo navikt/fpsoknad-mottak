@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.util.InntektsmeldingJAXBUtil;
+import no.nav.foreldrepenger.mottak.util.jaxb.InntektsmeldingJAXBUtil;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.Avsendersystem;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.AvtaltFerieListe;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.DelvisFravaer;

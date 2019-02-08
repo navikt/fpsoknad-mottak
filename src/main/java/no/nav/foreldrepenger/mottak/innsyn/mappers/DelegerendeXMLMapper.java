@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
 @Qualifier(DELEGERENDE)

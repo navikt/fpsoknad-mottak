@@ -46,7 +46,7 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.ESV2JAXBUtil;
+import no.nav.foreldrepenger.mottak.util.jaxb.ESV2JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v2.ObjectFactory;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderMedNorskIdent;

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
