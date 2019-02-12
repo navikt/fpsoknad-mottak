@@ -43,6 +43,7 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
 
         URI uri = UriComponentsBuilder.fromHttpRequest(request).replaceQuery(null).build().toUri();
         Timer t = Timer.builder(uri.toString())
+                .tags("method", request.getMethodValue())
                 .publishPercentiles(0.5, 0.95) // median and 95th percentile
                 .publishPercentileHistogram()
                 .sla(Duration.ofMillis(100))
