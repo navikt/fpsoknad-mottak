@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -19,6 +20,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -28,9 +30,11 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
     private static final Logger LOG = LoggerFactory.getLogger(TimingAndLoggingClientHttpRequestInterceptor.class);
 
     private final TokenUtil tokenUtil;
+    private final MeterRegistry registry;
 
-    public TimingAndLoggingClientHttpRequestInterceptor(TokenUtil tokenUtil) {
+    public TimingAndLoggingClientHttpRequestInterceptor(TokenUtil tokenUtil, MeterRegistry registry) {
         this.tokenUtil = tokenUtil;
+        this.registry = registry;
     }
 
     @Override
@@ -38,11 +42,17 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
             throws IOException {
 
         URI uri = UriComponentsBuilder.fromHttpRequest(request).replaceQuery(null).build().toUri();
+        Timer t = Timer.builder(uri.toString())
+                .publishPercentiles(0.5, 0.95) // median and 95th percentile
+                .publishPercentileHistogram()
+                .sla(Duration.ofMillis(100))
+                .minimumExpectedValue(Duration.ofMillis(1))
+                .maximumExpectedValue(Duration.ofSeconds(10))
+                .register(registry);
         LOG.info("{} - {}", request.getMethodValue(), uri);
         StopWatch timer = new StopWatch();
         timer.start();
         ClientHttpResponse respons = execution.execute(request, body);
-        Timer t = Metrics.timer("rest_calls_latency", "endpoint", uri.toString());
         Metrics.counter("endpoint", uri.toString(), "operation", request.getMethodValue(), "status",
                 String.valueOf(respons.getRawStatusCode()))
                 .increment();
