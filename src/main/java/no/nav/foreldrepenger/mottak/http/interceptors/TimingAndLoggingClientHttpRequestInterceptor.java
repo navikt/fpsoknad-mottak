@@ -18,6 +18,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -39,6 +40,8 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
         StopWatch timer = new StopWatch();
         timer.start();
         ClientHttpResponse respons = execution.execute(request, body);
+        Metrics.counter(uri.toString(), request.getMethodValue(), String.valueOf(respons.getRawStatusCode()))
+                .increment();
         timer.stop();
         if (hasError(respons.getStatusCode())) {
             LOG.warn("{} - {} - ({}). Dette tok {}ms. ({})", request.getMethodValue(), request.getURI(),
