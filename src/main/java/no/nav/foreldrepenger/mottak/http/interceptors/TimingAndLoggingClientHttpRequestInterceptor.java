@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -40,10 +42,12 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
         StopWatch timer = new StopWatch();
         timer.start();
         ClientHttpResponse respons = execution.execute(request, body);
+        Timer t = Metrics.timer("webservice_calls_latency", "endpoint", uri.toString());
         Metrics.counter("endpoint", uri.toString(), "operation", request.getMethodValue(), "status",
                 String.valueOf(respons.getRawStatusCode()))
                 .increment();
         timer.stop();
+        t.record(timer.getTime(), TimeUnit.MILLISECONDS);
         if (hasError(respons.getStatusCode())) {
             LOG.warn("{} - {} - ({}). Dette tok {}ms. ({})", request.getMethodValue(), request.getURI(),
                     respons.getRawStatusCode(), timer.getTime(MILLISECONDS), tokenUtil.getExpiryDate());
