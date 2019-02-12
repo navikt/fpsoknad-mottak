@@ -21,6 +21,7 @@
         <springfox.version>2.9.2</springfox.version>
         <xsd.location>${project.build.directory}/classes</xsd.location>
         <jaxb.location>${project.build.directory}/classes/</jaxb.location>
+        <kontrakter.version>5.0_20190131112112_28f4fb5</kontrakter.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
@@ -30,6 +31,31 @@
     </scm>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
+                                    <artifactId>foreldrepenger-kontrakter-root</artifactId>
+                                    <version>${kontrakter.version}</version>
+                                    <classifier>xsd</classifier>
+                                    <outputDirectory>src/main/xsd</outputDirectory>
+                                    <includes>**\/*.xsd</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -84,10 +110,16 @@
                         <arg>-Xfluent-api</arg>
                         <arg>-Xannotate</arg>
                     </args>
-                    <schemaDirectory>src/main/xsd</schemaDirectory>
-                    <schemaIncludes>
-                        <include>**/*.xsd</include>
-                    </schemaIncludes>
+                    <schemas>
+                        <schema>
+                            <fileset>
+                                <directory>src/main/xsd</directory>
+                                <includes>
+                                    <include>**/*.xsd</include>
+                                </includes>
+                            </fileset>
+                        </schema>
+                    </schemas>
                     <plugins>
                         <plugin>
                             <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -114,14 +146,12 @@
         </plugins>
     </build>
     <dependencies>
-    <!--  
         <dependency>
             <groupId>no.nav.foreldrepenger.kontrakter</groupId>
             <artifactId>foreldrepenger-kontrakter-root</artifactId>
-            <version>5.0_20190131112112_28f4fb5</version>
+            <version>${kontrakter.version}</version>
             <classifier>xsd</classifier>
         </dependency>
-     -->   
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>

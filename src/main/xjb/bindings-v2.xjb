@@ -6,48 +6,8 @@
     jaxb:extensionBindingPrefixes="annox"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
 
-    <jaxb:globalBindings>
-        <xjc:javaType
-            adapter="no.nav.foreldrepenger.mottak.domain.serialization.LocalDateAdapter"
-            name="java.time.LocalDate" xmlType="xsd:date" />
-        <xjc:javaType
-            adapter="no.nav.foreldrepenger.mottak.domain.serialization.LocalDateTimeAdapter"
-            name="java.time.LocalDateTime" xmlType="xsd:dateTime" />
-    </jaxb:globalBindings>
-
-
     <jaxb:bindings
-        schemaLocation="../xsd/v1/foreldrepenger/foreldrepenger-v1.xsd"
-        node="/xs:schema">
-        <jaxb:bindings
-            node="//xs:complexType[@name='Foreldrepenger']">
-            <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement
-            </annox:annotateClass>
-        </jaxb:bindings>
-    </jaxb:bindings>
-
-    <jaxb:bindings
-        schemaLocation="../xsd/v1/soeknad-v1.xsd"
-        node="/xs:schema">
-        <jaxb:bindings
-            node="//xs:complexType[@name='Soeknad']">
-            <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement
-            </annox:annotateClass>
-        </jaxb:bindings>
-    </jaxb:bindings>
-
-    <jaxb:bindings
-        schemaLocation="../xsd/v1/endringssoeknad-v1.xsd"
-        node="/xs:schema">
-        <jaxb:bindings
-            node="//xs:complexType[@name='Endringssoeknad']">
-            <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement
-            </annox:annotateClass>
-        </jaxb:bindings>
-    </jaxb:bindings>
-
-    <jaxb:bindings
-        schemaLocation="../xsd/v2/endringssoeknad-v2.xsd"
+        schemaLocation="../xsd/soeknad-v2/xsd/endringssoeknad/endringssoeknad-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='Endringssoeknad']">
@@ -56,9 +16,8 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
-<jaxb:bindings
-        schemaLocation="../xsd/v2/engangsstoenad/engangsstoenad-v2.xsd"
+    <jaxb:bindings
+        schemaLocation="../xsd/soeknad-v2/xsd/engangsstoenad/engangsstoenad-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='Engangsstønad']">
@@ -67,10 +26,8 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
-
     <jaxb:bindings
-        schemaLocation="../xsd/v2/foreldrepenger/foreldrepenger-v2.xsd"
+        schemaLocation="../xsd/soeknad-v2/xsd/foreldrepenger/foreldrepenger-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='Foreldrepenger']">
@@ -79,9 +36,8 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
     <jaxb:bindings
-        schemaLocation="../xsd/v2/vedtak/vedtak-v2.xsd"
+        schemaLocation="../xsd/behandlingsprosess-vedtak-v2/xsd/vedtak-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings node="//xs:element[@name='vedtak']">
             <annox:annotateClass>
@@ -89,11 +45,8 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
-
-
     <jaxb:bindings
-        schemaLocation="../xsd/v2/vedtak/beregningsgrunnlag/beregningsgrunnlag-fp-v2.xsd"
+        schemaLocation="../xsd/behandlingsprosess-vedtak-v2/xsd/beregningsgrunnlag/beregningsgrunnlag-fp-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='BeregningsgrunnlagForeldrepenger']">
@@ -102,10 +55,8 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
-
     <jaxb:bindings
-        schemaLocation="../xsd/v2/vedtak/vilkaarsgrunnlag/vilkaarsgrunnlag-fp-v2.xsd"
+        schemaLocation="../xsd/behandlingsprosess-vedtak-v2/xsd/vilkaarsgrunnlag/vilkaarsgrunnlag-fp-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='VilkaarsgrunnlagFoedsel']">
@@ -144,10 +95,8 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
-
     <jaxb:bindings
-        schemaLocation="../xsd/v2/vedtak/ytelse/ytelse-fp-v2.xsd"
+        schemaLocation="../xsd/behandlingsprosess-vedtak-v2/xsd/ytelse/ytelse-fp-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='YtelseForeldrepenger']">
@@ -156,9 +105,8 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
     <jaxb:bindings
-        schemaLocation="../xsd/v2/vedtak/uttak/uttak-fp-v2.xsd"
+        schemaLocation="../xsd/behandlingsprosess-vedtak-v2/xsd/uttak/uttak-fp-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='UttakForeldrepenger']">
@@ -170,7 +118,7 @@
 
 
     <jaxb:bindings
-        schemaLocation="../xsd/v2/vedtak/personopplysninger/personopplysninger-fp-v2.xsd"
+        schemaLocation="../xsd/behandlingsprosess-vedtak-v2/xsd/personopplysninger/personopplysninger-fp-v2.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='PersonopplysningerForeldrepenger']">

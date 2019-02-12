@@ -22,11 +22,11 @@ public class MDCValuesPropagatingClienHttpRequesInterceptor implements ClientHtt
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
 
-        propagateIfSet(request, NAV_CALL_ID, NAV_CONSUMER_ID);
+        propagerFraMDC(request, NAV_CALL_ID, NAV_CONSUMER_ID);
         return execution.execute(request, body);
     }
 
-    private static void propagateIfSet(HttpRequest request, String... keys) {
+    private static void propagerFraMDC(HttpRequest request, String... keys) {
         for (String key : keys) {
             String value = MDC.get(key);
             if (value != null) {

@@ -37,7 +37,7 @@ public class DelegerendeDomainMapper implements DomainMapper {
     public MapperEgenskaper mapperEgenskaper() {
         return new MapperEgenskaper(mappers.stream()
                 .map(m -> m.mapperEgenskaper())
-                .map(e -> e.getSøknadEgenskaper())
+                .map(e -> e.getEgenskaper())
                 .flatMap(e -> e.stream())
                 .collect(toList()));
     }
