@@ -42,7 +42,7 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
         StopWatch timer = new StopWatch();
         timer.start();
         ClientHttpResponse respons = execution.execute(request, body);
-        Timer t = Metrics.timer("webservice_calls_latency", "endpoint", uri.toString());
+        Timer t = Metrics.timer("rest_calls_latency", "endpoint", uri.toString());
         Metrics.counter("endpoint", uri.toString(), "operation", request.getMethodValue(), "status",
                 String.valueOf(respons.getRawStatusCode()))
                 .increment();
