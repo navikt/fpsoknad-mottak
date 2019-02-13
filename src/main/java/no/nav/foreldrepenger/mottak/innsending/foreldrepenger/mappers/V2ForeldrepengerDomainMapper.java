@@ -496,9 +496,10 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
                     .withINorgeVedFoedselstidspunkt(!ms.utenlands(relasjon))
                     .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
                     .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
-            if (kunOppholdINorgeSisteOgNeste12(ms)) {
-                medlemsskap.withOppholdNorge(kunOppholdINorgeSisteOgNeste12());
-            }
+            /*
+             * if (kunOppholdINorgeSisteOgNeste12(ms)) {
+             * medlemsskap.withOppholdNorge(kunOppholdINorgeSisteOgNeste12()); }
+             */
             return medlemsskap;
         }
         return null;
