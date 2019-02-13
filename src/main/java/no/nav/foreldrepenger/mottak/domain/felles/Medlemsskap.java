@@ -31,7 +31,7 @@ public class Medlemsskap {
 
     public boolean utenlands(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
         if (relasjonTilBarn instanceof Fødsel) {
-            varUtenlands(Fødsel.class.cast(relasjonTilBarn).getFødselsdato().get(0));
+            return varUtenlands(Fødsel.class.cast(relasjonTilBarn).getFødselsdato().get(0));
         }
         if (relasjonTilBarn instanceof FremtidigFødsel) {
             return skalVæreUtenlands(FremtidigFødsel.class.cast(relasjonTilBarn).getTerminDato());
