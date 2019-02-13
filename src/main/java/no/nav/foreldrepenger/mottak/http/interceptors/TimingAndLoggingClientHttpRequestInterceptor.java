@@ -54,7 +54,7 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
         StopWatch timer = new StopWatch();
         timer.start();
         ClientHttpResponse respons = execution.execute(request, body);
-        Metrics.counter("endpoint", uri.toString(), "operation", request.getMethodValue(), "status",
+        Metrics.counter("url", "endpoint", uri.toString(), "method", request.getMethodValue(), "status",
                 String.valueOf(respons.getRawStatusCode()))
                 .increment();
         timer.stop();
