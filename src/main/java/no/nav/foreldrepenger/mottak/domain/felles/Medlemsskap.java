@@ -18,6 +18,6 @@ public class Medlemsskap {
     private final FramtidigOppholdsInformasjon framtidigOppholdsInfo;
 
     public boolean varUtenlands(LocalDate day) {
-        return tidligereOppholdsInfo.varUtenlands(day);
+        return day == null ? false : tidligereOppholdsInfo.varUtenlands(day);
     }
 }

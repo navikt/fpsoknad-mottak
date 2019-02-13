@@ -508,7 +508,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
             Medlemskap medlemsskap = new Medlemskap()
                     .withOppholdUtlandet(
                             oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
-                    .withINorgeVedFoedselstidspunkt(dato != null ? !ms.varUtenlands(dato) : true)
+                    .withINorgeVedFoedselstidspunkt(!ms.varUtenlands(dato))
                     .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
                     .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
             if (kunOppholdINorgeSisteOgNeste12(ms)) {
