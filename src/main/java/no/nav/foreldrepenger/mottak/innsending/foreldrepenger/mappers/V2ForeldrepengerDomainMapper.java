@@ -230,28 +230,13 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse) {
         return FP_FACTORY_V2.createForeldrepenger(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
-                .withMedlemskap(
-                        medlemsskapFra(ytelse.getMedlemsskap(),
-                                fødselTerminEllerAdopsjonsdato(ytelse.getRelasjonTilBarn())))
+                .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap(), ytelse.getRelasjonTilBarn()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
                 .withRettigheter(
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn())));
-    }
-
-    private static LocalDate fødselTerminEllerAdopsjonsdato(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
-        if (relasjonTilBarn instanceof Fødsel) {
-            return Fødsel.class.cast(relasjonTilBarn).getFødselsdato().get(0);
-        }
-        if (relasjonTilBarn instanceof FremtidigFødsel) {
-            return FremtidigFødsel.class.cast(relasjonTilBarn).getTerminDato();
-        }
-        if (relasjonTilBarn instanceof Adopsjon) {
-            return Adopsjon.class.cast(relasjonTilBarn).getOmsorgsovertakelsesdato();
-        }
-        return null;
     }
 
     private Fordeling fordelingFra(Endringssøknad endringssøknad) {
@@ -502,13 +487,13 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
                 .orElse(null);
     }
 
-    private static Medlemskap medlemsskapFra(Medlemsskap ms, LocalDate dato) {
+    private static Medlemskap medlemsskapFra(Medlemsskap ms, RelasjonTilBarnMedVedlegg relasjon) {
         if (ms != null) {
             LOG.debug(CONFIDENTIAL, "Genererer medlemsskap XML fra {}", ms);
             Medlemskap medlemsskap = new Medlemskap()
                     .withOppholdUtlandet(
                             oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
-                    .withINorgeVedFoedselstidspunkt(!ms.varUtenlands(dato))
+                    .withINorgeVedFoedselstidspunkt(!ms.utenlands(relasjon))
                     .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
                     .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
             if (kunOppholdINorgeSisteOgNeste12(ms)) {
