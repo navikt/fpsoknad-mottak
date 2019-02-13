@@ -32,6 +32,10 @@ public class TidligereOppholdsInformasjon {
         this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }
 
+    public boolean isBoddINorge() {
+        return utenlandsOpphold.isEmpty();
+    }
+
     public boolean varUtenlands(LocalDate dato) {
         return utenlandsOpphold
                 .stream()

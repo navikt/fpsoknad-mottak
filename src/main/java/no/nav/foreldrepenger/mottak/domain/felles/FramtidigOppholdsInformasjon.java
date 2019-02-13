@@ -35,6 +35,10 @@ public class FramtidigOppholdsInformasjon {
         this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }
 
+    public boolean isNorgeNeste12() {
+        return utenlandsOpphold.isEmpty();
+    }
+
     public boolean skalVæreUtenlands(LocalDate dato) {
         return utenlandsOpphold
                 .stream()

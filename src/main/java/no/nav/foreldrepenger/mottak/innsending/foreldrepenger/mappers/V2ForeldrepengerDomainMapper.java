@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
@@ -11,7 +10,6 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.MapperEgenskaper;
@@ -77,7 +74,6 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderUtenNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.Foedsel;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.OppholdNorge;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.OppholdUtlandet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v2.Rettigheter;
@@ -496,17 +492,9 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
                     .withINorgeVedFoedselstidspunkt(!ms.utenlands(relasjon))
                     .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
                     .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
-            /*
-             * if (kunOppholdINorgeSisteOgNeste12(ms)) {
-             * medlemsskap.withOppholdNorge(kunOppholdINorgeSisteOgNeste12()); }
-             */
             return medlemsskap;
         }
         return null;
-    }
-
-    private static boolean kunOppholdINorgeSisteOgNeste12(Medlemsskap ms) {
-        return oppholdINorgeSiste12(ms) && oppholdINorgeNeste12(ms);
     }
 
     private static boolean oppholdINorgeSiste12(Medlemsskap ms) {
@@ -517,21 +505,8 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
         return ms.getFramtidigOppholdsInfo().getUtenlandsOpphold().isEmpty();
     }
 
-    private static List<OppholdNorge> kunOppholdINorgeSisteOgNeste12() {
-        return Lists.newArrayList(new OppholdNorge()
-                .withPeriode(new Periode()
-                        .withFom(LocalDate.now().minusYears(1))
-                        .withTom(LocalDate.now())),
-                new OppholdNorge().withPeriode(new Periode()
-                        .withFom(LocalDate.now())
-                        .withTom(LocalDate.now().plusYears(1))));
-    }
-
     private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
             FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
-        if (tidligereOppholdsInfo.isBoddINorge() && framtidigOppholdsInfo.isNorgeNeste12()) {
-            return emptyList();
-        }
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
                         safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
