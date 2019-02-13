@@ -510,11 +510,11 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static boolean oppholdINorgeSiste12(Medlemsskap ms) {
-        return ms.getTidligereOppholdsInfo().isBoddINorge();
+        return ms.getTidligereOppholdsInfo().getUtenlandsOpphold().isEmpty();
     }
 
     private static boolean oppholdINorgeNeste12(Medlemsskap ms) {
-        return ms.getFramtidigOppholdsInfo().isNorgeNeste12();
+        return ms.getFramtidigOppholdsInfo().getUtenlandsOpphold().isEmpty();
     }
 
     private static List<OppholdNorge> kunOppholdINorgeSisteOgNeste12() {
