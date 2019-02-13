@@ -42,13 +42,13 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
             throws IOException {
 
         URI uri = UriComponentsBuilder.fromHttpRequest(request).replaceQuery(null).build().toUri();
-        Timer t = Timer.builder(uri.toString())
-                .tags("method", request.getMethodValue())
+        Timer t = Timer.builder(uri.getPath())
+                .tags("method", request.getMethodValue(), "host", uri.getHost())
                 .publishPercentiles(0.5, 0.95) // median and 95th percentile
                 .publishPercentileHistogram()
                 .sla(Duration.ofMillis(100))
                 .minimumExpectedValue(Duration.ofMillis(1))
-                .maximumExpectedValue(Duration.ofSeconds(10))
+                .maximumExpectedValue(Duration.ofSeconds(1))
                 .register(registry);
         LOG.info("{} - {}", request.getMethodValue(), uri);
         StopWatch timer = new StopWatch();
