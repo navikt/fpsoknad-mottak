@@ -21,7 +21,6 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 public class FramtidigOppholdsInformasjon {
 
     private final boolean fødselNorge;
-    private final boolean norgeNeste12;
     @Opphold(fortid = false)
     @Valid
     private final List<Utenlandsopphold> utenlandsOpphold;
@@ -31,7 +30,6 @@ public class FramtidigOppholdsInformasjon {
             @JsonProperty("norgeNeste12") boolean norgeNeste12,
             @JsonProperty("utenlandsOpphold") List<Utenlandsopphold> utenlandsOpphold) {
         this.fødselNorge = fødselNorge;
-        this.norgeNeste12 = norgeNeste12;
         this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }
 

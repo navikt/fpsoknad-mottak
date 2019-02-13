@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBElement;
 
@@ -30,10 +29,8 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
@@ -486,13 +483,11 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     private static Medlemskap medlemsskapFra(Medlemsskap ms, RelasjonTilBarnMedVedlegg relasjon) {
         if (ms != null) {
             LOG.debug(CONFIDENTIAL, "Genererer medlemsskap XML fra {}", ms);
-            Medlemskap medlemsskap = new Medlemskap()
-                    .withOppholdUtlandet(
-                            oppholdUtlandetFra(ms.getTidligereOppholdsInfo(), ms.getFramtidigOppholdsInfo()))
+            return new Medlemskap()
+                    .withOppholdUtlandet(oppholdUtlandetFra(ms))
                     .withINorgeVedFoedselstidspunkt(!ms.utenlands(relasjon))
                     .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
                     .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
-            return medlemsskap;
         }
         return null;
     }
@@ -505,11 +500,9 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
         return ms.getFramtidigOppholdsInfo().getUtenlandsOpphold().isEmpty();
     }
 
-    private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
-            FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
-        return Stream
-                .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
-                        safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
+    private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
+        return ms.utenlandsOpphold()
+                .stream()
                 .map(V2ForeldrepengerDomainMapper::utenlandOppholdFra)
                 .collect(toList());
     }

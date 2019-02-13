@@ -17,7 +17,6 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 @Data
 public class TidligereOppholdsInformasjon {
 
-    private final boolean boddINorge;
     private final ArbeidsInformasjon arbeidsInfo;
     @Opphold(fortid = true)
     @Valid
@@ -27,7 +26,6 @@ public class TidligereOppholdsInformasjon {
     public TidligereOppholdsInformasjon(@JsonProperty("boddINorge") boolean boddINorge,
             @JsonProperty("arbeidsInfo") ArbeidsInformasjon arbeidsInfo,
             @JsonProperty("utenlandsOpphold") List<Utenlandsopphold> utenlandsOpphold) {
-        this.boddINorge = boddINorge;
         this.arbeidsInfo = arbeidsInfo;
         this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }
