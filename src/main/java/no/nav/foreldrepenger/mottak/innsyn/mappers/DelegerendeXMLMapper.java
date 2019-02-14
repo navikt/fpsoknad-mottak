@@ -39,7 +39,7 @@ public class DelegerendeXMLMapper implements XMLMapper {
 
     @Override
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
-        return mapper(xml, egenskap).tilSøknad(xml, egenskap);
+        return mapper(egenskap).tilSøknad(xml, egenskap);
     }
 
     @Override
@@ -47,19 +47,19 @@ public class DelegerendeXMLMapper implements XMLMapper {
         return mapperEgenskaper;
     }
 
-    private XMLMapper mapper(String xml, SøknadEgenskap egenskap) {
-        XMLMapper m = mappers.stream()
-                .filter(mapper -> mapper.kanMappe(egenskap))
+    private XMLMapper mapper(SøknadEgenskap egenskap) {
+        XMLMapper mapper = mappers.stream()
+                .filter(m -> m.kanMappe(egenskap))
                 .findFirst()
                 .orElse(new UkjentXMLMapper());
-        LOG.info("Bruker mapper {}", m.getClass().getSimpleName());
-        return m;
+        LOG.info("Bruker mapper {} for {}", mapper.getClass().getSimpleName(), egenskap);
+        return mapper;
     }
 
     private static MapperEgenskaper mapperEgenskaper(List<XMLMapper> mappers) {
         return new MapperEgenskaper(mappers.stream()
                 .map(e -> e.mapperEgenskaper())
-                .map(e -> e.getSøknadEgenskaper())
+                .map(e -> e.getEgenskaper())
                 .flatMap(e -> e.stream())
                 .collect(toList()));
     }

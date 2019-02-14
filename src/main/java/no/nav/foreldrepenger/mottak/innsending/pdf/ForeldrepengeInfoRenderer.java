@@ -457,7 +457,7 @@ public class ForeldrepengeInfoRenderer {
     private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
             FontAwareCos scratchcos, Person søker, boolean erEndring) throws IOException {
         cos.close();
-        float y = header(søker, doc, scratchcos, erEndring, STARTY);
+        header(søker, doc, scratchcos, erEndring, STARTY);
         doc.addPage(scratch);
         cos = scratchcos;
         return cos;

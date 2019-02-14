@@ -15,6 +15,6 @@ public class IDFilterRegistrationBean extends FilterRegistrationBean<IDToMDCFilt
     public IDFilterRegistrationBean(IDToMDCFilterBean idFilter) {
         setFilter(idFilter);
         setUrlPatterns(urlPatternsFor(INNSENDING, INNSYN));
-        LOG.info("Registrert filter {}", this);
+        LOG.info("Registrert filter {}", this.getClass().getSimpleName());
     }
 }

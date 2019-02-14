@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class MapperEgenskaper {
-    private final List<SøknadEgenskap> mapperEgenskaper;
+    private final List<SøknadEgenskap> egenskaper;
 
     public MapperEgenskaper(Versjon versjon, SøknadType type) {
         this(new SøknadEgenskap(versjon, type));
@@ -30,24 +30,16 @@ public class MapperEgenskaper {
         this(singletonList(egenskap));
     }
 
-    public MapperEgenskaper(List<SøknadEgenskap> mapperEgenskaper) {
-        this.mapperEgenskaper = mapperEgenskaper;
+    public MapperEgenskaper(List<SøknadEgenskap> egenskaper) {
+        this.egenskaper = egenskaper;
     }
 
-    public List<SøknadEgenskap> getSøknadEgenskaper() {
-        return mapperEgenskaper;
+    public List<SøknadEgenskap> getEgenskaper() {
+        return egenskaper;
     }
 
     public boolean kanMappe(SøknadEgenskap egenskap) {
-        return mapperEgenskaper.contains(egenskap);
-    }
-
-    public boolean kanMappe(Versjon versjon) {
-        return mapperEgenskaper.stream()
-                .map(e -> e.getVersjon())
-                .filter(v -> v.equals(versjon))
-                .findFirst()
-                .isPresent();
+        return egenskaper.contains(egenskap);
     }
 
     private static List<SøknadEgenskap> typerForVersjon(final Versjon versjon, SøknadType[] typer) {
@@ -58,7 +50,7 @@ public class MapperEgenskaper {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mapperEgenskaper=" + mapperEgenskaper + "]";
+        return getClass().getSimpleName() + " [mapperEgenskaper=" + egenskaper + "]";
     }
 
 }

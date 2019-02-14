@@ -6,6 +6,8 @@ import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -18,6 +20,9 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -25,9 +30,11 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
     private static final Logger LOG = LoggerFactory.getLogger(TimingAndLoggingClientHttpRequestInterceptor.class);
 
     private final TokenUtil tokenUtil;
+    private final MeterRegistry registry;
 
-    public TimingAndLoggingClientHttpRequestInterceptor(TokenUtil tokenUtil) {
+    public TimingAndLoggingClientHttpRequestInterceptor(TokenUtil tokenUtil, MeterRegistry registry) {
         this.tokenUtil = tokenUtil;
+        this.registry = registry;
     }
 
     @Override
@@ -35,11 +42,23 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
             throws IOException {
 
         URI uri = UriComponentsBuilder.fromHttpRequest(request).replaceQuery(null).build().toUri();
+        Timer t = Timer.builder(uri.getPath())
+                .tags("method", request.getMethodValue(), "host", uri.getHost())
+                .publishPercentiles(0.5, 0.95) // median and 95th percentile
+                .publishPercentileHistogram()
+                .sla(Duration.ofMillis(100))
+                .minimumExpectedValue(Duration.ofMillis(1))
+                .maximumExpectedValue(Duration.ofSeconds(1))
+                .register(registry);
         LOG.info("{} - {}", request.getMethodValue(), uri);
         StopWatch timer = new StopWatch();
         timer.start();
         ClientHttpResponse respons = execution.execute(request, body);
+        Metrics.counter("url", "endpoint", uri.toString(), "method", request.getMethodValue(), "status",
+                String.valueOf(respons.getRawStatusCode()))
+                .increment();
         timer.stop();
+        t.record(timer.getTime(), TimeUnit.MILLISECONDS);
         if (hasError(respons.getStatusCode())) {
             LOG.warn("{} - {} - ({}). Dette tok {}ms. ({})", request.getMethodValue(), request.getURI(),
                     respons.getRawStatusCode(), timer.getTime(MILLISECONDS), tokenUtil.getExpiryDate());

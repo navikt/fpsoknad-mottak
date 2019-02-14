@@ -1,13 +1,8 @@
 package no.nav.foreldrepenger.mottak.util.jaxb;
 
-import static no.nav.foreldrepenger.mottak.util.Versjon.V20180924;
-
-import no.nav.foreldrepenger.mottak.util.Versjon;
-import no.seres.xsd.nav.inntektsmelding_m._20180924.InntektsmeldingM;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.InntektsmeldingM;
 
 public final class InntektsmeldingJAXBUtil extends AbstractJAXBUtil {
-
-    private static final Versjon VERSJON = V20180924;
 
     public InntektsmeldingJAXBUtil() {
         this(false, false);
@@ -15,10 +10,8 @@ public final class InntektsmeldingJAXBUtil extends AbstractJAXBUtil {
 
     public InntektsmeldingJAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
         super(contextFra(InntektsmeldingM.class),
-                VERSJON,
                 validateMarshalling, validateUnmarshalling,
-                "/inntektsmelding-v6.xsd",
-                "/inntektsmelding-kodeliste-v6.xsd");
+                "/inntektsmelding-v1/xsd/Inntektsmelding20181211_V7.xsd",
+                "/inntektsmelding-v1/xsd/Inntektsmelding_kodelister_20180924.xsd");
     }
-
 }

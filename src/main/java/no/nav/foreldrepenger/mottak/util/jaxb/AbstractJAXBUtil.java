@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
@@ -26,12 +26,11 @@ import javax.xml.validation.SchemaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public abstract class AbstractJAXBUtil {
 
@@ -42,12 +41,12 @@ public abstract class AbstractJAXBUtil {
     private final boolean validateMarshalling;
     private final boolean validateUnarshalling;
 
-    protected static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+    private static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
 
-    public AbstractJAXBUtil(JAXBContext context, Versjon versjon, boolean validateMarhsalling,
+    public AbstractJAXBUtil(JAXBContext context, boolean validateMarhsalling,
             boolean validateUnmarshalling, String... xsds) {
         this.context = context;
-        this.schema = schema(versjon, xsds);
+        this.schema = schemaFra(xsds);
         this.validateMarshalling = validateMarhsalling;
         this.validateUnarshalling = validateUnmarshalling;
     }
@@ -97,7 +96,7 @@ public abstract class AbstractJAXBUtil {
             return (T) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             LOG.warn("Noe gikk galt ved unmarshalling til klasse {}", clazz.getName(), e);
-            LOG.warn(CONFIDENTIAL, "XML er {}", xml);
+            LOG.warn(CONFIDENTIAL, "XML som feilet er {}", xml);
             throw new IllegalArgumentException(e);
         }
     }
@@ -107,17 +106,17 @@ public abstract class AbstractJAXBUtil {
             return (JAXBElement<T>) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             LOG.warn("Noe gikk galt ved unmarshalling til klasse {}", clazz.getName(), e);
-            LOG.warn(CONFIDENTIAL, "XML er {}", xml);
+            LOG.warn(CONFIDENTIAL, "XML som feilet er {}", xml);
             throw new IllegalArgumentException(e);
         }
     }
 
-    private static Schema schema(Versjon versjon, String... xsds) {
+    private static Schema schemaFra(String... xsds) {
         try {
-            return SCHEMA_FACTORY.newSchema(sourcesFra(versjon, xsds));
+            return SCHEMA_FACTORY.newSchema(sourcesFra(xsds));
         } catch (SAXException e) {
             LOG.warn(
-                    "Noe gikk galt med konfigurasjon av skjema for validering fra {}, bruker ikke-validerende marshaller",
+                    "Noe gikk galt med konfigurasjon av skjema  fra {}, bruker ikke-validerende marshaller",
                     Arrays.toString(xsds), e);
             return null;
         }
@@ -163,25 +162,26 @@ public abstract class AbstractJAXBUtil {
         }
     }
 
-    private static Source[] sourcesFra(Versjon version, String... schemas) {
+    private static Source[] sourcesFra(String... schemas) {
         return Arrays.stream(schemas)
-                .map(s -> version.name().toLowerCase() + s)
                 .map(AbstractJAXBUtil::sourceFra)
                 .toArray(Source[]::new);
-
     }
 
     private static Source sourceFra(String re) {
         try {
-            URL url = AbstractJAXBUtil.class.getClassLoader().getResource(re);
-            return new StreamSource(inputStreamFra(new UrlResource(url)), url.toExternalForm());
+            return sourceFra(new ClassPathResource(re));
         } catch (Exception e) {
-            LOG.warn("Noe gikk galt ved lesing av ressurs {} fra classpath", re, e);
+            LOG.warn("Noe gikk galt ved lesing av ressurs {} fra classpath", re, new ClassPathResource(re), e);
             throw new IllegalArgumentException(e);
         }
     }
 
-    private static InputStream inputStreamFra(UrlResource res) {
+    private static Source sourceFra(ClassPathResource cpr) throws MalformedURLException, IOException {
+        return new StreamSource(inputStreamFra(cpr), cpr.getURI().toURL().toExternalForm());
+    }
+
+    private static InputStream inputStreamFra(Resource res) {
         try {
             if (!res.exists()) {
                 throw new IllegalArgumentException("Ressursen  " + res + " finnes ikke");

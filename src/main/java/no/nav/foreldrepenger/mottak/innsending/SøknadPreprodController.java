@@ -1,6 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -57,7 +61,7 @@ public class SøknadPreprodController {
 
     @PostMapping("/søknad")
     public String FPsøknadV1(@Valid @RequestBody Søknad søknad) {
-        return fpSøknad(søknad, Versjon.V1);
+        return fpSøknad(søknad, V1);
     }
 
     @GetMapping(value = "/test", produces = APPLICATION_JSON_VALUE)
@@ -72,17 +76,17 @@ public class SøknadPreprodController {
 
     @PostMapping("/søknadV2")
     public String FPsøknadV2(@Valid @RequestBody Søknad søknad) {
-        return fpSøknad(søknad, Versjon.V2);
+        return fpSøknad(søknad, V2);
     }
 
     @PostMapping("/endringssøknad")
     public String FPendringssøknadV1(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return fpEndringsSøknad(endringssøknad, Versjon.V1);
+        return fpEndringsSøknad(endringssøknad, V1);
     }
 
     @PostMapping("/endringssøknadV2")
     public String FPendringssøknadV2(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return fpEndringsSøknad(endringssøknad, Versjon.V2);
+        return fpEndringsSøknad(endringssøknad, V2);
     }
 
     @PostMapping(path = "/pdfEndring", produces = APPLICATION_PDF_VALUE)
@@ -101,7 +105,7 @@ public class SøknadPreprodController {
 
     private String fpSøknad(Søknad søknad, Versjon v) {
         return fpDomainMapper.tilXML(søknad, new AktorId("42"),
-                new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
+                new SøknadEgenskap(v, INITIELL_FORELDREPENGER));
     }
 
     private String esSøknad(Søknad søknad) {
@@ -110,7 +114,7 @@ public class SøknadPreprodController {
 
     private String fpEndringsSøknad(Endringssøknad endringssøknad, Versjon v) {
         return fpDomainMapper.tilXML(endringssøknad, new AktorId("42"),
-                new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
+                new SøknadEgenskap(v, ENDRING_FORELDREPENGER));
     }
 
     private static Person søker() {

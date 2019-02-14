@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static java.util.Collections.emptyList;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,6 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 public class FramtidigOppholdsInformasjon {
 
     private final boolean fødselNorge;
-    private final boolean norgeNeste12;
     @Opphold(fortid = false)
     @Valid
     private final List<Utenlandsopphold> utenlandsOpphold;
@@ -30,7 +30,16 @@ public class FramtidigOppholdsInformasjon {
             @JsonProperty("norgeNeste12") boolean norgeNeste12,
             @JsonProperty("utenlandsOpphold") List<Utenlandsopphold> utenlandsOpphold) {
         this.fødselNorge = fødselNorge;
-        this.norgeNeste12 = norgeNeste12;
         this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
+    }
+
+    public boolean isNorgeNeste12() {
+        return utenlandsOpphold.isEmpty();
+    }
+
+    public boolean skalVæreUtenlands(LocalDate dato) {
+        return utenlandsOpphold
+                .stream()
+                .anyMatch(s -> s.getVarighet().isWithinPeriod(dato));
     }
 }

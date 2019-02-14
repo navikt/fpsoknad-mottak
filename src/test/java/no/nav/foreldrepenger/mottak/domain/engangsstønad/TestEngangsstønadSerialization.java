@@ -63,8 +63,9 @@ public class TestEngangsstønadSerialization {
     }
 
     @Test
-    public void testEngangsstønadNorge() {
+    public void testEngangsstønadNorge() throws Exception {
         Engangsstønad engangstønad = engangstønad(Versjon.V1, false, termin(), norskForelder(Versjon.V1));
+        System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(engangstønad));
         test(engangstønad, false);
     }
 
