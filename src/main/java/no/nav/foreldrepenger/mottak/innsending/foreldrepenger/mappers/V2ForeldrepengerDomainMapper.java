@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers;
 
-import static com.neovisionaries.i18n.CountryCode.NO;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
@@ -486,7 +485,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
             LOG.debug(CONFIDENTIAL, "Genererer medlemsskap XML fra {}", ms);
             return new Medlemskap()
                     .withOppholdUtlandet(oppholdUtlandetFra(ms))
-                    .withINorgeVedFoedselstidspunkt(ms.landVedDato(relasjon.relasjonsDato()).equals(NO))
+                    .withINorgeVedFoedselstidspunkt(ms.varINorge(relasjon.relasjonsDato()))
                     .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
                     .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
         }

@@ -212,8 +212,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
         Medlemskap ms = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo(),
                         medlemsskap.getFramtidigOppholdsInfo()))
-                .withINorgeVedFoedselstidspunkt(
-                        medlemsskap.landVedDato(relasjon.relasjonsDato()).equals(CountryCode.NO))
+                .withINorgeVedFoedselstidspunkt(medlemsskap.varINorge(relasjon.relasjonsDato()))
                 .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(medlemsskap))
                 .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(medlemsskap));
         if (kunOppholdINorgeSisteOgNeste12(medlemsskap)) {

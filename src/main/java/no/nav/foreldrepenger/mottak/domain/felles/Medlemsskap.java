@@ -24,6 +24,14 @@ public class Medlemsskap {
     @Valid
     private final FramtidigOppholdsInformasjon framtidigOppholdsInfo;
 
+    public boolean varUtenlands(LocalDate dato) {
+        return !varINorge(dato);
+    }
+
+    public boolean varINorge(LocalDate dato) {
+        return NO.equals(landVedDato(dato));
+    }
+
     public CountryCode landVedDato(LocalDate dato) {
         return dato == null ? NO : landVedDato(utenlandsOpphold(), dato);
     }

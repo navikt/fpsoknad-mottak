@@ -11,8 +11,6 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
-import com.neovisionaries.i18n.CountryCode;
-
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -117,7 +115,7 @@ public class DokmotEngangsstønadDomainMapper {
                 .withFremtidigOppholdNorge(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
                 .withFremtidigOppholdUtenlands(framtidigOppholdUtenlandsFra(medlemsskap.getFramtidigOppholdsInfo()));
         return tilknytning
-                .withOppholdNorgeNaa(!medlemsskap.landVedDato(relasjon.relasjonsDato()).equals(CountryCode.NO)); // TODO
+                .withOppholdNorgeNaa(medlemsskap.varINorge(relasjon.relasjonsDato()));
 
     }
 
