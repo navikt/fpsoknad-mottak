@@ -39,14 +39,6 @@ fasitResources:
           hostname: DOKMOT_HOSTNAME
           port: DOKMOT_PORT
           name: DOKMOT_NAME
-    - alias: varsel_queue
-      resourcetype: queue
-      propertyMap:
-        queueName: VARSEL_QUEUENAME
-    - alias: varsel_channel
-        resourcetype: channel
-        propertyMap:
-            channelname: VARSEL_CHANNEL
     - alias: dokmot_channel
       resourceType: channel
       propertyMap:
@@ -63,10 +55,6 @@ fasitResources:
           queueManager: DOKMOT_QUEUEMANAGER
     - alias : FPSOKNADMOTTAK_PROPERTIES
       resourceType: applicationProperties
-    - alias: varsel_channel
-      resourcetype: channel
-      propertyMap:
-            name: VARSEL_CHANNELNAME
   exposed:
     - alias: fpsoknad-mottak-api
       resourceType: restservice
