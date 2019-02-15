@@ -129,7 +129,7 @@
     </jaxb:bindings>
 
     <jaxb:bindings
-        schemaLocation="../xsd/v1/varseltjeneste/varsel-v1.xsd"
+        schemaLocation="../xsd/varseltjeneste/varsel-v1.xsd"
         node="/xs:schema">
         <jaxb:bindings
             node="//xs:complexType[@name='Varsel']">
