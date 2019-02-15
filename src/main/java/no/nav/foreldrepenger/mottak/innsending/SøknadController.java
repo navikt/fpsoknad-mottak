@@ -14,9 +14,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,40 +52,28 @@ public class SøknadController {
     private final Oppslag oppslag;
     private final SøknadSender sender;
     private final EngangsstønadDestinasjon destinasjon;
-    private final VarselSender varselSender;
 
     public SøknadController(@Qualifier(ROUTING_SENDER) SøknadSender sender, Oppslag oppslag,
-            Innsyn innsyn, @Value("${engangs.destinasjon:DOKMOT}") EngangsstønadDestinasjon destinasjon,
-                            VarselSender varselSender) {
+            Innsyn innsyn, @Value("${engangs.destinasjon:DOKMOT}") EngangsstønadDestinasjon destinasjon) {
         this.sender = sender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
         this.destinasjon = destinasjon;
-        this.varselSender = varselSender;
     }
 
     @PostMapping("/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
-        Person søker = oppslag.getSøker();
-        Kvittering kvittering = sender.send(søknad, søker, søknadEgenskapFra(søknad));
-        varsleBruker(kvittering, søker);
-        return kvittering;
+        return sender.send(søknad, oppslag.getSøker(), søknadEgenskapFra(søknad));
     }
 
     @PostMapping("/ettersend")
     public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
-        Person søker = oppslag.getSøker();
-        Kvittering kvittering = sender.send(ettersending, søker, ETTERSENDING_FORELDREPENGER);
-        varsleBruker(kvittering, søker);
-        return kvittering;
+        return sender.send(ettersending, oppslag.getSøker(), ETTERSENDING_FORELDREPENGER);
     }
 
     @PostMapping("/endre")
     public Kvittering send(@Valid @RequestBody Endringssøknad endringssøknad) {
-        Person søker = oppslag.getSøker();
-        Kvittering kvittering = sender.send(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
-        varsleBruker(kvittering, søker);
-        return kvittering;
+        return sender.send(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
     }
 
     @GetMapping("/ping")
@@ -112,17 +97,6 @@ public class SøknadController {
 
     private Versjon versjonFraDestinasjon() {
         return DOKMOT.equals(destinasjon) ? V1 : DEFAULT_VERSJON;
-    }
-
-    private void varsleBruker(Kvittering kvittering, Person søker) {
-        if (vellykketInnsending(kvittering))
-            varselSender.send(søker);
-    }
-
-    private boolean vellykketInnsending(Kvittering kvittering) {
-        return kvittering.getLeveranseStatus() != LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK &&
-            kvittering.getLeveranseStatus() != LeveranseStatus.IKKE_SENDT_FPSAK &&
-            kvittering.getLeveranseStatus() != LeveranseStatus.FP_FORDEL_MESSED_UP;
     }
 
     @Override

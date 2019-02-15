@@ -115,8 +115,6 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
-
     <jaxb:bindings
         schemaLocation="../xsd/behandlingsprosess-vedtak-v2/xsd/personopplysninger/personopplysninger-fp-v2.xsd"
         node="/xs:schema">
@@ -127,17 +125,4 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
-
-    <jaxb:bindings
-        schemaLocation="../xsd/varseltjeneste/varsel-v1.xsd"
-        node="/xs:schema">
-        <jaxb:bindings
-            node="//xs:complexType[@name='Varsel']">
-            <annox:annotateClass>
-                @javax.xml.bind.annotation.XmlRootElement
-            </annox:annotateClass>
-        </jaxb:bindings>
-    </jaxb:bindings>
-
-
 </jaxb:bindings>

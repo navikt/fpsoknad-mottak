@@ -12,12 +12,6 @@ dokmot :
    usrname : user
    channelname : channel
 
-varsel :
-    queuename : DEV.APP.1
-    name: DEV.APP.SVRCONN
-    port: 1414
-    hostname: localhost
-
 no.nav.security.oidc:
   issuers: selvbetjening
   issuer:
