@@ -15,7 +15,7 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKon
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
-import static no.nav.foreldrepenger.mottak.util.Versjon.alleVersjoner;
+import static no.nav.foreldrepenger.mottak.util.Versjon.alleSøknadVersjoner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
@@ -64,8 +64,10 @@ import no.nav.foreldrepenger.mottak.innsending.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.engangsstønad.mappers.V2EngangsstønadDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.engangsstønad.mappers.V3EngangsstønadDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V1ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V2ForeldrepengerDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
@@ -76,8 +78,8 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V2ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V3ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.UkjentXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -109,10 +111,16 @@ public class TestFPFordelSerialization {
 
     @BeforeEach
     public void before() {
-        v12XMLMapper = new DelegerendeXMLMapper(new UkjentXMLMapper(), new V1ForeldrepengerXMLMapper(oppslag),
-                new V2ForeldrepengerXMLMapper(oppslag));
-        v12DomainMapper = new DelegerendeDomainMapper(new V2ForeldrepengerDomainMapper(oppslag),
-                new V1ForeldrepengerDomainMapper(oppslag), new V2EngangsstønadDomainMapper(oppslag));
+        v12XMLMapper = new DelegerendeXMLMapper(
+                new V1ForeldrepengerXMLMapper(oppslag),
+                new V2ForeldrepengerXMLMapper(oppslag),
+                new V3ForeldrepengerXMLMapper(oppslag));
+        v12DomainMapper = new DelegerendeDomainMapper(
+                new V1ForeldrepengerDomainMapper(oppslag),
+                new V2ForeldrepengerDomainMapper(oppslag),
+                new V3ForeldrepengerDomainMapper(oppslag),
+                new V2EngangsstønadDomainMapper(oppslag),
+                new V3EngangsstønadDomainMapper(oppslag));
         konvoluttGenerator = konvoluttGenerator();
         when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
@@ -121,7 +129,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testEndringssøknadRoundtrip() {
-        alleVersjoner().stream()
+        alleSøknadVersjoner().stream()
                 .forEach(v -> testEndringssøknadRoundtrip(v));
     }
 
@@ -135,7 +143,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtrip() {
-        alleVersjoner().stream()
+        alleSøknadVersjoner().stream()
                 .forEach(v -> testSøknadRoundtrip(v));
     }
 
@@ -148,14 +156,14 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() {
-        alleVersjoner()
+        alleSøknadVersjoner()
                 .stream()
                 .forEach(v -> testKonvolutt(v));
     }
 
     @Test
     public void testKonvoluttEndring() {
-        alleVersjoner()
+        alleSøknadVersjoner()
                 .stream()
                 .forEach(v -> testKonvoluttEndring(v));
     }

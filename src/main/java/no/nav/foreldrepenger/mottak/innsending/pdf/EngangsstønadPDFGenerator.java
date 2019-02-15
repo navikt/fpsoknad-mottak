@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Service;
 
+import com.neovisionaries.i18n.CountryCode;
+
 import no.nav.foreldrepenger.mottak.domain.KjentForelder;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.NorskForelder;
@@ -143,14 +145,14 @@ public class EngangsstønadPDFGenerator {
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
         if (erFremtidigFødsel(stønad)) {
             return textFormatter.fromMessageSource("terminføderi",
-                    textFormatter.countryName(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge()),
+                    textFormatter.countryName(medlemsskap.landVedDato(stønad.getRelasjonTilBarn().relasjonsDato())),
                     stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         }
         else {
             Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
-            boolean inNorway = !stønad.getMedlemsskap().varUtenlands(fødsel.getFødselsdato().get(0));
+            CountryCode land = stønad.getMedlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
             return textFormatter.fromMessageSource("fødtei",
-                    textFormatter.countryName(inNorway),
+                    textFormatter.countryName(land),
                     fødsel.getAntallBarn() > 1 ? "a" : "et");
         }
 

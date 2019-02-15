@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import com.neovisionaries.i18n.CountryCode;
+
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -67,7 +69,7 @@ public class DokmotEngangsstønadDomainMapper {
                 .withOpplysningerOmBarn(barnFra(søknad, ytelse))
                 .withSoknadsvalg(søknadsvalgFra(søknad, ytelse))
                 .withTilknytningNorge(tilknytningFra(ytelse.getMedlemsskap(),
-                        ytelse.getRelasjonTilBarn() instanceof FremtidigFødsel))
+                        ytelse.getRelasjonTilBarn()))
                 .withOpplysningerOmFar(farFra(ytelse.getAnnenForelder()))
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
                 .withVedleggListe(vedleggFra(søknad.getPåkrevdeVedlegg(), søknad.getFrivilligeVedlegg()));
@@ -108,13 +110,14 @@ public class DokmotEngangsstønadDomainMapper {
                 "Relasjon til barn " + relasjonTilBarn.getClass().getSimpleName() + " er foreløpig ikke støttet");
     }
 
-    private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap, boolean isTermin) {
+    private static TilknytningNorge tilknytningFra(Medlemsskap medlemsskap, RelasjonTilBarn relasjon) {
         TilknytningNorge tilknytning = new TilknytningNorge()
                 .withTidligereOppholdNorge(medlemsskap.getTidligereOppholdsInfo().isBoddINorge())
                 .withTidligereOppholdUtenlands(tidligereOppholdUtenlandsFra(medlemsskap.getTidligereOppholdsInfo()))
                 .withFremtidigOppholdNorge(medlemsskap.getFramtidigOppholdsInfo().isNorgeNeste12())
                 .withFremtidigOppholdUtenlands(framtidigOppholdUtenlandsFra(medlemsskap.getFramtidigOppholdsInfo()));
-        return tilknytning.withOppholdNorgeNaa(medlemsskap.getFramtidigOppholdsInfo().isFødselNorge());
+        return tilknytning
+                .withOppholdNorgeNaa(!medlemsskap.landVedDato(relasjon.relasjonsDato()).equals(CountryCode.NO)); // TODO
 
     }
 

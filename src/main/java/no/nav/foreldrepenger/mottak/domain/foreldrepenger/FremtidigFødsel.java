@@ -34,4 +34,9 @@ public class FremtidigFødsel extends RelasjonTilBarnMedVedlegg {
         this.terminDato = terminDato;
         this.utstedtDato = utstedtDato;
     }
+
+    @Override
+    public LocalDate relasjonsDato() {
+        return terminDato;
+    }
 }

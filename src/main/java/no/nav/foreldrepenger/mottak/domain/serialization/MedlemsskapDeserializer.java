@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.domain.serialization;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.arrayNode;
-import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.booleanValue;
 import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
 
 import java.io.IOException;
@@ -44,14 +43,12 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     }
 
     private static TidligereOppholdsInformasjon tidligereOpphold(JsonNode rootNode, JsonParser parser) {
-        return new TidligereOppholdsInformasjon(norgeSiste12(rootNode), arbeidsInfo(rootNode),
+        return new TidligereOppholdsInformasjon(arbeidsInfo(rootNode),
                 utenlandsOpphold(rootNode, parser, "utenlandsopphold"));
     }
 
     private static FramtidigOppholdsInformasjon framtidigOpphold(JsonNode rootNode, JsonParser parser) {
-        return new FramtidigOppholdsInformasjon(booleanValue(rootNode, "fødselNorge"),
-                booleanValue(rootNode, "norgeNeste12"),
-                utenlandsOpphold(rootNode, parser, "framtidigUtenlandsopphold"));
+        return new FramtidigOppholdsInformasjon(utenlandsOpphold(rootNode, parser, "framtidigUtenlandsopphold"));
     }
 
     private static List<Utenlandsopphold> utenlandsOpphold(JsonNode rootNode, JsonParser parser, String nodeName) {
@@ -77,10 +74,6 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
 
     private static ArbeidsInformasjon arbeidsInfo(JsonNode rootNode) {
         return ArbeidsInformasjon.valueOf(textValue(rootNode, "arbeidSiste12"));
-    }
-
-    private static boolean norgeSiste12(JsonNode rootNode) {
-        return booleanValue(rootNode, "norgeSiste12");
     }
 
     private static Iterator<JsonNode> iterator(ArrayNode utland) {

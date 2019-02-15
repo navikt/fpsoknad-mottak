@@ -38,4 +38,9 @@ public class Omsorgsovertakelse extends RelasjonTilBarnMedVedlegg {
         this.årsak = årsak;
         this.fødselsdato = fødselsdato;
     }
+
+    @Override
+    public LocalDate relasjonsDato() {
+        return omsorgsovertakelsesdato;
+    }
 }

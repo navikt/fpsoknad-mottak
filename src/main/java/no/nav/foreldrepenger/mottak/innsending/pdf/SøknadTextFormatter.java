@@ -80,10 +80,6 @@ public class SøknadTextFormatter {
                 .collect(joining(", "));
     }
 
-    public String countryName(boolean b) {
-        return b ? "Norge" : "utlandet";
-    }
-
     public String navn(Person søker) {
         return Optional.ofNullable(søker)
                 .map(s -> Joiner.on(' ').skipNulls().join(s.fornavn, s.mellomnavn, s.etternavn))

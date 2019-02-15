@@ -22,10 +22,12 @@ import no.nav.foreldrepenger.mottak.innsending.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V1ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V2ForeldrepengerDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V2ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.foreldrepenger.V3ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -47,21 +49,26 @@ public class MapperRoundtripTest {
     public void before() {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
-        domainMapper = new DelegerendeDomainMapper(new V1ForeldrepengerDomainMapper(oppslag), new V2ForeldrepengerDomainMapper(oppslag));
-        xmlMapper = new DelegerendeXMLMapper(new V1ForeldrepengerXMLMapper(oppslag),
-                new V2ForeldrepengerXMLMapper(oppslag));
+        domainMapper = new DelegerendeDomainMapper(
+                new V1ForeldrepengerDomainMapper(oppslag),
+                new V2ForeldrepengerDomainMapper(oppslag),
+                new V3ForeldrepengerDomainMapper(oppslag));
+        xmlMapper = new DelegerendeXMLMapper(
+                new V1ForeldrepengerXMLMapper(oppslag),
+                new V2ForeldrepengerXMLMapper(oppslag),
+                new V3ForeldrepengerXMLMapper(oppslag));
     }
 
     @Test
     public void testFørstegangssøknadRoundtrip() {
-        Versjon.alleVersjoner()
+        Versjon.alleSøknadVersjoner()
                 .stream()
                 .forEach(this::roundTripInitiell);
     }
 
     // @Test
     public void testEndringRoundtrip() {
-        Versjon.alleVersjoner()
+        Versjon.alleSøknadVersjoner()
                 .stream()
                 .forEach(this::roundTripEndring);
     }

@@ -29,15 +29,8 @@ public class LukketPeriode {
     }
 
     @JsonIgnore
-    public boolean isWithinPeriod(LocalDate day) {
-        return day.isAfter(fom.minusDays(1)) && day.isBefore(tom.plusDays(1));
+    public boolean isWithinPeriod(LocalDate dato) {
+        return dato.isAfter(fom.minusDays(1)) && dato.isBefore(tom.plusDays(1));
     }
 
-    public LukketPeriode sisteÅr() {
-        return new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now());
-    }
-
-    public LukketPeriode nesteÅr() {
-        return new LukketPeriode(LocalDate.now().plusDays(1), LocalDate.now().plusYears(1));
-    }
 }

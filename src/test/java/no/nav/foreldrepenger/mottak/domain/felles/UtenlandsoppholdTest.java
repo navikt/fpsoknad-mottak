@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static com.neovisionaries.i18n.CountryCode.FI;
+import static com.neovisionaries.i18n.CountryCode.NO;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,65 +12,75 @@ import org.junit.jupiter.api.Test;
 
 public class UtenlandsoppholdTest {
 
+    private static final LocalDate FROM_PAST = LocalDate.now().minusMonths(6);
+    private static final LocalDate TO_PAST = LocalDate.now().minusMonths(1);
+    private static final LocalDate FROM_FUTURE = LocalDate.now().plusMonths(1);
+    private static final LocalDate TO_FUTURE = LocalDate.now().plusMonths(6);
+
     @Test
     public void withinPeriod() {
-        TidligereOppholdsInformasjon opphold = tidligereOpphold();
-        assertTrue(opphold.varUtenlands(LocalDate.of(2018, 1, 20)));
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(FI, ms.landVedDato(LocalDate.now().minusMonths(4)));
     }
 
     @Test
     public void withinPeriodFramtid() {
-        FramtidigOppholdsInformasjon opphold = framtidigOpphold();
-        assertTrue(opphold.skalVæreUtenlands(LocalDate.now().plusMonths(2)));
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(FI, ms.landVedDato(LocalDate.now().plusMonths(4)));
     }
 
     @Test
-    public void firstDayOfPeriod() {
-        TidligereOppholdsInformasjon opphold = tidligereOpphold();
-        assertTrue(opphold.varUtenlands(LocalDate.of(2018, 1, 12)));
+    public void firstDayOfFuturePeriod() {
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(FI, ms.landVedDato(FROM_FUTURE));
     }
 
     @Test
-    public void lastDayOfPeriod() {
-        TidligereOppholdsInformasjon opphold = tidligereOpphold();
-        assertTrue(opphold.varUtenlands(LocalDate.of(2018, 2, 23)));
+    public void lastDayOfPastPeriod() {
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(FI, ms.landVedDato(TO_PAST));
     }
 
     @Test
-    public void beforePeriod() {
-        TidligereOppholdsInformasjon opphold = tidligereOpphold();
-        assertFalse(opphold.varUtenlands(LocalDate.of(2018, 1, 11)));
+    public void firstDayOfPastPeriod() {
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(FI, ms.landVedDato(FROM_PAST));
+    }
+
+    @Test
+    public void lastDayOfFuturePeriod() {
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(FI, ms.landVedDato(TO_FUTURE));
+    }
+
+    @Test
+    public void beforePeriodFortid() {
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(NO, ms.landVedDato(LocalDate.now().minusMonths(7)));
     }
 
     @Test
     public void beforePeriodFramtid() {
-        FramtidigOppholdsInformasjon opphold = framtidigOpphold();
-        assertFalse(opphold.skalVæreUtenlands(LocalDate.now().plusDays(1)));
-    }
-
-    @Test
-    public void afterPeriod() {
-        TidligereOppholdsInformasjon opphold = tidligereOpphold();
-        assertFalse(opphold.varUtenlands(LocalDate.of(2018, 2, 24)));
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(NO, ms.landVedDato(LocalDate.now().plusDays(1)));
     }
 
     @Test
     public void afterPeriodFramtid() {
-        FramtidigOppholdsInformasjon opphold = framtidigOpphold();
-        assertFalse(opphold.skalVæreUtenlands(LocalDate.now().plusMonths(5)));
+        Medlemsskap ms = new Medlemsskap(tidligereOpphold(), framtidigOpphold());
+        assertEquals(NO, ms.landVedDato(LocalDate.now().plusMonths(7)));
     }
 
     private static TidligereOppholdsInformasjon tidligereOpphold() {
         List<Utenlandsopphold> utenlandsopphold = asList(
-                new Utenlandsopphold(FI, new LukketPeriode(LocalDate.of(2018, 1, 12), LocalDate.of(2018, 2, 23))));
-        return new TidligereOppholdsInformasjon(true, ArbeidsInformasjon.IKKE_ARBEIDET, utenlandsopphold);
+                new Utenlandsopphold(FI, new LukketPeriode(FROM_PAST, TO_PAST)));
+        return new TidligereOppholdsInformasjon(ArbeidsInformasjon.IKKE_ARBEIDET, utenlandsopphold);
     }
 
     private static FramtidigOppholdsInformasjon framtidigOpphold() {
         List<Utenlandsopphold> utenlandsopphold = asList(
-                new Utenlandsopphold(FI,
-                        new LukketPeriode(LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(4))));
-        return new FramtidigOppholdsInformasjon(true, true, utenlandsopphold);
+                new Utenlandsopphold(FI, new LukketPeriode(FROM_FUTURE, TO_FUTURE)));
+        return new FramtidigOppholdsInformasjon(utenlandsopphold);
     }
 
 }

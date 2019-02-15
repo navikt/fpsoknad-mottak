@@ -287,7 +287,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
-        String land = framtidigeOpphold.isFødselNorge() ? "Norge" : "utlandet";
+        String land = textFormatter.countryName(medlemsskap.landVedDato(relasjonTilBarn.relasjonsDato()));
         if (relasjonTilBarn instanceof FremtidigFødsel) {
             y -= renderer.addLineOfRegularText(INDENT,
                     txt("terminføderi", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);

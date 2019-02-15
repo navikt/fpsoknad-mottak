@@ -32,4 +32,9 @@ public class Fødsel extends RelasjonTilBarn {
         super(antallBarn);
         this.fødselsdato = fødselsdato;
     }
+
+    @Override
+    public LocalDate relasjonsDato() {
+        return fødselsdato.get(0);
+    }
 }

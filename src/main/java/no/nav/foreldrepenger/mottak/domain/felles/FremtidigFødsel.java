@@ -32,4 +32,9 @@ public class FremtidigFødsel extends RelasjonTilBarn {
         this.terminDato = terminDato;
         this.utstedtDato = utstedtDato;
     }
+
+    @Override
+    public LocalDate relasjonsDato() {
+        return terminDato;
+    }
 }

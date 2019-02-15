@@ -37,4 +37,9 @@ public class Fødsel extends RelasjonTilBarnMedVedlegg {
         super(antallBarn, vedlegg);
         this.fødselsdato = fødselsdato;
     }
+
+    @Override
+    public LocalDate relasjonsDato() {
+        return fødselsdato.get(0);
+    }
 }

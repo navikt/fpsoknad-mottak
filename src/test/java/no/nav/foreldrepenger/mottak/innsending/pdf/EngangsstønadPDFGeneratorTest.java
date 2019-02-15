@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @ExtendWith(SpringExtension.class)
@@ -34,7 +35,7 @@ public class EngangsstønadPDFGeneratorTest {
     public void space() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
-            fos.write(gen.generate(engangssøknad(Versjon.V1, true), person()));
+            fos.write(gen.generate(engangssøknad(Versjon.V1, TestUtils.fødsel(), true), person()));
         }
     }
 }

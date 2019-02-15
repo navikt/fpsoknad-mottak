@@ -48,7 +48,7 @@ public class PeriodeValidatorTest {
     public void testIkkeOverlappendeFortid() {
         LukketPeriode periode1 = new LukketPeriode(now().minusMonths(6), now());
         LukketPeriode periode2 = new LukketPeriode(now().minusYears(1), now().minusMonths(6).minusDays(1));
-        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(true, ARBEIDET_I_UTLANDET,
+        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(ARBEIDET_I_UTLANDET,
                 opphold(periode2, periode1));
         Set<ConstraintViolation<TidligereOppholdsInformasjon>> constraintViolations = validator.validate(tidligere);
         assertTrue(constraintViolations.isEmpty());
@@ -58,7 +58,7 @@ public class PeriodeValidatorTest {
     public void testIkkeOverlappendeFramtidig() {
         LukketPeriode periode1 = new LukketPeriode(now(), now().plusMonths(6));
         LukketPeriode periode2 = new LukketPeriode(now().plusMonths(6).plusDays(1), now().plusYears(1));
-        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(true, true,
+        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(
                 opphold(periode2, periode1));
         Set<ConstraintViolation<FramtidigOppholdsInformasjon>> constraintViolations = validator.validate(framtidig);
         assertTrue(constraintViolations.isEmpty());
@@ -68,7 +68,7 @@ public class PeriodeValidatorTest {
     public void testIkkeOverlappendeMenFortid() {
         LukketPeriode periode1 = new LukketPeriode(now().minusMonths(6), now());
         LukketPeriode periode2 = new LukketPeriode(now().minusYears(1), now().minusMonths(6).minusDays(1));
-        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(true, true,
+        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(
                 opphold(periode2, periode1));
         Set<ConstraintViolation<FramtidigOppholdsInformasjon>> constraintViolations = validator.validate(framtidig);
         assertFalse(constraintViolations.isEmpty());
@@ -85,7 +85,7 @@ public class PeriodeValidatorTest {
     public void testIkkeOverlappendeMenFramtid() {
         LukketPeriode periode1 = new LukketPeriode(now(), now().plusMonths(6));
         LukketPeriode periode2 = new LukketPeriode(now().plusMonths(6).plusDays(1), now().plusYears(1));
-        TidligereOppholdsInformasjon framtidig = new TidligereOppholdsInformasjon(true, ARBEIDET_I_UTLANDET,
+        TidligereOppholdsInformasjon framtidig = new TidligereOppholdsInformasjon(ARBEIDET_I_UTLANDET,
                 opphold(periode2, periode1));
         Set<ConstraintViolation<TidligereOppholdsInformasjon>> constraintViolations = validator.validate(framtidig);
         assertFalse(constraintViolations.isEmpty());
@@ -162,7 +162,7 @@ public class PeriodeValidatorTest {
         LukketPeriode periode1 = new LukketPeriode(now().minusMonths(6), now());
         LukketPeriode periode2 = new LukketPeriode(now().minusYears(1), now().minusMonths(4));
         LukketPeriode periode3 = new LukketPeriode(now().minusMonths(4), now());
-        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(true, ARBEIDET_I_UTLANDET,
+        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(ARBEIDET_I_UTLANDET,
                 opphold(periode1, periode2, periode3));
         assertFalse(validator.validate(tidligere).isEmpty());
     }

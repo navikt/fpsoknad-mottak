@@ -8,7 +8,7 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELD
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -20,7 +20,6 @@ import javax.xml.bind.JAXBElement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -64,73 +63,73 @@ import no.nav.foreldrepenger.mottak.innsending.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Versjon;
-import no.nav.foreldrepenger.mottak.util.jaxb.FPV2JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.Endringssoeknad;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderMedNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.OppholdUtlandet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Periode;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Rettigheter;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.SoekersRelasjonTilBarnet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Termin;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.UkjentForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.AnnenOpptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Dekningsgrad;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.EgenNaering;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Frilans;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Frilansoppdrag;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.NorskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Opptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.Regnskapsfoerer;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.AnnenOpptjeningTyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Brukerroller;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Dekningsgrader;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Innsendingstype;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Land;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.MorsAktivitetsTyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Omsorgsovertakelseaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Oppholdsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Overfoeringsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Utsettelsesaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Uttaksperiodetyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Virksomhetstyper;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Arbeidsgiver;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Fordeling;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Gradering;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Oppholdsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Overfoeringsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Person;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Utsettelsesperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Uttaksperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v2.Virksomhet;
-import no.nav.vedtak.felles.xml.soeknad.v2.OmYtelse;
-import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
+import no.nav.foreldrepenger.mottak.util.jaxb.FPV3JAXBUtil;
+import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.Endringssoeknad;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Foedsel;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Rettigheter;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.SoekersRelasjonTilBarnet;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Termin;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.AnnenOpptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Dekningsgrad;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.EgenNaering;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Foreldrepenger;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Frilans;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Frilansoppdrag;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.NorskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Opptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Regnskapsfoerer;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.AnnenOpptjeningTyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Brukerroller;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Dekningsgrader;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.MorsAktivitetsTyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Omsorgsovertakelseaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Oppholdsaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Overfoeringsaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Utsettelsesaarsaker;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Uttaksperiodetyper;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Arbeidsgiver;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Fordeling;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Gradering;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Oppholdsperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Overfoeringsperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Person;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Utsettelsesperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Uttaksperiode;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Virksomhet;
+import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
+import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
-@Component
-public class V2ForeldrepengerDomainMapper implements DomainMapper {
+//@Component
+public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, ENDRING_FORELDREPENGER,
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V3, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
 
-    private static final FPV2JAXBUtil JAXB = new FPV2JAXBUtil();
-    private static final Logger LOG = LoggerFactory.getLogger(V2ForeldrepengerDomainMapper.class);
+    private static final FPV3JAXBUtil JAXB = new FPV3JAXBUtil();
+    private static final Logger LOG = LoggerFactory.getLogger(V3ForeldrepengerDomainMapper.class);
 
-    private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.ObjectFactory FP_FACTORY_V2 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.felles.v2.ObjectFactory FELLES_FACTORY_V2 = new no.nav.vedtak.felles.xml.soeknad.felles.v2.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.v2.ObjectFactory SØKNAD_FACTORY_V2 = new no.nav.vedtak.felles.xml.soeknad.v2.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.uttak.v2.ObjectFactory UTTAK_FACTORY_V2 = new no.nav.vedtak.felles.xml.soeknad.uttak.v2.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.ObjectFactory ENDRING_FACTORY_V2 = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v2.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory FELLES_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory SØKNAD_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.uttak.v3.ObjectFactory UTTAK_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.uttak.v3.ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.ObjectFactory ENDRING_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.ObjectFactory();
 
     private final Oppslag oppslag;
 
-    public V2ForeldrepengerDomainMapper(Oppslag oppslag) {
+    public V3ForeldrepengerDomainMapper(Oppslag oppslag) {
         this.oppslag = oppslag;
     }
 
@@ -141,12 +140,12 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     @Override
     public String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
-        return JAXB.marshal(SØKNAD_FACTORY_V2.createSoeknad(tilModell(søknad, søker)));
+        return JAXB.marshal(SØKNAD_FACTORY_V3.createSoeknad(tilModell(søknad, søker)));
     }
 
     @Override
     public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
-        return JAXB.marshal(SØKNAD_FACTORY_V2.createSoeknad(tilModell(endringssøknad, søker)));
+        return JAXB.marshal(SØKNAD_FACTORY_V3.createSoeknad(tilModell(endringssøknad, søker)));
     }
 
     private Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
@@ -164,7 +163,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private JAXBElement<Endringssoeknad> endringssøknadFra(Endringssøknad endringssøknad) {
-        return ENDRING_FACTORY_V2.createEndringssoeknad(new Endringssoeknad()
+        return ENDRING_FACTORY_V3.createEndringssoeknad(new Endringssoeknad()
                 .withFordeling(fordelingFra(endringssøknad))
                 .withSaksnummer(endringssøknad.getSaksnr()));
     }
@@ -184,7 +183,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
-                .map(V2ForeldrepengerDomainMapper::vedleggFra)
+                .map(V3ForeldrepengerDomainMapper::vedleggFra)
                 .collect(toList());
     }
 
@@ -222,7 +221,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private JAXBElement<Foreldrepenger> foreldrePengerFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse) {
-        return FP_FACTORY_V2.createForeldrepenger(new Foreldrepenger()
+        return FP_FACTORY_V3.createForeldrepenger(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap(), ytelse.getRelasjonTilBarn()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
@@ -289,13 +288,13 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> frilansVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY_V2.createFrilansVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V3.createFrilansVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
         return safeStream(frilansOppdrag)
-                .map(V2ForeldrepengerDomainMapper::frilansOppdragFra)
+                .map(V3ForeldrepengerDomainMapper::frilansOppdragFra)
                 .collect(toList());
     }
 
@@ -307,14 +306,14 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static List<EgenNaering> egenNæringFra(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
-                .map(V2ForeldrepengerDomainMapper::egenNæringFra)
+                .map(V3ForeldrepengerDomainMapper::egenNæringFra)
                 .collect(toList());
     }
 
-    private static List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold> utenlandskArbeidsforholdFra(
+    private static List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold> utenlandskArbeidsforholdFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
         return safeStream(utenlandskArbeidsforhold)
-                .map(V2ForeldrepengerDomainMapper::utenlandskArbeidsforholdFra)
+                .map(V3ForeldrepengerDomainMapper::utenlandskArbeidsforholdFra)
                 .collect(toList());
     }
 
@@ -373,14 +372,14 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY_V2.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V3.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(
             List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype> typer) {
         return safeStream(typer)
-                .map(V2ForeldrepengerDomainMapper::virksomhetsTypeFra)
+                .map(V3ForeldrepengerDomainMapper::virksomhetsTypeFra)
                 .collect(toList());
     }
 
@@ -422,20 +421,20 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> annenOpptjeningVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY_V2.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V3.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold utenlandskArbeidsforholdFra(
+    private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold utenlandskArbeidsforholdFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold arbeidsForhold) {
         return utenlandskArbeidsforhold(arbeidsForhold);
 
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold utenlandskArbeidsforhold(
+    private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold utenlandskArbeidsforhold(
             UtenlandskArbeidsforhold arbeidsForhold) {
         LOG.debug(CONFIDENTIAL, "Genererer utenlands arbeidsforhold XML fra {}", arbeidsForhold);
-        return new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold()
+        return new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold()
                 .withVedlegg(utenlandsArbeidsforholdVedleggFra(arbeidsForhold.getVedlegg()))
                 .withArbeidsgiversnavn(arbeidsForhold.getArbeidsgiverNavn())
                 .withArbeidsland(landFra(arbeidsForhold.getLand()))
@@ -444,7 +443,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> utenlandsArbeidsforholdVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FP_FACTORY_V2.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FP_FACTORY_V3.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
@@ -466,7 +465,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static boolean lovligVerdiForVersjon(AnnenOpptjeningType type) {
-        return type.versjoner.contains(Versjon.V2);
+        return type.versjoner.contains(V3);
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {
@@ -504,7 +503,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
         return ms.utenlandsOpphold()
                 .stream()
-                .map(V2ForeldrepengerDomainMapper::utenlandOppholdFra)
+                .map(V3ForeldrepengerDomainMapper::utenlandOppholdFra)
                 .collect(toList());
     }
 
@@ -539,7 +538,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
                 .withAnnenForelderErInformert(fordeling.isErAnnenForelderInformert());
     }
 
-    private List<no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg> perioderFra(
+    private List<no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg> perioderFra(
             List<LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
                 .map(this::lukkerPeriodeFra)
@@ -549,11 +548,11 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> lukketPeriodeVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> UTTAK_FACTORY_V2.createLukketPeriodeMedVedleggVedlegg(new Vedlegg().withId(s)))
+                .map(s -> UTTAK_FACTORY_V3.createLukketPeriodeMedVedleggVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 
-    private no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg lukkerPeriodeFra(
+    private no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg lukkerPeriodeFra(
             LukketPeriodeMedVedlegg periode) {
         LOG.debug(CONFIDENTIAL, "Genererer periode XML fra {}", periode);
         if (periode instanceof OverføringsPeriode) {
@@ -743,17 +742,17 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static UkjentForelder ukjentForelder() {
-        return new no.nav.vedtak.felles.xml.soeknad.felles.v2.UkjentForelder();
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder();
     }
 
     private static AnnenForelderUtenNorskIdent utenlandskForelder(UtenlandskForelder utenlandskForelder) {
-        return new no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderUtenNorskIdent()
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent()
                 .withUtenlandskPersonidentifikator(utenlandskForelder.getId())
                 .withLand(landFra(utenlandskForelder.getLand()));
     }
 
     private AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
-        return new no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderMedNorskIdent()
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent()
                 .withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
     }
 
@@ -780,7 +779,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
         }
         if (relasjonTilBarn instanceof Adopsjon) {
             Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
-            return new no.nav.vedtak.felles.xml.soeknad.felles.v2.Adopsjon()
+            return new no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon()
                     .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
                     .withAntallBarn(adopsjon.getAntallBarn())
                     .withFoedselsdato(adopsjon.getFødselsdato())
@@ -790,7 +789,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
         }
         if (relasjonTilBarn instanceof Omsorgsovertakelse) {
             Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
-            return new no.nav.vedtak.felles.xml.soeknad.felles.v2.Omsorgsovertakelse()
+            return new no.nav.vedtak.felles.xml.soeknad.felles.v3.Omsorgsovertakelse()
                     .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
                     .withAntallBarn(omsorgsovertakelse.getAntallBarn())
                     .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
@@ -805,7 +804,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<String> vedlegg) {
         return vedlegg.stream()
-                .map(s -> FELLES_FACTORY_V2.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
+                .map(s -> FELLES_FACTORY_V3.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
 

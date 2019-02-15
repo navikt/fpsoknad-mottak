@@ -40,4 +40,9 @@ public class Omsorgsovertakelse extends RelasjonTilBarn {
         this.fødselsdatoer = Optional.ofNullable(fødselsdatoer).orElse(emptyList());
     }
 
+    @Override
+    public LocalDate relasjonsDato() {
+        return omsorgsovertakelsesdato;
+    }
+
 }

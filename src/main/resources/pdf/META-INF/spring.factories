@@ -1,2 +1,0 @@
-org.springframework.boot.diagnostics.FailureAnalyzer=\
-  no.nav.foreldrepenger.mottak.config.NotDevModeFailureAnalyzer

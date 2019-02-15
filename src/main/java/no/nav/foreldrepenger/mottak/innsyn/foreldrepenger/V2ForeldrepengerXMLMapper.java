@@ -446,15 +446,12 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static TidligereOppholdsInformasjon tilTidligereOpphold(Medlemskap medlemskap) {
         return new TidligereOppholdsInformasjon(
-                true,
                 ArbeidsInformasjon.ARBEIDET_I_NORGE,
                 emptyList()); // TODO
     }
 
     private static FramtidigOppholdsInformasjon tilFremtidigOpphold(Medlemskap medlemskap) {
         return new FramtidigOppholdsInformasjon(
-                true,
-                true,
                 emptyList()); // TODO
     }
 

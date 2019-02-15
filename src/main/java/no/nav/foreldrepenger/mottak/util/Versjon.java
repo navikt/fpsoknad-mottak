@@ -9,9 +9,10 @@ import java.util.List;
 
 public enum Versjon {
 
-    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1", "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
-            "urn:no:nav:vedtak:felles:xml:soeknad:v2",
-            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"), V20180924, UKJENT;
+    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1", "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
+    V2("urn:no:nav:vedtak:felles:xml:soeknad:v2","urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"), 
+    V3("urn:no:nav:vedtak:felles:xml:soeknad:v3","urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"), 
+    V20180924, UKJENT;
 
     public static final String VERSION_PROPERTY = "contract.version";
     private final List<String> namespaces;
@@ -44,7 +45,7 @@ public enum Versjon {
                 .collect(toList());
     }
 
-    public static List<Versjon> alleVersjoner() {
+    public static List<Versjon> alleSøknadVersjoner() {
         return stream(values())
                 .filter(v -> !UKJENT.equals(v))
                 .filter(v -> !V20180924.equals(v))

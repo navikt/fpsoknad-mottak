@@ -36,4 +36,9 @@ public class Adopsjon extends RelasjonTilBarnMedVedlegg {
         this.ankomstDato = ankomstDato;
         this.fødselsdato = fødselsdato;
     }
+
+    @Override
+    public LocalDate relasjonsDato() {
+        return fødselsdato.get(0);
+    }
 }

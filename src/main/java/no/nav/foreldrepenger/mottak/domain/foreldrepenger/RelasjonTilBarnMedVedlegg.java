@@ -4,6 +4,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static java.util.Collections.emptyList;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,8 @@ import lombok.Data;
         @Type(value = Omsorgsovertakelse.class, name = "omsorgsovertakelse")
 })
 public abstract class RelasjonTilBarnMedVedlegg {
+
+    public abstract LocalDate relasjonsDato();
 
     private final List<String> vedlegg;
     @Positive

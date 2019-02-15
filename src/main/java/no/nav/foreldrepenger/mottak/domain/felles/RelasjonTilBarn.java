@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
+import java.time.LocalDate;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Positive;
@@ -23,6 +25,7 @@ import lombok.Data;
         @Type(value = Omsorgsovertakelse.class, name = "omsorgsovertakelse")
 })
 public abstract class RelasjonTilBarn {
+    public abstract LocalDate relasjonsDato();
 
     @Positive(message = "{ytelse.relasjontilbarn.antall}")
     @Max(10)

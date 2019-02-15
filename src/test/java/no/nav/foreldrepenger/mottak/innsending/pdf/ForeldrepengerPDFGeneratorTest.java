@@ -39,6 +39,9 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 @ActiveProfiles()
 public class ForeldrepengerPDFGeneratorTest {
 
+    private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +
+        "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
+        "mulighet til å søke om utsettelse.";
     @Autowired
     ForeldrepengerPDFGenerator gen;
 
@@ -52,9 +55,7 @@ public class ForeldrepengerPDFGeneratorTest {
 
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(Versjon.V2, true);
-            søknad.setTilleggsopplysninger("Begrunnelse for å søke om utsettelse, " +
-                "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
-                "mulighet til å søke om utsettelse.");
+            søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             fos.write(gen.generate(søknad, person(), arbeidsforhold()));
         }
     }
@@ -64,9 +65,7 @@ public class ForeldrepengerPDFGeneratorTest {
 
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
             Endringssøknad endringssøknad = endringssøknad(Versjon.V1, V1);
-            endringssøknad.setTilleggsopplysninger("Begrunnelse for å søke om utsettelse, " +
-                "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
-                "mulighet til å søke om utsettelse.");
+            endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             fos.write(gen.generate(endringssøknad, person()));
         }
     }

@@ -38,6 +38,10 @@ public class TestUtils {
         return engangssøknad(v, utland, termin(), norskForelder(v));
     }
 
+    public static Søknad engangssøknad(Versjon v, RelasjonTilBarn relasjon, boolean utland) {
+        return engangssøknad(v, utland, relasjon, norskForelder(v));
+    }
+
     public static Søknad engangssøknad(Versjon v, RelasjonTilBarn relasjon) {
         return engangssøknad(v, false, relasjon, norskForelder(v));
     }
@@ -90,11 +94,11 @@ public class TestUtils {
                 new LukketPeriode(LocalDate.now().minusYears(1), LocalDate.now().minusMonths(6).minusDays(1))));
         utenlandOpphold.add(new Utenlandsopphold(CountryCode.FI,
                 new LukketPeriode(LocalDate.now().minusMonths(6), LocalDate.now())));
-        return new TidligereOppholdsInformasjon(false, ArbeidsInformasjon.ARBEIDET_I_UTLANDET, utenlandOpphold);
+        return new TidligereOppholdsInformasjon(ArbeidsInformasjon.ARBEIDET_I_UTLANDET, utenlandOpphold);
     }
 
     static TidligereOppholdsInformasjon tidligereOppHoldINorge() {
-        return new TidligereOppholdsInformasjon(true, ArbeidsInformasjon.ARBEIDET_I_NORGE, Collections.emptyList());
+        return new TidligereOppholdsInformasjon(ArbeidsInformasjon.ARBEIDET_I_NORGE, Collections.emptyList());
     }
 
     public static Omsorgsovertakelse omsorgsovertakelse() {
@@ -125,11 +129,11 @@ public class TestUtils {
         return new Adopsjon(nå(), false, 1, nå(), nå());
     }
 
-    public static Fødsel fødsel() {
+    public static RelasjonTilBarn fødsel() {
         return fødsel(forrigeMåned());
     }
 
-    public static Fødsel fødsel(LocalDate date) {
+    public static RelasjonTilBarn fødsel(LocalDate date) {
         return new Fødsel(date);
     }
 
@@ -145,11 +149,11 @@ public class TestUtils {
                 new LukketPeriode(LocalDate.now(), LocalDate.now().plusMonths(6))));
         opphold.add(new Utenlandsopphold(CountryCode.DE,
                 new LukketPeriode(LocalDate.now().plusMonths(6).plusDays(1), LocalDate.now().plusYears(1))));
-        return new FramtidigOppholdsInformasjon(true, false, opphold);
+        return new FramtidigOppholdsInformasjon(opphold);
     }
 
     public static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
-        return new FramtidigOppholdsInformasjon(true, true, Collections.emptyList());
+        return new FramtidigOppholdsInformasjon(Collections.emptyList());
     }
 
     public static String serialize(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
@@ -177,7 +181,7 @@ public class TestUtils {
         return new Navn("Far", "Faraday", "Farsken");
     }
 
-    public static FremtidigFødsel termin() {
+    public static RelasjonTilBarn termin() {
         return new FremtidigFødsel(nesteMåned(), forrigeMåned());
     }
 

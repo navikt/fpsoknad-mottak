@@ -208,6 +208,7 @@ public class ForeldrepengerTestUtils {
             return new AnnenOpptjening(AnnenOpptjeningType.VENTELØNN, åpenPeriode(v),
                     Arrays.asList(vedleggRefs));
         case V2:
+        case V3:
             return new AnnenOpptjening(AnnenOpptjeningType.VENTELØNN_VARTPENGER, åpenPeriode(v),
                     Arrays.asList(vedleggRefs));
         default:
@@ -255,6 +256,7 @@ public class ForeldrepengerTestUtils {
                     Collections.singletonList("22222222222"),
                     Arrays.asList(vedleggRefs));
         case V2:
+        case V3:
             return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                     FEDREKVOTE,
                     true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
