@@ -24,6 +24,7 @@ public class MottakApplicationLocal {
     public static void main(String[] args) {
         new SpringApplicationBuilder(MottakApplicationLocal.class)
                 .profiles(DEV, PREPROD)
+                .main(MottakApplicationLocal.class)
                 .run(args);
     }
 }
