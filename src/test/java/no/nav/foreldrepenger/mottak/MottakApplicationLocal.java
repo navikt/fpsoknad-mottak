@@ -4,8 +4,8 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -22,8 +22,8 @@ import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
 public class MottakApplicationLocal {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(MottakApplicationLocal.class);
-        app.setAdditionalProfiles(DEV, PREPROD);
-        app.run(args);
+        new SpringApplicationBuilder(MottakApplicationLocal.class)
+                .profiles(DEV, PREPROD)
+                .run(args);
     }
 }
