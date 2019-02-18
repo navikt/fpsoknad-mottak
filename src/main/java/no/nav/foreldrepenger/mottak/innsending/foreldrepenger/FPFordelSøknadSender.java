@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ETTERSENDING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
@@ -51,7 +49,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
-        return send(ENDRING_FORELDREPENGER, konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
+        return send(egenskap.getType(), konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
     }
 
     @Override
@@ -61,7 +59,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return send(ETTERSENDING_FORELDREPENGER, konvoluttGenerator.payload(ettersending, søker));
+        return send(egenskap.getType(), konvoluttGenerator.payload(ettersending, søker));
     }
 
     private Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
@@ -74,7 +72,9 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         try {
+            LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
             Kvittering kvittering = connection.send(payload);
+            LOG.info("Sendte {} til FPFordel", type.name().toLowerCase());
             logAndCount(type);
             LOG.info("Returnerer kvittering {}", kvittering);
             return kvittering;
@@ -85,7 +85,6 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private static void logAndCount(SøknadType type) {
-        LOG.info("Sendte {} til FPFordel", type.name().toLowerCase());
         switch (type) {
         case INITIELL_ENGANGSSTØNAD:
             ES_FØRSTEGANG.increment();
