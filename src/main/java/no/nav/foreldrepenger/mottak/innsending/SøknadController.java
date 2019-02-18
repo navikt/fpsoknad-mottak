@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -57,6 +58,11 @@ public class SøknadController {
     @PostMapping("/ettersend")
     public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
         return sender.send(ettersending, oppslag.getSøker(), ETTERSENDING_FORELDREPENGER);
+    }
+
+    @PostMapping("/ettersendES")
+    public Kvittering sendES(@Valid @RequestBody Ettersending ettersending) {
+        return sender.send(ettersending, oppslag.getSøker(), ETTERSENDING_ENGANGSSTØNAD);
     }
 
     @PostMapping("/endre")

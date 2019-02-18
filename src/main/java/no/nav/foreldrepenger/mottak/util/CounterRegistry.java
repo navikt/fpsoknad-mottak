@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ETTERSENDING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -23,6 +24,8 @@ public final class CounterRegistry {
     public static final Counter DOKMOT_FAILURE = Metrics.counter(DOKMOT_SEND, "søknad", "failure");
 
     public static final Counter ES_FØRSTEGANG = esCounter(FPFORDEL_SEND, INITIELL_ENGANGSSTØNAD.name());
+    public static final Counter ES_ETTERSSENDING = esCounter(FPFORDEL_SEND, ETTERSENDING_ENGANGSSTØNAD.name());
+
     public static final Counter FP_SENDFEIL = fpCounter(FPFORDEL_SEND, "feil");
     public static final Counter FP_FØRSTEGANG = fpCounter(FPFORDEL_SEND, INITIELL_FORELDREPENGER.name());
     public static final Counter FP_ENDRING = fpCounter(FPFORDEL_SEND, ENDRING_FORELDREPENGER.name());

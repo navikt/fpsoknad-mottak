@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ETTERSSENDING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
@@ -91,6 +92,9 @@ public class FPFordelSøknadSender implements SøknadSender {
             break;
         case ENDRING_FORELDREPENGER:
             FP_ENDRING.increment();
+            break;
+        case ETTERSENDING_ENGANGSSTØNAD:
+            ES_ETTERSSENDING.increment();
             break;
         case ETTERSENDING_FORELDREPENGER:
             FP_ETTERSSENDING.increment();
