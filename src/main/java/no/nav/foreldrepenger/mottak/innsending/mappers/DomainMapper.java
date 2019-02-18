@@ -1,6 +1,5 @@
-package no.nav.foreldrepenger.mottak.innsending;
+package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import no.nav.foreldrepenger.mottak.Mappable;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak;
+package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak;
+package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;

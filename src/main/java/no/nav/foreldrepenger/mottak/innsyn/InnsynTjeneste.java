@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.Mappable.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
