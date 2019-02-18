@@ -11,7 +11,6 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadPreprodController.INNSENDING_PREPROD;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
@@ -45,7 +44,6 @@ import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
-import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class }, properties = {
@@ -76,7 +74,6 @@ public class TestFPFordelRoundtripSerialization {
     FPFordelKonvoluttGenerator konvoluttGenerator;
 
     @Autowired
-    @Qualifier(ROUTING_SENDER)
     SøknadSender sender;
 
     @BeforeEach
@@ -134,17 +131,6 @@ public class TestFPFordelRoundtripSerialization {
         Kvittering kvittering = sender.send(søknad, TestUtils.person(),
                 new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
-    }
-
-    @Test
-    public void testESSøknadFødselMedNorskFar() {
-        Versjon versjon = V1;
-        Søknad engangssøknad = engangssøknad(versjon, false, fødsel(), norskForelder(versjon),
-                påkrevdVedlegg(ID142));
-        SoeknadsskjemaEngangsstoenad response = JAXB.unmarshal(
-                template.postForObject(INNSENDING_PREPROD + "/søknadES", engangssøknad, String.class),
-                SoeknadsskjemaEngangsstoenad.class);
-        assertEquals(engangssøknad.getBegrunnelseForSenSøknad(), response.getOpplysningerOmBarn().getBegrunnelse());
     }
 
     @Test

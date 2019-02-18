@@ -8,9 +8,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public interface SøknadSender {
-    String DOKMOT_SENDER = "dokmot";
     String FPFORDEL_SENDER = "fpfordel";
-    String ROUTING_SENDER = "routing";
 
     Kvittering send(Søknad søknad, Person søker, SøknadEgenskap egenskap);
 

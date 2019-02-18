@@ -44,7 +44,8 @@ public class Endringssøknad extends Søknad {
     }
 
     @JsonCreator
-    public Endringssøknad(@JsonProperty("mottattdato") LocalDateTime mottattDato, @JsonProperty("søker") Søker søker,
+    public Endringssøknad(@JsonProperty("mottattdato") LocalDateTime mottattDato,
+            @JsonProperty("søker") Søker søker,
             @JsonProperty("annenForelder") AnnenForelder annenForelder,
             @JsonProperty("fordeling") Fordeling fordeling,
             @JsonProperty("fødsel") Fødsel fødsel,

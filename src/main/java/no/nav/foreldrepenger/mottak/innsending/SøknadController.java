@@ -1,13 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.ROUTING_SENDER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.innsending.engangsstønad.EngangsstønadDestinasjon.DOKMOT;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -16,8 +10,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,12 +22,9 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.innsending.engangsstønad.EngangsstønadDestinasjon;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
 
@@ -51,19 +40,18 @@ public class SøknadController {
     private final Innsyn innsyn;
     private final Oppslag oppslag;
     private final SøknadSender sender;
-    private final EngangsstønadDestinasjon destinasjon;
+    private final SøknadInspektør inspektør;
 
-    public SøknadController(@Qualifier(ROUTING_SENDER) SøknadSender sender, Oppslag oppslag,
-            Innsyn innsyn, @Value("${engangs.destinasjon:DOKMOT}") EngangsstønadDestinasjon destinasjon) {
+    public SøknadController(SøknadSender sender, Oppslag oppslag, Innsyn innsyn, SøknadInspektør inspektør) {
         this.sender = sender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
-        this.destinasjon = destinasjon;
+        this.inspektør = inspektør;
     }
 
     @PostMapping("/send")
     public Kvittering send(@Valid @RequestBody Søknad søknad) {
-        return sender.send(søknad, oppslag.getSøker(), søknadEgenskapFra(søknad));
+        return sender.send(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
     }
 
     @PostMapping("/ettersend")
@@ -86,22 +74,11 @@ public class SøknadController {
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
         return innsyn.hentSaker(oppslag.getAktørId());
-
-    }
-
-    private SøknadEgenskap søknadEgenskapFra(Søknad søknad) {
-        return søknad.getYtelse() instanceof Foreldrepenger
-                ? INITIELL_FORELDREPENGER
-                : new SøknadEgenskap(versjonFraDestinasjon(), INITIELL_ENGANGSSTØNAD);
-    }
-
-    private Versjon versjonFraDestinasjon() {
-        return DOKMOT.equals(destinasjon) ? V1 : DEFAULT_VERSJON;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + ", sender=" + sender
-                + ", destinasjon=" + destinasjon + "]";
+                + ", inspektør=" + inspektør + "]";
     }
 }

@@ -28,8 +28,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 
 @Service
 @Qualifier(FPFORDEL_SENDER)
@@ -39,18 +37,11 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator konvoluttGenerator;
-    private final SøknadInspektør inspektør;
-
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator) {
-        this(connection, konvoluttGenerator, new XMLStreamSøknadInspektør());
-    }
 
     @Inject
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator,
-            SøknadInspektør inspektør) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator) {
         this.connection = connection;
         this.konvoluttGenerator = konvoluttGenerator;
-        this.inspektør = inspektør;
     }
 
     public void ping() {
@@ -65,7 +56,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering send(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return send(inspektør.type(søknad), konvoluttGenerator.payload(søknad, søker, egenskap));
+        return send(egenskap.getType(), konvoluttGenerator.payload(søknad, søker, egenskap));
     }
 
     @Override
