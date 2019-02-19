@@ -34,11 +34,10 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
     }
 
     public Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
-
+        LOG.info("Sender {} til {}", type.name().toLowerCase(), name().toLowerCase());
         Kvittering kvittering = responseHandler.handle(
                 postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class));
-        LOG.info("Sendte {} til FPFordel, fikk kvittering {}", type.name().toLowerCase(), kvittering);
+        LOG.info("Sendte {} til {}, fikk kvittering {}", type.name().toLowerCase(), name().toLowerCase(), kvittering);
         type.count();
         kvittering.setPdf(pdfFra(payload.getBody()));
         return kvittering;
