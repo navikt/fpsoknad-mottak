@@ -85,9 +85,8 @@ public class FPFordelKonvoluttGenerator {
         AtomicInteger id = new AtomicInteger(1);
 
         builder.part(METADATA, metadata(endringsøknad, egenskap, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, egenskap), APPLICATION_XML).header(
-                CONTENT_ID,
-                id(id));
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, egenskap), APPLICATION_XML)
+                .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap.getType()), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
@@ -151,14 +150,14 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private byte[] pdfHovedDokument(Søknad søknad, Person søker, SøknadType type) {
-        if (type.equals(INITIELL_FORELDREPENGER)) {
+        if (INITIELL_FORELDREPENGER.equals(type)) {
             return foreldrepengerPDFGenerator.generate(søknad, søker);
         }
         return engangsstønadPDFGenerator.generate(søknad, søker);
     }
 
     private byte[] pdfHovedDokument(Endringssøknad endringssøknad, Person søker, SøknadType type) {
-        if (type.equals(ENDRING_FORELDREPENGER)) {
+        if (ENDRING_FORELDREPENGER.equals(type)) {
             return foreldrepengerPDFGenerator.generate(endringssøknad, søker);
         }
         return engangsstønadPDFGenerator.generate(endringssøknad, søker);

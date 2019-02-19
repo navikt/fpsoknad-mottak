@@ -20,6 +20,7 @@ public class Kvittering {
     private final LeveranseStatus leveranseStatus;
     private String journalId;
     private String saksNr;
+    private byte[] pdf;
 
     public static final Kvittering IKKE_SENDT = new Kvittering(LeveranseStatus.IKKE_SENDT_FPSAK);
 

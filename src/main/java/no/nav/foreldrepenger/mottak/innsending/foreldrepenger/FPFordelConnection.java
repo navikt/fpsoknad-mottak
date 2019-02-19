@@ -1,6 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
 
 import java.net.URI;
 
@@ -32,10 +35,12 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
 
     public Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
+
         Kvittering kvittering = responseHandler.handle(
                 postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class));
         LOG.info("Sendte {} til FPFordel, fikk kvittering {}", type.name().toLowerCase(), kvittering);
         type.count();
+        kvittering.setPdf(pdfFra(payload.getBody()));
         return kvittering;
     }
 
@@ -59,6 +64,23 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
     @Override
     public String name() {
         return "FPFORDEL";
+    }
+
+    private static byte[] pdfFra(MultiValueMap<String, HttpEntity<?>> body) {
+        byte[] bytes = safeStream(body.get(HOVEDDOKUMENT))
+                .filter(e -> APPLICATION_PDF.equals(e.getHeaders().getContentType()))
+                .filter(e -> e.hasBody())
+                .map(e -> e.getBody())
+                .map(b -> byte[].class.cast(b))
+                .findFirst()
+                .orElse(null);
+        if (bytes != null) {
+            LOG.info("Returnerer PDF med størrelse {} i kvittering", bytes.length);
+        }
+        else {
+            LOG.info("Returnerer ingen PDF i kvittering");
+        }
+        return bytes;
     }
 
     @Override

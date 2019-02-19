@@ -123,6 +123,7 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
             return kvitteringMedType(PÅGÅR, fordeltKvittering.getJournalpostId(),
                     fordeltKvittering.getSaksnummer());
         default:
+            LOG.warn("Fikk forsendelsesstatus {}", forsendelsesStatus.getForsendelseStatus());
             FAILED.increment();
             return new Kvittering(FP_FORDEL_MESSED_UP);
         }
