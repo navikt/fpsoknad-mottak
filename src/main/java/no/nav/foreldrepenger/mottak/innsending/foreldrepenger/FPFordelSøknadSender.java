@@ -1,20 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ENDRING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ETTERSSENDING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FPFORDEL_SEND_INITIELL;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ETTERSSENDING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -29,7 +25,6 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
-@Qualifier(FPFORDEL_SENDER)
 public class FPFordelSøknadSender implements SøknadSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
@@ -37,7 +32,6 @@ public class FPFordelSøknadSender implements SøknadSender {
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator konvoluttGenerator;
 
-    @Inject
     public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator) {
         this.connection = connection;
         this.konvoluttGenerator = konvoluttGenerator;
@@ -49,17 +43,17 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     @Override
-    public Kvittering send(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
-        return send(egenskap.getType(), konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
-    }
-
-    @Override
-    public Kvittering send(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         return send(egenskap.getType(), konvoluttGenerator.payload(søknad, søker, egenskap));
     }
 
     @Override
-    public Kvittering send(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
+    public Kvittering endreSøknad(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
+        return send(egenskap.getType(), konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
+    }
+
+    @Override
+    public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
         return send(egenskap.getType(), konvoluttGenerator.payload(ettersending, søker));
     }
 
@@ -76,7 +70,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
             Kvittering kvittering = connection.send(payload);
             LOG.info("Sendte {} til FPFordel", type.name().toLowerCase());
-            logAndCount(type);
+            count(type);
             LOG.info("Returnerer kvittering {}", kvittering);
             return kvittering;
         } catch (Exception e) {
@@ -85,23 +79,25 @@ public class FPFordelSøknadSender implements SøknadSender {
         }
     }
 
-    private static void logAndCount(SøknadType type) {
+    private static void count(SøknadType type) {
         switch (type) {
-        case INITIELL_ENGANGSSTØNAD:
-            ES_FØRSTEGANG.increment();
+        case INITIELL_FORELDREPENGER:
+            FP_FØRSTEGANG.increment();
             break;
         case ENDRING_FORELDREPENGER:
             FP_ENDRING.increment();
             break;
-        case ETTERSENDING_ENGANGSSTØNAD:
-            ES_ETTERSSENDING.increment();
-            break;
         case ETTERSENDING_FORELDREPENGER:
             FP_ETTERSSENDING.increment();
             break;
-        case INITIELL_FORELDREPENGER:
-            FPFORDEL_SEND_INITIELL.increment();
-            FP_FØRSTEGANG.increment();
+        case INITIELL_ENGANGSSTØNAD:
+            ES_FØRSTEGANG.increment();
+            break;
+        case ETTERSENDING_ENGANGSSTØNAD:
+            ES_ETTERSSENDING.increment();
+            break;
+        case ENDRING_ENGANGSSTØNAD:
+            ES_ENDRING.increment();
             break;
         default:
             break;

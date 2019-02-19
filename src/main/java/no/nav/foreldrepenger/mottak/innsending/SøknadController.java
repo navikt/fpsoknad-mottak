@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
@@ -51,23 +52,28 @@ public class SøknadController {
     }
 
     @PostMapping("/send")
-    public Kvittering send(@Valid @RequestBody Søknad søknad) {
-        return sender.send(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
+    public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
+        return sender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
     }
 
     @PostMapping("/ettersend")
-    public Kvittering send(@Valid @RequestBody Ettersending ettersending) {
-        return sender.send(ettersending, oppslag.getSøker(), ETTERSENDING_FORELDREPENGER);
+    public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
+        return sender.ettersend(ettersending, oppslag.getSøker(), ETTERSENDING_FORELDREPENGER);
     }
 
     @PostMapping("/ettersendES")
-    public Kvittering sendES(@Valid @RequestBody Ettersending ettersending) {
-        return sender.send(ettersending, oppslag.getSøker(), ETTERSENDING_ENGANGSSTØNAD);
+    public Kvittering ettersendES(@Valid @RequestBody Ettersending ettersending) {
+        return sender.ettersend(ettersending, oppslag.getSøker(), ETTERSENDING_ENGANGSSTØNAD);
     }
 
     @PostMapping("/endre")
-    public Kvittering send(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sender.send(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
+    public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return sender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
+    }
+
+    @PostMapping("/endreES")
+    public Kvittering endreES(@Valid @RequestBody Endringssøknad endringssøknad) {
+        return sender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_ENGANGSSTØNAD);
     }
 
     @GetMapping("/ping")

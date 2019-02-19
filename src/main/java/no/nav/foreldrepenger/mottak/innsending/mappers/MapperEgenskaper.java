@@ -42,9 +42,9 @@ public class MapperEgenskaper {
         return egenskaper.contains(egenskap);
     }
 
-    private static List<SøknadEgenskap> typerForVersjon(final Versjon versjon, SøknadType[] typer) {
+    private static List<SøknadEgenskap> typerForVersjon(final Versjon versjon, SøknadType... typer) {
         return Arrays.stream(typer)
-                .map(t -> new SøknadEgenskap(versjon, t))
+                .map(type -> new SøknadEgenskap(versjon, type))
                 .collect(toList());
     }
 

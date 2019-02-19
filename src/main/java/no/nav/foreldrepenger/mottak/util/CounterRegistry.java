@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ETTERSENDING_FORELDREPENGER;
@@ -15,16 +16,13 @@ public final class CounterRegistry {
     private static final String YTELSE = "ytelse";
     private static final String FORELDREPENGER = "foreldrepenger";
     private static final String ENGANGSSTØNAD = "engangsstønad";
-    private static final String DOKMOT_SEND = "dokmot.send";
     private static final String FPINFO_KVITTERINGER = "fpinfo.kvitteringer";
     private static final String FPFORDEL_KVITTERINGER = "fpfordel.kvitteringer";
     private static final String FPFORDEL_SEND = "fpfordel.send";
 
-    public static final Counter DOKMOT_SUKSESS = Metrics.counter(DOKMOT_SEND, "søknad", "success");
-    public static final Counter DOKMOT_FAILURE = Metrics.counter(DOKMOT_SEND, "søknad", "failure");
-
     public static final Counter ES_FØRSTEGANG = esCounter(FPFORDEL_SEND, INITIELL_ENGANGSSTØNAD.name());
     public static final Counter ES_ETTERSSENDING = esCounter(FPFORDEL_SEND, ETTERSENDING_ENGANGSSTØNAD.name());
+    public static final Counter ES_ENDRING = esCounter(FPFORDEL_SEND, ENDRING_ENGANGSSTØNAD.name());
 
     public static final Counter FP_SENDFEIL = fpCounter(FPFORDEL_SEND, "feil");
     public static final Counter FP_FØRSTEGANG = fpCounter(FPFORDEL_SEND, INITIELL_FORELDREPENGER.name());
@@ -39,8 +37,6 @@ public final class CounterRegistry {
     public static final Counter ACCEPTED = fpCounter(FPINFO_KVITTERINGER, "innvilget");
     public static final Counter RUNNING = fpCounter(FPINFO_KVITTERINGER, "pågår");
     public static final Counter FAILED = fpCounter(FPINFO_KVITTERINGER, "feilet");
-
-    public static final Counter FPFORDEL_SEND_INITIELL = Metrics.counter("fpfordel_send_initiell");
 
     private CounterRegistry() {
 

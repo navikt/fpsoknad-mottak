@@ -119,7 +119,7 @@ public class TestFPFordelRoundtripSerialization {
     public void testFPSøknadSendV1() {
         Versjon versjon = V1;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        Kvittering kvittering = sender.send(søknad, TestUtils.person(),
+        Kvittering kvittering = sender.søk(søknad, TestUtils.person(),
                 new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
@@ -128,7 +128,7 @@ public class TestFPFordelRoundtripSerialization {
     public void testFPSøknadSendV2() {
         Versjon versjon = V2;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        Kvittering kvittering = sender.send(søknad, TestUtils.person(),
+        Kvittering kvittering = sender.søk(søknad, TestUtils.person(),
                 new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }

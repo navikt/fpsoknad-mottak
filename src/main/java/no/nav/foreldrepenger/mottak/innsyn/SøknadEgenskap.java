@@ -18,7 +18,9 @@ public class SøknadEgenskap {
             SøknadType.ETTERSENDING_ENGANGSSTØNAD);
     public static final SøknadEgenskap INITIELL_FORELDREPENGER = new SøknadEgenskap(
             SøknadType.INITIELL_FORELDREPENGER);
+    public static final SøknadEgenskap ENDRING_ENGANGSSTØNAD = new SøknadEgenskap(SøknadType.ENDRING_ENGANGSSTØNAD);
     public static final SøknadEgenskap ENDRING_FORELDREPENGER = new SøknadEgenskap(SøknadType.ENDRING_FORELDREPENGER);
+
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 
     public SøknadEgenskap(SøknadType type) {

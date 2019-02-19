@@ -8,11 +8,10 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public interface SøknadSender {
-    String FPFORDEL_SENDER = "fpfordel";
 
-    Kvittering send(Søknad søknad, Person søker, SøknadEgenskap egenskap);
+    Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap);
 
-    Kvittering send(Ettersending ettersending, Person søker, SøknadEgenskap egenskap);
+    Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap);
 
-    Kvittering send(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap);
+    Kvittering endreSøknad(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap);
 }

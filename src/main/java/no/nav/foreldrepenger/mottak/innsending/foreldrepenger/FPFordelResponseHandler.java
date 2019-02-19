@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadSender.FPFORDEL_SENDER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.GITTOPP_KVITTERING;
@@ -126,7 +125,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     }
 
     private ResponseEntity<FPFordelKvittering> pollFPFordel(URI uri, long delayMillis) {
-        return poll(uri, FPFORDEL_SENDER, delayMillis, FPFordelKvittering.class);
+        return poll(uri, "FPFORDEL", delayMillis, FPFordelKvittering.class);
     }
 
     private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {

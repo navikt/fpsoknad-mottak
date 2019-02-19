@@ -208,7 +208,7 @@ public class FPFordelTest {
     public void pollTwiceThenGosys() throws Exception {
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 goysReceipt);
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), GOSYS);
         assertEquals(kvittering.getJournalId(), JOURNALID);
@@ -221,7 +221,7 @@ public class FPFordelTest {
     public void poll3GivesUp() throws Exception {
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
                 pollReceipt200, pollReceipt200);
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
         assertNull(kvittering.getJournalId());
@@ -244,7 +244,7 @@ public class FPFordelTest {
                 fpinfoPågår(),
                 fpinfoPågår(),
                 fpinfoInnvilget());
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getJournalId(), JOURNALID);
         assertEquals(kvittering.getSaksNr(), SAKSNR);
@@ -261,7 +261,7 @@ public class FPFordelTest {
                 fordeltReceipt);
         when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
                 .thenReturn(fpinfoNull());
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
         assertEquals(kvittering.getJournalId(), JOURNALID);
@@ -282,7 +282,7 @@ public class FPFordelTest {
                 fordeltReceipt);
         when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
                 .thenReturn(fpinfoPågår());
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), PÅGÅR);
         assertEquals(kvittering.getJournalId(), JOURNALID);
@@ -294,7 +294,7 @@ public class FPFordelTest {
     public void pollNoLocation() throws Exception {
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt202,
                 pollReceiptNoLocation());
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
         verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
@@ -312,7 +312,7 @@ public class FPFordelTest {
                 fordeltReceipt);
         when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
                 .thenReturn(fpinfoFailed());
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
         assertEquals(kvittering.getJournalId(), JOURNALID);
@@ -323,7 +323,7 @@ public class FPFordelTest {
     public void unexpectedStatusCode() throws Exception {
         when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class)))
                 .thenReturn(fpfordelPollReceiptError());
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
         assertNull(kvittering.getJournalId());
@@ -335,7 +335,7 @@ public class FPFordelTest {
     public void testNullBody() throws Exception {
         when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class)))
                 .thenReturn(nullBody());
-        Kvittering kvittering = sender.send(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
+        Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
         assertNull(kvittering.getJournalId());
