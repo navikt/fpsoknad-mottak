@@ -23,14 +23,10 @@ abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, Envir
         this.env = env;
     }
 
-    protected void checkHealth() {
-        pingable.ping();
-    }
-
     @Override
     public Health health() {
         try {
-            checkHealth();
+            pingable.ping();
             return up();
         } catch (Exception e) {
             return down(e);
@@ -38,19 +34,23 @@ abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, Envir
     }
 
     private Health up() {
-        return isDevOrPreprod(env) ? Health.up().withDetail(pingable.name(), pingable.pingEndpoint()).build()
+        return isDevOrPreprod(env) ? Health.up()
+                .withDetail(pingable.name(), pingable.pingEndpoint())
+                .build()
                 : Health.up().build();
     }
 
     private Health down(Exception e) {
         return isDevOrPreprod(env)
-                ? Health.down().withDetail(pingable.name(), pingable.pingEndpoint()).withException(e).build()
+                ? Health.down()
+                        .withDetail(pingable.name(), pingable.pingEndpoint())
+                        .withException(e)
+                        .build()
                 : Health.down().build();
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingable=" + pingable + "isDevOrPreprod "
-                + isDevOrPreprod(env) + "]";
+        return getClass().getSimpleName() + " [pingable=" + pingable + "isDevOrPreprod " + isDevOrPreprod(env) + "]";
     }
 }

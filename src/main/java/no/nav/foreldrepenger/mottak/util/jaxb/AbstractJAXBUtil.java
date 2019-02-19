@@ -51,10 +51,10 @@ public abstract class AbstractJAXBUtil {
         this.validateUnarshalling = validateUnmarshalling;
     }
 
-//    public AbstractJAXBUtil(JAXBContext context, String xsd) {
-//        this.context = context;
-//        this.schema = schema(xsd);
-//    }
+    // public AbstractJAXBUtil(JAXBContext context, String xsd) {
+    // this.context = context;
+    // this.schema = schema(xsd);
+    // }
 
     protected static JAXBContext contextFra(Class<?>... classes) {
         try {
@@ -118,17 +118,6 @@ public abstract class AbstractJAXBUtil {
             LOG.warn(
                     "Noe gikk galt med konfigurasjon av skjema  fra {}, bruker ikke-validerende marshaller",
                     Arrays.toString(xsds), e);
-            return null;
-        }
-    }
-
-    private static Schema schema(String xsd) {
-        try {
-            return SCHEMA_FACTORY.newSchema(sourceFra(xsd));
-        } catch (SAXException e) {
-            LOG.warn(
-                "Noe gikk galt med konfigurasjon av skjema for validering fra {}, bruker ikke-validerende marshaller",
-                xsd, e);
             return null;
         }
     }

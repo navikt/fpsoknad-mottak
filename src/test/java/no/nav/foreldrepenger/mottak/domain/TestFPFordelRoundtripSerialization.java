@@ -43,11 +43,9 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
-import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class }, properties = {
-        "engangstønad.destinasjon=DOKMOT" })
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { DEV, PREPROD })
 public class TestFPFordelRoundtripSerialization {
 
@@ -59,8 +57,6 @@ public class TestFPFordelRoundtripSerialization {
 
     @Autowired
     ObjectMapper mapper;
-
-    private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
     @Autowired
     CallIdGenerator refGenerator;
