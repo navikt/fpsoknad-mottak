@@ -69,9 +69,9 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
     private static byte[] pdfFra(MultiValueMap<String, HttpEntity<?>> body) {
         byte[] bytes = safeStream(body.get(HOVEDDOKUMENT))
                 .filter(e -> APPLICATION_PDF.equals(e.getHeaders().getContentType()))
-                .filter(e -> e.hasBody())
-                .map(e -> e.getBody())
-                .map(b -> byte[].class.cast(b))
+                .filter(HttpEntity::hasBody)
+                .map(HttpEntity::getBody)
+                .map(byte[].class::cast)
                 .findFirst()
                 .orElse(null);
         if (bytes != null) {
