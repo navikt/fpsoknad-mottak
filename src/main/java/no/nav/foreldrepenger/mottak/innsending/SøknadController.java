@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
@@ -69,11 +68,6 @@ public class SøknadController {
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
         return sender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
-    }
-
-    @PostMapping("/endreES")
-    public Kvittering endreES(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_ENGANGSSTØNAD);
     }
 
     @GetMapping("/ping")
