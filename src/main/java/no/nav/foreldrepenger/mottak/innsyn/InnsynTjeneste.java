@@ -38,6 +38,11 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
+    public String ping() {
+        return innsynConnection.ping();
+    }
+
+    @Override
     public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
         return innsynConnection.hentUttaksplan(saksnummer);
     }

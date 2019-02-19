@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 
 @Component
-public class InnsynConnection extends AbstractRestConnection implements Pingable {
+public class InnsynConnection extends AbstractRestConnection implements PingEndpointAware {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
 
     private final InnsynConfig config;

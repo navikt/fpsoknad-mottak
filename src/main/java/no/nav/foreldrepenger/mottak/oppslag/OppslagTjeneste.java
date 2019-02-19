@@ -25,6 +25,11 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
+    public String ping() {
+        return connection.ping();
+    }
+
+    @Override
     public Person getSøker() {
         return connection.getSøker();
     }
@@ -54,4 +59,5 @@ public class OppslagTjeneste implements Oppslag {
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
     }
+
 }

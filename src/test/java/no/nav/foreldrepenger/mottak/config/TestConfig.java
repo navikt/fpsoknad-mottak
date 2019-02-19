@@ -1,20 +1,20 @@
 package no.nav.foreldrepenger.mottak.config;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 @Configuration
 public class TestConfig {
@@ -47,11 +47,15 @@ public class TestConfig {
             @Override
             public List<Arbeidsforhold> getArbeidsforhold() {
                 return Arrays.asList(
-                    new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                        Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
-                    new Arbeidsforhold("2345", "", LocalDate.now().minusDays(300),
-                        Optional.of(LocalDate.now().minusDays(240)), 55.0, "Bedriftolainen")
-                );
+                        new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                                Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
+                        new Arbeidsforhold("2345", "", LocalDate.now().minusDays(300),
+                                Optional.of(LocalDate.now().minusDays(240)), 55.0, "Bedriftolainen"));
+            }
+
+            @Override
+            public String ping() {
+                return "42";
             }
         };
     }

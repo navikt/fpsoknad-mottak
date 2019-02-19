@@ -4,6 +4,8 @@ import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -11,9 +13,12 @@ import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @Component
-public class FPFordelConnection extends AbstractRestConnection implements Pingable {
+public class FPFordelConnection extends AbstractRestConnection implements PingEndpointAware {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
 
     private final FPFordelConfig config;
     private final FPFordelResponseHandler responseHandler;
@@ -25,14 +30,20 @@ public class FPFordelConnection extends AbstractRestConnection implements Pingab
         this.responseHandler = responseHandler;
     }
 
-    public Kvittering send(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        return responseHandler.handle(
+    public Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+        LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
+        Kvittering kvittering = responseHandler.handle(
                 postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class));
+        LOG.info("Sendte {} til FPFordel, fikk kvittering {}", type.name().toLowerCase(), kvittering);
+        type.count();
+        return kvittering;
     }
 
     @Override
     public String ping() {
-        return ping(pingEndpoint());
+        URI pingEndpoint = pingEndpoint();
+        LOG.info("Pinger {}", pingEndpoint);
+        return ping(pingEndpoint);
     }
 
     @Override

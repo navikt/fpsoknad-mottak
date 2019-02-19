@@ -65,4 +65,9 @@ public class OppslagServiceStub implements Oppslag {
         return søker;
     }
 
+    @Override
+    public String ping() {
+        return "42";
+    }
+
 }

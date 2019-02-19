@@ -19,10 +19,10 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
 
 @Component
-public class OppslagConnection extends AbstractRestConnection implements Pingable {
+public class OppslagConnection extends AbstractRestConnection implements PingEndpointAware {
 
     public static final Logger LOG = LoggerFactory.getLogger(OppslagConnection.class);
 

@@ -5,9 +5,10 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.Pingable;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-public interface SøknadSender {
+public interface SøknadSender extends Pingable {
 
     Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap);
 

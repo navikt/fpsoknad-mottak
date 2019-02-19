@@ -1,11 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ETTERSSENDING;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ETTERSSENDING;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 
 import org.slf4j.Logger;
@@ -36,9 +31,9 @@ public class FPFordelSøknadSender implements SøknadSender {
         this.konvoluttGenerator = konvoluttGenerator;
     }
 
-    public void ping() {
-        LOG.info("Pinger");
-        connection.ping();
+    @Override
+    public String ping() {
+        return connection.ping();
     }
 
     @Override
@@ -66,37 +61,10 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
         try {
-            LOG.info("Sender {} til FPFordel", type.name().toLowerCase());
-            Kvittering kvittering = connection.send(payload);
-            LOG.info("Sendte {} til FPFordel", type.name().toLowerCase());
-            count(type);
-            LOG.info("Returnerer kvittering {}", kvittering);
-            return kvittering;
+            return connection.send(type, payload);
         } catch (Exception e) {
             FP_SENDFEIL.increment();
             throw e;
-        }
-    }
-
-    private static void count(SøknadType type) {
-        switch (type) {
-        case INITIELL_FORELDREPENGER:
-            FP_FØRSTEGANG.increment();
-            break;
-        case ENDRING_FORELDREPENGER:
-            FP_ENDRING.increment();
-            break;
-        case ETTERSENDING_FORELDREPENGER:
-            FP_ETTERSSENDING.increment();
-            break;
-        case INITIELL_ENGANGSSTØNAD:
-            ES_FØRSTEGANG.increment();
-            break;
-        case ETTERSENDING_ENGANGSSTØNAD:
-            ES_ETTERSSENDING.increment();
-            break;
-        default:
-            break;
         }
     }
 
