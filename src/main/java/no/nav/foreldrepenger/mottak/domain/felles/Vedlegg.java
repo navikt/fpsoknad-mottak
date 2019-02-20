@@ -4,10 +4,11 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.fraBytes;
 import static org.springframework.util.StreamUtils.copyToByteArray;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -87,17 +88,9 @@ public abstract class Vedlegg {
                 .orElse(0);
     }
 
-    private String bytes() {
-        String vedleggAsString = Arrays.toString(vedlegg);
-        if (vedleggAsString.length() >= 50) {
-            return vedleggAsString.substring(0, 49) + ".... " + (vedleggAsString.length() - 50) + " more bytes";
-        }
-        return vedleggAsString;
-    }
-
     protected static byte[] bytesFra(Resource vedlegg) {
-        try {
-            return copyToByteArray(vedlegg.getInputStream());
+        try (InputStream is = vedlegg.getInputStream()) {
+            return copyToByteArray(is);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -105,6 +98,6 @@ public abstract class Vedlegg {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + bytes();
+        return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + fraBytes(vedlegg, 50);
     }
 }

@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.fraBytes;
 
 import java.time.LocalDateTime;
 
@@ -35,5 +36,12 @@ public class Kvittering {
         this.referanseId = referanseId;
         this.mottattDato = mottattDato;
         this.leveranseStatus = leveranseStatus;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [referanseId=" + referanseId + ", mottattDato=" + mottattDato
+                + ", leveranseStatus=" + leveranseStatus + ", journalId=" + journalId + ", saksNr=" + saksNr + ", pdf="
+                + fraBytes(pdf, 50) + "]";
     }
 }
