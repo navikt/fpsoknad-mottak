@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,7 +23,7 @@ public class Ettersending {
     }
 
     @JsonCreator
-    public Ettersending(@JsonProperty("type") @NotNull EttersendingsType type,
+    public Ettersending(@JsonProperty("type") EttersendingsType type,
             @JsonProperty("saksnr") String saksnr,
             @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {
         this.type = type;

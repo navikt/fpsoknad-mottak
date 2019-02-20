@@ -6,15 +6,19 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGAN
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public interface SøknadInspektør {
+
+    static final Logger LOG = LoggerFactory.getLogger(SøknadInspektør.class);
 
     SøknadEgenskap inspiser(String xml);
 
@@ -43,7 +47,10 @@ public interface SøknadInspektør {
         if (engangsstønad.equals(ettersending.getType())) {
             return ETTERSENDING_ENGANGSSTØNAD;
         }
-        throw new UnexpectedInputException("UKjent eller ikke satt ettersendingstype " + ettersending.getType());
+        LOG.warn("UKjent eller ikke satt ettersendingstype " + ettersending.getType());
+        return ETTERSENDING_FORELDREPENGER;
+        // throw new UnexpectedInputException("UKjent eller ikke satt ettersendingstype
+        // " + ettersending.getType());
 
     }
 
