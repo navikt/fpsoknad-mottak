@@ -36,4 +36,8 @@ public class Kvittering {
         this.mottattDato = mottattDato;
         this.leveranseStatus = leveranseStatus;
     }
+
+    public boolean erVellykket() {
+        return leveranseStatus.erVellykket();
+    }
 }
