@@ -27,6 +27,8 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
@@ -94,7 +96,7 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Ettersending ettersending() {
-        return new Ettersending("42", TO_VEDLEGG);
+        return new Ettersending(EttersendingsType.foreldrepenger, "42", TO_VEDLEGG);
     }
 
     static Foreldrepenger foreldrePenger(Versjon v, boolean utland, String... vedleggRefs) {

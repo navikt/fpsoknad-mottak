@@ -53,10 +53,11 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
@@ -170,7 +171,8 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEttersending() {
-        Ettersending es = new Ettersending("42", ForeldrepengerTestUtils.V1, ForeldrepengerTestUtils.V2);
+        Ettersending es = new Ettersending(EttersendingsType.foreldrepenger, "42", ForeldrepengerTestUtils.V1,
+                ForeldrepengerTestUtils.V2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
         assertEquals(1, metadata.size());
