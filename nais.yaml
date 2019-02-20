@@ -33,26 +33,20 @@ fasitResources:
       resourceType: baseurl
       propertyMap:
          url: NO_NAV_SECURITY_OIDC_ISSUER_SELVBETJENING_DISCOVERYURL
-    - alias: mqGateway01
+    - alias: mqGateway02
       resourceType: queuemanager
       propertyMap:
-          hostname: DOKMOT_HOSTNAME
-          port: DOKMOT_PORT
-          name: DOKMOT_NAME
-    - alias: dokmot_channel
-      resourceType: channel
-      propertyMap:
-          name: DOKMOT_CHANNELNAME
-    - alias: brisdokmot
-      resourceType: credential
-      propertyMap:
-          username: DOKMOT_USERNAME
-          password: DOKMOT_PASSWORD
-    - alias : dokmot_motta_forsendelse_ditt_nav
+          hostname: VARSEL_HOSTNAME
+          port: VARSEL_PORT
+          name: VARSEL_NAME
+    - alias: VARSELPRODUKSJON_VARSLINGER
       resourceType: queue
       propertyMap:
-          queueName: DOKMOT_QUEUENAME
-          queueManager: DOKMOT_QUEUEMANAGER
+          - queueName: VARSEL_QUEUE
+    - alias: FPSOKNAD-MOTTAK_CHANNEL
+      resourcetype: channel
+      propertyMap:
+          name: VARSEL_CHANNELNAME
     - alias : FPSOKNADMOTTAK_PROPERTIES
       resourceType: applicationProperties
   exposed:
