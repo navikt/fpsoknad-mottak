@@ -4,13 +4,12 @@ management :
      health.show-details : always
      security.enabled : false
 
-dokmot :
-   queuename : ueue
-   hostname : hostname
-   port : 2412
-   name : name
-   usrname : user
-   channelname : channel
+varsel :
+    queuename : DEV.QUEUE.1
+    hostname: localhost
+    port: 1414
+    name: QM1
+    channelname : DEV.APP.SVRCONN
 
 no.nav.security.oidc:
   issuers: selvbetjening
