@@ -9,9 +9,9 @@ public final class VarselJaxbUtil extends AbstractJAXBUtil {
     }
 
     private VarselJaxbUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
-        super(contextFra(Varsel.class), //Versjon.V1,
+        super(contextFra(Varsel.class),
             validateMarshalling, validateUnmarshalling,
-            "/varseltjeneste/varsel-v1.xsd");
+            "/varseltjeneste/xsd/varsel-v1.xsd");
     }
 
 }
