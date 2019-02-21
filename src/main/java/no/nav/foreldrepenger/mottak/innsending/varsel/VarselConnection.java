@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
-//import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.VARSEL_FAILURE;
-//import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.CounterRegistry.VARSEL_SUKSESS;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_FAILED;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_SUCCESS;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class VarselConnection {
         try {
             template.getConnectionFactory().createConnection().close();
         } catch (JMSException swallow) {
-            LOG.warn("Kunne ikke pinge VARSEL-kø {}", queueConfig.loggable());
+            LOG.warn("Kunne ikke pinge VARSEL-kø {}", queueConfig.loggable(), swallow);
             //TODO: legg til varsel som en Health-indicator?
         }
     }
@@ -39,10 +39,10 @@ public class VarselConnection {
     public void send(MessageCreator msg) {
         try {
             template.send(msg);
-            //VARSEL_SUKSESS.increment();
+            VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
             LOG.error("Feil ved sending til Varseltjenesten {}", queueConfig.loggable(), swallow);
-            //VARSEL_FAILURE.increment();
+            VARSEL_FAILED.increment();
         }
     }
 
