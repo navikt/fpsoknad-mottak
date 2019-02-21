@@ -39,7 +39,7 @@ public class VarselHealthIndicator implements HealthIndicator, EnvironmentAware 
                 return isPreprod(env) ? downWithDetails(e) : down();
             }
         }
-        LOG.info(" DEV mode, sjekker ikke DOKMOT");
+        LOG.info(" DEV mode, sjekker ikke {}", connection.name());
         return up();
     }
 
