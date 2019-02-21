@@ -8,6 +8,13 @@ public enum LeveranseStatus {
     SENDT_OG_FORSØKT_BEHANDLET_FPSAK,
     IKKE_SENDT_FPSAK,
     FP_FORDEL_MESSED_UP,
-    GOSYS
+    GOSYS;
 
+    public boolean erVellykket() {
+        return this.equals(PÅGÅR) || this.equals(PÅ_VENT) || this.equals(INNVILGET) ||
+            this.equals(SENDT_OG_FORSØKT_BEHANDLET_FPSAK) || this.equals(GOSYS);
+
+    }
 }
+
+

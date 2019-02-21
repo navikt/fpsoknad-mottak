@@ -38,6 +38,10 @@ public class Kvittering {
         this.leveranseStatus = leveranseStatus;
     }
 
+    public boolean erVellykket() {
+        return leveranseStatus.erVellykket();
+    }
+  
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [referanseId=" + referanseId + ", mottattDato=" + mottattDato

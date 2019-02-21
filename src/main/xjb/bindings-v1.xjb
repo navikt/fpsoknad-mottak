@@ -35,4 +35,16 @@
             </annox:annotateClass>
         </jaxb:bindings>
     </jaxb:bindings>
+
+    <jaxb:bindings
+        schemaLocation="../xsd/varseltjeneste/xsd/varsel-v1.xsd"
+        node="/xs:schema">
+        <jaxb:bindings
+            node="//xs:complexType[@name='Varsel']">
+            <annox:annotateClass>
+                @javax.xml.bind.annotation.XmlRootElement
+            </annox:annotateClass>
+        </jaxb:bindings>
+    </jaxb:bindings>
+
 </jaxb:bindings>

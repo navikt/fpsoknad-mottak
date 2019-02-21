@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,17 +43,24 @@ public class SøknadController {
     private final Oppslag oppslag;
     private final SøknadSender sender;
     private final SøknadInspektør inspektør;
+    private final VarselSender varselSender;
 
-    public SøknadController(SøknadSender sender, Oppslag oppslag, Innsyn innsyn, SøknadInspektør inspektør) {
+    public SøknadController(SøknadSender sender, Oppslag oppslag, Innsyn innsyn, SøknadInspektør inspektør,
+                            VarselSender varselSender) {
         this.sender = sender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
         this.inspektør = inspektør;
+        this.varselSender = varselSender;
     }
 
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
-        return sender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
+        Kvittering kvittering = sender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
+        if (kvittering.erVellykket()) {
+            varselSender.send(oppslag.getSøker(), kvittering.getMottattDato());
+        }
+        return kvittering;
     }
 
     @PostMapping("/ettersend")
@@ -60,7 +70,11 @@ public class SøknadController {
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
+        Kvittering kvittering = sender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
+        if (kvittering.erVellykket()) {
+            varselSender.send(oppslag.getSøker(), kvittering.getMottattDato());
+        }
+        return kvittering;
     }
 
     @GetMapping("/ping")

@@ -12,6 +12,7 @@ public final class CounterRegistry {
     private static final String FPINFO_KVITTERINGER = "fpinfo.kvitteringer";
     private static final String FPFORDEL_KVITTERINGER = "fpfordel.kvitteringer";
     private static final String FPFORDEL_SEND = "fpfordel.send";
+    private static final String VARSEL_SEND = "varsel.send";
 
     public static final Counter ES_FØRSTEGANG = esCounter(FPFORDEL_SEND, "INITIELL_ENGANGSSTØNAD");
     public static final Counter ES_ETTERSSENDING = esCounter(FPFORDEL_SEND, "ETTERSENDING_ENGANGSSTØNAD");
@@ -29,6 +30,9 @@ public final class CounterRegistry {
     public static final Counter ACCEPTED = fpCounter(FPINFO_KVITTERINGER, "innvilget");
     public static final Counter RUNNING = fpCounter(FPINFO_KVITTERINGER, "pågår");
     public static final Counter FAILED = fpCounter(FPINFO_KVITTERINGER, "feilet");
+
+    public static final Counter VARSEL_FAILED = counter(VARSEL_SEND, "felles", "feilet");
+    public static final Counter VARSEL_SUCCESS = counter(VARSEL_SEND, "felles", "suksess");
 
     private CounterRegistry() {
 
