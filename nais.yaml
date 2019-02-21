@@ -42,7 +42,7 @@ fasitResources:
     - alias: VARSELPRODUKSJON_VARSLINGER
       resourceType: queue
       propertyMap:
-          - queueName: VARSEL_QUEUE
+          queueName: VARSEL_QUEUE
     - alias: fpsoknad_varsel_kanal
       resourcetype: channel
       propertyMap:
