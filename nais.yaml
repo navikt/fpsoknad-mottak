@@ -44,7 +44,7 @@ fasitResources:
       propertyMap:
           queueName: VARSEL_QUEUE
     - alias: fpsoknad_varsel_kanal
-      resourcetype: channel
+      resourceType: channel
       propertyMap:
           name: VARSEL_CHANNELNAME
     - alias : FPSOKNADMOTTAK_PROPERTIES
