@@ -1,18 +1,19 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
-import com.ibm.mq.jms.MQQueueConnectionFactory;
+import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
+import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
+import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_ENCODING;
+import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
+
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-
-import static com.ibm.mq.constants.CMQC.MQENC_NATIVE;
-import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_CHARACTER_SET;
-import static com.ibm.msg.client.jms.JmsConstants.JMS_IBM_ENCODING;
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
+import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 @Configuration
 public class VarselConfiguration {
@@ -27,7 +28,7 @@ public class VarselConfiguration {
         return jmsTemplate;
     }
 
-    @Bean(name = "varselMQ")
+    @Bean
     public MQQueueConnectionFactory varselConnectionFactory(VarselQueueConfig cfg) throws JMSException {
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
         cf.setHostName(cfg.getHostname());

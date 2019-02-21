@@ -57,7 +57,7 @@ public class VarselConnection implements PingEndpointAware {
             template.send(msg);
             VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
-            LOG.error("Feil ved sending til Varseltjenesten {}", queueConfig.getURI(), swallow);
+            LOG.error("Feil ved sending til varseltjenesten {}", queueConfig.getURI(), swallow);
             VARSEL_FAILED.increment();
         }
     }
@@ -66,9 +66,12 @@ public class VarselConnection implements PingEndpointAware {
         return queueConfig;
     }
 
+    public boolean isEnabled() {
+        return queueConfig.isEnabled();
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig.getURI() + "]";
     }
-
 }
