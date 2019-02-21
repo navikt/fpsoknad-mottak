@@ -1,10 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import java.net.URI;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @ConfigurationProperties(prefix = "varsel")
 @Configuration
@@ -57,23 +60,21 @@ public class VarselQueueConfig {
         this.hostname = hostname;
     }
 
-    public VarselQueueConfig loggable() {
-        VarselQueueConfig unwrapped = new VarselQueueConfig();
-        unwrapped.setChannelname(getChannelname());
-        unwrapped.setHostname(getHostname());
-        unwrapped.setPort(getPort());
-        unwrapped.setQueueName(getQueueName());
-        return unwrapped;
-    }
-
     public void setChannelname(String channelname) {
         this.channelname = channelname;
     }
 
+    public URI getURI() {
+        return UriComponentsBuilder
+                .newInstance().scheme("jms")
+                .host(getHostname())
+                .port(getPort())
+                .pathSegment(getChannelname(), getQueueName())
+                .build().toUri();
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [hostname=" + hostname + ", port=" + port + ", name=" + name
-            + ", channelname="
-            + channelname + ", queuename=" + queueName + "]";
+        return getClass().getSimpleName() + " [uri=" + getURI() + "]";
     }
 }

@@ -3,6 +3,10 @@ package no.nav.foreldrepenger.mottak.innsending.varsel;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_FAILED;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_SUCCESS;
 
+import java.net.URI;
+
+import javax.jms.JMSException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,10 +15,10 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
-import javax.jms.JMSException;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
 
 @Component
-public class VarselConnection {
+public class VarselConnection implements PingEndpointAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(VarselConnection.class);
 
@@ -26,13 +30,26 @@ public class VarselConnection {
         this.queueConfig = queueConfig;
     }
 
-    public void ping() {
-        LOG.info("Pinger {}", queueConfig.loggable());
+    @Override
+    public String ping() {
+        LOG.info("Pinger {}", queueConfig.getURI());
         try {
             template.getConnectionFactory().createConnection().close();
-        } catch (JMSException swallow) {
-            LOG.warn("Kunne ikke pinge VARSEL-kø {}", queueConfig.loggable(), swallow);
+            return ("Alive and kicking");
+        } catch (JMSException e) {
+            LOG.warn("Kunne ikke pinge VARSEL-kø {}", queueConfig.getURI(), e);
+            throw new IllegalArgumentException("Kunne ikke pinge VARSEL-kø");
         }
+    }
+
+    @Override
+    public URI pingEndpoint() {
+        return queueConfig.getURI();
+    }
+
+    @Override
+    public String name() {
+        return "VARSEL";
     }
 
     public void send(MessageCreator msg) {
@@ -40,7 +57,7 @@ public class VarselConnection {
             template.send(msg);
             VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
-            LOG.error("Feil ved sending til Varseltjenesten {}", queueConfig.loggable(), swallow);
+            LOG.error("Feil ved sending til Varseltjenesten {}", queueConfig.getURI(), swallow);
             VARSEL_FAILED.increment();
         }
     }
@@ -51,7 +68,7 @@ public class VarselConnection {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig.loggable() + "]";
+        return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig.getURI() + "]";
     }
 
 }
