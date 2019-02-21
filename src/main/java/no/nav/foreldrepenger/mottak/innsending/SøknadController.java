@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -24,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -67,12 +65,7 @@ public class SøknadController {
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        return sender.ettersend(ettersending, oppslag.getSøker(), ETTERSENDING_FORELDREPENGER);
-    }
-
-    @PostMapping("/ettersendES")
-    public Kvittering ettersendES(@Valid @RequestBody Ettersending ettersending) {
-        return sender.ettersend(ettersending, oppslag.getSøker(), ETTERSENDING_ENGANGSSTØNAD);
+        return sender.ettersend(ettersending, oppslag.getSøker(), inspektør.inspiser(ettersending));
     }
 
     @PostMapping("/endre")

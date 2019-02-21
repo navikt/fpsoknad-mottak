@@ -26,10 +26,10 @@ import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Ettersending;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
