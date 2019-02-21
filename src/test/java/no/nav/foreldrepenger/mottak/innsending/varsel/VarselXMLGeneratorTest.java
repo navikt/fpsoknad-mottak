@@ -32,7 +32,7 @@ class VarselXMLGeneratorTest {
     void tilXml() throws IOException {
         LocalDateTime dateTime = LocalDateTime.of(2019, 2, 18, 14, 1, 35);
         String actualXml = varselXmlGenerator.tilXml(person(), dateTime);
-        InputStream streamExpectedXml = new ClassPathResource("varseltjeneste/xsd/varsel-v1.xml").getInputStream();
+        InputStream streamExpectedXml = new ClassPathResource("varsel-v1.xml").getInputStream();
         String expectedXml;
 
         try (final Reader reader = new InputStreamReader(streamExpectedXml)) {
