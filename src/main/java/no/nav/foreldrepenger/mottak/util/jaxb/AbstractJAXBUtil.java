@@ -51,11 +51,6 @@ public abstract class AbstractJAXBUtil {
         this.validateUnarshalling = validateUnmarshalling;
     }
 
-    // public AbstractJAXBUtil(JAXBContext context, String xsd) {
-    // this.context = context;
-    // this.schema = schema(xsd);
-    // }
-
     protected static JAXBContext contextFra(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
