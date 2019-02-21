@@ -39,7 +39,7 @@ fasitResources:
           hostname: VARSEL_HOSTNAME
           port: VARSEL_PORT
           name: VARSEL_NAME
-    - alias: VARSELPRODUKSJON_VARSLINGER
+    - alias: VARSELPRODUKSJON.VARSLINGER
       resourceType: queue
       propertyMap:
           queueName: VARSEL_QUEUE
