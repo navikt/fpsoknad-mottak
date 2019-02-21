@@ -15,19 +15,18 @@ import java.util.Locale;
 @Service
 public class VarselXMLGenerator {
     private static final VarselJaxbUtil JAXB = new VarselJaxbUtil();
-    private static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel"; //appconfig
-    private static final String URL_FP_VERDI = "https://foreldrepenger.nav.no"; // dittnav.link ressurs i fasit?
+    private static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel";
     private static final String FORNAVN = "FORNAVN";
     private static final String DATO = "DATO";
-    private static final String TID = "TID";
+
     private static final String URL_FP = "URL_FP";
+    private static final String URL_FP_VALUE = "https://foreldrepenger.nav.no";
 
     public static String tilXml(Person person, LocalDateTime mottatt) {
         return JAXB.marshal(tilVarselModel(person, mottatt));
     }
 
     private static Varsel tilVarselModel(Person person, LocalDateTime mottatt) {
-        String tidFormattert = mottatt.format(DateTimeFormatter.ofPattern("HH:mm"));
 
         return new Varsel()
             .withMottaker(new AktoerId().withAktoerId(person.aktørId.getId()))
@@ -41,11 +40,8 @@ public class VarselXMLGenerator {
                         .withKey(DATO)
                         .withValue(formattertDato(mottatt)),
                     new Parameter()
-                        .withKey(TID)
-                        .withValue(tidFormattert),
-                    new Parameter()
                         .withKey(URL_FP)
-                        .withValue(URL_FP_VERDI)));
+                        .withValue(URL_FP_VALUE)));
     }
 
     private static String formattertDato(LocalDateTime date) {

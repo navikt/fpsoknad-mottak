@@ -29,7 +29,7 @@ class VarselXMLGeneratorTest {
     VarselXMLGenerator varselXmlGenerator;
 
     @Test
-    void tilXml() throws IOException {
+    void testGenerateVarselXML() throws IOException {
         LocalDateTime dateTime = LocalDateTime.of(2019, 2, 18, 14, 1, 35);
         String actualXml = varselXmlGenerator.tilXml(person(), dateTime);
         InputStream streamExpectedXml = new ClassPathResource("varsel-v1.xml").getInputStream();
