@@ -32,7 +32,6 @@ public class VarselConnection {
             template.getConnectionFactory().createConnection().close();
         } catch (JMSException swallow) {
             LOG.warn("Kunne ikke pinge VARSEL-kø {}", queueConfig.loggable(), swallow);
-            //TODO: legg til varsel som en Health-indicator?
         }
     }
 
