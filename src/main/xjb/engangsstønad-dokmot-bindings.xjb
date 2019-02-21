@@ -23,17 +23,4 @@
         </jaxb:bindings>
         <jaxb:schemaBindings />
     </jaxb:bindings>
-    <jaxb:bindings
-        schemaLocation="../xsd/dokmot/v1/konvolutt-dokmot-v1.xsd"
-        node="/xs:schema">
-        <jaxb:bindings
-            node="xs:complexType[@name='Dokumentforsendelse']">
-            <annox:annotate>
-                <annox:annotate
-                    annox:class="javax.xml.bind.annotation.XmlRootElement"
-                    name="dokumentforsendelse"
-                    namespace="http://nav.no/melding/virksomhet/dokumentforsendelse/v1" />
-            </annox:annotate>
-        </jaxb:bindings>
-    </jaxb:bindings>
 </jaxb:bindings>
