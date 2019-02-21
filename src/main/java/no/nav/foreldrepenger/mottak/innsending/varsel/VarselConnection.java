@@ -38,7 +38,7 @@ public class VarselConnection implements PingEndpointAware {
             return ("Alive and kicking");
         } catch (JMSException e) {
             LOG.warn("Kunne ikke pinge VARSEL-kø {}", queueConfig.getURI(), e);
-            throw new IllegalArgumentException("Kunne ikke pinge VARSEL-kø");
+            throw new IllegalArgumentException("Kunne ikke pinge VARSEL-kø", e);
         }
     }
 
