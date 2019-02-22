@@ -18,7 +18,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(name = "varsel.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "varsel.enabled", havingValue = "true", matchIfMissing = true)
 public class VarselJMSConnection implements VarselConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(VarselJMSConnection.class);
