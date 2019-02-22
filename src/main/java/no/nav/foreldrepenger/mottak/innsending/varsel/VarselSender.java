@@ -1,11 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
-import static no.nav.foreldrepenger.mottak.Constants.CALL_ID;
-import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
-
 import java.time.LocalDateTime;
-
-import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +31,7 @@ public class VarselSender {
     }
 
     private void doSend(Person søker, LocalDateTime mottattDato) {
-        connection.send(session -> {
-            TextMessage msg = session.createTextMessage(generator.tilXml(søker, mottattDato));
-            LOG.info("Legger melding på varselkø");
-            msg.setStringProperty(CALL_ID, callId());
-            return msg;
-        });
+        connection.send(generator.tilXml(søker, mottattDato));
     }
 
     @Override

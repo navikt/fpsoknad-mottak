@@ -1,11 +1,14 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
+import static no.nav.foreldrepenger.mottak.Constants.CALL_ID;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_FAILED;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_SUCCESS;
+import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 
 import java.net.URI;
 
 import javax.jms.JMSException;
+import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,12 +54,21 @@ public class VarselConnection implements PingEndpointAware {
         return "varseltjeneste";
     }
 
-    public void send(MessageCreator msg) {
+    void send(String xml) {
+        send(session -> {
+            TextMessage msg = session.createTextMessage(xml);
+            msg.setStringProperty(CALL_ID, callId());
+            return msg;
+        });
+    }
+
+    private void send(MessageCreator msg) {
         try {
+            LOG.info("Legger melding på {}-kø ({})", name(), queueConfig.getURI());
             template.send(msg);
             VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
-            LOG.error("Feil ved sending til {} ({})", name(), queueConfig.getURI(), swallow);
+            LOG.error("Feil ved sending til {}-kø ({})", name(), queueConfig.getURI(), swallow);
             VARSEL_FAILED.increment();
         }
     }
@@ -73,4 +85,5 @@ public class VarselConnection implements PingEndpointAware {
     public String toString() {
         return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig.getURI() + "]";
     }
+
 }
