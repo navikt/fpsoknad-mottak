@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
@@ -55,17 +54,13 @@ public class VarselConnection implements PingEndpointAware {
     }
 
     void send(String xml) {
-        send(session -> {
-            TextMessage msg = session.createTextMessage(xml);
-            msg.setStringProperty(CALL_ID, callId());
-            return msg;
-        });
-    }
-
-    private void send(MessageCreator msg) {
+        LOG.info("Legger melding på {}-kø ({})", name(), queueConfig.getURI());
         try {
-            LOG.info("Legger melding på {}-kø ({})", name(), queueConfig.getURI());
-            template.send(msg);
+            template.send(session -> {
+                TextMessage msg = session.createTextMessage(xml);
+                msg.setStringProperty(CALL_ID, callId());
+                return msg;
+            });
             VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
             LOG.error("Feil ved sending til {}-kø ({})", name(), queueConfig.getURI(), swallow);
