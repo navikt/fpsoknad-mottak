@@ -3,7 +3,9 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
@@ -26,6 +28,7 @@ import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -345,7 +348,8 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public FontAwareCos fordeling(FontAwarePDDocument doc, Person søker, Fordeling fordeling, Dekningsgrad dekningsgrad,
+    public FontAwareCos fordeling(FontAwarePDDocument doc, Person søker, BrukerRolle rolle, Fordeling fordeling,
+            Dekningsgrad dekningsgrad,
             List<Vedlegg> vedlegg,
             int antallBarn,
             boolean erEndring, FontAwareCos cos, float y)
@@ -360,12 +364,12 @@ public class ForeldrepengeInfoRenderer {
             if (periode.getClass().equals(UttaksPeriode.class)) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn,
+                float x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                    y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
                             y);
                 }
                 else {
@@ -376,13 +380,13 @@ public class ForeldrepengeInfoRenderer {
             else if (periode instanceof GradertUttaksPeriode) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn,
+                float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
                         scratchcos,
                         STARTY - 190);
                 float behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                    y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
                             y);
                 }
                 else {
@@ -411,12 +415,13 @@ public class ForeldrepengeInfoRenderer {
             else if (periode instanceof UtsettelsesPeriode) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn,
+                float x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
+                            cos,
                             y);
                 }
                 else {
@@ -428,12 +433,13 @@ public class ForeldrepengeInfoRenderer {
             else if (periode instanceof OverføringsPeriode) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn,
+                float x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
                 float behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), vedlegg, antallBarn, cos,
+                    y = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
+                            cos,
                             y);
                 }
                 else {
@@ -463,10 +469,11 @@ public class ForeldrepengeInfoRenderer {
         return cos;
     }
 
-    public float renderOverføringsPeriode(OverføringsPeriode overføring, List<Vedlegg> vedlegg, int antallBarn,
+    public float renderOverføringsPeriode(OverføringsPeriode overføring, BrukerRolle rolle, List<Vedlegg> vedlegg,
+            int antallBarn,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("overføring"), cos, y);
-        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(overføring), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(overføring, rolle), cos, y);
         if (!vedlegg.isEmpty()) {
             LOG.debug("Overføringsperiode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
@@ -477,20 +484,22 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    private List<String> uttaksData(OverføringsPeriode overføring) {
+    private List<String> uttaksData(OverføringsPeriode overføring, BrukerRolle rolle) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", overføring.getFom());
         addIfSet(attributter, "tom", overføring.getTom());
         addIfSet(attributter, "dager", String.valueOf(overføring.dager()));
-        attributter.add(txt("uttaksperiodetype", cap(overføring.getUttaksperiodeType().name())));
+        attributter.add(txt(""
+                + "", cap(overføring.getUttaksperiodeType().name())));
         attributter.add(txt("overføringsårsak", cap(overføring.getÅrsak().name())));
         return attributter;
     }
 
-    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, List<Vedlegg> vedlegg, int antallBarn,
+    public float renderUtsettelsesPeriode(UtsettelsesPeriode utsettelse, BrukerRolle rolle, List<Vedlegg> vedlegg,
+            int antallBarn,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
-        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse, rolle), cos, y);
         if (!vedlegg.isEmpty()) {
             LOG.debug("UtsettelsesPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
@@ -500,7 +509,7 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    private List<String> uttaksData(UtsettelsesPeriode utsettelse) {
+    private List<String> uttaksData(UtsettelsesPeriode utsettelse, BrukerRolle rolle) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", utsettelse.getFom());
         addIfSet(attributter, "tom", utsettelse.getTom());
@@ -544,11 +553,11 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    public float renderUttaksPeriode(UttaksPeriode uttak, List<Vedlegg> vedlegg, int antallBarn,
+    public float renderUttaksPeriode(UttaksPeriode uttak, BrukerRolle rolle, List<Vedlegg> vedlegg, int antallBarn,
             FontAwareCos cos, float y)
             throws IOException {
         y -= renderer.addBulletPoint(txt("uttak"), cos, y);
-        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn, rolle), cos, y);
         if (!vedlegg.isEmpty()) {
             LOG.debug("UttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
@@ -558,11 +567,12 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float renderGradertPeriode(GradertUttaksPeriode gradert, List<Vedlegg> vedlegg, int antallBarn,
+    public float renderGradertPeriode(GradertUttaksPeriode gradert, BrukerRolle rolle, List<Vedlegg> vedlegg,
+            int antallBarn,
             FontAwareCos cos, float y)
             throws IOException {
         y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
-        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn), cos, y);
+        y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn, rolle), cos, y);
         if (!vedlegg.isEmpty()) {
             LOG.debug("GradertUttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
                     vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
@@ -573,7 +583,7 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    private List<String> uttaksData(GradertUttaksPeriode gradert, int antallBarn) {
+    private List<String> uttaksData(GradertUttaksPeriode gradert, int antallBarn, BrukerRolle rolle) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", gradert.getFom());
         addIfSet(attributter, "tom", gradert.getTom());
@@ -593,12 +603,12 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    private List<String> uttaksData(UttaksPeriode uttak, int antallBarn) {
+    private List<String> uttaksData(UttaksPeriode uttak, int antallBarn, BrukerRolle rolle) {
         ArrayList<String> attributter = new ArrayList<>();
         addIfSet(attributter, "fom", uttak.getFom());
         addIfSet(attributter, "tom", uttak.getTom());
         addIfSet(attributter, "dager", String.valueOf(uttak.dager()));
-        attributter.add(txt("uttaksperiodetype", cap(uttak.getUttaksperiodeType().name())));
+        attributter.add(txt("uttaksperiodetype", uttaksperiodeTypeForRolle(uttak, rolle)));
         addIfSet(attributter, uttak.getMorsAktivitetsType());
         if (antallBarn > 1) {
             attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
@@ -607,6 +617,13 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, uttak.isØnskerSamtidigUttak(), "samtidiguttakprosent",
                 String.valueOf(uttak.getSamtidigUttakProsent()));
         return attributter;
+    }
+
+    private String uttaksperiodeTypeForRolle(UttaksPeriode uttak, BrukerRolle rolle) {
+        if (MEDMOR.equals(rolle) && FEDREKVOTE.equals(uttak.getUttaksperiodeType())) {
+            return txt("uttakfedrekvotemedmor");
+        }
+        return cap(uttak.getUttaksperiodeType().name());
     }
 
     private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {

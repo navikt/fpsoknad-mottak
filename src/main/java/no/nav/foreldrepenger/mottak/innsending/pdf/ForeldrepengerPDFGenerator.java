@@ -82,18 +82,18 @@ public class ForeldrepengerPDFGenerator {
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos,
-                    true, startY);
+                        true, startY);
                 float size = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
-                    scratchcos, startY);
+                        scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
                     y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
-                        cos, y);
+                            cos, y);
                 }
                 else {
                     cos = nySide(doc, cos, scratch1,
-                        scratchcos);
+                            scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }
@@ -211,7 +211,8 @@ public class ForeldrepengerPDFGenerator {
                 }
 
                 if (stønad.getFordeling() != null) {
-                    cos = fpRenderer.fordeling(doc, søker, stønad.getFordeling(), stønad.getDekningsgrad(),
+                    cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.getFordeling(),
+                            stønad.getDekningsgrad(),
                             søknad.getVedlegg(),
                             stønad.getRelasjonTilBarn().getAntallBarn(), false,
                             cos, y);
@@ -276,24 +277,25 @@ public class ForeldrepengerPDFGenerator {
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos,
-                    true, startY);
+                        true, startY);
                 float size = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
-                    scratchcos, startY);
+                        scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
                     y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
-                        cos, y);
+                            cos, y);
                 }
                 else {
                     cos = nySide(doc, cos, scratch1,
-                        scratchcos);
+                            scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }
 
             if (stønad.getFordeling() != null) {
-                cos = fpRenderer.fordeling(doc, søker, stønad.getFordeling(), stønad.getDekningsgrad(),
+                cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.getFordeling(),
+                        stønad.getDekningsgrad(),
                         søknad.getVedlegg(),
                         stønad.getRelasjonTilBarn().getAntallBarn(), true,
                         cos, y);
