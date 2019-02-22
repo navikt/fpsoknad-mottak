@@ -21,6 +21,9 @@ server.servlet :
     context-path :  /api
     use-forward-headers: true
 
+varsel:
+    username : srvappserver
+
 spring :
     cache :
        cache-names : aktoer

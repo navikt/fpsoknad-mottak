@@ -24,6 +24,8 @@ public class VarselQueueConfig {
     @NotNull
     String channelname;
     boolean enabled = false;
+    @NotNull
+    String username;
 
     public boolean isEnabled() {
         return enabled;
@@ -73,9 +75,18 @@ public class VarselQueueConfig {
         this.channelname = channelname;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public URI getURI() {
         return UriComponentsBuilder
                 .newInstance().scheme("jms")
+                .userInfo(getUsername())
                 .host(getHostname())
                 .port(getPort())
                 .pathSegment(getChannelname(), getQueueName())
