@@ -90,6 +90,7 @@ public class VarselQueueConfig {
                 .host(getHostname())
                 .port(getPort())
                 .pathSegment(getChannelname(), getQueueName())
+                .queryParam("enabled", isEnabled())
                 .build().toUri();
     }
 
