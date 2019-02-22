@@ -9,7 +9,6 @@ import javax.jms.JMSException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -25,20 +24,20 @@ public class VarselConnection implements PingEndpointAware {
     private final JmsTemplate template;
     private final VarselQueueConfig queueConfig;
 
-    public VarselConnection(@Qualifier("varselTemplate") JmsTemplate template, VarselQueueConfig queueConfig) {
+    public VarselConnection(JmsTemplate template, VarselQueueConfig queueConfig) {
         this.template = template;
         this.queueConfig = queueConfig;
     }
 
     @Override
     public String ping() {
-        LOG.info("Pinger {}", queueConfig.getURI());
+        LOG.info("Pinger {} ({})", name(), queueConfig.getURI());
         try {
             template.getConnectionFactory().createConnection().close();
             return ("Alive and kicking");
         } catch (JMSException e) {
-            LOG.warn("Kunne ikke pinge VARSEL-kø {}", queueConfig.getURI(), e);
-            throw new IllegalArgumentException("Kunne ikke pinge VARSEL-kø", e);
+            LOG.warn("Kunne ikke pinge {}-kø ({})", name(), queueConfig.getURI(), e);
+            throw new IllegalArgumentException("Kunne ikke pinge " + name() + "-kø", e);
         }
     }
 
@@ -49,7 +48,7 @@ public class VarselConnection implements PingEndpointAware {
 
     @Override
     public String name() {
-        return "VARSEL";
+        return "varseltjeneste";
     }
 
     public void send(MessageCreator msg) {
@@ -57,7 +56,7 @@ public class VarselConnection implements PingEndpointAware {
             template.send(msg);
             VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
-            LOG.error("Feil ved sending til varseltjenesten {}", queueConfig.getURI(), swallow);
+            LOG.error("Feil ved sending til {} ({})", name(), queueConfig.getURI(), swallow);
             VARSEL_FAILED.increment();
         }
     }
@@ -67,7 +66,7 @@ public class VarselConnection implements PingEndpointAware {
     }
 
     public boolean isEnabled() {
-        return queueConfig.isEnabled();
+        return getQueueConfig().isEnabled();
     }
 
     @Override

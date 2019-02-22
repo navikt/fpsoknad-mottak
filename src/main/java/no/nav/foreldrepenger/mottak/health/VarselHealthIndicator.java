@@ -49,7 +49,7 @@ public class VarselHealthIndicator implements HealthIndicator, EnvironmentAware 
     }
 
     private Health downWithDetails(Exception e) {
-        return Health.down().withDetail("config", connection.pingEndpoint()).withException(e).build();
+        return Health.down().withDetail(connection.name(), connection.pingEndpoint()).withException(e).build();
     }
 
     private static Health up() {
@@ -57,7 +57,7 @@ public class VarselHealthIndicator implements HealthIndicator, EnvironmentAware 
     }
 
     private Health upWithDetails() {
-        return Health.up().withDetail("config", connection.pingEndpoint()).build();
+        return Health.up().withDetail(connection.name(), connection.pingEndpoint()).build();
     }
 
     @Override
