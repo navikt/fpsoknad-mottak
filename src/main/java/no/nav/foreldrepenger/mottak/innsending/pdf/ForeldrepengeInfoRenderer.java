@@ -54,6 +54,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
@@ -489,8 +490,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", overføring.getFom());
         addIfSet(attributter, "tom", overføring.getTom());
         addIfSet(attributter, "dager", String.valueOf(overføring.dager()));
-        attributter.add(txt(""
-                + "", cap(overføring.getUttaksperiodeType().name())));
+        attributter.add(txt("uttaksperiodetype",uttaksperiodeTypeForRolle(overføring.getUttaksperiodeType(), rolle)));
         attributter.add(txt("overføringsårsak", cap(overføring.getÅrsak().name())));
         return attributter;
     }
@@ -516,7 +516,8 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "dager", String.valueOf(utsettelse.dager()));
 
         if (utsettelse.getUttaksperiodeType() != null) {
-            attributter.add(txt("uttaksperiodetype", cap(utsettelse.getUttaksperiodeType().name())));
+            attributter
+                    .add(txt("uttaksperiodetype", uttaksperiodeTypeForRolle(utsettelse.getUttaksperiodeType(), rolle)));
         }
         attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addIfSet(attributter, utsettelse.getMorsAktivitetsType());
@@ -588,7 +589,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", gradert.getFom());
         addIfSet(attributter, "tom", gradert.getTom());
         addIfSet(attributter, "dager", String.valueOf(gradert.dager()));
-        attributter.add(txt("uttaksperiodetype", cap(gradert.getUttaksperiodeType().name())));
+        attributter.add(txt("uttaksperiodetype", uttaksperiodeTypeForRolle(gradert.getUttaksperiodeType(), rolle)));
         addListIfSet(attributter, "arbeidsgiver", gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
         attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
@@ -608,7 +609,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", uttak.getFom());
         addIfSet(attributter, "tom", uttak.getTom());
         addIfSet(attributter, "dager", String.valueOf(uttak.dager()));
-        attributter.add(txt("uttaksperiodetype", uttaksperiodeTypeForRolle(uttak, rolle)));
+        attributter.add(txt("uttaksperiodetype", uttaksperiodeTypeForRolle(uttak.getUttaksperiodeType(), rolle)));
         addIfSet(attributter, uttak.getMorsAktivitetsType());
         if (antallBarn > 1) {
             attributter.add(txt("ønskerflerbarnsdager", jaNei(uttak.isØnskerFlerbarnsdager())));
@@ -619,11 +620,11 @@ public class ForeldrepengeInfoRenderer {
         return attributter;
     }
 
-    private String uttaksperiodeTypeForRolle(UttaksPeriode uttak, BrukerRolle rolle) {
-        if (MEDMOR.equals(rolle) && FEDREKVOTE.equals(uttak.getUttaksperiodeType())) {
+    private String uttaksperiodeTypeForRolle(StønadskontoType type, BrukerRolle rolle) {
+        if (MEDMOR.equals(rolle) && FEDREKVOTE.equals(type)) {
             return txt("uttakfedrekvotemedmor");
         }
-        return cap(uttak.getUttaksperiodeType().name());
+        return cap(type.name());
     }
 
     private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
