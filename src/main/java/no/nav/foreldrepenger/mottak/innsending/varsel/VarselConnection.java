@@ -54,7 +54,7 @@ public class VarselConnection implements PingEndpointAware {
     }
 
     void send(String xml) {
-        LOG.info("Legger melding på {}-kø ({})", name(), queueConfig.getURI());
+        LOG.info("Legger melding for varsel på {}-kø ({})", name(), queueConfig.getURI());
         try {
             template.send(session -> {
                 TextMessage msg = session.createTextMessage(xml);
@@ -63,7 +63,7 @@ public class VarselConnection implements PingEndpointAware {
             });
             VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
-            LOG.error("Feil ved sending til {}-kø ({})", name(), queueConfig.getURI(), swallow);
+            LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), queueConfig.getURI(), swallow);
             VARSEL_FAILED.increment();
         }
     }
