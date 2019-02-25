@@ -8,18 +8,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.util.jaxb.VarselJaxbUtil;
 import no.nav.melding.virksomhet.varsel.v1.varsel.AktoerId;
+import no.nav.melding.virksomhet.varsel.v1.varsel.ObjectFactory;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Parameter;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Varsel;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Varslingstyper;
 
 @Service
 public class VarselXMLGenerator {
-    private static final VarselJaxbUtil JAXB = new VarselJaxbUtil();
+    private final VarselJaxbUtil jaxb;
     private static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel";
     private static final String FORNAVN = "FORNAVN";
     private static final String DATO = "DATO";
@@ -27,8 +30,23 @@ public class VarselXMLGenerator {
     private static final String URL_FP = "URL_FP";
     private static final String URL_FP_VALUE = "https://foreldrepenger.nav.no";
 
+    private static final ObjectFactory VARSEL_FACTORY_V1 = new ObjectFactory();
+
+    @Inject
+    public VarselXMLGenerator() {
+        this(true);
+    }
+
+    public VarselXMLGenerator(boolean validate) {
+        this(new VarselJaxbUtil(validate, validate));
+    }
+
+    public VarselXMLGenerator(VarselJaxbUtil jaxb) {
+        this.jaxb = jaxb;
+    }
+
     public String tilXml(Person person, LocalDateTime mottatt) {
-        return JAXB.marshal(tilVarselModel(person, mottatt));
+        return jaxb.marshal(VARSEL_FACTORY_V1.createVarsel(tilVarselModel(person, mottatt)));
     }
 
     private static Varsel tilVarselModel(Person søker, LocalDateTime mottatt) {
