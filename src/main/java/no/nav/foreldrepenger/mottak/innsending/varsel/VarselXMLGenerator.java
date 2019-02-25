@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.stereotype.Service;
@@ -33,19 +34,30 @@ public class VarselXMLGenerator {
     private static Varsel tilVarselModel(Person søker, LocalDateTime mottatt) {
 
         return new Varsel()
-                .withMottaker(new AktoerId().withAktoerId(søker.aktørId.getId()))
-                .withVarslingstype(new Varslingstyper().withValue(VARSEL_TYPE))
-                .withParameterListe(
-                        Arrays.asList(
-                                new Parameter()
-                                        .withKey(FORNAVN)
-                                        .withValue(søker.fornavn),
-                                new Parameter()
-                                        .withKey(DATO)
-                                        .withValue(formattertDato(mottatt)),
-                                new Parameter()
-                                        .withKey(URL_FP)
-                                        .withValue(URL_FP_VALUE)));
+                .withMottaker(mottaker(søker))
+                .withVarslingstype(varslingsType())
+                .withParameterListe(parameterListe(søker, mottatt));
+    }
+
+    private static AktoerId mottaker(Person søker) {
+        return new AktoerId().withAktoerId(søker.aktørId.getId());
+    }
+
+    private static Varslingstyper varslingsType() {
+        return new Varslingstyper().withValue(VARSEL_TYPE);
+    }
+
+    private static List<Parameter> parameterListe(Person søker, LocalDateTime mottatt) {
+        return Arrays.asList(
+                new Parameter()
+                        .withKey(FORNAVN)
+                        .withValue(søker.fornavn),
+                new Parameter()
+                        .withKey(DATO)
+                        .withValue(formattertDato(mottatt)),
+                new Parameter()
+                        .withKey(URL_FP)
+                        .withValue(URL_FP_VALUE));
     }
 
     private static String formattertDato(LocalDateTime date) {
@@ -54,5 +66,4 @@ public class VarselXMLGenerator {
                 .withLocale(Locale.forLanguageTag("no"))
                 .withZone(ZoneId.systemDefault()));
     }
-
 }
