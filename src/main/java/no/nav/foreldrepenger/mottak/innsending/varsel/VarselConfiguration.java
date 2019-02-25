@@ -30,14 +30,14 @@ public class VarselConfiguration {
     }
 
     @Bean
-    ConnectionFactory userCredentialsConnectionFactoryAdapter(VarselConfig cfg) throws JMSException {
+    ConnectionFactory connectionFactory(VarselConfig cfg) throws JMSException {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(cfg.getUsername());
-        cf.setTargetConnectionFactory(varselConnectionFactory(cfg));
+        cf.setTargetConnectionFactory(targetFrom(cfg));
         return cf;
     }
 
-    private static MQQueueConnectionFactory varselConnectionFactory(VarselConfig cfg) throws JMSException {
+    private static ConnectionFactory targetFrom(VarselConfig cfg) throws JMSException {
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
         cf.setHostName(cfg.getHostname());
         cf.setPort(cfg.getPort());
