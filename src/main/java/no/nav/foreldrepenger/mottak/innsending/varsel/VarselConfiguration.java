@@ -8,6 +8,7 @@ import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
@@ -17,6 +18,7 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 @Configuration
+@ConditionalOnProperty(name = "varsel.enabled", havingValue = "true")
 public class VarselConfiguration {
 
     private static final int UTF_8_WITH_PUA = 1208;
