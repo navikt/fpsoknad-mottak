@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         VarselSender.class,
-        VarselQueueConfig.class,
+        VarselConfig.class,
         VoidVarselConnection.class,
         VarselConfiguration.class,
         VarselXMLGenerator.class

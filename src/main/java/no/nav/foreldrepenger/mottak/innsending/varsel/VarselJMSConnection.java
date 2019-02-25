@@ -24,28 +24,33 @@ public class VarselJMSConnection implements VarselConnection {
     private static final Logger LOG = LoggerFactory.getLogger(VarselJMSConnection.class);
 
     private final JmsTemplate template;
-    private final VarselQueueConfig queueConfig;
+    private final VarselConfig varselConfig;
 
-    public VarselJMSConnection(JmsTemplate template, VarselQueueConfig queueConfig) {
+    public VarselJMSConnection(JmsTemplate template, VarselConfig varselConfig) {
         this.template = template;
-        this.queueConfig = queueConfig;
+        this.varselConfig = varselConfig;
     }
 
     @Override
     public String ping() {
-        LOG.info("Pinger {} ({})", name(), queueConfig.getURI());
+        LOG.info("Pinger {} ({})", name(), varselConfig.getURI());
         try {
             template.getConnectionFactory().createConnection().close();
-            return (name() + " is alive and kicking at " + pingEndpoint());
+            return (name() + " er i live på " + pingEndpoint());
         } catch (JMSException e) {
-            LOG.warn("Kunne ikke pinge {}-kø ({})", name(), queueConfig.getURI(), e);
+            LOG.warn("Kunne ikke pinge {}-kø ({})", name(), varselConfig.getURI(), e);
             throw new IllegalArgumentException("Kunne ikke pinge " + name() + "-kø", e);
         }
     }
 
     @Override
     public URI pingEndpoint() {
-        return queueConfig.getURI();
+        return varselConfig.getURI();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return getConfig().isEnabled();
     }
 
     @Override
@@ -55,7 +60,7 @@ public class VarselJMSConnection implements VarselConnection {
 
     @Override
     public void send(String xml) {
-        LOG.info("Legger melding for varsel på {}-kø ({})", name(), queueConfig.getURI());
+        LOG.info("Legger melding for varsel på {}-kø ({})", name(), varselConfig.getURI());
         try {
             template.send(session -> {
                 TextMessage msg = session.createTextMessage(xml);
@@ -64,23 +69,18 @@ public class VarselJMSConnection implements VarselConnection {
             });
             VARSEL_SUCCESS.increment();
         } catch (JmsException swallow) {
-            LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), queueConfig.getURI(), swallow);
+            LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), varselConfig.getURI(), swallow);
             VARSEL_FAILED.increment();
         }
     }
 
-    public VarselQueueConfig getQueueConfig() {
-        return queueConfig;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return getQueueConfig().isEnabled();
+    VarselConfig getConfig() {
+        return varselConfig;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", queueConfig=" + queueConfig.getURI() + "]";
+        return getClass().getSimpleName() + " [template=" + template + ", varselConfig=" + varselConfig.getURI() + "]";
     }
 
 }

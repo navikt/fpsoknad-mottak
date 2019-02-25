@@ -23,7 +23,7 @@ public class VarselConfiguration {
     private static final int UTF_8_WITH_PUA = 1208;
 
     @Bean
-    public JmsTemplate varselTemplate(VarselQueueConfig cfg, ConnectionFactory cf) {
+    public JmsTemplate varselTemplate(VarselConfig cfg, ConnectionFactory cf) {
         JmsTemplate jmsTemplate = new JmsTemplate(cf);
         jmsTemplate.setDefaultDestinationName(cfg.getQueueName());
         jmsTemplate.setDestinationResolver(new DynamicDestinationResolver());
@@ -31,7 +31,7 @@ public class VarselConfiguration {
     }
 
     @Bean
-    public MQQueueConnectionFactory varselConnectionFactory(VarselQueueConfig cfg) throws JMSException {
+    public MQQueueConnectionFactory varselConnectionFactory(VarselConfig cfg) throws JMSException {
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
         cf.setHostName(cfg.getHostname());
         cf.setPort(cfg.getPort());
@@ -46,7 +46,7 @@ public class VarselConfiguration {
 
     @Bean
     @Primary
-    ConnectionFactory userCredentialsConnectionFactoryAdapter(VarselQueueConfig cfg,
+    ConnectionFactory userCredentialsConnectionFactoryAdapter(VarselConfig cfg,
                                                               MQQueueConnectionFactory delegate) {
         UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(cfg.getUsername());

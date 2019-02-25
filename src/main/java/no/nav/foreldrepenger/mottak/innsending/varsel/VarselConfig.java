@@ -11,7 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @ConfigurationProperties(prefix = "varsel")
 @Configuration
-public class VarselQueueConfig {
+public class VarselConfig {
 
     @NotNull
     String hostname;
