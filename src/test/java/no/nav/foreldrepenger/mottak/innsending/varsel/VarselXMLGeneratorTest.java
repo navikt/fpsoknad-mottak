@@ -10,6 +10,7 @@ import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -27,12 +28,13 @@ class VarselXMLGeneratorTest {
         VarselJaxbUtil jaxb = new VarselJaxbUtil(true);
         VarselXMLGenerator varselXmlGenerator = new VarselXMLGenerator(jaxb);
         Person person = person();
-        Varsel varsel = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(person, now()), Varsel.class).getValue();
+        LocalDateTime now = now();
+        Varsel varsel = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(person, now), Varsel.class).getValue();
         assertEquals(AktoerId.class.cast(varsel.getMottaker()).getAktoerId(), person.aktørId.getId());
         assertEquals(VARSEL_TYPE, varsel.getVarslingstype().getValue());
         List<Parameter> parametre = varsel.getParameterListe();
         assertEquals(3, parametre.size());
-        assertParameter(parametre, DATO, VarselXMLGenerator.formattertDato(now()));
+        assertParameter(parametre, DATO, VarselXMLGenerator.formattertDato(now));
         assertParameter(parametre, FORNAVN, person.fornavn);
         assertParameter(parametre, URL_FP, URL_FP_VALUE);
     }
