@@ -5,4 +5,5 @@ management :
      security.enabled : false
 spring.http.log-request-details : true
 varsel:
-    enabled: true
+    username : srvappserver
+    enabled : false
