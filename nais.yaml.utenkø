@@ -33,20 +33,6 @@ fasitResources:
       resourceType: baseurl
       propertyMap:
          url: NO_NAV_SECURITY_OIDC_ISSUER_SELVBETJENING_DISCOVERYURL
-    - alias: mqGateway02
-      resourceType: queuemanager
-      propertyMap:
-          hostname: VARSEL_HOSTNAME
-          port: VARSEL_PORT
-          name: VARSEL_NAME
-    - alias: VARSELPRODUKSJON.VARSLINGER
-      resourceType: queue
-      propertyMap:
-          queueName: VARSEL_QUEUENAME
-    - alias: fpsoknad_varsel_kanal
-      resourceType: channel
-      propertyMap:
-          name: VARSEL_CHANNELNAME
     - alias : FPSOKNADMOTTAK_PROPERTIES
       resourceType: applicationProperties
   exposed:
