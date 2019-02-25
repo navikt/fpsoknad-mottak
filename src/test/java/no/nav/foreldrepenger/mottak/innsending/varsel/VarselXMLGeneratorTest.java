@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.
 import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.URL_FP;
 import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.URL_FP_VALUE;
 import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.VARSEL_TYPE;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.formattertDato;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ class VarselXMLGeneratorTest {
         assertEquals(VARSEL_TYPE, varsel.getVarslingstype().getValue());
         List<Parameter> parametre = varsel.getParameterListe();
         assertEquals(3, parametre.size());
-        assertParameter(parametre, DATO, VarselXMLGenerator.formattertDato(now));
+        assertParameter(parametre, DATO, formattertDato(now));
         assertParameter(parametre, FORNAVN, person.fornavn);
         assertParameter(parametre, URL_FP, URL_FP_VALUE);
     }
