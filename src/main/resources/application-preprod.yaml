@@ -6,4 +6,4 @@ management :
 spring.http.log-request-details : true
 varsel:
     username : srvappserver
-    enabled : false
+    enabled : true
