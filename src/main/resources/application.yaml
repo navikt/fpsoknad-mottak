@@ -23,6 +23,7 @@ server.servlet :
 
 varsel:
     username : srvappserver
+    enabled : false
 
 spring :
     cache :
@@ -41,4 +42,4 @@ spring :
     main.banner-mode : 'off'
     metrics.web.server.auto-time-requests: true
 
- varsel.enabled: false
+
