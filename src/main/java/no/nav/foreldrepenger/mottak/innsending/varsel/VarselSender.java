@@ -21,17 +21,13 @@ public class VarselSender {
         this.generator = generator;
     }
 
-    public void send(Person søker, LocalDateTime mottattDato) {
+    public void varsle(Person søker, LocalDateTime mottattDato) {
         if (connection.isEnabled()) {
-            doSend(søker, mottattDato);
+            connection.send(generator.tilXml(søker, mottattDato));
         }
         else {
             LOG.info("Sending av varsler er deaktivert, ingenting å sende");
         }
-    }
-
-    private void doSend(Person søker, LocalDateTime mottattDato) {
-        connection.send(generator.tilXml(søker, mottattDato));
     }
 
     @Override

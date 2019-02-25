@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -41,13 +39,13 @@ public class SøknadController {
 
     private final Innsyn innsyn;
     private final Oppslag oppslag;
-    private final SøknadSender sender;
+    private final SøknadSender søknadSender;
     private final SøknadInspektør inspektør;
     private final VarselSender varselSender;
 
-    public SøknadController(SøknadSender sender, Oppslag oppslag, Innsyn innsyn, SøknadInspektør inspektør,
-                            VarselSender varselSender) {
-        this.sender = sender;
+    public SøknadController(SøknadSender søknadSender, VarselSender varselSender, Oppslag oppslag, Innsyn innsyn,
+            SøknadInspektør inspektør) {
+        this.søknadSender = søknadSender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
         this.inspektør = inspektør;
@@ -56,23 +54,23 @@ public class SøknadController {
 
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
-        Kvittering kvittering = sender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
+        Kvittering kvittering = søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
         if (kvittering.erVellykket()) {
-            varselSender.send(oppslag.getSøker(), kvittering.getMottattDato());
+            varselSender.varsle(oppslag.getSøker(), kvittering.getMottattDato());
         }
         return kvittering;
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        return sender.ettersend(ettersending, oppslag.getSøker(), inspektør.inspiser(ettersending));
+        return søknadSender.ettersend(ettersending, oppslag.getSøker(), inspektør.inspiser(ettersending));
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        Kvittering kvittering = sender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
+        Kvittering kvittering = søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
         if (kvittering.erVellykket()) {
-            varselSender.send(oppslag.getSøker(), kvittering.getMottattDato());
+            varselSender.varsle(oppslag.getSøker(), kvittering.getMottattDato());
         }
         return kvittering;
     }
@@ -91,7 +89,7 @@ public class SøknadController {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + ", sender=" + sender
-                + ", inspektør=" + inspektør + "]";
+        return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + ", søknadSender="
+                + søknadSender + ", inspektør=" + inspektør + "]";
     }
 }
