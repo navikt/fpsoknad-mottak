@@ -10,7 +10,6 @@ import javax.jms.JMSException;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.destination.DynamicDestinationResolver;
@@ -31,7 +30,14 @@ public class VarselConfiguration {
     }
 
     @Bean
-    public MQQueueConnectionFactory varselConnectionFactory(VarselConfig cfg) throws JMSException {
+    ConnectionFactory userCredentialsConnectionFactoryAdapter(VarselConfig cfg) throws JMSException {
+        UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
+        cf.setUsername(cfg.getUsername());
+        cf.setTargetConnectionFactory(varselConnectionFactory(cfg));
+        return cf;
+    }
+
+    private static MQQueueConnectionFactory varselConnectionFactory(VarselConfig cfg) throws JMSException {
         MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
         cf.setHostName(cfg.getHostname());
         cf.setPort(cfg.getPort());
@@ -41,16 +47,6 @@ public class VarselConfiguration {
         cf.setCCSID(UTF_8_WITH_PUA);
         cf.setIntProperty(JMS_IBM_ENCODING, MQENC_NATIVE);
         cf.setIntProperty(JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
-        return cf;
-    }
-
-    @Bean
-    @Primary
-    ConnectionFactory userCredentialsConnectionFactoryAdapter(VarselConfig cfg,
-                                                              MQQueueConnectionFactory delegate) {
-        UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
-        cf.setUsername(cfg.getUsername());
-        cf.setTargetConnectionFactory(delegate);
         return cf;
     }
 
