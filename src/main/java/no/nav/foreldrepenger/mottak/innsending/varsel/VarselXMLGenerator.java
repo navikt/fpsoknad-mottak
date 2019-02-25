@@ -23,12 +23,12 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.Varslingstyper;
 @Service
 public class VarselXMLGenerator {
     private final VarselJaxbUtil jaxb;
-    private static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel";
-    private static final String FORNAVN = "FORNAVN";
-    private static final String DATO = "DATO";
+    static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel";
+    static final String FORNAVN = "FORNAVN";
+    static final String DATO = "DATO";
 
-    private static final String URL_FP = "URL_FP";
-    private static final String URL_FP_VALUE = "https://foreldrepenger.nav.no";
+    static final String URL_FP = "URL_FP";
+    static final String URL_FP_VALUE = "https://foreldrepenger.nav.no";
 
     private static final ObjectFactory VARSEL_FACTORY_V1 = new ObjectFactory();
 
@@ -38,7 +38,7 @@ public class VarselXMLGenerator {
     }
 
     public VarselXMLGenerator(boolean validate) {
-        this(new VarselJaxbUtil(validate, validate));
+        this(new VarselJaxbUtil(validate));
     }
 
     public VarselXMLGenerator(VarselJaxbUtil jaxb) {
@@ -58,11 +58,13 @@ public class VarselXMLGenerator {
     }
 
     private static AktoerId mottaker(Person søker) {
-        return new AktoerId().withAktoerId(søker.aktørId.getId());
+        return new AktoerId()
+                .withAktoerId(søker.aktørId.getId());
     }
 
     private static Varslingstyper varslingsType() {
-        return new Varslingstyper().withValue(VARSEL_TYPE);
+        return new Varslingstyper()
+                .withValue(VARSEL_TYPE);
     }
 
     private static List<Parameter> parameterListe(Person søker, LocalDateTime mottatt) {
@@ -78,10 +80,15 @@ public class VarselXMLGenerator {
                         .withValue(URL_FP_VALUE));
     }
 
-    private static String formattertDato(LocalDateTime date) {
+    static String formattertDato(LocalDateTime date) {
         return date.format(DateTimeFormatter
                 .ofLocalizedDate(FormatStyle.LONG)
                 .withLocale(Locale.forLanguageTag("no"))
                 .withZone(ZoneId.systemDefault()));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [jaxb=" + jaxb + "]";
     }
 }
