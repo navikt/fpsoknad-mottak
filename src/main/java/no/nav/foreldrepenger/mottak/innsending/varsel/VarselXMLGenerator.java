@@ -7,6 +7,7 @@ import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -81,10 +82,9 @@ public class VarselXMLGenerator {
     }
 
     static String formattertNavn(String name) {
-        if (name == null) {
-            return "";
-        }
-        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+        return Optional.ofNullable(name)
+            .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
+            .orElse("");
     }
 
     static String formattertDato(LocalDateTime date) {
