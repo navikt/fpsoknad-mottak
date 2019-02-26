@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Mappables.egenskaperFor;
 import static no.nav.foreldrepenger.mottak.util.Mappables.mapperFor;
 

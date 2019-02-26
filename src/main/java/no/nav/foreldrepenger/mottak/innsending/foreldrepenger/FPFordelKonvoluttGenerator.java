@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;

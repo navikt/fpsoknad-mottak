@@ -11,9 +11,9 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadPreprodController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
+import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
