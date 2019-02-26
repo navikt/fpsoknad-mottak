@@ -42,7 +42,7 @@ public abstract class EgenNæring {
     private final long næringsinntektBrutto;
     private final LocalDate endringsDato;
     private final LocalDate oppstartsDato;
-    @Length(max = 100)
+    @Length(max = 1000)
     private final String beskrivelseEndring;
     private final Double stillingsprosent;
     private final List<String> vedlegg;
