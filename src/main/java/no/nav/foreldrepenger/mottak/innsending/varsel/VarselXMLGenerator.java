@@ -83,6 +83,7 @@ public class VarselXMLGenerator {
 
     static String formattertNavn(String name) {
         return Optional.ofNullable(name)
+            .map(n -> n.toLowerCase())
             .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
             .orElse("");
     }
