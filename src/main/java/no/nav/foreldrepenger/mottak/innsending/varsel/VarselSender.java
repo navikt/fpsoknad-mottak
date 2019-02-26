@@ -22,7 +22,7 @@ public class VarselSender {
             connection.varsle(generator.tilXml(varsel));
         }
         else {
-            LOG.info("Sending av varsler er deaktivert, ingenting å sende");
+            LOG.info("Varsling er deaktivert");
         }
     }
 
