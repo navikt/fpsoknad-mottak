@@ -45,7 +45,7 @@ public class ForeldrepengerTestUtils {
     public static final List<Vedlegg> TO_VEDLEGG = newArrayList(
             TestUtils.valgfrittVedlegg(ID142, InnsendingsType.LASTET_OPP),
             TestUtils.valgfrittVedlegg(ID143, InnsendingsType.LASTET_OPP));
-    public static final ValgfrittVedlegg V1 = opplastetVedlegg(ID142, I500002);
+    public static final ValgfrittVedlegg VEDLEGG1 = opplastetVedlegg(ID142, I500002);
     public static final ValgfrittVedlegg V2 = opplastetVedlegg(ID143, I500005);
     public static final ValgfrittVedlegg V3 = opplastetVedlegg(ID144, I000062);
 
@@ -53,7 +53,7 @@ public class ForeldrepengerTestUtils {
     private static final ValgfrittVedlegg IKKE_OPPLASTETV2 = ikkeOpplastet(ID143, I000063);
 
     public static Søknad foreldrepengeSøknad(Versjon v) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(v, false), V1);
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(v, false), VEDLEGG1);
     }
 
     public static Søknad foreldrepengeSøknadUtenVedlegg(Versjon v) {
@@ -61,15 +61,15 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Søknad søknadMedEttVedlegg(Versjon v) {
-        return søknad(v, false, V1);
+        return søknad(v, false, VEDLEGG1);
     }
 
     public static Søknad søknadMedEttOpplastetEttIkkeOpplastetVedlegg(Versjon v) {
-        return søknad(v, false, V1, IKKE_OPPLASTETV2);
+        return søknad(v, false, VEDLEGG1, IKKE_OPPLASTETV2);
     }
 
     public static Søknad søknadMedToVedlegg(Versjon v) {
-        return søknad(v, false, V1, V2);
+        return søknad(v, false, VEDLEGG1, V2);
     }
 
     public static Søknad søknadMedEttIkkeOpplastedVedlegg(Versjon v, boolean utland) {

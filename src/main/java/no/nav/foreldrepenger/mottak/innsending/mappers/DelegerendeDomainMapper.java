@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.mapperFor;
 
 import java.util.List;
 
@@ -14,14 +14,15 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedEgenskapException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.util.StreamUtil;
 
 @Component
 @Qualifier(DELEGERENDE)
 public class DelegerendeDomainMapper implements DomainMapper {
 
     private final List<DomainMapper> mappers;
+    private final MapperEgenskaper mapperEgenskaper;
 
     public DelegerendeDomainMapper(DomainMapper... mappers) {
         this(asList(mappers));
@@ -30,37 +31,26 @@ public class DelegerendeDomainMapper implements DomainMapper {
     @Inject
     public DelegerendeDomainMapper(List<DomainMapper> mappers) {
         this.mappers = mappers;
+        this.mapperEgenskaper = StreamUtil.egenskaperFor(mappers);
     }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(mappers.stream()
-                .map(m -> m.mapperEgenskaper())
-                .map(e -> e.getEgenskaper())
-                .flatMap(e -> e.stream())
-                .collect(toList()));
+        return mapperEgenskaper;
     }
 
     @Override
     public String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
-        return mapper(egenskap).tilXML(søknad, søker, egenskap);
+        return mapperFor(mappers, egenskap).tilXML(søknad, søker, egenskap);
     }
 
     @Override
     public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
-        return mapper(egenskap).tilXML(endringssøknad, søker, egenskap);
-    }
-
-    private DomainMapper mapper(SøknadEgenskap egenskap) {
-        return mappers.stream()
-                .filter(mapper -> mapper.kanMappe(egenskap))
-                .findFirst()
-                .orElseThrow(() -> new UnsupportedEgenskapException(egenskap));
+        return mapperFor(mappers, egenskap).tilXML(endringssøknad, søker, egenskap);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mappers=" + mappers + "]";
+        return getClass().getSimpleName() + " [mappers=" + mappers + ", mapperEgenskaper=" + mapperEgenskaper + "]";
     }
-
 }

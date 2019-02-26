@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -27,10 +28,12 @@ import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Service
-public class EngangsstønadPDFGenerator {
+public class EngangsstønadPDFGenerator implements PDFGenerator {
     private final SøknadTextFormatter textFormatter;
     private final PDFElementRenderer renderer;
 
@@ -40,7 +43,13 @@ public class EngangsstønadPDFGenerator {
         this.renderer = renderer;
     }
 
-    public byte[] generate(Søknad søknad, Person søker) {
+    @Override
+    public MapperEgenskaper mapperEgenskaper() {
+        return new MapperEgenskaper(INITIELL_ENGANGSSTØNAD);
+    }
+
+    @Override
+    public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         Engangsstønad stønad = Engangsstønad.class.cast(søknad.getYtelse());
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
         final PDPage page = newPage();

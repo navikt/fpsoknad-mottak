@@ -10,7 +10,17 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedEgenskapException;
+import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+
 public final class StreamUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(StreamUtil.class);
 
     private StreamUtil() {
     }
@@ -36,5 +46,22 @@ public final class StreamUtil {
                     }
                     return list.get(0);
                 });
+    }
+
+    public static MapperEgenskaper egenskaperFor(List<? extends Mappable> mappables) {
+        return new MapperEgenskaper(mappables.stream()
+                .map(e -> e.mapperEgenskaper())
+                .map(e -> e.getEgenskaper())
+                .flatMap(e -> e.stream())
+                .collect(toList()));
+    }
+
+    public static <T extends Mappable> T mapperFor(List<T> mappables, SøknadEgenskap egenskap) {
+        T mapper = mappables.stream()
+                .filter(m -> m.kanMappe(egenskap))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedEgenskapException(egenskap));
+        LOG.info("Bruker mapper {} for {}", mapper, egenskap);
+        return mapper;
     }
 }

@@ -172,7 +172,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvoluttEttersending() {
-        Ettersending es = new Ettersending(EttersendingsType.foreldrepenger, "42", ForeldrepengerTestUtils.V1,
+        Ettersending es = new Ettersending(EttersendingsType.foreldrepenger, "42", ForeldrepengerTestUtils.VEDLEGG1,
                 ForeldrepengerTestUtils.V2);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person());
         List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
@@ -196,7 +196,7 @@ public class TestFPFordelSerialization {
     }
 
     public void testEndringssøknadRoundtrip(Versjon v) {
-        Endringssøknad original = endringssøknad(v, ForeldrepengerTestUtils.V1, ForeldrepengerTestUtils.V2);
+        Endringssøknad original = endringssøknad(v, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
         String xml = v12DomainMapper.tilXML(original, AKTØRID,
                 new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
         SøknadEgenskap inspiser = INSPEKTØR.inspiser(xml);
@@ -231,7 +231,7 @@ public class TestFPFordelSerialization {
     }
 
     private void testKonvoluttEndring(Versjon v) {
-        Endringssøknad es = endringssøknad(v, ForeldrepengerTestUtils.V1, ForeldrepengerTestUtils.V2);
+        Endringssøknad es = endringssøknad(v, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
 
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
                 new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));

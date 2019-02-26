@@ -1,62 +1,65 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.V1;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.google.common.collect.Lists;
-
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
         PDFElementRenderer.class,
+        DelegerendePDFGenerator.class,
         ForeldrepengerPDFGenerator.class,
+        EngangsstønadPDFGenerator.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 
-@ActiveProfiles()
-public class ForeldrepengerPDFGeneratorTest {
+public class PDFGeneratorTest {
 
     private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +
-        "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
-        "mulighet til å søke om utsettelse.";
+            "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
+            "mulighet til å søke om utsettelse.";
     @Autowired
-    ForeldrepengerPDFGenerator gen;
+    @Qualifier(DELEGERENDE)
+    PDFGenerator gen;
 
     @Test
     public void signature() throws Exception {
-        assertTrue(hasPdfSignature(gen.generate(foreldrepengeSøknad(Versjon.V2), person())));
+        assertTrue(hasPdfSignature(
+                gen.generate(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test
     public void førstegangssøknad() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
-            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(Versjon.V2, true);
+            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            fos.write(gen.generate(søknad, person(), arbeidsforhold()));
+            fos.write(gen.generate(søknad, person(), INITIELL_FORELDREPENGER));
         }
     }
 
@@ -64,20 +67,17 @@ public class ForeldrepengerPDFGeneratorTest {
     public void endring() throws Exception {
 
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
-            Endringssøknad endringssøknad = endringssøknad(Versjon.V1, V1);
+            Endringssøknad endringssøknad = endringssøknad(DEFAULT_VERSJON, VEDLEGG1);
             endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            fos.write(gen.generate(endringssøknad, person()));
+            fos.write(gen.generate(endringssøknad, person(), ENDRING_FORELDREPENGER));
         }
     }
 
-    private static List<Arbeidsforhold> arbeidsforhold() {
-        return Lists.newArrayList(
-                new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                        Optional.of(LocalDate.now()), 90.0, "El caca"),
-                new Arbeidsforhold("1234", "", LocalDate.now().minusDays(500),
-                        Optional.of(LocalDate.now()), 90.0, "El Bedrifto"),
-                new Arbeidsforhold("5678", "", LocalDate.now().minusDays(100),
-                        Optional.of(LocalDate.now()), 80.0, "TGD"));
+    @Test
+    public void engangs() throws Exception {
 
+        try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
+            fos.write(gen.generate(engangssøknad(DEFAULT_VERSJON, fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
+        }
     }
 }

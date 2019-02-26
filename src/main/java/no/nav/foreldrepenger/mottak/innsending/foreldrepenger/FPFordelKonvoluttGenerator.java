@@ -28,9 +28,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.PDFGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
@@ -44,10 +43,11 @@ public class FPFordelKonvoluttGenerator {
     private static final String CONTENT_ID = "Content-ID";
     private final FPFordelMetdataGenerator metadataGenerator;
     private final DomainMapper domainMapper;
-    private final DelegerendePDFGenerator pdfGenerator;
+    private final PDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            @Qualifier(DELEGERENDE) DomainMapper domainMapper, DelegerendePDFGenerator pdfGenerator) {
+            @Qualifier(DELEGERENDE) DomainMapper domainMapper,
+            @Qualifier(DELEGERENDE) PDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.domainMapper = domainMapper;
         this.pdfGenerator = pdfGenerator;
@@ -62,7 +62,7 @@ public class FPFordelKonvoluttGenerator {
         builder.part(METADATA, metadata(søknad, egenskap, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId, egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
-        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap.getType()), APPLICATION_PDF)
+        builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
         søknad.getVedlegg().stream()
@@ -81,7 +81,7 @@ public class FPFordelKonvoluttGenerator {
         builder.part(METADATA, metadata(endringsøknad, egenskap, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
-        builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap.getType()), APPLICATION_PDF)
+        builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
         endringsøknad.getVedlegg().stream()
@@ -143,13 +143,12 @@ public class FPFordelKonvoluttGenerator {
         return metadata;
     }
 
-    private byte[] pdfHovedDokument(Søknad søknad, Person søker, SøknadType type) {
-        return pdfGenerator.generate(søknad, søker, type);
-
+    private byte[] pdfHovedDokument(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        return pdfGenerator.generate(søknad, søker, egenskap);
     }
 
-    private byte[] pdfHovedDokument(Endringssøknad endringssøknad, Person søker, SøknadType type) {
-        return pdfGenerator.generate(endringssøknad, søker, type);
+    private byte[] pdfHovedDokument(Endringssøknad endringssøknad, Person søker, SøknadEgenskap egenskap) {
+        return pdfGenerator.generate(endringssøknad, søker, egenskap);
     }
 
     private String xmlHovedDokument(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {

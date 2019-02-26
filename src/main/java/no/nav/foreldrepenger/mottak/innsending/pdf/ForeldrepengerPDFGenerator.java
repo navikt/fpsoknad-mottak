@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -20,10 +22,13 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
-public class ForeldrepengerPDFGenerator {
+public class ForeldrepengerPDFGenerator implements PDFGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private final Oppslag oppslag;
@@ -34,8 +39,21 @@ public class ForeldrepengerPDFGenerator {
         this.fpRenderer = fpRenderer;
     }
 
-    public byte[] generate(Søknad søknad, Person søker) {
-        return generate(søknad, søker, emptyList());
+    @Override
+    public MapperEgenskaper mapperEgenskaper() {
+        return new MapperEgenskaper(INITIELL_FORELDREPENGER, ENDRING_FORELDREPENGER);
+    }
+
+    @Override
+    public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        switch (egenskap.getType()) {
+        case INITIELL_FORELDREPENGER:
+            return generate(søknad, søker, emptyList());
+        case ENDRING_FORELDREPENGER:
+            return generate(Endringssøknad.class.cast(søknad), søker);
+        default:
+            throw new UnexpectedInputException("Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
+        }
     }
 
     public byte[] generate(Søknad søknad, Person søker, final List<Arbeidsforhold> arbeidsforhold) {
@@ -230,7 +248,7 @@ public class ForeldrepengerPDFGenerator {
         }
     }
 
-    public byte[] generate(Endringssøknad søknad, Person søker) {
+    private byte[] generate(Endringssøknad søknad, Person søker) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
@@ -332,6 +350,8 @@ public class ForeldrepengerPDFGenerator {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer + "]";
+        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer
+                + ", mapperEgenskaper=" + mapperEgenskaper() + "]";
     }
+
 }

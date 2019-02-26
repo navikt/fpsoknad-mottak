@@ -1,46 +1,53 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.egenskaperFor;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.mapperFor;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
-public class DelegerendePDFGenerator {
+@Qualifier(DELEGERENDE)
+public class DelegerendePDFGenerator implements PDFGenerator {
 
-    private final ForeldrepengerPDFGenerator fpGenerator;
-    private final EngangsstønadPDFGenerator esGenerator;
+    private final List<PDFGenerator> generatorer;
+    private final MapperEgenskaper mapperEgenskaper;
 
-    public DelegerendePDFGenerator(ForeldrepengerPDFGenerator fpGenerator, EngangsstønadPDFGenerator esGenerator) {
-        this.fpGenerator = fpGenerator;
-        this.esGenerator = esGenerator;
+    public DelegerendePDFGenerator(PDFGenerator... generatorer) {
+        this(asList(generatorer));
     }
 
-    public byte[] generate(Søknad søknad, Person søker, SøknadType type) {
-        switch (type) {
-        case INITIELL_FORELDREPENGER:
-            return fpGenerator.generate(søknad, søker);
-        case INITIELL_ENGANGSSTØNAD:
-            return esGenerator.generate(søknad, søker);
-        default:
-            throw new UnexpectedInputException("Uventet type " + type + " for søknad");
-        }
+    @Inject
+    public DelegerendePDFGenerator(List<PDFGenerator> generatorer) {
+        this.generatorer = generatorer;
+        this.mapperEgenskaper = egenskaperFor(generatorer);
     }
 
-    public byte[] generate(Endringssøknad endringssøknad, Person søker, SøknadType type) {
-        switch (type) {
-        case ENDRING_FORELDREPENGER:
-            return fpGenerator.generate(endringssøknad, søker);
-        default:
-            throw new UnexpectedInputException("Uventet type " + type + " for endringssøknad");
-        }
+    @Override
+    public MapperEgenskaper mapperEgenskaper() {
+        return mapperEgenskaper;
+    }
+
+    @Override
+    public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        return mapperFor(generatorer, egenskap).generate(søknad, søker, egenskap);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [fpGenerator=" + fpGenerator + ", esGenerator=" + esGenerator + "]";
+        return getClass().getSimpleName() + " [generatorer=" + generatorer + ", mapperEgenskaper=" + mapperEgenskaper
+                + "]";
     }
+
 }
