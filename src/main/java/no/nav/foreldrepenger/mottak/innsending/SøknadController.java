@@ -21,6 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.innsending.varsel.Varsel;
 import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
@@ -56,7 +57,7 @@ public class SøknadController {
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         Kvittering kvittering = søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
         if (kvittering.erVellykket()) {
-            varselSender.varsle(oppslag.getSøker(), kvittering.getMottattDato());
+            varselSender.varsle(varselFra(kvittering));
         }
         return kvittering;
     }
@@ -70,7 +71,7 @@ public class SøknadController {
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
         Kvittering kvittering = søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
         if (kvittering.erVellykket()) {
-            varselSender.varsle(oppslag.getSøker(), kvittering.getMottattDato());
+            varselSender.varsle(varselFra(kvittering));
         }
         return kvittering;
     }
@@ -85,6 +86,10 @@ public class SøknadController {
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
         return innsyn.hentSaker(oppslag.getAktørId());
+    }
+
+    private Varsel varselFra(Kvittering kvittering) {
+        return new Varsel(kvittering.getMottattDato(), oppslag.getSøker());
     }
 
     @Override

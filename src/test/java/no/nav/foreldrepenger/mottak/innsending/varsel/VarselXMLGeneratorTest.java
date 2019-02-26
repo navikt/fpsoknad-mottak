@@ -11,12 +11,10 @@ import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.util.jaxb.VarselJaxbUtil;
 import no.nav.melding.virksomhet.varsel.v1.varsel.AktoerId;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Parameter;
@@ -28,15 +26,14 @@ class VarselXMLGeneratorTest {
     void testVarselXMLRoundtrip() throws IOException {
         VarselJaxbUtil jaxb = new VarselJaxbUtil(true);
         VarselXMLGenerator varselXmlGenerator = new VarselXMLGenerator(jaxb);
-        Person person = person();
-        LocalDateTime now = now();
-        Varsel varsel = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(person, now), Varsel.class).getValue();
-        assertEquals(AktoerId.class.cast(varsel.getMottaker()).getAktoerId(), person.aktørId.getId());
-        assertEquals(VARSEL_TYPE, varsel.getVarslingstype().getValue());
-        List<Parameter> parametre = varsel.getParameterListe();
+        no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel = varsel();
+        Varsel v = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(varsel), Varsel.class).getValue();
+        assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.getSøker().aktørId.getId());
+        assertEquals(VARSEL_TYPE, v.getVarslingstype().getValue());
+        List<Parameter> parametre = v.getParameterListe();
         assertEquals(3, parametre.size());
-        assertParameter(parametre, DATO, formattertDato(now));
-        assertParameter(parametre, FORNAVN, person.fornavn);
+        assertParameter(parametre, DATO, formattertDato(varsel.getDato()));
+        assertParameter(parametre, FORNAVN, varsel.getSøker().fornavn);
         assertParameter(parametre, URL_FP, URL_FP_VALUE);
     }
 
@@ -44,6 +41,11 @@ class VarselXMLGeneratorTest {
         assertEquals(expected, parameters.stream()
                 .filter(s -> s.getKey().equals(key))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Fant ikke " + key)).getValue());
+                .orElseThrow(() -> new IllegalArgumentException("Fant ikke " + key)).getValue());
+    }
+
+    private static no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel() {
+        return new no.nav.foreldrepenger.mottak.innsending.varsel.Varsel(
+                now(), person());
     }
 }

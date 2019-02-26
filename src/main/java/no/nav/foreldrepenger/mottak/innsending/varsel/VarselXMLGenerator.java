@@ -45,16 +45,16 @@ public class VarselXMLGenerator {
         this.jaxb = jaxb;
     }
 
-    public String tilXml(Person person, LocalDateTime mottatt) {
-        return jaxb.marshal(VARSEL_FACTORY_V1.createVarsel(tilVarselModel(person, mottatt)));
+    public String tilXml(no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel) {
+        return jaxb.marshal(VARSEL_FACTORY_V1.createVarsel(tilVarselModel(varsel)));
     }
 
-    private static Varsel tilVarselModel(Person søker, LocalDateTime mottatt) {
+    private static Varsel tilVarselModel(no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel) {
 
         return new Varsel()
-                .withMottaker(mottaker(søker))
+                .withMottaker(mottaker(varsel.getSøker()))
                 .withVarslingstype(varslingsType())
-                .withParameterListe(parameterListe(søker, mottatt));
+                .withParameterListe(parameterListe(varsel.getSøker(), varsel.getDato()));
     }
 
     private static AktoerId mottaker(Person søker) {

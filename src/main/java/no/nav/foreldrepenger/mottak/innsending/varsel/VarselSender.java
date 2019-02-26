@@ -1,12 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
-import java.time.LocalDateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
 
 @Service
 public class VarselSender {
@@ -21,9 +17,9 @@ public class VarselSender {
         this.generator = generator;
     }
 
-    public void varsle(Person søker, LocalDateTime mottattDato) {
+    public void varsle(Varsel varsel) {
         if (connection.isEnabled()) {
-            connection.send(generator.tilXml(søker, mottattDato));
+            connection.send(generator.tilXml(varsel));
         }
         else {
             LOG.info("Sending av varsler er deaktivert, ingenting å sende");

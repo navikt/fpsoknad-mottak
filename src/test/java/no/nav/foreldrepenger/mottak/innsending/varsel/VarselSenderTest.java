@@ -36,7 +36,7 @@ class VarselSenderTest {
 
     @Test
     void varselSenderGeneratesAndSendsVarsel() {
-        varselSender.varsle(person(), LocalDateTime.now());
+        varselSender.varsle(new Varsel(LocalDateTime.now(), person()));
         // TODO: skriv en faktisk test her, denne hjelper kun for manuell kontroll på kø
         // dersom man kjører mq lokalt
 
