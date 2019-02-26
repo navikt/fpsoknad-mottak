@@ -29,7 +29,7 @@ public class VoidVarselConnection implements VarselConnection {
     }
 
     @Override
-    public void send(String xml) {
+    public void varsle(String xml) {
         LOG.info("Sender XML, liksom");
 
     }

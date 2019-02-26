@@ -59,7 +59,7 @@ public class VarselJMSConnection implements VarselConnection {
     }
 
     @Override
-    public void send(String xml) {
+    public void varsle(String xml) {
         LOG.info("Legger melding for varsel på {}-kø ({})", name(), varselConfig.getURI());
         try {
             template.send(session -> {

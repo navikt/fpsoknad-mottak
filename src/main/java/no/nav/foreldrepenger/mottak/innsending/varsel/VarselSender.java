@@ -19,7 +19,7 @@ public class VarselSender {
 
     public void varsle(Varsel varsel) {
         if (connection.isEnabled()) {
-            connection.send(generator.tilXml(varsel));
+            connection.varsle(generator.tilXml(varsel));
         }
         else {
             LOG.info("Sending av varsler er deaktivert, ingenting å sende");

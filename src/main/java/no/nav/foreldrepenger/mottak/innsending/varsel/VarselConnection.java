@@ -4,7 +4,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
 
 public interface VarselConnection extends PingEndpointAware {
 
-    void send(String xml);
+    void varsle(String xml);
 
     boolean isEnabled();
 
