@@ -17,31 +17,31 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 public class FPFordelSøknadSender implements SøknadSender {
 
     private final FPFordelConnection connection;
-    private final FPFordelKonvoluttGenerator konvoluttGenerator;
+    private final FPFordelKonvoluttGenerator payloadGenerator;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator konvoluttGenerator) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator payloadGenerator) {
         this.connection = connection;
-        this.konvoluttGenerator = konvoluttGenerator;
+        this.payloadGenerator = payloadGenerator;
+    }
+
+    @Override
+    public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        return doSend(egenskap.getType(), payloadGenerator.payload(søknad, søker, egenskap));
+    }
+
+    @Override
+    public Kvittering endreSøknad(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
+        return doSend(egenskap.getType(), payloadGenerator.payload(endringsSøknad, søker, egenskap));
+    }
+
+    @Override
+    public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
+        return doSend(egenskap.getType(), payloadGenerator.payload(ettersending, søker));
     }
 
     @Override
     public String ping() {
         return connection.ping();
-    }
-
-    @Override
-    public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap.getType(), konvoluttGenerator.payload(søknad, søker, egenskap));
-    }
-
-    @Override
-    public Kvittering endreSøknad(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap.getType(), konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
-    }
-
-    @Override
-    public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap.getType(), konvoluttGenerator.payload(ettersending, søker));
     }
 
     private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
@@ -50,7 +50,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", konvoluttGenerator=" + konvoluttGenerator
+        return getClass().getSimpleName() + " [connection=" + connection + ", payloadGenerator=" + payloadGenerator
                 + "]";
     }
 

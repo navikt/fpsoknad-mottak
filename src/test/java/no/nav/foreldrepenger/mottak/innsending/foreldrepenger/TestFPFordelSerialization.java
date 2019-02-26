@@ -69,6 +69,7 @@ import no.nav.foreldrepenger.mottak.innsending.mappers.V2EngangsstønadDomainMap
 import no.nav.foreldrepenger.mottak.innsending.mappers.V2ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3EngangsstønadDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
@@ -266,10 +267,10 @@ public class TestFPFordelSerialization {
         SøknadTextFormatter textFormatter = new SøknadTextFormatter(cfg.landkoder(), cfg.kvitteringstekster());
         ForeldrepengeInfoRenderer fpRenderer = new ForeldrepengeInfoRenderer(renderer,
                 textFormatter);
-        ForeldrepengerPDFGenerator foreldrepengerPDFGenerator = new ForeldrepengerPDFGenerator(oppslag,
-                fpRenderer);
+        ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, fpRenderer);
         EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(textFormatter, renderer);
+        DelegerendePDFGenerator pdf = new DelegerendePDFGenerator(fp, es);
         return new FPFordelKonvoluttGenerator(new FPFordelMetdataGenerator(objectMapper),
-                v12DomainMapper, foreldrepengerPDFGenerator, es);
+                v12DomainMapper, pdf);
     }
 }

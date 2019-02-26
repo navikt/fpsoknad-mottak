@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
@@ -32,8 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
-import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
@@ -47,16 +44,13 @@ public class FPFordelKonvoluttGenerator {
     private static final String CONTENT_ID = "Content-ID";
     private final FPFordelMetdataGenerator metadataGenerator;
     private final DomainMapper domainMapper;
-    private final ForeldrepengerPDFGenerator foreldrepengerPDFGenerator;
-    private final EngangsstønadPDFGenerator engangsstønadPDFGenerator;
+    private final DelegerendePDFGenerator pdfGenerator;
 
     public FPFordelKonvoluttGenerator(FPFordelMetdataGenerator metadataGenerator,
-            @Qualifier(DELEGERENDE) DomainMapper domainMapper, ForeldrepengerPDFGenerator foreldrepengerPDFGenerator,
-            EngangsstønadPDFGenerator engangsstønadPDFGenerator) {
+            @Qualifier(DELEGERENDE) DomainMapper domainMapper, DelegerendePDFGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.domainMapper = domainMapper;
-        this.foreldrepengerPDFGenerator = foreldrepengerPDFGenerator;
-        this.engangsstønadPDFGenerator = engangsstønadPDFGenerator;
+        this.pdfGenerator = pdfGenerator;
     }
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload(Søknad søknad, Person søker,
@@ -150,17 +144,12 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private byte[] pdfHovedDokument(Søknad søknad, Person søker, SøknadType type) {
-        if (INITIELL_FORELDREPENGER.equals(type)) {
-            return foreldrepengerPDFGenerator.generate(søknad, søker);
-        }
-        return engangsstønadPDFGenerator.generate(søknad, søker);
+        return pdfGenerator.generate(søknad, søker, type);
+
     }
 
     private byte[] pdfHovedDokument(Endringssøknad endringssøknad, Person søker, SøknadType type) {
-        if (ENDRING_FORELDREPENGER.equals(type)) {
-            return foreldrepengerPDFGenerator.generate(endringssøknad, søker);
-        }
-        return engangsstønadPDFGenerator.generate(endringssøknad, søker);
+        return pdfGenerator.generate(endringssøknad, søker, type);
     }
 
     private String xmlHovedDokument(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
@@ -178,7 +167,7 @@ public class FPFordelKonvoluttGenerator {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [metadataGenerator=" + metadataGenerator + ", domainMapper="
-                + domainMapper + ", pdfGenerator=" + foreldrepengerPDFGenerator + "]";
+                + domainMapper + ", pdfGenerator=" + pdfGenerator + "]";
     }
 
     private static final class VedleggHeaderConsumer implements Consumer<HttpHeaders> {
