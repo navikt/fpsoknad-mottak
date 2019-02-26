@@ -81,6 +81,9 @@ public class VarselXMLGenerator {
     }
 
     static String formattertNavn(String name) {
+        if (name == null) {
+            return "";
+        }
         return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
