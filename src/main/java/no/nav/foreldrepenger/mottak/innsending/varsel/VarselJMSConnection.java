@@ -48,8 +48,7 @@ public class VarselJMSConnection implements VarselConnection {
         return varselConfig.getURI();
     }
 
-    @Override
-    public boolean isEnabled() {
+    private boolean isEnabled() {
         return getConfig().isEnabled();
     }
 
@@ -60,18 +59,24 @@ public class VarselJMSConnection implements VarselConnection {
 
     @Override
     public void varsle(String xml) {
-        LOG.info("Legger melding for varsel på {}-kø ({})", name(), varselConfig.getURI());
-        try {
-            template.send(session -> {
-                TextMessage msg = session.createTextMessage(xml);
-                msg.setStringProperty(CALL_ID, callId());
-                return msg;
-            });
-            VARSEL_SUCCESS.increment();
-        } catch (JmsException swallow) {
-            LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), varselConfig.getURI(), swallow);
-            VARSEL_FAILED.increment();
+        if (isEnabled()) {
+            LOG.info("Legger melding for varsel på {}-kø ({})", name(), varselConfig.getURI());
+            try {
+                template.send(session -> {
+                    TextMessage msg = session.createTextMessage(xml);
+                    msg.setStringProperty(CALL_ID, callId());
+                    return msg;
+                });
+                VARSEL_SUCCESS.increment();
+            } catch (JmsException swallow) {
+                LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), varselConfig.getURI(), swallow);
+                VARSEL_FAILED.increment();
+            }
         }
+        else {
+            LOG.info("Varsling er deaktivert");
+        }
+
     }
 
     VarselConfig getConfig() {

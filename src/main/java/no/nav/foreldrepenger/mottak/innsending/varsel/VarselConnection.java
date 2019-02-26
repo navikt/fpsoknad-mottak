@@ -6,6 +6,4 @@ public interface VarselConnection extends PingEndpointAware {
 
     void varsle(String xml);
 
-    boolean isEnabled();
-
 }

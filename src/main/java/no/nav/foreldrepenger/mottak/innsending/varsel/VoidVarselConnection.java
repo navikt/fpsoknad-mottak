@@ -34,9 +34,4 @@ public class VoidVarselConnection implements VarselConnection {
 
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
 }
