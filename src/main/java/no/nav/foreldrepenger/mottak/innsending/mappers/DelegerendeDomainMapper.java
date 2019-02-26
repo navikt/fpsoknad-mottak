@@ -2,7 +2,8 @@ package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.mapperFor;
+import static no.nav.foreldrepenger.mottak.util.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.mottak.util.Mappables.mapperFor;
 
 import java.util.List;
 
@@ -15,7 +16,6 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.StreamUtil;
 
 @Component
 @Qualifier(DELEGERENDE)
@@ -31,7 +31,7 @@ public class DelegerendeDomainMapper implements DomainMapper {
     @Inject
     public DelegerendeDomainMapper(List<DomainMapper> mappers) {
         this.mappers = mappers;
-        this.mapperEgenskaper = StreamUtil.egenskaperFor(mappers);
+        this.mapperEgenskaper = egenskaperFor(mappers);
     }
 
     @Override

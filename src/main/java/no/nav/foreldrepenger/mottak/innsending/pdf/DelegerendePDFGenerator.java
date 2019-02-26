@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappable.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.egenskaperFor;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.mapperFor;
+import static no.nav.foreldrepenger.mottak.util.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.mottak.util.Mappables.mapperFor;
 
 import java.util.List;
 
