@@ -20,7 +20,7 @@ public class Mappables {
 
     private static final Logger LOG = LoggerFactory.getLogger(Mappables.class);
 
-    public static MapperEgenskaper egenskaperFor(List<? extends Mappable> mappables) {
+    public static <T extends Mappable> MapperEgenskaper egenskaperFor(List<T> mappables) {
         return new MapperEgenskaper(mappables.stream()
                 .map(e -> e.mapperEgenskaper())
                 .map(e -> e.getEgenskaper())
