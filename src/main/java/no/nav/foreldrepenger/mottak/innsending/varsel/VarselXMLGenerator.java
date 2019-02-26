@@ -27,8 +27,8 @@ public class VarselXMLGenerator {
     static final String FORNAVN = "FORNAVN";
     static final String DATO = "DATO";
 
-    static final String URL_FP = "URL_FP";
-    static final String URL_FP_VALUE = "https://foreldrepenger.nav.no";
+    static final String URL = "URL";
+    static final String URL_VALUE = "https://foreldrepenger.nav.no";
 
     private static final ObjectFactory VARSEL_FACTORY_V1 = new ObjectFactory();
 
@@ -71,13 +71,17 @@ public class VarselXMLGenerator {
         return Arrays.asList(
                 new Parameter()
                         .withKey(FORNAVN)
-                        .withValue(søker.fornavn),
+                        .withValue(formattertNavn(søker.fornavn)),
                 new Parameter()
                         .withKey(DATO)
                         .withValue(formattertDato(mottatt)),
                 new Parameter()
-                        .withKey(URL_FP)
-                        .withValue(URL_FP_VALUE));
+                        .withKey(URL)
+                        .withValue(URL_VALUE));
+    }
+
+    static String formattertNavn(String name) {
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
     static String formattertDato(LocalDateTime date) {
