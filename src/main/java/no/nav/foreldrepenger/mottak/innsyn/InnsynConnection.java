@@ -36,11 +36,6 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     @Override
-    public boolean isEnabled() {
-        return config.isEnabled();
-    }
-
-    @Override
     public String ping() {
         return ping(pingEndpoint());
     }

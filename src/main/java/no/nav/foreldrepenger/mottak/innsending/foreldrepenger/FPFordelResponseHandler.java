@@ -150,9 +150,4 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     public String toString() {
         return getClass().getSimpleName() + " [maxAntallForsøk=" + maxAntallForsøk + "]";
     }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

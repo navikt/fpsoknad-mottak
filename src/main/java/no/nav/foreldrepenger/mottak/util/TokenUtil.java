@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.security.oidc.context.OIDCClaims;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
@@ -46,6 +47,10 @@ public class TokenUtil {
     public String autentisertBruker() {
         return Optional.ofNullable(getSubject())
                 .orElseThrow(unauthenticated("Fant ikke subject"));
+    }
+
+    public Fødselsnummer autentisertBrukerFNR() {
+        return new Fødselsnummer(autentisertBruker());
     }
 
     private static Supplier<? extends OIDCTokenValidatorException> unauthenticated(String msg) {

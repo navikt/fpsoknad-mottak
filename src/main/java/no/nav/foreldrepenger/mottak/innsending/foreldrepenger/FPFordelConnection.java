@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
@@ -34,13 +36,27 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
     }
 
     public Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        LOG.info("Sender {} til {}", type.name().toLowerCase(), name().toLowerCase());
-        Kvittering kvittering = responseHandler.handle(
-                postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class));
-        LOG.info("Sendte {} til {}, fikk kvittering {}", type.name().toLowerCase(), name().toLowerCase(), kvittering);
-        type.count();
-        kvittering.setPdf(pdfFra(payload.getBody()));
-        return kvittering;
+        if (isEnabled()) {
+            return doSend(type, payload);
+        }
+        LOG.info("Sending av {} er deaktivert, ingenting å sende", type);
+        return IKKE_SENDT;
+    }
+
+    private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+        try {
+            LOG.info("Sender {} til {}", name(type), name().toLowerCase());
+            Kvittering kvittering = responseHandler.handle(
+                    postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class));
+            LOG.info("Sendte {} til {}, fikk kvittering {}", name(type), name().toLowerCase(),
+                    kvittering);
+            type.count();
+            kvittering.setPdf(pdfFra(payload.getBody()));
+            return kvittering;
+        } catch (Exception e) {
+            FP_SENDFEIL.increment();
+            throw e;
+        }
     }
 
     @Override
@@ -55,8 +71,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
         return uri(config.getUri(), config.getPingPath());
     }
 
-    @Override
-    public boolean isEnabled() {
+    private boolean isEnabled() {
         return config.isEnabled();
     }
 
@@ -80,6 +95,10 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
             LOG.info("Returnerer ingen PDF i kvittering");
         }
         return bytes;
+    }
+
+    private static String name(SøknadType type) {
+        return type.name().toLowerCase();
     }
 
     @Override

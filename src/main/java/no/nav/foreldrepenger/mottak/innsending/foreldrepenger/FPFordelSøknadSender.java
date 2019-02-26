@@ -1,10 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -21,8 +16,6 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 @Service
 public class FPFordelSøknadSender implements SøknadSender {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
-
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator konvoluttGenerator;
 
@@ -38,34 +31,21 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return send(egenskap.getType(), konvoluttGenerator.payload(søknad, søker, egenskap));
+        return doSend(egenskap.getType(), konvoluttGenerator.payload(søknad, søker, egenskap));
     }
 
     @Override
     public Kvittering endreSøknad(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
-        return send(egenskap.getType(), konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
+        return doSend(egenskap.getType(), konvoluttGenerator.payload(endringsSøknad, søker, egenskap));
     }
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return send(egenskap.getType(), konvoluttGenerator.payload(ettersending, søker));
-    }
-
-    private Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        if (connection.isEnabled()) {
-            return doSend(type, payload);
-        }
-        LOG.info("Sending av {} til FPFordel er deaktivert, ingenting å sende", type);
-        return IKKE_SENDT;
+        return doSend(egenskap.getType(), konvoluttGenerator.payload(ettersending, søker));
     }
 
     private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        try {
-            return connection.send(type, payload);
-        } catch (Exception e) {
-            FP_SENDFEIL.increment();
-            throw e;
-        }
+        return connection.send(type, payload);
     }
 
     @Override

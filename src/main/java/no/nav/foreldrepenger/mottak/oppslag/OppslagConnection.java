@@ -34,11 +34,6 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
     }
 
     @Override
-    public boolean isEnabled() {
-        return cfg.isEnabled();
-    }
-
-    @Override
     public String ping() {
         return ping(pingEndpoint());
     }

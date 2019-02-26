@@ -17,8 +17,6 @@ public abstract class AbstractRestConnection {
     private final RestOperations restOperations;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
-    protected abstract boolean isEnabled();
-
     public AbstractRestConnection(RestOperations restOperations) {
         this.restOperations = restOperations;
     }

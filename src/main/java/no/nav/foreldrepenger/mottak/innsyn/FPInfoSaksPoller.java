@@ -143,10 +143,4 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
         kvittering.setSaksNr(saksnr);
         return kvittering;
     }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
 }
