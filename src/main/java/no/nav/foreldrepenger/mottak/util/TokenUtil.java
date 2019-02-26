@@ -49,7 +49,7 @@ public class TokenUtil {
                 .orElseThrow(unauthenticated("Fant ikke subject"));
     }
 
-    public Fødselsnummer autentisertBrukerFNR() {
+    public Fødselsnummer autentisertFNR() {
         return new Fødselsnummer(autentisertBruker());
     }
 
