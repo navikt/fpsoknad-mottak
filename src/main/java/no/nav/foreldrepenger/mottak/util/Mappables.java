@@ -35,7 +35,7 @@ public class Mappables {
                 .filter(m -> m.kanMappe(egenskap))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedEgenskapException(egenskap));
-        LOG.info("Bruker mapper {} for {}", mapper, egenskap);
+        LOG.info("Bruker mapper {} for {}", mapper.getClass().getSimpleName(), egenskap);
         return mapper;
     }
 

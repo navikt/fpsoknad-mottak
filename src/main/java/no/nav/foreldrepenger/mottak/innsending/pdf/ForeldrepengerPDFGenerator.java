@@ -1,8 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -41,7 +40,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(INITIELL_FORELDREPENGER, ENDRING_FORELDREPENGER);
+        return FORELDREPENGER;
     }
 
     @Override
