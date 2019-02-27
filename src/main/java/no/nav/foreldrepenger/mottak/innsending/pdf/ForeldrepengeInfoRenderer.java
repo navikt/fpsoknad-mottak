@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -67,8 +65,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
 public class ForeldrepengeInfoRenderer {
 
     private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
 
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final int INDENT = 20;
@@ -475,11 +471,6 @@ public class ForeldrepengeInfoRenderer {
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("overføring"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(overføring, rolle), cos, y);
-        if (!vedlegg.isEmpty()) {
-            LOG.debug("Overføringsperiode har {} vedlegg med type(r) {}", vedlegg.size(),
-                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
-        }
-
         y = renderVedlegg(vedlegg, overføring.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -490,7 +481,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", overføring.getFom());
         addIfSet(attributter, "tom", overføring.getTom());
         addIfSet(attributter, "dager", String.valueOf(overføring.dager()));
-        attributter.add(txt("uttaksperiodetype",kontoTypeForRolle(overføring.getUttaksperiodeType(), rolle)));
+        attributter.add(txt("uttaksperiodetype", kontoTypeForRolle(overføring.getUttaksperiodeType(), rolle)));
         attributter.add(txt("overføringsårsak", cap(overføring.getÅrsak().name())));
         return attributter;
     }
@@ -500,10 +491,6 @@ public class ForeldrepengeInfoRenderer {
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse, rolle), cos, y);
-        if (!vedlegg.isEmpty()) {
-            LOG.debug("UtsettelsesPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
-                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
-        }
         y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -530,11 +517,6 @@ public class ForeldrepengeInfoRenderer {
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addBulletPoint(txt("opphold"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(opphold, antallBarn), cos, y);
-        if (!vedlegg.isEmpty()) {
-            LOG.debug("OppholdsPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
-                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
-        }
-
         y = renderVedlegg(vedlegg, opphold.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -559,10 +541,6 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addBulletPoint(txt("uttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn, rolle), cos, y);
-        if (!vedlegg.isEmpty()) {
-            LOG.debug("UttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
-                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
-        }
         y = renderVedlegg(vedlegg, uttak.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -574,11 +552,6 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn, rolle), cos, y);
-        if (!vedlegg.isEmpty()) {
-            LOG.debug("GradertUttaksPeriode har {} vedlegg med type(r) {}", vedlegg.size(),
-                    vedlegg.stream().map(v -> v.getInnsendingsType()).collect(toList()));
-        }
-
         y = renderVedlegg(vedlegg, gradert.getVedlegg(), "dokumentasjon", cos, y);
         y -= renderer.addBlankLine();
         return y;
@@ -891,6 +864,11 @@ public class ForeldrepengeInfoRenderer {
 
     private String txt(String key, Object... values) {
         return textFormatter.fromMessageSource(key, values);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [renderer=" + renderer + ", textFormatter=" + textFormatter + "]";
     }
 
 }
