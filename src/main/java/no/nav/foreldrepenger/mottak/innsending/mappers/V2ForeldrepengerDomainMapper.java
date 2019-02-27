@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
+import static com.neovisionaries.i18n.CountryCode.XK;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
@@ -112,6 +113,8 @@ import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
 
 @Component
 public class V2ForeldrepengerDomainMapper implements DomainMapper {
+
+    private static final Land KOSOVO = landFra("XXK");
 
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
@@ -515,13 +518,16 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static Land landFra(CountryCode land) {
+        if (XK.equals(land)) {
+            return KOSOVO; // https://jira.adeo.no/browse/PFP-6077
+        }
         return Optional.ofNullable(land)
                 .map(s -> landFra(s.getAlpha3()))
                 .orElse(null);
     }
 
-    private static Land landFra(String alphq3) {
-        Land land = new Land().withKode(alphq3);
+    private static Land landFra(String alpha3) {
+        Land land = new Land().withKode(alpha3);
         return land.withKodeverk(land.getKodeverk());
     }
 
