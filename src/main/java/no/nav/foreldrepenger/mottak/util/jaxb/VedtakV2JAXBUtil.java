@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.util.jaxb;
 
-import no.seres.xsd.nav.inntektsmelding_m._20181211.InntektsmeldingM;
+import no.nav.vedtak.felles.xml.vedtak.v2.ObjectFactory;
+import no.nav.vedtak.felles.xml.vedtak.v2.Vedtak;
 
 public final class VedtakV2JAXBUtil extends AbstractJAXBUtil {
 
@@ -9,7 +10,7 @@ public final class VedtakV2JAXBUtil extends AbstractJAXBUtil {
     }
 
     public VedtakV2JAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
-        super(contextFra(InntektsmeldingM.class),
+        super(contextFra(Vedtak.class, ObjectFactory.class),
                 validateMarshalling, validateUnmarshalling,
                 "/behandlingsprosess-vedtak-v2/xsd/vedtak-v2.xsd");
     }

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.util.jaxb.VedtakV2JAXBUtil;
-import no.nav.vedtak.felles.xml.vedtak.v2.Uttak;
 
 @Component
 public class XMLVedtakMapper {
@@ -21,8 +20,9 @@ public class XMLVedtakMapper {
         try {
             no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = JAXB
                     .unmarshalToElement(xml, no.nav.vedtak.felles.xml.vedtak.v2.Vedtak.class).getValue();
-            Uttak uttak = vedtak.getBehandlingsresultat().getBeregningsresultat().getUttak();
-            LOG.info("Fikk uttak {}", uttak);
+            // Uttak uttak =
+            // vedtak.getBehandlingsresultat().getBeregningsresultat().getUttak();
+            // LOG.info("Fikk uttak {}", uttak);
             return new Vedtak(xml);
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak", e);
