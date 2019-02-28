@@ -81,7 +81,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     public VedtakDTO hentVedtak(Lenke vedtaksLenke) {
-        LOG.trace("Henter behandling fra {}", vedtaksLenke.getHref());
+        LOG.trace("Henter vedtak fra {}", vedtaksLenke.getHref());
         return Optional.ofNullable(
                 getForObject(URI.create(config.getUri() + vedtaksLenke.getHref()), VedtakDTO.class))
                 .orElse(null);
