@@ -102,7 +102,7 @@ public class InnsynTjeneste implements Innsyn {
             LOG.info("Hentet intet vedtak");
         }
         else {
-            LOG.info("Hentet søknad");
+            LOG.info("Hentet vedtak");
             LOG.info(CONFIDENTIAL, "{}", vedtak);
         }
         return vedtak;
