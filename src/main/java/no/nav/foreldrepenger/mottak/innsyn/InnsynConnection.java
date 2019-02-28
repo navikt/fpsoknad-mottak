@@ -77,7 +77,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     private <T> T hent(Lenke lenke, Class<T> clazz) {
         if (lenke != null && lenke.getHref() != null) {
-            LOG.trace("Henter {} fra {}", clazz.getSimpleName(), lenke.getHref());
+            LOG.trace("Henter {} fra {}", clazz.getSimpleName(), lenke);
             return Optional.ofNullable(
                     getForObject(URI.create(config.getUri() + lenke.getHref()), clazz))
                     .orElse(null);
