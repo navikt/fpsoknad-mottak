@@ -19,11 +19,10 @@ public class XMLVedtakMapper {
             return null;
         }
         try {
-            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = JAXB
-                    .unmarshal(xml, no.nav.vedtak.felles.xml.vedtak.v2.Vedtak.class);
-            LOG.info("Fikk xml {}", xml);
+            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = JAXB.unmarshal(xml,
+                    no.nav.vedtak.felles.xml.vedtak.v2.Vedtak.class);
             Uttak uttak = vedtak.getBehandlingsresultat().getBeregningsresultat().getUttak();
-            LOG.info("Fikk uttak {}", uttak);
+            LOG.info("Fikk uttak {}", uttak.getAny());
             return new Vedtak(xml);
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak", e);

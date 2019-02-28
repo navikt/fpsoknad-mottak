@@ -64,7 +64,7 @@ public class VedtakDTO {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [xml=" + getXml().substring(0, 50) + ", journalpostId=" + journalpostId
+        return getClass().getSimpleName() + " [xml=" + getXml() + ", journalpostId=" + journalpostId
                 + "]";
     }
 }
