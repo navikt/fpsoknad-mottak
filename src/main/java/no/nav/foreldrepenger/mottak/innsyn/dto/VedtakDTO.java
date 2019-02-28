@@ -9,17 +9,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class VedtakDTO {
 
-    private final String xml;
+    private final String xmlClob;
     private final String journalpostId;
 
     @JsonCreator
-    public VedtakDTO(@JsonProperty("xml") String xml, @JsonProperty("journalpostId") String journalpostId) {
-        this.xml = xml;
+    public VedtakDTO(@JsonProperty("xmlClob") String xmlClob, @JsonProperty("journalpostId") String journalpostId) {
+        this.xmlClob = xmlClob;
         this.journalpostId = journalpostId;
     }
 
     public String getXml() {
-        return unescapeHtml4(xml);
+        return unescapeHtml4(xmlClob);
     }
 
     public String getJournalpostId() {
@@ -28,7 +28,7 @@ public class VedtakDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(xml, journalpostId);
+        return Objects.hash(xmlClob, journalpostId);
     }
 
     @Override
@@ -51,12 +51,12 @@ public class VedtakDTO {
         else if (!journalpostId.equals(other.journalpostId)) {
             return false;
         }
-        if (xml == null) {
-            if (other.xml != null) {
+        if (xmlClob == null) {
+            if (other.xmlClob != null) {
                 return false;
             }
         }
-        else if (!xml.equals(other.xml)) {
+        else if (!xmlClob.equals(other.xmlClob)) {
             return false;
         }
         return true;
