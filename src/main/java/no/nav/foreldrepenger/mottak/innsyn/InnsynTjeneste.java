@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
@@ -27,20 +29,38 @@ public class InnsynTjeneste implements Innsyn {
 
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
 
-    private final XMLSøknadMapper mapper;
+    private final XMLSøknadMapper søknadMapper;
     private final InnsynConnection innsynConnection;
     private final SøknadInspektør inspektør;
+    private final XMLVedtakMapper vedtakMapper;
 
-    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(DELEGERENDE) XMLSøknadMapper mapper,
+    public InnsynTjeneste(InnsynConnection innsynConnection,
+            @Qualifier(DELEGERENDE) XMLSøknadMapper søknadMapper,
+            XMLVedtakMapper vedtakMapper,
             SøknadInspektør inspektør) {
         this.innsynConnection = innsynConnection;
-        this.mapper = mapper;
+        this.søknadMapper = søknadMapper;
+        this.vedtakMapper = vedtakMapper;
         this.inspektør = inspektør;
     }
 
     @Override
     public String ping() {
         return innsynConnection.ping();
+    }
+
+    @Override
+    public InnsynsVedtak hentVedtak(AktorId aktørId, String saksnummer) {
+        return Optional.ofNullable(hentSaker(aktørId).stream()
+                .filter(s -> s.getSaksnummer().equals(saksnummer))
+                .findFirst()
+                .orElse(null)).map(s -> s.getBehandlinger())
+                .orElse(emptyList()).stream()
+                .sorted(comparing(Behandling::getEndretTidspunkt).reversed())
+                .collect(toList()).stream()
+                .findFirst()
+                .map(b -> b.getVedtak())
+                .orElse(null);
     }
 
     @Override
@@ -151,22 +171,21 @@ public class InnsynTjeneste implements Innsyn {
         String xml = wrapper.getXml();
         SøknadEgenskap egenskaper = inspektør.inspiser(xml);
         return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
-                mapper.tilSøknad(xml, egenskaper));
+                søknadMapper.tilSøknad(xml, egenskaper));
 
     }
 
     private InnsynsVedtak tilVedtak(VedtakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
         String xml = wrapper.getXml();
-        return new InnsynsVedtak(new VedtakMetadata(wrapper.getJournalpostId()), new Vedtak(xml));
-        // mapper.tilSøknad(xml, egenskaper));
+        return new InnsynsVedtak(new VedtakMetadata(wrapper.getJournalpostId()), vedtakMapper.tilVedtak(xml));
 
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mapper=" + mapper + ", innsynConnection=" + innsynConnection
-                + ", inspektør=" + inspektør + "]";
+        return getClass().getSimpleName() + " [søknadMapper=" + søknadMapper + ", innsynConnection=" + innsynConnection
+                + ", inspektør=" + inspektør + ", vedtakMapper=" + vedtakMapper + "]";
     }
 
 }

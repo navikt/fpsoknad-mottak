@@ -13,4 +13,6 @@ public interface Innsyn extends Pingable {
 
     List<UttaksPeriode> hentUttaksplan(String saksnummer);
 
+    InnsynsVedtak hentVedtak(AktorId aktørId, String saksnummer);
+
 }
