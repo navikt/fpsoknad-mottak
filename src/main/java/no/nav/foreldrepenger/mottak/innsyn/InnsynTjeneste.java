@@ -118,7 +118,10 @@ public class InnsynTjeneste implements Innsyn {
                         w.getAktørId(),
                         w.getAktørIdAnnenPart(),
                         w.getAktørIdBarna(),
-                        hentBehandlinger(w.getBehandlingsLenker(), w.getSaksnummer()), w.getOpprettetTidspunkt(),
+                        hentBehandlinger(
+                                w.getBehandlingsLenker(),
+                                w.getSaksnummer()),
+                        w.getOpprettetTidspunkt(),
                         w.getEndretTidspunkt()))
                 .orElse(null);
     }
