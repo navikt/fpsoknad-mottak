@@ -22,7 +22,8 @@ public final class StringUtil {
     public static String limit(String tekst, int max) {
         return Optional.ofNullable(tekst)
                 .filter(t -> t.length() >= max)
-                .map(s -> s.substring(0, max - 1))
+                .map(s -> s.substring(0, max - 1) + "...")
+
                 .orElse(tekst);
     }
 

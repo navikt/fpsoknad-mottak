@@ -10,6 +10,6 @@ public class Vedtak {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [xml=" + limit(xml, 50) + "]";
+        return getClass().getSimpleName() + " [xml=" + limit(xml, 200) + "]";
     }
 }
