@@ -74,6 +74,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
+
         LOG.trace("Henter behandling fra {}", behandlingsLenke.getHref());
         return Optional.ofNullable(
                 getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingDTO.class))
@@ -81,10 +82,14 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     public VedtakDTO hentVedtak(Lenke vedtaksLenke) {
-        LOG.trace("Henter vedtak fra {}", vedtaksLenke.getHref());
-        return Optional.ofNullable(
-                getForObject(URI.create(config.getUri() + vedtaksLenke.getHref()), VedtakDTO.class))
-                .orElse(null);
+        if (vedtaksLenke != null && vedtaksLenke.getHref() != null) {
+            LOG.trace("Henter vedtak fra {}", vedtaksLenke.getHref());
+            return Optional.ofNullable(
+                    getForObject(URI.create(config.getUri() + vedtaksLenke.getHref()), VedtakDTO.class))
+                    .orElse(null);
+        }
+        LOG.trace("Henter ingen vedtak");
+        return null;
     }
 
     @Override

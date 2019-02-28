@@ -26,11 +26,7 @@ public final class StringUtil {
                 .orElse(tekst);
     }
 
-    public static String fraBytes(byte[] bytes, int max) {
-        String asString = Arrays.toString(bytes);
-        if (asString.length() >= max) {
-            return asString.substring(0, max - 1) + ".... " + (asString.length() - max) + " flere bytes";
-        }
-        return asString;
+    public static String limit(byte[] bytes, int max) {
+        return limit(Arrays.toString(bytes), max);
     }
 }

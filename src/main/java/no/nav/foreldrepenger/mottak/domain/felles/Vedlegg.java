@@ -4,7 +4,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
-import static no.nav.foreldrepenger.mottak.util.StringUtil.fraBytes;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 import static org.springframework.util.StreamUtils.copyToByteArray;
 
 import java.io.IOException;
@@ -98,6 +98,6 @@ public abstract class Vedlegg {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + fraBytes(vedlegg, 50);
+        return getClass().getSimpleName() + "metadata=" + metadata + "vedlegg=" + limit(vedlegg, 50);
     }
 }
