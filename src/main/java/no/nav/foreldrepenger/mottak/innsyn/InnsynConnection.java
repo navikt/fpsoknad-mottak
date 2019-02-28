@@ -46,16 +46,6 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         return uri(config.getUri(), config.getPingPath());
     }
 
-    public SøknadDTO hentSøknad(Lenke søknadsLenke) {
-        if (søknadsLenke != null && søknadsLenke.getHref() != null) {
-            LOG.trace("Henter søknad fra {}", søknadsLenke.getHref());
-            return Optional.ofNullable(
-                    getForObject(URI.create(config.getUri() + søknadsLenke.getHref()), SøknadDTO.class))
-                    .orElse(null);
-        }
-        return null;
-    }
-
     public List<SakDTO> hentSaker(String aktørId) {
         LOG.trace("Henter saker for {}", aktørId);
         return Optional.ofNullable(
@@ -74,21 +64,25 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
-
-        LOG.trace("Henter behandling fra {}", behandlingsLenke.getHref());
-        return Optional.ofNullable(
-                getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingDTO.class))
-                .orElse(null);
+        return hent(behandlingsLenke, BehandlingDTO.class);
     }
 
     public VedtakDTO hentVedtak(Lenke vedtaksLenke) {
-        if (vedtaksLenke != null && vedtaksLenke.getHref() != null) {
-            LOG.trace("Henter vedtak fra {}", vedtaksLenke.getHref());
+        return hent(vedtaksLenke, VedtakDTO.class);
+    }
+
+    public SøknadDTO hentSøknad(Lenke søknadsLenke) {
+        return hent(søknadsLenke, SøknadDTO.class);
+    }
+
+    private <T> T hent(Lenke lenke, Class<T> clazz) {
+        if (lenke != null && lenke.getHref() != null) {
+            LOG.trace("Henter {} fra {}", clazz.getSimpleName(), lenke.getHref());
             return Optional.ofNullable(
-                    getForObject(URI.create(config.getUri() + vedtaksLenke.getHref()), VedtakDTO.class))
+                    getForObject(URI.create(config.getUri() + lenke.getHref()), clazz))
                     .orElse(null);
         }
-        LOG.trace("Henter ingen vedtak");
+        LOG.trace("Henter ingenting");
         return null;
     }
 
