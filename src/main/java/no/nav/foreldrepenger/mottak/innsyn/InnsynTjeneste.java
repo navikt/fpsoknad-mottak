@@ -19,18 +19,19 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
 
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
 
-    private final XMLMapper mapper;
+    private final XMLSøknadMapper mapper;
     private final InnsynConnection innsynConnection;
     private final SøknadInspektør inspektør;
 
-    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(DELEGERENDE) XMLMapper mapper,
+    public InnsynTjeneste(InnsynConnection innsynConnection, @Qualifier(DELEGERENDE) XMLSøknadMapper mapper,
             SøknadInspektør inspektør) {
         this.innsynConnection = innsynConnection;
         this.mapper = mapper;
@@ -93,6 +94,20 @@ public class InnsynTjeneste implements Innsyn {
         return søknad;
     }
 
+    private InnsynsVedtak hentVedtak(Lenke vedtaksLenke) {
+        InnsynsVedtak vedtak = Optional.ofNullable(innsynConnection.hentVedtak(vedtaksLenke))
+                .map(this::tilVedtak)
+                .orElse(null);
+        if (vedtak == null) {
+            LOG.info("Hentet intet vedtak");
+        }
+        else {
+            LOG.info("Hentet søknad");
+            LOG.info(CONFIDENTIAL, "{}", vedtak);
+        }
+        return vedtak;
+    }
+
     private Sak tilSak(SakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
         return Optional.ofNullable(wrapper)
@@ -123,6 +138,7 @@ public class InnsynTjeneste implements Innsyn {
                         .type(w.getType())
                         .inntektsmeldinger(w.getInntektsmeldinger())
                         .søknad(hentSøknad(w.getSøknadsLenke()))
+                        .vedtak(hentVedtak(w.getVedtaksLenke()))
                         .build())
                 .orElse(null);
     }
@@ -133,6 +149,14 @@ public class InnsynTjeneste implements Innsyn {
         SøknadEgenskap egenskaper = inspektør.inspiser(xml);
         return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
                 mapper.tilSøknad(xml, egenskaper));
+
+    }
+
+    private InnsynsVedtak tilVedtak(VedtakDTO wrapper) {
+        LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
+        String xml = wrapper.getXml();
+        return new InnsynsVedtak(new VedtakMetadata(wrapper.getJournalpostId()), new Vedtak(xml));
+        // mapper.tilSøknad(xml, egenskaper));
 
     }
 

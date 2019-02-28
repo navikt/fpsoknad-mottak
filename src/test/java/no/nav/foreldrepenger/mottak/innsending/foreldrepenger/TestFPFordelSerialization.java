@@ -82,7 +82,7 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V3ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -104,7 +104,7 @@ public class TestFPFordelSerialization {
     @Inject
     ObjectMapper objectMapper;
 
-    private XMLMapper v12XMLMapper;
+    private XMLSøknadMapper v12XMLMapper;
     private DomainMapper v12DomainMapper;
 
     private static final AktorId AKTØRID = new AktorId("1111111111");

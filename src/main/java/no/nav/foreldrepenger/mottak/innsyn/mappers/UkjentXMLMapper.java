@@ -9,7 +9,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public class UkjentXMLMapper implements XMLMapper {
+public class UkjentXMLMapper implements XMLSøknadMapper {
 
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(Versjon.UKJENT, SøknadType.UKJENT);
 

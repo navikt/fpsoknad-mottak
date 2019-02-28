@@ -19,20 +19,20 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
 @Qualifier(DELEGERENDE)
-public class DelegerendeXMLMapper implements XMLMapper {
+public class DelegerendeXMLMapper implements XMLSøknadMapper {
 
-    private final List<XMLMapper> mappers;
+    private final List<XMLSøknadMapper> mappers;
 
     private final MapperEgenskaper mapperEgenskaper;
 
     private static final Logger LOG = LoggerFactory.getLogger(DelegerendeXMLMapper.class);
 
-    public DelegerendeXMLMapper(XMLMapper... mappers) {
+    public DelegerendeXMLMapper(XMLSøknadMapper... mappers) {
         this(asList(mappers));
     }
 
     @Inject
-    public DelegerendeXMLMapper(List<XMLMapper> mappers) {
+    public DelegerendeXMLMapper(List<XMLSøknadMapper> mappers) {
         this.mappers = mappers;
         this.mapperEgenskaper = mapperEgenskaper(mappers);
     }
@@ -47,8 +47,8 @@ public class DelegerendeXMLMapper implements XMLMapper {
         return mapperEgenskaper;
     }
 
-    private XMLMapper mapper(SøknadEgenskap egenskap) {
-        XMLMapper mapper = mappers.stream()
+    private XMLSøknadMapper mapper(SøknadEgenskap egenskap) {
+        XMLSøknadMapper mapper = mappers.stream()
                 .filter(m -> m.kanMappe(egenskap))
                 .findFirst()
                 .orElse(new UkjentXMLMapper());
@@ -56,7 +56,7 @@ public class DelegerendeXMLMapper implements XMLMapper {
         return mapper;
     }
 
-    private static MapperEgenskaper mapperEgenskaper(List<XMLMapper> mappers) {
+    private static MapperEgenskaper mapperEgenskaper(List<XMLSøknadMapper> mappers) {
         return new MapperEgenskaper(mappers.stream()
                 .map(e -> e.mapperEgenskaper())
                 .map(e -> e.getEgenskaper())

@@ -41,7 +41,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttG
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 
@@ -65,7 +65,7 @@ public class TestFPFordelRoundtripSerialization {
     DomainMapper søknadXMLGenerator;
     @Autowired
     @Qualifier(DELEGERENDE)
-    XMLMapper xmlMapper;
+    XMLSøknadMapper xmlMapper;
     @Autowired
     FPFordelKonvoluttGenerator konvoluttGenerator;
 

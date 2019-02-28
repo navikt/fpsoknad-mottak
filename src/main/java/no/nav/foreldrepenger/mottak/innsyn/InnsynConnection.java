@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
+import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements PingEndpointAware {
@@ -76,6 +77,13 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         LOG.trace("Henter behandling fra {}", behandlingsLenke.getHref());
         return Optional.ofNullable(
                 getForObject(URI.create(config.getUri() + behandlingsLenke.getHref()), BehandlingDTO.class))
+                .orElse(null);
+    }
+
+    public VedtakDTO hentVedtak(Lenke vedtaksLenke) {
+        LOG.trace("Henter behandling fra {}", vedtaksLenke.getHref());
+        return Optional.ofNullable(
+                getForObject(URI.create(config.getUri() + vedtaksLenke.getHref()), VedtakDTO.class))
                 .orElse(null);
     }
 

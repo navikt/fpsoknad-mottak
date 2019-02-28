@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEnga
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge;
 
 @Component
-public class DokmotV1XMLMapper implements XMLMapper {
+public class DokmotV1XMLMapper implements XMLSøknadMapper {
 
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD);
 

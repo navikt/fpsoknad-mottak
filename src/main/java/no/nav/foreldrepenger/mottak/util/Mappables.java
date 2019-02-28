@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-public class Mappables {
+public final class Mappables {
 
     private Mappables() {
 

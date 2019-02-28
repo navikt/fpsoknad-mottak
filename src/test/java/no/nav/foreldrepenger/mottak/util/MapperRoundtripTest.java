@@ -29,7 +29,7 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V3ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,7 +43,7 @@ public class MapperRoundtripTest {
     @Mock
     private Oppslag oppslag;
     private DelegerendeDomainMapper domainMapper;
-    private XMLMapper xmlMapper;
+    private XMLSøknadMapper xmlMapper;
 
     @BeforeEach
     public void before() {

@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
-public abstract class AbstractXMLMapper implements XMLMapper {
+public abstract class AbstractXMLMapper implements XMLSøknadMapper {
 
     protected final Oppslag oppslag;
 

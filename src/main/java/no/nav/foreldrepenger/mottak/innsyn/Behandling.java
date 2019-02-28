@@ -20,5 +20,6 @@ public class Behandling {
     private final String behandlingResultat;
     private final List<String> inntektsmeldinger;
     private final InnsynsSøknad søknad;
+    private final InnsynsVedtak vedtak;
 
 }

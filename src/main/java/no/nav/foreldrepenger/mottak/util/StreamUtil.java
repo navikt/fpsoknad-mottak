@@ -10,12 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public final class StreamUtil {
-
-    private static final Logger LOG = LoggerFactory.getLogger(StreamUtil.class);
 
     private StreamUtil() {
     }

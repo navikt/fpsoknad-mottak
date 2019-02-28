@@ -15,6 +15,8 @@ import no.nav.foreldrepenger.mottak.innsyn.Lenke;
 public class BehandlingDTO {
 
     private static final String SØKNAD = "søknad";
+    private static final String VEDTAK = "vedtak";
+
     private final String status;
     private final String type;
     private final String tema;
@@ -51,10 +53,6 @@ public class BehandlingDTO {
         this.behandlingResultat = behandlingResultat;
         this.inntektsmeldinger = Optional.ofNullable(inntektsmeldinger).orElse(emptyList());
         this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
-    }
-
-    public static String getSøknad() {
-        return SØKNAD;
     }
 
     public String getStatus() {
@@ -102,8 +100,16 @@ public class BehandlingDTO {
     }
 
     public Lenke getSøknadsLenke() {
+        return getLenke(SØKNAD);
+    }
+
+    public Lenke getVedtaksLenke() {
+        return getLenke(VEDTAK);
+    }
+
+    private Lenke getLenke(String type) {
         return safeStream(getLenker())
-                .filter(s -> s.getRel().equals(SØKNAD))
+                .filter(s -> s.getRel().equals(type))
                 .findFirst().orElse(null);
     }
 

@@ -4,7 +4,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-public interface XMLMapper extends Mappable {
+public interface XMLSøknadMapper extends Mappable {
 
     String UKJENT_KODEVERKSVERDI = "-";
 
