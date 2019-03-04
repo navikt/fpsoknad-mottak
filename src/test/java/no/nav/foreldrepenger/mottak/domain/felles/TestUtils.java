@@ -17,11 +17,8 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -70,11 +67,11 @@ public class TestUtils {
     }
 
     public static NorskForelder norskForelder(Versjon v) {
-        return new NorskForelder(true, farnavn(), fnr());
+        return new NorskForelder(fnr(), "Far Farsen");
     }
 
     public static UtenlandskForelder utenlandskForelder() {
-        return new UtenlandskForelder(true, farnavn(), "123456", CountryCode.SE);
+        return new UtenlandskForelder("123456", CountryCode.SE, "Far Farsen");
     }
 
     public static Medlemsskap medlemsskap(Versjon v) {

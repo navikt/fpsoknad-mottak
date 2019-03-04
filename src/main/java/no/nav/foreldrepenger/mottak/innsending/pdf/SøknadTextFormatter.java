@@ -61,11 +61,22 @@ public class SøknadTextFormatter {
         return getMessage(key, kvitteringstekster, values);
     }
 
+    public String navn(String navn) {
+        return fromMessageSource("navn", navn);
+    }
+
     public String navn(Navn navn) {
         String sammensattnavn = Joiner.on(' ')
                 .skipNulls()
                 .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
+    }
+
+    public String navn(Person søker) {
+        return Optional.ofNullable(søker)
+            .map(s -> Joiner.on(' ').skipNulls().join(s.fornavn, s.mellomnavn, s.etternavn))
+            .map(String::trim)
+            .orElse("Ukjent");
     }
 
     public String dato(LocalDate localDate) {
@@ -78,13 +89,6 @@ public class SøknadTextFormatter {
         return datoer.stream()
                 .map(this::dato)
                 .collect(joining(", "));
-    }
-
-    public String navn(Person søker) {
-        return Optional.ofNullable(søker)
-                .map(s -> Joiner.on(' ').skipNulls().join(s.fornavn, s.mellomnavn, s.etternavn))
-                .map(String::trim)
-                .orElse("Ukjent");
     }
 
     public String yesNo(boolean b) {

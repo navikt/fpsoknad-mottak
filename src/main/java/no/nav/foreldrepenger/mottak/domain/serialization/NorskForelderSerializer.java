@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.NorskForelder;
 
 public class NorskForelderSerializer extends StdSerializer<NorskForelder> {
 
@@ -24,9 +24,8 @@ public class NorskForelderSerializer extends StdSerializer<NorskForelder> {
     @Override
     public void serialize(NorskForelder forelder, JsonGenerator gen, SerializerProvider provider)
             throws IOException {
-        gen.writeBooleanField("lever", forelder.isLever());
         gen.writeStringField("fnr", forelder.getFnr().getFnr());
-        JacksonUtils.writeNavn(forelder.getNavn(), gen);
+        gen.writeStringField("navn", forelder.getNavn());
     }
 
     @Override

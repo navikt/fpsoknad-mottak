@@ -1,19 +1,15 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
-import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.booleanValue;
-import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.navn;
-import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
-
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.felles.UtenlandskForelder;
 
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import java.io.IOException;
+
+import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
 
 public class UtenlandskForelderDeserializer extends StdDeserializer<UtenlandskForelder> {
 
@@ -27,10 +23,10 @@ public class UtenlandskForelderDeserializer extends StdDeserializer<UtenlandskFo
 
     @Override
     public UtenlandskForelder deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         JsonNode rootNode = p.getCodec().readTree(p);
-        return new UtenlandskForelder(booleanValue(rootNode, "lever", true), navn(rootNode), textValue(rootNode, "id"),
-                CountryCode.valueOf(textValue(rootNode, "land")));
+        return new UtenlandskForelder(textValue(rootNode, "id"),
+                CountryCode.valueOf(textValue(rootNode, "land")), textValue(rootNode, "navn"));
     }
 
 }

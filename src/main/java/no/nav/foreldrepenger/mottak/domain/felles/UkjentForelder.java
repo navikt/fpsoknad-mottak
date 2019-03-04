@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.domain.felles;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;

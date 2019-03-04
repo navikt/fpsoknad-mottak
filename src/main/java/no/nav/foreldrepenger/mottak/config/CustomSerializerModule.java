@@ -4,8 +4,8 @@ import static com.fasterxml.jackson.core.json.PackageVersion.VERSION;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapDeserializer;
 import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapSerializer;
