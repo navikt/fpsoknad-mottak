@@ -18,7 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 @Valid
 public class FramtidigOppholdsInformasjon {
 
-    @Opphold(fortid = false)
+    @Opphold
     @Valid
     private final List<Utenlandsopphold> utenlandsOpphold;
 

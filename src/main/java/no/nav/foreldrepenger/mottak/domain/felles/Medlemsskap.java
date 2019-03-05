@@ -40,7 +40,7 @@ public class Medlemsskap {
         return utenlandsopphold
                 .stream()
                 .filter(s -> s.getVarighet().isWithinPeriod(dato))
-                .map(s -> s.getLand())
+                .map(Utenlandsopphold::getLand)
                 .findFirst()
                 .orElse(NO);
     }

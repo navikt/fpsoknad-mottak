@@ -61,7 +61,7 @@ public class Søknad {
     public List<PåkrevdVedlegg> getPåkrevdeVedlegg() {
         return vedlegg.stream()
                 .filter(s -> s instanceof PåkrevdVedlegg)
-                .map(s -> PåkrevdVedlegg.class.cast(s))
+                .map(s -> (PåkrevdVedlegg) s)
                 .collect(toList());
     }
 
@@ -69,7 +69,7 @@ public class Søknad {
     public List<ValgfrittVedlegg> getFrivilligeVedlegg() {
         return vedlegg.stream()
                 .filter(s -> s instanceof ValgfrittVedlegg)
-                .map(s -> ValgfrittVedlegg.class.cast(s))
+                .map(s -> (ValgfrittVedlegg) s)
                 .collect(toList());
     }
 }
