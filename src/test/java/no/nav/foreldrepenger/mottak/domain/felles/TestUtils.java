@@ -174,10 +174,6 @@ public class TestUtils {
         return new Navn("Mor", "Godhjerta", "Morsen");
     }
 
-    private static Navn farnavn() {
-        return new Navn("Far", "Faraday", "Farsken");
-    }
-
     public static RelasjonTilBarn termin() {
         return new FremtidigFødsel(nesteMåned(), forrigeMåned());
     }
