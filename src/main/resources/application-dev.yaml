@@ -1,22 +1,23 @@
-management :
-   endpoints.web.exposure.include:  '*'
-   endpoint:
-     health.show-details : always
-     security.enabled : false
+management:
+    endpoints.web.exposure.include:  '*'
+    endpoint:
+        health.enabled: false
+        health.show-details : always
+        security.enabled : false
 
-varsel :
-    queuename : DEV.QUEUE.1
+varsel:
+    queuename: DEV.QUEUE.1
     hostname: localhost
     port: 1414
     name: QM1
-    channelname : DEV.APP.SVRCONN
+    channelname: DEV.APP.SVRCONN
 
 no.nav.security.oidc:
-  issuers: selvbetjening
-  issuer:
-    selvbetjening.discoveryurl: http://metadata
-    selvbetjening.accepted_audience: aud-localhost
-    selvbetjening.cookie_name: localhost-idtoken
+    issuers: selvbetjening
+    issuer:
+        selvbetjening.discoveryurl: http://metadata
+        selvbetjening.accepted_audience: aud-localhost
+        selvbetjening.cookie_name: localhost-idtoken
 
 server.port: 9001
 spring.http.log-request-details : true
