@@ -1,5 +1,41 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
+import com.google.common.collect.Lists;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.jaxb.ESV2JAXBUtil;
+import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v2.ObjectFactory;
+import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v2.*;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Brukerroller;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Innsendingstype;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Land;
+import no.nav.vedtak.felles.xml.soeknad.v2.OmYtelse;
+import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import javax.xml.bind.JAXBElement;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import static com.neovisionaries.i18n.CountryCode.XK;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -9,60 +45,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGAN
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import javax.xml.bind.JAXBElement;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import com.google.common.collect.Lists;
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.felles.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.jaxb.ESV2JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v2.ObjectFactory;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderMedNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.OppholdNorge;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.OppholdUtlandet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Periode;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.SoekersRelasjonTilBarnet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v2.Termin;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Brukerroller;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Innsendingstype;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v2.Land;
-import no.nav.vedtak.felles.xml.soeknad.v2.OmYtelse;
-import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
 
 @Component
 public class V2EngangsstønadDomainMapper implements DomainMapper {
@@ -141,25 +123,25 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
 
-    private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg) {
+    private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarnMedVedlegg relasjon, List<Vedlegg> vedlegg) {
         if (relasjon instanceof FremtidigFødsel) {
-            return terminFra(FremtidigFødsel.class.cast(relasjon), vedlegg);
+            return terminFra((FremtidigFødsel) relasjon, vedlegg);
         }
         if (relasjon instanceof Fødsel) {
-            return fødselFra(Fødsel.class.cast(relasjon), vedlegg);
+            return fødselFra((Fødsel) relasjon, vedlegg);
         }
         throw new IllegalArgumentException(
                 "Relasjon til barn " + relasjon.getClass().getSimpleName() + " er foreløpig ikke støttet");
     }
 
-    private static SoekersRelasjonTilBarnet fødselFra(Fødsel fødsel, List<Vedlegg> vedlegg) {
+    private static SoekersRelasjonTilBarnet fødselFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel fødsel, List<Vedlegg> vedlegg) {
         return new Foedsel()
                 .withVedlegg(relasjonTilBarnVedleggFra(vedlegg))
                 .withFoedselsdato(fødsel.getFødselsdato().get(0))
                 .withAntallBarn(fødsel.getAntallBarn());
     }
 
-    private static SoekersRelasjonTilBarnet terminFra(FremtidigFødsel termin, List<Vedlegg> vedlegg) {
+    private static SoekersRelasjonTilBarnet terminFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel termin, List<Vedlegg> vedlegg) {
         return new Termin()
                 .withVedlegg(relasjonTilBarnVedleggFra(vedlegg))
                 .withTermindato(termin.getTerminDato())
@@ -169,7 +151,7 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<Vedlegg> vedlegg) {
         return vedlegg.stream()
-                .map(s -> s.getId())
+                .map(Vedlegg::getId)
                 .map(s -> FELLES_FACTORY_V2.createSoekersRelasjonTilBarnetVedlegg(
                         new no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg().withId(s)))
                 .collect(toList());
@@ -209,7 +191,7 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
         return new no.nav.vedtak.felles.xml.soeknad.felles.v2.UkjentForelder();
     }
 
-    private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap, RelasjonTilBarn relasjon) {
+    private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap, RelasjonTilBarnMedVedlegg relasjon) {
         Medlemskap ms = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo(),
                         medlemsskap.getFramtidigOppholdsInfo()))

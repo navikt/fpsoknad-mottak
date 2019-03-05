@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.BarnOgFødselsdatoer;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.validation.annotations.BarnOgFødselsdatoer;
 
 public class BarnOgFødselsdatoerValidator implements ConstraintValidator<BarnOgFødselsdatoer, Fødsel> {
 
