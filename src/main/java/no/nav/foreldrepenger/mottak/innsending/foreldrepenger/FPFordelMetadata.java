@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.*;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
@@ -132,20 +130,20 @@ public class FPFordelMetadata {
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
-        RelasjonTilBarnMedVedlegg relasjon = ((Engangsstønad) søknad.getYtelse()).getRelasjonTilBarn();
-        if (relasjon instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel
-                || relasjon instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel) {
+        RelasjonTilBarn relasjon = ((Engangsstønad) søknad.getYtelse()).getRelasjonTilBarn();
+        if (relasjon instanceof Fødsel
+                || relasjon instanceof FremtidigFødsel) {
             return I000003;
         }
-        if (relasjon instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse
-                || relasjon instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon) {
+        if (relasjon instanceof Omsorgsovertakelse
+                || relasjon instanceof Adopsjon) {
             return I000003; // DOTO separate type ?
         }
         throw new IllegalArgumentException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
     }
 
     private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
-        RelasjonTilBarnMedVedlegg relasjon = ((Foreldrepenger) søknad.getYtelse()).getRelasjonTilBarn();
+        RelasjonTilBarn relasjon = ((Foreldrepenger) søknad.getYtelse()).getRelasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;
         }

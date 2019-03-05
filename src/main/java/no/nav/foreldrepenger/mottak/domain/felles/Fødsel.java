@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
+package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @BarnOgFødselsdatoer
-public class Fødsel extends RelasjonTilBarnMedVedlegg {
+public class Fødsel extends RelasjonTilBarn {
 
     private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") LocalDate> fødselsdato;
 

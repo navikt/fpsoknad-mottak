@@ -7,9 +7,9 @@ import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
@@ -192,7 +192,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 null);
     }
 
-    private static RelasjonTilBarnMedVedlegg tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
+    private static RelasjonTilBarn tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {
         if (relasjonTilBarnet == null) {
             return null;
         }

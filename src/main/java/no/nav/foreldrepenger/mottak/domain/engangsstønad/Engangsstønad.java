@@ -9,7 +9,7 @@ import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 
 import javax.validation.Valid;
 
@@ -25,11 +25,11 @@ public class Engangsstønad extends Ytelse {
     @Valid
     private AnnenForelder annenForelder;
     @Valid
-    private final RelasjonTilBarnMedVedlegg relasjonTilBarn;
+    private final RelasjonTilBarn relasjonTilBarn;
 
     @JsonCreator
     public Engangsstønad(@JsonProperty("medlemsskap") Medlemsskap medlemsskap,
-            @JsonProperty("relasjonTilBarn") RelasjonTilBarnMedVedlegg relasjonTilBarn) {
+            @JsonProperty("relasjonTilBarn") RelasjonTilBarn relasjonTilBarn) {
         this.medlemsskap = medlemsskap;
         this.relasjonTilBarn = relasjonTilBarn;
     }

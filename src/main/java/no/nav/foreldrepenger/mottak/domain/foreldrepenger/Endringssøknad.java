@@ -8,6 +8,7 @@ import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 
 import javax.validation.constraints.NotNull;
@@ -26,8 +27,8 @@ public class Endringssøknad extends Søknad {
     private final String saksnr;
 
     public Endringssøknad(Søker søker, Fordeling fordeling, AnnenForelder annenForelder,
-            Fødsel fødsel, Rettigheter rettigheter, String saksnr,
-            Vedlegg... vedlegg) {
+                          Fødsel fødsel, Rettigheter rettigheter, String saksnr,
+                          Vedlegg... vedlegg) {
         this(now(), søker, fordeling, annenForelder, fødsel, rettigheter, saksnr, vedlegg);
     }
 

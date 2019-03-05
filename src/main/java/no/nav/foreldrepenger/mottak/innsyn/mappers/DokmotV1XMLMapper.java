@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
@@ -63,7 +63,7 @@ public class DokmotV1XMLMapper implements XMLSøknadMapper {
         }
     }
 
-    private static RelasjonTilBarnMedVedlegg relasjonFra(OpplysningerOmBarn opplysningerOmBarn) {
+    private static RelasjonTilBarn relasjonFra(OpplysningerOmBarn opplysningerOmBarn) {
         opplysningerOmBarn.getAntallBarn();
         return null;
     }

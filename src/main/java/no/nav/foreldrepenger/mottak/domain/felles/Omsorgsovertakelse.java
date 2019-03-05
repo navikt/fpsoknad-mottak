@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
+package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -11,12 +11,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Omsorgsovertakelse extends RelasjonTilBarnMedVedlegg {
+public class Omsorgsovertakelse extends RelasjonTilBarn {
 
     private final LocalDate omsorgsovertakelsesdato;
     private final OmsorgsOvertakelsesÅrsak årsak;

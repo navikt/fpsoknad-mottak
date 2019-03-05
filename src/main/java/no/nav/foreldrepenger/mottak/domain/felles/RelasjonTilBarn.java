@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
+package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
@@ -26,7 +26,7 @@ import lombok.Data;
         @Type(value = FremtidigFødsel.class, name = "termin"),
         @Type(value = Omsorgsovertakelse.class, name = "omsorgsovertakelse")
 })
-public abstract class RelasjonTilBarnMedVedlegg {
+public abstract class RelasjonTilBarn {
 
     public abstract LocalDate relasjonsDato();
 
@@ -34,7 +34,7 @@ public abstract class RelasjonTilBarnMedVedlegg {
     @Positive
     private final int antallBarn;
 
-    public RelasjonTilBarnMedVedlegg(int antallBarn, List<String> vedlegg) {
+    public RelasjonTilBarn(int antallBarn, List<String> vedlegg) {
         this.antallBarn = antallBarn;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }

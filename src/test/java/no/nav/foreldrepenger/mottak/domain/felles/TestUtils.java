@@ -5,11 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.*;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import org.springframework.core.io.ClassPathResource;
 
@@ -17,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -36,11 +30,11 @@ public class TestUtils {
         return engangssøknad(v, utland, termin(), norskForelder(v));
     }
 
-    public static Søknad engangssøknad(Versjon v, RelasjonTilBarnMedVedlegg relasjon, boolean utland) {
+    public static Søknad engangssøknad(Versjon v, RelasjonTilBarn relasjon, boolean utland) {
         return engangssøknad(v, utland, relasjon, norskForelder(v));
     }
 
-    public static Søknad engangssøknad(Versjon v, RelasjonTilBarnMedVedlegg relasjon) {
+    public static Søknad engangssøknad(Versjon v, RelasjonTilBarn relasjon) {
         return engangssøknad(v, false, relasjon, norskForelder(v));
     }
 
@@ -48,15 +42,15 @@ public class TestUtils {
         return engangssøknad(v, true, termin(), norskForelder(v), vedlegg);
     }
 
-    public static Søknad engangssøknad(Versjon v, boolean utland, RelasjonTilBarnMedVedlegg relasjon, AnnenForelder annenForelder,
-            Vedlegg... vedlegg) {
+    public static Søknad engangssøknad(Versjon v, boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
+                                       Vedlegg... vedlegg) {
         Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(v, utland, relasjon, annenForelder), vedlegg);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
         return s;
     }
 
-    public static Engangsstønad engangstønad(Versjon v, boolean utland, RelasjonTilBarnMedVedlegg relasjon,
+    public static Engangsstønad engangstønad(Versjon v, boolean utland, RelasjonTilBarn relasjon,
             AnnenForelder annenForelder) {
         Engangsstønad stønad = new Engangsstønad(medlemsskap(v, utland), relasjon);
         stønad.setAnnenForelder(annenForelder);
@@ -127,11 +121,11 @@ public class TestUtils {
         return new Adopsjon(1, nå(), false, emptyList(), nå(), listeMedNå());
     }
 
-    public static RelasjonTilBarnMedVedlegg fødsel() {
+    public static RelasjonTilBarn fødsel() {
         return fødsel(forrigeMåned());
     }
 
-    public static RelasjonTilBarnMedVedlegg fødsel(LocalDate date) {
+    public static RelasjonTilBarn fødsel(LocalDate date) {
         return new Fødsel(date);
     }
 
@@ -175,7 +169,7 @@ public class TestUtils {
         return new Navn("Mor", "Godhjerta", "Morsen");
     }
 
-    public static RelasjonTilBarnMedVedlegg termin() {
+    public static RelasjonTilBarn termin() {
         return new FremtidigFødsel(nesteMåned(), forrigeMåned());
     }
 

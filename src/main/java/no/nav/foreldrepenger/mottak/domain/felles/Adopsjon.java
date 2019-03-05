@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
+package no.nav.foreldrepenger.mottak.domain.felles;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Adopsjon extends RelasjonTilBarnMedVedlegg {
+public class Adopsjon extends RelasjonTilBarn {
 
     @NotNull(message = "{ytelse.relasjontilbarn.adopsjon.omsorggsovertakelsesdato.notnull}")
     private final LocalDate omsorgsovertakelsesdato;

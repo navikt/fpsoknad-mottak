@@ -11,8 +11,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -118,11 +118,11 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
 
-    private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarnMedVedlegg relasjon, List<Vedlegg> vedlegg) {
-        if (relasjon instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel) {
-            return terminFra((no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel) relasjon, vedlegg);
+    private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg) {
+        if (relasjon instanceof FremtidigFødsel) {
+            return terminFra((FremtidigFødsel) relasjon, vedlegg);
         }
-        if (relasjon instanceof no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel) {
+        if (relasjon instanceof Fødsel) {
             return fødselFra((Fødsel) relasjon, vedlegg);
         }
         throw new IllegalArgumentException(
@@ -136,7 +136,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
                 .withAntallBarn(fødsel.getAntallBarn());
     }
 
-    private static SoekersRelasjonTilBarnet terminFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel termin, List<Vedlegg> vedlegg) {
+    private static SoekersRelasjonTilBarnet terminFra(FremtidigFødsel termin, List<Vedlegg> vedlegg) {
         return new Termin()
                 .withVedlegg(relasjonTilBarnVedleggFra(vedlegg))
                 .withTermindato(termin.getTerminDato())
@@ -186,7 +186,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
         return new no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder();
     }
 
-    private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap, RelasjonTilBarnMedVedlegg relasjon) {
+    private static Medlemskap medlemsskapFra(Medlemsskap medlemsskap, RelasjonTilBarn relasjon) {
         Medlemskap ms = new Medlemskap()
                 .withOppholdUtlandet(oppholdUtlandetFra(medlemsskap.getTidligereOppholdsInfo(),
                         medlemsskap.getFramtidigOppholdsInfo()))

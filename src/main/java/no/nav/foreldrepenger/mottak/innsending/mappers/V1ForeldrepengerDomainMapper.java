@@ -7,11 +7,11 @@ import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.felles.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
@@ -707,7 +707,7 @@ public class V1ForeldrepengerDomainMapper implements DomainMapper {
                 .withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
     }
 
-    private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
+    private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjonTilBarn) {
 
         if (relasjonTilBarn == null) {
             return null;

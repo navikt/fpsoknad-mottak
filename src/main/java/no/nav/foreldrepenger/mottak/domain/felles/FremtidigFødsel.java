@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
+package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static java.util.Collections.emptyList;
 
@@ -17,7 +17,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.Termindato;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 
-public class FremtidigFødsel extends RelasjonTilBarnMedVedlegg {
+public class FremtidigFødsel extends RelasjonTilBarn {
     @Termindato
     private final LocalDate terminDato;
     @PastOrToday(nullable = true)

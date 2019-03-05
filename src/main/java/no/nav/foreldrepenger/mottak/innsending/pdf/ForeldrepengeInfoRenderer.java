@@ -5,10 +5,10 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.felles.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
@@ -253,7 +253,7 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
-    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarnMedVedlegg relasjonTilBarn,
+    public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
@@ -308,7 +308,7 @@ public class ForeldrepengeInfoRenderer {
         return antallBarn > 1 ? "a" : "et";
     }
 
-    public float omBarn(RelasjonTilBarnMedVedlegg relasjon, FontAwareCos cos, float y)
+    public float omBarn(RelasjonTilBarn relasjon, FontAwareCos cos, float y)
             throws IOException {
         y -= renderer.addLeftHeading(txt("barn"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, barn(relasjon), cos, y);
@@ -588,8 +588,8 @@ public class ForeldrepengeInfoRenderer {
         return textFormatter.capitalize(name);
     }
 
-    public float relasjonTilBarn(RelasjonTilBarnMedVedlegg relasjon, List<Vedlegg> vedlegg, FontAwareCos cos,
-            float y)
+    public float relasjonTilBarn(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg, FontAwareCos cos,
+                                 float y)
             throws IOException {
         y -= renderer.addBlankLine();
         y = omBarn(relasjon, cos, y);
@@ -777,7 +777,7 @@ public class ForeldrepengeInfoRenderer {
         }
     }
 
-    private List<String> barn(RelasjonTilBarnMedVedlegg relasjonTilBarn) {
+    private List<String> barn(RelasjonTilBarn relasjonTilBarn) {
         if (relasjonTilBarn instanceof Fødsel) {
             return fødsel(Fødsel.class.cast(relasjonTilBarn));
         }
