@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
 
+import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;

@@ -1,18 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.time.DayOfWeek.SATURDAY;
-import static java.time.DayOfWeek.SUNDAY;
-import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000062;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000063;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500005;
-import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.util.Versjon;
+import org.springframework.core.io.ClassPathResource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,20 +13,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.core.io.ClassPathResource;
-
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.*;
+import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
 
 public class ForeldrepengerTestUtils {
 

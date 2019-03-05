@@ -7,14 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true, exclude = { "navn" })
 public final class NorskForelder extends AnnenForelder {
 
-    @NotBlank
+    @NotNull
     private final Fødselsnummer fnr;
     private final String navn;
 
