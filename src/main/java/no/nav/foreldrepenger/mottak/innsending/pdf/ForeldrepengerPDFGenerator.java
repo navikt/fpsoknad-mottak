@@ -1,23 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
@@ -25,6 +11,19 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
 public class ForeldrepengerPDFGenerator implements PDFGenerator {

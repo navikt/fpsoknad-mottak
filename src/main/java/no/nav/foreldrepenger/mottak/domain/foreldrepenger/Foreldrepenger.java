@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
 
 @Data

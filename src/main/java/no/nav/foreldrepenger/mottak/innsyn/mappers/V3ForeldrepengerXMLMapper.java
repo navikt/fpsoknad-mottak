@@ -1,5 +1,50 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.jaxb.FPV3JAXBUtil;
+import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.Endringssoeknad;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Rettigheter;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.*;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.AnnenOpptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Dekningsgrad;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Foreldrepenger;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Frilans;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.NorskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Opptjening;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.*;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.*;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Fordeling;
+import no.nav.vedtak.felles.xml.soeknad.uttak.v3.*;
+import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
+import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
+import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBElement;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -7,102 +52,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELD
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import javax.xml.bind.JAXBElement;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.FrilansOppdrag;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.GradertUttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.MorsAktivitet;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Oppholdsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Regnskapsfører;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.RelasjonTilBarnMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UtsettelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.jaxb.FPV3JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.Endringssoeknad;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Rettigheter;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.SoekersRelasjonTilBarnet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Termin;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.AnnenOpptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Dekningsgrad;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.EgenNaering;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Frilans;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Frilansoppdrag;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.NorskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Opptjening;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Regnskapsfoerer;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.MorsAktivitetsTyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Oppholdsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Overfoeringsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Utsettelsesaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Uttaksperiodetyper;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Arbeidsgiver;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Fordeling;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Gradering;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Oppholdsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Overfoeringsperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Utsettelsesperiode;
-import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Uttaksperiode;
-import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
-import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
 //@Component
 public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
@@ -589,13 +538,13 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 .fraKode(dekningsgrad.getDekningsgrad().getKode());
     }
 
-    private no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenForelder tilAnnenForelder(
+    private no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder tilAnnenForelder(
             AnnenForelder annenForelder) {
         if (annenForelder == null) {
             return null;
         }
         if (annenForelder instanceof UkjentForelder) {
-            return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.UkjentForelder();
+            return new no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder();
         }
         if (annenForelder instanceof AnnenForelderMedNorskIdent) {
             AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);

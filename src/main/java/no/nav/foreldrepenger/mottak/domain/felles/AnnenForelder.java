@@ -8,9 +8,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
 
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({

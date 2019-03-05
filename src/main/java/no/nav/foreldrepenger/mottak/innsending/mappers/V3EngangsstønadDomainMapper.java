@@ -25,11 +25,11 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
@@ -195,11 +195,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private AnnenForelder norskForelderFra(NorskForelder norskForelder) {
-        if (norskForelder.hasId()) {
-            return new AnnenForelderMedNorskIdent()
-                    .withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
-        }
-        return null;
+        return new AnnenForelderMedNorskIdent().withAktoerId(oppslag.getAktørId(norskForelder.getFnr()).getId());
     }
 
     private static AnnenForelder ukjentForelder() {

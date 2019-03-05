@@ -40,6 +40,9 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
             return doSend(type, payload);
         }
         LOG.info("Sending av {} er deaktivert, ingenting å sende", type);
+        if (payload.getBody() != null) {
+            IKKE_SENDT.setPdf(pdfFra(payload.getBody()));
+        }
         return IKKE_SENDT;
     }
 

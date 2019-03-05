@@ -1,36 +1,25 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.util.Pair;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.stereotype.Service;
-
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.KjentForelder;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Pair;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Service
 public class EngangsstønadPDFGenerator implements PDFGenerator {
@@ -71,8 +60,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             y -= renderer.addBlankLine();
 
             AnnenForelder annenForelder = stønad.getAnnenForelder();
-            if (annenForelder != null && annenForelder instanceof KjentForelder
-                    && ((KjentForelder) annenForelder).hasId()) {
+            if (!(annenForelder instanceof UkjentForelder)) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
                 renderer.addLinesOfRegularText(omFar(stønad), cos, y);
             }
@@ -132,8 +120,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> lines = new ArrayList<>(Arrays.asList(textFormatter.fromMessageSource("nasjonalitet",
-                textFormatter.countryName(utenlandsForelder.getLand(),
-                        utenlandsForelder.getLand().getName())),
+                textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())),
                 textFormatter.navn(utenlandsForelder.getNavn())));
 
         if (utenlandsForelder.getId() != null) {
