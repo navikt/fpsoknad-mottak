@@ -9,6 +9,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -20,5 +21,5 @@ public class Svangerskapspenger extends Ytelse {
     @Valid
     private final Opptjening opptjening;
 
-    private final Tilrettelegging tilrettelegging;
+    private final List<Tilrettelegging> tilrettelegging;
 }

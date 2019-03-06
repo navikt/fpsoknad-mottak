@@ -126,6 +126,9 @@ public class FPFordelMetadata {
         if (søknadType.erEngangsstønad()) {
             return dokumentTypeFraRelasjonForEngangsstønad(søknad);
         }
+        if (søknadType.erSvangerskapspenger()) {
+            return I000001;
+        }
         throw new UnsupportedOperationException(
                 "Ytelse av type " + søknad.getYtelse().getClass().getSimpleName() + " ikke støttet");
     }

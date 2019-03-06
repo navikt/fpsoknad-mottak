@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,9 +25,9 @@ public final class Mappables {
 
     public static <T extends Mappable> MapperEgenskaper egenskaperFor(List<T> mappables) {
         return new MapperEgenskaper(mappables.stream()
-                .map(e -> e.mapperEgenskaper())
-                .map(e -> e.getEgenskaper())
-                .flatMap(e -> e.stream())
+                .map(Mappable::mapperEgenskaper)
+                .map(MapperEgenskaper::getEgenskaper)
+                .flatMap(Collection::stream)
                 .collect(toList()));
     }
 
