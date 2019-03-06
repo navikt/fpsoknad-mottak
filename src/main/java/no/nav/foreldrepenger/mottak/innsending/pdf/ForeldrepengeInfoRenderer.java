@@ -5,11 +5,17 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.felles.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.*;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.*;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.*;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -28,7 +34,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
@@ -254,7 +260,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn,
-            FontAwareCos cos, float y) throws IOException {
+                             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();

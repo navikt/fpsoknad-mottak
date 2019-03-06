@@ -4,6 +4,14 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.*;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.*;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import org.springframework.core.io.ClassPathResource;
 
@@ -18,11 +26,11 @@ import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.*;
-import static no.nav.foreldrepenger.mottak.domain.felles.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
+import static no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Virksomhetstype.FISKE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype.FISKE;
 
 public class ForeldrepengerTestUtils {
 

@@ -25,8 +25,8 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 
 @Component
 public class SøknadTextFormatter {

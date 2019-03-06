@@ -7,6 +7,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.*;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import no.nav.foreldrepenger.mottak.domain.felles.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 
 public class NorskForelderSerializer extends StdSerializer<NorskForelder> {
 

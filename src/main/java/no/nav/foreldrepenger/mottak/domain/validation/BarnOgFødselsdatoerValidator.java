@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.BarnOgFødselsdatoer;
 
 import javax.validation.ConstraintValidator;

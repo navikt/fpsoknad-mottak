@@ -2,11 +2,11 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Opptjening;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;

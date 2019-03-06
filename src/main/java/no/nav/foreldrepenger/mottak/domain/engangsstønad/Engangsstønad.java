@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
 
 import javax.validation.Valid;
 
@@ -17,7 +17,6 @@ import javax.validation.Valid;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonPropertyOrder({ "medlemsskap", "relasjonTilBarn", "annenForelder" })
-
 public class Engangsstønad extends Ytelse {
 
     @Valid

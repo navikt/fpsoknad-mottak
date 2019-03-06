@@ -7,13 +7,19 @@ import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -158,7 +164,7 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private AnnenForelder annenForelderFra(
-            no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder annenForelder) {
+            no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder annenForelder) {
         if (annenForelder == null) {
             return null;
         }
@@ -227,7 +233,7 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private static List<OppholdUtlandet> oppholdUtlandetFra(TidligereOppholdsInformasjon tidligereOppholdsInfo,
-            FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
+                                                            FramtidigOppholdsInformasjon framtidigOppholdsInfo) {
         if (tidligereOppholdsInfo.isBoddINorge() && framtidigOppholdsInfo.isNorgeNeste12()) {
             return emptyList();
         }

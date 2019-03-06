@@ -7,9 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;

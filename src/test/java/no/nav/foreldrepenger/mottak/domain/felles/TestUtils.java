@@ -5,6 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.*;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.*;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.*;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import org.springframework.core.io.ClassPathResource;
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.felles.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
 
 import java.io.IOException;
 
