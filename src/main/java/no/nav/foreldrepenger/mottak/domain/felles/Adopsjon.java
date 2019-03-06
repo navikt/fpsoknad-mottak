@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,21 +22,23 @@ public class Adopsjon extends RelasjonTilBarn {
     private final LocalDate omsorgsovertakelsesdato;
     private final boolean ektefellesBarn;
     private final LocalDate ankomstDato;
-    private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.adopsjon.fødselssdato.framtid}") LocalDate> fødselsdatoer;
+    private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.adopsjon.fødselssdato.framtid}") LocalDate> fødselsdato;
 
     @JsonCreator
-    public Adopsjon(LocalDate omsorgsovertakelsesdato,
-            boolean ektefellesBarn,
-            int antallBarn, LocalDate ankomstDato, LocalDate... fødselsdatoer) {
-        super(antallBarn);
+    public Adopsjon(@JsonProperty("antallBarn") int antallBarn,
+            @JsonProperty("omsorgsovertakelsesdato") LocalDate omsorgsovertakelsesdato,
+            @JsonProperty("ektefellesBarn") boolean ektefellesBarn, @JsonProperty("vedlegg") List<String> vedlegg,
+            @JsonProperty("ankomstDato") LocalDate ankomstDato,
+            @JsonProperty("fødselsdato") List<LocalDate> fødselsdato) {
+        super(antallBarn, vedlegg);
         this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
         this.ektefellesBarn = ektefellesBarn;
         this.ankomstDato = ankomstDato;
-        this.fødselsdatoer = Arrays.asList(fødselsdatoer);
+        this.fødselsdato = fødselsdato;
     }
 
     @Override
     public LocalDate relasjonsDato() {
-        return omsorgsovertakelsesdato;
+        return fødselsdato.get(0);
     }
 }

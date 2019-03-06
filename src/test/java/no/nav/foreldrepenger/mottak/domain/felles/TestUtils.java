@@ -1,26 +1,21 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.*;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.util.Versjon;
+import org.springframework.core.io.ClassPathResource;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.springframework.core.io.ClassPathResource;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 public class TestUtils {
 
@@ -48,7 +43,7 @@ public class TestUtils {
     }
 
     public static Søknad engangssøknad(Versjon v, boolean utland, RelasjonTilBarn relasjon, AnnenForelder annenForelder,
-            Vedlegg... vedlegg) {
+                                       Vedlegg... vedlegg) {
         Søknad s = new Søknad(LocalDateTime.now(), søker(), engangstønad(v, utland, relasjon, annenForelder), vedlegg);
         s.setBegrunnelseForSenSøknad("Glemte hele ungen");
         s.setTilleggsopplysninger("Intet å tilføye");
@@ -95,7 +90,7 @@ public class TestUtils {
     }
 
     static TidligereOppholdsInformasjon tidligereOppHoldINorge() {
-        return new TidligereOppholdsInformasjon(ArbeidsInformasjon.ARBEIDET_I_NORGE, Collections.emptyList());
+        return new TidligereOppholdsInformasjon(ArbeidsInformasjon.ARBEIDET_I_NORGE, emptyList());
     }
 
     public static Omsorgsovertakelse omsorgsovertakelse() {
@@ -123,7 +118,7 @@ public class TestUtils {
     }
 
     public static Adopsjon adopsjon() {
-        return new Adopsjon(nå(), false, 1, nå(), nå());
+        return new Adopsjon(1, nå(), false, emptyList(), nå(), listeMedNå());
     }
 
     public static RelasjonTilBarn fødsel() {
@@ -150,7 +145,7 @@ public class TestUtils {
     }
 
     public static FramtidigOppholdsInformasjon framtidigOppholdINorge() {
-        return new FramtidigOppholdsInformasjon(Collections.emptyList());
+        return new FramtidigOppholdsInformasjon(emptyList());
     }
 
     public static String serialize(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
@@ -200,6 +195,10 @@ public class TestUtils {
 
     public static LocalDate nå() {
         return LocalDate.now();
+    }
+
+    public static List<LocalDate> listeMedNå() {
+        return singletonList(nå());
     }
 
     static LocalDate ettÅrSiden() {

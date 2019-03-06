@@ -2,11 +2,13 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+import static java.util.Collections.emptyList;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -15,8 +17,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
 
-@Valid
 @Data
+@Valid
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
         @Type(value = Fødsel.class, name = "fødsel"),
@@ -25,13 +27,15 @@ import lombok.Data;
         @Type(value = Omsorgsovertakelse.class, name = "omsorgsovertakelse")
 })
 public abstract class RelasjonTilBarn {
+
     public abstract LocalDate relasjonsDato();
 
-    @Positive(message = "{ytelse.relasjontilbarn.antall}")
-    @Max(10)
+    private final List<String> vedlegg;
+    @Positive
     private final int antallBarn;
 
-    public RelasjonTilBarn(int antallBarn) {
+    public RelasjonTilBarn(int antallBarn, List<String> vedlegg) {
         this.antallBarn = antallBarn;
+        this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }
 }

@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -17,7 +18,7 @@ public class Foreldrepenger extends Ytelse {
     @Valid
     private AnnenForelder annenForelder;
     @Valid
-    private final RelasjonTilBarnMedVedlegg relasjonTilBarn;
+    private final RelasjonTilBarn relasjonTilBarn;
     @Valid
     private final Rettigheter rettigheter;
     private final Dekningsgrad dekningsgrad;

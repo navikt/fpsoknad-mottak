@@ -1,90 +1,58 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
-import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
-import static no.nav.foreldrepenger.mottak.util.Versjon.alleSøknadVersjoner;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.mockito.quality.Strictness.LENIENT;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.MultiValueMap;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V1ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V2EngangsstønadDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V2ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V3EngangsstønadDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
-import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
-import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
-import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
-import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
-import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.innsending.mappers.*;
+import no.nav.foreldrepenger.mottak.innsending.pdf.*;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V3ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.*;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.Versjon;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.http.HttpEntity;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.util.MultiValueMap;
+
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.*;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.*;
+import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.*;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -131,8 +99,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testEndringssøknadRoundtrip() {
-        alleSøknadVersjoner().stream()
-                .forEach(v -> testEndringssøknadRoundtrip(v));
+        alleSøknadVersjoner().forEach(this::testEndringssøknadRoundtrip);
     }
 
     @Test
@@ -145,12 +112,11 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtrip() {
-        alleSøknadVersjoner().stream()
-                .forEach(v -> testSøknadRoundtrip(v));
+        alleSøknadVersjoner().forEach(this::testSøknadRoundtrip);
     }
 
     @Test
-    public void testFeilMapper() throws Exception {
+    public void testFeilMapper() {
         assertThrows(VersionMismatchException.class,
                 () -> v12DomainMapper.tilXML(søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1), AKTØRID,
                         new SøknadEgenskap(V2, SøknadType.ENDRING_FORELDREPENGER)));
@@ -158,16 +124,12 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() {
-        alleSøknadVersjoner()
-                .stream()
-                .forEach(v -> testKonvolutt(v));
+        alleSøknadVersjoner().forEach(this::testKonvolutt);
     }
 
     @Test
     public void testKonvoluttEndring() {
-        alleSøknadVersjoner()
-                .stream()
-                .forEach(v -> testKonvoluttEndring(v));
+        alleSøknadVersjoner().forEach(this::testKonvoluttEndring);
     }
 
     @Test
@@ -241,15 +203,6 @@ public class TestFPFordelSerialization {
         assertEquals(2, vedlegg.size());
         assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
-    }
-
-    private static ValgfrittVedlegg opplastetVedlegg(String id, DokumentType type) {
-        try {
-            return new ValgfrittVedlegg(id, InnsendingsType.LASTET_OPP, type,
-                    new ClassPathResource("terminbekreftelse.pdf"));
-        } catch (Exception e) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private static List<Arbeidsforhold> arbeidsforhold() {

@@ -48,14 +48,13 @@ public class PDFGeneratorTest {
     PDFGenerator gen;
 
     @Test
-    public void signature() throws Exception {
+    public void signature() {
         assertTrue(hasPdfSignature(
                 gen.generate(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test
     public void førstegangssøknad() throws Exception {
-
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
@@ -65,7 +64,6 @@ public class PDFGeneratorTest {
 
     @Test
     public void endring() throws Exception {
-
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
             Endringssøknad endringssøknad = endringssøknad(DEFAULT_VERSJON, VEDLEGG1);
             endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
@@ -75,7 +73,6 @@ public class PDFGeneratorTest {
 
     @Test
     public void engangs() throws Exception {
-
         try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
             fos.write(gen.generate(engangssøknad(DEFAULT_VERSJON, fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
         }

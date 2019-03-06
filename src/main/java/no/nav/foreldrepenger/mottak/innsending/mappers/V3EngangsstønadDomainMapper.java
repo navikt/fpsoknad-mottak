@@ -1,5 +1,40 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
+import com.google.common.collect.Lists;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.util.jaxb.ESV3JAXBUtil;
+import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v3.ObjectFactory;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.*;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Brukerroller;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
+import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
+import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import javax.xml.bind.JAXBElement;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
@@ -8,60 +43,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGAN
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import javax.xml.bind.JAXBElement;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import com.google.common.collect.Lists;
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.felles.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.domain.felles.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.jaxb.ESV3JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v3.ObjectFactory;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdNorge;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.SoekersRelasjonTilBarnet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Termin;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Brukerroller;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
-import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
-import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
 @Component
 public class V3EngangsstønadDomainMapper implements DomainMapper {
@@ -139,10 +120,10 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg) {
         if (relasjon instanceof FremtidigFødsel) {
-            return terminFra(FremtidigFødsel.class.cast(relasjon), vedlegg);
+            return terminFra((FremtidigFødsel) relasjon, vedlegg);
         }
         if (relasjon instanceof Fødsel) {
-            return fødselFra(Fødsel.class.cast(relasjon), vedlegg);
+            return fødselFra((Fødsel) relasjon, vedlegg);
         }
         throw new IllegalArgumentException(
                 "Relasjon til barn " + relasjon.getClass().getSimpleName() + " er foreløpig ikke støttet");
@@ -165,7 +146,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<Vedlegg> vedlegg) {
         return vedlegg.stream()
-                .map(s -> s.getId())
+                .map(Vedlegg::getId)
                 .map(s -> FELLES_FACTORY_V3.createSoekersRelasjonTilBarnetVedlegg(
                         new no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg().withId(s)))
                 .collect(toList());

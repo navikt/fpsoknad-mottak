@@ -1,9 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static java.util.Collections.emptyList;
+
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,13 +24,13 @@ public class FremtidigFødsel extends RelasjonTilBarn {
     private final LocalDate utstedtDato;
 
     public FremtidigFødsel(LocalDate terminDato, LocalDate utstedtDato) {
-        this(1, terminDato, utstedtDato);
+        this(1, terminDato, utstedtDato, emptyList());
     }
 
     @JsonCreator
-    public FremtidigFødsel(@JsonProperty("antallBarn") int antallBarn, @JsonProperty("terminDato") LocalDate terminDato,
-            @JsonProperty("utstedtDato") LocalDate utstedtDato) {
-        super(antallBarn);
+    public FremtidigFødsel(int antallBarn, LocalDate terminDato,
+            LocalDate utstedtDato, List<String> vedlegg) {
+        super(antallBarn, vedlegg);
         this.terminDato = terminDato;
         this.utstedtDato = utstedtDato;
     }
