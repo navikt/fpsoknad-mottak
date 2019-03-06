@@ -18,4 +18,6 @@ import lombok.Data;
 @Data
 public abstract class AnnenForelder {
 
+    public abstract boolean hasId();
+
 }

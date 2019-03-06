@@ -60,7 +60,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             y -= renderer.addBlankLine();
 
             AnnenForelder annenForelder = stønad.getAnnenForelder();
-            if (!(annenForelder instanceof UkjentForelder)) {
+            if (annenForelder.hasId()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
                 renderer.addLinesOfRegularText(omFar(stønad), cos, y);
             }

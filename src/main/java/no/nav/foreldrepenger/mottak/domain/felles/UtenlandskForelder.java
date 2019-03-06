@@ -16,4 +16,9 @@ public final class UtenlandskForelder extends AnnenForelder {
     private final String id;
     private final CountryCode land;
     private final String navn;
+
+    @Override
+    public boolean hasId() {
+        return id != null;
+    }
 }

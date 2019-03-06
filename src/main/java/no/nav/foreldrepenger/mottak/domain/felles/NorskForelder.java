@@ -27,5 +27,10 @@ public final class NorskForelder extends AnnenForelder {
         this.fnr = fnr;
         this.navn = navn;
     }
+
+    @Override
+    public boolean hasId() {
+        return fnr != null && fnr.getFnr() != null;
+    }
 }
 
