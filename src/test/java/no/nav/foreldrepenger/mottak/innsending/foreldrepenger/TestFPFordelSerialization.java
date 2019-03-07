@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.alleSøknadVersjoner;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
@@ -15,7 +16,6 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKon
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
-import static no.nav.foreldrepenger.mottak.util.Versjon.alleSøknadVersjoner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
@@ -54,6 +54,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
@@ -61,7 +62,6 @@ import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V1ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V2EngangsstønadDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V2ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3EngangsstønadDomainMapper;
@@ -115,7 +115,6 @@ public class TestFPFordelSerialization {
                 new V2ForeldrepengerXMLMapper(oppslag),
                 new V3ForeldrepengerXMLMapper(oppslag));
         v12DomainMapper = new DelegerendeDomainMapper(
-                new V1ForeldrepengerDomainMapper(oppslag),
                 new V2ForeldrepengerDomainMapper(oppslag),
                 new V3ForeldrepengerDomainMapper(oppslag),
                 new V2EngangsstønadDomainMapper(oppslag),
@@ -141,7 +140,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtrip() {
-        alleSøknadVersjoner().forEach(this::testSøknadRoundtrip);
+        TestUtils.alleSøknadVersjoner().stream().forEach(v -> testSøknadRoundtrip(v));
     }
 
     @Test

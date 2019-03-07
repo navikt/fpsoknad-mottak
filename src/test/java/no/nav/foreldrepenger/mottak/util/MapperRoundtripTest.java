@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.alleSøknadVersjoner;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
@@ -20,7 +21,6 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V1ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V2ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -50,7 +50,6 @@ public class MapperRoundtripTest {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
         domainMapper = new DelegerendeDomainMapper(
-                new V1ForeldrepengerDomainMapper(oppslag),
                 new V2ForeldrepengerDomainMapper(oppslag),
                 new V3ForeldrepengerDomainMapper(oppslag));
         xmlMapper = new DelegerendeXMLSøknadMapper(
@@ -61,14 +60,14 @@ public class MapperRoundtripTest {
 
     @Test
     public void testFørstegangssøknadRoundtrip() {
-        Versjon.alleSøknadVersjoner()
+        alleSøknadVersjoner()
                 .stream()
                 .forEach(this::roundTripInitiell);
     }
 
     // @Test
     public void testEndringRoundtrip() {
-        Versjon.alleSøknadVersjoner()
+        alleSøknadVersjoner()
                 .stream()
                 .forEach(this::roundTripEndring);
     }

@@ -11,12 +11,19 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 public enum Versjon {
 
-    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1", "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
-            "urn:no:nav:vedtak:felles:xml:vedtak:v2", "urn:no:nav:vedtak:felles:xml:soeknad:v2",
-            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"), V3("urn:no:nav:vedtak:felles:xml:soeknad:v3",
-                    "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"), V20180924, UKJENT;
+    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1",
+       "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
+    V2("urn:no:nav:vedtak:felles:xml:vedtak:v2",
+       "urn:no:nav:vedtak:felles:xml:soeknad:v2",
+       "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"),
+    V3("urn:no:nav:vedtak:felles:xml:soeknad:v3",
+       "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"),
+    V20180924,
+    UKJENT;
 
     private static final Logger LOG = LoggerFactory.getLogger(Versjon.class);
     public static final String VERSION_PROPERTY = "contract.version";
@@ -54,15 +61,6 @@ public enum Versjon {
         return stream(values())
                 .map(v -> v.namespaces)
                 .flatMap(v -> v.stream())
-                .collect(toList());
-    }
-
-    public static List<Versjon> alleSøknadVersjoner() {
-        return stream(values())
-                .filter(v -> !V1.equals(v))
-                .filter(v -> !V3.equals(v))
-                .filter(v -> !UKJENT.equals(v))
-                .filter(v -> !V20180924.equals(v))
                 .collect(toList());
     }
 }

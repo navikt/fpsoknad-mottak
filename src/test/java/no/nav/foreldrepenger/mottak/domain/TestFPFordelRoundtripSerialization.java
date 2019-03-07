@@ -94,15 +94,6 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testFPForeldrepengerSøknadXMLV1() {
-        Versjon versjon = V1;
-        Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        String xml = template.postForObject(INNSENDING_PREPROD + "/søknad", original, String.class);
-        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
-        assertEquals(original, xmlMapper.tilSøknad(xml, egenskaper));
-    }
-
-    @Test
     public void testFPForeldrepengerSøknadXMLV2() {
         Versjon versjon = V2;
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
