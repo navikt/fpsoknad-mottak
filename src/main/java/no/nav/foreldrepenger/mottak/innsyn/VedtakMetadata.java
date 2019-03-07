@@ -1,54 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+import no.nav.foreldrepenger.mottak.util.Versjon;
+
+@Data
 public class VedtakMetadata {
 
     private final String journalpostId;
+    private final Versjon versjon;
 
     @JsonCreator
-    public VedtakMetadata(@JsonProperty("journalpostId") String journalpostId) {
+    public VedtakMetadata(@JsonProperty("journalpostId") String journalpostId,
+            @JsonProperty("versjon") Versjon versjon) {
         this.journalpostId = journalpostId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(journalpostId);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        VedtakMetadata other = (VedtakMetadata) obj;
-        if (journalpostId == null) {
-            if (other.journalpostId != null) {
-                return false;
-            }
-        }
-        else if (!journalpostId.equals(other.journalpostId)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public String getJournalpostId() {
-        return journalpostId;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [journalpostId=" + journalpostId + "]";
+        this.versjon = versjon;
     }
 }

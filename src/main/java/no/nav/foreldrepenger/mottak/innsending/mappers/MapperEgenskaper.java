@@ -16,6 +16,8 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class MapperEgenskaper {
     private final List<SøknadEgenskap> egenskaper;
 
+    public static MapperEgenskaper UKJENT = new MapperEgenskaper(Versjon.UKJENT, SøknadType.UKJENT);
+
     public static MapperEgenskaper FORELDREPENGER = new MapperEgenskaper(INITIELL_FORELDREPENGER,
             ENDRING_FORELDREPENGER);
 

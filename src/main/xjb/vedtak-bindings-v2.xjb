@@ -14,5 +14,10 @@
             <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement
             </annox:annotateClass>
         </jaxb:bindings>
+        <jaxb:bindings
+            node="//xs:complexType[@name='Uttak']">
+            <annox:annotateClass>@javax.xml.bind.annotation.XmlRootElement
+            </annox:annotateClass>
+        </jaxb:bindings>
     </jaxb:bindings>
 </jaxb:bindings>

@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
-import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
 
@@ -13,7 +12,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -22,26 +20,22 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
 
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
 
-    private final XMLSøknadMapper søknadMapper;
-    private final InnsynConnection innsynConnection;
-    private final SøknadInspektør inspektør;
-    private final XMLVedtakMapper vedtakMapper;
+    private final XMLSøknadHandler søknadHandler;
+    private final XMLVedtakHandler vedtakHandler;
 
-    public InnsynTjeneste(InnsynConnection innsynConnection,
-            @Qualifier(DELEGERENDE) XMLSøknadMapper søknadMapper,
-            XMLVedtakMapper vedtakMapper,
-            SøknadInspektør inspektør) {
+    private final InnsynConnection innsynConnection;
+
+    public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler, InnsynConnection innsynConnection) {
         this.innsynConnection = innsynConnection;
-        this.søknadMapper = søknadMapper;
-        this.vedtakMapper = vedtakMapper;
-        this.inspektør = inspektør;
+        this.søknadHandler = søknadHandler;
+        this.vedtakHandler = vedtakHandler;
     }
 
     @Override
@@ -50,7 +44,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public InnsynsVedtak hentVedtak(AktorId aktørId, String saksnummer) {
+    public Vedtak hentVedtak(AktorId aktørId, String saksnummer) {
         return Optional.ofNullable(hentSaker(aktørId).stream()
                 .filter(s -> s.getSaksnummer().equals(saksnummer))
                 .findFirst()
@@ -114,8 +108,8 @@ public class InnsynTjeneste implements Innsyn {
         return søknad;
     }
 
-    private InnsynsVedtak hentVedtak(Lenke vedtaksLenke) {
-        InnsynsVedtak vedtak = Optional.ofNullable(innsynConnection.hentVedtak(vedtaksLenke))
+    private Vedtak hentVedtak(Lenke vedtaksLenke) {
+        Vedtak vedtak = Optional.ofNullable(innsynConnection.hentVedtak(vedtaksLenke))
                 .map(this::tilVedtak)
                 .orElse(null);
         if (vedtak == null) {
@@ -169,23 +163,25 @@ public class InnsynTjeneste implements Innsyn {
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         String xml = wrapper.getXml();
-        SøknadEgenskap egenskaper = inspektør.inspiser(xml);
+        SøknadEgenskap egenskaper = søknadHandler.inspiser(xml);
         return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
-                søknadMapper.tilSøknad(xml, egenskaper));
+                søknadHandler.tilSøknad(xml, egenskaper));
 
     }
 
-    private InnsynsVedtak tilVedtak(VedtakDTO wrapper) {
+    private Vedtak tilVedtak(VedtakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
         String xml = wrapper.getXml();
-        return new InnsynsVedtak(new VedtakMetadata(wrapper.getJournalpostId()), vedtakMapper.tilVedtak(xml));
+        Versjon versjon = vedtakHandler.inspiser(xml);
+        return vedtakHandler.tilVedtak(xml, versjon)
+                .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), versjon));
 
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [søknadMapper=" + søknadMapper + ", innsynConnection=" + innsynConnection
-                + ", inspektør=" + inspektør + ", vedtakMapper=" + vedtakMapper + "]";
+        return getClass().getSimpleName() + " [søknadHandler=" + søknadHandler + ", vedtakHandler=" + vedtakHandler
+                + ", innsynConnection=" + innsynConnection + "]";
     }
 
 }

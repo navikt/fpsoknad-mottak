@@ -117,7 +117,7 @@ public abstract class AbstractJAXBUtil {
         }
     }
 
-    private Unmarshaller unmarshaller() {
+    public Unmarshaller unmarshaller() {
         try {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler(new DefaultValidationEventHandler());

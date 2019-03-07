@@ -23,7 +23,8 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.Varslingstyper;
 
 @Service
 public class VarselXMLGenerator {
-    private final VarselJaxbUtil jaxb;
+    private static final ObjectFactory VARSEL_FACTORY_V1 = new ObjectFactory();
+
     static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel";
     static final String FORNAVN = "FORNAVN";
     static final String DATO = "DATO";
@@ -31,18 +32,18 @@ public class VarselXMLGenerator {
     static final String URL = "URL";
     static final String URL_VALUE = "https://foreldrepenger.nav.no";
 
-    private static final ObjectFactory VARSEL_FACTORY_V1 = new ObjectFactory();
+    private final VarselJaxbUtil jaxb;
 
     @Inject
     public VarselXMLGenerator() {
         this(true);
     }
 
-    public VarselXMLGenerator(boolean validate) {
+    private VarselXMLGenerator(boolean validate) {
         this(new VarselJaxbUtil(validate));
     }
 
-    public VarselXMLGenerator(VarselJaxbUtil jaxb) {
+    VarselXMLGenerator(VarselJaxbUtil jaxb) {
         this.jaxb = jaxb;
     }
 
@@ -55,7 +56,7 @@ public class VarselXMLGenerator {
         return new Varsel()
                 .withMottaker(mottaker(varsel.getSøker()))
                 .withVarslingstype(varslingsType())
-                .withParameterListe(parameterListe(varsel.getSøker(), varsel.getDato()));
+                .withParameterListe(parameterListe(varsel));
     }
 
     private static AktoerId mottaker(Person søker) {
@@ -68,14 +69,14 @@ public class VarselXMLGenerator {
                 .withValue(VARSEL_TYPE);
     }
 
-    private static List<Parameter> parameterListe(Person søker, LocalDateTime mottatt) {
+    private static List<Parameter> parameterListe(no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel) {
         return Arrays.asList(
                 new Parameter()
                         .withKey(FORNAVN)
-                        .withValue(formattertNavn(søker.fornavn)),
+                        .withValue(formattertNavn(varsel.getSøker().fornavn)),
                 new Parameter()
                         .withKey(DATO)
-                        .withValue(formattertDato(mottatt)),
+                        .withValue(formattertDato(varsel.getDato())),
                 new Parameter()
                         .withKey(URL)
                         .withValue(URL_VALUE));
@@ -83,9 +84,9 @@ public class VarselXMLGenerator {
 
     static String formattertNavn(String name) {
         return Optional.ofNullable(name)
-            .map(n -> n.toLowerCase())
-            .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
-            .orElse("");
+                .map(n -> n.toLowerCase())
+                .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
+                .orElse("");
     }
 
     static String formattertDato(LocalDateTime date) {

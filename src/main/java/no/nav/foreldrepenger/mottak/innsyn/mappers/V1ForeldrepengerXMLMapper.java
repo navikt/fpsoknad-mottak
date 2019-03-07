@@ -5,11 +5,13 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBElement;
@@ -298,8 +300,12 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 emptyList());
     }
 
-    private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
-        return periode == null || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
+    private static ÅpenPeriode tilÅpenPeriode(List<Periode> perioder) {
+        return Optional.ofNullable(perioder)
+                .filter(not(l -> l.isEmpty()))
+                .map(p -> p.get(0))
+                .map(V1ForeldrepengerXMLMapper::tilÅpenPeriode)
+                .orElse(null);
     }
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
@@ -308,22 +314,16 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 .collect(toList());
     }
 
-    private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
-        if (frilansoppdrag == null) {
-            return null;
-        }
-        return new FrilansOppdrag(
-                frilansoppdrag.getOppdragsgiver(),
-                tilÅpenPeriode(frilansoppdrag.getPeriode()));
+    private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag oppdrag) {
+        return Optional.ofNullable(oppdrag)
+                .map(f -> new FrilansOppdrag(f.getOppdragsgiver(), tilÅpenPeriode(f.getPeriode())))
+                .orElse(null);
     }
 
     private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
-        if (periode == null) {
-            return null;
-        }
-        return new ÅpenPeriode(
-                periode.getFom(),
-                periode.getTom());
+        return Optional.ofNullable(periode)
+                .map(p -> new ÅpenPeriode(p.getFom(), p.getTom()))
+                .orElse(null);
     }
 
     private static List<no.nav.foreldrepenger.mottak.domain.foreldrepenger.AnnenOpptjening> tilAnnenOpptjening(
@@ -396,7 +396,10 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static CountryCode tilLand(Land land, CountryCode defaultLand) {
-        return land == null ? defaultLand : CountryCode.getByCode(land.getKode());
+        return Optional.ofNullable(land)
+                .map(Land::getKode)
+                .map(CountryCode::getByCode)
+                .orElse(defaultLand);
     }
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
@@ -406,10 +409,11 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
-        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
-            return null;
-        }
-        return Virksomhetstype.valueOf(type.getKode());
+        return Optional.ofNullable(type)
+                .map(Virksomhetstyper::getKode)
+                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .map(Virksomhetstype::valueOf)
+                .orElse(null);
     }
 
     private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
@@ -465,10 +469,11 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
-        if (årsak == null || årsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
-            return null;
-        }
-        return Overføringsårsak.valueOf(årsak.getKode());
+        return Optional.ofNullable(årsak)
+                .map(Overfoeringsaarsaker::getKode)
+                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .map(Overføringsårsak::valueOf)
+                .orElse(null);
     }
 
     private static List<LukketPeriodeMedVedlegg> tilPerioder(
@@ -547,31 +552,35 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
-        if (morsAktivitetIPerioden == null || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
-            return null;
-        }
-        return MorsAktivitet.valueOf(morsAktivitetIPerioden.getKode());
+        return Optional.ofNullable(morsAktivitetIPerioden)
+                .map(MorsAktivitetsTyper::getKode)
+                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .map(MorsAktivitet::valueOf)
+                .orElse(null);
     }
 
     private static StønadskontoType tilStønadKontoType(Uttaksperiodetyper type) {
-        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
-            return null;
-        }
-        return StønadskontoType.valueOf(type.getKode());
+        return Optional.ofNullable(type)
+                .map(Uttaksperiodetyper::getKode)
+                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .map(StønadskontoType::valueOf)
+                .orElse(null);
     }
 
     private static UtsettelsesÅrsak tilÅrsak(Utsettelsesaarsaker aarsak) {
-        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
-            return null;
-        }
-        return UtsettelsesÅrsak.valueOf(aarsak.getKode());
+        return Optional.ofNullable(aarsak)
+                .map(Utsettelsesaarsaker::getKode)
+                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .map(UtsettelsesÅrsak::valueOf)
+                .orElse(null);
     }
 
     private static Oppholdsårsak tilÅrsak(Oppholdsaarsaker aarsak) {
-        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
-            return null;
-        }
-        return Oppholdsårsak.valueOf(aarsak.getKode());
+        return Optional.ofNullable(aarsak)
+                .map(Oppholdsaarsaker::getKode)
+                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .map(Oppholdsårsak::valueOf)
+                .orElse(null);
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad tilDekningsgrad(

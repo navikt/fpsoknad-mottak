@@ -454,7 +454,8 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
                     lovligeVerdier());
         }
         return Optional.ofNullable(type)
-                .map(s -> annenOpptjeningTypeFra(s.name()))
+                .map(AnnenOpptjeningType::name)
+                .map(V2ForeldrepengerDomainMapper::annenOpptjeningTypeFra)
                 .orElse(null);
     }
 
@@ -466,7 +467,7 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static boolean lovligVerdiForVersjon(AnnenOpptjeningType type) {
-        return type.versjoner.contains(Versjon.V2);
+        return type.versjoner.contains(V2);
     }
 
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {

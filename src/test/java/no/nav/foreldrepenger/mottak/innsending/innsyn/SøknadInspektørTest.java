@@ -5,9 +5,7 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGAN
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,11 +23,12 @@ import org.springframework.core.io.ClassPathResource;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DokmotV1XMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.UkjentXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.UkjentXMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,15 +37,14 @@ public class SøknadInspektørTest {
     @Mock
     private Oppslag oppslag;
 
-    private DelegerendeXMLMapper mapper;
-
+    private XMLSøknadMapper mapper;
     private SøknadInspektør inspektør;
 
     @BeforeEach
     public void beforeEach() {
         inspektør = new XMLStreamSøknadInspektør();
-        mapper = new DelegerendeXMLMapper(
-                new UkjentXMLMapper(),
+        mapper = new DelegerendeXMLSøknadMapper(
+                new UkjentXMLSøknadMapper(),
                 new DokmotV1XMLMapper(),
                 new V1ForeldrepengerXMLMapper(oppslag),
                 new V2ForeldrepengerXMLMapper(oppslag));
@@ -87,16 +85,6 @@ public class SøknadInspektørTest {
         assertEquals(INITIELL_ENGANGSSTØNAD, egenskap.getType());
         assertTrue(mapper.kanMappe(egenskap));
         assertNotNull(mapper.tilSøknad(xml, egenskap));
-    }
-
-    @Test
-    public void testInspektørESV2EndringXML() throws Exception {
-        String xml = load("v2es-endring.xml");
-        SøknadEgenskap egenskaper = inspektør.inspiser(xml);
-        assertEquals(V2, egenskaper.getVersjon());
-        assertEquals(INITIELL_ENGANGSSTØNAD, egenskaper.getType());
-        assertFalse(mapper.kanMappe(egenskaper));
-        assertNull(mapper.tilSøknad(xml, egenskaper));
     }
 
     @Test

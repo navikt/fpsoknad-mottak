@@ -1,26 +1,23 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
+import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.UKJENT;
+
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public class UkjentXMLMapper implements XMLSøknadMapper {
-
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(Versjon.UKJENT, SøknadType.UKJENT);
+public class UkjentXMLSøknadMapper implements XMLSøknadMapper {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return EGENSKAPER;
+        return UKJENT;
     }
 
     @Override
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
         return null;
     }
-
 }

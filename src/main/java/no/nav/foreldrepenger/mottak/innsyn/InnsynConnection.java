@@ -11,6 +11,7 @@ import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -76,14 +77,11 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     private <T> T hent(Lenke lenke, Class<T> clazz) {
-        if (lenke != null && lenke.getHref() != null) {
-            LOG.trace("Henter {} fra {}", clazz.getSimpleName(), lenke);
-            return Optional.ofNullable(
-                    getForObject(URI.create(config.getUri() + lenke.getHref()), clazz))
-                    .orElse(null);
-        }
-        LOG.trace("Henter ingenting");
-        return null;
+        return Optional.ofNullable(lenke)
+                .map(Lenke::getHref)
+                .filter(Objects::nonNull)
+                .map(l -> getForObject(URI.create(config.getUri() + l), clazz))
+                .orElse(null);
     }
 
     @Override
