@@ -10,4 +10,7 @@ public class UnsupportedVersionException extends RuntimeException {
         this.versjon = versjon;
     }
 
+    public Versjon getVersjon() {
+        return versjon;
+    }
 }
