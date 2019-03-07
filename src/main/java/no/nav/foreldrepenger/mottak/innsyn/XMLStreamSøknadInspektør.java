@@ -5,6 +5,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.UKJENT;
 
 import java.io.StringReader;
@@ -29,7 +30,10 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
-    private static final List<String> KJENTE_TAGS = asList(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSOEKNAD);
+    private static final String SVANGERSKAPSPENGER = "svangerskapspenger";
+
+    private static final List<String> KJENTE_TAGS = asList(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSOEKNAD,
+            SVANGERSKAPSPENGER);
 
     private static final String OMYTELSE = "omYtelse";
 
@@ -97,6 +101,10 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                                     LOG.debug("Fant type ENDRING fra attributt på OMYTELSE");
                                     return ENDRING_FORELDREPENGER;
                                 }
+                                if (type.toLowerCase().contains(SVANGERSKAPSPENGER.toLowerCase())) {
+                                    LOG.debug("Fant type SVANGERSKAPSPENGER fra attributt på OMYTELSE");
+                                    return SøknadType.INITIELL_SVANGERSKAPSPENGER;
+                                }
                             }
                         }
                     }
@@ -108,6 +116,9 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENGANGSSOEKNAD)) {
                         return INITIELL_ENGANGSSTØNAD;
+                    }
+                    if (reader.getLocalName().equalsIgnoreCase(SVANGERSKAPSPENGER)) {
+                        return INITIELL_SVANGERSKAPSPENGER;
                     }
                 }
             }
