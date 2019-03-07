@@ -21,7 +21,7 @@
         <springfox.version>2.9.2</springfox.version>
         <xsd.location>${project.build.directory}/classes</xsd.location>
         <jaxb.location>${project.build.directory}/classes/</jaxb.location>
-        <kontrakter.version>5.0_20190131112112_28f4fb5</kontrakter.version>
+        <kontrakter.version>5.0_20190365085310_d5f760c</kontrakter.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>

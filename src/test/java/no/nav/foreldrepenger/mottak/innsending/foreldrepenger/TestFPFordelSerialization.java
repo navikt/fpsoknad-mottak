@@ -54,7 +54,6 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
@@ -140,7 +139,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtrip() {
-        TestUtils.alleSøknadVersjoner().stream().forEach(v -> testSøknadRoundtrip(v));
+        alleSøknadVersjoner().stream().forEach(v -> testSøknadRoundtrip(v));
     }
 
     @Test

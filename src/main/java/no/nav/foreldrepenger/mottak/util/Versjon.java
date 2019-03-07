@@ -11,13 +11,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 
 public enum Versjon {
 
     V1("urn:no:nav:vedtak:felles:xml:soeknad:v1",
+       "urn:no:nav:vedtak:felles:xml:vedtak:v1",
+       "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
        "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
     V2("urn:no:nav:vedtak:felles:xml:vedtak:v2",
+       "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
        "urn:no:nav:vedtak:felles:xml:soeknad:v2",
        "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"),
     V3("urn:no:nav:vedtak:felles:xml:soeknad:v3",
