@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.StønadskontoType;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 
 @Data
 public class UttaksPeriode {

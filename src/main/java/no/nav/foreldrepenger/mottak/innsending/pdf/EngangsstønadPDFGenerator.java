@@ -1,36 +1,32 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.util.Pair;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.stereotype.Service;
-
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.KjentForelder;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Pair;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Service
 public class EngangsstønadPDFGenerator implements PDFGenerator {
@@ -50,7 +46,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
 
     @Override
     public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        Engangsstønad stønad = Engangsstønad.class.cast(søknad.getYtelse());
+        Engangsstønad stønad = (Engangsstønad) søknad.getYtelse();
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
         final PDPage page = newPage();
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
@@ -58,10 +54,10 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = PDFElementRenderer.calculateStartY();
 
-            y -= header(søker, stønad, doc, cos, y);
+            y -= header(søker, doc, cos, y);
             y -= renderer.addBlankLine();
 
-            y -= omBarn(søker, søknad, stønad, cos, y);
+            y -= omBarn(søknad, stønad, cos, y);
             y -= renderer.addBlankLine();
 
             y -= tilknytning(medlemsskap, cos, y);
@@ -71,8 +67,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             y -= renderer.addBlankLine();
 
             AnnenForelder annenForelder = stønad.getAnnenForelder();
-            if (annenForelder != null && annenForelder instanceof KjentForelder
-                    && ((KjentForelder) annenForelder).hasId()) {
+            if (annenForelder.hasId()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
                 renderer.addLinesOfRegularText(omFar(stønad), cos, y);
             }
@@ -86,7 +81,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
         }
     }
 
-    private float omBarn(Person søker, Søknad søknad, Engangsstønad stønad, FontAwareCos cos, float y)
+    private float omBarn(Søknad søknad, Engangsstønad stønad, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(textFormatter.fromMessageSource("ombarn"), cos, y);
@@ -98,12 +93,12 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
         }
 
         if (erFødt(stønad)) {
-            y -= renderer.addLineOfRegularText(født(søknad, stønad), cos, y);
+            y -= renderer.addLineOfRegularText(født(stønad), cos, y);
         }
         return startY - y;
     }
 
-    private float header(Person søker, Engangsstønad stønad, FontAwarePDDocument doc, FontAwareCos cos, float y)
+    private float header(Person søker, FontAwarePDDocument doc, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addLogo(doc, cos, y);
@@ -130,10 +125,9 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
-        UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
+        UtenlandskForelder utenlandsForelder = (UtenlandskForelder) annenForelder;
         List<String> lines = new ArrayList<>(Arrays.asList(textFormatter.fromMessageSource("nasjonalitet",
-                textFormatter.countryName(utenlandsForelder.getLand(),
-                        utenlandsForelder.getLand().getName())),
+                textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())),
                 textFormatter.navn(utenlandsForelder.getNavn())));
 
         if (utenlandsForelder.getId() != null) {
@@ -143,7 +137,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> norskForelder(AnnenForelder annenForelder) {
-        NorskForelder norskForelder = NorskForelder.class.cast(annenForelder);
+        NorskForelder norskForelder = (NorskForelder) annenForelder;
         List<String> lines = new ArrayList<>();
         lines.add(textFormatter.fromMessageSource("nasjonalitet", "Norsk"));
         lines.add(textFormatter.navn(norskForelder.getNavn()));
@@ -158,7 +152,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
                     stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         }
         else {
-            Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
+            Fødsel fødsel = (Fødsel) stønad.getRelasjonTilBarn();
             CountryCode land = stønad.getMedlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
             return textFormatter.fromMessageSource("fødtei",
                     textFormatter.countryName(land),
@@ -178,7 +172,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> fødsel(Søknad søknad, Engangsstønad stønad) {
-        FremtidigFødsel ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
+        FremtidigFødsel ff = (FremtidigFødsel) stønad.getRelasjonTilBarn();
         List<String> texts = new ArrayList<>();
         texts.add(textFormatter.fromMessageSource("termindato", textFormatter.dato(ff.getTerminDato())));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
@@ -187,8 +181,8 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
         return texts;
     }
 
-    private String født(Søknad søknad, Engangsstønad stønad) {
-        Fødsel ff = Fødsel.class.cast(stønad.getRelasjonTilBarn());
+    private String født(Engangsstønad stønad) {
+        Fødsel ff = (Fødsel) stønad.getRelasjonTilBarn();
         return textFormatter.fromMessageSource("fødselsdato", textFormatter.datoer(ff.getFødselsdato()));
     }
 

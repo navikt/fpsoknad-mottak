@@ -11,6 +11,7 @@ public enum SøknadType {
     INITIELL_ENGANGSSTØNAD(ES_FØRSTEGANG),
     ETTERSENDING_ENGANGSSTØNAD(ES_ETTERSSENDING),
     INITIELL_ENGANGSSTØNAD_DOKMOT,
+    INITIELL_SVANGERSKAPSPENGER(SVP_FØRSTEGANG),
     UKJENT;
 
     private final Counter counter;
@@ -32,6 +33,10 @@ public enum SøknadType {
         return this.equals(INITIELL_ENGANGSSTØNAD)
                 || this.equals(ETTERSENDING_ENGANGSSTØNAD)
                 || this.equals(INITIELL_ENGANGSSTØNAD_DOKMOT);
+    }
+
+    public boolean erSvangerskapspenger() {
+        return this.equals(INITIELL_SVANGERSKAPSPENGER);
     }
 
     public void count() {

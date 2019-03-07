@@ -1,22 +1,23 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static java.time.LocalDateTime.now;
-import static java.util.Arrays.asList;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.time.LocalDateTime.now;
+import static java.util.Arrays.asList;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,8 +28,8 @@ public class Endringssøknad extends Søknad {
     private final String saksnr;
 
     public Endringssøknad(Søker søker, Fordeling fordeling, AnnenForelder annenForelder,
-            Fødsel fødsel, Rettigheter rettigheter, String saksnr,
-            Vedlegg... vedlegg) {
+                          Fødsel fødsel, Rettigheter rettigheter, String saksnr,
+                          Vedlegg... vedlegg) {
         this(now(), søker, fordeling, annenForelder, fødsel, rettigheter, saksnr, vedlegg);
     }
 

@@ -38,7 +38,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -52,14 +51,12 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
 import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
@@ -131,8 +128,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testEndringssøknadRoundtrip() {
-        alleSøknadVersjoner().stream()
-                .forEach(v -> testEndringssøknadRoundtrip(v));
+        alleSøknadVersjoner().forEach(this::testEndringssøknadRoundtrip);
     }
 
     @Test
@@ -145,12 +141,11 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtrip() {
-        alleSøknadVersjoner().stream()
-                .forEach(v -> testSøknadRoundtrip(v));
+        alleSøknadVersjoner().forEach(this::testSøknadRoundtrip);
     }
 
     @Test
-    public void testFeilMapper() throws Exception {
+    public void testFeilMapper() {
         assertThrows(VersionMismatchException.class,
                 () -> v12DomainMapper.tilXML(søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1), AKTØRID,
                         new SøknadEgenskap(V2, SøknadType.ENDRING_FORELDREPENGER)));
@@ -158,16 +153,12 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testKonvolutt() {
-        alleSøknadVersjoner()
-                .stream()
-                .forEach(v -> testKonvolutt(v));
+        alleSøknadVersjoner().forEach(this::testKonvolutt);
     }
 
     @Test
     public void testKonvoluttEndring() {
-        alleSøknadVersjoner()
-                .stream()
-                .forEach(v -> testKonvoluttEndring(v));
+        alleSøknadVersjoner().forEach(this::testKonvoluttEndring);
     }
 
     @Test
@@ -241,15 +232,6 @@ public class TestFPFordelSerialization {
         assertEquals(2, vedlegg.size());
         assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
-    }
-
-    private static ValgfrittVedlegg opplastetVedlegg(String id, DokumentType type) {
-        try {
-            return new ValgfrittVedlegg(id, InnsendingsType.LASTET_OPP, type,
-                    new ClassPathResource("terminbekreftelse.pdf"));
-        } catch (Exception e) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private static List<Arbeidsforhold> arbeidsforhold() {

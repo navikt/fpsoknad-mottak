@@ -21,6 +21,7 @@ public class SøknadEgenskap {
     public static final SøknadEgenskap INITIELL_ENGANGSSTØNAD = new SøknadEgenskap(
             SøknadType.INITIELL_ENGANGSSTØNAD);
     public static final SøknadEgenskap ENDRING_FORELDREPENGER = new SøknadEgenskap(SøknadType.ENDRING_FORELDREPENGER);
+    public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(SøknadType.INITIELL_SVANGERSKAPSPENGER);
 
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 
