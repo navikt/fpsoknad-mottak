@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedVersionException;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Qualifier(DELEGERENDE)
@@ -37,7 +36,7 @@ public class DelegerendeXMLVedtakMapper implements XMLVedtakMapper {
         return mappers.stream()
                 .filter(m -> m.kanMappe(versjon))
                 .findFirst()
-                .orElseThrow(() -> new UnsupportedVersionException(versjon));
+                .orElse(new UkjentXMLVedtakMapper());
     }
 
     private static List<Versjon> versjonerFor(List<XMLVedtakMapper> mappers) {

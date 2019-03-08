@@ -38,6 +38,11 @@ public class InnsynController {
         return innsyn.hentUttaksplan(saksnummer);
     }
 
+    @GetMapping(value = "/vedtak")
+    public Vedtak vedtak(@RequestParam(name = "saksnummer") String saksnummer) {
+        return innsyn.hentVedtak(oppslag.getAktørId(), saksnummer);
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [innsyn=" + innsyn + ", oppslag=" + oppslag + "]";

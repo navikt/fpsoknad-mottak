@@ -8,6 +8,8 @@ import org.springframework.util.CollectionUtils;
 
 public final class StringUtil {
 
+    private static final int DEFAULT_LENGTH = 50;
+
     private StringUtil() {
 
     }
@@ -17,6 +19,10 @@ public final class StringUtil {
             return "er";
         }
         return liste.size() == 1 ? "" : "er";
+    }
+
+    public static String limit(String tekst) {
+        return limit(tekst, DEFAULT_LENGTH);
     }
 
     public static String limit(String tekst, int max) {
