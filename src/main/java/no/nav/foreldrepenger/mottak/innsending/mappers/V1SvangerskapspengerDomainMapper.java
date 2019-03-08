@@ -121,7 +121,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     private static JAXBElement<Svangerskapspenger> svangerskapsPengerFra(
             no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse) {
-        return SVP_FACTORY_V1.createSvangerskapspenger(new Svangerskapspenger());
+        return SVP_FACTORY_V1.createSvangerskapspenger(new Svangerskapspenger()); // TODO more....
 
     }
 

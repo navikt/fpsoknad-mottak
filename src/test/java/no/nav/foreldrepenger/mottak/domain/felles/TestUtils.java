@@ -1,8 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.springframework.util.StreamUtils.copyToString;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -262,5 +265,9 @@ public class TestUtils {
         søker.land = CountryCode.NO;
         søker.målform = "NN";
         return søker;
+    }
+
+    public static String load(String file) throws IOException {
+        return copyToString(new ClassPathResource(file).getInputStream(), defaultCharset());
     }
 }

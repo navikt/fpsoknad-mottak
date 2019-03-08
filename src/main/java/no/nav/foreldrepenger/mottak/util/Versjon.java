@@ -7,25 +7,23 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public enum Versjon {
 
     V1("urn:no:nav:vedtak:felles:xml:soeknad:v1",
-       "urn:no:nav:vedtak:felles:xml:vedtak:v1",
-       "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
-       "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
-    V2("urn:no:nav:vedtak:felles:xml:vedtak:v2",
-       "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
-       "urn:no:nav:vedtak:felles:xml:soeknad:v2",
-       "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"),
-    V3("urn:no:nav:vedtak:felles:xml:soeknad:v3",
-       "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"),
-    V20180924,
-    UKJENT;
+            "urn:no:nav:vedtak:felles:xml:vedtak:v1",
+            "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
+            "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
+                    "urn:no:nav:vedtak:felles:xml:vedtak:v2",
+                    "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
+                    "urn:no:nav:vedtak:felles:xml:soeknad:v2",
+                    "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"), V3(
+                            "urn:no:nav:vedtak:felles:xml:soeknad:v3",
+                            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"), V20180924, UKJENT;
 
     private static final Logger LOG = LoggerFactory.getLogger(Versjon.class);
     public static final String VERSION_PROPERTY = "contract.version";
@@ -39,6 +37,16 @@ public enum Versjon {
         this(emptyList());
     }
 
+    public static boolean erEngangsstønadV1Dokmot(String namespace) {
+        return startsWith(namespace, "http");
+    }
+
+    private static boolean startsWith(String namespace, String prefix) {
+        return Optional.ofNullable(namespace)
+                .filter(ns -> ns.startsWith(prefix))
+                .isPresent();
+    }
+
     private Versjon(String... namespaces) {
         this(asList(namespaces));
     }
@@ -47,16 +55,26 @@ public enum Versjon {
         this.namespaces = namespaces;
     }
 
-    public static Versjon namespaceFra(String namespace) {
-        return stream(values())
-                .filter(v -> v.namespaces.contains(namespace))
-                .findFirst()
-                .orElse(ukjent(namespace));
+    public static Versjon namespaceFra(String ns) {
+
+        for (Versjon v : values()) {
+            if (v.namespaces.contains(ns))
+                return v;
+        }
+        return ukjent(ns);
+
     }
 
     private static Versjon ukjent(String namespace) {
-        LOG.warn("Fant ingen versjon for namespace {}", namespace);
+        LOG.warn("Fant ingen versjon for namespace {} blant {}", namespace, allNamespaces());
         return UKJENT;
+    }
+
+    private static List<String> allNamespaces() {
+        return stream(values())
+                .map(e -> e.namespaces)
+                .flatMap(e -> e.stream())
+                .collect(toList());
     }
 
     public static List<String> alleNamespaces() {

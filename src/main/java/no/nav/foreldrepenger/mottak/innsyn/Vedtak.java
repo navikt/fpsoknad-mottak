@@ -1,18 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
-
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.Uttak;
 
 @Data
 public class Vedtak {
     private VedtakMetadata metadata;
-    private final String xml;
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [xml=" + limit(xml, 200) + "]";
-    }
+    private final Uttak uttak;
 
     public Vedtak withMetadata(VedtakMetadata vedtakMetadata) {
         setMetadata(vedtakMetadata);

@@ -52,11 +52,11 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     }
 
     private static SøknadType typeFra(String xml, String namespace) {
-        return !erEngangsstønadV1Dokmot(namespace) ? fpTypeFra(xml) : INITIELL_ENGANGSSTØNAD;
-    }
+        if (Versjon.erEngangsstønadV1Dokmot(namespace)) {
+            return INITIELL_ENGANGSSTØNAD;
+        }
 
-    private static boolean erEngangsstønadV1Dokmot(String namespace) {
-        return namespace != null && namespace.startsWith("http");
+        return fpTypeFra(xml);
     }
 
     private static Versjon versjonFra(String namespace) {

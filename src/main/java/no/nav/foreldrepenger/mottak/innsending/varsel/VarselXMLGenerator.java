@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.util.jaxb.VarselJaxbUtil;
+import no.nav.foreldrepenger.mottak.util.jaxb.VarselV1JAXBUtil;
 import no.nav.melding.virksomhet.varsel.v1.varsel.AktoerId;
 import no.nav.melding.virksomhet.varsel.v1.varsel.ObjectFactory;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Parameter;
@@ -32,7 +32,7 @@ public class VarselXMLGenerator {
     static final String URL = "URL";
     static final String URL_VALUE = "https://foreldrepenger.nav.no";
 
-    private final VarselJaxbUtil jaxb;
+    private final VarselV1JAXBUtil jaxb;
 
     @Inject
     public VarselXMLGenerator() {
@@ -40,10 +40,10 @@ public class VarselXMLGenerator {
     }
 
     private VarselXMLGenerator(boolean validate) {
-        this(new VarselJaxbUtil(validate));
+        this(new VarselV1JAXBUtil(validate));
     }
 
-    VarselXMLGenerator(VarselJaxbUtil jaxb) {
+    VarselXMLGenerator(VarselV1JAXBUtil jaxb) {
         this.jaxb = jaxb;
     }
 
