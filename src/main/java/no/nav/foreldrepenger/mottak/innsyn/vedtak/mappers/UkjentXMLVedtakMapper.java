@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 import static no.nav.foreldrepenger.mottak.util.Versjon.UKJENT_VERSJON;
@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component

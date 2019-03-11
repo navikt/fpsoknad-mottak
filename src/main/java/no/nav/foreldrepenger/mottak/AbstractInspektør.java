@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak;
 
 import java.io.StringReader;
 
@@ -9,19 +9,15 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-@Component
-public final class XMLStreamVedtakInspektør implements XMLVedtakInspektør {
+public abstract class AbstractInspektør {
 
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractInspektør.class);
 
-    private static final Logger LOG = LoggerFactory.getLogger(XMLStreamVedtakInspektør.class);
-
-    @Override
-    public Versjon inspiser(String xml) {
+    protected static Versjon versjonFraXML(String xml) {
         return versjonFra(namespaceFra(xml));
     }
 
@@ -29,12 +25,12 @@ public final class XMLStreamVedtakInspektør implements XMLVedtakInspektør {
         return Versjon.namespaceFra(namespace);
     }
 
-    private static String namespaceFra(String xml) {
+    protected static String namespaceFra(String xml) {
         if (xml == null) {
             return null;
         }
         try {
-            XMLStreamReader reader = createReader(xml);
+            XMLStreamReader reader = reader(xml);
             while (!reader.isStartElement()) {
                 reader.next();
             }
@@ -45,7 +41,7 @@ public final class XMLStreamVedtakInspektør implements XMLVedtakInspektør {
         }
     }
 
-    private static XMLStreamReader createReader(String xml) throws XMLStreamException {
+    protected static XMLStreamReader reader(String xml) throws XMLStreamException {
         return FACTORY.createXMLStreamReader(new StreamSource(new StringReader(xml)));
     }
 }

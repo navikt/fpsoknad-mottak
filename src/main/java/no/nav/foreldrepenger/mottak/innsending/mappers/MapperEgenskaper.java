@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import static java.util.Collections.singletonList;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -33,8 +33,8 @@ public class MapperEgenskaper {
         this(typerForVersjon(versjon, typer));
     }
 
-    public MapperEgenskaper(SøknadEgenskap egenskap) {
-        this(singletonList(egenskap));
+    public MapperEgenskaper(SøknadEgenskap... egenskaper) {
+        this(asList(egenskaper));
     }
 
     public MapperEgenskaper(List<SøknadEgenskap> egenskaper) {

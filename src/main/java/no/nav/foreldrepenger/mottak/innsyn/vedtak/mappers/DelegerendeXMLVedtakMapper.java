@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Qualifier(DELEGERENDE)

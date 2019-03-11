@@ -15,6 +15,8 @@ public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
 
     @Override
     public String marshal(LocalDate dato) throws Exception {
-        return Optional.ofNullable(dato).map(s -> s.toString()).orElse(null);
+        return Optional.ofNullable(dato)
+                .map(LocalDate::toString)
+                .orElse(null);
     }
 }

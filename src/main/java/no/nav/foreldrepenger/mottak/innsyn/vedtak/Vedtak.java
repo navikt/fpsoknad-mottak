@@ -1,6 +1,7 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.innsyn.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.Uttak;
 
 @Data

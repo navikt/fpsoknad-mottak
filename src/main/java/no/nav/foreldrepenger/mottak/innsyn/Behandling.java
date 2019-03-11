@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 
 @Data
 @Builder

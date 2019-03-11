@@ -13,6 +13,8 @@ public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
 
     @Override
     public String marshal(LocalDateTime v) throws Exception {
-        return Optional.ofNullable(v).map(s -> s.toString()).orElse(null);
+        return Optional.ofNullable(v)
+                .map(LocalDateTime::toString)
+                .orElse(null);
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.ArbeidType;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.AvslagsÅrsak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.ManuellBehandlingsÅrsak;

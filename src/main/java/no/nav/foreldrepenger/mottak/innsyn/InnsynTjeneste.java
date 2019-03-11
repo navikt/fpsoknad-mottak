@@ -20,6 +20,8 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Service

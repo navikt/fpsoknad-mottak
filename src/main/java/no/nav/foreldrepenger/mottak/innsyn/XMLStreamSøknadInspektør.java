@@ -8,23 +8,21 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FOREL
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.UKJENT;
 
-import java.io.StringReader;
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.AbstractInspektør;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public final class XMLStreamSøknadInspektør implements SøknadInspektør {
+public final class XMLStreamSøknadInspektør extends AbstractInspektør implements SøknadInspektør {
 
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
     private static final String ENGANGSSOEKNAD = "engangsstønad";
@@ -42,7 +40,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
     @Override
     public SøknadEgenskap inspiser(String xml) {
         String namespace = namespaceFra(xml);
-        SøknadEgenskap egenskap = new SøknadEgenskap(versjonFra(namespace), typeFra(xml, namespace));
+        SøknadEgenskap egenskap = new SøknadEgenskap(versjonFraXML(xml), typeFra(xml, namespace));
         if (egenskap.erUkjent()) {
             LOG.warn("Søknad {} kunne ikke analyseres", xml);
             return SøknadEgenskap.UKJENT;
@@ -55,28 +53,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
         if (Versjon.erEngangsstønadV1Dokmot(namespace)) {
             return INITIELL_ENGANGSSTØNAD;
         }
-
         return fpTypeFra(xml);
-    }
-
-    private static Versjon versjonFra(String namespace) {
-        return Versjon.namespaceFra(namespace);
-    }
-
-    private static String namespaceFra(String xml) {
-        if (xml == null) {
-            return null;
-        }
-        try {
-            XMLStreamReader reader = createReader(xml);
-            while (!reader.isStartElement()) {
-                reader.next();
-            }
-            return reader.getNamespaceURI();
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke hente namespace fra {}", xml);
-            return null;
-        }
     }
 
     private static SøknadType fpTypeFra(String xml) {
@@ -84,7 +61,7 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
             return UKJENT;
         }
         try {
-            XMLStreamReader reader = createReader(xml);
+            XMLStreamReader reader = reader(xml);
             while (reader.hasNext()) {
                 reader.next();
                 if (reader.getEventType() == START_ELEMENT) {
@@ -131,7 +108,4 @@ public final class XMLStreamSøknadInspektør implements SøknadInspektør {
         }
     }
 
-    private static XMLStreamReader createReader(String xml) throws XMLStreamException {
-        return FACTORY.createXMLStreamReader(new StreamSource(new StringReader(xml)));
-    }
 }

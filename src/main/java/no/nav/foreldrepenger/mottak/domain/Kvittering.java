@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 
@@ -23,7 +24,7 @@ public class Kvittering {
     private String saksNr;
     private byte[] pdf;
 
-    public static final Kvittering IKKE_SENDT = new Kvittering(LeveranseStatus.IKKE_SENDT_FPSAK);
+    public static final Kvittering IKKE_SENDT = new Kvittering(IKKE_SENDT_FPSAK);
 
     public Kvittering(LeveranseStatus leveranseStatus) {
         this(leveranseStatus, LocalDateTime.now(), callId());
@@ -41,7 +42,7 @@ public class Kvittering {
     public boolean erVellykket() {
         return leveranseStatus.erVellykket();
     }
-  
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [referanseId=" + referanseId + ", mottattDato=" + mottattDato

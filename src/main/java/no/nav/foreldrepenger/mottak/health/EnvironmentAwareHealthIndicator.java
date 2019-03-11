@@ -7,7 +7,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 
 abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, EnvironmentAware {
 

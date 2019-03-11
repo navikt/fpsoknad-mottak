@@ -1,7 +1,8 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import java.util.List;
 
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public interface XMLVedtakMapper {

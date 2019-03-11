@@ -12,10 +12,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.innsyn.Vedtak;
-import no.nav.foreldrepenger.mottak.innsyn.XMLStreamVedtakInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.XMLV2VedtakMapper;
-import no.nav.foreldrepenger.mottak.innsyn.XMLVedtakInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLStreamVedtakInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLV2VedtakMapper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @ExtendWith(SpringExtension.class)

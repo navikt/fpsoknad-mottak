@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 
 public interface VarselConnection extends PingEndpointAware {
 

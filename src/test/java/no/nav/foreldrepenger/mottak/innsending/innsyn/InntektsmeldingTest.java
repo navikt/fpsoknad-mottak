@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
-import no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Inntektsmelding;
-import no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.InntektsmeldingXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Inntektsmelding;
+import no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.InntektsmeldingXMLMapper;
 
 public class InntektsmeldingTest {
 

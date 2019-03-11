@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain;
+package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -169,12 +169,12 @@ public final class InntektsmeldingXMLMapper {
                 tilTekst(sykepenger.getValue().getBegrunnelseForReduksjonEllerIkkeUtbetalt()));
     }
 
-    private static no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Refusjon tilRefusjon(
+    private static no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Refusjon tilRefusjon(
             JAXBElement<Refusjon> refusjon) {
         if (refusjon == null) {
             return null;
         }
-        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Refusjon(
+        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Refusjon(
                 tilDoubleFraBigDecimal(refusjon.getValue().getRefusjonsbeloepPrMnd()),
                 tilDato(refusjon.getValue().getRefusjonsopphoersdato()),
                 tilRefusjonsEndringer(refusjon.getValue().getEndringIRefusjonListe()));
@@ -195,9 +195,9 @@ public final class InntektsmeldingXMLMapper {
                 tilDoubleFraBigDecimal(endring.getRefusjonsbeloepPrMnd()));
     }
 
-    private static no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Arbeidsforhold tilArbeidsforhold(
+    private static no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Arbeidsforhold tilArbeidsforhold(
             no.seres.xsd.nav.inntektsmelding_m._20180924.Arbeidsforhold forhold) {
-        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Arbeidsforhold(
+        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Arbeidsforhold(
                 tilId(forhold.getArbeidsforholdId()),
                 tilDato(forhold.getFoersteFravaersdag()),
                 tilInntekt(forhold.getBeregnetInntekt()),
@@ -282,9 +282,9 @@ public final class InntektsmeldingXMLMapper {
                 .orElse(null);
     }
 
-    private static no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Inntekt tilInntekt(
+    private static no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Inntekt tilInntekt(
             JAXBElement<Inntekt> inntekt) {
-        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Inntekt(
+        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Inntekt(
                 tilBeløp(inntekt.getValue().getBeloep()),
                 tilÅrsak(inntekt.getValue().getAarsakVedEndring()));
     }
@@ -304,7 +304,7 @@ public final class InntektsmeldingXMLMapper {
 
     private static Arbeidsgiver tilArbeidsgiver(
             no.seres.xsd.nav.inntektsmelding_m._20180924.Arbeidsgiver arbeidsgiver) {
-        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.domain.Arbeidsgiver(
+        return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Arbeidsgiver(
                 arbeidsgiver.getVirksomhetsnummer(),
                 tilKontaktInformasjon(arbeidsgiver.getKontaktinformasjon()));
     }
