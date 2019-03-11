@@ -10,7 +10,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.UKJENT;
 
 import java.util.List;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @Component
 public final class XMLStreamSøknadInspektør extends AbstractInspektør implements SøknadInspektør {
 
-    private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
     private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";

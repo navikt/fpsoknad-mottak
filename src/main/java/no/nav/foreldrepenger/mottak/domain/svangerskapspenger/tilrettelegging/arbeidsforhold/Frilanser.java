@@ -1,4 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold;
 
-public class Frilanser {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class Frilanser extends Arbeidsforhold {
+    private final String risikoFaktorer;
+    private final String tilretteleggingstiltak;
 }
