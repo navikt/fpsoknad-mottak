@@ -77,8 +77,8 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
         HibernateConstraintValidatorContext hibernateContext = context
                 .unwrap(HibernateConstraintValidatorContext.class);
         hibernateContext.disableDefaultConstraintViolation();
-        hibernateContext.addExpressionVariable("fra", opphold.getVarighet().getFom())
-                .addExpressionVariable("til", opphold.getVarighet().getTom())
+        hibernateContext.addExpressionVariable("fra", opphold.getFom())
+                .addExpressionVariable("til", opphold.getTom())
                 .addExpressionVariable("txt", txt)
                 .buildConstraintViolationWithTemplate("Perioden ${fra} - ${til} ${txt}")
                 .addConstraintViolation();
@@ -90,10 +90,10 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
                 .unwrap(HibernateConstraintValidatorContext.class);
         hibernateContext.disableDefaultConstraintViolation();
         hibernateContext
-                .addExpressionVariable("fra1", periode1.getVarighet().getFom())
-                .addExpressionVariable("til1", periode1.getVarighet().getTom())
-                .addExpressionVariable("fra2", periode2.getVarighet().getFom())
-                .addExpressionVariable("til2", periode2.getVarighet().getTom())
+                .addExpressionVariable("fra1", periode1.getFom())
+                .addExpressionVariable("til1", periode1.getTom())
+                .addExpressionVariable("fra2", periode2.getFom())
+                .addExpressionVariable("til2", periode2.getTom())
                 .buildConstraintViolationWithTemplate("Periodene ${fra1} - ${til1} og ${fra2} - ${til2} overlpper")
                 .addConstraintViolation();
     }
@@ -107,13 +107,13 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
     }
 
     private static boolean isAfterNow(Utenlandsopphold opphold) {
-        return opphold.getVarighet().getFom().isAfter(LocalDate.now()) ||
-                opphold.getVarighet().getTom().isAfter(LocalDate.now());
+        return opphold.getFom().isAfter(LocalDate.now()) ||
+                opphold.getTom().isAfter(LocalDate.now());
     }
 
     private static boolean isBeforeNow(Utenlandsopphold opphold) {
-        return opphold.getVarighet().getFom().isBefore(LocalDate.now()) ||
-                opphold.getVarighet().getTom().isBefore(LocalDate.now());
+        return opphold.getFom().isBefore(LocalDate.now()) ||
+                opphold.getTom().isBefore(LocalDate.now());
     }
 
     @Override

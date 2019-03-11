@@ -3,8 +3,8 @@ package no.nav.foreldrepenger.mottak.innsending.mappers;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
+import static no.nav.foreldrepenger.mottak.domain.felles.SpråkKode.defaultSpråk;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.mottak.domain.felles.SpråkKode;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
@@ -40,7 +40,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.jaxb.SVPV1JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
@@ -60,6 +59,7 @@ import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.AnnenOpptjeningTyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Brukerroller;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Spraakkode;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 import no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold;
 import no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.DelvisTilrettelegging;
@@ -84,14 +84,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory SVP_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory();
-    private static final no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory FELLES_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory SØKNAD_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory();
-
-    private final Oppslag oppslag;
-
-    public V1SvangerskapspengerDomainMapper(Oppslag oppslag) {
-        this.oppslag = oppslag;
-    }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
@@ -105,11 +98,12 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     @Override
     public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
-        throw new NotImplementedException("NOPE");
+        throw new UnexpectedInputException("Endringssøknad ikke støttet for svangerskapspenger");
     }
 
     public Soeknad tilModell(Søknad søknad, AktorId søker) {
         return new Soeknad()
+                .withSprakvalg(språkFra(søknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))
@@ -117,6 +111,26 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                 .withMottattDato(søknad.getMottattdato().toLocalDate())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
+    }
+
+    private static Spraakkode språkFra(Søker søker) {
+        return Optional.ofNullable(søker)
+                .map(Søker::getSpråkkode)
+                .map(SpråkKode::name)
+                .map(V1SvangerskapspengerDomainMapper::språkKodeFra)
+                .orElse(defaultSpråkKode());
+    }
+
+    private static Spraakkode defaultSpråkKode() {
+        return språkKodeFra(defaultSpråk());
+    }
+
+    private static Spraakkode språkKodeFra(SpråkKode kode) {
+        return språkKodeFra(kode.name());
+    }
+
+    private static Spraakkode språkKodeFra(String kode) {
+        return new Spraakkode().withKode(kode);
     }
 
     private static List<Vedlegg> vedleggFra(
@@ -154,7 +168,6 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
     private static OmYtelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger.class
                 .cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
         return new OmYtelse().withAny(JAXB.marshalToElement(svangerskapsPengerFra(ytelse)));
     }
 
@@ -402,7 +415,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
                     .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()));
         }
-        throw new UnexpectedInputException("Vil aldri skje");
+        throw new UnexpectedInputException("Ukjent egen næring " + egenNæring.getClass().getSimpleName());
     }
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
@@ -504,8 +517,8 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
         return opphold == null ? null
                 : new OppholdUtlandet()
                         .withPeriode(new Periode()
-                                .withFom(opphold.getVarighet().getFom())
-                                .withTom(opphold.getVarighet().getTom()))
+                                .withFom(opphold.getFom())
+                                .withTom(opphold.getTom()))
                         .withLand(landFra(opphold.getLand()));
     }
 
@@ -522,7 +535,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", mapperEgenskaper=" + mapperEgenskaper() + "]";
+        return getClass().getSimpleName() + " [mapperEgenskaper=" + mapperEgenskaper() + "]";
     }
 
 }

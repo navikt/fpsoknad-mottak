@@ -1,8 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.felles.medlemskap;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
@@ -20,5 +23,15 @@ public class Utenlandsopphold {
     public Utenlandsopphold(@JsonProperty("land") CountryCode land, @JsonProperty("varighet") LukketPeriode varighet) {
         this.land = land;
         this.varighet = varighet;
+    }
+
+    @JsonIgnore
+    public LocalDate getFom() {
+        return varighet.getFom();
+    }
+
+    @JsonIgnore
+    public LocalDate getTom() {
+        return varighet.getTom();
     }
 }

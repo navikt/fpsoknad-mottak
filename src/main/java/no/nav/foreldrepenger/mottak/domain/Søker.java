@@ -30,4 +30,5 @@ public class Søker {
         this.søknadsRolle = søknadsRolle;
         this.språkkode = Optional.ofNullable(språkkode).orElse(defaultSpråk());
     }
+
 }

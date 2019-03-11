@@ -25,8 +25,8 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 
 @Component
 public class SøknadTextFormatter {
@@ -74,9 +74,9 @@ public class SøknadTextFormatter {
 
     public String navn(Person søker) {
         return Optional.ofNullable(søker)
-            .map(s -> Joiner.on(' ').skipNulls().join(s.fornavn, s.mellomnavn, s.etternavn))
-            .map(String::trim)
-            .orElse("Ukjent");
+                .map(s -> Joiner.on(' ').skipNulls().join(s.fornavn, s.mellomnavn, s.etternavn))
+                .map(String::trim)
+                .orElse("Ukjent");
     }
 
     public String dato(LocalDate localDate) {
@@ -120,8 +120,8 @@ public class SøknadTextFormatter {
     private String formatOpphold(Utenlandsopphold opphold) {
         return countryName(opphold.getLand(), opphold.getLand().getName())
                 + ": "
-                + dato(opphold.getVarighet().getFom()) + " - "
-                + dato(opphold.getVarighet().getTom());
+                + dato(opphold.getFom()) + " - "
+                + dato(opphold.getTom());
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {
