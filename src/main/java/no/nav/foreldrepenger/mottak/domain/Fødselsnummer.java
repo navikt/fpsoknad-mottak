@@ -1,9 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static no.nav.foreldrepenger.mottak.util.StringUtil.mask;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.google.common.base.Strings;
 
 import lombok.Data;
 
@@ -26,9 +27,4 @@ public class Fødselsnummer {
     public String toString() {
         return getClass().getSimpleName() + " [fnr=" + mask(fnr) + "]";
     }
-
-    private static String mask(String value) {
-        return value != null && value.length() == 11 ? Strings.padEnd(value.substring(0, 6), 11, '*') : value;
-    }
-
 }

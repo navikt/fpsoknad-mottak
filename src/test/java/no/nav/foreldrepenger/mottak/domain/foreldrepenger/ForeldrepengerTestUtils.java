@@ -1,19 +1,18 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.*;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.*;
-import no.nav.foreldrepenger.mottak.util.Versjon;
-import org.springframework.core.io.ClassPathResource;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000062;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000063;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500005;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
+import static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype.FISKE;
+import static no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,16 +20,61 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.time.DayOfWeek.SATURDAY;
-import static java.time.DayOfWeek.SUNDAY;
-import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.*;
-import static no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype.FISKE;
+import org.springframework.core.io.ClassPathResource;
+
+import com.google.common.collect.Lists;
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
+import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjeningType;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Frilanser;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.PrivatArbeidsgiver;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.SelvstendigNæringsdrivende;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Virksomhet;
+import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class ForeldrepengerTestUtils {
 
@@ -55,6 +99,10 @@ public class ForeldrepengerTestUtils {
 
     public static Søknad foreldrepengeSøknadUtenVedlegg(Versjon v) {
         return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(v, false));
+    }
+
+    public static Søknad svp() {
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), svangerskapspenger());
     }
 
     public static Søknad søknadMedEttVedlegg(Versjon v) {
@@ -94,6 +142,52 @@ public class ForeldrepengerTestUtils {
 
     public static Ettersending ettersending() {
         return new Ettersending(EttersendingsType.foreldrepenger, "42", TO_VEDLEGG);
+    }
+
+    public static Svangerskapspenger svangerskapspenger() {
+        return Svangerskapspenger.builder()
+                .termindato(LocalDate.now().plusMonths(1))
+                .medlemsskap(medlemsskap(Versjon.V3))
+                .opptjening(opptjening(Versjon.V3))
+                .tilrettelegging(tilrettelegging())
+                .build();
+    }
+
+    private static List<Tilrettelegging> tilrettelegging() {
+        return Lists.newArrayList(helTilrettelegging(), delvisTilrettelegging(), ingenTilrettelegging());
+    }
+
+    private static Tilrettelegging ingenTilrettelegging() {
+        return new IngenTilrettelegging(frilanser(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
+                null);
+
+    }
+
+    private static Tilrettelegging delvisTilrettelegging() {
+        return new DelvisTilrettelegging(privat(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
+                ProsentAndel.of(100), null);
+    }
+
+    private static Tilrettelegging helTilrettelegging() {
+        return new HelTilrettelegging(virksomhet(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
+                null);
+
+    }
+
+    private static Arbeidsforhold virksomhet() {
+        return new Virksomhet("888888888");
+    }
+
+    private static Arbeidsforhold privat() {
+        return new PrivatArbeidsgiver("01010111111");
+    }
+
+    private static Arbeidsforhold frilanser() {
+        return new Frilanser("risiko", "tiltak");
+    }
+
+    private static Arbeidsforhold selvstendig() {
+        return new SelvstendigNæringsdrivende("risiko", "tiltak");
     }
 
     static Foreldrepenger foreldrePenger(Versjon v, boolean utland, String... vedleggRefs) {

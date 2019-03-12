@@ -15,7 +15,7 @@ public class IngenTilrettelegging extends Tilrettelegging {
 
     private final LocalDate slutteArbeidFom;
 
-    public IngenTilrettelegging(Arbeidsforhold arbeidsforhold, LocalDate behovForTilretteleggingFom, List<String> vedlegg, LocalDate slutteArbeidFom) {
+    public IngenTilrettelegging(Arbeidsforhold arbeidsforhold, LocalDate behovForTilretteleggingFom, LocalDate slutteArbeidFom, List<String> vedlegg) {
         super(arbeidsforhold, behovForTilretteleggingFom, vedlegg);
         this.slutteArbeidFom = slutteArbeidFom;
     }

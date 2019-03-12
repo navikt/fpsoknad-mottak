@@ -16,6 +16,10 @@ public class ProsentAndel {
     @Prosent
     private final Double prosent;
 
+    public static ProsentAndel of(int prosent) {
+        return new ProsentAndel(new Double(prosent));
+    }
+
     public ProsentAndel(Double prosent) {
         this.prosent = round(prosent, 1);
     }

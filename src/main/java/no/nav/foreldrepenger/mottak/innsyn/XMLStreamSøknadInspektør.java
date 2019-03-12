@@ -6,7 +6,9 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELD
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.UKJENT;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.DOKMOT_ES_V1;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
+import static no.nav.foreldrepenger.mottak.util.Versjon.erEngangsstønadV1Dokmot;
 
 import java.util.List;
 
@@ -37,24 +39,13 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør impleme
 
     @Override
     public SøknadEgenskap inspiser(String xml) {
-        String namespace = namespaceFra(xml);
-        SøknadEgenskap egenskap = new SøknadEgenskap(versjonFraXML(xml), typeFra(xml, namespace));
-        if (egenskap.erUkjent()) {
-            LOG.warn("Søknad {} kunne ikke analyseres", xml);
-            return SøknadEgenskap.UKJENT;
+        if (erEngangsstønadV1Dokmot(rootElementNamespace(xml))) {
+            return DOKMOT_ES_V1;
         }
-        LOG.info("Søknad har egenskap {}", egenskap);
-        return egenskap;
+        return egenskapFra(xml);
     }
 
-    private static SøknadType typeFra(String xml, String namespace) {
-        if (Versjon.erEngangsstønadV1Dokmot(namespace)) {
-            return INITIELL_ENGANGSSTØNAD;
-        }
-        return fpTypeFra(xml);
-    }
-
-    private static SøknadType fpTypeFra(String xml) {
+    private static SøknadEgenskap egenskapFra(String xml) {
         if (xml == null) {
             return UKJENT;
         }
@@ -70,34 +61,47 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør impleme
                             if (type != null) {
                                 if (type.toLowerCase().contains(FORELDREPENGER.toLowerCase())) {
                                     LOG.debug("Fant type INITIELL fra attributt på OMYTELSE");
-                                    return INITIELL_FORELDREPENGER;
+                                    return new SøknadEgenskap(
+                                            Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
+                                            INITIELL_FORELDREPENGER);
                                 }
                                 if (type.toLowerCase().contains(ENDRINGSSOEKNAD.toLowerCase())) {
                                     LOG.debug("Fant type ENDRING fra attributt på OMYTELSE");
-                                    return ENDRING_FORELDREPENGER;
+                                    return new SøknadEgenskap(
+                                            Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
+                                            ENDRING_FORELDREPENGER);
                                 }
                                 if (type.toLowerCase().contains(SVANGERSKAPSPENGER.toLowerCase())) {
                                     LOG.debug("Fant type SVANGERSKAPSPENGER fra attributt på OMYTELSE");
-                                    return SøknadType.INITIELL_SVANGERSKAPSPENGER;
+                                    return new SøknadEgenskap(
+                                            Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
+                                            SøknadType.INITIELL_SVANGERSKAPSPENGER);
                                 }
                             }
                         }
                     }
                     if (reader.getLocalName().equalsIgnoreCase(FORELDREPENGER)) {
-                        return INITIELL_FORELDREPENGER;
+                        return new SøknadEgenskap(
+                                Versjon.namespaceFra(reader.getNamespaceURI()),
+                                INITIELL_FORELDREPENGER);
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENDRINGSSOEKNAD)) {
-                        return ENDRING_FORELDREPENGER;
+                        return new SøknadEgenskap(
+                                Versjon.namespaceFra(reader.getNamespaceURI()),
+                                ENDRING_FORELDREPENGER);
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENGANGSSOEKNAD)) {
-                        return INITIELL_ENGANGSSTØNAD;
+                        return new SøknadEgenskap(
+                                Versjon.namespaceFra(reader.getNamespaceURI()),
+                                INITIELL_ENGANGSSTØNAD);
                     }
                     if (reader.getLocalName().equalsIgnoreCase(SVANGERSKAPSPENGER)) {
-                        return INITIELL_SVANGERSKAPSPENGER;
+                        return new SøknadEgenskap(
+                                Versjon.namespaceFra(reader.getNamespaceURI()),
+                                INITIELL_SVANGERSKAPSPENGER);
                     }
                 }
             }
-
             LOG.warn("Fant ingen av de kjente tags {} i søknaden, kan ikke fastslå type", KJENTE_TAGS);
             return UKJENT;
         } catch (Exception e) {
@@ -105,5 +109,4 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør impleme
             return UKJENT;
         }
     }
-
 }

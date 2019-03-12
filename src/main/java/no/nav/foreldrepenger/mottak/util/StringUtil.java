@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.base.Strings;
+
 public final class StringUtil {
 
     private static final int DEFAULT_LENGTH = 50;
@@ -35,5 +37,9 @@ public final class StringUtil {
 
     public static String limit(byte[] bytes, int max) {
         return limit(Arrays.toString(bytes), max);
+    }
+
+    public static String mask(String value) {
+        return value != null && value.length() == 11 ? Strings.padEnd(value.substring(0, 6), 11, '*') : value;
     }
 }

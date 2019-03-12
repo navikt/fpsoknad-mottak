@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,8 +22,8 @@ public class SøknadEgenskap {
     public static final SøknadEgenskap INITIELL_ENGANGSSTØNAD = new SøknadEgenskap(
             SøknadType.INITIELL_ENGANGSSTØNAD);
     public static final SøknadEgenskap ENDRING_FORELDREPENGER = new SøknadEgenskap(SøknadType.ENDRING_FORELDREPENGER);
-    public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(SøknadType.INITIELL_SVANGERSKAPSPENGER);
 
+    public static final SøknadEgenskap DOKMOT_ES_V1 = new SøknadEgenskap(V1, SøknadType.INITIELL_ENGANGSSTØNAD);
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 
     public SøknadEgenskap(SøknadType type) {

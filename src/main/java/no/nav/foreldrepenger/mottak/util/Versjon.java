@@ -14,16 +14,19 @@ import org.slf4j.LoggerFactory;
 
 public enum Versjon {
 
-    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1",
-            "urn:no:nav:vedtak:felles:xml:vedtak:v1",
-            "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
-            "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
-                    "urn:no:nav:vedtak:felles:xml:vedtak:v2",
-                    "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
-                    "urn:no:nav:vedtak:felles:xml:soeknad:v2",
-                    "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"), V3(
-                            "urn:no:nav:vedtak:felles:xml:soeknad:v3",
-                            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"), V20180924, UKJENT;
+    V1("urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1",
+       "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1",
+       "urn:no:nav:vedtak:felles:xml:vedtak:v1",
+       "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
+       "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
+    V2("urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v2",
+       "urn:no:nav:vedtak:felles:xml:vedtak:v2",
+       "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
+       "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"),
+    V3("urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v3",
+       "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"),
+    V20180924,
+    UKJENT;
 
     private static final Logger LOG = LoggerFactory.getLogger(Versjon.class);
     public static final String VERSION_PROPERTY = "contract.version";
@@ -32,6 +35,7 @@ public enum Versjon {
     public static final List<Versjon> UKJENT_VERSJON = singletonList(UKJENT);
 
     public static final Versjon DEFAULT_VERSJON = V2;
+    public static final Versjon DEFAULT_SVP_VERSJON = V1;
 
     private Versjon() {
         this(emptyList());
@@ -62,7 +66,6 @@ public enum Versjon {
                 return v;
         }
         return ukjent(ns);
-
     }
 
     private static Versjon ukjent(String namespace) {

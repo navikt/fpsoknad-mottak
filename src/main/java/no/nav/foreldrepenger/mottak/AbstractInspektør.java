@@ -18,14 +18,14 @@ public abstract class AbstractInspektør {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractInspektør.class);
 
     protected static Versjon versjonFraXML(String xml) {
-        return versjonFra(namespaceFra(xml));
+        return versjonFra(rootElementNamespace(xml));
     }
 
     private static Versjon versjonFra(String namespace) {
         return Versjon.namespaceFra(namespace);
     }
 
-    protected static String namespaceFra(String xml) {
+    protected static String rootElementNamespace(String xml) {
         if (xml == null) {
             return null;
         }
