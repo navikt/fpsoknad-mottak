@@ -154,7 +154,6 @@ public class ForeldrepengerTestUtils {
                 .medlemsskap(medlemsskap(Versjon.V3))
                 .opptjening(opptjening(Versjon.V3))
                 .tilrettelegging(tilrettelegging(vedleggRefs))
-
                 .build();
     }
 
@@ -352,14 +351,19 @@ public class ForeldrepengerTestUtils {
             return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                     FEDREKVOTE,
                     true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
-                    Collections.singletonList("22222222222"),
+                    Collections.singletonList("22222222222"), null, null,
                     Arrays.asList(vedleggRefs));
         case V2:
+            return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
+                    FEDREKVOTE,
+                    true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                    Collections.singletonList("22222222222"), null, null,
+                    Arrays.asList(vedleggRefs));
         case V3:
             return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                     FEDREKVOTE,
                     true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
-                    Collections.singletonList("22222222222"),
+                    Collections.singletonList("22222222222"), true, true,
                     Arrays.asList(vedleggRefs));
         default:
             throw new IllegalStateException(v.toString());
@@ -383,6 +387,7 @@ public class ForeldrepengerTestUtils {
                 ukeDagNær(LocalDate.now().plusMonths(3)), true, Collections.singletonList("222"),
                 UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET, StønadskontoType.FEDREKVOTE, null,
                 Arrays.asList(vedleggRefs));
+
     }
 
     static Fordeling fordeling(Versjon v, String... vedleggRefs) {

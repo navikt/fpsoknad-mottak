@@ -15,5 +15,4 @@ public class UnsupportedEgenskapException extends SøknadEgenskapException {
     public UnsupportedEgenskapException(String msg, SøknadEgenskap egenskap, Throwable cause) {
         super(msg, egenskap, cause);
     }
-
 }

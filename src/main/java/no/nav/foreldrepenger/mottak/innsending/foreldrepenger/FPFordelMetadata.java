@@ -1,26 +1,39 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000001;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000003;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.*;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @JsonPropertyOrder({ "forsendelsesId", "saksnummer", "brukerId", "forsendelseMottatt", "filer" })
 public class FPFordelMetadata {
@@ -112,7 +125,7 @@ public class FPFordelMetadata {
         if (søknadType.equals(ENDRING_FORELDREPENGER)) {
             return new Del(I000050, id.getAndIncrement());
         }
-        throw new UnsupportedOperationException("Søknad av type " + søknadType + " foreløpig ikke støttet");
+        throw new UnexpectedInputException("Søknad av type " + søknadType + " foreløpig ikke støttet");
     }
 
     private static Del vedleggsDel(Vedlegg vedlegg, final AtomicInteger id) {
@@ -129,8 +142,7 @@ public class FPFordelMetadata {
         if (søknadType.erSvangerskapspenger()) {
             return I000001;
         }
-        throw new UnsupportedOperationException(
-                "Ytelse av type " + søknad.getYtelse().getClass().getSimpleName() + " ikke støttet");
+        throw new UnexpectedInputException("Ytelse av type " + søknadType + " ikke støttet");
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
@@ -143,7 +155,7 @@ public class FPFordelMetadata {
                 || relasjon instanceof Adopsjon) {
             return I000003; // DOTO separate type ?
         }
-        throw new IllegalArgumentException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
     }
 
     private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
@@ -155,7 +167,7 @@ public class FPFordelMetadata {
         if (relasjon instanceof Adopsjon || relasjon instanceof Omsorgsovertakelse) {
             return I000002;
         }
-        throw new IllegalArgumentException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
     }
 
     @Override

@@ -534,7 +534,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     gradering.getArbeidtidProsent(),
                     gradering.isErArbeidstaker(),
                     gradering.isArbeidsforholdSomSkalGraderes(),
-                    Collections.singletonList(gradering.getVirksomhetsnummer().toString()),
+                    Collections.singletonList(gradering.getVirksomhetsnummer().toString()), null, null,
                     emptyList());
         }
 
