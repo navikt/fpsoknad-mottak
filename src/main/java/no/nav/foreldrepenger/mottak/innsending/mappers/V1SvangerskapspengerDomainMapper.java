@@ -1,10 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
-import static no.nav.foreldrepenger.mottak.domain.felles.SpråkKode.defaultSpråk;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.innsendingstypeFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
@@ -27,8 +26,6 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.SpråkKode;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
@@ -57,9 +54,7 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforho
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.AnnenOpptjeningTyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Brukerroller;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Spraakkode;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 import no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold;
 import no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.DelvisTilrettelegging;
@@ -114,26 +109,6 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
 
-    private static Spraakkode språkFra(Søker søker) {
-        return Optional.ofNullable(søker)
-                .map(Søker::getSpråkkode)
-                .map(SpråkKode::name)
-                .map(V1SvangerskapspengerDomainMapper::språkKodeFra)
-                .orElse(defaultSpråkKode());
-    }
-
-    private static Spraakkode defaultSpråkKode() {
-        return språkKodeFra(defaultSpråk());
-    }
-
-    private static Spraakkode språkKodeFra(SpråkKode kode) {
-        return språkKodeFra(kode.name());
-    }
-
-    private static Spraakkode språkKodeFra(String kode) {
-        return new Spraakkode().withKode(kode);
-    }
-
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
@@ -147,23 +122,6 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                 .withTilleggsinformasjon(vedlegg.getBeskrivelse())
                 .withSkjemanummer(vedlegg.getDokumentType().name())
                 .withInnsendingstype(innsendingstypeFra(vedlegg.getInnsendingsType()));
-    }
-
-    private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
-
-        switch (innsendingsType) {
-        case SEND_SENERE:
-            return innsendingsTypeMedKodeverk(SEND_SENERE);
-        case LASTET_OPP:
-            return innsendingsTypeMedKodeverk(LASTET_OPP);
-        default:
-            throw new UnexpectedInputException("Innsendingstype " + innsendingsType + " foreløpig kke støttet");
-        }
-    }
-
-    private static Innsendingstype innsendingsTypeMedKodeverk(InnsendingsType type) {
-        Innsendingstype typeMedKodeverk = new Innsendingstype().withKode(type.name());
-        return typeMedKodeverk.withKodeverk(typeMedKodeverk.getKodeverk());
     }
 
     private static OmYtelse ytelseFra(Søknad søknad) {

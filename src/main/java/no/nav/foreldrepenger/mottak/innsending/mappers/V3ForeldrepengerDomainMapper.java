@@ -1,11 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
-import static no.nav.foreldrepenger.mottak.domain.felles.SpråkKode.defaultSpråk;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.innsendingstypeFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
@@ -29,8 +28,6 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.SpråkKode;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
@@ -92,13 +89,11 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.AnnenOpptjeningTyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Brukerroller;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Dekningsgrader;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.MorsAktivitetsTyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Omsorgsovertakelseaarsaker;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Oppholdsaarsaker;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Overfoeringsaarsaker;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Spraakkode;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Utsettelsesaarsaker;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Uttaksperiodetyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
@@ -183,25 +178,21 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
 
-    private static Spraakkode språkFra(Søker søker) {
-        return Optional.ofNullable(søker)
-                .map(Søker::getSpråkkode)
-                .map(SpråkKode::name)
-                .map(V3ForeldrepengerDomainMapper::språkKodeFra)
-                .orElse(defaultSpråkKode());
-    }
-
-    private static Spraakkode defaultSpråkKode() {
-        return språkKodeFra(defaultSpråk());
-    }
-
-    private static Spraakkode språkKodeFra(SpråkKode kode) {
-        return språkKodeFra(kode.name());
-    }
-
-    private static Spraakkode språkKodeFra(String kode) {
-        return new Spraakkode().withKode(kode);
-    }
+    /*
+     * private static Spraakkode språkFra(Søker søker) { return
+     * Optional.ofNullable(søker) .map(Søker::getSpråkkode) .map(SpråkKode::name)
+     * .map(V3ForeldrepengerDomainMapper::språkKodeFra) .orElse(defaultSpråkKode());
+     * }
+     *
+     * private static Spraakkode defaultSpråkKode() { return
+     * språkKodeFra(defaultSpråk()); }
+     *
+     * private static Spraakkode språkKodeFra(SpråkKode kode) { return
+     * språkKodeFra(kode.name()); }
+     *
+     * private static Spraakkode språkKodeFra(String kode) { return new
+     * Spraakkode().withKode(kode); }
+     */
 
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
@@ -216,23 +207,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withTilleggsinformasjon(vedlegg.getBeskrivelse())
                 .withSkjemanummer(vedlegg.getDokumentType().name())
                 .withInnsendingstype(innsendingstypeFra(vedlegg.getInnsendingsType()));
-    }
-
-    private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
-
-        switch (innsendingsType) {
-        case SEND_SENERE:
-            return innsendingsTypeMedKodeverk(SEND_SENERE);
-        case LASTET_OPP:
-            return innsendingsTypeMedKodeverk(LASTET_OPP);
-        default:
-            throw new UnexpectedInputException("Innsendingstype " + innsendingsType + " foreløpig kke støttet");
-        }
-    }
-
-    private static Innsendingstype innsendingsTypeMedKodeverk(InnsendingsType type) {
-        Innsendingstype typeMedKodeverk = new Innsendingstype().withKode(type.name());
-        return typeMedKodeverk.withKodeverk(typeMedKodeverk.getKodeverk());
     }
 
     private OmYtelse ytelseFra(Søknad søknad) {
