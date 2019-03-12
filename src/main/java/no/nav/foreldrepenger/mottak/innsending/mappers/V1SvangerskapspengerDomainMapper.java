@@ -203,6 +203,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .cast(tilrettelegging);
             return new IngenTilrettelegging()
                     .withVedlegg(tilretteleggingVedleggFraIDs(ingen.getVedlegg()))
+                    .withSlutteArbeidFom(ingen.getSlutteArbeidFom())
                     .withBehovForTilretteleggingFom(ingen.getBehovForTilretteleggingFom())
                     .withArbeidsforhold(arbeidsforholdFra(ingen.getArbeidsforhold()));
         }
