@@ -18,6 +18,7 @@ import javax.xml.bind.JAXBElement;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.neovisionaries.i18n.CountryCode;
 
@@ -104,7 +105,7 @@ import no.nav.vedtak.felles.xml.soeknad.uttak.v3.Uttaksperiode;
 import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
-//@Component
+@Component
 public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V3, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);

@@ -62,15 +62,6 @@ public class SøknadController {
         return kvittering;
     }
 
-    @PostMapping("/sendV3")
-    public Kvittering initiellV3(@Valid @RequestBody Søknad søknad) {
-        Kvittering kvittering = søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
-        if (kvittering.erVellykket()) {
-            varselSender.varsle(varselFra(kvittering));
-        }
-        return kvittering;
-    }
-
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
         return søknadSender.ettersend(ettersending, oppslag.getSøker(), inspektør.inspiser(ettersending));
