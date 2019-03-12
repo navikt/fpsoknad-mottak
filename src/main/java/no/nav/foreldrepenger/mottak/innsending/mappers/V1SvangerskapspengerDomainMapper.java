@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.mappers;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.innsendingstypeFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.periodeFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -26,7 +27,6 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjeningType;
@@ -405,14 +405,6 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
         return new Regnskapsfoerer()
                 .withTelefon(regnskapsfører.getTelefon())
                 .withNavn(regnskapsfører.getNavn());
-    }
-
-    private static Periode periodeFra(ÅpenPeriode periode) {
-        return Optional.ofNullable(periode)
-                .map(p -> new Periode()
-                        .withFom(p.getFom())
-                        .withTom(p.getTom()))
-                .orElse(null);
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(List<Virksomhetstype> typer) {

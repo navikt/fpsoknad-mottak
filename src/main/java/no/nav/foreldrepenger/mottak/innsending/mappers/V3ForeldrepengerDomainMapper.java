@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.innsendingstypeFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.periodeFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -28,7 +29,6 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
@@ -177,22 +177,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
-
-    /*
-     * private static Spraakkode språkFra(Søker søker) { return
-     * Optional.ofNullable(søker) .map(Søker::getSpråkkode) .map(SpråkKode::name)
-     * .map(V3ForeldrepengerDomainMapper::språkKodeFra) .orElse(defaultSpråkKode());
-     * }
-     *
-     * private static Spraakkode defaultSpråkKode() { return
-     * språkKodeFra(defaultSpråk()); }
-     *
-     * private static Spraakkode språkKodeFra(SpråkKode kode) { return
-     * språkKodeFra(kode.name()); }
-     *
-     * private static Spraakkode språkKodeFra(String kode) { return new
-     * Spraakkode().withKode(kode); }
-     */
 
     private static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
@@ -462,12 +446,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         AnnenOpptjeningTyper type = new AnnenOpptjeningTyper().withKode(kode);
         type.setKodeverk(type.getKodeverk());
         return type;
-    }
-
-    private static Periode periodeFra(ÅpenPeriode periode) {
-        return Optional.ofNullable(periode)
-                .map(s -> new Periode().withFom(s.getFom()).withTom(s.getTom()))
-                .orElse(null);
     }
 
     private static Medlemskap medlemsskapFra(Medlemsskap ms, RelasjonTilBarn relasjon) {
