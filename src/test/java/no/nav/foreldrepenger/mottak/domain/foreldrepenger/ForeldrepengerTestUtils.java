@@ -27,6 +27,7 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
@@ -94,15 +95,15 @@ public class ForeldrepengerTestUtils {
     private static final ValgfrittVedlegg IKKE_OPPLASTETV2 = ikkeOpplastet(ID143, I000063);
 
     public static Søknad foreldrepengeSøknad(Versjon v) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(v, false), VEDLEGG1);
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrepenger(v, false), VEDLEGG1);
     }
 
     public static Søknad foreldrepengeSøknadUtenVedlegg(Versjon v) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(v, false));
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrepenger(v, false));
     }
 
     public static Søknad svp() {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), svangerskapspenger());
+        return søknad(Versjon.V1, svangerskapspenger(vedleggRefs(VEDLEGG1)), VEDLEGG1);
     }
 
     public static Søknad søknadMedEttVedlegg(Versjon v) {
@@ -122,8 +123,11 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Søknad søknad(Versjon v, boolean utland, Vedlegg... vedlegg) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrePenger(v, utland, vedleggRefs(vedlegg)),
-                asList(vedlegg));
+        return søknad(v, foreldrepenger(v, utland, vedleggRefs(vedlegg)), vedlegg);
+    }
+
+    public static Søknad søknad(Versjon v, Ytelse ytelse, Vedlegg... vedlegg) {
+        return new Søknad(LocalDateTime.now(), TestUtils.søker(), ytelse, asList(vedlegg));
     }
 
     public static Endringssøknad endringssøknad(Versjon v, Vedlegg... vedlegg) {
@@ -144,33 +148,35 @@ public class ForeldrepengerTestUtils {
         return new Ettersending(EttersendingsType.foreldrepenger, "42", TO_VEDLEGG);
     }
 
-    public static Svangerskapspenger svangerskapspenger() {
+    public static Svangerskapspenger svangerskapspenger(String... vedleggRefs) {
         return Svangerskapspenger.builder()
                 .termindato(LocalDate.now().plusMonths(1))
                 .medlemsskap(medlemsskap(Versjon.V3))
                 .opptjening(opptjening(Versjon.V3))
-                .tilrettelegging(tilrettelegging())
+                .tilrettelegging(tilrettelegging(vedleggRefs))
+
                 .build();
     }
 
-    private static List<Tilrettelegging> tilrettelegging() {
-        return Lists.newArrayList(helTilrettelegging(), delvisTilrettelegging(), ingenTilrettelegging());
+    private static List<Tilrettelegging> tilrettelegging(String... vedleggRefs) {
+        return Lists.newArrayList(helTilrettelegging(vedleggRefs), delvisTilrettelegging(vedleggRefs),
+                ingenTilrettelegging(vedleggRefs));
     }
 
-    private static Tilrettelegging ingenTilrettelegging() {
+    private static Tilrettelegging ingenTilrettelegging(String... vedleggRefs) {
         return new IngenTilrettelegging(frilanser(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
-                null);
+                asList(vedleggRefs));
 
     }
 
-    private static Tilrettelegging delvisTilrettelegging() {
+    private static Tilrettelegging delvisTilrettelegging(String... vedleggRefs) {
         return new DelvisTilrettelegging(privat(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
-                ProsentAndel.of(100), null);
+                ProsentAndel.of(100), asList(vedleggRefs));
     }
 
-    private static Tilrettelegging helTilrettelegging() {
+    private static Tilrettelegging helTilrettelegging(String... vedleggRefs) {
         return new HelTilrettelegging(virksomhet(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
-                null);
+                asList(vedleggRefs));
 
     }
 
@@ -190,7 +196,7 @@ public class ForeldrepengerTestUtils {
         return new SelvstendigNæringsdrivende("risiko", "tiltak");
     }
 
-    static Foreldrepenger foreldrePenger(Versjon v, boolean utland, String... vedleggRefs) {
+    static Foreldrepenger foreldrepenger(Versjon v, boolean utland, String... vedleggRefs) {
         return Foreldrepenger.builder()
                 .rettigheter(rettigheter(v))
                 .annenForelder(norskForelder(v))
