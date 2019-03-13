@@ -2,11 +2,13 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType.engangsstønad;
 import static no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType.foreldrepenger;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,7 @@ public interface SøknadInspektør {
             return INITIELL_ENGANGSSTØNAD;
         }
         if (ytelse instanceof Svangerskapspenger) {
-            return new SøknadEgenskap(Versjon.DEFAULT_SVP_VERSJON, SøknadType.INITIELL_SVANGERSKAPSPENGER);
+            return new SøknadEgenskap(DEFAULT_SVP_VERSJON, INITIELL_SVANGERSKAPSPENGER);
         }
 
         return UKJENT;
