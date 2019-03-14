@@ -55,7 +55,7 @@ import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 
 final class V3DomainMapperUtils {
 
-    private static final Land KOSOVO = landFra("XXK");
+    private static final Land KOSOVO = landFra(DomainMapper.KOSOVO);
 
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
 

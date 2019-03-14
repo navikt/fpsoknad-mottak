@@ -7,6 +7,8 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public interface DomainMapper extends Mappable {
 
+    static final String KOSOVO = "XXK";
+
     static final String UKJENT_KODEVERKSVERDI = "-";
 
     String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap);

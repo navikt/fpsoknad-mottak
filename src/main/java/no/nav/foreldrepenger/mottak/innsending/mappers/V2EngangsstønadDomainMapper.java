@@ -67,7 +67,7 @@ import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
 @Component
 public class V2EngangsstønadDomainMapper implements DomainMapper {
 
-    private static final Land KOSOVO = landFra("XXK");
+    private static final Land KOSOVO = landFra(DomainMapper.KOSOVO);
 
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, INITIELL_ENGANGSSTØNAD);
 

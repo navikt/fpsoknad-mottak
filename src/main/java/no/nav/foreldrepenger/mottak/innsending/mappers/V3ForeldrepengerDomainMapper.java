@@ -9,7 +9,6 @@ import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtil
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.vedleggFra;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
@@ -18,8 +17,6 @@ import java.util.Optional;
 
 import javax.xml.bind.JAXBElement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -89,7 +86,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             INITIELL_FORELDREPENGER);
 
     private static final FPV3JAXBUtil JAXB = new FPV3JAXBUtil();
-    private static final Logger LOG = LoggerFactory.getLogger(V3ForeldrepengerDomainMapper.class);
 
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory FELLES_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory();
@@ -119,7 +115,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
-        LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
         return new Soeknad()
                 .withSprakvalg(språkFra(endringsøknad.getSøker()))
                 .withMottattDato(endringsøknad.getMottattdato().toLocalDate())
