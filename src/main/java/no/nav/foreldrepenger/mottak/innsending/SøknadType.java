@@ -1,6 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.*;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_FØRSTEGANG;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_FØRSTEGANG;
 
 import io.micrometer.core.instrument.Counter;
 
@@ -12,6 +18,7 @@ public enum SøknadType {
     ETTERSENDING_ENGANGSSTØNAD(ES_ETTERSSENDING),
     INITIELL_ENGANGSSTØNAD_DOKMOT,
     INITIELL_SVANGERSKAPSPENGER(SVP_FØRSTEGANG),
+    ETTERSENDING_SVANGERSKAPSPENGER(SVP_ETTERSSENDING),
     UKJENT;
 
     private final Counter counter;
@@ -19,6 +26,7 @@ public enum SøknadType {
     SøknadType() {
         this(null);
     }
+
     SøknadType(Counter counter) {
         this.counter = counter;
     }
@@ -36,7 +44,8 @@ public enum SøknadType {
     }
 
     public boolean erSvangerskapspenger() {
-        return this.equals(INITIELL_SVANGERSKAPSPENGER);
+        return this.equals(INITIELL_SVANGERSKAPSPENGER)
+                || this.equals(ETTERSENDING_SVANGERSKAPSPENGER);
     }
 
     public void count() {

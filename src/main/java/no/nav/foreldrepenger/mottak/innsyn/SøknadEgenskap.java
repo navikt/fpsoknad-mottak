@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
@@ -13,6 +14,10 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class SøknadEgenskap {
     Pair<Versjon, SøknadType> egenskap;
 
+    public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(DEFAULT_SVP_VERSJON,
+            SøknadType.INITIELL_SVANGERSKAPSPENGER);
+    public static final SøknadEgenskap ETTERSENDING_SVANGERSKAPSPENGER = new SøknadEgenskap(DEFAULT_SVP_VERSJON,
+            SøknadType.ETTERSENDING_SVANGERSKAPSPENGER);
     public static final SøknadEgenskap ETTERSENDING_FORELDREPENGER = new SøknadEgenskap(
             SøknadType.ETTERSENDING_FORELDREPENGER);
     public static final SøknadEgenskap ETTERSENDING_ENGANGSSTØNAD = new SøknadEgenskap(

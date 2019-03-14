@@ -23,6 +23,7 @@ public final class CounterRegistry {
     public static final Counter FP_ETTERSSENDING = fpCounter(FPFORDEL_SEND, "ETTERSENDING_FORELDREPENGER");
 
     public static final Counter SVP_FØRSTEGANG = fpCounter(FPFORDEL_SEND, "INITIELL_SVANGERSKAPSPENGER");
+    public static final Counter SVP_ETTERSSENDING = fpCounter(FPFORDEL_SEND, "ETTERSENDING_SVANGERSKAPSPENGER");
 
     public static final Counter GITTOPP_KVITTERING = fpCounter(FPFORDEL_KVITTERINGER, "gittopp");
     public static final Counter MANUELL_KVITTERING = fpCounter(FPFORDEL_KVITTERINGER, "gosys");

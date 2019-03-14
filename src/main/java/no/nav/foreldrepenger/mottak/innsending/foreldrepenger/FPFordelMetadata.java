@@ -153,7 +153,7 @@ public class FPFordelMetadata {
         }
         if (relasjon instanceof Omsorgsovertakelse
                 || relasjon instanceof Adopsjon) {
-            return I000003; // DOTO separate type ?
+            return I000003; // TODO separate type ?
         }
         throw new UnexpectedInputException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
     }
