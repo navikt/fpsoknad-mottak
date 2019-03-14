@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
+import static com.neovisionaries.i18n.CountryCode.XK;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
@@ -7,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.SpråkKode.defaultSprå
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,8 @@ import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.SpråkKode;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
@@ -29,6 +33,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.AnnenOpptjening;
@@ -36,6 +42,7 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.EgenNaering;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Frilans;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Frilansoppdrag;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.NorskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Regnskapsfoerer;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon;
@@ -48,10 +55,72 @@ import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 
 final class V3DomainMapperUtils {
 
+    private static final Land KOSOVO = landFra("XXK");
+
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
 
     private V3DomainMapperUtils() {
 
+    }
+
+    static Spraakkode språkFra(Søker søker) {
+        return Optional.ofNullable(søker)
+                .map(Søker::getSpråkkode)
+                .map(SpråkKode::name)
+                .map(V3DomainMapperUtils::språkKodeFra)
+                .orElse(defaultSpråkKode());
+    }
+
+    static Periode periodeFra(ÅpenPeriode periode) {
+        return Optional.ofNullable(periode)
+                .map(p -> new Periode()
+                        .withFom(p.getFom())
+                        .withTom(p.getTom()))
+                .orElse(null);
+    }
+
+    static Opptjening opptjeningFra(
+            no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening opptjening) {
+        return new Opptjening()
+                .withUtenlandskArbeidsforhold(utenlandskeArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
+                .withFrilans(frilansFra(opptjening.getFrilans()))
+                .withEgenNaering(egneNæringerFra(opptjening.getEgenNæring()))
+                .withAnnenOpptjening(andreOpptjeningerFra(opptjening.getAnnenOpptjening()));
+    }
+
+    static Medlemskap medlemsskapFra(Medlemsskap ms, LocalDate relasjonsDato) {
+        if (ms != null) {
+            return new Medlemskap()
+                    .withOppholdUtlandet(oppholdUtlandetFra(ms))
+                    .withINorgeVedFoedselstidspunkt(ms.varINorge(relasjonsDato))
+                    .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
+                    .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
+        }
+        return null;
+    }
+
+    private static boolean oppholdINorgeSiste12(Medlemsskap ms) {
+        return ms.getTidligereOppholdsInfo().getUtenlandsOpphold().isEmpty();
+    }
+
+    private static boolean oppholdINorgeNeste12(Medlemsskap ms) {
+        return ms.getFramtidigOppholdsInfo().getUtenlandsOpphold().isEmpty();
+    }
+
+    private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
+        return ms.utenlandsOpphold()
+                .stream()
+                .map(V3DomainMapperUtils::utenlandOppholdFra)
+                .collect(toList());
+    }
+
+    private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
+        return opphold == null ? null
+                : new OppholdUtlandet()
+                        .withPeriode(new Periode()
+                                .withFom(opphold.getFom())
+                                .withTom(opphold.getTom()))
+                        .withLand(landFra(opphold.getLand()));
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(
@@ -74,7 +143,7 @@ final class V3DomainMapperUtils {
         return vt;
     }
 
-    static List<EgenNaering> egneNæringerFra(List<EgenNæring> egenNæring) {
+    private static List<EgenNaering> egneNæringerFra(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
                 .map(V3DomainMapperUtils::egenNæringFra)
                 .collect(toList());
@@ -130,7 +199,7 @@ final class V3DomainMapperUtils {
                 .collect(toList());
     }
 
-    static List<AnnenOpptjening> andreOpptjeningerFra(
+    private static List<AnnenOpptjening> andreOpptjeningerFra(
             List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
                 .map(V3DomainMapperUtils::annenOpptjeningFra)
@@ -164,17 +233,9 @@ final class V3DomainMapperUtils {
                 .orElse(null);
     }
 
-    static AnnenOpptjeningTyper annenOpptjeningTypeFra(String kode) {
-        AnnenOpptjeningTyper type = new AnnenOpptjeningTyper().withKode(kode);
-        type.setKodeverk(type.getKodeverk());
-        return type;
-    }
-
-    static Regnskapsfoerer regnskapsFørerFra(List<Regnskapsfører> regnskapsførere) {
+    private static Regnskapsfoerer regnskapsFørerFra(List<Regnskapsfører> regnskapsførere) {
         if (CollectionUtils.isEmpty(regnskapsførere)) {
             return null;
-        }
-        if (regnskapsførere.size() > 1) {
         }
         Regnskapsfører regnskapsfører = regnskapsførere.get(0);
         return new Regnskapsfoerer()
@@ -183,12 +244,15 @@ final class V3DomainMapperUtils {
     }
 
     static Land landFra(CountryCode land) {
+        if (XK.equals(land)) {
+            return KOSOVO; // https://jira.adeo.no/browse/PFP-6077
+        }
         return Optional.ofNullable(land)
                 .map(s -> landFra(s.getAlpha3()))
                 .orElse(null);
     }
 
-    static List<UtenlandskArbeidsforhold> utenlandskeArbeidsforholdFra(
+    private static List<UtenlandskArbeidsforhold> utenlandskeArbeidsforholdFra(
             List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold> arbeidsforhold) {
         return safeStream(arbeidsforhold)
                 .map(V3DomainMapperUtils::utenlandskArbeidsforholdFra)
@@ -223,7 +287,7 @@ final class V3DomainMapperUtils {
                 .collect(toList());
     }
 
-    static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
+    private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
 
         switch (innsendingsType) {
         case SEND_SENERE:
@@ -235,23 +299,7 @@ final class V3DomainMapperUtils {
         }
     }
 
-    static Spraakkode språkFra(Søker søker) {
-        return Optional.ofNullable(søker)
-                .map(Søker::getSpråkkode)
-                .map(SpråkKode::name)
-                .map(V3DomainMapperUtils::språkKodeFra)
-                .orElse(defaultSpråkKode());
-    }
-
-    static Periode periodeFra(ÅpenPeriode periode) {
-        return Optional.ofNullable(periode)
-                .map(p -> new Periode()
-                        .withFom(p.getFom())
-                        .withTom(p.getTom()))
-                .orElse(null);
-    }
-
-    static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans frilans) {
+    private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans frilans) {
         return Optional.ofNullable(frilans)
                 .map(V3DomainMapperUtils::create)
                 .orElse(null);
@@ -331,8 +379,8 @@ final class V3DomainMapperUtils {
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
 
-    private static Land landFra(String alphq3) {
-        Land land = new Land().withKode(alphq3);
+    private static Land landFra(String alpha3) {
+        Land land = new Land().withKode(alpha3);
         return land.withKodeverk(land.getKodeverk());
     }
 }

@@ -3,12 +3,11 @@ package no.nav.foreldrepenger.mottak.innsending.mappers;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.andreOpptjeningerFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.egneNæringerFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.frilansFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.landFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.medlemsskapFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.opptjeningFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.utenlandskeArbeidsforholdFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -25,13 +24,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
@@ -58,11 +53,7 @@ import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Rettigheter;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.SoekersRelasjonTilBarnet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Termin;
@@ -70,8 +61,6 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Dekningsgrad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Opptjening;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Brukerroller;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Dekningsgrader;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.MorsAktivitetsTyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Omsorgsovertakelseaarsaker;
@@ -165,29 +154,20 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     private OmYtelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
-        return new OmYtelse().withAny(JAXB.marshalToElement(foreldrePengerFra(ytelse)));
+        return new OmYtelse().withAny(JAXB.marshalToElement(foreldrepengerFra(ytelse)));
     }
 
-    private JAXBElement<Foreldrepenger> foreldrePengerFra(
+    private JAXBElement<Foreldrepenger> foreldrepengerFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse) {
         return FP_FACTORY_V3.createForeldrepenger(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
-                .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap(), ytelse.getRelasjonTilBarn()))
+                .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap(), ytelse.getRelasjonTilBarn().relasjonsDato()))
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
                 .withFordeling(fordelingFra(ytelse.getFordeling()))
                 .withRettigheter(
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn())));
-    }
-
-    private static Opptjening opptjeningFra(
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening opptjening) {
-        return new Opptjening()
-                .withUtenlandskArbeidsforhold(utenlandskeArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
-                .withFrilans(frilansFra(opptjening.getFrilans()))
-                .withEgenNaering(egneNæringerFra(opptjening.getEgenNæring()))
-                .withAnnenOpptjening(andreOpptjeningerFra(opptjening.getAnnenOpptjening()));
     }
 
     private Fordeling fordelingFra(Endringssøknad endringssøknad) {
@@ -214,41 +194,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     private static Dekningsgrader dekningsgradFra(String kode) {
         Dekningsgrader dekningsgrad = new Dekningsgrader().withKode(kode);
         return dekningsgrad.withKodeverk(dekningsgrad.getKodeverk());
-    }
-
-    private static Medlemskap medlemsskapFra(Medlemsskap ms, RelasjonTilBarn relasjon) {
-        if (ms != null) {
-            return new Medlemskap()
-                    .withOppholdUtlandet(oppholdUtlandetFra(ms))
-                    .withINorgeVedFoedselstidspunkt(ms.varINorge(relasjon.relasjonsDato()))
-                    .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
-                    .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
-        }
-        return null;
-    }
-
-    private static boolean oppholdINorgeSiste12(Medlemsskap ms) {
-        return ms.getTidligereOppholdsInfo().getUtenlandsOpphold().isEmpty();
-    }
-
-    private static boolean oppholdINorgeNeste12(Medlemsskap ms) {
-        return ms.getFramtidigOppholdsInfo().getUtenlandsOpphold().isEmpty();
-    }
-
-    private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
-        return ms.utenlandsOpphold()
-                .stream()
-                .map(V3ForeldrepengerDomainMapper::utenlandOppholdFra)
-                .collect(toList());
-    }
-
-    private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
-        return opphold == null ? null
-                : new OppholdUtlandet()
-                        .withPeriode(new Periode()
-                                .withFom(opphold.getFom())
-                                .withTom(opphold.getTom()))
-                        .withLand(landFra(opphold.getLand()));
     }
 
     private Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling fordeling) {
@@ -526,21 +471,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return vedlegg.stream()
                 .map(s -> FELLES_FACTORY_V3.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
-    }
-
-    private static Bruker søkerFra(AktorId aktørId, Søker søker) {
-        return new Bruker()
-                .withAktoerId(aktørId.getId())
-                .withSoeknadsrolle(brukerRolleFra(søker.getSøknadsRolle()));
-    }
-
-    private static Brukerroller brukerRolleFra(BrukerRolle søknadsRolle) {
-        return brukerRolleFra(søknadsRolle.name());
-    }
-
-    private static Brukerroller brukerRolleFra(String rolle) {
-        Brukerroller brukerRolle = new Brukerroller().withKode(rolle);
-        return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
 
     @Override

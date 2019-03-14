@@ -2,13 +2,10 @@ package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.andreOpptjeningerFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.egneNæringerFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.frilansFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.landFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.medlemsskapFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.opptjeningFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.søkerFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.utenlandskeArbeidsforholdFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -24,17 +21,11 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.jaxb.SVPV1JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg;
-import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold;
 import no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.DelvisTilrettelegging;
 import no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser;
@@ -89,23 +80,18 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
     private static OmYtelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger.class
                 .cast(søknad.getYtelse());
-        return new OmYtelse().withAny(JAXB.marshalToElement(svangerskapsPengerFra(ytelse)));
+        return new OmYtelse().withAny(JAXB.marshalToElement(svangerskapspengerFra(ytelse)));
     }
 
-    private static JAXBElement<Svangerskapspenger> svangerskapsPengerFra(
+    private static JAXBElement<Svangerskapspenger> svangerskapspengerFra(
             no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse) {
         return SVP_FACTORY_V1.createSvangerskapspenger(new Svangerskapspenger()
                 .withTermindato(ytelse.getTermindato())
                 .withFødselsdato(ytelse.getFødselsdato())
                 .withOpptjening(opptjeningFra(ytelse.getOpptjening()))
                 .withTilretteleggingListe(tilretteleggingFra(ytelse.getTilrettelegging()))
-                .withMedlemskap(medlemskapFra(ytelse)));
-    }
-
-    private static Medlemskap medlemskapFra(
-            no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse) {
-        return medlemskapFra(ytelse.getMedlemsskap(),
-                relasjonsDatoFra(ytelse.getTermindato(), ytelse.getFødselsdato()));
+                .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap(),
+                        relasjonsDatoFra(ytelse.getTermindato(), ytelse.getFødselsdato()))));
     }
 
     private static TilretteleggingListe tilretteleggingFra(
@@ -190,56 +176,9 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
         throw new UnexpectedInputException("Ukjent arbeidsforhold " + forhold.getClass().getSimpleName());
     }
 
-    private static Opptjening opptjeningFra(
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening opptjening) {
-        return new Opptjening()
-                .withUtenlandskArbeidsforhold(utenlandskeArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
-                .withFrilans(frilansFra(opptjening.getFrilans()))
-                .withEgenNaering(egneNæringerFra(opptjening.getEgenNæring()))
-                .withAnnenOpptjening(andreOpptjeningerFra(opptjening.getAnnenOpptjening()));
-    }
-
     private static LocalDate relasjonsDatoFra(LocalDate termindato, LocalDate fødselsdato) {
         return Optional.ofNullable(fødselsdato)
                 .orElse(termindato);
-    }
-
-    private static Medlemskap medlemskapFra(Medlemsskap ms, LocalDate relasjonsDato) {
-        return Optional.ofNullable(ms)
-                .map(m -> create(ms, relasjonsDato))
-                .orElse(null);
-    }
-
-    private static Medlemskap create(Medlemsskap ms, LocalDate relasjonsDato) {
-        return new Medlemskap()
-                .withOppholdUtlandet(oppholdUtlandetFra(ms))
-                .withINorgeVedFoedselstidspunkt(ms.varINorge(relasjonsDato))
-                .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
-                .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
-    }
-
-    private static boolean oppholdINorgeSiste12(Medlemsskap ms) {
-        return ms.getTidligereOppholdsInfo().getUtenlandsOpphold().isEmpty();
-    }
-
-    private static boolean oppholdINorgeNeste12(Medlemsskap ms) {
-        return ms.getFramtidigOppholdsInfo().getUtenlandsOpphold().isEmpty();
-    }
-
-    private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
-        return ms.utenlandsOpphold()
-                .stream()
-                .map(V1SvangerskapspengerDomainMapper::utenlandOppholdFra)
-                .collect(toList());
-    }
-
-    private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
-        return opphold == null ? null
-                : new OppholdUtlandet()
-                        .withPeriode(new Periode()
-                                .withFom(opphold.getFom())
-                                .withTom(opphold.getTom()))
-                        .withLand(landFra(opphold.getLand()));
     }
 
     @Override
