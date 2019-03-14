@@ -210,7 +210,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static List<JAXBElement<Object>> lukketPeriodeVedleggFra(List<String> vedlegg) {
-        return vedlegg.stream()
+        return safeStream(vedlegg)
                 .map(s -> UTTAK_FACTORY_V3.createLukketPeriodeMedVedleggVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
@@ -463,7 +463,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<String> vedlegg) {
-        return vedlegg.stream()
+        return safeStream(vedlegg)
                 .map(s -> FELLES_FACTORY_V3.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }

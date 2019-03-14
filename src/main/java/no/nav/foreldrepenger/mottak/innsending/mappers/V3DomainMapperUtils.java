@@ -108,8 +108,7 @@ final class V3DomainMapperUtils {
     }
 
     private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
-        return ms.utenlandsOpphold()
-                .stream()
+        return safeStream(ms.utenlandsOpphold())
                 .map(V3DomainMapperUtils::utenlandOppholdFra)
                 .collect(toList());
     }
@@ -123,15 +122,13 @@ final class V3DomainMapperUtils {
                         .withLand(landFra(opphold.getLand()));
     }
 
-    private static List<Virksomhetstyper> virksomhetsTyperFra(
-            List<Virksomhetstype> typer) {
+    private static List<Virksomhetstyper> virksomhetsTyperFra(List<Virksomhetstype> typer) {
         return safeStream(typer)
                 .map(V3DomainMapperUtils::virksomhetsTypeFra)
                 .collect(toList());
     }
 
-    private static Virksomhetstyper virksomhetsTypeFra(
-            Virksomhetstype type) {
+    private static Virksomhetstyper virksomhetsTypeFra(Virksomhetstype type) {
         return Optional.ofNullable(type)
                 .map(s -> virksomhetsTypeFra(s.name()))
                 .orElse(null);
@@ -194,7 +191,7 @@ final class V3DomainMapperUtils {
     }
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
-        return vedlegg.stream()
+        return safeStream(vedlegg)
                 .map(s -> FP_FACTORY_V3.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
@@ -340,7 +337,7 @@ final class V3DomainMapperUtils {
     }
 
     private static List<JAXBElement<Object>> annenOpptjeningVedleggFra(List<String> vedlegg) {
-        return vedlegg.stream()
+        return safeStream(vedlegg)
                 .map(s -> FP_FACTORY_V3.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
                 .collect(toList());
     }
