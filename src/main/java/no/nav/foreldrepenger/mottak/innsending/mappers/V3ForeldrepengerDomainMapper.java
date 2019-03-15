@@ -292,10 +292,10 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                 .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
         if (gradertPeriode.getFrilans() != null) {
-            gradering = gradering.withErFrilanser(gradertPeriode.getFrilans());
+            gradering = gradering.withErFrilanser(gradertPeriode.getFrilans().booleanValue());
         }
         if (gradertPeriode.getSelvstendig() != null) {
-            gradering = gradering.withErSelvstNæringsdrivende(gradertPeriode.getSelvstendig());
+            gradering = gradering.withErSelvstNæringsdrivende(gradertPeriode.getSelvstendig().booleanValue());
         }
         return gradertPeriode.isØnskerSamtidigUttak()
                 ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
