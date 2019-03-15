@@ -290,9 +290,13 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
                 .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getVirksomhetsnummer()))
                 .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
-                .withErFrilanser(gradertPeriode.getFrilans())
-                .withErSelvstNæringsdrivende(gradertPeriode.getSelvstendig())
                 .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
+        if (gradertPeriode.getFrilans() != null) {
+            gradering = gradering.withErFrilanser(gradertPeriode.getFrilans());
+        }
+        if (gradertPeriode.getSelvstendig() != null) {
+            gradering = gradering.withErSelvstNæringsdrivende(gradertPeriode.getSelvstendig());
+        }
         return gradertPeriode.isØnskerSamtidigUttak()
                 ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
                 : gradering;

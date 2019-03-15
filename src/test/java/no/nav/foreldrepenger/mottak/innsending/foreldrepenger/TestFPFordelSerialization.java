@@ -14,10 +14,8 @@ import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConver
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
@@ -38,6 +36,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -57,7 +56,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
-import no.nav.foreldrepenger.mottak.errorhandling.VersionMismatchException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
@@ -85,7 +83,8 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @MockitoSettings(strictness = LENIENT)
-@ContextConfiguration(classes = { MottakConfiguration.class, ObjectMapper.class, TestConfig.class })
+@AutoConfigureJsonTesters
+@ContextConfiguration(classes = { MottakConfiguration.class, TestConfig.class })
 public class TestFPFordelSerialization {
 
     private static final SøknadInspektør INSPEKTØR = new XMLStreamSøknadInspektør();
@@ -100,8 +99,8 @@ public class TestFPFordelSerialization {
     @Inject
     ObjectMapper objectMapper;
 
-    private XMLSøknadMapper v12XMLMapper;
-    private DomainMapper v12DomainMapper;
+    private XMLSøknadMapper v123XMLMapper;
+    private DomainMapper v23DomainMapper;
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
@@ -109,11 +108,11 @@ public class TestFPFordelSerialization {
 
     @BeforeEach
     public void before() {
-        v12XMLMapper = new DelegerendeXMLSøknadMapper(
+        v123XMLMapper = new DelegerendeXMLSøknadMapper(
                 new V1ForeldrepengerXMLMapper(oppslag),
                 new V2ForeldrepengerXMLMapper(oppslag),
                 new V3ForeldrepengerXMLMapper(oppslag));
-        v12DomainMapper = new DelegerendeDomainMapper(
+        v23DomainMapper = new DelegerendeDomainMapper(
                 new V2ForeldrepengerDomainMapper(oppslag),
                 new V3ForeldrepengerDomainMapper(oppslag),
                 new V2EngangsstønadDomainMapper(oppslag),
@@ -131,8 +130,9 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testESFpFordel() {
-        Søknad engangstønad = engangssøknad(V2, false, termin(), norskForelder(V2), ForeldrepengerTestUtils.V3);
-        String xml = v12DomainMapper.tilXML(engangstønad, AKTØRID,
+        Søknad engangstønad = engangssøknad(DEFAULT_VERSJON, false, termin(), norskForelder(DEFAULT_VERSJON),
+                ForeldrepengerTestUtils.V3);
+        String xml = v23DomainMapper.tilXML(engangstønad, AKTØRID,
                 new SøknadEgenskap(SøknadType.INITIELL_ENGANGSSTØNAD));
         System.out.println(xml);
     }
@@ -140,13 +140,6 @@ public class TestFPFordelSerialization {
     @Test
     public void testSøknadRoundtrip() {
         alleSøknadVersjoner().stream().forEach(v -> testSøknadRoundtrip(v));
-    }
-
-    @Test
-    public void testFeilMapper() {
-        assertThrows(VersionMismatchException.class,
-                () -> v12DomainMapper.tilXML(søknadMedEttOpplastetEttIkkeOpplastetVedlegg(V1), AKTØRID,
-                        new SøknadEgenskap(V2, SøknadType.ENDRING_FORELDREPENGER)));
     }
 
     @Test
@@ -175,23 +168,23 @@ public class TestFPFordelSerialization {
 
     private void testSøknadRoundtrip(Versjon v) {
         Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
-        String xml = v12DomainMapper.tilXML(original, AKTØRID,
+        String xml = v23DomainMapper.tilXML(original, AKTØRID,
                 new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
         SøknadEgenskap inspiser = INSPEKTØR.inspiser(xml);
         assertEquals(inspiser.getVersjon(), v);
         assertEquals(inspiser.getType(), SøknadType.INITIELL_FORELDREPENGER);
-        Søknad respons = v12XMLMapper.tilSøknad(xml, inspiser);
+        Søknad respons = v123XMLMapper.tilSøknad(xml, inspiser);
         assertEquals(original, respons);
     }
 
     public void testEndringssøknadRoundtrip(Versjon v) {
         Endringssøknad original = endringssøknad(v, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
-        String xml = v12DomainMapper.tilXML(original, AKTØRID,
+        String xml = v23DomainMapper.tilXML(original, AKTØRID,
                 new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
         SøknadEgenskap inspiser = INSPEKTØR.inspiser(xml);
         assertEquals(inspiser.getVersjon(), v);
         assertEquals(inspiser.getType(), SøknadType.ENDRING_FORELDREPENGER);
-        Endringssøknad respons = Endringssøknad.class.cast(v12XMLMapper.tilSøknad(xml, inspiser));
+        Endringssøknad respons = Endringssøknad.class.cast(v123XMLMapper.tilSøknad(xml, inspiser));
         Fordeling originalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(original.getYtelse()).getFordeling();
         Fordeling responsFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
@@ -251,6 +244,6 @@ public class TestFPFordelSerialization {
         EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(textFormatter, renderer);
         DelegerendePDFGenerator pdf = new DelegerendePDFGenerator(fp, es);
         return new FPFordelKonvoluttGenerator(new FPFordelMetdataGenerator(objectMapper),
-                v12DomainMapper, pdf);
+                v23DomainMapper, pdf);
     }
 }
