@@ -39,10 +39,7 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør impleme
 
     @Override
     public SøknadEgenskap inspiser(String xml) {
-        if (erEngangsstønadV1Dokmot(rootElementNamespace(xml))) {
-            return DOKMOT_ES_V1;
-        }
-        return egenskapFra(xml);
+        return erEngangsstønadV1Dokmot(rootElementNamespace(xml)) ? DOKMOT_ES_V1 : egenskapFra(xml);
     }
 
     private static SøknadEgenskap egenskapFra(String xml) {
