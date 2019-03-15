@@ -14,9 +14,9 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class SøknadEgenskap {
     Pair<Versjon, SøknadType> egenskap;
 
-    public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(DEFAULT_SVP_VERSJON,
+    public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(
             SøknadType.INITIELL_SVANGERSKAPSPENGER);
-    public static final SøknadEgenskap ETTERSENDING_SVANGERSKAPSPENGER = new SøknadEgenskap(DEFAULT_SVP_VERSJON,
+    public static final SøknadEgenskap ETTERSENDING_SVANGERSKAPSPENGER = new SøknadEgenskap(
             SøknadType.ETTERSENDING_SVANGERSKAPSPENGER);
     public static final SøknadEgenskap ETTERSENDING_FORELDREPENGER = new SøknadEgenskap(
             SøknadType.ETTERSENDING_FORELDREPENGER);
@@ -32,7 +32,7 @@ public class SøknadEgenskap {
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 
     public SøknadEgenskap(SøknadType type) {
-        this(DEFAULT_VERSJON, type);
+        this(type.erSvangerskapspenger() ? DEFAULT_SVP_VERSJON : DEFAULT_VERSJON, type);
     }
 
     @JsonCreator

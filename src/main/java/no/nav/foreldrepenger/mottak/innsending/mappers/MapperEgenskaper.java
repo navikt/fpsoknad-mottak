@@ -4,6 +4,8 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 
 import java.util.Arrays;
@@ -16,6 +18,8 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class MapperEgenskaper {
     private final List<SøknadEgenskap> egenskaper;
 
+    public static MapperEgenskaper SVANGERSKAPSPENGER = new MapperEgenskaper(DEFAULT_SVP_VERSJON,
+            INITIELL_SVANGERSKAPSPENGER);
     public static MapperEgenskaper UKJENT = new MapperEgenskaper(Versjon.UKJENT, SøknadType.UKJENT);
 
     public static MapperEgenskaper FORELDREPENGER = new MapperEgenskaper(INITIELL_FORELDREPENGER,

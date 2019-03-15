@@ -1,14 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.medlemsskapFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.opptjeningFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -43,8 +42,6 @@ import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 @Component
 public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_SVANGERSKAPSPENGER);
-
     private static final SVPV1JAXBUtil JAXB = new SVPV1JAXBUtil();
 
     private static final no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory SVP_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory();
@@ -52,7 +49,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return EGENSKAPER;
+        return SVANGERSKAPSPENGER;
     }
 
     @Override

@@ -6,15 +6,13 @@ import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtil
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.medlemsskapFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.vedleggFra;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
@@ -32,7 +30,6 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV3JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v3.ObjectFactory;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent;
@@ -47,9 +44,8 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V3, INITIELL_ENGANGSSTØNAD);
 
     private static final ESV3JAXBUtil JAXB = new ESV3JAXBUtil();
-    private static final Logger LOG = LoggerFactory.getLogger(V3EngangsstønadDomainMapper.class);
 
-    private static final ObjectFactory ES_FACTORY_V3 = new ObjectFactory();
+    private static final no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v3.ObjectFactory ES_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory SØKNAD_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory FELLES_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory();
 
@@ -75,9 +71,6 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private Soeknad tilModell(Søknad søknad, AktorId søker) {
-        no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad es = no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad.class
-                .cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", es);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
@@ -89,7 +82,6 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
 
     private OmYtelse engangsstønadFra(Søknad søknad) {
         Engangsstønad ytelse = Engangsstønad.class.cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
         return new OmYtelse().withAny(JAXB.marshalToElement(engangsstønadFra(ytelse, søknad.getVedlegg())));
     }
 
@@ -103,23 +95,22 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg) {
         if (relasjon instanceof FremtidigFødsel) {
-            return terminFra((FremtidigFødsel) relasjon, vedlegg);
+            return create(FremtidigFødsel.class.cast(relasjon), vedlegg);
         }
         if (relasjon instanceof Fødsel) {
-            return fødselFra((Fødsel) relasjon, vedlegg);
+            return create(Fødsel.class.cast(relasjon), vedlegg);
         }
-        throw new UnexpectedInputException(
-                "Relasjon til barn " + relasjon.getClass().getSimpleName() + " er foreløpig ikke støttet");
+        throw new UnexpectedInputException("Relasjon " + relasjon.getClass().getSimpleName() + " er ikke støttet");
     }
 
-    private static SoekersRelasjonTilBarnet fødselFra(Fødsel fødsel, List<Vedlegg> vedlegg) {
+    private static SoekersRelasjonTilBarnet create(Fødsel fødsel, List<Vedlegg> vedlegg) {
         return new Foedsel()
                 .withVedlegg(relasjonTilBarnVedleggFra(vedlegg))
                 .withFoedselsdato(fødsel.getFødselsdato().get(0))
                 .withAntallBarn(fødsel.getAntallBarn());
     }
 
-    private static SoekersRelasjonTilBarnet terminFra(FremtidigFødsel termin, List<Vedlegg> vedlegg) {
+    private static SoekersRelasjonTilBarnet create(FremtidigFødsel termin, List<Vedlegg> vedlegg) {
         return new Termin()
                 .withVedlegg(relasjonTilBarnVedleggFra(vedlegg))
                 .withTermindato(termin.getTerminDato())
@@ -128,7 +119,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<Vedlegg> vedlegg) {
-        return vedlegg.stream()
+        return safeStream(vedlegg)
                 .map(Vedlegg::getId)
                 .map(s -> FELLES_FACTORY_V3.createSoekersRelasjonTilBarnetVedlegg(
                         new no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg().withId(s)))
