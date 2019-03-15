@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -61,6 +60,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Stønadskont
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -190,7 +190,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (ytelse instanceof Endringssoeknad) {
             return Endringssoeknad.class.cast(ytelse).getSaksnummer();
         }
-        throw new IllegalStateException(ytelse.getClass().getSimpleName() + " er ikke en endringssøknad");
+        throw new UnexpectedInputException(ytelse.getClass().getSimpleName() + " er ikke en endringssøknad");
     }
 
     private static Object ytelse(OmYtelse omYtelse) {
@@ -226,7 +226,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .rettigheter(tilRettigheter(søknad.getRettigheter()))
                     .build();
         }
-        throw new NotImplementedException("Ukjent type " + førsteYtelse.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent type " + førsteYtelse.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
@@ -270,8 +270,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     adopsjon.getAnkomstdato(),
                     adopsjon.getFoedselsdato());
         }
-        throw new IllegalArgumentException("Ikke"
-                + " støttet type " + relasjonTilBarnet.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ikke-støttet type " + relasjonTilBarnet.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening tilOpptjening(
@@ -388,7 +387,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .virksomhetsTyper(tilVirksomhetsTyper(utenlandskOrg.getVirksomhetstype()))
                     .build();
         }
-        throw new IllegalArgumentException("Ikke"
+        throw new UnexpectedInputException("Ikke"
                 + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
     }
 
@@ -547,7 +546,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     uttaksperiode.getSamtidigUttakProsent(),
                     emptyList());
         }
-        throw new IllegalArgumentException();
+        throw new UnexpectedInputException("Ikke-støttet periode " + periode.getClass().getSimpleName());
     }
 
     private static Boolean tilBoolean(boolean value) {
@@ -619,7 +618,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     tilLand(utenlandsForelder.getLand()),
                     null);
         }
-        throw new IllegalArgumentException();
+        throw new UnexpectedInputException("Ikke-støttet annen forelder " + annenForelder.getClass().getSimpleName());
     }
 
     private static Søker tilSøker(Bruker søker) {

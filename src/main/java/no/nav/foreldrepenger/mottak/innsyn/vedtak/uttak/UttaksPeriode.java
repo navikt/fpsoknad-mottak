@@ -17,8 +17,4 @@ public class UttaksPeriode {
     private final Boolean samtidigUttak;
     private final Boolean manueltBehandlet;
     private final ManuellBehandlingsÅrsak manuellBehandlingsårsak;
-
-    /*
-     * "manuellbehandlingaarsak", "uttakUtsettelseType",
-     */
 }

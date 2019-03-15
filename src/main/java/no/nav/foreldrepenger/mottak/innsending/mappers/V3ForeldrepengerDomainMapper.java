@@ -114,27 +114,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return JAXB.marshal(SØKNAD_FACTORY_V3.createSoeknad(tilModell(endringssøknad, søker)));
     }
 
-    private Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
-        return new Soeknad()
-                .withSprakvalg(språkFra(endringsøknad.getSøker()))
-                .withMottattDato(endringsøknad.getMottattdato().toLocalDate())
-                .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
-                .withAndreVedlegg(vedleggFra(endringsøknad.getFrivilligeVedlegg()))
-                .withPaakrevdeVedlegg(vedleggFra(endringsøknad.getPåkrevdeVedlegg()))
-                .withOmYtelse(ytelseFra(endringsøknad));
-    }
-
-    private OmYtelse ytelseFra(Endringssøknad endringssøknad) {
-        return new OmYtelse().withAny(endringssøknadFra(endringssøknad));
-    }
-
-    private JAXBElement<Endringssoeknad> endringssøknadFra(Endringssøknad endringssøknad) {
-        return ENDRING_FACTORY_V3.createEndringssoeknad(new Endringssoeknad()
-                .withFordeling(fordelingFra(endringssøknad))
-                .withSaksnummer(endringssøknad.getSaksnr()));
-    }
-
-    public Soeknad tilModell(Søknad søknad, AktorId søker) {
+    private Soeknad tilModell(Søknad søknad, AktorId søker) {
         return new Soeknad()
                 .withSprakvalg(språkFra(søknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
@@ -144,6 +124,26 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withMottattDato(søknad.getMottattdato().toLocalDate())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
+    }
+
+    private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
+        return new Soeknad()
+                .withSprakvalg(språkFra(endringsøknad.getSøker()))
+                .withMottattDato(endringsøknad.getMottattdato().toLocalDate())
+                .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
+                .withAndreVedlegg(vedleggFra(endringsøknad.getFrivilligeVedlegg()))
+                .withPaakrevdeVedlegg(vedleggFra(endringsøknad.getPåkrevdeVedlegg()))
+                .withOmYtelse(ytelseFra(endringsøknad));
+    }
+
+    private static OmYtelse ytelseFra(Endringssøknad endringssøknad) {
+        return new OmYtelse().withAny(endringssøknadFra(endringssøknad));
+    }
+
+    private static JAXBElement<Endringssoeknad> endringssøknadFra(Endringssøknad endringssøknad) {
+        return ENDRING_FACTORY_V3.createEndringssoeknad(new Endringssoeknad()
+                .withFordeling(fordelingFra(endringssøknad))
+                .withSaksnummer(endringssøknad.getSaksnr()));
     }
 
     private OmYtelse ytelseFra(Søknad søknad) {
@@ -165,7 +165,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn())));
     }
 
-    private Fordeling fordelingFra(Endringssøknad endringssøknad) {
+    private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(endringssøknad.getYtelse());
         return fordelingFra(ytelse.getFordeling());
@@ -191,20 +191,24 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return dekningsgrad.withKodeverk(dekningsgrad.getKodeverk());
     }
 
-    private Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling fordeling) {
-        if (fordeling == null) {
-            return null;
-        }
+    private static Fordeling fordelingFra(
+            no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling fordeling) {
+        return Optional.ofNullable(fordeling)
+                .map(V3ForeldrepengerDomainMapper::create)
+                .orElse(null);
+    }
+
+    private static Fordeling create(no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling fordeling) {
         return new Fordeling()
                 .withPerioder(perioderFra(fordeling.getPerioder()))
                 .withOenskerKvoteOverfoert(valgfriOverføringsÅrsakFra(fordeling.getØnskerKvoteOverført()))
                 .withAnnenForelderErInformert(fordeling.isErAnnenForelderInformert());
     }
 
-    private List<no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg> perioderFra(
+    private static List<no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg> perioderFra(
             List<LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
-                .map(this::lukkerPeriodeFra)
+                .map(V3ForeldrepengerDomainMapper::lukketPeriodeFra)
                 .collect(toList());
 
     }
@@ -215,69 +219,96 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .collect(toList());
     }
 
-    private no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg lukkerPeriodeFra(
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg lukketPeriodeFra(
+            LukketPeriodeMedVedlegg periode) {
+        return Optional.ofNullable(periode)
+                .map(V3ForeldrepengerDomainMapper::create)
+                .orElse(null);
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
             LukketPeriodeMedVedlegg periode) {
         if (periode instanceof OverføringsPeriode) {
-            OverføringsPeriode overføringsPeriode = OverføringsPeriode.class.cast(periode);
-            return new Overfoeringsperiode()
-                    .withFom(overføringsPeriode.getFom())
-                    .withTom(overføringsPeriode.getTom())
-                    .withOverfoeringAv(uttaksperiodeTypeFra(overføringsPeriode.getUttaksperiodeType()))
-                    .withAarsak(påkrevdOverføringsÅrsakFra(overføringsPeriode.getÅrsak()))
-                    .withVedlegg(lukketPeriodeVedleggFra(overføringsPeriode.getVedlegg()));
-
+            return create(OverføringsPeriode.class.cast(periode));
         }
         if (periode instanceof OppholdsPeriode) {
-            OppholdsPeriode oppholdsPeriode = OppholdsPeriode.class.cast(periode);
-            return new Oppholdsperiode()
-                    .withFom(oppholdsPeriode.getFom())
-                    .withTom(oppholdsPeriode.getTom())
-                    .withAarsak(oppholdsÅrsakFra(oppholdsPeriode.getÅrsak()))
-                    .withVedlegg(lukketPeriodeVedleggFra(oppholdsPeriode.getVedlegg()));
+            return create(OppholdsPeriode.class.cast(periode));
         }
         if (periode instanceof UtsettelsesPeriode) {
-            UtsettelsesPeriode utsettelsesPeriode = UtsettelsesPeriode.class.cast(periode);
-            return new Utsettelsesperiode()
-                    .withFom(utsettelsesPeriode.getFom())
-                    .withTom(utsettelsesPeriode.getTom())
-                    .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
-                    .withMorsAktivitetIPerioden(morsAktivitetFra(utsettelsesPeriode.getMorsAktivitetsType()))
-                    .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType(), true))
-                    .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
-                    .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
+            return create(UtsettelsesPeriode.class.cast(periode));
         }
         if (periode instanceof GradertUttaksPeriode) {
-            GradertUttaksPeriode gradertPeriode = GradertUttaksPeriode.class.cast(periode);
-            Gradering gradering = new Gradering()
-                    .withFom(gradertPeriode.getFom())
-                    .withTom(gradertPeriode.getTom())
-                    .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
-                    .withOenskerSamtidigUttak(gradertPeriode.isØnskerSamtidigUttak())
-                    .withMorsAktivitetIPerioden(morsAktivitetFra(gradertPeriode.getMorsAktivitetsType()))
-                    .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
-                    .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
-                    .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
-                    .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getVirksomhetsnummer()))
-                    .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
-                    .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
-            return gradertPeriode.isØnskerSamtidigUttak()
-                    ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
-                    : gradering;
-
+            return create(GradertUttaksPeriode.class.cast(periode));
         }
         if (periode instanceof UttaksPeriode) {
-            UttaksPeriode uttaksPeriode = UttaksPeriode.class.cast(periode);
-            return new Uttaksperiode()
-                    .withFom(uttaksPeriode.getFom())
-                    .withTom(uttaksPeriode.getTom())
-                    .withSamtidigUttakProsent(uttaksPeriode.getSamtidigUttakProsent())
-                    .withOenskerFlerbarnsdager(uttaksPeriode.isØnskerFlerbarnsdager())
-                    .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
-                    .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
-                    .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
-                    .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
+            return create(UttaksPeriode.class.cast(periode));
         }
         throw new UnexpectedInputException("Vil aldri skje");
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
+            OverføringsPeriode overføringsPeriode) {
+        return new Overfoeringsperiode()
+                .withFom(overføringsPeriode.getFom())
+                .withTom(overføringsPeriode.getTom())
+                .withOverfoeringAv(uttaksperiodeTypeFra(overføringsPeriode.getUttaksperiodeType()))
+                .withAarsak(påkrevdOverføringsÅrsakFra(overføringsPeriode.getÅrsak()))
+                .withVedlegg(lukketPeriodeVedleggFra(overføringsPeriode.getVedlegg()));
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
+            OppholdsPeriode oppholdsPeriode) {
+        return new Oppholdsperiode()
+                .withFom(oppholdsPeriode.getFom())
+                .withTom(oppholdsPeriode.getTom())
+                .withAarsak(oppholdsÅrsakFra(oppholdsPeriode.getÅrsak()))
+                .withVedlegg(lukketPeriodeVedleggFra(oppholdsPeriode.getVedlegg()));
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
+            UtsettelsesPeriode utsettelsesPeriode) {
+        return new Utsettelsesperiode()
+                .withFom(utsettelsesPeriode.getFom())
+                .withTom(utsettelsesPeriode.getTom())
+                .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(utsettelsesPeriode.getMorsAktivitetsType()))
+                .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType(), true))
+                .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
+                .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
+            GradertUttaksPeriode gradertPeriode) {
+        Gradering gradering = new Gradering()
+                .withFom(gradertPeriode.getFom())
+                .withTom(gradertPeriode.getTom())
+                .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
+                .withOenskerSamtidigUttak(gradertPeriode.isØnskerSamtidigUttak())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(gradertPeriode.getMorsAktivitetsType()))
+                .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
+                .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
+                .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
+                .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getVirksomhetsnummer()))
+                .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
+                .withErFrilanser(gradertPeriode.getFrilans())
+                .withErSelvstNæringsdrivende(gradertPeriode.getSelvstendig())
+                .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
+        return gradertPeriode.isØnskerSamtidigUttak()
+                ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
+                : gradering;
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
+            UttaksPeriode uttaksPeriode) {
+        return new Uttaksperiode()
+                .withFom(uttaksPeriode.getFom())
+                .withTom(uttaksPeriode.getTom())
+                .withSamtidigUttakProsent(uttaksPeriode.getSamtidigUttakProsent())
+                .withOenskerFlerbarnsdager(uttaksPeriode.isØnskerFlerbarnsdager())
+                .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
+                .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
+                .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
     }
 
     private static Arbeidsgiver arbeidsGiverFra(List<String> arbeidsgiver) {
@@ -371,17 +402,24 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
 
         if (ukjentForelder) {
-            return new Rettigheter()
-                    .withHarOmsorgForBarnetIPeriodene(true)
-                    .withHarAnnenForelderRett(false)
-                    .withHarAleneomsorgForBarnet(true);
+            return rettigheterForUkjentForelder();
         }
-        if (rettigheter == null) {
-            return null;
-        }
+
+        return Optional.ofNullable(rettigheter)
+                .map(V3ForeldrepengerDomainMapper::create)
+                .orElse(null);
+    }
+
+    private static Rettigheter rettigheterForUkjentForelder() {
         return new Rettigheter()
-                .withHarOmsorgForBarnetIPeriodene(true) // Hardkodet til true, siden dette er implisitt og vi ikke spør
-                                                        // brukeren eksplisitt
+                .withHarOmsorgForBarnetIPeriodene(true)
+                .withHarAnnenForelderRett(false)
+                .withHarAleneomsorgForBarnet(true);
+    }
+
+    private static Rettigheter create(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter) {
+        return new Rettigheter()
+                .withHarOmsorgForBarnetIPeriodene(true)
                 .withHarAnnenForelderRett(rettigheter.isHarAnnenForelderRett())
                 .withHarAleneomsorgForBarnet(rettigheter.isHarAleneOmsorgForBarnet());
     }
@@ -390,7 +428,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder annenForelder) {
 
         if (erAnnenForelderUkjent(annenForelder)) {
-            return ukjentForelder();
+            return new UkjentForelder();
         }
         if (annenForelder instanceof UtenlandskForelder) {
             return utenlandskForelder(UtenlandskForelder.class.cast(annenForelder));
@@ -399,10 +437,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             return norskForelder(NorskForelder.class.cast(annenForelder));
         }
         return null;
-    }
-
-    private static UkjentForelder ukjentForelder() {
-        return new no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder();
     }
 
     private static AnnenForelderUtenNorskIdent utenlandskForelder(UtenlandskForelder utenlandskForelder) {
@@ -417,49 +451,61 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjonTilBarn) {
+        return Optional.ofNullable(relasjonTilBarn)
+                .map(V3ForeldrepengerDomainMapper::create)
+                .orElse(null);
+    }
 
-        if (relasjonTilBarn == null) {
-            return null;
-        }
-
+    private static SoekersRelasjonTilBarnet create(RelasjonTilBarn relasjonTilBarn) {
         if (relasjonTilBarn instanceof Fødsel) {
-            Fødsel fødsel = Fødsel.class.cast(relasjonTilBarn);
-            return new Foedsel()
-                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
-                    .withFoedselsdato(fødsel.getFødselsdato().get(0))
-                    .withAntallBarn(fødsel.getAntallBarn());
+            return create(Fødsel.class.cast(relasjonTilBarn));
         }
         if (relasjonTilBarn instanceof FremtidigFødsel) {
-            FremtidigFødsel termin = FremtidigFødsel.class.cast(relasjonTilBarn);
-            return new Termin()
-                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
-                    .withAntallBarn(termin.getAntallBarn())
-                    .withTermindato(termin.getTerminDato())
-                    .withUtstedtdato(termin.getUtstedtDato());
+            return create(FremtidigFødsel.class.cast(relasjonTilBarn));
         }
         if (relasjonTilBarn instanceof Adopsjon) {
-            Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarn);
-            return new no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon()
-                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
-                    .withAntallBarn(adopsjon.getAntallBarn())
-                    .withFoedselsdato(adopsjon.getFødselsdato())
-                    .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato())
-                    .withAdopsjonAvEktefellesBarn(adopsjon.isEktefellesBarn())
-                    .withAnkomstdato(adopsjon.getAnkomstDato());
+            return create(Adopsjon.class.cast(relasjonTilBarn));
         }
         if (relasjonTilBarn instanceof Omsorgsovertakelse) {
-            Omsorgsovertakelse omsorgsovertakelse = Omsorgsovertakelse.class.cast(relasjonTilBarn);
-            return new no.nav.vedtak.felles.xml.soeknad.felles.v3.Omsorgsovertakelse()
-                    .withVedlegg(relasjonTilBarnVedleggFra(relasjonTilBarn.getVedlegg()))
-                    .withAntallBarn(omsorgsovertakelse.getAntallBarn())
-                    .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
-                    .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato())
-                    .withOmsorgsovertakelseaarsak(new Omsorgsovertakelseaarsaker().withKode("OVERTATT_OMSORG"))
-                    .withBeskrivelse("Omsorgsovertakelse");
+            return create(Omsorgsovertakelse.class.cast(relasjonTilBarn));
         }
-
         throw new UnexpectedInputException(
                 "Relasjon " + relasjonTilBarn.getClass().getSimpleName() + " er ikke støttet");
+    }
+
+    private static SoekersRelasjonTilBarnet create(Omsorgsovertakelse omsorgsovertakelse) {
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v3.Omsorgsovertakelse()
+                .withVedlegg(relasjonTilBarnVedleggFra(omsorgsovertakelse.getVedlegg()))
+                .withAntallBarn(omsorgsovertakelse.getAntallBarn())
+                .withFoedselsdato(omsorgsovertakelse.getFødselsdato())
+                .withOmsorgsovertakelsesdato(omsorgsovertakelse.getOmsorgsovertakelsesdato())
+                .withOmsorgsovertakelseaarsak(new Omsorgsovertakelseaarsaker().withKode("OVERTATT_OMSORG"))
+                .withBeskrivelse("Omsorgsovertakelse");
+    }
+
+    private static SoekersRelasjonTilBarnet create(Fødsel fødsel) {
+        return new Foedsel()
+                .withVedlegg(relasjonTilBarnVedleggFra(fødsel.getVedlegg()))
+                .withFoedselsdato(fødsel.getFødselsdato().get(0))
+                .withAntallBarn(fødsel.getAntallBarn());
+    }
+
+    private static SoekersRelasjonTilBarnet create(FremtidigFødsel termin) {
+        return new Termin()
+                .withVedlegg(relasjonTilBarnVedleggFra(termin.getVedlegg()))
+                .withAntallBarn(termin.getAntallBarn())
+                .withTermindato(termin.getTerminDato())
+                .withUtstedtdato(termin.getUtstedtDato());
+    }
+
+    private static SoekersRelasjonTilBarnet create(Adopsjon adopsjon) {
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon()
+                .withVedlegg(relasjonTilBarnVedleggFra(adopsjon.getVedlegg()))
+                .withAntallBarn(adopsjon.getAntallBarn())
+                .withFoedselsdato(adopsjon.getFødselsdato())
+                .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato())
+                .withAdopsjonAvEktefellesBarn(adopsjon.isEktefellesBarn())
+                .withAnkomstdato(adopsjon.getAnkomstDato());
     }
 
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<String> vedlegg) {

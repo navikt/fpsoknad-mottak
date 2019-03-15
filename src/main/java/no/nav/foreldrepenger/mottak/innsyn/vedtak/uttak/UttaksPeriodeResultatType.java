@@ -12,7 +12,7 @@ public enum UttaksPeriodeResultatType {
         try {
             return UttaksPeriodeResultatType.valueOf(name);
         } catch (Exception e) {
-            LOG.warn("INgen enum verdi for {}", name);
+            LOG.warn("Ingen enum verdi for {}", name);
             return null;
         }
     }

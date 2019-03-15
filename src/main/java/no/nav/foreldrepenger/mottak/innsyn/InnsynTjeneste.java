@@ -21,6 +21,7 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -34,7 +35,8 @@ public class InnsynTjeneste implements Innsyn {
 
     private final InnsynConnection innsynConnection;
 
-    public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler, InnsynConnection innsynConnection) {
+    public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
+            InnsynConnection innsynConnection) {
         this.innsynConnection = innsynConnection;
         this.søknadHandler = søknadHandler;
         this.vedtakHandler = vedtakHandler;
@@ -50,12 +52,16 @@ public class InnsynTjeneste implements Innsyn {
         return Optional.ofNullable(hentSaker(aktørId).stream()
                 .filter(s -> s.getSaksnummer().equals(saksnummer))
                 .findFirst()
-                .orElse(null)).map(s -> s.getBehandlinger())
-                .orElse(emptyList()).stream()
-                .sorted(comparing(Behandling::getEndretTidspunkt).reversed())
-                .collect(toList()).stream()
+                .orElse(null))
+                .map(Sak::getBehandlinger)
+                .orElse(emptyList())
+                .stream()
+                .sorted(comparing(Behandling::getEndretTidspunkt)
+                        .reversed())
+                .collect(toList())
+                .stream()
                 .findFirst()
-                .map(b -> b.getVedtak())
+                .map(Behandling::getVedtak)
                 .orElse(null);
     }
 
