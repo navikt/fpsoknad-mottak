@@ -23,7 +23,7 @@ server.servlet :
 
 varsel:
     username : srvappserver
-    enabled : false
+    enabled : true
 
 spring :
     cache :

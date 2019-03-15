@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.util.jaxb;
 
-import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v2.Engangsstønad;
-import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
+import no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v3.Engangsstønad;
+import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
 public final class ESV3JAXBUtil extends AbstractJAXBUtil {
 

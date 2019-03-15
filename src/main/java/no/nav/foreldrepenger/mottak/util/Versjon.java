@@ -34,7 +34,7 @@ public enum Versjon {
 
     public static final List<Versjon> UKJENT_VERSJON = singletonList(UKJENT);
 
-    public static final Versjon DEFAULT_VERSJON = V2;
+    public static final Versjon DEFAULT_VERSJON = V3;
     public static final Versjon DEFAULT_SVP_VERSJON = V1;
 
     private Versjon() {

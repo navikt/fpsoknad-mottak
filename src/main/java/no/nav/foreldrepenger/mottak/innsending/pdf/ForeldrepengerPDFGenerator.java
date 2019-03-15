@@ -1,6 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -39,7 +43,13 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return FORELDREPENGER;
+        return new MapperEgenskaper(
+                new SøknadEgenskap(V1, INITIELL_FORELDREPENGER),
+                new SøknadEgenskap(V1, ENDRING_FORELDREPENGER),
+                new SøknadEgenskap(V2, INITIELL_FORELDREPENGER),
+                new SøknadEgenskap(V2, ENDRING_FORELDREPENGER),
+                new SøknadEgenskap(V3, INITIELL_FORELDREPENGER),
+                new SøknadEgenskap(V3, ENDRING_FORELDREPENGER));
     }
 
     @Override
@@ -88,28 +98,23 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             AnnenForelder annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
-                        stønad.getRettigheter(), cos,
-                        y);
-
+                        stønad.getRettigheter(), cos, y);
             }
 
             if (søknad.getTilleggsopplysninger() != null) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
-                startY = fpRenderer.header(søker, doc, scratchcos,
-                        true, startY);
-                float size = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
-                        scratchcos, startY);
+                startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
+                float size = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(), scratchcos,
+                        startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
-                            cos, y);
+                    y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(), cos, y);
                 }
                 else {
-                    cos = nySide(doc, cos, scratch1,
-                            scratchcos);
+                    cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
             }

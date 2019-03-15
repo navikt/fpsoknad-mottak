@@ -63,7 +63,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelSøknadSen
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V2ForeldrepengerDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
@@ -143,7 +143,7 @@ public class FPFordelTest {
         EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(jalla2, jalla1);
         DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
 
-        DomainMapper domainMapper = new DelegerendeDomainMapper(new V2ForeldrepengerDomainMapper(oppslag));
+        DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
                 new FPFordelMetdataGenerator(new ObjectMapper()),
                 domainMapper,

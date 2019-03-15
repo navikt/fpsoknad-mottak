@@ -16,6 +16,7 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -103,8 +104,8 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testFPSøknadSendV2() {
-        Versjon versjon = V2;
+    public void testFPSøknadSendV3() {
+        Versjon versjon = V3;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
         Kvittering kvittering = sender.søk(søknad, TestUtils.person(),
                 new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
@@ -113,7 +114,8 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     public void testESSøknadSendFPFordel() {
-        Søknad engangssøknad = engangssøknad(V2, false, fødsel(), norskForelder(V2),
+        Søknad engangssøknad = engangssøknad(Versjon.DEFAULT_VERSJON, false, fødsel(),
+                norskForelder(Versjon.DEFAULT_VERSJON),
                 påkrevdVedlegg(ID142));
         Kvittering kvittering = template.postForObject(INNSENDING + "/send", engangssøknad, Kvittering.class);
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
