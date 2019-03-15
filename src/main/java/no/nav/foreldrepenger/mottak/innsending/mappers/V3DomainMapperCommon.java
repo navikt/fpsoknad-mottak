@@ -53,13 +53,13 @@ import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Spraakkode;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 
-final class V3DomainMapperUtils {
+final class V3DomainMapperCommon {
 
     private static final Land KOSOVO = landFra(DomainMapper.KOSOVO);
 
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
 
-    private V3DomainMapperUtils() {
+    private V3DomainMapperCommon() {
 
     }
 
@@ -67,7 +67,7 @@ final class V3DomainMapperUtils {
         return Optional.ofNullable(søker)
                 .map(Søker::getSpråkkode)
                 .map(SpråkKode::name)
-                .map(V3DomainMapperUtils::språkKodeFra)
+                .map(V3DomainMapperCommon::språkKodeFra)
                 .orElse(defaultSpråkKode());
     }
 
@@ -110,7 +110,7 @@ final class V3DomainMapperUtils {
 
     private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
         return safeStream(ms.utenlandsOpphold())
-                .map(V3DomainMapperUtils::utenlandOppholdFra)
+                .map(V3DomainMapperCommon::utenlandOppholdFra)
                 .collect(toList());
     }
 
@@ -125,14 +125,14 @@ final class V3DomainMapperUtils {
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(List<Virksomhetstype> typer) {
         return safeStream(typer)
-                .map(V3DomainMapperUtils::virksomhetsTypeFra)
+                .map(V3DomainMapperCommon::virksomhetsTypeFra)
                 .collect(toList());
     }
 
     private static Virksomhetstyper virksomhetsTypeFra(Virksomhetstype type) {
         return Optional.ofNullable(type)
                 .map(Virksomhetstype::name)
-                .map(V3DomainMapperUtils::virksomhetsTypeFra)
+                .map(V3DomainMapperCommon::virksomhetsTypeFra)
                 .orElse(null);
     }
 
@@ -144,13 +144,13 @@ final class V3DomainMapperUtils {
 
     private static List<EgenNaering> egneNæringerFra(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
-                .map(V3DomainMapperUtils::egenNæringFra)
+                .map(V3DomainMapperCommon::egenNæringFra)
                 .collect(toList());
     }
 
     private static EgenNaering egenNæringFra(EgenNæring egenNæring) {
         return Optional.ofNullable(egenNæring)
-                .map(V3DomainMapperUtils::create)
+                .map(V3DomainMapperCommon::create)
                 .orElse(null);
     }
 
@@ -216,14 +216,14 @@ final class V3DomainMapperUtils {
     private static List<AnnenOpptjening> andreOpptjeningerFra(
             List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
-                .map(V3DomainMapperUtils::annenOpptjeningFra)
+                .map(V3DomainMapperCommon::annenOpptjeningFra)
                 .collect(toList());
     }
 
     private static AnnenOpptjening annenOpptjeningFra(
             no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening annen) {
         return Optional.ofNullable(annen)
-                .map(V3DomainMapperUtils::create)
+                .map(V3DomainMapperCommon::create)
                 .orElse(null);
     }
 
@@ -243,7 +243,7 @@ final class V3DomainMapperUtils {
     private static AnnenOpptjeningTyper annenOpptjeningTypeFra(AnnenOpptjeningType type) {
         return Optional.ofNullable(type)
                 .map(AnnenOpptjeningType::name)
-                .map(V3DomainMapperUtils::create)
+                .map(V3DomainMapperCommon::create)
                 .orElse(null);
     }
 
@@ -269,7 +269,7 @@ final class V3DomainMapperUtils {
     private static List<UtenlandskArbeidsforhold> utenlandskeArbeidsforholdFra(
             List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold> arbeidsforhold) {
         return safeStream(arbeidsforhold)
-                .map(V3DomainMapperUtils::utenlandskArbeidsforholdFra)
+                .map(V3DomainMapperCommon::utenlandskArbeidsforholdFra)
                 .collect(toList());
     }
 
@@ -297,7 +297,7 @@ final class V3DomainMapperUtils {
     static List<Vedlegg> vedleggFra(
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
-                .map(V3DomainMapperUtils::vedleggFra)
+                .map(V3DomainMapperCommon::vedleggFra)
                 .collect(toList());
     }
 
@@ -315,7 +315,7 @@ final class V3DomainMapperUtils {
 
     private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans frilans) {
         return Optional.ofNullable(frilans)
-                .map(V3DomainMapperUtils::create)
+                .map(V3DomainMapperCommon::create)
                 .orElse(null);
     }
 
@@ -331,13 +331,13 @@ final class V3DomainMapperUtils {
 
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
         return safeStream(frilansOppdrag)
-                .map(V3DomainMapperUtils::frilansOppdragFra)
+                .map(V3DomainMapperCommon::frilansOppdragFra)
                 .collect(toList());
     }
 
     private static Frilansoppdrag frilansOppdragFra(FrilansOppdrag oppdrag) {
         return Optional.ofNullable(oppdrag)
-                .map(V3DomainMapperUtils::create)
+                .map(V3DomainMapperCommon::create)
                 .orElse(null);
     }
 
