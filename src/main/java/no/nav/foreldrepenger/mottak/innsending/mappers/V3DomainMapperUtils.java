@@ -89,14 +89,15 @@ final class V3DomainMapperUtils {
     }
 
     static Medlemskap medlemsskapFra(Medlemsskap ms, LocalDate relasjonsDato) {
-        if (ms != null) {
-            return new Medlemskap()
-                    .withOppholdUtlandet(oppholdUtlandetFra(ms))
-                    .withINorgeVedFoedselstidspunkt(ms.varINorge(relasjonsDato))
-                    .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
-                    .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
-        }
-        return null;
+        return Optional.ofNullable(ms).map(m -> create(m, relasjonsDato)).orElse(null);
+    }
+
+    private static Medlemskap create(Medlemsskap ms, LocalDate relasjonsDato) {
+        return new Medlemskap()
+                .withOppholdUtlandet(oppholdUtlandetFra(ms))
+                .withINorgeVedFoedselstidspunkt(ms.varINorge(relasjonsDato))
+                .withBoddINorgeSiste12Mnd(oppholdINorgeSiste12(ms))
+                .withBorINorgeNeste12Mnd(oppholdINorgeNeste12(ms));
     }
 
     private static boolean oppholdINorgeSiste12(Medlemsskap ms) {
@@ -130,7 +131,8 @@ final class V3DomainMapperUtils {
 
     private static Virksomhetstyper virksomhetsTypeFra(Virksomhetstype type) {
         return Optional.ofNullable(type)
-                .map(s -> virksomhetsTypeFra(s.name()))
+                .map(Virksomhetstype::name)
+                .map(V3DomainMapperUtils::virksomhetsTypeFra)
                 .orElse(null);
     }
 
@@ -147,47 +149,62 @@ final class V3DomainMapperUtils {
     }
 
     private static EgenNaering egenNæringFra(EgenNæring egenNæring) {
+        return Optional.ofNullable(egenNæring)
+                .map(V3DomainMapperUtils::create)
+                .orElse(null);
+    }
 
+    private static EgenNaering create(EgenNæring egenNæring) {
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon) {
             no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon norskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.class
                     .cast(egenNæring);
-            return new NorskOrganisasjon()
-                    .withVedlegg(egenNæringVedleggFraIDs(norskOrg.getVedlegg()))
-                    .withBeskrivelseAvEndring(norskOrg.getBeskrivelseEndring())
-                    .withNaerRelasjon(norskOrg.isNærRelasjon())
-                    .withEndringsDato(norskOrg.getEndringsDato())
-                    .withOppstartsdato(norskOrg.getOppstartsDato())
-                    .withErNyoppstartet(norskOrg.isErNyOpprettet())
-                    .withErNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
-                    .withErVarigEndring(norskOrg.isErVarigEndring())
-                    .withNaeringsinntektBrutto(BigInteger.valueOf(norskOrg.getNæringsinntektBrutto()))
-                    .withNavn(norskOrg.getOrgName())
-                    .withOrganisasjonsnummer(norskOrg.getOrgNummer())
-                    .withPeriode(periodeFra(norskOrg.getPeriode()))
-                    .withRegnskapsfoerer(regnskapsFørerFra(norskOrg.getRegnskapsførere()))
-                    .withVirksomhetstype(virksomhetsTyperFra(norskOrg.getVirksomhetsTyper()))
-                    .withOppstartsdato(norskOrg.getOppstartsDato());
+            return create(norskOrg);
         }
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon) {
             no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon utenlandskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.class
                     .cast(egenNæring);
-            return new UtenlandskOrganisasjon()
-                    .withVedlegg(egenNæringVedleggFraIDs(utenlandskOrg.getVedlegg()))
-                    .withBeskrivelseAvEndring(utenlandskOrg.getBeskrivelseEndring())
-                    .withNaerRelasjon(utenlandskOrg.isNærRelasjon())
-                    .withEndringsDato(utenlandskOrg.getEndringsDato())
-                    .withOppstartsdato(utenlandskOrg.getOppstartsDato())
-                    .withErNyoppstartet(utenlandskOrg.isErNyOpprettet())
-                    .withErNyIArbeidslivet(utenlandskOrg.isErNyIArbeidslivet())
-                    .withErVarigEndring(utenlandskOrg.isErVarigEndring())
-                    .withNaeringsinntektBrutto(BigInteger.valueOf(utenlandskOrg.getNæringsinntektBrutto()))
-                    .withNavn(utenlandskOrg.getOrgName())
-                    .withRegistrertILand(landFra(utenlandskOrg.getRegistrertILand()))
-                    .withPeriode(periodeFra(utenlandskOrg.getPeriode()))
-                    .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
-                    .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()));
+            return create(utenlandskOrg);
         }
         throw new UnexpectedInputException("Vil aldri skje");
+    }
+
+    private static UtenlandskOrganisasjon create(
+            no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon utenlandskOrg) {
+        return new UtenlandskOrganisasjon()
+                .withVedlegg(egenNæringVedleggFraIDs(utenlandskOrg.getVedlegg()))
+                .withBeskrivelseAvEndring(utenlandskOrg.getBeskrivelseEndring())
+                .withNaerRelasjon(utenlandskOrg.isNærRelasjon())
+                .withEndringsDato(utenlandskOrg.getEndringsDato())
+                .withOppstartsdato(utenlandskOrg.getOppstartsDato())
+                .withErNyoppstartet(utenlandskOrg.isErNyOpprettet())
+                .withErNyIArbeidslivet(utenlandskOrg.isErNyIArbeidslivet())
+                .withErVarigEndring(utenlandskOrg.isErVarigEndring())
+                .withNaeringsinntektBrutto(BigInteger.valueOf(utenlandskOrg.getNæringsinntektBrutto()))
+                .withNavn(utenlandskOrg.getOrgName())
+                .withRegistrertILand(landFra(utenlandskOrg.getRegistrertILand()))
+                .withPeriode(periodeFra(utenlandskOrg.getPeriode()))
+                .withRegnskapsfoerer(regnskapsFørerFra(utenlandskOrg.getRegnskapsførere()))
+                .withVirksomhetstype(virksomhetsTyperFra(utenlandskOrg.getVirksomhetsTyper()));
+    }
+
+    private static NorskOrganisasjon create(
+            no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon norskOrg) {
+        return new NorskOrganisasjon()
+                .withVedlegg(egenNæringVedleggFraIDs(norskOrg.getVedlegg()))
+                .withBeskrivelseAvEndring(norskOrg.getBeskrivelseEndring())
+                .withNaerRelasjon(norskOrg.isNærRelasjon())
+                .withEndringsDato(norskOrg.getEndringsDato())
+                .withOppstartsdato(norskOrg.getOppstartsDato())
+                .withErNyoppstartet(norskOrg.isErNyOpprettet())
+                .withErNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
+                .withErVarigEndring(norskOrg.isErVarigEndring())
+                .withNaeringsinntektBrutto(BigInteger.valueOf(norskOrg.getNæringsinntektBrutto()))
+                .withNavn(norskOrg.getOrgName())
+                .withOrganisasjonsnummer(norskOrg.getOrgNummer())
+                .withPeriode(periodeFra(norskOrg.getPeriode()))
+                .withRegnskapsfoerer(regnskapsFørerFra(norskOrg.getRegnskapsførere()))
+                .withVirksomhetstype(virksomhetsTyperFra(norskOrg.getVirksomhetsTyper()))
+                .withOppstartsdato(norskOrg.getOppstartsDato());
     }
 
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
