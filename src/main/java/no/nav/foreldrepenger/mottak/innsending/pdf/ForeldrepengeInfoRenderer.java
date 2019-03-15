@@ -1,24 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import com.google.common.base.Joiner;
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.*;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.*;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.*;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -29,14 +18,48 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import com.google.common.base.Joiner;
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
 
 @Component
 public class ForeldrepengeInfoRenderer {
@@ -67,8 +90,8 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float annenForelder(AnnenForelder annenForelder, boolean erAnnenForlderInformert,
-                               Rettigheter rettigheter,
-                               FontAwareCos cos, float y) throws IOException {
+            Rettigheter rettigheter,
+            FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
@@ -260,7 +283,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn,
-                             FontAwareCos cos, float y) throws IOException {
+            FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
         TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
         FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
@@ -543,6 +566,8 @@ public class ForeldrepengeInfoRenderer {
         addListIfSet(attributter, "arbeidsgiver", gradert.getVirksomhetsnummer());
         attributter.add(txt("skalgraderes", jaNei(gradert.isArbeidsForholdSomskalGraderes())));
         attributter.add(txt("erarbeidstaker", jaNei(gradert.isErArbeidstaker())));
+        addIfSet(attributter, "erfrilans", gradert.getFrilans());
+        addIfSet(attributter, "erselvstendig", gradert.getSelvstendig());
         addIfSet(attributter, gradert.getMorsAktivitetsType());
         if (antallBarn > 1) {
             attributter.add(txt("ønskerflerbarnsdager", jaNei(gradert.isØnskerFlerbarnsdager())));
@@ -552,6 +577,12 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent",
                 String.valueOf(gradert.getSamtidigUttakProsent()));
         return attributter;
+    }
+
+    private void addIfSet(List<String> attributter, String key, Boolean value) {
+        if (value != null) {
+            attributter.add(txt(key, jaNei(value.booleanValue())));
+        }
     }
 
     private List<String> uttaksData(UttaksPeriode uttak, int antallBarn, BrukerRolle rolle) {
@@ -595,7 +626,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float relasjonTilBarn(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg, FontAwareCos cos,
-                                 float y)
+            float y)
             throws IOException {
         y -= renderer.addBlankLine();
         y = omBarn(relasjon, cos, y);

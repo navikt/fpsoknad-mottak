@@ -1,29 +1,29 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-
-import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.FORELDREPENGER;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
 public class ForeldrepengerPDFGenerator implements PDFGenerator {
@@ -46,7 +46,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         switch (egenskap.getType()) {
         case INITIELL_FORELDREPENGER:
-            return generate(søknad, søker, emptyList());
+            return generate(søknad, søker);
         case ENDRING_FORELDREPENGER:
             return generate(Endringssøknad.class.cast(søknad), søker);
         default:
@@ -54,7 +54,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
         }
     }
 
-    public byte[] generate(Søknad søknad, Person søker, final List<Arbeidsforhold> arbeidsforhold) {
+    public byte[] generate(Søknad søknad, Person søker) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
@@ -115,17 +115,17 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             }
 
             Opptjening opptjening = stønad.getOpptjening();
-            List<Arbeidsforhold> faktiskearbeidsforhold = arbeidsforhold(arbeidsforhold);
+            List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
             if (opptjening != null) {
                 PDPage scratch = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
-                float size = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, scratchcos, startY);
+                float size = fpRenderer.arbeidsforholdOpptjening(arbeidsforhold, scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
-                    y = fpRenderer.arbeidsforholdOpptjening(faktiskearbeidsforhold, cos, y);
+                    y = fpRenderer.arbeidsforholdOpptjening(arbeidsforhold, cos, y);
                 }
                 else {
                     cos = nySide(doc, cos, scratch, scratchcos);
@@ -325,10 +325,6 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             LOG.warn("Kunne ikke lage PDF", e);
             throw new PDFException("Kunne ikke lage PDF", e);
         }
-    }
-
-    private List<Arbeidsforhold> arbeidsforhold(List<Arbeidsforhold> forhold) {
-        return forhold.isEmpty() ? oppslag.getArbeidsforhold() : forhold;
     }
 
     private static FontAwareCos nySide(PDDocument doc, FontAwareCos cos, PDPage scratch,
