@@ -125,7 +125,7 @@ public class FPFordelMetadata {
         if (søknadType.equals(ENDRING_FORELDREPENGER)) {
             return new Del(I000050, id.getAndIncrement());
         }
-        throw new UnexpectedInputException("Søknad av type " + søknadType + " foreløpig ikke støttet");
+        throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
     }
 
     private static Del vedleggsDel(Vedlegg vedlegg, final AtomicInteger id) {
@@ -142,7 +142,7 @@ public class FPFordelMetadata {
         if (søknadType.erSvangerskapspenger()) {
             return I000001;
         }
-        throw new UnexpectedInputException("Ytelse av type " + søknadType + " ikke støttet");
+        throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
@@ -155,7 +155,7 @@ public class FPFordelMetadata {
                 || relasjon instanceof Adopsjon) {
             return I000003; // TODO separate type ?
         }
-        throw new UnexpectedInputException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent relasjon %s", relasjon.getClass().getSimpleName());
     }
 
     private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
@@ -167,7 +167,7 @@ public class FPFordelMetadata {
         if (relasjon instanceof Adopsjon || relasjon instanceof Omsorgsovertakelse) {
             return I000002;
         }
-        throw new UnexpectedInputException("Ukjent relasjon " + relasjon.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent relasjon %s", relasjon.getClass().getSimpleName());
     }
 
     @Override

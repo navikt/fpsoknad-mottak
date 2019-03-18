@@ -52,7 +52,7 @@ public class FPFordelKonvoluttGenerator {
         this.pdfGenerator = pdfGenerator;
     }
 
-    public FPFordelKonvolutt<Søknad> payload(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    public FPFordelKonvolutt generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
@@ -67,11 +67,10 @@ public class FPFordelKonvoluttGenerator {
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
-        return new FPFordelKonvolutt<>(new HttpEntity<>(builder.build(), headers()));
+        return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));
     }
 
-    public FPFordelKonvolutt<Endringssøknad> payload(Endringssøknad endringsøknad, Person søker,
-            SøknadEgenskap egenskap) {
+    public FPFordelKonvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
@@ -85,17 +84,17 @@ public class FPFordelKonvoluttGenerator {
         endringsøknad.getVedlegg().stream()
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-        return new FPFordelKonvolutt<>(new HttpEntity<>(builder.build(), headers()));
+        return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));
     }
 
-    public FPFordelKonvolutt<Ettersending> payload(Ettersending ettersending, Person søker) {
+    public FPFordelKonvolutt generer(Ettersending ettersending, Person søker) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         builder.part(METADATA, metadata(ettersending, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
         ettersending.getVedlegg().stream()
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
-        return new FPFordelKonvolutt<>(new HttpEntity<>(builder.build(), headers()));
+        return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));
     }
 
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {
@@ -121,7 +120,7 @@ public class FPFordelKonvoluttGenerator {
 
     private String metadata(Endringssøknad endringssøknad, SøknadEgenskap egenskap, AktorId aktørId, String ref) {
         String metadata = metadataGenerator
-                .generateMetadata(new FPFordelMetadata(endringssøknad, egenskap.getType(), aktørId, ref));
+                .generer(new FPFordelMetadata(endringssøknad, egenskap.getType(), aktørId, ref));
         LOG.debug("Metadata for endringssøknad er {}", metadata);
         return metadata;
 
@@ -129,13 +128,13 @@ public class FPFordelKonvoluttGenerator {
 
     private String metadata(Søknad søknad, SøknadEgenskap egenskap, AktorId aktørId, String ref) {
         String metadata = metadataGenerator
-                .generateMetadata(new FPFordelMetadata(søknad, egenskap.getType(), aktørId, ref));
+                .generer(new FPFordelMetadata(søknad, egenskap.getType(), aktørId, ref));
         LOG.debug("Metadata for førstegangssøknad er {}", metadata);
         return metadata;
     }
 
     private String metadata(Ettersending ettersending, AktorId aktørId, String ref) {
-        String metadata = metadataGenerator.generateMetadata(new FPFordelMetadata(ettersending, aktørId, ref));
+        String metadata = metadataGenerator.generer(new FPFordelMetadata(ettersending, aktørId, ref));
         LOG.debug("Metadata for ettersending er {}", metadata);
         return metadata;
     }

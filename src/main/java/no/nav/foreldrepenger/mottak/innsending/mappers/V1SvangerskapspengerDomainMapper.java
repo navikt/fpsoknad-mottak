@@ -129,7 +129,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .withBehovForTilretteleggingFom(hel.getBehovForTilretteleggingFom())
                     .withArbeidsforhold(arbeidsforholdFra(hel.getArbeidsforhold()));
         }
-        throw new UnexpectedInputException("Ukjent tilrettelegging " + tilrettelegging.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent tilrettelegging %s", tilrettelegging.getClass().getSimpleName());
     }
 
     private static List<JAXBElement<Object>> tilretteleggingVedleggFraIDs(List<String> vedlegg) {
@@ -170,7 +170,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .withOpplysningerOmRisikofaktorer(selvstendig.getRisikoFaktorer());
         }
 
-        throw new UnexpectedInputException("Ukjent arbeidsforhold " + forhold.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent arbeidsforhold %s", forhold.getClass().getSimpleName());
     }
 
     private static LocalDate relasjonsDatoFra(LocalDate termindato, LocalDate fødselsdato) {

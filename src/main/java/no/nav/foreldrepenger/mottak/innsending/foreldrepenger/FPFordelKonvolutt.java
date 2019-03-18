@@ -1,18 +1,25 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 
-public class FPFordelKonvolutt<T> {
+public class FPFordelKonvolutt {
     private final HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload;
 
     public FPFordelKonvolutt(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
@@ -23,31 +30,60 @@ public class FPFordelKonvolutt<T> {
         return payload;
     }
 
-    public List<HttpEntity<?>> getMetadata() {
-        return payload.getBody().get(METADATA);
+    public String getMetadata() {
+        return get(METADATA)
+                .filter(mediaType(APPLICATION_JSON_UTF8_VALUE))
+                .findFirst()
+                .filter(HttpEntity::hasBody)
+                .map(HttpEntity::getBody)
+                .map(String.class::cast)
+                .orElse(null);
     }
 
-    public List<HttpEntity<?>> getVedlegg() {
-        return payload.getBody().get(VEDLEGG);
+    public List<byte[]> getVedlegg() {
+        return get(VEDLEGG)
+                .filter(mediaType(APPLICATION_PDF))
+                .filter(HttpEntity::hasBody)
+                .map(HttpEntity::getBody)
+                .map(byte[].class::cast)
+                .collect(toList());
     }
 
-    public List<HttpEntity<?>> getHoveddokumenter() {
-        return payload.getBody().get(HOVEDDOKUMENT);
-    }
-
-    public HttpEntity<?> getXMLDokument() {
-        return getHoveddokumenter().stream()
+    public String XMLHovedDokument() {
+        return get(HOVEDDOKUMENT)
                 .filter(mediaType(APPLICATION_XML))
                 .findFirst()
+                .filter(HttpEntity::hasBody)
+                .map(HttpEntity::getBody)
+                .map(String.class::cast)
                 .orElse(null);
+    }
+
+    public byte[] PDFHovedDokument() {
+        return get(HOVEDDOKUMENT)
+                .filter(mediaType(APPLICATION_PDF))
+                .findFirst()
+                .filter(HttpEntity::hasBody)
+                .map(HttpEntity::getBody)
+                .map(byte[].class::cast)
+                .orElse(null);
+    }
+
+    private Stream<HttpEntity<?>> get(String key) {
+        return Optional.ofNullable(payload)
+                .filter(HttpEntity::hasBody)
+                .map(HttpEntity::getBody)
+                .map(v -> v.get(key))
+                .orElse(emptyList())
+                .stream();
     }
 
     private static Predicate<? super HttpEntity<?>> mediaType(MediaType type) {
         return e -> e.getHeaders().getContentType().equals(type);
     }
 
-    public int antallElementer() {
-        return payload.getBody().size();
+    private static Predicate<? super HttpEntity<?>> mediaType(String type) {
+        return e -> e.getHeaders().getFirst(CONTENT_TYPE).equals(type);
     }
 
     @Override

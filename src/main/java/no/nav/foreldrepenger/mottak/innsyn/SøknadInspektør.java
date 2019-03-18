@@ -53,7 +53,7 @@ public interface SøknadInspektør {
             return ETTERSENDING_SVANGERSKAPSPENGER;
         default:
             LOG.warn("UKjent eller ikke satt ettersendingstype " + type);
-            throw new UnexpectedInputException("UKjent eller ikke satt ettersendingstype " + type);
+            throw new UnexpectedInputException("Ukjent eller ikke satt ettersendingstype %s", type);
         }
     }
 

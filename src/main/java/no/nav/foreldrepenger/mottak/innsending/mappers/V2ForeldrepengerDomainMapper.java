@@ -151,7 +151,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
-        LOG.debug(CONFIDENTIAL, "Genererer endringssøknad XML fra {}", endringsøknad);
         return new Soeknad()
                 .withMottattDato(endringsøknad.getMottattdato().toLocalDate())
                 .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
@@ -171,7 +170,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     public Soeknad tilModell(Søknad søknad, AktorId søker) {
-        LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", søknad);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
@@ -217,7 +215,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     private OmYtelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
         return new OmYtelse().withAny(JAXB.marshalToElement(foreldrePengerFra(ytelse)));
     }
 
@@ -237,7 +234,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     private Fordeling fordelingFra(Endringssøknad endringssøknad) {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(endringssøknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer fordeling endringssøknad XML fra {}", ytelse.getFordeling());
         return fordelingFra(ytelse.getFordeling());
 
     }
@@ -265,7 +261,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
         if (opptjening == null) {
             return null;
         }
-        LOG.debug(CONFIDENTIAL, "Genererer opptjening XML fra {}", opptjening);
         return new Opptjening()
                 .withFrilans(frilansFra(opptjening.getFrilans()))
                 .withEgenNaering(egenNæringFra(opptjening.getEgenNæring()))
@@ -277,7 +272,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
         if (frilans == null) {
             return null;
         }
-        LOG.debug(CONFIDENTIAL, "Genererer frilans XML fra {}", frilans);
 
         return new Frilans()
                 .withVedlegg(frilansVedleggFraIDs(frilans.getVedlegg()))
@@ -328,7 +322,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static EgenNaering egenNæringFra(
             EgenNæring egenNæring) {
-        LOG.debug(CONFIDENTIAL, "Genererer egenNæring XML fra {}", egenNæring);
 
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon) {
             no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon norskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.class
@@ -435,7 +428,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold utenlandskArbeidsforhold(
             UtenlandskArbeidsforhold arbeidsForhold) {
-        LOG.debug(CONFIDENTIAL, "Genererer utenlands arbeidsforhold XML fra {}", arbeidsForhold);
         return new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold()
                 .withVedlegg(utenlandsArbeidsforholdVedleggFra(arbeidsForhold.getVedlegg()))
                 .withArbeidsgiversnavn(arbeidsForhold.getArbeidsgiverNavn())
@@ -485,7 +477,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private static Medlemskap medlemsskapFra(Medlemsskap ms, RelasjonTilBarn relasjon) {
         if (ms != null) {
-            LOG.debug(CONFIDENTIAL, "Genererer medlemsskap XML fra {}", ms);
             return new Medlemskap()
                     .withOppholdUtlandet(oppholdUtlandetFra(ms))
                     .withINorgeVedFoedselstidspunkt(ms.varINorge(relasjon.relasjonsDato()))
@@ -534,7 +525,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private Fordeling fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling fordeling) {
-        LOG.debug(CONFIDENTIAL, "Genererer fordeling XML fra {}", fordeling);
         if (fordeling == null) {
             return null;
         }
@@ -560,7 +550,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
 
     private no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg lukkerPeriodeFra(
             LukketPeriodeMedVedlegg periode) {
-        LOG.debug(CONFIDENTIAL, "Genererer periode XML fra {}", periode);
         if (periode instanceof OverføringsPeriode) {
             OverføringsPeriode overføringsPeriode = OverføringsPeriode.class.cast(periode);
             return new Overfoeringsperiode()
@@ -724,7 +713,6 @@ public class V2ForeldrepengerDomainMapper implements DomainMapper {
         if (rettigheter == null) {
             return null;
         }
-        LOG.debug(CONFIDENTIAL, "Genererer rettigheter XML fra {}", rettigheter);
         return new Rettigheter()
                 .withHarOmsorgForBarnetIPeriodene(true) // Hardkodet til true, siden dette er implisitt og vi ikke spør
                                                         // brukeren eksplisitt

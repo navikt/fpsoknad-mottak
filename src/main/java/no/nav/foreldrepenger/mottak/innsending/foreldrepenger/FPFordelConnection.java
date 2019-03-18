@@ -1,19 +1,14 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
-import static org.springframework.http.MediaType.APPLICATION_PDF;
 
 import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
@@ -36,26 +31,25 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
         this.responseHandler = responseHandler;
     }
 
-    public Kvittering send(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+    public Kvittering send(SøknadType type, FPFordelKonvolutt konvolutt) {
         if (isEnabled()) {
-            return doSend(type, payload);
+            return doSend(type, konvolutt);
         }
         LOG.info("Sending av {} er deaktivert, ingenting å sende", type);
-        if (payload.getBody() != null) {
-            IKKE_SENDT.setPdf(pdfFra(payload.getBody()));
-        }
+        IKKE_SENDT.setPdf(konvolutt.PDFHovedDokument());
         return IKKE_SENDT;
     }
 
-    private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+    private Kvittering doSend(SøknadType type, FPFordelKonvolutt konvolutt) {
         try {
             LOG.info("Sender {} til {}", name(type), name().toLowerCase());
             Kvittering kvittering = responseHandler.handle(
-                    postForEntity(uri(config.getUri(), config.getBasePath()), payload, FPFordelKvittering.class));
+                    postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
+                            FPFordelKvittering.class));
             LOG.info("Sendte {} til {}, fikk kvittering {}", name(type), name().toLowerCase(),
                     kvittering);
             type.count();
-            kvittering.setPdf(pdfFra(payload.getBody()));
+            kvittering.setPdf(konvolutt.PDFHovedDokument());
             return kvittering;
         } catch (Exception e) {
             FP_SENDFEIL.increment();
@@ -82,23 +76,6 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
     @Override
     public String name() {
         return "FPFORDEL";
-    }
-
-    private static byte[] pdfFra(MultiValueMap<String, HttpEntity<?>> body) {
-        byte[] bytes = safeStream(body.get(HOVEDDOKUMENT))
-                .filter(e -> APPLICATION_PDF.equals(e.getHeaders().getContentType()))
-                .filter(HttpEntity::hasBody)
-                .map(HttpEntity::getBody)
-                .map(byte[].class::cast)
-                .findFirst()
-                .orElse(null);
-        if (bytes != null) {
-            LOG.info("Returnerer PDF med størrelse {} i kvittering", bytes.length);
-        }
-        else {
-            LOG.info("Returnerer ingen PDF i kvittering");
-        }
-        return bytes;
     }
 
     private static String name(SøknadType type) {

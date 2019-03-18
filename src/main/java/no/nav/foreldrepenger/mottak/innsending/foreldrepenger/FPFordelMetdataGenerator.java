@@ -14,7 +14,7 @@ public class FPFordelMetdataGenerator {
         this.mapper = mapper;
     }
 
-    public String generateMetadata(FPFordelMetadata metadata) {
+    public String generer(FPFordelMetadata metadata) {
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(metadata);
         } catch (JsonProcessingException e) {
