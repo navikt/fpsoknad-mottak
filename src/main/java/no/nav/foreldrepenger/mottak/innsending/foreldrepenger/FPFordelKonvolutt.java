@@ -7,8 +7,8 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKon
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PDF;
-import static org.springframework.http.MediaType.APPLICATION_XML;
+import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 
 public class FPFordelKonvolutt {
@@ -42,7 +41,7 @@ public class FPFordelKonvolutt {
 
     public List<byte[]> getVedlegg() {
         return get(VEDLEGG)
-                .filter(mediaType(APPLICATION_PDF))
+                .filter(mediaType(APPLICATION_PDF_VALUE))
                 .filter(HttpEntity::hasBody)
                 .map(HttpEntity::getBody)
                 .map(byte[].class::cast)
@@ -51,7 +50,7 @@ public class FPFordelKonvolutt {
 
     public String XMLHovedDokument() {
         return get(HOVEDDOKUMENT)
-                .filter(mediaType(APPLICATION_XML))
+                .filter(mediaType(APPLICATION_XML_VALUE))
                 .findFirst()
                 .filter(HttpEntity::hasBody)
                 .map(HttpEntity::getBody)
@@ -61,7 +60,7 @@ public class FPFordelKonvolutt {
 
     public byte[] PDFHovedDokument() {
         return get(HOVEDDOKUMENT)
-                .filter(mediaType(APPLICATION_PDF))
+                .filter(mediaType(APPLICATION_PDF_VALUE))
                 .findFirst()
                 .filter(HttpEntity::hasBody)
                 .map(HttpEntity::getBody)
@@ -76,10 +75,6 @@ public class FPFordelKonvolutt {
                 .map(v -> v.get(key))
                 .orElse(emptyList())
                 .stream();
-    }
-
-    private static Predicate<? super HttpEntity<?>> mediaType(MediaType type) {
-        return e -> e.getHeaders().getContentType().equals(type);
     }
 
     private static Predicate<? super HttpEntity<?>> mediaType(String type) {
