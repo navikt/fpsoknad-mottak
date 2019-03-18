@@ -47,7 +47,7 @@ public class XMLV2VedtakMapper implements XMLVedtakMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLV2VedtakMapper.class);
 
-    private static final VedtakV2FPJAXBUtil JAXB = new VedtakV2FPJAXBUtil(true, true);
+    private static final VedtakV2FPJAXBUtil JAXB = new VedtakV2FPJAXBUtil(false, false);
 
     private static final String UKJENT_KODEVERKSVERDI = "-";
 

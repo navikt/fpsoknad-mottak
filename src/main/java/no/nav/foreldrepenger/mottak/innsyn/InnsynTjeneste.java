@@ -182,7 +182,6 @@ public class InnsynTjeneste implements Innsyn {
             LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
             String xml = wrapper.getXml();
             Versjon versjon = vedtakHandler.inspiser(xml);
-
             return vedtakHandler.tilVedtak(xml, versjon)
                     .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), versjon.name()));
         } catch (Exception e) {
