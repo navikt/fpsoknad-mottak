@@ -182,7 +182,7 @@ public class InnsynTjeneste implements Innsyn {
         String xml = wrapper.getXml();
         Versjon versjon = vedtakHandler.inspiser(xml);
         return vedtakHandler.tilVedtak(xml, versjon)
-                .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), versjon));
+                .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), versjon.name()));
 
     }
 
