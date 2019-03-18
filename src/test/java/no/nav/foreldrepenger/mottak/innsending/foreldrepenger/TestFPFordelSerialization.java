@@ -11,11 +11,9 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
@@ -40,7 +38,6 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -156,12 +153,12 @@ public class TestFPFordelSerialization {
     public void testKonvoluttEttersending() {
         Ettersending es = new Ettersending(EttersendingsType.foreldrepenger, "42", ForeldrepengerTestUtils.VEDLEGG1,
                 ForeldrepengerTestUtils.V2);
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person());
-        List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
+        FPFordelKonvolutt<Ettersending> konvolutt = konvoluttGenerator.payload(es, person());
+        List<HttpEntity<?>> metadata = konvolutt.getMetadata();
         assertEquals(1, metadata.size());
-        List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
+        List<HttpEntity<?>> vedlegg = konvolutt.getVedlegg();
         assertEquals(2, vedlegg.size());
-        assertEquals(null, konvolutt.getBody().get(HOVEDDOKUMENT));
+        assertEquals(null, konvolutt.getHoveddokumenter());
         assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
     }
@@ -196,18 +193,19 @@ public class TestFPFordelSerialization {
     private void testKonvolutt(Versjon v) {
         Søknad søknad = søknad(v, false,
                 valgfrittVedlegg(ForeldrepengerTestUtils.ID142, InnsendingsType.LASTET_OPP));
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(søknad, person(),
+        FPFordelKonvolutt<Søknad> konvolutt = konvoluttGenerator.payload(søknad, person(),
                 new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
-        assertEquals(3, konvolutt.getBody().size());
-        List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
-        List<HttpEntity<?>> hoveddokumenter = konvolutt.getBody().get(HOVEDDOKUMENT);
-        List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
+        assertEquals(3, konvolutt.antallElementer());
+        List<HttpEntity<?>> metadata = konvolutt.getMetadata();
+        List<HttpEntity<?>> hoveddokumenter = konvolutt.getHoveddokumenter();
+        List<HttpEntity<?>> vedlegg = konvolutt.getVedlegg();
         assertEquals(1, metadata.size());
         assertEquals(2, hoveddokumenter.size());
         assertEquals(1, vedlegg.size());
-        assertMediaType(konvolutt, MULTIPART_MIXED_VALUE);
+        assertMediaType(konvolutt.getPayload(), MULTIPART_MIXED_VALUE);
         assertMediaType(metadata.get(0), APPLICATION_JSON_UTF8_VALUE);
         assertMediaType(hoveddokumenter.get(0), APPLICATION_XML_VALUE);
+        assertNotNull(konvolutt.getXMLDokument());
         assertMediaType(hoveddokumenter.get(1), APPLICATION_PDF_VALUE);
         assertMediaType(vedlegg.get(0), APPLICATION_PDF_VALUE);
     }
@@ -215,10 +213,10 @@ public class TestFPFordelSerialization {
     private void testKonvoluttEndring(Versjon v) {
         Endringssøknad es = endringssøknad(v, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
 
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> konvolutt = konvoluttGenerator.payload(es, person(),
+        FPFordelKonvolutt<Endringssøknad> konvolutt = konvoluttGenerator.payload(es, person(),
                 new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
-        List<HttpEntity<?>> metadata = konvolutt.getBody().get(METADATA);
-        List<HttpEntity<?>> vedlegg = konvolutt.getBody().get(VEDLEGG);
+        List<HttpEntity<?>> metadata = konvolutt.getMetadata();
+        List<HttpEntity<?>> vedlegg = konvolutt.getVedlegg();
         assertEquals(1, metadata.size());
         assertEquals(2, vedlegg.size());
         assertMediaType(vedlegg.get(1), APPLICATION_PDF_VALUE);

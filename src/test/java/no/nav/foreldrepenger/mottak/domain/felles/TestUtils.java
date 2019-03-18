@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 import static org.springframework.util.StreamUtils.copyToString;
 
 import java.io.IOException;
@@ -10,9 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.assertj.core.util.Lists;
 import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,7 +54,7 @@ public class TestUtils {
     }
 
     public static List<Versjon> alleSøknadVersjoner() {
-        return Collections.singletonList(Versjon.V2);
+        return Lists.newArrayList(V3);
     }
 
     public static Søknad engangssøknad(Versjon v, boolean utland) {

@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -44,8 +42,8 @@ public class FPFordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering doSend(SøknadType type, HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
-        return connection.send(type, payload);
+    private Kvittering doSend(SøknadType type, FPFordelKonvolutt<?> konvolutt) {
+        return connection.send(type, konvolutt.getPayload());
     }
 
     @Override
