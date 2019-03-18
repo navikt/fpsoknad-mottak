@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+
 public class FontAwarePDDocument extends PDDocument {
     private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
 
@@ -47,10 +49,10 @@ public class FontAwarePDDocument extends PDDocument {
             try (InputStream is = res.getInputStream()) {
                 return PDType0Font.load(this, is);
             } catch (IOException e) {
-                throw new PDFException("Kunne ikke lese InputStream under lasting av fonter", e);
+                throw new UnexpectedInputException("Kunne ikke lese InputStream under lasting av fonter", e);
             }
         }
-        throw new PDFException("Font " + res.getFilename() + " finnes ikke");
+        throw new UnexpectedInputException("Font " + res.getFilename() + " finnes ikke");
     }
 
     private static void setPdfMetadata(PDDocument doc) throws IOException {

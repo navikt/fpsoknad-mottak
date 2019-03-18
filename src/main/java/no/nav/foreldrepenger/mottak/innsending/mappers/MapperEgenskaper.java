@@ -7,6 +7,9 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FOREL
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +27,14 @@ public class MapperEgenskaper {
 
     public static MapperEgenskaper FORELDREPENGER = new MapperEgenskaper(INITIELL_FORELDREPENGER,
             ENDRING_FORELDREPENGER);
+
+    public static MapperEgenskaper ALLE_FORELDREPENGER = new MapperEgenskaper(
+            new SøknadEgenskap(V1, INITIELL_FORELDREPENGER),
+            new SøknadEgenskap(V1, ENDRING_FORELDREPENGER),
+            new SøknadEgenskap(V2, INITIELL_FORELDREPENGER),
+            new SøknadEgenskap(V2, ENDRING_FORELDREPENGER),
+            new SøknadEgenskap(V3, INITIELL_FORELDREPENGER),
+            new SøknadEgenskap(V3, ENDRING_FORELDREPENGER));
 
     public MapperEgenskaper(Versjon versjon, SøknadType type) {
         this(new SøknadEgenskap(versjon, type));

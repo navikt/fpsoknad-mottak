@@ -1,32 +1,36 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import com.neovisionaries.i18n.CountryCode;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Pair;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.stereotype.Service;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
-import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import javax.inject.Inject;
+
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.stereotype.Service;
+
+import com.neovisionaries.i18n.CountryCode;
+
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Service
 public class EngangsstønadPDFGenerator implements PDFGenerator {
@@ -77,7 +81,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             doc.save(baos);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new PDFException("Kunne ikke lage PDF", e);
+            throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
     }
 

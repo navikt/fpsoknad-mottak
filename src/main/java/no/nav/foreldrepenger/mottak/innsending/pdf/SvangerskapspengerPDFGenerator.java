@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
@@ -27,7 +28,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             doc.save(baos);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new PDFException("Kunne ikke lage PDF", e);
+            throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
 
     }
