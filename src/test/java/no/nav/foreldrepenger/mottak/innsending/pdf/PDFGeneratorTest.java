@@ -1,22 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.*;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.*;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.*;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
 
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +30,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         DelegerendePDFGenerator.class,
         ForeldrepengerPDFGenerator.class,
         EngangsstønadPDFGenerator.class,
+        SvangerskapspengerPdfGenerator.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 
 public class PDFGeneratorTest {
@@ -75,6 +70,13 @@ public class PDFGeneratorTest {
     public void engangs() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
             fos.write(gen.generate(engangssøknad(DEFAULT_VERSJON, fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
+        }
+    }
+
+    @Test
+    public void svanger() throws Exception {
+        try (FileOutputStream fos = new FileOutputStream("svangerskapspenger.pdf")) {
+            fos.write(gen.generate(svp(), person(), INITIELL_SVANGERSKAPSPENGER));
         }
     }
 }
