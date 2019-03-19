@@ -186,7 +186,7 @@ public class InnsynTjeneste implements Innsyn {
             return vedtakHandler.tilVedtak(xml, versjon)
                     .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), versjon.name()));
         } catch (Exception e) {
-            LOG.warn("Feil ved mapping av vedtak fra {}", wrapper);
+            LOG.warn("Feil ved mapping av vedtak fra {}", wrapper, e);
             return null;
         }
     }
