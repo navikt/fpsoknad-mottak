@@ -1,16 +1,14 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
-import static no.nav.foreldrepenger.mottak.util.Versjon.UKJENT_VERSJON;
-
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 public class UkjentXMLVedtakMapper implements XMLVedtakMapper {
@@ -18,13 +16,13 @@ public class UkjentXMLVedtakMapper implements XMLVedtakMapper {
     private static final Logger LOG = LoggerFactory.getLogger(UkjentXMLVedtakMapper.class);
 
     @Override
-    public List<Versjon> versjoner() {
-        return UKJENT_VERSJON;
+    public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
+        LOG.info("Kan ikke mappe {}", limit(xml));
+        return null;
     }
 
     @Override
-    public Vedtak tilVedtak(String xml, Versjon v) {
-        LOG.info("Kan ikke mappe {}", limit(xml));
-        return null;
+    public MapperEgenskaper mapperEgenskaper() {
+        return MapperEgenskaper.UKJENT;
     }
 }

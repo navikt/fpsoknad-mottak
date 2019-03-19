@@ -1,18 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
-import java.util.List;
-
+import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
-public interface XMLVedtakMapper {
+public interface XMLVedtakMapper extends Mappable {
 
-    List<Versjon> versjoner();
-
-    default boolean kanMappe(Versjon v) {
-        return versjoner().contains(v);
-    }
-
-    Vedtak tilVedtak(String xml, Versjon v);
+    Vedtak tilVedtak(String xml, SøknadEgenskap egenskap);
 
 }

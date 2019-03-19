@@ -18,7 +18,8 @@ import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLStreamVedtakInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.DelegerendeXMLVedtakMapper;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLV2VedtakMapper;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V1XMLVedtakMapper;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V2ForeldrepengerXMLVedtakMapper;
 
 class VedtakTest {
 
@@ -30,7 +31,7 @@ class VedtakTest {
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V2, e.getVersjon());
         assertEquals(INITIELL_FORELDREPENGER, e.getType());
-        Vedtak vedtak = new XMLV2VedtakMapper().tilVedtak(xml, e.getVersjon());
+        Vedtak vedtak = new V2ForeldrepengerXMLVedtakMapper().tilVedtak(xml, e);
         assertNotNull(vedtak);
         assertNotNull(vedtak.getUttak());
     }
@@ -41,7 +42,7 @@ class VedtakTest {
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V1, e.getVersjon());
         assertEquals(INITIELL_ENGANGSSTØNAD, e.getType());
-        Vedtak vedtak = new DelegerendeXMLVedtakMapper(new XMLV2VedtakMapper()).tilVedtak(xml, e.getVersjon());
+        Vedtak vedtak = new DelegerendeXMLVedtakMapper(new V1XMLVedtakMapper()).tilVedtak(xml, e);
         assertNull(vedtak);
     }
 }

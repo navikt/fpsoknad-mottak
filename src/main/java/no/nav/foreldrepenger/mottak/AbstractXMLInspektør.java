@@ -15,6 +15,9 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public abstract class AbstractXMLInspektør implements XMLInspektør {
 
+    public static final String SØKNAD = "søknad";
+    public static final String VEDTAK = "vedtak";
+
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
     private static final Logger LOG = LoggerFactory.getLogger(AbstractXMLInspektør.class);
 

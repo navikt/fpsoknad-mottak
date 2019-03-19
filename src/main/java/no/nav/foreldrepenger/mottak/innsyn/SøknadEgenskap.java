@@ -4,6 +4,8 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -76,15 +78,7 @@ public class SøknadEgenskap {
             return false;
         }
         SøknadEgenskap other = (SøknadEgenskap) obj;
-        if (egenskap == null) {
-            if (other.egenskap != null) {
-                return false;
-            }
-        }
-        else if (!egenskap.equals(other.egenskap)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(getVersjon(), other.getVersjon()) && Objects.equals(getType(), other.getType());
     }
 
     @Override
