@@ -52,7 +52,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtil
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -65,7 +65,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @ComponentScan(basePackages = "no.nav.foreldrepenger.mottak")
 public class TestFPFordelSerialization {
 
-    private static final SøknadInspektør INSPEKTØR = new XMLStreamSøknadInspektør();
+    private static final XMLInspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
     @MockBean
     private Oppslag oppslag;

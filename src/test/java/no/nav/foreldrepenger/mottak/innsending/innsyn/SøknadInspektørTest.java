@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DokmotV1XMLMapper;
@@ -38,7 +38,7 @@ public class SøknadInspektørTest {
     private Oppslag oppslag;
 
     private XMLSøknadMapper mapper;
-    private SøknadInspektør inspektør;
+    private XMLInspektør inspektør;
 
     @BeforeEach
     public void beforeEach() {

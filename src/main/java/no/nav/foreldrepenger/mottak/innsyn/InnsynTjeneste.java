@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -182,11 +182,11 @@ public class InnsynTjeneste implements Innsyn {
         try {
             LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
             String xml = wrapper.getXml();
-            Versjon versjon = vedtakHandler.inspiser(xml);
-            return vedtakHandler.tilVedtak(xml, versjon)
-                    .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), versjon.name()));
+            SøknadEgenskap e = vedtakHandler.inspiser(xml);
+            return vedtakHandler.tilVedtak(xml, e)
+                    .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e));
         } catch (Exception e) {
-            LOG.warn("Feil ved mapping av vedtak fra {}", wrapper, e);
+            LOG.warn("Feil ved mapping av vedtak fra {}", StringUtil.limit(wrapper.getXml()), e);
             return null;
         }
     }

@@ -18,12 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.AbstractInspektør;
+import no.nav.foreldrepenger.mottak.AbstractXMLInspektør;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public final class XMLStreamSøknadInspektør extends AbstractInspektør implements SøknadInspektør {
+public final class XMLStreamSøknadInspektør extends AbstractXMLInspektør {
 
     private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";

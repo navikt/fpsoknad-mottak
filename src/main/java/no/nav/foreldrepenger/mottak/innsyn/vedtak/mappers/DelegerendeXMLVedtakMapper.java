@@ -1,10 +1,15 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +20,15 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @Component
 public class DelegerendeXMLVedtakMapper implements XMLVedtakMapper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DelegerendeXMLVedtakMapper.class);
     private final List<XMLVedtakMapper> mappers;
     private final List<Versjon> versjoner;
 
+    public DelegerendeXMLVedtakMapper(XMLVedtakMapper... mappers) {
+        this(asList(mappers));
+    }
+
+    @Inject
     public DelegerendeXMLVedtakMapper(List<XMLVedtakMapper> mappers) {
         this.mappers = mappers;
         this.versjoner = versjonerFor(mappers);
@@ -30,7 +41,9 @@ public class DelegerendeXMLVedtakMapper implements XMLVedtakMapper {
 
     @Override
     public Vedtak tilVedtak(String xml, Versjon v) {
-        return mapperFor(v).tilVedtak(xml, v);
+        XMLVedtakMapper mapper = mapperFor(v);
+        LOG.info("Bruker mapper {} for {}", mapper, v);
+        return mapper.tilVedtak(xml, v);
     }
 
     private XMLVedtakMapper mapperFor(Versjon versjon) {

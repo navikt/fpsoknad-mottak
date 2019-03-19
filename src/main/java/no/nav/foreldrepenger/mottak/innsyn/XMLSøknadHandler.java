@@ -12,10 +12,10 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 public class XMLSøknadHandler {
 
     private final XMLSøknadMapper mapper;
-    private final SøknadInspektør inspektør;
+    private final XMLInspektør inspektør;
 
     public XMLSøknadHandler(@Qualifier(DELEGERENDE) XMLSøknadMapper mapper,
-            SøknadInspektør inspektør) {
+            XMLInspektør inspektør) {
         this.inspektør = inspektør;
         this.mapper = mapper;
     }
