@@ -20,6 +20,7 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
@@ -66,7 +67,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
+    public Uttaksplan hentUttaksplan(String saksnummer) {
         return innsynConnection.hentUttaksplan(saksnummer);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Sak;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
@@ -35,7 +36,7 @@ public class InnsynController {
     }
 
     @GetMapping(value = "/uttaksplan")
-    public List<UttaksPeriode> uttaksplan(@RequestParam(name = "saksnummer") String saksnummer) {
+    public Uttaksplan uttaksplan(@RequestParam(name = "saksnummer") String saksnummer) {
         return innsyn.hentUttaksplan(saksnummer);
     }
 

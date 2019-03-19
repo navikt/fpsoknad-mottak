@@ -25,6 +25,7 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements PingEndpointAware {
@@ -55,13 +56,9 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 .orElse(emptyList());
     }
 
-    public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
+    public Uttaksplan hentUttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan for sak {}", saksnummer);
-        return Optional.ofNullable(
-                getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)),
-                        UttaksPeriode[].class))
-                .map(Arrays::asList)
-                .orElse(emptyList());
+        return getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)), Uttaksplan.class);
     }
 
     public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
