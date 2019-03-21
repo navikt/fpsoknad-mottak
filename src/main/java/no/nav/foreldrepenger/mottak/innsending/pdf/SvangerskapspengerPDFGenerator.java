@@ -12,6 +12,7 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.He
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.*;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -26,12 +27,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Service
-public class SvangerskapspengerPdfGenerator implements PDFGenerator {
+public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final float STARTY = PDFElementRenderer.calculateStartY();
@@ -42,7 +42,7 @@ public class SvangerskapspengerPdfGenerator implements PDFGenerator {
     private final Oppslag oppslag;
 
     @Inject
-    public SvangerskapspengerPdfGenerator(PDFElementRenderer renderer,
+    public SvangerskapspengerPDFGenerator(PDFElementRenderer renderer,
                                           SøknadTextFormatter textFormatter,
                                           Oppslag oppslag) {
         this.renderer = renderer;
@@ -113,7 +113,7 @@ public class SvangerskapspengerPdfGenerator implements PDFGenerator {
             doc.save(baos);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new PDFException("Kunne ikke lage PDF", e);
+            throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
     }
 
@@ -299,6 +299,6 @@ public class SvangerskapspengerPdfGenerator implements PDFGenerator {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(DEFAULT_SVP_VERSJON, INITIELL_SVANGERSKAPSPENGER);
+        return SVANGERSKAPSPENGER;
     }
 }

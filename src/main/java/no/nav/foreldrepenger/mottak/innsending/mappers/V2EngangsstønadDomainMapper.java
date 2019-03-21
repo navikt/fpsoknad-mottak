@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
@@ -102,7 +101,6 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
     private Soeknad tilModell(Søknad søknad, AktorId søker) {
         no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad es = no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad.class
                 .cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer søknad XML fra {}", es);
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
@@ -114,7 +112,6 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
 
     private OmYtelse engangsstønadFra(Søknad søknad) {
         Engangsstønad ytelse = Engangsstønad.class.cast(søknad.getYtelse());
-        LOG.debug(CONFIDENTIAL, "Genererer ytelse XML fra {}", ytelse);
         return new OmYtelse().withAny(JAXB.marshalToElement(engangsstønadFra(ytelse, søknad.getVedlegg())));
     }
 
@@ -149,7 +146,7 @@ public class V2EngangsstønadDomainMapper implements DomainMapper {
             return fødselFra((Fødsel) relasjon, vedlegg);
         }
         throw new IllegalArgumentException(
-                "Relasjon til barn " + relasjon.getClass().getSimpleName() + " er foreløpig ikke støttet");
+                "Relasjon til barn " + relasjon.getClass().getSimpleName() + " ikke støttet");
     }
 
     private static SoekersRelasjonTilBarnet fødselFra(Fødsel fødsel, List<Vedlegg> vedlegg) {

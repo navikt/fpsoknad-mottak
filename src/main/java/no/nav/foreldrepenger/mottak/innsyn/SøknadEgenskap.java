@@ -4,6 +4,8 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,9 +16,9 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 public class SøknadEgenskap {
     Pair<Versjon, SøknadType> egenskap;
 
-    public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(DEFAULT_SVP_VERSJON,
+    public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(
             SøknadType.INITIELL_SVANGERSKAPSPENGER);
-    public static final SøknadEgenskap ETTERSENDING_SVANGERSKAPSPENGER = new SøknadEgenskap(DEFAULT_SVP_VERSJON,
+    public static final SøknadEgenskap ETTERSENDING_SVANGERSKAPSPENGER = new SøknadEgenskap(
             SøknadType.ETTERSENDING_SVANGERSKAPSPENGER);
     public static final SøknadEgenskap ETTERSENDING_FORELDREPENGER = new SøknadEgenskap(
             SøknadType.ETTERSENDING_FORELDREPENGER);
@@ -32,7 +34,7 @@ public class SøknadEgenskap {
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 
     public SøknadEgenskap(SøknadType type) {
-        this(DEFAULT_VERSJON, type);
+        this(type.erSvangerskapspenger() ? DEFAULT_SVP_VERSJON : DEFAULT_VERSJON, type);
     }
 
     @JsonCreator
@@ -76,15 +78,7 @@ public class SøknadEgenskap {
             return false;
         }
         SøknadEgenskap other = (SøknadEgenskap) obj;
-        if (egenskap == null) {
-            if (other.egenskap != null) {
-                return false;
-            }
-        }
-        else if (!egenskap.equals(other.egenskap)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(getVersjon(), other.getVersjon()) && Objects.equals(getType(), other.getType());
     }
 
     @Override

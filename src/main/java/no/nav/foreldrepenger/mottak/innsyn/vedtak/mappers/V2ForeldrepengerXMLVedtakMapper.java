@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +19,9 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.ArbeidType;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.AvslagsÅrsak;
@@ -43,21 +44,21 @@ import no.nav.vedtak.felles.xml.vedtak.uttak.fp.v2.UttaksresultatPeriode;
 import no.nav.vedtak.felles.xml.vedtak.uttak.fp.v2.UttaksresultatPeriodeAktivitet;
 
 @Component
-public class XMLV2VedtakMapper implements XMLVedtakMapper {
+public class V2ForeldrepengerXMLVedtakMapper implements XMLVedtakMapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XMLV2VedtakMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(V2ForeldrepengerXMLVedtakMapper.class);
 
-    private static final VedtakV2FPJAXBUtil JAXB = new VedtakV2FPJAXBUtil(true, true);
+    private static final VedtakV2FPJAXBUtil JAXB = new VedtakV2FPJAXBUtil(false, false);
 
     private static final String UKJENT_KODEVERKSVERDI = "-";
 
     @Override
-    public List<Versjon> versjoner() {
-        return singletonList(V2);
+    public MapperEgenskaper mapperEgenskaper() {
+        return new MapperEgenskaper(Versjon.V2, SøknadType.INITIELL_FORELDREPENGER);
     }
 
     @Override
-    public Vedtak tilVedtak(String xml, Versjon v) {
+    public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
         return Optional.ofNullable(xml)
                 .map(x -> tilVedtak(x))
                 .orElse(null);
@@ -88,7 +89,7 @@ public class XMLV2VedtakMapper implements XMLVedtakMapper {
 
     private static List<UttaksPeriode> tilUttaksPerioder(List<UttaksresultatPeriode> perioder) {
         return safeStream(perioder)
-                .map(XMLV2VedtakMapper::tilUttaksPeriode)
+                .map(V2ForeldrepengerXMLVedtakMapper::tilUttaksPeriode)
                 .collect(toList());
 
     }
@@ -126,7 +127,7 @@ public class XMLV2VedtakMapper implements XMLVedtakMapper {
 
     private static List<PeriodeAktivitet> tilPeriodeaktiviteter(List<UttaksresultatPeriodeAktivitet> aktiviteter) {
         return safeStream(aktiviteter)
-                .map(XMLV2VedtakMapper::tilPeriodeAktivitet)
+                .map(V2ForeldrepengerXMLVedtakMapper::tilPeriodeAktivitet)
                 .collect(toList());
     }
 
@@ -205,4 +206,5 @@ public class XMLV2VedtakMapper implements XMLVedtakMapper {
                 .map(ProsentAndel::new)
                 .orElse(null);
     }
+
 }

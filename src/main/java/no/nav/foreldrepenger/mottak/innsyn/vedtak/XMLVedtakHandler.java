@@ -1,31 +1,33 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
+import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.VEDTAK;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLVedtakMapper;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 public class XMLVedtakHandler {
 
     private final XMLVedtakMapper mapper;
-    private final XMLVedtakInspektør inspektør;
+    private final XMLInspektør inspektør;
 
     public XMLVedtakHandler(@Qualifier(DELEGERENDE) XMLVedtakMapper mapper,
-            XMLVedtakInspektør inspektør) {
+            @Qualifier(VEDTAK) XMLInspektør inspektør) {
         this.inspektør = inspektør;
         this.mapper = mapper;
     }
 
-    public Versjon inspiser(String xml) {
+    public SøknadEgenskap inspiser(String xml) {
         return inspektør.inspiser(xml);
     }
 
-    public Vedtak tilVedtak(String xml, Versjon v) {
-        return mapper.tilVedtak(xml, v);
+    public Vedtak tilVedtak(String xml, SøknadEgenskap e) {
+        return mapper.tilVedtak(xml, e);
     }
 
     @Override

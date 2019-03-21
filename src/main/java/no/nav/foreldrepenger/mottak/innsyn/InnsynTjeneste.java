@@ -20,10 +20,11 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -66,7 +67,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public List<UttaksPeriode> hentUttaksplan(String saksnummer) {
+    public Uttaksplan hentUttaksplan(String saksnummer) {
         return innsynConnection.hentUttaksplan(saksnummer);
     }
 
@@ -178,12 +179,16 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private Vedtak tilVedtak(VedtakDTO wrapper) {
-        LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
-        String xml = wrapper.getXml();
-        Versjon versjon = vedtakHandler.inspiser(xml);
-        return vedtakHandler.tilVedtak(xml, versjon)
-                .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), versjon));
-
+        try {
+            LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
+            String xml = wrapper.getXml();
+            SøknadEgenskap e = vedtakHandler.inspiser(xml);
+            return vedtakHandler.tilVedtak(xml, e)
+                    .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e));
+        } catch (Exception e) {
+            LOG.warn("Feil ved mapping av vedtak fra {}", StringUtil.limit(wrapper.getXml()), e);
+            return null;
+        }
     }
 
     @Override

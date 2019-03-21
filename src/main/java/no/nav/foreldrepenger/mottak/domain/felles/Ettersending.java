@@ -1,9 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,12 +16,14 @@ import lombok.Data;
 @Valid
 public class Ettersending {
 
+    @NotNull
     private final String saksnr;
+    @NotNull
     private final EttersendingsType type;
     private final List<Vedlegg> vedlegg;
 
     public Ettersending(EttersendingsType type, String saksnr, Vedlegg... vedlegg) {
-        this(type, saksnr, Arrays.asList(vedlegg));
+        this(type, saksnr, asList(vedlegg));
     }
 
     @JsonCreator

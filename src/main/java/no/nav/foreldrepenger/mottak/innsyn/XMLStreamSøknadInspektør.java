@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -16,14 +17,16 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.AbstractInspektør;
+import no.nav.foreldrepenger.mottak.AbstractXMLInspektør;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
-public final class XMLStreamSøknadInspektør extends AbstractInspektør implements SøknadInspektør {
+@Qualifier(SØKNAD)
+public final class XMLStreamSøknadInspektør extends AbstractXMLInspektør {
 
     private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
@@ -39,10 +42,7 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør impleme
 
     @Override
     public SøknadEgenskap inspiser(String xml) {
-        if (erEngangsstønadV1Dokmot(rootElementNamespace(xml))) {
-            return DOKMOT_ES_V1;
-        }
-        return egenskapFra(xml);
+        return erEngangsstønadV1Dokmot(rootElementNamespace(xml)) ? DOKMOT_ES_V1 : egenskapFra(xml);
     }
 
     private static SøknadEgenskap egenskapFra(String xml) {

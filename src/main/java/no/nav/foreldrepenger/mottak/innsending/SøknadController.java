@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +26,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.varsel.Varsel;
 import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
@@ -41,11 +43,11 @@ public class SøknadController {
     private final Innsyn innsyn;
     private final Oppslag oppslag;
     private final SøknadSender søknadSender;
-    private final SøknadInspektør inspektør;
+    private final XMLInspektør inspektør;
     private final VarselSender varselSender;
 
     public SøknadController(SøknadSender søknadSender, VarselSender varselSender, Oppslag oppslag, Innsyn innsyn,
-            SøknadInspektør inspektør) {
+            @Qualifier(SØKNAD) XMLInspektør inspektør) {
         this.søknadSender = søknadSender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;

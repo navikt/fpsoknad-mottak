@@ -1,54 +1,51 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.mottak.util.Mappables.mapperFor;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Qualifier(DELEGERENDE)
 @Component
 public class DelegerendeXMLVedtakMapper implements XMLVedtakMapper {
 
     private final List<XMLVedtakMapper> mappers;
-    private final List<Versjon> versjoner;
+    private final MapperEgenskaper mapperEgenskaper;
 
+    public DelegerendeXMLVedtakMapper(XMLVedtakMapper... mappers) {
+        this(asList(mappers));
+    }
+
+    @Inject
     public DelegerendeXMLVedtakMapper(List<XMLVedtakMapper> mappers) {
         this.mappers = mappers;
-        this.versjoner = versjonerFor(mappers);
+        this.mapperEgenskaper = egenskaperFor(mappers);
     }
 
     @Override
-    public List<Versjon> versjoner() {
-        return versjoner;
+    public MapperEgenskaper mapperEgenskaper() {
+        return mapperEgenskaper;
     }
 
     @Override
-    public Vedtak tilVedtak(String xml, Versjon v) {
-        return mapperFor(v).tilVedtak(xml, v);
-    }
-
-    private XMLVedtakMapper mapperFor(Versjon versjon) {
-        return mappers.stream()
-                .filter(m -> m.kanMappe(versjon))
-                .findFirst()
-                .orElse(new UkjentXMLVedtakMapper());
-    }
-
-    private static List<Versjon> versjonerFor(List<XMLVedtakMapper> mappers) {
-        return mappers.stream()
-                .map(e -> e.versjoner())
-                .flatMap(e -> e.stream())
-                .collect(toList());
+    public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
+        return mapperFor(mappers, egenskap).tilVedtak(xml, egenskap);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [mappers=" + mappers + ", versjoner=" + versjoner + "]";
+        return getClass().getSimpleName() + " [mappers=" + mappers + ", mapperEgenskaper=" + mapperEgenskaper + "]";
     }
+
 }

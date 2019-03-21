@@ -22,9 +22,9 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-public interface SøknadInspektør {
+public interface XMLInspektør {
 
-    Logger LOG = LoggerFactory.getLogger(SøknadInspektør.class);
+    Logger LOG = LoggerFactory.getLogger(XMLInspektør.class);
 
     SøknadEgenskap inspiser(String xml);
 
@@ -53,7 +53,7 @@ public interface SøknadInspektør {
             return ETTERSENDING_SVANGERSKAPSPENGER;
         default:
             LOG.warn("UKjent eller ikke satt ettersendingstype " + type);
-            throw new UnexpectedInputException("UKjent eller ikke satt ettersendingstype " + type);
+            throw new UnexpectedInputException("Ukjent eller ikke satt ettersendingstype %s", type);
         }
     }
 

@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,10 +13,10 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 public class XMLSøknadHandler {
 
     private final XMLSøknadMapper mapper;
-    private final SøknadInspektør inspektør;
+    private final XMLInspektør inspektør;
 
     public XMLSøknadHandler(@Qualifier(DELEGERENDE) XMLSøknadMapper mapper,
-            SøknadInspektør inspektør) {
+            @Qualifier(SØKNAD) XMLInspektør inspektør) {
         this.inspektør = inspektør;
         this.mapper = mapper;
     }

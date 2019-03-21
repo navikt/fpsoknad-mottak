@@ -10,12 +10,16 @@ import javax.xml.transform.stream.StreamSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-public abstract class AbstractInspektør {
+public abstract class AbstractXMLInspektør implements XMLInspektør {
+
+    public static final String SØKNAD = "søknad";
+    public static final String VEDTAK = "vedtak";
 
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractInspektør.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractXMLInspektør.class);
 
     protected static Versjon versjonFraXML(String xml) {
         return versjonFra(rootElementNamespace(xml));

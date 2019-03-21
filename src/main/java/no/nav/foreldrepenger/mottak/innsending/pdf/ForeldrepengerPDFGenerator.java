@@ -1,10 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.ALLE_FORELDREPENGER;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -43,13 +39,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(
-                new SøknadEgenskap(V1, INITIELL_FORELDREPENGER),
-                new SøknadEgenskap(V1, ENDRING_FORELDREPENGER),
-                new SøknadEgenskap(V2, INITIELL_FORELDREPENGER),
-                new SøknadEgenskap(V2, ENDRING_FORELDREPENGER),
-                new SøknadEgenskap(V3, INITIELL_FORELDREPENGER),
-                new SøknadEgenskap(V3, ENDRING_FORELDREPENGER));
+        return ALLE_FORELDREPENGER;
     }
 
     @Override
@@ -64,7 +54,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
         }
     }
 
-    public byte[] generate(Søknad søknad, Person søker) {
+    private byte[] generate(Søknad søknad, Person søker) {
         Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
@@ -247,7 +237,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
 
         } catch (Exception e) {
             LOG.warn("Kunne ikke lage PDF", e);
-            throw new PDFException("Kunne ikke lage PDF", e);
+            throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
     }
 
@@ -328,7 +318,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             return baos.toByteArray();
         } catch (Exception e) {
             LOG.warn("Kunne ikke lage PDF", e);
-            throw new PDFException("Kunne ikke lage PDF", e);
+            throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
     }
 

@@ -1,16 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.*;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.*;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.*;
-import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.FileOutputStream;
-
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
+import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.config.TestConfig;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +12,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.config.TestConfig;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
+import java.io.FileOutputStream;
+
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.*;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.*;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.*;
+import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
@@ -30,7 +27,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         DelegerendePDFGenerator.class,
         ForeldrepengerPDFGenerator.class,
         EngangsstønadPDFGenerator.class,
-        SvangerskapspengerPdfGenerator.class,
+        SvangerskapspengerPDFGenerator.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 
 public class PDFGeneratorTest {

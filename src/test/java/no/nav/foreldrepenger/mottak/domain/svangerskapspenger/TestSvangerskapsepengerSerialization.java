@@ -25,7 +25,7 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V1SvangerskapspengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -38,7 +38,7 @@ public class TestSvangerskapsepengerSerialization {
     @Autowired
     ObjectMapper mapper;
 
-    private static final SøknadInspektør inspektør = new XMLStreamSøknadInspektør();
+    private static final XMLInspektør inspektør = new XMLStreamSøknadInspektør();
 
     private static final DomainMapper DOMAINMAPPER = new V1SvangerskapspengerDomainMapper();
 

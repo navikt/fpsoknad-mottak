@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
 
 import java.time.LocalDate;
 
@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 
 @Data
 public class UttaksPeriode {

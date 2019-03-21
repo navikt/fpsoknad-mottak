@@ -3,12 +3,12 @@ package no.nav.foreldrepenger.mottak.innsending.mappers;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.landFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.medlemsskapFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.opptjeningFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.språkFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.søkerFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperUtils.vedleggFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.landFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.medlemsskapFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.opptjeningFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.språkFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.søkerFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
@@ -44,7 +44,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriod
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.mottak.util.jaxb.FPV3JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
@@ -80,9 +79,7 @@ import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 @Component
 public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
-    private static final Versjon HÅNDTERT_VERSJON = V3;
-
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(HÅNDTERT_VERSJON, ENDRING_FORELDREPENGER,
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V3, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
 
     private static final FPV3JAXBUtil JAXB = new FPV3JAXBUtil();
@@ -136,20 +133,10 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withOmYtelse(ytelseFra(endringsøknad));
     }
 
-    private static OmYtelse ytelseFra(Endringssøknad endringssøknad) {
-        return new OmYtelse().withAny(endringssøknadFra(endringssøknad));
-    }
-
     private static JAXBElement<Endringssoeknad> endringssøknadFra(Endringssøknad endringssøknad) {
         return ENDRING_FACTORY_V3.createEndringssoeknad(new Endringssoeknad()
                 .withFordeling(fordelingFra(endringssøknad))
                 .withSaksnummer(endringssøknad.getSaksnr()));
-    }
-
-    private OmYtelse ytelseFra(Søknad søknad) {
-        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                .cast(søknad.getYtelse());
-        return new OmYtelse().withAny(JAXB.marshalToElement(foreldrepengerFra(ytelse)));
     }
 
     private JAXBElement<Foreldrepenger> foreldrepengerFra(
@@ -163,6 +150,16 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                         rettigheterFra(ytelse.getRettigheter(), erAnnenForelderUkjent(ytelse.getAnnenForelder())))
                 .withAnnenForelder(annenForelderFra(ytelse.getAnnenForelder()))
                 .withRelasjonTilBarnet(relasjonFra(ytelse.getRelasjonTilBarn())));
+    }
+
+    private static OmYtelse ytelseFra(Endringssøknad endringssøknad) {
+        return new OmYtelse().withAny(endringssøknadFra(endringssøknad));
+    }
+
+    private OmYtelse ytelseFra(Søknad søknad) {
+        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(søknad.getYtelse());
+        return new OmYtelse().withAny(JAXB.marshalToElement(foreldrepengerFra(ytelse)));
     }
 
     private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
@@ -181,8 +178,9 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     private static Dekningsgrad dekningsgradFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad dekningsgrad) {
         return Optional.ofNullable(dekningsgrad)
-                .map(s -> dekningsgradFra(s.kode()))
-                .map(s -> new Dekningsgrad().withDekningsgrad(s))
+                .map(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad::kode)
+                .map(V3ForeldrepengerDomainMapper::dekningsgradFra)
+                .map(g -> new Dekningsgrad().withDekningsgrad(g))
                 .orElse(null);
     }
 
@@ -243,7 +241,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         if (periode instanceof UttaksPeriode) {
             return create(UttaksPeriode.class.cast(periode));
         }
-        throw new UnexpectedInputException("Vil aldri skje");
+        throw new UnexpectedInputException("Ukjent periode " + periode.getClass().getSimpleName());
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
@@ -292,10 +290,10 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                 .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
         if (gradertPeriode.getFrilans() != null) {
-            gradering = gradering.withErFrilanser(gradertPeriode.getFrilans().booleanValue());
+            gradering.setErFrilanser(gradertPeriode.getFrilans().booleanValue());
         }
         if (gradertPeriode.getSelvstendig() != null) {
-            gradering = gradering.withErSelvstNæringsdrivende(gradertPeriode.getSelvstendig().booleanValue());
+            gradering.setErSelvstNæringsdrivende(gradertPeriode.getSelvstendig().booleanValue());
         }
         return gradertPeriode.isØnskerSamtidigUttak()
                 ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
@@ -339,11 +337,13 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type, boolean optional) {
         if (optional) {
             return Optional.ofNullable(type)
-                    .map(s -> uttaksperiodeTypeFra(s.name()))
+                    .map(StønadskontoType::name)
+                    .map(V3ForeldrepengerDomainMapper::uttaksperiodeTypeFra)
                     .orElse(null);
         }
         return Optional.ofNullable(type)
-                .map(s -> uttaksperiodeTypeFra(s.name()))
+                .map(StønadskontoType::name)
+                .map(V3ForeldrepengerDomainMapper::uttaksperiodeTypeFra)
                 .orElseThrow(() -> new UnexpectedInputException("Stønadskontotype må være satt"));
     }
 
@@ -354,7 +354,8 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet aktivitet) {
         return Optional.ofNullable(aktivitet)
-                .map(s -> morsAktivitetFra(s.name()))
+                .map(MorsAktivitet::name)
+                .map(V3ForeldrepengerDomainMapper::morsAktivitetFra)
                 .orElse(morsAktivitetFra(UKJENT_KODEVERKSVERDI));
     }
 
@@ -365,7 +366,8 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(UtsettelsesÅrsak årsak) {
         return Optional.ofNullable(årsak)
-                .map(s -> utsettelsesÅrsakFra(s.name()))
+                .map(UtsettelsesÅrsak::name)
+                .map(V3ForeldrepengerDomainMapper::utsettelsesÅrsakFra)
                 .orElse(null);
     }
 
@@ -376,7 +378,8 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static Oppholdsaarsaker oppholdsÅrsakFra(Oppholdsårsak årsak) {
         return Optional.ofNullable(årsak)
-                .map(s -> oppholdsÅrsakFra(s.name()))
+                .map(Oppholdsårsak::name)
+                .map(V3ForeldrepengerDomainMapper::oppholdsÅrsakFra)
                 .orElseThrow(() -> new UnexpectedInputException("Oppholdsårsak må være satt"));
     }
 
@@ -387,13 +390,15 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static Overfoeringsaarsaker påkrevdOverføringsÅrsakFra(Overføringsårsak årsak) {
         return Optional.ofNullable(årsak)
-                .map(s -> overføringsÅrsakFra(s.name()))
+                .map(Overføringsårsak::name)
+                .map(V3ForeldrepengerDomainMapper::overføringsÅrsakFra)
                 .orElseThrow(() -> new UnexpectedInputException("Oppholdsårsak må være satt"));
     }
 
     private static Overfoeringsaarsaker valgfriOverføringsÅrsakFra(Overføringsårsak årsak) {
         return Optional.ofNullable(årsak)
-                .map(s -> overføringsÅrsakFra(s.name()))
+                .map(Overføringsårsak::name)
+                .map(V3ForeldrepengerDomainMapper::overføringsÅrsakFra)
                 .orElse(overføringsÅrsakFra(UKJENT_KODEVERKSVERDI));
     }
 
