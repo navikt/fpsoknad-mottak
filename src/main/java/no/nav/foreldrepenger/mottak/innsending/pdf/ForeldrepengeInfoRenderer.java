@@ -315,14 +315,14 @@ public class ForeldrepengeInfoRenderer {
             }
         }
 
-        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") + " " +
-                (tidligereOpphold.isBoddINorge() ? "Norge" : ""), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("siste12") +
+                (tidligereOpphold.isBoddINorge() ? " Norge" : ":"), cos, y);
         if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {
             y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(tidligereOpphold.getUtenlandsOpphold()),
                     cos, y);
         }
-        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") + " " +
-                (framtidigeOpphold.isNorgeNeste12() ? "Norge" : ""), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("neste12") +
+                (framtidigeOpphold.isNorgeNeste12() ? " Norge" : ":"), cos, y);
 
         if (!framtidigeOpphold.getUtenlandsOpphold().isEmpty()) {
             y -= renderer.addBulletList(INDENT, textFormatter.utenlandsOpphold(framtidigeOpphold.getUtenlandsOpphold()),
