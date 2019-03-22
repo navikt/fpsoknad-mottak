@@ -9,6 +9,9 @@ import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_ETTERSSENDIN
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_FØRSTEGANG;
 
 import io.micrometer.core.instrument.Counter;
+import no.nav.foreldrepenger.mottak.domain.FagsakType;
+
+import static no.nav.foreldrepenger.mottak.domain.FagsakType.*;
 
 public enum SøknadType {
     INITIELL_FORELDREPENGER(FP_FØRSTEGANG),
@@ -46,6 +49,20 @@ public enum SøknadType {
     public boolean erSvangerskapspenger() {
         return this.equals(INITIELL_SVANGERSKAPSPENGER)
                 || this.equals(ETTERSENDING_SVANGERSKAPSPENGER);
+    }
+
+    public FagsakType fagsakType() {
+        if (erForeldrepenger()) {
+            return FORELDREPENGER;
+        }
+        if (erEngangsstønad()) {
+            return ENGANGSSTØNAD;
+        }
+        if (erSvangerskapspenger()) {
+            return SVANGERSKAPSPENGER;
+        }
+        return FagsakType.UKJENT;
+
     }
 
     public void count() {

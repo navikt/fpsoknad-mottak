@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.Kvittering.IKKE_SENDT;
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.ikkeSendt;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
@@ -36,8 +36,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
             return doSend(type, konvolutt);
         }
         LOG.info("Sending av {} er deaktivert, ingenting å sende", type);
-        IKKE_SENDT.setPdf(konvolutt.PDFHovedDokument());
-        return IKKE_SENDT;
+        return ikkeSendt(konvolutt.PDFHovedDokument());
     }
 
     private Kvittering doSend(SøknadType type, FPFordelKonvolutt konvolutt) {

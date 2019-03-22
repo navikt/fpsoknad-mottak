@@ -9,6 +9,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import no.nav.foreldrepenger.mottak.domain.FagsakType;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Pair;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -48,6 +49,10 @@ public class SøknadEgenskap {
 
     public SøknadType getType() {
         return egenskap.getSecond();
+    }
+
+    public FagsakType getFagsakType() {
+        return getType().fagsakType();
     }
 
     public Pair<Versjon, SøknadType> getEgenskap() {

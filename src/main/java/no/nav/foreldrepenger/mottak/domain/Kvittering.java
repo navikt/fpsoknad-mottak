@@ -24,8 +24,6 @@ public class Kvittering {
     private String saksNr;
     private byte[] pdf;
 
-    public static final Kvittering IKKE_SENDT = new Kvittering(IKKE_SENDT_FPSAK);
-
     public Kvittering(LeveranseStatus leveranseStatus) {
         this(leveranseStatus, LocalDateTime.now(), callId());
     }
@@ -41,6 +39,12 @@ public class Kvittering {
 
     public boolean erVellykket() {
         return leveranseStatus.erVellykket();
+    }
+
+    public static Kvittering ikkeSendt(byte[] pdf) {
+        Kvittering kvittering = new Kvittering(IKKE_SENDT_FPSAK);
+        kvittering.setPdf(pdf);
+        return kvittering;
     }
 
     @Override
