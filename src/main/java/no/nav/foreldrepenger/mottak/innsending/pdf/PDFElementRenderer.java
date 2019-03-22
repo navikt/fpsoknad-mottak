@@ -167,6 +167,7 @@ public class PDFElementRenderer {
         return yTotal;
     }
 
+
     public float addCenteredHeading(String heading, FontAwareCos cos, float startY) throws IOException {
         cos.beginText();
         cos.useHeadingFont();
@@ -182,6 +183,25 @@ public class PDFElementRenderer {
         float yTotal = 0;
         for (String heading : headings) {
             yTotal += addCenteredHeading(heading, cos, startY - yTotal);
+        }
+        return yTotal;
+    }
+
+    public float addCenteredRegular(String text, FontAwareCos cos, float startY) throws IOException {
+        cos.beginText();
+        cos.useRegularFont();
+        float textWidth = cos.regularTextWidth(text);
+        float startX = (MEDIABOX.getWidth() - textWidth) / 2;
+        cos.newLineAtOffset(startX, startY);
+        cos.showText(normalizeAndRemoveNonencodableChars(text, cos.fontRegular));
+        cos.endText();
+        return cos.fontHeightHeading;
+    }
+
+    public float addCenteredRegulars(List<String> texts, FontAwareCos cos, float startY) throws IOException {
+        float yTotal = 0;
+        for (String text : texts) {
+            yTotal += addCenteredRegular(text, cos, startY - yTotal);
         }
         return yTotal;
     }

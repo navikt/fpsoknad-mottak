@@ -63,8 +63,12 @@ public class FontAwareCos {
         cos.setFont(font, fontSize);
     }
 
-    public float headingTextWidth(String string) throws IOException {
+    float headingTextWidth(String string) throws IOException {
         return textWidth(string, fontHeading, HEADINGFONTSIZE);
+    }
+
+    float regularTextWidth(String string) throws  IOException {
+        return textWidth(string, fontRegular, REGULARFONTSIZE);
     }
 
     private static float textWidth(String string, PDFont font, int fontSize) throws IOException {
