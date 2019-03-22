@@ -161,10 +161,10 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> påkrevd,
             List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> valgfritt) {
-        Stream<Vedlegg> vf = valgfritt.stream()
+        Stream<Vedlegg> vf = safeStream(valgfritt)
                 .map(this::metadataFra)
                 .map(s -> new ValgfrittVedlegg(s, null));
-        Stream<Vedlegg> pk = påkrevd.stream()
+        Stream<Vedlegg> pk = safeStream(påkrevd)
                 .map(this::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
         return Stream.concat(vf, pk).collect(toList());
@@ -399,8 +399,8 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         return land == null ? defaultLand : CountryCode.getByCode(land.getKode());
     }
 
-    private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstype) {
-        return virksomhetstype.stream()
+    private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstyper) {
+        return safeStream(virksomhetstyper)
                 .map(V3ForeldrepengerXMLMapper::tilVirksomhetsType)
                 .collect(toList());
     }
@@ -422,8 +422,8 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
-            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold> utenlandskArbeidsforhold) {
-        return utenlandskArbeidsforhold.stream()
+            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold> utenlandskeArbeidsforhold) {
+        return safeStream(utenlandskeArbeidsforhold)
                 .map(V3ForeldrepengerXMLMapper::tilUtenlandskArbeidsforhold)
                 .collect(toList());
     }

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.landFra;

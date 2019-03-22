@@ -65,10 +65,7 @@ public class SøknadEgenskap {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (egenskap == null ? 0 : egenskap.hashCode());
-        return result;
+        return Objects.hash(egenskap);
     }
 
     @Override

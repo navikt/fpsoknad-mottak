@@ -50,8 +50,6 @@ public class V2ForeldrepengerXMLVedtakMapper implements XMLVedtakMapper {
 
     private static final VedtakV2FPJAXBUtil JAXB = new VedtakV2FPJAXBUtil(false, false);
 
-    private static final String UKJENT_KODEVERKSVERDI = "-";
-
     @Override
     public MapperEgenskaper mapperEgenskaper() {
         return new MapperEgenskaper(Versjon.V2, SøknadType.INITIELL_FORELDREPENGER);

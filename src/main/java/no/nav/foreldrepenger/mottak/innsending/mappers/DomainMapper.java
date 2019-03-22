@@ -9,8 +9,6 @@ public interface DomainMapper extends Mappable {
 
     static final String KOSOVO = "XXK";
 
-    static final String UKJENT_KODEVERKSVERDI = "-";
-
     String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap);
 
     String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap);
