@@ -5,10 +5,14 @@ import io.micrometer.core.instrument.Metrics;
 
 public final class CounterRegistry {
 
+    private static final String FELLES = "felles";
+    private static final String SUKSESS = "suksess";
+    private static final String FEILET = "feilet";
     private static final String TYPE = "type";
     private static final String YTELSE = "ytelse";
     private static final String FORELDREPENGER = "foreldrepenger";
     private static final String ENGANGSSTØNAD = "engangsstønad";
+    private static final String SVANGERSKAPSPENGER = "svangerskapspenger";
     private static final String FPINFO_KVITTERINGER = "fpinfo.kvitteringer";
     private static final String FPFORDEL_KVITTERINGER = "fpfordel.kvitteringer";
     private static final String FPFORDEL_SEND = "fpfordel.send";
@@ -22,21 +26,21 @@ public final class CounterRegistry {
     public static final Counter FP_ENDRING = fpCounter(FPFORDEL_SEND, "ENDRING_FORELDREPENGER");
     public static final Counter FP_ETTERSSENDING = fpCounter(FPFORDEL_SEND, "ETTERSENDING_FORELDREPENGER");
 
-    public static final Counter SVP_FØRSTEGANG = fpCounter(FPFORDEL_SEND, "INITIELL_SVANGERSKAPSPENGER");
-    public static final Counter SVP_ETTERSSENDING = fpCounter(FPFORDEL_SEND, "ETTERSENDING_SVANGERSKAPSPENGER");
+    public static final Counter SVP_FØRSTEGANG = svpCounter(FPFORDEL_SEND, "INITIELL_SVANGERSKAPSPENGER");
+    public static final Counter SVP_ETTERSSENDING = svpCounter(FPFORDEL_SEND, "ETTERSENDING_SVANGERSKAPSPENGER");
 
     public static final Counter GITTOPP_KVITTERING = fpCounter(FPFORDEL_KVITTERINGER, "gittopp");
     public static final Counter MANUELL_KVITTERING = fpCounter(FPFORDEL_KVITTERINGER, "gosys");
     public static final Counter FORDELT_KVITTERING = fpCounter(FPFORDEL_KVITTERINGER, "fordelt");
-    public static final Counter FEILET_KVITTERINGER = fpCounter(FPFORDEL_KVITTERINGER, "feilet");
+    public static final Counter FEILET_KVITTERINGER = fpCounter(FPFORDEL_KVITTERINGER, FEILET);
     public static final Counter PENDING = fpCounter(FPINFO_KVITTERINGER, "påvent");
     public static final Counter REJECTED = fpCounter(FPINFO_KVITTERINGER, "avslått");
     public static final Counter ACCEPTED = fpCounter(FPINFO_KVITTERINGER, "innvilget");
     public static final Counter RUNNING = fpCounter(FPINFO_KVITTERINGER, "pågår");
-    public static final Counter FAILED = fpCounter(FPINFO_KVITTERINGER, "feilet");
+    public static final Counter FAILED = fpCounter(FPINFO_KVITTERINGER, FEILET);
 
-    public static final Counter VARSEL_FAILED = counter(VARSEL_SEND, "felles", "feilet");
-    public static final Counter VARSEL_SUCCESS = counter(VARSEL_SEND, "felles", "suksess");
+    public static final Counter VARSEL_FAILED = counter(VARSEL_SEND, FELLES, FEILET);
+    public static final Counter VARSEL_SUCCESS = counter(VARSEL_SEND, FELLES, SUKSESS);
 
     private CounterRegistry() {
 
@@ -44,6 +48,10 @@ public final class CounterRegistry {
 
     private static Counter fpCounter(String name, String type) {
         return counter(name, FORELDREPENGER, type);
+    }
+
+    private static Counter svpCounter(String name, String type) {
+        return counter(name, SVANGERSKAPSPENGER, type);
     }
 
     private static Counter esCounter(String name, String type) {
