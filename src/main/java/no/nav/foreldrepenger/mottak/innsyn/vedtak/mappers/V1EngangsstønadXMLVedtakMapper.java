@@ -18,7 +18,7 @@ public class V1EngangsstønadXMLVedtakMapper implements XMLVedtakMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadXMLVedtakMapper.class);
 
-    private static final VedtakV1ESJAXBUtil JAXB = new VedtakV1ESJAXBUtil(false, false);
+    private static final VedtakV1ESJAXBUtil JAXB = new VedtakV1ESJAXBUtil(false);
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {

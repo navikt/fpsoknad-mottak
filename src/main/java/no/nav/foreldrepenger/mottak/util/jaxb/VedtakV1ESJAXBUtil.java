@@ -13,7 +13,11 @@ import no.nav.vedtak.felles.xml.vedtak.ytelse.v1.YtelseEngangsstoenad;
 public final class VedtakV1ESJAXBUtil extends AbstractJAXBUtil {
 
     public VedtakV1ESJAXBUtil() {
-        this(false, false);
+        this(false);
+    }
+
+    public VedtakV1ESJAXBUtil(boolean validate) {
+        this(validate, validate);
     }
 
     public VedtakV1ESJAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
@@ -36,6 +40,6 @@ public final class VedtakV1ESJAXBUtil extends AbstractJAXBUtil {
                 "/behandlingsprosess-vedtak-v1/xsd/vilkaarsgrunnlag/vilkaarsgrunnlag-v1.xsd",
                 "/behandlingsprosess-vedtak-v1/xsd/personopplysninger/personopplysninger-v1.xsd",
                 "/behandlingsprosess-vedtak-v1/xsd/beregningsgrunnlag/beregningsgrunnlag-v1.xsd",
-                "/behandlingsprosess-vedtak-v1/xsd/vedtak-v2.xsd");
+                "/behandlingsprosess-vedtak-v1/xsd/vedtak-v1.xsd");
     }
 }
