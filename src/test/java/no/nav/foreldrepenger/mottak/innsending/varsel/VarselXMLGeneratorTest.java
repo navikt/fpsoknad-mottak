@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.util.jaxb.VarselV1JAXBUtil;
+import no.nav.foreldrepenger.mottak.util.jaxb.V1VarselJAXBUtil;
 import no.nav.melding.virksomhet.varsel.v1.varsel.AktoerId;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Parameter;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Varsel;
@@ -19,7 +19,7 @@ class VarselXMLGeneratorTest {
 
     @Test
     void testVarselXMLRoundtrip() throws IOException {
-        VarselV1JAXBUtil jaxb = new VarselV1JAXBUtil(true);
+        V1VarselJAXBUtil jaxb = new V1VarselJAXBUtil(true);
         VarselXMLGenerator varselXmlGenerator = new VarselXMLGenerator(jaxb);
         no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel = varsel();
         Varsel v = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(varsel), Varsel.class).getValue();

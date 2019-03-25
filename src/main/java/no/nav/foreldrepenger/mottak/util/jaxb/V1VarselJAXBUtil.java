@@ -3,18 +3,18 @@ package no.nav.foreldrepenger.mottak.util.jaxb;
 import no.nav.melding.virksomhet.varsel.v1.varsel.ObjectFactory;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Varsel;
 
-public final class VarselV1JAXBUtil extends AbstractJAXBUtil {
+public final class V1VarselJAXBUtil extends AbstractJAXBUtil {
 
-    public VarselV1JAXBUtil() {
+    public V1VarselJAXBUtil() {
         this(false, false);
     }
 
-    public VarselV1JAXBUtil(boolean validate) {
+    public V1VarselJAXBUtil(boolean validate) {
         this(validate, validate);
 
     }
 
-    public VarselV1JAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
+    public V1VarselJAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
         super(contextFra(Varsel.class, ObjectFactory.class),
                 validateMarshalling, validateUnmarshalling,
                 "/varseltjeneste/xsd/varsel-v1.xsd");

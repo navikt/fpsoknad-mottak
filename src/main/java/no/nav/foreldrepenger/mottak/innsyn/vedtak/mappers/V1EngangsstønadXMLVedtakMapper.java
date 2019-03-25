@@ -1,16 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.foreldrepenger.mottak.util.jaxb.VedtakV1ESJAXBUtil;
 
 @Component
@@ -18,11 +19,11 @@ public class V1EngangsstønadXMLVedtakMapper implements XMLVedtakMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadXMLVedtakMapper.class);
 
-    private static final VedtakV1ESJAXBUtil JAXB = new VedtakV1ESJAXBUtil(false);
+    private static final VedtakV1ESJAXBUtil JAXB = new VedtakV1ESJAXBUtil(true);
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(Versjon.V1, SøknadType.INITIELL_ENGANGSSTØNAD);
+        return new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class V1EngangsstønadXMLVedtakMapper implements XMLVedtakMapper {
     }
 
     private static no.nav.vedtak.felles.xml.vedtak.v1.Vedtak unmarshal(String xml) {
-        return JAXB.unmarshal(xml, no.nav.vedtak.felles.xml.vedtak.v1.Vedtak.class);
+        return JAXB.unmarshalToElement(xml, no.nav.vedtak.felles.xml.vedtak.v1.Vedtak.class).getValue();
     }
 
 }

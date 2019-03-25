@@ -68,8 +68,9 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
                     .map(x -> tilFPVedtak(x))
                     .orElse(null);
         case ENGANGSSTØNAD:
-            LOG.warn("Engangsstønad vedtak ikke støttet siden de ikke kan parses"); // https://jira.adeo.no/browse/TFP-212
-            return null;
+            return Optional.ofNullable(xml)
+                    .map(x -> tilESVedtak(x))
+                    .orElse(null);
         case SVANGERSKAPSPENGER:
             LOG.warn("Svangerskapspenger vedtak ikke støttet");
             return null;
@@ -85,16 +86,19 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
                     .getBeregningsresultat().getUttak().getAny().get(0);
             return new Vedtak(tilUttak(fp.getValue()));
         } catch (Exception e) {
-            LOG.warn("Feil ved unmarshalling av vedtak", e);
+            LOG.warn("Feil ved unmarshalling av vedtak for foreldrepenger", e);
             return null;
-
         }
     }
 
     private static Vedtak tilESVedtak(String xml) {
-        no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalES(xml);
-        return new Vedtak(null);
-
+        try {
+            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalES(xml);
+            return new Vedtak(null);
+        } catch (Exception e) {
+            LOG.warn("Feil ved unmarshalling av vedtak for engangsstønad", e);
+            return null;
+        }
     }
 
     private static no.nav.vedtak.felles.xml.vedtak.v2.Vedtak unmarshalFP(String xml) {

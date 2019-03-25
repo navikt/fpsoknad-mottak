@@ -18,13 +18,13 @@ import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLStreamVedtakInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.DelegerendeXMLVedtakMapper;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V1XMLVedtakMapper;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V1EngangsstønadXMLVedtakMapper;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V2XMLVedtakMapper;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLVedtakMapper;
 
 class VedtakTest {
 
-    private static final XMLVedtakMapper MAPPER = new DelegerendeXMLVedtakMapper(new V1XMLVedtakMapper(),
+    private static final XMLVedtakMapper MAPPER = new DelegerendeXMLVedtakMapper(new V1EngangsstønadXMLVedtakMapper(),
             new V2XMLVedtakMapper());
     private static final XMLInspektør INSPEKTØR = new XMLStreamVedtakInspektør();
 

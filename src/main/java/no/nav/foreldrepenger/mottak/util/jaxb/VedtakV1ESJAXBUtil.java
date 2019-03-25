@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.util.jaxb;
 
 import no.nav.vedtak.felles.xml.vedtak.beregningsgrunnlag.v1.BeregningsgrunnlagEngangsstoenad;
 import no.nav.vedtak.felles.xml.vedtak.personopplysninger.v1.PersonopplysningerEngangsstoenad;
+import no.nav.vedtak.felles.xml.vedtak.v1.ObjectFactory;
 import no.nav.vedtak.felles.xml.vedtak.v1.Vedtak;
 import no.nav.vedtak.felles.xml.vedtak.vilkaarsgrunnlag.v1.VilkaarsgrunnlagAdopsjon;
 import no.nav.vedtak.felles.xml.vedtak.vilkaarsgrunnlag.v1.VilkaarsgrunnlagFoedsel;
@@ -30,11 +31,7 @@ public final class VedtakV1ESJAXBUtil extends AbstractJAXBUtil {
                 BeregningsgrunnlagEngangsstoenad.class,
                 YtelseEngangsstoenad.class,
                 Vedtak.class,
-                PersonopplysningerEngangsstoenad.class,
-                no.nav.vedtak.felles.xml.vedtak.beregningsgrunnlag.v1.ObjectFactory.class,
-                no.nav.vedtak.felles.xml.vedtak.personopplysninger.v1.ObjectFactory.class,
-                no.nav.vedtak.felles.xml.vedtak.ytelse.v1.ObjectFactory.class,
-                no.nav.vedtak.felles.xml.vedtak.vilkaarsgrunnlag.v1.ObjectFactory.class),
+                PersonopplysningerEngangsstoenad.class, ObjectFactory.class),
                 validateMarshalling, validateUnmarshalling,
                 "/behandlingsprosess-vedtak-v1/xsd/ytelse/ytelse-v1.xsd",
                 "/behandlingsprosess-vedtak-v1/xsd/vilkaarsgrunnlag/vilkaarsgrunnlag-v1.xsd",
