@@ -56,6 +56,6 @@ class VedtakTest {
         assertEquals(V2, e.getVersjon());
         assertEquals(ENGANGSSTØNAD, e.getFagsakType());
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
-        assertNotNull(vedtak);
+        assertNull(vedtak);
     }
 }
