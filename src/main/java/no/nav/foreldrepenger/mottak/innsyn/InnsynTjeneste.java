@@ -24,7 +24,6 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
-import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -170,23 +169,27 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
-        LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
         String xml = wrapper.getXml();
-        SøknadEgenskap egenskaper = søknadHandler.inspiser(xml);
-        return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
-                søknadHandler.tilSøknad(xml, egenskaper));
-
+        try {
+            LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
+            SøknadEgenskap egenskaper = søknadHandler.inspiser(xml);
+            return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
+                    søknadHandler.tilSøknad(xml, egenskaper));
+        } catch (Exception e) {
+            LOG.warn("Feil ved mapping av søknad fra {}", xml, e);
+            return null;
+        }
     }
 
     private Vedtak tilVedtak(VedtakDTO wrapper) {
+        String xml = wrapper.getXml();
         try {
             LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
-            String xml = wrapper.getXml();
             SøknadEgenskap e = vedtakHandler.inspiser(xml);
             return vedtakHandler.tilVedtak(xml, e)
                     .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e));
         } catch (Exception e) {
-            LOG.warn("Feil ved mapping av vedtak fra {}", StringUtil.limit(wrapper.getXml()), e);
+            LOG.warn("Feil ved mapping av vedtak fra {}", xml, e);
             return null;
         }
     }
