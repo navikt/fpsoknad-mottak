@@ -1,8 +1,12 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +23,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
@@ -30,7 +34,7 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.PeriodeAktivitet;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.UttaksPeriodeResultatType;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.UttaksPeriodeResultatÅrsak;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.mottak.util.jaxb.VedtakV2ESJAXBUtil;
 import no.nav.foreldrepenger.mottak.util.jaxb.VedtakV2FPJAXBUtil;
 import no.nav.vedtak.felles.xml.felles.v2.BooleanOpplysning;
 import no.nav.vedtak.felles.xml.felles.v2.DateOpplysning;
@@ -44,27 +48,39 @@ import no.nav.vedtak.felles.xml.vedtak.uttak.fp.v2.UttaksresultatPeriode;
 import no.nav.vedtak.felles.xml.vedtak.uttak.fp.v2.UttaksresultatPeriodeAktivitet;
 
 @Component
-public class V2ForeldrepengerXMLVedtakMapper implements XMLVedtakMapper {
+public class V2XMLVedtakMapper implements XMLVedtakMapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(V2ForeldrepengerXMLVedtakMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(V2XMLVedtakMapper.class);
 
-    private static final VedtakV2FPJAXBUtil JAXB = new VedtakV2FPJAXBUtil(false, false);
+    private static final VedtakV2FPJAXBUtil JAXB_FP = new VedtakV2FPJAXBUtil(true);
+    private static final VedtakV2ESJAXBUtil JAXB_ES = new VedtakV2ESJAXBUtil(true);
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(Versjon.V2, SøknadType.INITIELL_FORELDREPENGER);
+        return new MapperEgenskaper(V2, INITIELL_FORELDREPENGER, INITIELL_ENGANGSSTØNAD);
     }
 
     @Override
     public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
-        return Optional.ofNullable(xml)
-                .map(x -> tilVedtak(x))
-                .orElse(null);
+        switch (egenskap.getFagsakType()) {
+        case FORELDREPENGER:
+            return Optional.ofNullable(xml)
+                    .map(x -> tilFPVedtak(x))
+                    .orElse(null);
+        case ENGANGSSTØNAD:
+            LOG.warn("Engangsstønad vedtak ikke støttet siden de ikke kan parses"); // https://jira.adeo.no/browse/TFP-212
+            return null;
+        case SVANGERSKAPSPENGER:
+            LOG.warn("Svangerskapspenger vedtak ikke støttet");
+            return null;
+        default:
+            throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
+        }
     }
 
-    private static Vedtak tilVedtak(String xml) {
+    private static Vedtak tilFPVedtak(String xml) {
         try {
-            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshal(xml);
+            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalFP(xml);
             JAXBElement<UttakForeldrepenger> fp = (JAXBElement<UttakForeldrepenger>) vedtak.getBehandlingsresultat()
                     .getBeregningsresultat().getUttak().getAny().get(0);
             return new Vedtak(tilUttak(fp.getValue()));
@@ -75,8 +91,18 @@ public class V2ForeldrepengerXMLVedtakMapper implements XMLVedtakMapper {
         }
     }
 
-    private static no.nav.vedtak.felles.xml.vedtak.v2.Vedtak unmarshal(String xml) {
-        return JAXB.unmarshal(xml, no.nav.vedtak.felles.xml.vedtak.v2.Vedtak.class);
+    private static Vedtak tilESVedtak(String xml) {
+        no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalES(xml);
+        return new Vedtak(null);
+
+    }
+
+    private static no.nav.vedtak.felles.xml.vedtak.v2.Vedtak unmarshalFP(String xml) {
+        return JAXB_FP.unmarshal(xml, no.nav.vedtak.felles.xml.vedtak.v2.Vedtak.class);
+    }
+
+    private static no.nav.vedtak.felles.xml.vedtak.v2.Vedtak unmarshalES(String xml) {
+        return JAXB_ES.unmarshal(xml, no.nav.vedtak.felles.xml.vedtak.v2.Vedtak.class);
     }
 
     private static no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.Uttak tilUttak(UttakForeldrepenger uttak) {
@@ -87,7 +113,7 @@ public class V2ForeldrepengerXMLVedtakMapper implements XMLVedtakMapper {
 
     private static List<UttaksPeriode> tilUttaksPerioder(List<UttaksresultatPeriode> perioder) {
         return safeStream(perioder)
-                .map(V2ForeldrepengerXMLVedtakMapper::tilUttaksPeriode)
+                .map(V2XMLVedtakMapper::tilUttaksPeriode)
                 .collect(toList());
 
     }
@@ -125,7 +151,7 @@ public class V2ForeldrepengerXMLVedtakMapper implements XMLVedtakMapper {
 
     private static List<PeriodeAktivitet> tilPeriodeaktiviteter(List<UttaksresultatPeriodeAktivitet> aktiviteter) {
         return safeStream(aktiviteter)
-                .map(V2ForeldrepengerXMLVedtakMapper::tilPeriodeAktivitet)
+                .map(V2XMLVedtakMapper::tilPeriodeAktivitet)
                 .collect(toList());
     }
 

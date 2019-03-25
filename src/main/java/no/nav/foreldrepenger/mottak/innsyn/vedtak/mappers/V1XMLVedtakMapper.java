@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
-import no.nav.foreldrepenger.mottak.util.jaxb.VedtakV2ESJAXBUtil;
 
 @Component
 public class V1XMLVedtakMapper implements XMLVedtakMapper {
@@ -24,8 +23,6 @@ public class V1XMLVedtakMapper implements XMLVedtakMapper {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(V1XMLVedtakMapper.class);
-
-    private static final VedtakV2ESJAXBUtil JAXB = new VedtakV2ESJAXBUtil(false, false);
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {

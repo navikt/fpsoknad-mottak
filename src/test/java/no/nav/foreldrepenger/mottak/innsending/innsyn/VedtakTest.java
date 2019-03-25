@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.innsyn;
 
+import static no.nav.foreldrepenger.mottak.domain.FagsakType.ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.domain.FagsakType.FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.load;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,10 +19,13 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLStreamVedtakInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.DelegerendeXMLVedtakMapper;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V1XMLVedtakMapper;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V2ForeldrepengerXMLVedtakMapper;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V2XMLVedtakMapper;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLVedtakMapper;
 
 class VedtakTest {
 
+    private static final XMLVedtakMapper MAPPER = new DelegerendeXMLVedtakMapper(new V1XMLVedtakMapper(),
+            new V2XMLVedtakMapper());
     private static final XMLInspektør INSPEKTØR = new XMLStreamVedtakInspektør();
 
     @Test
@@ -30,8 +33,8 @@ class VedtakTest {
         String xml = load("FPVedtakV2.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V2, e.getVersjon());
-        assertEquals(INITIELL_FORELDREPENGER, e.getType());
-        Vedtak vedtak = new V2ForeldrepengerXMLVedtakMapper().tilVedtak(xml, e);
+        assertEquals(FORELDREPENGER, e.getFagsakType());
+        Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNotNull(vedtak);
         assertNotNull(vedtak.getUttak());
     }
@@ -41,8 +44,18 @@ class VedtakTest {
         String xml = load("ESVedtakV1.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V1, e.getVersjon());
-        assertEquals(INITIELL_ENGANGSSTØNAD, e.getType());
-        Vedtak vedtak = new DelegerendeXMLVedtakMapper(new V1XMLVedtakMapper()).tilVedtak(xml, e);
+        assertEquals(ENGANGSSTØNAD, e.getFagsakType());
+        Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNull(vedtak);
+    }
+
+    @Test
+    void testVedtakESV2() throws IOException {
+        String xml = load("ESVedtakV2.xml");
+        SøknadEgenskap e = INSPEKTØR.inspiser(xml);
+        assertEquals(V2, e.getVersjon());
+        assertEquals(ENGANGSSTØNAD, e.getFagsakType());
+        Vedtak vedtak = MAPPER.tilVedtak(xml, e);
+        assertNotNull(vedtak);
     }
 }

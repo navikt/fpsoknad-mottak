@@ -25,6 +25,8 @@
     <ns7:behandlendeEnhet>242</ns7:behandlendeEnhet>
     <ns7:soeknadsdato>2018-10-15</ns7:soeknadsdato>
     <ns7:vedtaksdato>2018-10-20</ns7:vedtaksdato>
+    <ns7:vedtaksresultat kode="INNVILGET"
+        kodeverk="VEDTAK_RESULTAT_TYPE">Innvilget</ns7:vedtaksresultat>
     <ns7:personOpplysninger>
         <personopplysningerEngangsstoenad>
             <ns4:bruker>

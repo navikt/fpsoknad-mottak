@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.util.jaxb;
 
 import no.nav.vedtak.felles.xml.vedtak.beregningsgrunnlag.es.v2.BeregningsgrunnlagEngangsstoenad;
 import no.nav.vedtak.felles.xml.vedtak.personopplysninger.es.v2.PersonopplysningerEngangsstoenad;
+import no.nav.vedtak.felles.xml.vedtak.personopplysninger.v2.Personopplysninger;
 import no.nav.vedtak.felles.xml.vedtak.v2.Vedtak;
 import no.nav.vedtak.felles.xml.vedtak.vilkaarsgrunnlag.es.v2.VilkaarsgrunnlagAdopsjon;
 import no.nav.vedtak.felles.xml.vedtak.vilkaarsgrunnlag.es.v2.VilkaarsgrunnlagFoedsel;
@@ -13,7 +14,11 @@ import no.nav.vedtak.felles.xml.vedtak.ytelse.es.v2.YtelseEngangsstoenad;
 public final class VedtakV2ESJAXBUtil extends AbstractJAXBUtil {
 
     public VedtakV2ESJAXBUtil() {
-        this(false, false);
+        this(false);
+    }
+
+    public VedtakV2ESJAXBUtil(boolean validate) {
+        this(validate, validate);
     }
 
     public VedtakV2ESJAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
@@ -26,10 +31,12 @@ public final class VedtakV2ESJAXBUtil extends AbstractJAXBUtil {
                 BeregningsgrunnlagEngangsstoenad.class,
                 YtelseEngangsstoenad.class,
                 Vedtak.class,
+                Personopplysninger.class,
                 PersonopplysningerEngangsstoenad.class,
                 no.nav.vedtak.felles.xml.vedtak.beregningsgrunnlag.es.v2.ObjectFactory.class,
                 no.nav.vedtak.felles.xml.vedtak.oppdrag.dvh.es.v2.ObjectFactory.class,
                 no.nav.vedtak.felles.xml.vedtak.personopplysninger.es.v2.ObjectFactory.class,
+                no.nav.vedtak.felles.xml.vedtak.personopplysninger.v2.ObjectFactory.class,
                 no.nav.vedtak.felles.xml.vedtak.personopplysninger.dvh.es.v2.ObjectFactory.class,
                 no.nav.vedtak.felles.xml.vedtak.ytelse.es.v2.ObjectFactory.class,
                 no.nav.vedtak.felles.xml.vedtak.vilkaarsgrunnlag.v2.ObjectFactory.class),

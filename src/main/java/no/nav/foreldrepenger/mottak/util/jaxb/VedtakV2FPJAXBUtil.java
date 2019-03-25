@@ -15,7 +15,11 @@ import no.nav.vedtak.felles.xml.vedtak.ytelse.fp.v2.YtelseForeldrepenger;
 public final class VedtakV2FPJAXBUtil extends AbstractJAXBUtil {
 
     public VedtakV2FPJAXBUtil() {
-        this(false, false);
+        this(false);
+    }
+
+    public VedtakV2FPJAXBUtil(boolean validate) {
+        this(validate, validate);
     }
 
     public VedtakV2FPJAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {

@@ -6,8 +6,6 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 
 public interface XMLVedtakMapper extends Mappable {
 
-    static final String UKJENT_KODEVERKSVERDI = "-";
-
     Vedtak tilVedtak(String xml, SøknadEgenskap egenskap);
 
 }
