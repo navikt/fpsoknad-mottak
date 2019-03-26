@@ -86,7 +86,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
                     .getBeregningsresultat().getUttak().getAny().get(0);
             return new Vedtak(tilUttak(fp.getValue()));
         } catch (Exception e) {
-            LOG.warn("Feil ved unmarshalling av vedtak for foreldrepenger", e);
+            LOG.warn("Feil ved unmarshalling av vedtak {} for foreldrepenger", xml, e);
             return null;
         }
     }
@@ -96,7 +96,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
             no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalES(xml);
             return new Vedtak(null);
         } catch (Exception e) {
-            LOG.warn("Feil ved unmarshalling av vedtak for engangsstønad", e);
+            LOG.warn("Feil ved unmarshalling av vedtak {} for engangsstønad", xml, e);
             return null;
         }
     }
@@ -234,5 +234,4 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
                 .map(ProsentAndel::new)
                 .orElse(null);
     }
-
 }
