@@ -45,6 +45,7 @@ import org.springframework.web.client.RestOperations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
@@ -80,7 +81,6 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)
-
 public class FPFordelTest {
 
     private static final AktorId AKTØRID = new AktorId("1111111111");
@@ -102,12 +102,12 @@ public class FPFordelTest {
 
     @Mock
     private RestOperations restOperations;
+
+    private MeterRegistry registry = new SimpleMeterRegistry();
     @Mock
     private Oppslag oppslag;
     @Mock
     private FPInfoSaksPoller poller;
-    @Mock
-    private MeterRegistry registry;
     @Mock
     private TokenUtil tokenHelper;
     private FPFordelConfig cfg;
