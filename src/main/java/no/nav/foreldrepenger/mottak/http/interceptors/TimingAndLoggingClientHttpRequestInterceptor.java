@@ -7,7 +7,6 @@ import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -47,7 +46,7 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
                 .publishPercentiles(0.5, 0.95) // median and 95th percentile
                 .publishPercentileHistogram()
                 .sla(Duration.ofMillis(100))
-                .minimumExpectedValue(Duration.ofMillis(1))
+                .minimumExpectedValue(Duration.ofMillis(100))
                 .maximumExpectedValue(Duration.ofSeconds(1))
                 .register(registry);
         LOG.info("{} - {}", request.getMethodValue(), uri);
@@ -58,7 +57,7 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
                 String.valueOf(respons.getRawStatusCode()))
                 .increment();
         timer.stop();
-        t.record(timer.getTime(), TimeUnit.MILLISECONDS);
+        t.record(timer.getTime(), MILLISECONDS);
         if (hasError(respons.getStatusCode())) {
             LOG.warn("{} - {} - ({}). Dette tok {}ms. ({})", request.getMethodValue(), request.getURI(),
                     respons.getRawStatusCode(), timer.getTime(MILLISECONDS), tokenUtil.getExpiryDate());

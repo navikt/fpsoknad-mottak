@@ -81,10 +81,8 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
 
     private static Vedtak tilFPVedtak(String xml) {
         try {
-            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalFP(xml);
-            JAXBElement<UttakForeldrepenger> fp = (JAXBElement<UttakForeldrepenger>) vedtak.getBehandlingsresultat()
-                    .getBeregningsresultat().getUttak().getAny().get(0);
-            return new Vedtak(tilUttak(fp.getValue()));
+            return new Vedtak(tilUttak(((JAXBElement<UttakForeldrepenger>) unmarshalFP(xml).getBehandlingsresultat()
+                    .getBeregningsresultat().getUttak().getAny().get(0)).getValue()));
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak {} for foreldrepenger", xml, e);
             return null;
@@ -119,7 +117,6 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
         return safeStream(perioder)
                 .map(V2XMLVedtakMapper::tilUttaksPeriode)
                 .collect(toList());
-
     }
 
     private static LocalDate tilDato(DateOpplysning dato) {
@@ -224,7 +221,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     private static Optional<String> kodeFra(KodeverksOpplysning opplysning) {
         return Optional.ofNullable(opplysning)
                 .map(KodeverksOpplysning::getKode)
-                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)));
+                .filter(not(UKJENT_KODEVERKSVERDI::equals));
     }
 
     private static ProsentAndel tilProsent(DecimalOpplysning prosent) {
