@@ -1,16 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.ikkeSendt;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
+import java.time.Duration;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
@@ -23,12 +28,14 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
 
     private final FPFordelConfig config;
     private final FPFordelResponseHandler responseHandler;
+    private final MeterRegistry registry;
 
     public FPFordelConnection(RestOperations restOperations, FPFordelConfig config,
-            FPFordelResponseHandler responseHandler) {
+            FPFordelResponseHandler responseHandler, MeterRegistry registry) {
         super(restOperations);
         this.config = config;
         this.responseHandler = responseHandler;
+        this.registry = registry;
     }
 
     public Kvittering send(SøknadType type, FPFordelKonvolutt konvolutt) {
@@ -41,13 +48,25 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
 
     private Kvittering doSend(SøknadType type, FPFordelKonvolutt konvolutt) {
         try {
+            StopWatch timer = new StopWatch();
+            timer.start();
             LOG.info("Sender {} til {}", name(type), name().toLowerCase());
             Kvittering kvittering = responseHandler.handle(
                     postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
                             FPFordelKvittering.class));
             LOG.info("Sendte {} til {}, fikk kvittering {}", name(type), name().toLowerCase(),
                     kvittering);
+            timer.stop();
+            Timer t = Timer.builder("application.send")
+                    .tags("type", type.name())
+                    .publishPercentiles(0.5, 0.95) // median and 95th percentile
+                    .publishPercentileHistogram()
+                    .sla(Duration.ofMillis(100))
+                    .minimumExpectedValue(Duration.ofMillis(100))
+                    .maximumExpectedValue(Duration.ofSeconds(1))
+                    .register(registry);
             type.count();
+            t.record(timer.getTime(), MILLISECONDS);
             kvittering.setPdf(konvolutt.PDFHovedDokument());
             return kvittering;
         } catch (Exception e) {

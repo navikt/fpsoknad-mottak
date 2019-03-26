@@ -44,6 +44,7 @@ import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
@@ -106,6 +107,8 @@ public class FPFordelTest {
     @Mock
     private FPInfoSaksPoller poller;
     @Mock
+    private MeterRegistry registry;
+    @Mock
     private TokenUtil tokenHelper;
     private FPFordelConfig cfg;
 
@@ -150,7 +153,7 @@ public class FPFordelTest {
                 pdfGenerator);
         return new FPFordelSøknadSender(
                 new FPFordelConnection(restOperations, cfg,
-                        new FPFordelResponseHandler(restOperations, 3, 10000, poller)),
+                        new FPFordelResponseHandler(restOperations, 3, 10000, poller), registry),
                 konvoluttGenerator);
     }
 

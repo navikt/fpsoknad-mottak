@@ -69,5 +69,6 @@ public enum SøknadType {
         if (counter != null) {
             counter.increment();
         }
+
     }
 }
