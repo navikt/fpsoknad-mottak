@@ -70,7 +70,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
 
     private Timer timer(SøknadType type) {
         return Timer.builder("application.send")
-                .tags("type", type.name())
+                .tags("type", type.name(), "fagsaktype", type.fagsakType().name())
                 .publishPercentiles(0.5, 0.95)
                 .publishPercentileHistogram()
                 .minimumExpectedValue(Duration.ofSeconds(2))
