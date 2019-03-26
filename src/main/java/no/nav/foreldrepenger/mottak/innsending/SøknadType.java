@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ETTERSENDING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ETTERSENDING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_FØRSTEGANG;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_ETTERSSENDING;
+import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_ETTERSENDING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_FØRSTEGANG;
 
 import io.micrometer.core.instrument.Counter;
@@ -15,13 +15,13 @@ import static no.nav.foreldrepenger.mottak.domain.FagsakType.*;
 
 public enum SøknadType {
     INITIELL_FORELDREPENGER(FP_FØRSTEGANG),
-    ETTERSENDING_FORELDREPENGER(FP_ETTERSSENDING),
+    ETTERSENDING_FORELDREPENGER(FP_ETTERSENDING),
     ENDRING_FORELDREPENGER(FP_ENDRING),
     INITIELL_ENGANGSSTØNAD(ES_FØRSTEGANG),
-    ETTERSENDING_ENGANGSSTØNAD(ES_ETTERSSENDING),
+    ETTERSENDING_ENGANGSSTØNAD(ES_ETTERSENDING),
     INITIELL_ENGANGSSTØNAD_DOKMOT,
     INITIELL_SVANGERSKAPSPENGER(SVP_FØRSTEGANG),
-    ETTERSENDING_SVANGERSKAPSPENGER(SVP_ETTERSSENDING),
+    ETTERSENDING_SVANGERSKAPSPENGER(SVP_ETTERSENDING),
     UKJENT;
 
     private final Counter counter;
@@ -34,19 +34,19 @@ public enum SøknadType {
         this.counter = counter;
     }
 
-    public boolean erForeldrepenger() {
+    private boolean erForeldrepenger() {
         return this.equals(INITIELL_FORELDREPENGER)
                 || this.equals(ENDRING_FORELDREPENGER)
                 || this.equals(ETTERSENDING_FORELDREPENGER);
     }
 
-    public boolean erEngangsstønad() {
+    private boolean erEngangsstønad() {
         return this.equals(INITIELL_ENGANGSSTØNAD)
                 || this.equals(ETTERSENDING_ENGANGSSTØNAD)
                 || this.equals(INITIELL_ENGANGSSTØNAD_DOKMOT);
     }
 
-    public boolean erSvangerskapspenger() {
+    private boolean erSvangerskapspenger() {
         return this.equals(INITIELL_SVANGERSKAPSPENGER)
                 || this.equals(ETTERSENDING_SVANGERSKAPSPENGER);
     }

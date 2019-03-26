@@ -1,8 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+import static no.nav.foreldrepenger.mottak.util.Versjon.defaultVersjon;
 
 import java.util.Objects;
 
@@ -35,7 +34,7 @@ public class SøknadEgenskap {
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 
     public SøknadEgenskap(SøknadType type) {
-        this(type.erSvangerskapspenger() ? DEFAULT_SVP_VERSJON : DEFAULT_VERSJON, type);
+        this(defaultVersjon(type), type);
     }
 
     @JsonCreator

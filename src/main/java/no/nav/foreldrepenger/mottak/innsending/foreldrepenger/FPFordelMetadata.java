@@ -133,16 +133,16 @@ public class FPFordelMetadata {
     }
 
     private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType søknadType) {
-        if (søknadType.erForeldrepenger()) {
+        switch (søknadType.fagsakType()) {
+        case FORELDREPENGER:
             return dokumentTypeFraRelasjonForForeldrepenger(søknad);
-        }
-        if (søknadType.erEngangsstønad()) {
+        case ENGANGSSTØNAD:
             return dokumentTypeFraRelasjonForEngangsstønad(søknad);
-        }
-        if (søknadType.erSvangerskapspenger()) {
+        case SVANGERSKAPSPENGER:
             return I000001;
+        default:
+            throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
         }
-        throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.errorhandling;
 
 import static java.util.stream.Collectors.joining;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.List;
 
@@ -18,17 +19,16 @@ public class UnsupportedEgenskapException extends SøknadEgenskapException {
     }
 
     public UnsupportedEgenskapException(List<? extends Mappable> mappables, SøknadEgenskap egenskap) {
-        this("Ingen egenskap " + egenskap + " blant " + mappables(mappables), null);
+        this("Ingen egenskap " + egenskap + " blant " + navn(mappables), null);
     }
 
     public UnsupportedEgenskapException(String msg, SøknadEgenskap egenskap, Throwable cause) {
         super(msg, egenskap, cause);
     }
 
-    private static String mappables(List<? extends Mappable> mappables) {
-        return mappables.stream()
+    private static String navn(List<? extends Mappable> mappables) {
+        return safeStream(mappables)
                 .map(c -> c.getClass().getSimpleName() + " (" + c.mapperEgenskaper() + ")")
                 .collect(joining(","));
     }
-
 }

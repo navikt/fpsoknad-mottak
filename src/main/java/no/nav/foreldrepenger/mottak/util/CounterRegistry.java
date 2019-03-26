@@ -19,15 +19,15 @@ public final class CounterRegistry {
     private static final String VARSEL_SEND = "varsel.send";
 
     public static final Counter ES_FØRSTEGANG = esCounter(FPFORDEL_SEND, "INITIELL_ENGANGSSTØNAD");
-    public static final Counter ES_ETTERSSENDING = esCounter(FPFORDEL_SEND, "ETTERSENDING_ENGANGSSTØNAD");
+    public static final Counter ES_ETTERSENDING = esCounter(FPFORDEL_SEND, "ETTERSENDING_ENGANGSSTØNAD");
 
     public static final Counter FP_SENDFEIL = fpCounter(FPFORDEL_SEND, "feil");
     public static final Counter FP_FØRSTEGANG = fpCounter(FPFORDEL_SEND, "INITIELL_FORELDREPENGER");
     public static final Counter FP_ENDRING = fpCounter(FPFORDEL_SEND, "ENDRING_FORELDREPENGER");
-    public static final Counter FP_ETTERSSENDING = fpCounter(FPFORDEL_SEND, "ETTERSENDING_FORELDREPENGER");
+    public static final Counter FP_ETTERSENDING = fpCounter(FPFORDEL_SEND, "ETTERSENDING_FORELDREPENGER");
 
     public static final Counter SVP_FØRSTEGANG = svpCounter(FPFORDEL_SEND, "INITIELL_SVANGERSKAPSPENGER");
-    public static final Counter SVP_ETTERSSENDING = svpCounter(FPFORDEL_SEND, "ETTERSENDING_SVANGERSKAPSPENGER");
+    public static final Counter SVP_ETTERSENDING = svpCounter(FPFORDEL_SEND, "ETTERSENDING_SVANGERSKAPSPENGER");
 
     public static final Counter GITTOPP_KVITTERING = fpCounter(FPFORDEL_KVITTERINGER, "gittopp");
     public static final Counter MANUELL_KVITTERING = fpCounter(FPFORDEL_KVITTERINGER, "gosys");
