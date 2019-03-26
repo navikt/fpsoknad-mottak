@@ -17,6 +17,7 @@ import org.springframework.web.client.RestOperations;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
@@ -48,7 +49,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
 
     private Kvittering doSend(SøknadType type, FPFordelKonvolutt konvolutt) {
         try {
-            Timer t = timer(type);
+
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             LOG.info("Sender {} til {}", name(type), name().toLowerCase());
@@ -59,7 +60,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
                     kvittering);
             stopWatch.stop();
             type.count();
-            t.record(stopWatch.getTime(), MILLISECONDS);
+            timer(type, kvittering.getLeveranseStatus()).record(stopWatch.getTime(), MILLISECONDS);
             kvittering.setPdf(konvolutt.PDFHovedDokument());
             return kvittering;
         } catch (Exception e) {
@@ -68,9 +69,9 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
         }
     }
 
-    private Timer timer(SøknadType type) {
+    private Timer timer(SøknadType type, LeveranseStatus leveranseStatus) {
         return Timer.builder("application.send")
-                .tags("type", type.name(), "fagsaktype", type.fagsakType().name())
+                .tags("status", leveranseStatus.name(), "type", type.name(), "fagsaktype", type.fagsakType().name())
                 .publishPercentiles(0.5, 0.95)
                 .publishPercentileHistogram()
                 .minimumExpectedValue(Duration.ofSeconds(2))
