@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public enum ArbeidType {
-    ORDINÆRT_ARBEID, ANNET;
+    ORDINÆRT_ARBEID, ANNET, SELVSTENDIG_NÆRINGSDRIVENDE;
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidType.class);
 

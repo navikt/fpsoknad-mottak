@@ -59,7 +59,7 @@ public class SøknadEgenskap {
     }
 
     public boolean erUkjent() {
-        return getType().equals(SøknadType.UKJENT) || getVersjon().equals(Versjon.UKJENT);
+        return getType().erUkjent() || getVersjon().erUkjent();
     }
 
     @Override

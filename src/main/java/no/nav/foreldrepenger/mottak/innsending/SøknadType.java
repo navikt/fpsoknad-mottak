@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import static no.nav.foreldrepenger.mottak.domain.FagsakType.ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.domain.FagsakType.FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.domain.FagsakType.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_ETTERSENDING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ES_FØRSTEGANG;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_ENDRING;
@@ -11,18 +14,11 @@ import static no.nav.foreldrepenger.mottak.util.CounterRegistry.SVP_FØRSTEGANG;
 import io.micrometer.core.instrument.Counter;
 import no.nav.foreldrepenger.mottak.domain.FagsakType;
 
-import static no.nav.foreldrepenger.mottak.domain.FagsakType.*;
-
 public enum SøknadType {
-    INITIELL_FORELDREPENGER(FP_FØRSTEGANG),
-    ETTERSENDING_FORELDREPENGER(FP_ETTERSENDING),
-    ENDRING_FORELDREPENGER(FP_ENDRING),
-    INITIELL_ENGANGSSTØNAD(ES_FØRSTEGANG),
-    ETTERSENDING_ENGANGSSTØNAD(ES_ETTERSENDING),
-    INITIELL_ENGANGSSTØNAD_DOKMOT,
-    INITIELL_SVANGERSKAPSPENGER(SVP_FØRSTEGANG),
-    ETTERSENDING_SVANGERSKAPSPENGER(SVP_ETTERSENDING),
-    UKJENT;
+    INITIELL_FORELDREPENGER(FP_FØRSTEGANG), ETTERSENDING_FORELDREPENGER(FP_ETTERSENDING), ENDRING_FORELDREPENGER(
+            FP_ENDRING), INITIELL_ENGANGSSTØNAD(ES_FØRSTEGANG), ETTERSENDING_ENGANGSSTØNAD(
+                    ES_ETTERSENDING), INITIELL_ENGANGSSTØNAD_DOKMOT, INITIELL_SVANGERSKAPSPENGER(
+                            SVP_FØRSTEGANG), ETTERSENDING_SVANGERSKAPSPENGER(SVP_ETTERSENDING), UKJENT;
 
     private final Counter counter;
 
@@ -49,6 +45,10 @@ public enum SøknadType {
     private boolean erSvangerskapspenger() {
         return this.equals(INITIELL_SVANGERSKAPSPENGER)
                 || this.equals(ETTERSENDING_SVANGERSKAPSPENGER);
+    }
+
+    public boolean erUkjent() {
+        return UKJENT.equals(this);
     }
 
     public FagsakType fagsakType() {

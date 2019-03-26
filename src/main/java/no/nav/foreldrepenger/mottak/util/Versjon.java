@@ -85,4 +85,8 @@ public enum Versjon {
                 .flatMap(e -> e.stream())
                 .collect(toList());
     }
+
+    public boolean erUkjent() {
+        return UKJENT.equals(this);
+    }
 }
