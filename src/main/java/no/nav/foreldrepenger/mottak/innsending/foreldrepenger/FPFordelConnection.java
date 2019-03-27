@@ -78,9 +78,9 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
                 .publishPercentileHistogram()
                 .minimumExpectedValue(Duration.ofSeconds(2))
                 .maximumExpectedValue(Duration.ofSeconds(20));
-        if (rolle != null) {
-            builder.tag("rolle", rolle.name());
-        }
+        /*
+         * if (rolle != null) { builder.tag("rolle", rolle.name()); }
+         */
         return builder.register(registry);
     }
 
