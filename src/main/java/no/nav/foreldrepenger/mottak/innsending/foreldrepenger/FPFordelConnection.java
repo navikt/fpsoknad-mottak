@@ -16,6 +16,8 @@ import org.springframework.web.client.RestOperations;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.Timer.Builder;
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
@@ -39,15 +41,15 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
         this.registry = registry;
     }
 
-    public Kvittering send(SøknadType type, FPFordelKonvolutt konvolutt) {
+    public Kvittering send(SøknadType type, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
         if (isEnabled()) {
-            return doSend(type, konvolutt);
+            return doSend(type, rolle, konvolutt);
         }
         LOG.info("Sending av {} er deaktivert, ingenting å sende", type);
         return ikkeSendt(konvolutt.PDFHovedDokument());
     }
 
-    private Kvittering doSend(SøknadType type, FPFordelKonvolutt konvolutt) {
+    private Kvittering doSend(SøknadType type, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
         try {
 
             StopWatch stopWatch = new StopWatch();
@@ -60,7 +62,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
                     kvittering);
             stopWatch.stop();
             type.count();
-            timer(type, kvittering.getLeveranseStatus()).record(stopWatch.getTime(), MILLISECONDS);
+            timer(type, rolle, kvittering.getLeveranseStatus()).record(stopWatch.getTime(), MILLISECONDS);
             kvittering.setPdf(konvolutt.PDFHovedDokument());
             return kvittering;
         } catch (Exception e) {
@@ -69,14 +71,17 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
         }
     }
 
-    private Timer timer(SøknadType type, LeveranseStatus leveranseStatus) {
-        return Timer.builder("application.send")
+    private Timer timer(SøknadType type, BrukerRolle rolle, LeveranseStatus leveranseStatus) {
+        Builder builder = Timer.builder("application.send")
                 .tags("status", leveranseStatus.name(), "type", type.name(), "fagsaktype", type.fagsakType().name())
                 .publishPercentiles(0.5, 0.95)
                 .publishPercentileHistogram()
                 .minimumExpectedValue(Duration.ofSeconds(2))
-                .maximumExpectedValue(Duration.ofSeconds(20))
-                .register(registry);
+                .maximumExpectedValue(Duration.ofSeconds(20));
+        if (rolle != null) {
+            builder.tag("rolle", rolle.name());
+        }
+        return builder.register(registry);
     }
 
     @Override

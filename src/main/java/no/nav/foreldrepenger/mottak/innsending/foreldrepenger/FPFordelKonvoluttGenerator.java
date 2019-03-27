@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConver
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
@@ -63,7 +64,7 @@ public class FPFordelKonvoluttGenerator {
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
-        søknad.getVedlegg().stream()
+        safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
@@ -81,7 +82,7 @@ public class FPFordelKonvoluttGenerator {
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
                 .header(CONTENT_ENCODING, "base64");
-        endringsøknad.getVedlegg().stream()
+        safeStream(endringsøknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));
@@ -91,7 +92,7 @@ public class FPFordelKonvoluttGenerator {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         builder.part(METADATA, metadata(ettersending, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
-        ettersending.getVedlegg().stream()
+        safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
 
         return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));

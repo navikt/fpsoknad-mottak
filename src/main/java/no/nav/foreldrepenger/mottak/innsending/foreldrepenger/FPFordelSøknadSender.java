@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
@@ -23,17 +24,19 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, payloadGenerator.generer(søknad, søker, egenskap));
+        return doSend(egenskap, søknad.getSøker().getSøknadsRolle(), payloadGenerator.generer(søknad, søker, egenskap));
     }
 
     @Override
-    public Kvittering endreSøknad(Endringssøknad endringsSøknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, payloadGenerator.generer(endringsSøknad, søker, egenskap));
+    public Kvittering endreSøknad(Endringssøknad endringssøknad, Person søker, SøknadEgenskap egenskap) {
+        return doSend(egenskap, endringssøknad.getSøker().getSøknadsRolle(),
+                payloadGenerator.generer(endringssøknad, søker, egenskap));
     }
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, payloadGenerator.generer(ettersending, søker));
+        return doSend(egenskap, null,
+                payloadGenerator.generer(ettersending, søker));
     }
 
     @Override
@@ -41,8 +44,8 @@ public class FPFordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering doSend(SøknadEgenskap egenskap, FPFordelKonvolutt konvolutt) {
-        return connection.send(egenskap.getType(), konvolutt);
+    private Kvittering doSend(SøknadEgenskap egenskap, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
+        return connection.send(egenskap.getType(), rolle, konvolutt);
     }
 
     @Override
