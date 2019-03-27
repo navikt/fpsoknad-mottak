@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.util.jaxb;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import java.io.IOException;
@@ -101,7 +100,7 @@ public abstract class AbstractJAXBUtil {
             return (JAXBElement<T>) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
             LOG.warn("Noe gikk galt ved unmarshalling av {} til klasse {}", xml, clazz.getName(), e);
-            LOG.warn(CONFIDENTIAL, "XML som feilet er {}", xml);
+            // LOG.warn(CONFIDENTIAL, "XML som feilet er {}", xml);
             throw new IllegalArgumentException(e);
         }
     }
