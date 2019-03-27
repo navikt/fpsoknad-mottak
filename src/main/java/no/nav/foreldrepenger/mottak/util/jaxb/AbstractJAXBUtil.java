@@ -90,8 +90,8 @@ public abstract class AbstractJAXBUtil {
         try {
             return (T) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt ved unmarshalling til klasse {}", clazz.getName(), e);
-            LOG.warn(CONFIDENTIAL, "XML som feilet er {}", xml);
+            LOG.warn("Noe gikk galt ved unmarshalling av {} til klasse {}", xml, clazz.getName(), e);
+            // LOG.warn(CONFIDENTIAL, "XML som feilet er {}", xml);
             throw new IllegalArgumentException(e);
         }
     }
@@ -100,7 +100,7 @@ public abstract class AbstractJAXBUtil {
         try {
             return (JAXBElement<T>) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt ved unmarshalling til klasse {}", clazz.getName(), e);
+            LOG.warn("Noe gikk galt ved unmarshalling av {} til klasse {}", xml, clazz.getName(), e);
             LOG.warn(CONFIDENTIAL, "XML som feilet er {}", xml);
             throw new IllegalArgumentException(e);
         }
