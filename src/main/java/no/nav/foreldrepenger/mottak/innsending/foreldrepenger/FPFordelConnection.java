@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.Optional;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -72,16 +73,19 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
     }
 
     private Timer timer(SøknadType type, BrukerRolle rolle, LeveranseStatus leveranseStatus) {
-        Builder builder = Timer.builder("application.send")
-                .tags("status", leveranseStatus.name(), "type", type.name(), "fagsaktype", type.fagsakType().name())
+        return Timer.builder("application.send")
+                .tags("rolle", rolleFra(rolle), "status", leveranseStatus.name(), "type", type.name(), "fagsaktype",
+                        type.fagsakType().name())
                 .publishPercentiles(0.5, 0.95)
                 .publishPercentileHistogram()
                 .minimumExpectedValue(Duration.ofSeconds(2))
-                .maximumExpectedValue(Duration.ofSeconds(20));
-        /*
-         * if (rolle != null) { builder.tag("rolle", rolle.name()); }
-         */
-        return builder.register(registry);
+                .maximumExpectedValue(Duration.ofSeconds(20)).register(registry);
+    }
+
+    private static String rolleFra(BrukerRolle rolle) {
+        return Optional.ofNullable(rolle)
+                .map(BrukerRolle::name)
+                .orElse("N/A");
     }
 
     @Override
