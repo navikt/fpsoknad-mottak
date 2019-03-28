@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.springframework.util.StreamUtils.copyToString;
 
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class TestUtils {
     }
 
     public static List<Versjon> alleSøknadVersjoner() {
-        return Lists.newArrayList(V3);
+        return Lists.newArrayList(DEFAULT_VERSJON);
     }
 
     public static Søknad engangssøknad(Versjon v, boolean utland) {
