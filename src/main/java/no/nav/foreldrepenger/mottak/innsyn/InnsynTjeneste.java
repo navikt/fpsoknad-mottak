@@ -50,7 +50,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public Vedtak hentVedtak(AktorId aktørId, String saksnummer) {
-        return Optional.ofNullable(hentSaker(aktørId).stream()
+        return Optional.ofNullable(safeStream(hentSaker(aktørId))
                 .filter(s -> s.getSaksnummer().equals(saksnummer))
                 .findFirst()
                 .orElse(null))
@@ -169,12 +169,6 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
     }
 
-    private static BehandlingsTema tilTema(String tema) {
-        return Optional.ofNullable(tema)
-                .map(BehandlingsTema::valueOf)
-                .orElse(null);
-    }
-
     private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
         String xml = wrapper.getXml();
         try {
@@ -199,6 +193,12 @@ public class InnsynTjeneste implements Innsyn {
             LOG.warn("Feil ved mapping av vedtak fra {}", xml, e);
             return null;
         }
+    }
+
+    private static BehandlingsTema tilTema(String tema) {
+        return Optional.ofNullable(tema)
+                .map(BehandlingsTema::valueOf)
+                .orElse(null);
     }
 
     @Override

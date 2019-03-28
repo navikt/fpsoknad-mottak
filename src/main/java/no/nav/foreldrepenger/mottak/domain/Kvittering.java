@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
@@ -39,6 +40,10 @@ public class Kvittering {
 
     public boolean erVellykket() {
         return leveranseStatus.erVellykket();
+    }
+
+    public boolean erUklarStatus() {
+        return FP_FORDEL_MESSED_UP.equals(leveranseStatus);
     }
 
     public static Kvittering ikkeSendt(byte[] pdf) {

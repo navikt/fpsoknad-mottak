@@ -17,7 +17,6 @@ import org.springframework.web.client.RestOperations;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-import io.micrometer.core.instrument.Timer.Builder;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
@@ -61,6 +60,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
                             FPFordelKvittering.class));
             LOG.info("Sendte {} til {}, fikk kvittering {}", name(type), name().toLowerCase(),
                     kvittering);
+
             stopWatch.stop();
             type.count();
             timer(type, rolle, kvittering.getLeveranseStatus()).record(stopWatch.getTime(), MILLISECONDS);

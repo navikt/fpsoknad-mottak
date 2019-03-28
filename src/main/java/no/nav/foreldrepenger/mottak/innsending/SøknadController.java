@@ -58,24 +58,20 @@ public class SøknadController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         Kvittering kvittering = søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
-        if (kvittering.erVellykket()) {
-            varselSender.varsle(varselFra(kvittering));
-        }
-        return kvittering;
+        return sjekkStatus(kvittering, "Søknad", true);
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        return søknadSender.ettersend(ettersending, oppslag.getSøker(), inspektør.inspiser(ettersending));
+        Kvittering kvittering = søknadSender.ettersend(ettersending, oppslag.getSøker(),
+                inspektør.inspiser(ettersending));
+        return sjekkStatus(kvittering, "Ettersending", false);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
         Kvittering kvittering = søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
-        if (kvittering.erVellykket()) {
-            varselSender.varsle(varselFra(kvittering));
-        }
-        return kvittering;
+        return sjekkStatus(kvittering, "Endring", true);
     }
 
     @GetMapping("/ping")
@@ -88,6 +84,16 @@ public class SøknadController {
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
         return innsyn.hentSaker(oppslag.getAktørId());
+    }
+
+    private Kvittering sjekkStatus(Kvittering kvittering, String type, boolean varsle) {
+        if (kvittering.erUklarStatus()) {
+            LOG.warn("{} fikk ikke entydig status, dette bør sjekkes opp nærmere", type);
+        }
+        if (varsle && kvittering.erVellykket()) {
+            varselSender.varsle(varselFra(kvittering));
+        }
+        return kvittering;
     }
 
     private Varsel varselFra(Kvittering kvittering) {
