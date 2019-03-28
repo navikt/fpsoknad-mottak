@@ -57,7 +57,8 @@ public class SøknadController {
 
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
-        return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad)), "Søknad", true);
+        return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad)),
+                "Førstegangssøknad");
     }
 
     @PostMapping("/ettersend")
@@ -68,7 +69,8 @@ public class SøknadController {
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER), "Endring", true);
+        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER),
+                "Endringssøknad");
     }
 
     @GetMapping("/ping")
@@ -81,6 +83,10 @@ public class SøknadController {
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
         return innsyn.hentSaker(oppslag.getAktørId());
+    }
+
+    private Kvittering sjekkStatus(Kvittering kvittering, String type) {
+        return sjekkStatus(kvittering, type, true);
     }
 
     private Kvittering sjekkStatus(Kvittering kvittering, String type, boolean varsle) {
