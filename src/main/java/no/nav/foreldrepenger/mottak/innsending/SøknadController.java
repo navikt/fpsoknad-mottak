@@ -57,21 +57,18 @@ public class SøknadController {
 
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
-        Kvittering kvittering = søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad));
-        return sjekkStatus(kvittering, "Søknad", true);
+        return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad)), "Søknad", true);
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        Kvittering kvittering = søknadSender.ettersend(ettersending, oppslag.getSøker(),
-                inspektør.inspiser(ettersending));
-        return sjekkStatus(kvittering, "Ettersending", false);
+        return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.getSøker(),
+                inspektør.inspiser(ettersending)), "Ettersending", false);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        Kvittering kvittering = søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER);
-        return sjekkStatus(kvittering, "Endring", true);
+        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER), "Endring", true);
     }
 
     @GetMapping("/ping")
