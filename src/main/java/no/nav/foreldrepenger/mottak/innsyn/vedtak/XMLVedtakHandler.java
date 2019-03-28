@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLVedtakMapper;
 
 @Component
 public class XMLVedtakHandler {
 
     private final XMLVedtakMapper mapper;
-    private final XMLInspektør inspektør;
+    private final Inspektør inspektør;
 
     public XMLVedtakHandler(@Qualifier(DELEGERENDE) XMLVedtakMapper mapper,
-            @Qualifier(VEDTAK) XMLInspektør inspektør) {
+            @Qualifier(VEDTAK) Inspektør inspektør) {
         this.inspektør = inspektør;
         this.mapper = mapper;
     }

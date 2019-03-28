@@ -22,9 +22,9 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-public interface XMLInspektør {
+public interface Inspektør {
 
-    Logger LOG = LoggerFactory.getLogger(XMLInspektør.class);
+    Logger LOG = LoggerFactory.getLogger(Inspektør.class);
 
     SøknadEgenskap inspiser(String xml);
 
@@ -52,7 +52,7 @@ public interface XMLInspektør {
         case svangerskapspenger:
             return ETTERSENDING_SVANGERSKAPSPENGER;
         default:
-            LOG.warn("UKjent eller ikke satt ettersendingstype " + type);
+            LOG.warn("Ukjent eller ikke satt ettersendingstype {}", type);
             throw new UnexpectedInputException("Ukjent eller ikke satt ettersendingstype %s", type);
         }
     }
@@ -68,5 +68,4 @@ public interface XMLInspektør {
     default Versjon versjon(String xml) {
         return inspiser(xml).getVersjon();
     }
-
 }

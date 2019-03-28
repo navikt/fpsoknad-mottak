@@ -26,7 +26,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.varsel.Varsel;
 import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
-import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
@@ -43,11 +43,11 @@ public class SøknadController {
     private final Innsyn innsyn;
     private final Oppslag oppslag;
     private final SøknadSender søknadSender;
-    private final XMLInspektør inspektør;
+    private final Inspektør inspektør;
     private final VarselSender varselSender;
 
     public SøknadController(SøknadSender søknadSender, VarselSender varselSender, Oppslag oppslag, Innsyn innsyn,
-            @Qualifier(SØKNAD) XMLInspektør inspektør) {
+            @Qualifier(SØKNAD) Inspektør inspektør) {
         this.søknadSender = søknadSender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;

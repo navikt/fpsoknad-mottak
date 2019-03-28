@@ -13,7 +13,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.XMLInspektør;
+import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLStreamVedtakInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.DelegerendeXMLVedtakMapper;
@@ -25,7 +25,7 @@ class VedtakTest {
 
     private static final XMLVedtakMapper MAPPER = new DelegerendeXMLVedtakMapper(new V1EngangsstønadXMLVedtakMapper(),
             new V2XMLVedtakMapper());
-    private static final XMLInspektør INSPEKTØR = new XMLStreamVedtakInspektør();
+    private static final Inspektør INSPEKTØR = new XMLStreamVedtakInspektør();
 
     @Test
     void testVedtakFPV2() throws IOException {
