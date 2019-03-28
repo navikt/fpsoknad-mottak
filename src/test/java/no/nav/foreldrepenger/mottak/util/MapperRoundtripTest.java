@@ -21,6 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
@@ -35,13 +36,15 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 @MockitoSettings(strictness = LENIENT)
 public class MapperRoundtripTest {
 
+    private static final XMLStreamSøknadInspektør INSPEKTØR = new XMLStreamSøknadInspektør();
+
     private static final AktorId SØKER = new AktorId("42");
 
     private static final AktorId ID = SØKER;
 
     @Mock
     private Oppslag oppslag;
-    private DelegerendeDomainMapper domainMapper;
+    private DomainMapper domainMapper;
     private XMLSøknadMapper xmlMapper;
 
     @BeforeEach
@@ -73,14 +76,14 @@ public class MapperRoundtripTest {
     private void roundTripInitiell(Versjon v) {
         Søknad søknad = søknadMedToVedlegg(v);
         String xml = domainMapper.tilXML(søknad, SØKER, new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
-        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
+        SøknadEgenskap egenskaper = INSPEKTØR.inspiser(xml);
         assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
     }
 
     private void roundTripEndring(Versjon v) {
         Endringssøknad søknad = endringssøknad(v);
         String xml = domainMapper.tilXML(søknad, SØKER, new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
-        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
+        SøknadEgenskap egenskaper = INSPEKTØR.inspiser(xml);
         assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
     }
 }

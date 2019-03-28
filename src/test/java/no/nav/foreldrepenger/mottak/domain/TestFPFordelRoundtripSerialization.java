@@ -15,7 +15,6 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,7 +40,6 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
@@ -92,15 +90,6 @@ public class TestFPFordelRoundtripSerialization {
     @Test
     public void test1() {
         assertEquals(new AktorId("42"), template.getForObject(INNSENDING_PREPROD + "/test", AktorId.class));
-    }
-
-    @Test
-    public void testFPForeldrepengerSøknadXMLV2() {
-        Versjon versjon = V2;
-        Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        String xml = template.postForObject(INNSENDING_PREPROD + "/søknadV2", original, String.class);
-        SøknadEgenskap egenskaper = new XMLStreamSøknadInspektør().inspiser(xml);
-        assertEquals(original, xmlMapper.tilSøknad(xml, egenskaper));
     }
 
     @Test
