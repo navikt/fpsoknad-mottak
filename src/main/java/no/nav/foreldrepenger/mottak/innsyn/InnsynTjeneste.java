@@ -125,7 +125,7 @@ public class InnsynTjeneste implements Innsyn {
             LOG.info("Hentet intet vedtak");
         }
         else {
-            LOG.info("Hentet vedtak");
+            LOG.info("Hentet vedtak med id {}", vedtak.getFagsakId());
             LOG.info(CONFIDENTIAL, "{}", vedtak);
         }
         return vedtak;

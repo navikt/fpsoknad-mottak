@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.Uttak;
 
@@ -12,5 +14,10 @@ public class Vedtak {
     public Vedtak withMetadata(VedtakMetadata vedtakMetadata) {
         setMetadata(vedtakMetadata);
         return this;
+    }
+
+    @JsonIgnore
+    public String getFagsakId() {
+        return saksInformasjon.getFagsakId();
     }
 }
