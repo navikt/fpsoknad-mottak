@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 
 @Data
@@ -14,7 +15,7 @@ public class Behandling {
     private final LocalDateTime endretTidspunkt;
     private final String status;
     private final String type;
-    private final String tema;
+    private final BehandlingsTema tema;
     private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;

@@ -28,7 +28,7 @@
     <ns7:vedtaksresultat kode="INNVILGET"
         kodeverk="VEDTAK_RESULTAT_TYPE">Innvilget</ns7:vedtaksresultat>
     <ns7:personOpplysninger>
-        <personopplysningerEngangsstoenad>
+        <ns4:personopplysningerEngangsstoenad>
             <ns4:bruker>
                 <ns9:kjoenn>Kvinne</ns9:kjoenn>
                 <ns9:statsborgerskap kode="NOR">NORGE
@@ -80,7 +80,7 @@
             </ns4:familierelasjoner>
             <ns4:medlemskapsperioder />
             <ns4:inntekter />
-        </personopplysningerEngangsstoenad>
+        </ns4:personopplysningerEngangsstoenad>
     </ns7:personOpplysninger>
     <ns7:behandlingsresultat>
         <ns7:behandlingsresultat
@@ -92,11 +92,11 @@
                 <ns7:type kode="FP_VK_34"
                     kodeverk="VILKAR_TYPE">Søkers opplysningsplikt</ns7:type>
                 <ns7:vilkaarsgrunnlag>
-                    <vilkaarsgrunnlagSoekersopplysningsplikt>
+                    <ns3:vilkaarsgrunnlagSoekersopplysningsplikt>
                         <ns3:elektroniskSoeknad>true</ns3:elektroniskSoeknad>
                         <ns3:erBarnetFoedt>false</ns3:erBarnetFoedt>
                         <ns3:erSoeknadenKomplett>true</ns3:erSoeknadenKomplett>
-                    </vilkaarsgrunnlagSoekersopplysningsplikt>
+                    </ns3:vilkaarsgrunnlagSoekersopplysningsplikt>
                 </ns7:vilkaarsgrunnlag>
                 <ns7:utfall>OPPFYLT</ns7:utfall>
             </ns7:vilkaar>
@@ -104,12 +104,12 @@
                 <ns7:type kode="FP_VK_1" kodeverk="VILKAR_TYPE">Fødselsvilkår
                     Mor</ns7:type>
                 <ns7:vilkaarsgrunnlag>
-                    <vilkaarsgrunnlagFoedsel>
+                    <ns3:vilkaarsgrunnlagFoedsel>
                         <ns2:sokersKjoenn>KVINNE</ns2:sokersKjoenn>
                         <ns2:antallBarn>1</ns2:antallBarn>
                         <ns2:termindato>2018-11-11</ns2:termindato>
                         <ns2:soeknadsdato>2018-10-10</ns2:soeknadsdato>
-                    </vilkaarsgrunnlagFoedsel>
+                    </ns3:vilkaarsgrunnlagFoedsel>
                 </ns7:vilkaarsgrunnlag>
                 <ns7:utfall>OPPFYLT</ns7:utfall>
             </ns7:vilkaar>
@@ -117,7 +117,7 @@
                 <ns7:type kode="FP_VK_2" kodeverk="VILKAR_TYPE">Medlemskapsvilkåret
                 </ns7:type>
                 <ns7:vilkaarsgrunnlag>
-                    <vilkaarsgrunnlagMedlemskap>
+                    <ns3:vilkaarsgrunnlagMedlemskap>
                         <ns2:personstatus>Bosatt</ns2:personstatus>
                         <ns2:erBrukerMedlem>true</ns2:erBrukerMedlem>
                         <ns2:erBrukerBosatt>true</ns2:erBrukerBosatt>
@@ -131,7 +131,7 @@
                         </ns2:erBrukerBorgerAvEUEOS>
                         <ns2:erBrukerPliktigEllerFrivilligMedlem>false
                         </ns2:erBrukerPliktigEllerFrivilligMedlem>
-                    </vilkaarsgrunnlagMedlemskap>
+                    </ns3:vilkaarsgrunnlagMedlemskap>
                 </ns7:vilkaarsgrunnlag>
                 <ns7:utfall>OPPFYLT</ns7:utfall>
             </ns7:vilkaar>
@@ -139,26 +139,26 @@
                 <ns7:type kode="FP_VK_3" kodeverk="VILKAR_TYPE">Søknadsfristvilkåret
                 </ns7:type>
                 <ns7:vilkaarsgrunnlag>
-                    <vilkaarsgrunnlagSoeknadsfrist>
+                    <ns3:vilkaarsgrunnlagSoeknadsfrist>
                         <ns2:elektroniskSoeknad>true</ns2:elektroniskSoeknad>
                         <ns2:skjaeringstidspunkt>2018-11-09</ns2:skjaeringstidspunkt>
                         <ns2:soeknadMottattDato>2018-10-15</ns2:soeknadMottattDato>
-                    </vilkaarsgrunnlagSoeknadsfrist>
+                    </ns3:vilkaarsgrunnlagSoeknadsfrist>
                 </ns7:vilkaarsgrunnlag>
                 <ns7:utfall>OPPFYLT</ns7:utfall>
             </ns7:vilkaar>
         </ns7:vurderteVilkaar>
         <ns7:beregningsresultat>
             <ns7:beregningsgrunnlag>
-                <beregningsgrunnlagEngangsstoenad>
+                <ns17:beregningsgrunnlagEngangsstoenad>
                     <ns17:antallBarn>1</ns17:antallBarn>
                     <ns17:sats>63140</ns17:sats>
-                </beregningsgrunnlagEngangsstoenad>
+                </ns17:beregningsgrunnlagEngangsstoenad>
             </ns7:beregningsgrunnlag>
             <ns7:tilkjentYtelse>
-                <ytelseEngangsstoenad>
+                <ns15:ytelseEngangsstoenad>
                     <ns14:beloep>63140.0</ns14:beloep>
-                </ytelseEngangsstoenad>
+                </ns15:ytelseEngangsstoenad>
             </ns7:tilkjentYtelse>
         </ns7:beregningsresultat>
         <ns7:manuelleVurderinger>

@@ -36,11 +36,10 @@ public class V1EngangsstønadXMLVedtakMapper implements XMLVedtakMapper {
     private static Vedtak tilVedtak(String xml) {
         try {
             no.nav.vedtak.felles.xml.vedtak.v1.Vedtak vedtak = unmarshal(xml);
-            return new Vedtak(null);
+            return new Vedtak(null, null);
         } catch (Exception e) {
-            LOG.warn("Feil ved unmarshalling av vedtak", e);
+            LOG.warn("Feil ved unmarshalling av vedtak fra {}", xml, e);
             return null;
-
         }
     }
 

@@ -7,7 +7,6 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
@@ -37,6 +36,7 @@ class VedtakTest {
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNotNull(vedtak);
         assertNotNull(vedtak.getUttak());
+        System.out.println(vedtak.getSaksInformasjon());
     }
 
     @Test
@@ -46,7 +46,7 @@ class VedtakTest {
         assertEquals(V1, e.getVersjon());
         assertEquals(ENGANGSSTØNAD, e.getFagsakType());
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
-        assertNull(vedtak);
+        assertNotNull(vedtak);
     }
 
     @Test
@@ -56,6 +56,7 @@ class VedtakTest {
         assertEquals(V2, e.getVersjon());
         assertEquals(ENGANGSSTØNAD, e.getFagsakType());
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
-        assertNull(vedtak);
+        assertNotNull(vedtak);
+        System.out.println(vedtak.getSaksInformasjon());
     }
 }

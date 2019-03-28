@@ -7,6 +7,7 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.Uttak;
 public class Vedtak {
     private VedtakMetadata metadata;
     private final Uttak uttak;
+    private final SaksInformasjon saksInformasjon;
 
     public Vedtak withMetadata(VedtakMetadata vedtakMetadata) {
         setMetadata(vedtakMetadata);

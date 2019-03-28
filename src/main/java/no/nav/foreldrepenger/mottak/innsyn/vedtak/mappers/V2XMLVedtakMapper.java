@@ -20,12 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsyn.vedtak.SaksInformasjon;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.ArbeidType;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak.AvslagsÅrsak;
@@ -81,18 +83,41 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
 
     private static Vedtak tilFPVedtak(String xml) {
         try {
-            return new Vedtak(tilUttak(((JAXBElement<UttakForeldrepenger>) unmarshalFP(xml).getBehandlingsresultat()
-                    .getBeregningsresultat().getUttak().getAny().get(0)).getValue()));
+            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalFP(xml);
+            SaksInformasjon saksInfo = tilSaksInformasjon(vedtak);
+            return new Vedtak(tilUttak(((JAXBElement<UttakForeldrepenger>) vedtak.getBehandlingsresultat()
+                    .getBeregningsresultat().getUttak().getAny().get(0)).getValue()), saksInfo);
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak {} for foreldrepenger", xml, e);
             return null;
         }
     }
 
+    private static SaksInformasjon tilSaksInformasjon(no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak) {
+        SaksInformasjon saksInfo = new SaksInformasjon();
+        saksInfo.ansvarligBeslutterIdent = vedtak.getAnsvarligBeslutterIdent();
+        saksInfo.ansvarligSaksbehandlerIdent = vedtak.getAnsvarligSaksbehandlerIdent();
+        saksInfo.behandlendeEnhet = vedtak.getBehandlendeEnhet();
+        saksInfo.behandlingsTema = tilBehandlingsTema(vedtak.getBehandlingsTema().getKode());
+        saksInfo.fagsakAnnenForelderId = vedtak.getFagsakAnnenForelderId();
+        saksInfo.fagsakId = vedtak.getFagsakId();
+        saksInfo.fagsakType = vedtak.getFagsakType().getKode();
+        saksInfo.søknadsdato = vedtak.getSoeknadsdato();
+        saksInfo.vedtaksdato = vedtak.getVedtaksdato();
+        saksInfo.klagedato = vedtak.getKlagedato();
+        return saksInfo;
+    }
+
+    private static BehandlingsTema tilBehandlingsTema(String kode) {
+        return Optional.ofNullable(kode)
+                .map(BehandlingsTema::valueOf)
+                .orElse(null);
+    }
+
     private static Vedtak tilESVedtak(String xml) {
         try {
             no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalES(xml);
-            return new Vedtak(null);
+            return new Vedtak(null, tilSaksInformasjon(vedtak));
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak {} for engangsstønad", xml, e);
             return null;

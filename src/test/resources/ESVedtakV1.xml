@@ -13,10 +13,10 @@
         <bruker>
             <navn>Navn Navnesen</navn>
             <norskIdent>01010111111</norskIdent>
-            <kjoenn kode="M" kodeverk="BRUKER_KJOENN">Mann</kjoenn>
+            <kjoenn>Mann</kjoenn>
             <statsborgerskap kode="NOR" kodeverk="LANDKODER">NORGE</statsborgerskap>
             <personstatus kode="BOSA" kodeverk="PERSONSTATUS_TYPE">Bosatt</personstatus>
-            <region kode="NORDEN" kodeverk="REGION">Norden</region>
+            <region>Norden</region>
             <sivilstand kode="UGIF" kodeverk="SIVILSTAND_TYPE">Ugift</sivilstand>
             <foedselssdato>1984-03-04+01:00</foedselssdato>
         </bruker>

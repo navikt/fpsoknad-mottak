@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
+import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
@@ -159,12 +160,18 @@ public class InnsynTjeneste implements Innsyn {
                         .behandlingResultat(w.getBehandlingResultat())
                         .status(w.getStatus())
                         .årsak(w.getÅrsak())
-                        .tema(w.getTema())
+                        .tema(tilTema(w.getTema()))
                         .type(w.getType())
                         .inntektsmeldinger(w.getInntektsmeldinger())
                         .søknad(hentSøknad(w.getSøknadsLenke()))
                         .vedtak(hentVedtak(w.getVedtaksLenke()))
                         .build())
+                .orElse(null);
+    }
+
+    private static BehandlingsTema tilTema(String tema) {
+        return Optional.ofNullable(tema)
+                .map(BehandlingsTema::valueOf)
                 .orElse(null);
     }
 
