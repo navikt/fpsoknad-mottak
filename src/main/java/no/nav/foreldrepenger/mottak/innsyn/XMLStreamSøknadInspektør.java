@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Arrays.asList;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.SØKNAD;
+import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -20,13 +20,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.AbstractXMLInspektør;
+import no.nav.foreldrepenger.mottak.AbstractInspektør;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 @Qualifier(SØKNAD)
-public final class XMLStreamSøknadInspektør extends AbstractXMLInspektør {
+public final class XMLStreamSøknadInspektør extends AbstractInspektør {
 
     private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";

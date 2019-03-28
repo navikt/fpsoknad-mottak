@@ -21,7 +21,6 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V2ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
@@ -50,7 +49,6 @@ public class MapperRoundtripTest {
         when(oppslag.getFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.getAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
         domainMapper = new DelegerendeDomainMapper(
-                new V2ForeldrepengerDomainMapper(oppslag),
                 new V3ForeldrepengerDomainMapper(oppslag));
         xmlMapper = new DelegerendeXMLSøknadMapper(
                 new V1ForeldrepengerXMLMapper(oppslag),

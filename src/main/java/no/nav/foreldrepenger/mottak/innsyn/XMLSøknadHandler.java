@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.SØKNAD;
+import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 
 import org.springframework.beans.factory.annotation.Qualifier;

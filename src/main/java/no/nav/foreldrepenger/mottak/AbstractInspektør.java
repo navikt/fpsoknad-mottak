@@ -13,13 +13,13 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
-public abstract class AbstractXMLInspektør implements Inspektør {
+public abstract class AbstractInspektør implements Inspektør {
 
     public static final String SØKNAD = "søknad";
     public static final String VEDTAK = "vedtak";
 
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractXMLInspektør.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractInspektør.class);
 
     protected static Versjon versjonFraXML(String xml) {
         return versjonFra(rootElementNamespace(xml));

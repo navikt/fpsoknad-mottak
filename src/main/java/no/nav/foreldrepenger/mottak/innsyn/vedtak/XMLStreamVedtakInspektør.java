@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.VEDTAK;
+import static no.nav.foreldrepenger.mottak.AbstractInspektør.VEDTAK;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.AbstractXMLInspektør;
+import no.nav.foreldrepenger.mottak.AbstractInspektør;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 @Qualifier(VEDTAK)
-public final class XMLStreamVedtakInspektør extends AbstractXMLInspektør {
+public final class XMLStreamVedtakInspektør extends AbstractInspektør {
 
     private static final String FAGSAKTYPE = "fagsakType";
     private static final String ENGANGSSTØNAD = "ENGANGSSTOENAD";

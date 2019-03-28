@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
-import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.VEDTAK;
+import static no.nav.foreldrepenger.mottak.AbstractInspektør.VEDTAK;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 
 import org.springframework.beans.factory.annotation.Qualifier;

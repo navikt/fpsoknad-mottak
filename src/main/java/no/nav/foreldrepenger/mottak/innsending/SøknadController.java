@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.mottak.AbstractXMLInspektør.SØKNAD;
+import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
