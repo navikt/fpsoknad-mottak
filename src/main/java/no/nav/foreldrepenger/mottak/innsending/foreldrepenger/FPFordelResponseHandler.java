@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.gosysKvittering;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.GITTOPP_KVITTERING;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 
@@ -130,19 +129,6 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     private <T> ResponseEntity<T> poll(URI uri, String name, long delayMillis, Class<T> clazz) {
         waitFor(delayMillis);
         return getForEntity(uri, clazz);
-    }
-
-    private static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
-        Kvittering kvittering = new Kvittering(type);
-        kvittering.setJournalId(journalId);
-        kvittering.setSaksNr(saksnr);
-        return kvittering;
-    }
-
-    private static Kvittering gosysKvittering(FPFordelGosysKvittering gosysKvittering) {
-        LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}",
-                gosysKvittering.getJournalpostId());
-        return kvitteringMedType(GOSYS, gosysKvittering.getJournalpostId(), null);
     }
 
     @Override

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.domain;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.AVSLÅTT;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 
@@ -105,6 +107,12 @@ public class Kvittering {
         FAILED.increment();
         return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, kvittering.getJournalpostId(),
                 kvittering.getSaksnummer());
+    }
+
+    public static Kvittering gosysKvittering(FPFordelGosysKvittering gosysKvittering) {
+        LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}",
+                gosysKvittering.getJournalpostId());
+        return kvitteringMedType(GOSYS, gosysKvittering.getJournalpostId(), null);
     }
 
     @Override
