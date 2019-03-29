@@ -24,12 +24,12 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, søknad.getSøker().getSøknadsRolle(), payloadGenerator.generer(søknad, søker, egenskap));
+        return doSend(egenskap, søknad.getSøknadsRolle(), payloadGenerator.generer(søknad, søker, egenskap));
     }
 
     @Override
     public Kvittering endreSøknad(Endringssøknad endringssøknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, endringssøknad.getSøker().getSøknadsRolle(),
+        return doSend(egenskap, endringssøknad.getSøknadsRolle(),
                 payloadGenerator.generer(endringssøknad, søker, egenskap));
     }
 

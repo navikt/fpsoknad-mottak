@@ -1,16 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.AVSLÅTT;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.INNVILGET;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅ_VENT;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.ACCEPTED;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FAILED;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.PENDING;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.REJECTED;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.RUNNING;
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.forsendelsesStatusKvittering;
+import static no.nav.foreldrepenger.mottak.domain.Kvittering.sendtOgForsøktBehandletKvittering;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 
 import java.net.URI;
@@ -25,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 
@@ -101,46 +91,8 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
         return timer.getTime();
     }
 
-    private static Kvittering forsendelsesStatusKvittering(ForsendelsesStatusKvittering forsendelsesStatus,
-            FPSakFordeltKvittering fordeltKvittering) {
-
-        switch (forsendelsesStatus.getForsendelseStatus()) {
-        case AVSLÅTT:
-            REJECTED.increment();
-            return kvitteringMedType(AVSLÅTT, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case INNVILGET:
-            ACCEPTED.increment();
-            return kvitteringMedType(INNVILGET, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case MOTTATT:
-        case PÅ_VENT:
-            PENDING.increment();
-            return kvitteringMedType(PÅ_VENT, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case PÅGÅR:
-            RUNNING.increment();
-            return kvitteringMedType(PÅGÅR, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        default:
-            LOG.warn("Fikk forsendelsesstatus {}", forsendelsesStatus.getForsendelseStatus());
-            FAILED.increment();
-            return new Kvittering(FP_FORDEL_MESSED_UP);
-        }
-    }
-
-    private static Kvittering sendtOgForsøktBehandletKvittering(FPSakFordeltKvittering kvittering) {
-        LOG.info("Søknaden er motatt og forsøkt behandlet av FPSak, journalId er {}, saksnummer er {}",
-                kvittering.getJournalpostId(), kvittering.getSaksnummer());
-        FAILED.increment();
-        return kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK, kvittering.getJournalpostId(),
-                kvittering.getSaksnummer());
-    }
-
-    private static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
-        Kvittering kvittering = new Kvittering(type);
-        kvittering.setJournalId(journalId);
-        kvittering.setSaksNr(saksnr);
-        return kvittering;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [maxAntallForsøk=" + maxAntallForsøk + "]";
     }
 }

@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.GITTOPP_KVITTERING;
@@ -31,15 +32,18 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelResponseHandler.class);
     private final int maxAntallForsøk;
     private final long maxMillis;
+    private final boolean pollfpinfo;
     private final FPInfoSaksPoller poller;
 
     public FPFordelResponseHandler(RestOperations restOperations,
             @Value("${fpfordel.max:10}") int maxAntallForsøk,
             @Value("${fpfordel.maxMillis:10000}") long maxMillis,
+            @Value("${fpfordel.pollfpinfo:true}") boolean pollfpinfo,
             FPInfoSaksPoller poller) {
         super(restOperations);
         this.maxAntallForsøk = maxAntallForsøk;
         this.maxMillis = maxMillis;
+        this.pollfpinfo = pollfpinfo;
         this.poller = poller;
     }
 
@@ -89,8 +93,12 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                     case SEE_OTHER:
                         FORDELT_KVITTERING.increment();
                         FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
-                        return poller.poll(locationFra(fpInfoRespons), timer, pending.getPollInterval(), fordelt);
-
+                        if (pollfpinfo) {
+                            return poller.poll(locationFra(fpInfoRespons), timer, pending.getPollInterval(), fordelt);
+                        }
+                        LOG.info("Poller ikke fpinfo");
+                        return Kvittering.kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK,
+                                fordelt.getJournalpostId(), fordelt.getSaksnummer());
                     default:
                         FEILET_KVITTERINGER.increment();
                         LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",

@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
+import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.security.oidc.api.Unprotected;
 
@@ -28,13 +29,16 @@ import no.nav.security.oidc.api.Unprotected;
 @Profile(PREPROD)
 public class SøknadPreprodController {
 
+    private static final AktorId SØKER = new AktorId("42");
+
     public static final String INNSENDING_PREPROD = "/preprod";
 
-    private final DelegerendeDomainMapper fpDomainMapper;
+    private final DomainMapper domainMapper;
     private final Inspektør inspektør;
 
-    public SøknadPreprodController(DelegerendeDomainMapper fpDomainMapper, @Qualifier(SØKNAD) Inspektør inspektør) {
-        this.fpDomainMapper = fpDomainMapper;
+    public SøknadPreprodController(@Qualifier(DELEGERENDE) DomainMapper domainMapper,
+            @Qualifier(SØKNAD) Inspektør inspektør) {
+        this.domainMapper = domainMapper;
         this.inspektør = inspektør;
     }
 
@@ -45,7 +49,7 @@ public class SøknadPreprodController {
 
     @GetMapping(value = "/test", produces = APPLICATION_JSON_VALUE)
     public AktorId test() {
-        return new AktorId("42");
+        return SØKER;
     }
 
     @PostMapping("/endringssøknad")
@@ -54,15 +58,15 @@ public class SøknadPreprodController {
     }
 
     private String fpSøknad(Søknad søknad) {
-        return fpDomainMapper.tilXML(søknad, new AktorId("42"), inspektør.inspiser(søknad));
+        return domainMapper.tilXML(søknad, SØKER, inspektør.inspiser(søknad));
     }
 
     private String fpEndringsSøknad(Endringssøknad endringssøknad) {
-        return fpDomainMapper.tilXML(endringssøknad, new AktorId("42"), inspektør.inspiser(endringssøknad));
+        return domainMapper.tilXML(endringssøknad, SØKER, inspektør.inspiser(endringssøknad));
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [fpDomainMapper=" + fpDomainMapper + "]";
+        return getClass().getSimpleName() + " [domainMapper=" + domainMapper + "]";
     }
 }

@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.domain;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,17 +60,22 @@ public class Søknad {
 
     @JsonIgnore
     public List<PåkrevdVedlegg> getPåkrevdeVedlegg() {
-        return vedlegg.stream()
-                .filter(s -> s instanceof PåkrevdVedlegg)
-                .map(s -> (PåkrevdVedlegg) s)
+        return safeStream(vedlegg)
+                .filter(PåkrevdVedlegg.class::isInstance)
+                .map(PåkrevdVedlegg.class::cast)
                 .collect(toList());
     }
 
     @JsonIgnore
     public List<ValgfrittVedlegg> getFrivilligeVedlegg() {
-        return vedlegg.stream()
-                .filter(s -> s instanceof ValgfrittVedlegg)
-                .map(s -> (ValgfrittVedlegg) s)
+        return safeStream(vedlegg)
+                .filter(ValgfrittVedlegg.class::isInstance)
+                .map(ValgfrittVedlegg.class::cast)
                 .collect(toList());
+    }
+
+    @JsonIgnore
+    public BrukerRolle getSøknadsRolle() {
+        return søker.getSøknadsRolle();
     }
 }

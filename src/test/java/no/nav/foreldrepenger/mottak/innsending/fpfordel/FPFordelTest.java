@@ -153,7 +153,7 @@ public class FPFordelTest {
                 pdfGenerator);
         return new FPFordelSøknadSender(
                 new FPFordelConnection(restOperations, cfg,
-                        new FPFordelResponseHandler(restOperations, 3, 10000, poller), registry),
+                        new FPFordelResponseHandler(restOperations, 3, 10000, true, poller), registry),
                 konvoluttGenerator);
     }
 
