@@ -104,28 +104,27 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
         if (tilrettelegging instanceof no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging) {
             no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging ingen = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging.class
                     .cast(tilrettelegging);
-            return new IngenTilrettelegging()
+            return new Tilrettelegging().withIngenTilrettelegging(new IngenTilrettelegging()
+                    .withSlutteArbeidFom(ingen.getSlutteArbeidFom()))
                     .withVedlegg(tilretteleggingVedleggFraIDs(ingen.getVedlegg()))
-                    .withSlutteArbeidFom(ingen.getSlutteArbeidFom())
-                    .withBehovForTilretteleggingFom(ingen.getBehovForTilretteleggingFom())
                     .withArbeidsforhold(arbeidsforholdFra(ingen.getArbeidsforhold()));
         }
         if (tilrettelegging instanceof no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging) {
             no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging delvis = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging.class
                     .cast(tilrettelegging);
-            return new DelvisTilrettelegging()
-                    .withVedlegg(tilretteleggingVedleggFraIDs(delvis.getVedlegg()))
+            return new Tilrettelegging().withDelvisTilrettelegging(new DelvisTilrettelegging()
                     .withTilrettelagtArbeidFom(delvis.getTilrettelagtArbeidFom())
-                    .withStillingsprosent(BigDecimal.valueOf(delvis.getStillingsprosent().getProsent()))
+                    .withStillingsprosent(BigDecimal.valueOf(delvis.getStillingsprosent().getProsent())))
                     .withBehovForTilretteleggingFom(delvis.getBehovForTilretteleggingFom())
+                    .withVedlegg(tilretteleggingVedleggFraIDs(delvis.getVedlegg()))
                     .withArbeidsforhold(arbeidsforholdFra(delvis.getArbeidsforhold()));
         }
         if (tilrettelegging instanceof no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging) {
             no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging hel = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging.class
                     .cast(tilrettelegging);
-            return new HelTilrettelegging()
+            return new Tilrettelegging().withHelTilrettelegging(new HelTilrettelegging()
+                    .withTilrettelagtArbeidFom(hel.getTilrettelagtArbeidFom()))
                     .withVedlegg(tilretteleggingVedleggFraIDs(hel.getVedlegg()))
-                    .withTilrettelagtArbeidFom(hel.getTilrettelagtArbeidFom())
                     .withBehovForTilretteleggingFom(hel.getBehovForTilretteleggingFom())
                     .withArbeidsforhold(arbeidsforholdFra(hel.getArbeidsforhold()));
         }
