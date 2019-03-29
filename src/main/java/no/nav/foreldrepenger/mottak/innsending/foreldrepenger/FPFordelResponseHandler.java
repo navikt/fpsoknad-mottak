@@ -94,9 +94,10 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                         FORDELT_KVITTERING.increment();
                         FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
                         if (pollfpinfo) {
+                            LOG.info("Poller fpinfo");
                             return poller.poll(locationFra(fpInfoRespons), timer, pending.getPollInterval(), fordelt);
                         }
-                        LOG.info("Poller ikke fpinfo");
+                        LOG.info("Poller IKKE fpinfo");
                         return Kvittering.kvitteringMedType(SENDT_OG_FORSØKT_BEHANDLET_FPSAK,
                                 fordelt.getJournalpostId(), fordelt.getSaksnummer());
                     default:
