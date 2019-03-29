@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinctByKey;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
 
@@ -80,6 +81,7 @@ public class InnsynTjeneste implements Innsyn {
     public List<Sak> hentSaker(String aktørId) {
         LOG.info("Henter sak(er) for {}", aktørId);
         List<Sak> saker = safeStream(innsynConnection.hentSaker(aktørId))
+                .filter(distinctByKey(SakDTO::getSaksnummer))
                 .map(this::tilSak)
                 .collect(toList());
         LOG.info("Hentet {} sak{}", saker.size(), endelse(saker));
@@ -93,6 +95,7 @@ public class InnsynTjeneste implements Innsyn {
         LOG.info("Henter {} behandling{} for sak {} fra {}", behandlingsLenker.size(), endelse(behandlingsLenker),
                 saksnr, behandlingsLenker);
         List<Behandling> behandlinger = safeStream(behandlingsLenker)
+                .filter(distinctByKey(Lenke::getHref))
                 .map(innsynConnection::hentBehandling)
                 .map(this::tilBehandling)
                 .collect(toList());

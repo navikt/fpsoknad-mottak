@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FPFordelConfig {
 
-    private static final String PING_PATH = "fpfordel/internal/isReady";
-    private static final String BASE_PATH = "fpfordel/api/dokumentforsendelse";
+    public static final String PING_PATH = "fpfordel/internal/isReady";
+    public static final String BASE_PATH = "fpfordel/api/dokumentforsendelse";
 
-    private static final URI DEFAULT_URI = URI.create("http://fpfordel");
+    public static final URI DEFAULT_URI = URI.create("http://fpfordel");
 
     String pingPath;
     String basePath;
