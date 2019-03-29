@@ -8,5 +8,5 @@ varsel:
     username : srvappserver
     enabled : true
 
-fpfordel.pollfpinfo : false
 fpfordel.max : 0
+fpinfo.max : 0
