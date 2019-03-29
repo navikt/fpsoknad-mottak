@@ -9,3 +9,4 @@ varsel:
     enabled : true
 
 fpfordel.pollfpinfo : false
+fpfordel.max : 0
