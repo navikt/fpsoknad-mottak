@@ -90,7 +90,7 @@ public class SøknadController {
     }
 
     private Kvittering sjekkStatus(Kvittering kvittering, String type, boolean varsle) {
-        if (kvittering.erUklarStatus()) {
+        if (!kvittering.erVellykket()) {
             LOG.warn("{} fikk ikke entydig status, dette bør sjekkes opp nærmere", type);
         }
         if (varsle && kvittering.erVellykket()) {

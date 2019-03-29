@@ -58,10 +58,6 @@ public class Kvittering {
         return leveranseStatus.erVellykket();
     }
 
-    public boolean erUklarStatus() {
-        return FP_FORDEL_MESSED_UP.equals(leveranseStatus);
-    }
-
     public static Kvittering ikkeSendt(byte[] pdf) {
         Kvittering kvittering = new Kvittering(IKKE_SENDT_FPSAK);
         kvittering.setPdf(pdf);
