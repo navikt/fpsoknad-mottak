@@ -91,7 +91,8 @@ public class SøknadController {
 
     private Kvittering sjekkStatus(Kvittering kvittering, String type, boolean varsle) {
         if (!kvittering.erVellykket()) {
-            LOG.warn("{} fikk ikke entydig status, dette bør sjekkes opp nærmere", type);
+            LOG.warn("{} fikk ikke entydig status ({}), dette bør sjekkes opp nærmere", type,
+                    kvittering.getLeveranseStatus());
         }
         if (varsle && kvittering.erVellykket()) {
             varselSender.varsle(varselFra(kvittering));
