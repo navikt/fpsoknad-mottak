@@ -10,6 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
 import static org.springframework.util.StreamUtils.copyToString;
 
 import java.io.IOException;
@@ -19,21 +22,31 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.core.io.ClassPathResource;
 
+import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.UkjentXMLSøknadMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.V1EngangsstønadDokmotXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.V1EngangsstønadPapirXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V1XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = LENIENT)
+
 public class SøknadInspektørTest {
+
+    private static final AktorId AKTØRID = new AktorId("1111111111");
+    private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
 
     @Mock
     private Oppslag oppslag;
@@ -43,10 +56,13 @@ public class SøknadInspektørTest {
 
     @BeforeEach
     public void beforeEach() {
+        when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
+        when(oppslag.getFnr(any(AktorId.class))).thenReturn(FNR);
         inspektør = new XMLStreamSøknadInspektør();
         mapper = new DelegerendeXMLSøknadMapper(
                 new UkjentXMLSøknadMapper(),
-                new V1XMLMapper(),
+                new V1EngangsstønadPapirXMLMapper(oppslag),
+                new V1EngangsstønadDokmotXMLMapper(oppslag),
                 new V1ForeldrepengerXMLMapper(oppslag),
                 new V2ForeldrepengerXMLMapper(oppslag));
     }
@@ -89,13 +105,15 @@ public class SøknadInspektørTest {
     }
 
     @Test
-    public void testESV1XML() throws Exception {
+    public void testESPapirXML() throws Exception {
         String xml = load("v1ESpapir.xml");
         SøknadEgenskap egenskap = inspektør.inspiser(xml);
         assertEquals(V1, egenskap.getVersjon());
         assertEquals(INITIELL_ENGANGSSTØNAD, egenskap.getType());
         assertTrue(mapper.kanMappe(egenskap));
-        assertNotNull(mapper.tilSøknad(xml, egenskap));
+        Søknad søknad = mapper.tilSøknad(xml, egenskap);
+        assertNotNull(søknad);
+        System.out.println(søknad.getYtelse());
     }
 
     @Test

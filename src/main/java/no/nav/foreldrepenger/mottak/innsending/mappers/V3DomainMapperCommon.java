@@ -89,7 +89,9 @@ final class V3DomainMapperCommon {
     }
 
     static Medlemskap medlemsskapFra(Medlemsskap ms, LocalDate relasjonsDato) {
-        return Optional.ofNullable(ms).map(m -> create(m, relasjonsDato)).orElse(null);
+        return Optional.ofNullable(ms)
+                .map(m -> create(m, relasjonsDato))
+                .orElse(null);
     }
 
     private static Medlemskap create(Medlemsskap ms, LocalDate relasjonsDato) {

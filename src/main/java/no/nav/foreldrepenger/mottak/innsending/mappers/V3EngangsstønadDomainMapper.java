@@ -67,7 +67,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
 
     @Override
     public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Endringssøknad ikke støttet");
     }
 
     private Soeknad tilModell(Søknad søknad, AktorId søker) {
@@ -100,7 +100,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
         if (relasjon instanceof Fødsel) {
             return create(Fødsel.class.cast(relasjon), vedlegg);
         }
-        throw new UnexpectedInputException("Relasjon " + relasjon.getClass().getSimpleName() + " er ikke støttet");
+        throw new UnexpectedInputException("Relasjon %s er ikke støttet", relasjon.getClass().getSimpleName());
     }
 
     private static SoekersRelasjonTilBarnet create(Fødsel fødsel, List<Vedlegg> vedlegg) {
@@ -140,7 +140,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
         if (annenForelder instanceof UtenlandskForelder) {
             return utenlandskForelderFra(UtenlandskForelder.class.cast(annenForelder));
         }
-        throw new UnexpectedInputException("Ukjent annen forelder " + annenForelder.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent annen forelder %s", annenForelder.getClass().getSimpleName());
     }
 
     private static AnnenForelder utenlandskForelderFra(UtenlandskForelder utenlandskFar) {

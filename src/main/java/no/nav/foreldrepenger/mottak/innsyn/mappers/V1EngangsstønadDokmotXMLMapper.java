@@ -1,11 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD_DOKMOT;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,24 +13,28 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedEgenskapException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge;
-import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
-public class V1XMLMapper implements XMLSøknadMapper {
+public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
 
-    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD_DOKMOT,
-            INITIELL_ENGANGSSTØNAD);
+    private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD_DOKMOT);
 
     private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
 
-    private static final Logger LOG = LoggerFactory.getLogger(V1XMLMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadDokmotXMLMapper.class);
+
+    private final Oppslag oppslag;
+
+    public V1EngangsstønadDokmotXMLMapper(Oppslag oppslag) {
+        this.oppslag = oppslag;
+    }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
@@ -46,28 +48,10 @@ public class V1XMLMapper implements XMLSøknadMapper {
             LOG.debug("Ingen søknad ble funnet");
             return null;
         }
-        switch (egenskap.getType()) {
-        case INITIELL_ENGANGSSTØNAD_DOKMOT:
-            return dokmot(xml);
-        case INITIELL_ENGANGSSTØNAD:
-            return esPapir(xml);
-        default:
-            throw new UnsupportedEgenskapException(egenskap);
-        }
-
+        return esDokmot(xml);
     }
 
-    private static Søknad esPapir(String xml) {
-        try {
-            Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
-            return new Søknad(null, null, null, Collections.emptyList()); // TODO
-        } catch (Exception e) {
-            LOG.debug("Feil ved unmarshalling av papirsøknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
-            return null;
-        }
-    }
-
-    private static Søknad dokmot(String xml) {
+    private static Søknad esDokmot(String xml) {
         try {
             SoeknadsskjemaEngangsstoenad søknad = JAXB.unmarshal(xml, SoeknadsskjemaEngangsstoenad.class);
             søknad.getBruker();

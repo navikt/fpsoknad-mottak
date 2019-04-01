@@ -61,6 +61,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Stønadskont
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -159,18 +160,18 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         }
     }
 
-    private List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg> påkrevd,
+    private static List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg> påkrevd,
             List<no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg> valgfritt) {
         Stream<Vedlegg> vf = safeStream(valgfritt)
-                .map(this::metadataFra)
+                .map(V2ForeldrepengerXMLMapper::metadataFra)
                 .map(s -> new ValgfrittVedlegg(s, null));
         Stream<Vedlegg> pk = safeStream(påkrevd)
-                .map(this::metadataFra)
+                .map(V2ForeldrepengerXMLMapper::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
         return Stream.concat(vf, pk).collect(toList());
     }
 
-    private VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg vedlegg) {
+    private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg vedlegg) {
         return new VedleggMetaData(
                 vedlegg.getId(),
                 tilInnsendingsType(vedlegg.getInnsendingstype()),
@@ -190,7 +191,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (ytelse instanceof Endringssoeknad) {
             return Endringssoeknad.class.cast(ytelse).getSaksnummer();
         }
-        throw new IllegalStateException(ytelse.getClass().getSimpleName() + " er ikke en endringssøknad");
+        throw new UnexpectedInputException(ytelse.getClass().getSimpleName() + " er ikke en endringssøknad");
     }
 
     private static Object ytelse(OmYtelse omYtelse) {
@@ -270,8 +271,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     adopsjon.getAnkomstdato(),
                     adopsjon.getFoedselsdato());
         }
-        throw new IllegalArgumentException("Ikke"
-                + " støttet type " + relasjonTilBarnet.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ikke-støttet type " + relasjonTilBarnet.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening tilOpptjening(
@@ -397,7 +397,10 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static CountryCode tilLand(Land land, CountryCode defaultLand) {
-        return land == null ? defaultLand : CountryCode.getByCode(land.getKode());
+        return Optional.ofNullable(land)
+                .map(Land::getKode)
+                .map(CountryCode::getByCode)
+                .orElse(defaultLand);
     }
 
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstyper) {
@@ -613,7 +616,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     tilLand(utenlandsForelder.getLand()),
                     null);
         }
-        throw new IllegalArgumentException();
+        throw new UnexpectedInputException("UKjent annen forelder %s", annenForelder.getClass().getSimpleName());
     }
 
     private static Søker tilSøker(Bruker søker) {
