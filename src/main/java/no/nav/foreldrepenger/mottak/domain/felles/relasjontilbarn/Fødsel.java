@@ -22,20 +22,31 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 public class Fødsel extends RelasjonTilBarn {
 
     private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") LocalDate> fødselsdato;
+    @PastOrToday
+    private final LocalDate termindato;
 
     public Fødsel(LocalDate fødselsdato) {
-        this(1, singletonList(fødselsdato), emptyList());
+        this(fødselsdato, null);
     }
 
-    public Fødsel(int antallBarn, LocalDate fødselsDato) {
-        this(antallBarn, singletonList(fødselsDato), emptyList());
+    public Fødsel(int antallBarn, LocalDate foedselsdato) {
+        this(foedselsdato, null);
+    }
+
+    public Fødsel(LocalDate fødselsdato, LocalDate termindato) {
+        this(1, fødselsdato, termindato);
+    }
+
+    public Fødsel(int antallBarn, LocalDate fødselsDato, LocalDate termindato) {
+        this(antallBarn, singletonList(fødselsDato), termindato, emptyList());
     }
 
     @JsonCreator
     public Fødsel(@JsonProperty("antallBarn") int antallBarn,
-            @JsonProperty("fødselsdato") List<LocalDate> fødselsdato, List<String> vedlegg) {
+            @JsonProperty("fødselsdato") List<LocalDate> fødselsdato, LocalDate termindato, List<String> vedlegg) {
         super(antallBarn, vedlegg);
         this.fødselsdato = fødselsdato;
+        this.termindato = termindato;
     }
 
     @Override
