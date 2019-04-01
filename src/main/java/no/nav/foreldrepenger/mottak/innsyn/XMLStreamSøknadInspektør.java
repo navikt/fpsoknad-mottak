@@ -12,6 +12,7 @@ import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
 import static no.nav.foreldrepenger.mottak.util.Versjon.erEngangsstønadV1Dokmot;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -42,10 +43,11 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør {
 
     @Override
     public SøknadEgenskap inspiser(String xml) {
-        return erEngangsstønadV1Dokmot(rootElementNamespace(xml)) ? DOKMOT_ES_V1 : egenskapFra(xml);
+        String rootElementNamespace = rootElementNamespace(xml);
+        return erEngangsstønadV1Dokmot(rootElementNamespace) ? DOKMOT_ES_V1 : egenskapFra(xml, rootElementNamespace);
     }
 
-    private static SøknadEgenskap egenskapFra(String xml) {
+    private static SøknadEgenskap egenskapFra(String xml, String rootElementNamespace) {
         if (xml == null) {
             return UKJENT;
         }
@@ -87,17 +89,17 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør {
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENDRINGSSOEKNAD)) {
                         return new SøknadEgenskap(
-                                Versjon.namespaceFra(reader.getNamespaceURI()),
+                                Versjon.namespaceFra(namespace(reader, rootElementNamespace)),
                                 ENDRING_FORELDREPENGER);
                     }
                     if (reader.getLocalName().equalsIgnoreCase(ENGANGSSOEKNAD)) {
                         return new SøknadEgenskap(
-                                Versjon.namespaceFra(reader.getNamespaceURI()),
+                                Versjon.namespaceFra(namespace(reader, rootElementNamespace)),
                                 INITIELL_ENGANGSSTØNAD);
                     }
                     if (reader.getLocalName().equalsIgnoreCase(SVANGERSKAPSPENGER)) {
                         return new SøknadEgenskap(
-                                Versjon.namespaceFra(reader.getNamespaceURI()),
+                                Versjon.namespaceFra(namespace(reader, rootElementNamespace)),
                                 INITIELL_SVANGERSKAPSPENGER);
                     }
                 }
@@ -108,5 +110,10 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør {
             LOG.warn("Feil ved søk etter kjente tags {} i {} , kan ikke fastslå type", KJENTE_TAGS, xml, e);
             return UKJENT;
         }
+    }
+
+    private static String namespace(XMLStreamReader reader, String rootElementNamespace) {
+        return Optional.ofNullable(reader.getNamespaceURI())
+                .orElse(rootElementNamespace);
     }
 }

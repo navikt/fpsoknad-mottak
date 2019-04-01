@@ -17,11 +17,13 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 public enum Versjon {
 
-    V1("urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1",
+    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1",
+            "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1",
             "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1",
             "urn:no:nav:vedtak:felles:xml:vedtak:v1",
             "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
             "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
+                    "urn:no:nav:vedtak:felles:xml:soeknad:v2",
                     "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v2",
                     "urn:no:nav:vedtak:felles:xml:vedtak:v2",
                     "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",

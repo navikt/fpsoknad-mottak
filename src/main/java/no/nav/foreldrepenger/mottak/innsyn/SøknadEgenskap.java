@@ -30,7 +30,7 @@ public class SøknadEgenskap {
             SøknadType.INITIELL_ENGANGSSTØNAD);
     public static final SøknadEgenskap ENDRING_FORELDREPENGER = new SøknadEgenskap(SøknadType.ENDRING_FORELDREPENGER);
 
-    public static final SøknadEgenskap DOKMOT_ES_V1 = new SøknadEgenskap(V1, SøknadType.INITIELL_ENGANGSSTØNAD);
+    public static final SøknadEgenskap DOKMOT_ES_V1 = new SøknadEgenskap(V1, SøknadType.INITIELL_ENGANGSSTØNAD_DOKMOT);
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 
     public SøknadEgenskap(SøknadType type) {

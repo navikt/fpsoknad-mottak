@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.innsyn;
 
 import static java.nio.charset.Charset.defaultCharset;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD_DOKMOT;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -20,13 +21,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLSøknadMapper;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.DokmotV1XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.UkjentXMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
+import no.nav.foreldrepenger.mottak.innsyn.mappers.V1XMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -45,7 +46,7 @@ public class SøknadInspektørTest {
         inspektør = new XMLStreamSøknadInspektør();
         mapper = new DelegerendeXMLSøknadMapper(
                 new UkjentXMLSøknadMapper(),
-                new DokmotV1XMLMapper(),
+                new V1XMLMapper(),
                 new V1ForeldrepengerXMLMapper(oppslag),
                 new V2ForeldrepengerXMLMapper(oppslag));
     }
@@ -80,6 +81,16 @@ public class SøknadInspektørTest {
     @Test
     public void testESDokmotV1XML() throws Exception {
         String xml = load("esdokmotV1.xml");
+        SøknadEgenskap egenskap = inspektør.inspiser(xml);
+        assertEquals(V1, egenskap.getVersjon());
+        assertEquals(INITIELL_ENGANGSSTØNAD_DOKMOT, egenskap.getType());
+        assertTrue(mapper.kanMappe(egenskap));
+        assertNotNull(mapper.tilSøknad(xml, egenskap));
+    }
+
+    @Test
+    public void testESV1XML() throws Exception {
+        String xml = load("v1ESpapir.xml");
         SøknadEgenskap egenskap = inspektør.inspiser(xml);
         assertEquals(V1, egenskap.getVersjon());
         assertEquals(INITIELL_ENGANGSSTØNAD, egenskap.getType());
