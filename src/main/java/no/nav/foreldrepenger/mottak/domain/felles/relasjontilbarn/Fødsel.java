@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 public class Fødsel extends RelasjonTilBarn {
 
     private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") LocalDate> fødselsdato;
-    @PastOrToday
+    @PastOrToday(nullable = true)
     private final LocalDate termindato;
 
     public Fødsel(LocalDate fødselsdato) {
