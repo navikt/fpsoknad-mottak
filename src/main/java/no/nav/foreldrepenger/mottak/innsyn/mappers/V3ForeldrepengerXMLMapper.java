@@ -247,9 +247,11 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         }
         if (relasjonTilBarnet instanceof Foedsel) {
             Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
+
             return new Fødsel(
                     fødsel.getAntallBarn(),
-                    fødsel.getFoedselsdato());
+                    fødsel.getFoedselsdato(),
+                    fødsel.getTermindato());
         }
         if (relasjonTilBarnet instanceof Termin) {
             Termin termin = Termin.class.cast(relasjonTilBarnet);

@@ -497,7 +497,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return new Foedsel()
                 .withVedlegg(relasjonTilBarnVedleggFra(fødsel.getVedlegg()))
                 .withFoedselsdato(fødsel.getFødselsdato().get(0))
-                // TODO, update contract .withTermindato(fødsel.getTermindato())
+                .withTermindato(fødsel.getTermindato())
                 .withAntallBarn(fødsel.getAntallBarn());
     }
 
