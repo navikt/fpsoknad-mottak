@@ -37,8 +37,7 @@ public class Medlemsskap {
     }
 
     private static CountryCode landVedDato(List<Utenlandsopphold> utenlandsopphold, LocalDate dato) {
-        return utenlandsopphold
-                .stream()
+        return safeStream(utenlandsopphold)
                 .filter(s -> s.getVarighet().isWithinPeriod(dato))
                 .map(Utenlandsopphold::getLand)
                 .findFirst()

@@ -10,6 +10,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -92,7 +93,7 @@ public class FPFordelMetadata {
     private static List<Del> søknadsDeler(Søknad søknad, SøknadType søknadType) {
         final AtomicInteger id = new AtomicInteger(1);
         List<Del> dokumenter = newArrayList(søknadsDel(id, søknad, søknadType), søknadsDel(id, søknad, søknadType));
-        dokumenter.addAll(søknad.getVedlegg().stream()
+        dokumenter.addAll(safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
                 .collect(toList()));
@@ -103,7 +104,7 @@ public class FPFordelMetadata {
         final AtomicInteger id = new AtomicInteger(1);
         List<Del> dokumenter = newArrayList(endringsøknadsDel(id, søknadType),
                 endringsøknadsDel(id, søknadType));
-        dokumenter.addAll(endringssøknad.getVedlegg().stream()
+        dokumenter.addAll(safeStream(endringssøknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
                 .collect(toList()));
@@ -112,7 +113,7 @@ public class FPFordelMetadata {
 
     private static List<Del> ettersendingsDeler(Ettersending ettersending) {
         AtomicInteger id = new AtomicInteger(1);
-        return ettersending.getVedlegg().stream()
+        return safeStream(ettersending.getVedlegg())
                 .map(s -> vedleggsDel(s, id))
                 .collect(toList());
     }

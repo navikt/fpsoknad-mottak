@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
 import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -86,7 +87,7 @@ public class SøknadTextFormatter {
     }
 
     public String datoer(List<LocalDate> datoer) {
-        return datoer.stream()
+        return safeStream(datoer)
                 .map(this::dato)
                 .collect(joining(", "));
     }
@@ -112,7 +113,7 @@ public class SøknadTextFormatter {
         if (CollectionUtils.isEmpty(opphold)) {
             return Collections.singletonList(countryName(CountryCode.NO));
         }
-        return opphold.stream()
+        return safeStream(opphold)
                 .map(this::formatOpphold)
                 .collect(toList());
     }

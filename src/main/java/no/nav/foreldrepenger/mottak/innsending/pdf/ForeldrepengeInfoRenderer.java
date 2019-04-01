@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.IOException;
@@ -192,7 +193,9 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
         }
         for (String id : vedleggRefs) {
-            Optional<Vedlegg> details = vedlegg.stream().filter(s -> id.equals(s.getId())).findFirst();
+            Optional<Vedlegg> details = safeStream(vedlegg)
+                    .filter(s -> id.equals(s.getId()))
+                    .findFirst();
             if (details.isPresent()) {
                 String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
                 y -= renderer.addBulletPoint(INDENT,
@@ -263,7 +266,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
         if (!frilans.getFrilansOppdrag().isEmpty()) {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
-            List<String> oppdrag = frilans.getFrilansOppdrag().stream()
+            List<String> oppdrag = safeStream(frilans.getFrilansOppdrag())
                     .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
                     .collect(toList());
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
@@ -638,7 +641,7 @@ public class ForeldrepengeInfoRenderer {
     public float vedlegg(List<Vedlegg> vedlegg, FontAwareCos cos, float y) throws IOException {
         float startY = y;
         y -= renderer.addLeftHeading(txt("vedlegg"), cos, y);
-        List<String> formatted = vedlegg.stream()
+        List<String> formatted = safeStream(vedlegg)
                 .map(Vedlegg::getBeskrivelse)
                 .collect(toList());
         y -= renderer.addBulletList(formatted, cos, y);
@@ -691,7 +694,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<List<String>> egneNæringer(List<EgenNæring> egenNæring) {
-        return egenNæring.stream()
+        return safeStream(egenNæring)
                 .map(this::egenNæring)
                 .collect(toList());
     }
@@ -711,7 +714,7 @@ public class ForeldrepengeInfoRenderer {
             addIfSet(attributter, "registrertiland", org.getRegistrertILand());
         }
         attributter.add(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : "",
-                næring.getVirksomhetsTyper().stream()
+                safeStream(næring.getVirksomhetsTyper())
                         .map(v -> textFormatter.capitalize(v.toString()))
                         .collect(joining(","))));
         if (næring.getPeriode().getTom() == null) {

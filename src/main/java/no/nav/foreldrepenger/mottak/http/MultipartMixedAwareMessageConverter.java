@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.MediaType.parseMediaType;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
     }
 
     private void applyDefaultCharset() {
-        partConverters.stream()
+        safeStream(partConverters)
                 .filter(s -> s instanceof AbstractHttpMessageConverter)
                 .map(s -> AbstractHttpMessageConverter.class.cast(s))
                 .filter(s -> s.getDefaultCharset() != null)

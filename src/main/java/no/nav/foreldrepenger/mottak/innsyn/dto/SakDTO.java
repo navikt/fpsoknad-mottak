@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.dto;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,7 +55,9 @@ public class SakDTO {
 
     @JsonIgnore
     public List<Lenke> getBehandlingsLenker() {
-        return getLenker().stream().filter(s -> s.getRel().equals(BEHANDLINGER)).collect(toList());
+        return safeStream(getLenker())
+                .filter(s -> BEHANDLINGER.equals(s.getRel()))
+                .collect(toList());
     }
 
     public String getSaksnummer() {
