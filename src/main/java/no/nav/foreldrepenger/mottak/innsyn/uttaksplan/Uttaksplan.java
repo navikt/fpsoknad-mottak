@@ -19,5 +19,4 @@ public class Uttaksplan {
         this.grunnlag = grunnlag;
         this.perioder = perioder;
     }
-
 }

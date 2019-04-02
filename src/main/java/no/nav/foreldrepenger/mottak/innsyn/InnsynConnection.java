@@ -25,7 +25,9 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.SøknadsGrunnlag;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 
 @Component
 public class InnsynConnection extends AbstractRestConnection implements PingEndpointAware {
@@ -58,7 +60,10 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     public Uttaksplan hentUttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan for sak {}", saksnummer);
-        return getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)), Uttaksplan.class);
+        return Optional.ofNullable(getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)),
+                UttaksplanDTO.class))
+                .map(InnsynConnection::map)
+                .orElse(null);
     }
 
     public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
@@ -79,6 +84,16 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 .filter(Objects::nonNull)
                 .map(l -> getForObject(URI.create(config.getUri() + l), clazz))
                 .orElse(null);
+    }
+
+    private static Uttaksplan map(UttaksplanDTO dto) {
+        SøknadsGrunnlag grunnlag = new SøknadsGrunnlag(dto.getFamilieHendelseType(), dto.getFamilieHendelseDato(),
+                dto.getDekningsgrad(),
+                dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(), dto.getMorHarRett(),
+                dto.getMorErUfør(),
+                dto.getFarMedmorErAleneOmOmsorg(), dto.getFarMedmorHarRett());
+        return new Uttaksplan(grunnlag, dto.getUttaksPerioder());
+
     }
 
     @Override

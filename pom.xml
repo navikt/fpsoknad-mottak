@@ -14,13 +14,15 @@
     <artifactId>fpsoknad-mottak</artifactId>
     <version>0-SNAPSHOT</version>
     <properties>
-        <pdfbox.version>2.0.13</pdfbox.version>
+        <pdfbox.version>2.0.14</pdfbox.version>
         <oidc-spring-support.version>0.2.15</oidc-spring-support.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <springfox.version>2.9.2</springfox.version>
         <xsd.location>${project.build.directory}/classes</xsd.location>
         <jaxb.location>${project.build.directory}/classes/</jaxb.location>
+        <xsd.location>src/main/xsd</xsd.location>
+        <xjb.location>src/main/xjb</xjb.location>
         <kontrakter.version>5.0_20190491092911_ae77aec</kontrakter.version>
     </properties>
     <scm>
@@ -48,7 +50,7 @@
                                     <artifactId>foreldrepenger-kontrakter-root</artifactId>
                                     <version>${kontrakter.version}</version>
                                     <classifier>xsd</classifier>
-                                    <outputDirectory>src/main/xsd</outputDirectory>
+                                    <outputDirectory>${xsd.location}</outputDirectory>
                                     <includes>**\/*.xsd</includes>
                                 </artifactItem>
                             </artifactItems>
@@ -73,7 +75,7 @@
                             <outputDirectory>${basedir}/target/classes</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/xsd</directory>
+                                    <directory>${xsd.location}</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -96,7 +98,7 @@
                     <bindings>
                         <binding>
                             <fileset>
-                                <directory>src/main/xjb</directory>
+                                    <directory>${xjb.location}</directory>
                                 <includes>
                                     <include>*.xjb</include>
                                 </includes>
@@ -113,7 +115,7 @@
                     <schemas>
                         <schema>
                             <fileset>
-                                <directory>src/main/xsd</directory>
+                                  <directory>${xsd.location}</directory>
                                 <includes>
                                     <include>**/*.xsd</include>
                                 </includes>

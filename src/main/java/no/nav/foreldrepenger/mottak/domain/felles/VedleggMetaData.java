@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import java.util.Optional;
+
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,7 +26,7 @@ public class VedleggMetaData {
     public VedleggMetaData(@JsonProperty("beskrivelse") String beskrivelse, @JsonProperty("id") String id,
             @JsonProperty("innsendingsType") InnsendingsType innsendingType,
             @JsonProperty("dokumentType") DokumentType dokumentType) {
-        this.beskrivelse = beskrivelse != null ? beskrivelse : dokumentType.beskrivelse;
+        this.beskrivelse = Optional.ofNullable(beskrivelse).orElse(dokumentType.beskrivelse);
         this.id = id;
         this.innsendingsType = innsendingType;
         this.dokumentType = dokumentType;
