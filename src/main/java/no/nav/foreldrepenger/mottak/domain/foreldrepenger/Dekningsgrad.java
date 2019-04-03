@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
@@ -14,6 +15,11 @@ public enum Dekningsgrad {
 
     Dekningsgrad(String kode) {
         this.kode = kode;
+    }
+
+    @JsonCreator
+    public static Dekningsgrad create(String value) {
+        return Dekningsgrad.valueOf(value);
     }
 
     @JsonValue

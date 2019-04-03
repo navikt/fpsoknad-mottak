@@ -85,11 +85,6 @@ public class TestForeldrepengerSerialization {
     }
 
     @Test
-    public void testDekningsgrad() throws Exception {
-        test(Dekningsgrad.GRAD100, true, mapper);
-    }
-
-    @Test
     public void testPeriodeEnDag() {
         LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
                 LocalDate.of(2019, Month.MARCH, 1), Collections.emptyList()) {
