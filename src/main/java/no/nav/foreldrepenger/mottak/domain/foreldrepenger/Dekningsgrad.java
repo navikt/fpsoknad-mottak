@@ -19,7 +19,12 @@ public enum Dekningsgrad {
 
     @JsonCreator
     public static Dekningsgrad create(String value) {
-        return Dekningsgrad.valueOf(value);
+        for (Dekningsgrad val : values()) {
+            if (val.name().equals(value) || val.kode.equals(value)) {
+                return val;
+            }
+        }
+        throw new UnexpectedInputException("Ikke støttet dekningsgrad %s.", value);
     }
 
     @JsonValue
@@ -33,5 +38,4 @@ public enum Dekningsgrad {
                 .findFirst()
                 .orElseThrow(() -> new UnexpectedInputException("Ikke støttet dekningsgrad %s.", kode));
     }
-
 }
