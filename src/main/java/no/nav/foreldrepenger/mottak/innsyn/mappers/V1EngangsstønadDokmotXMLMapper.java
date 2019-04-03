@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGAN
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,12 +44,9 @@ public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
 
     @Override
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
-        // TODO incomplete
-        if (xml == null) {
-            LOG.debug("Ingen søknad ble funnet");
-            return null;
-        }
-        return esDokmot(xml);
+        return Optional.ofNullable(xml)
+                .map(V1EngangsstønadDokmotXMLMapper::esDokmot)
+                .orElse(null);
     }
 
     private static Søknad esDokmot(String xml) {

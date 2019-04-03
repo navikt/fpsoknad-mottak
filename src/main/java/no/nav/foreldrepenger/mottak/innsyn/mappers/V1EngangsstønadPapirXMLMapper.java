@@ -21,6 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
@@ -33,7 +34,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -98,13 +98,12 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
         return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()));
     }
 
-    private Foreldrepenger tilYtelse(OmYtelse omYtelse, LocalDate søknadsDato) {
+    private Engangsstønad tilYtelse(OmYtelse omYtelse, LocalDate søknadsDato) {
         no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v1.Engangsstønad søknad = ytelse(omYtelse);
-        return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                .annenForelder(tilAnnenForelder(søknad.getAnnenForelder()))
-                .medlemsskap(tilMedlemsskap(søknad.getMedlemskap(), søknadsDato))
-                .relasjonTilBarn(tilRelasjonTilBarn(søknad.getSoekersRelasjonTilBarnet()))
-                .build();
+        Engangsstønad stønad = new Engangsstønad(tilMedlemsskap(søknad.getMedlemskap(), søknadsDato),
+                tilRelasjonTilBarn(søknad.getSoekersRelasjonTilBarnet()));
+        stønad.setAnnenForelder(tilAnnenForelder(søknad.getAnnenForelder()));
+        return stønad;
     }
 
     private static RelasjonTilBarn tilRelasjonTilBarn(SoekersRelasjonTilBarnet relasjonTilBarnet) {

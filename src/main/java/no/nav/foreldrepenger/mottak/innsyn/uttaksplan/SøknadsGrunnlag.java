@@ -46,5 +46,4 @@ public class SøknadsGrunnlag {
         this.farMedmorErAleneOmOmsorg = farMedmorErAleneOmOmsorg;
         this.farMedmorHarRett = farMedmorHarRett;
     }
-
 }
