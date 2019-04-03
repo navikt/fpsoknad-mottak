@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import java.util.Arrays;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Dekningsgrad {
@@ -20,7 +19,6 @@ public enum Dekningsgrad {
         return kode;
     }
 
-    @JsonCreator
     public static Dekningsgrad fraKode(String kode) {
         return Arrays.stream(Dekningsgrad.values())
                 .filter(e -> e.kode.equals(kode))

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ActiveProfiles("dev")
+@ActiveProfiles(DEV)
 @EnableConfigurationProperties
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
