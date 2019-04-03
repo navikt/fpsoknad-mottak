@@ -33,30 +33,6 @@ public class LukketPeriodeMedVedleggValidatorTest {
     }
 
     @Test
-    public void testOKOverHelgen() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
-                LocalDate.of(2019, Month.MARCH, 4), Collections.emptyList()) {
-        };
-        assertTrue(validator.validate(periode).isEmpty());
-    }
-
-    // @Test
-    public void testStartLørdag() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 2),
-                LocalDate.of(2019, Month.MARCH, 4), Collections.emptyList()) {
-        };
-        assertFalse(validator.validate(periode).isEmpty());
-    }
-
-    // @Test
-    public void testSluttSøndag() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
-                LocalDate.of(2019, Month.MARCH, 3), Collections.emptyList()) {
-        };
-        assertFalse(validator.validate(periode).isEmpty());
-    }
-
-    @Test
     public void testNullStart() {
         LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(null,
                 LocalDate.of(2019, Month.MARCH, 3), Collections.emptyList()) {
