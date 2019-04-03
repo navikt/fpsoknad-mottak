@@ -62,7 +62,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         LOG.trace("Henter uttaksplan for sak {}", saksnummer);
         return Optional.ofNullable(getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)),
                 UttaksplanDTO.class))
-                .map(InnsynConnection::map)
+                .map(InnsynConnection::create)
                 .orElse(null);
     }
 
@@ -86,14 +86,11 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 .orElse(null);
     }
 
-    private static Uttaksplan map(UttaksplanDTO dto) {
+    private static Uttaksplan create(UttaksplanDTO dto) {
         SøknadsGrunnlag grunnlag = new SøknadsGrunnlag(dto.getFamilieHendelseType(), dto.getFamilieHendelseDato(),
-                dto.getDekningsgrad(),
-                dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(), dto.getMorHarRett(),
-                dto.getMorErUfør(),
-                dto.getFarMedmorErAleneOmOmsorg(), dto.getFarMedmorHarRett());
+                dto.getDekningsgrad(), dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(),
+                dto.getMorHarRett(), dto.getMorErUfør(), dto.getFarMedmorErAleneOmOmsorg(), dto.getFarMedmorHarRett());
         return new Uttaksplan(grunnlag, dto.getUttaksPerioder());
-
     }
 
     @Override

@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
 
 @Data
 public class SøknadsGrunnlag {
     private final FamiliehendelseType familieHendelseType;
     private final LocalDate familieHendelseDato;
 
-    private final Integer dekningsgrad;
+    private final Dekningsgrad dekningsgrad;
     private final Integer antallBarn;
 
     private final Boolean søkerErFarEllerMedmor;
@@ -26,7 +27,7 @@ public class SøknadsGrunnlag {
     @JsonCreator
     public SøknadsGrunnlag(@JsonProperty("familieHendelseType") FamiliehendelseType familieHendelseType,
             @JsonProperty("familieHendelseDato") LocalDate familieHendelseDato,
-            @JsonProperty("dekningsgrad") Integer dekningsgrad,
+            @JsonProperty("dekningsgrad") Dekningsgrad dekningsgrad,
             @JsonProperty("antallBarn") Integer antallBarn,
             @JsonProperty("søkerErFarEllerMedmor") Boolean søkerErFarEllerMedmor,
             @JsonProperty("morErAleneOmOmsorg") Boolean morErAleneOmOmsorg,

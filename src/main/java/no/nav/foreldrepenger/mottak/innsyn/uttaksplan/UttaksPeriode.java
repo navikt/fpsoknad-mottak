@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 
@@ -19,18 +20,19 @@ public class UttaksPeriode {
     private final LukketPeriode periode;
     private final StønadskontoType stønadskontotype;
     private final Integer trekkDager;
-    private final Double arbeidstidProsent;
-    private final Double utbetalingprosent;
+    private final ProsentAndel arbeidstidProsent;
+    private final ProsentAndel utbetalingprosent;
     private final Boolean gjelderAnnenPart;
 
     public UttaksPeriode(@JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
             @JsonProperty("samtidigUttak") Boolean samtidigUttak,
-            @JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
+            @JsonProperty("fom") LocalDate fom,
+            @JsonProperty("tom") LocalDate tom,
             @JsonProperty("stønadskontotype") @JsonAlias("trekkonto") StønadskontoType stønadskontotype,
             @JsonProperty("trekkDager") Integer trekkDager,
-            @JsonProperty("arbeidstidprosent") Double arbeidstidProsent,
-            @JsonProperty("utbetalingprosent") Double utbetalingprosent,
+            @JsonProperty("arbeidstidprosent") ProsentAndel arbeidstidProsent,
+            @JsonProperty("utbetalingprosent") ProsentAndel utbetalingprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart) {
         this.periodeResultatType = periodeResultatType;
         this.graderingInnvilget = graderingInnvilget;
