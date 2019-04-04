@@ -44,7 +44,7 @@ import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 @Component
 public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
-    private final SVPV1JAXBUtil JAXB;
+    private final SVPV1JAXBUtil jaxb;
 
     private static final no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory SVP_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory SØKNAD_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory();
@@ -55,7 +55,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
     }
 
     public V1SvangerskapspengerDomainMapper(boolean validate) {
-        JAXB = new SVPV1JAXBUtil(validate);
+        jaxb = new SVPV1JAXBUtil(validate);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     @Override
     public String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
-        return JAXB.marshal(SØKNAD_FACTORY_V3.createSoeknad(tilModell(søknad, søker)));
+        return jaxb.marshal(SØKNAD_FACTORY_V3.createSoeknad(tilModell(søknad, søker)));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
     private OmYtelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger.class
                 .cast(søknad.getYtelse());
-        return new OmYtelse().withAny(JAXB.marshalToElement(svangerskapspengerFra(ytelse)));
+        return new OmYtelse().withAny(jaxb.marshalToElement(svangerskapspengerFra(ytelse)));
     }
 
     private static JAXBElement<Svangerskapspenger> svangerskapspengerFra(

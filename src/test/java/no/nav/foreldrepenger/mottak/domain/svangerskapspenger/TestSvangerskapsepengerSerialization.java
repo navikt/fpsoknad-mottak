@@ -32,7 +32,7 @@ public class TestSvangerskapsepengerSerialization {
 
     private static final Inspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
-    private static final DomainMapper DOMAINMAPPER = new V1SvangerskapspengerDomainMapper(false);
+    private static final DomainMapper DOMAINMAPPER = new V1SvangerskapspengerDomainMapper();
 
     @Test
     public void testSVP() {
