@@ -86,8 +86,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
     }
 
     private static Svangerskapspenger tilYtelse(OmYtelse omYtelse, LocalDate søknadsDato) {
-        no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger søknad = (no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger) ytelse(
-                omYtelse);
+        no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger søknad = ytelse(omYtelse);
         return new Svangerskapspenger(søknad.getTermindato(), søknad.getFødselsdato(),
                 tilMedlemsskap(søknad.getMedlemskap(), søknadsDato), null, null);
     }
@@ -125,7 +124,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
         return f -> f.getPeriode().getFom().isAfter(søknadsDato);
     }
 
-    private static Object ytelse(OmYtelse omYtelse) {
+    private static no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger ytelse(OmYtelse omYtelse) {
         if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
@@ -133,7 +132,8 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
         if (omYtelse.getAny().size() > 1) {
             LOG.warn("Fikk {} ytelser i søknaden, forventet 1, behandler kun den første", omYtelse.getAny().size());
         }
-        return ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
+        return (no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger) ((JAXBElement<?>) omYtelse
+                .getAny().get(0)).getValue();
     }
 
     private static BrukerRolle tilRolle(String kode) {
