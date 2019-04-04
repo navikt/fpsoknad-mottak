@@ -35,22 +35,14 @@ public class TestSvangerskapsepengerSerialization {
     private static final DomainMapper DOMAINMAPPER = new V1SvangerskapspengerDomainMapper();
 
     @Test
-    public void inspiser() {
-        SøknadEgenskap resultat = INSPEKTØR.inspiser(svp());
-        assertEquals(resultat.getVersjon(), V1);
-        assertEquals(resultat.getType(), INITIELL_SVANGERSKAPSPENGER);
-    }
-
-    @Test
     public void testSVP() {
         test(svp(), true, mapper);
     }
 
     @Test
-    public void testXML() {
+    public void testInspeksjon() {
         Søknad svp = svp();
         String xml = DOMAINMAPPER.tilXML(svp, new AktorId("42"), INSPEKTØR.inspiser(svp));
-        System.out.println(xml);
         SøknadEgenskap resultat = INSPEKTØR.inspiser(xml);
         assertEquals(V1, resultat.getVersjon());
         assertEquals(INITIELL_SVANGERSKAPSPENGER, resultat.getType());
@@ -60,10 +52,10 @@ public class TestSvangerskapsepengerSerialization {
     public void testRoundtrip() {
         Søknad svp = svp();
         String xml = DOMAINMAPPER.tilXML(svp, new AktorId("42"), INSPEKTØR.inspiser(svp));
-        System.out.println(xml);
         SøknadEgenskap egenskap = INSPEKTØR.inspiser(xml);
-        Søknad svp1 = new V1SVPXMLMapper(null).tilSøknad(xml, egenskap);
-        // assertEquals(svp1.getYtelse(), svp.getYtelse());
+        Søknad svp1 = new V1SVPXMLMapper().tilSøknad(xml, egenskap);
+        Svangerskapspenger orig = (Svangerskapspenger) svp.getYtelse();
+        Svangerskapspenger res = (Svangerskapspenger) svp1.getYtelse();
+        assertEquals(orig.getOpptjening(), res.getOpptjening());
     }
-
 }

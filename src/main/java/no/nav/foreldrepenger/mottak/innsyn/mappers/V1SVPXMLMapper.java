@@ -2,16 +2,20 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.xml.bind.JAXBElement;
 
+import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,18 +23,29 @@ import org.springframework.stereotype.Component;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Frilanser;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.PrivatArbeidsgiver;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.SelvstendigNæringsdrivende;
+import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Virksomhet;
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.jaxb.SVPV1JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
@@ -47,12 +62,6 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
     private static final SVPV1JAXBUtil JAXB = new SVPV1JAXBUtil();
 
     private static final Logger LOG = LoggerFactory.getLogger(V1SVPXMLMapper.class);
-
-    private final Oppslag oppslag;
-
-    public V1SVPXMLMapper(Oppslag oppslag) {
-        this.oppslag = oppslag;
-    }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
@@ -88,7 +97,91 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
     private static Svangerskapspenger tilYtelse(OmYtelse omYtelse, LocalDate søknadsDato) {
         no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger søknad = ytelse(omYtelse);
         return new Svangerskapspenger(søknad.getTermindato(), søknad.getFødselsdato(),
-                tilMedlemsskap(søknad.getMedlemskap(), søknadsDato), null, null);
+                tilMedlemsskap(søknad.getMedlemskap(), søknadsDato), tilOpptjening(søknad.getOpptjening()),
+                tilTilrettelegging(søknad.getTilretteleggingListe().getTilrettelegging()));
+    }
+
+    private static List<Tilrettelegging> tilTilrettelegging(
+            List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Tilrettelegging> tilrettelegginger) {
+        return safeStream(tilrettelegginger)
+                .map(V1SVPXMLMapper::create)
+                .flatMap(Collection::stream)
+                .collect(toList());
+    }
+
+    private static List<Tilrettelegging> create(
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Tilrettelegging tilrettelegging) {
+
+        HelTilrettelegging hel = hel(tilrettelegging
+                .getHelTilrettelegging(), tilrettelegging.getArbeidsforhold(),
+                tilrettelegging.getBehovForTilretteleggingFom());
+
+        DelvisTilrettelegging delvis = delvis(tilrettelegging
+                .getDelvisTilrettelegging(), tilrettelegging.getArbeidsforhold(),
+                tilrettelegging.getBehovForTilretteleggingFom());
+
+        IngenTilrettelegging ingen = ingen(tilrettelegging
+                .getIngenTilrettelegging(), tilrettelegging.getArbeidsforhold(),
+                tilrettelegging.getBehovForTilretteleggingFom());
+        return Lists.newArrayList(hel, delvis, ingen)
+                .stream().filter(Objects::nonNull)
+                .collect(toList());
+    }
+
+    private static HelTilrettelegging hel(no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.HelTilrettelegging hel,
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+            LocalDate behovFra) {
+        return Optional.ofNullable(hel)
+                .map(h -> new HelTilrettelegging(tilArbeidsForhold(arbeidsforhold), behovFra,
+                        h.getTilrettelagtArbeidFom(), null))
+                .orElse(null);
+    }
+
+    private static DelvisTilrettelegging delvis(
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.DelvisTilrettelegging delvis,
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+            LocalDate behovFra) {
+        return Optional.ofNullable(delvis)
+                .map(d -> new DelvisTilrettelegging(tilArbeidsForhold(arbeidsforhold), behovFra,
+                        d.getTilrettelagtArbeidFom(), new ProsentAndel(d.getStillingsprosent().doubleValue()), null))
+                .orElse(null);
+    }
+
+    private static IngenTilrettelegging ingen(
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.IngenTilrettelegging ingen,
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+            LocalDate behovFra) {
+        return Optional.ofNullable(ingen)
+                .map(i -> new IngenTilrettelegging(tilArbeidsForhold(arbeidsforhold), i.getSlutteArbeidFom(),
+                        null))
+                .orElse(null);
+    }
+
+    private static Arbeidsforhold tilArbeidsForhold(
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold) {
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser) {
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser frilanser = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser.class
+                    .cast(arbeidsforhold);
+            return new Frilanser(frilanser.getOpplysningerOmRisikofaktorer(),
+                    frilanser.getOpplysningerOmTilretteleggingstiltak());
+        }
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.PrivatArbeidsgiver) {
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.PrivatArbeidsgiver privatArbeidsgiver = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.PrivatArbeidsgiver.class
+                    .cast(arbeidsforhold);
+            return new PrivatArbeidsgiver(new Fødselsnummer(privatArbeidsgiver.getIdentifikator()));
+        }
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsgiver) {
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsgiver arbeidsgiver = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsgiver.class
+                    .cast(arbeidsforhold);
+            return new Virksomhet(arbeidsgiver.getIdentifikator());
+        }
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.SelvstendigNæringsdrivende) {
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.SelvstendigNæringsdrivende selvstendig = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.SelvstendigNæringsdrivende.class
+                    .cast(arbeidsforhold);
+            return new SelvstendigNæringsdrivende(selvstendig.getOpplysningerOmRisikofaktorer(),
+                    selvstendig.getOpplysningerOmTilretteleggingstiltak());
+        }
+        throw new UnexpectedInputException("UKjent arbeidsforhold %s", arbeidsforhold.getClass().getSimpleName());
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap, LocalDate søknadsDato) {

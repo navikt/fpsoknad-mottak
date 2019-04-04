@@ -30,9 +30,7 @@ public class V3EngangsstønadXMLMapper extends AbstractXMLMapper {
 
     @Override
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
-        // TODO
-        LOG.info("Mapper ikke engangssøknad V3 tilbake til søknad foreløpig");
+        LOG.info("Mapper ikke {} tilbake til søknad foreløpig", mapperEgenskaper());
         return null;
     }
-
 }

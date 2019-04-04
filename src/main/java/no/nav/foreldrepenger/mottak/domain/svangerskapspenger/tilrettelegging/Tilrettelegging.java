@@ -12,9 +12,13 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Arbeidsforhold;
 
 @Data
+@EqualsAndHashCode(exclude = { "vedlegg" })
+@ToString(exclude = { "vedlegg" })
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = HelTilrettelegging.class, name = "hel"),
