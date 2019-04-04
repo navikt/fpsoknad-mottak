@@ -5,10 +5,12 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilLand;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,10 +34,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
@@ -63,7 +61,6 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Foedsel;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Rettigheter;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.SoekersRelasjonTilBarnet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Termin;
@@ -115,17 +112,18 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
             switch (egenskap.getType()) {
             case ENDRING_FORELDREPENGER:
                 Endringssøknad endringssøknad = new Endringssøknad(
-                        søknad.getMottattDato().atStartOfDay(),
+                        søknad.getMottattDato(),
                         tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
+                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()).getFordeling(),
+                        saksnummer(søknad.getOmYtelse()));
                 endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return endringssøknad;
             case INITIELL_FORELDREPENGER:
                 Søknad førstegangssøknad = new Søknad(
-                        søknad.getMottattDato().atStartOfDay(),
+                        søknad.getMottattDato(),
                         tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()),
+                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()),
                         tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
                 førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
@@ -185,7 +183,8 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         return ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
     }
 
-    private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
+    private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse,
+            LocalDate søknadsDato) {
 
         Object førsteYtelse = ytelse(omYtelse);
         if (førsteYtelse instanceof Endringssoeknad) {
@@ -201,13 +200,13 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .annenForelder(tilAnnenForelder(søknad.getAnnenForelder()))
                     .dekningsgrad(tilDekningsgrad(søknad.getDekningsgrad()))
                     .fordeling(tilFordeling(søknad.getFordeling()))
-                    .medlemsskap(tilMedlemsskap(søknad.getMedlemskap()))
+                    .medlemsskap(tilMedlemsskap(søknad.getMedlemskap(), søknadsDato))
                     .opptjening(tilOpptjening(søknad.getOpptjening()))
                     .relasjonTilBarn(tilRelasjonTilBarn(søknad.getRelasjonTilBarnet()))
                     .rettigheter(tilRettigheter(søknad.getRettigheter()))
                     .build();
         }
-        throw new UnexpectedInputException("Ukjent type " + førsteYtelse.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent type %s", førsteYtelse.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
@@ -253,23 +252,6 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     adopsjon.getFoedselsdato());
         }
         throw new UnexpectedInputException("Ikke-støttet type " + relasjonTilBarnet.getClass().getSimpleName());
-    }
-
-    private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
-        return new Medlemsskap(
-                tilTidligereOpphold(medlemskap),
-                tilFremtidigOpphold(medlemskap));
-    }
-
-    private static TidligereOppholdsInformasjon tilTidligereOpphold(Medlemskap medlemskap) {
-        return new TidligereOppholdsInformasjon(
-                ArbeidsInformasjon.ARBEIDET_I_NORGE,
-                emptyList()); // TODO
-    }
-
-    private static FramtidigOppholdsInformasjon tilFremtidigOpphold(Medlemskap medlemskap) {
-        return new FramtidigOppholdsInformasjon(
-                emptyList()); // TODO
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling tilFordeling(

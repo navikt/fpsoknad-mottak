@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -11,28 +12,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import javax.xml.bind.JAXBElement;
 
-import org.assertj.core.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.neovisionaries.i18n.CountryCode;
+import com.google.common.collect.Lists;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
@@ -48,9 +41,6 @@ import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.jaxb.SVPV1JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
 import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
@@ -78,7 +68,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
     private static Søknad svpSøknad(String xml) {
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
-            Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
+            Søknad s = new Søknad(søknad.getMottattDato(), tilSøker(søknad.getSoeker()),
                     tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()));
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
             s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
@@ -184,39 +174,6 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
         throw new UnexpectedInputException("UKjent arbeidsforhold %s", arbeidsforhold.getClass().getSimpleName());
     }
 
-    private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap, LocalDate søknadsDato) {
-        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(ArbeidsInformasjon.IKKE_ARBEIDET,
-                utenlandsOppholdFør(medlemskap.getOppholdUtlandet(), søknadsDato));
-        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(
-                utenlandsOppholdEtter(medlemskap.getOppholdUtlandet(), søknadsDato));
-        return new Medlemsskap(tidligere, framtidig);
-    }
-
-    private static List<Utenlandsopphold> utenlandsOppholdFør(List<OppholdUtlandet> opphold, LocalDate søknadsDato) {
-        return utenlandsOpphold(opphold, søknadsDato, før(søknadsDato));
-    }
-
-    private static List<Utenlandsopphold> utenlandsOppholdEtter(List<OppholdUtlandet> opphold, LocalDate søknadsDato) {
-        return utenlandsOpphold(opphold, søknadsDato, etter(søknadsDato));
-    }
-
-    private static List<Utenlandsopphold> utenlandsOpphold(List<OppholdUtlandet> opphold, LocalDate søknadsDato,
-            Predicate<? super OppholdUtlandet> predicate) {
-        return safeStream(opphold)
-                .filter(predicate)
-                .map(u -> new Utenlandsopphold(tilLand(u.getLand()),
-                        new LukketPeriode(u.getPeriode().getFom(), u.getPeriode().getTom())))
-                .collect(toList());
-    }
-
-    private static Predicate<? super OppholdUtlandet> før(LocalDate søknadsDato) {
-        return f -> f.getPeriode().getFom().isBefore(søknadsDato);
-    }
-
-    private static Predicate<? super OppholdUtlandet> etter(LocalDate søknadsDato) {
-        return f -> f.getPeriode().getFom().isAfter(søknadsDato);
-    }
-
     private static no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger ytelse(OmYtelse omYtelse) {
         if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
@@ -233,17 +190,6 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
         return Optional.of(kode)
                 .map(BrukerRolle::valueOf)
                 .orElse(BrukerRolle.IKKE_RELEVANT);
-    }
-
-    private static CountryCode tilLand(Land land) {
-        return tilLand(land, null);
-    }
-
-    private static CountryCode tilLand(Land land, CountryCode defaultLand) {
-        return Optional.ofNullable(land)
-                .map(Land::getKode)
-                .map(CountryCode::getByCode)
-                .orElse(defaultLand);
     }
 
 }

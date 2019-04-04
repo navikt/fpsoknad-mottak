@@ -5,7 +5,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +33,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 public class Søknad {
 
     @NotNull
-    private final LocalDateTime mottattdato;
+    private final LocalDate mottattdato;
     @Valid
     private final Søker søker;
     @Valid
@@ -44,12 +44,12 @@ public class Søknad {
     private String tilleggsopplysninger;
     private final List<Vedlegg> vedlegg;
 
-    public Søknad(LocalDateTime mottattdato, Søker søker, Ytelse ytelse, Vedlegg... vedlegg) {
+    public Søknad(LocalDate mottattdato, Søker søker, Ytelse ytelse, Vedlegg... vedlegg) {
         this(mottattdato, søker, ytelse, asList(vedlegg));
     }
 
     @JsonCreator
-    public Søknad(@JsonProperty("mottattdato") LocalDateTime mottattdato, @JsonProperty("søker") Søker søker,
+    public Søknad(@JsonProperty("mottattdato") LocalDate mottattdato, @JsonProperty("søker") Søker søker,
             @JsonProperty("ytelse") Ytelse ytelse,
             @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {
         this.mottattdato = mottattdato;

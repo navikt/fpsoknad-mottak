@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD_DOKMOT;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
             søknad.getVedleggListe();
             Engangsstønad ytelse = new Engangsstønad(medlemsskapFra(søknad.getTilknytningNorge()),
                     relasjonFra(søknad.getOpplysningerOmBarn()));
-            Søknad engangssøknad = new Søknad(LocalDateTime.now(), null, ytelse);
+            Søknad engangssøknad = new Søknad(LocalDate.now(), null, ytelse);
             engangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             return engangssøknad;
 

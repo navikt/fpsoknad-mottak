@@ -4,10 +4,12 @@ import java.time.LocalDate;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Rettighet;
 
 @Data
 @Rettighet
+@ToString(exclude = "datoForAleneomsorg")
 @EqualsAndHashCode(exclude = "datoForAleneomsorg")
 public class Rettigheter {
 

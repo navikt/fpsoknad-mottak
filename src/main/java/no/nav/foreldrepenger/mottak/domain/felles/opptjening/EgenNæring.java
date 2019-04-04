@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -21,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 
 @Data
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
@@ -29,6 +30,7 @@ import lombok.EqualsAndHashCode;
         @Type(value = UtenlandskOrganisasjon.class, name = "utenlandsk")
 })
 
+@ToString(exclude = "vedlegg")
 @EqualsAndHashCode(exclude = "vedlegg")
 public abstract class EgenNæring {
 

@@ -135,7 +135,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
             switch (egenskap.getType()) {
             case ENDRING_FORELDREPENGER:
                 Endringssøknad endringssøknad = new Endringssøknad(
-                        søknad.getMottattDato().atStartOfDay(),
+                        søknad.getMottattDato(),
                         tilSøker(søknad.getSoeker()),
                         tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
                 endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
@@ -143,7 +143,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 return endringssøknad;
             case INITIELL_FORELDREPENGER:
                 Søknad førstegangssøknad = new Søknad(
-                        søknad.getMottattDato().atStartOfDay(),
+                        søknad.getMottattDato(),
                         tilSøker(søknad.getSoeker()),
                         tilYtelse(søknad.getOmYtelse()),
                         tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));

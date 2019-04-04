@@ -119,7 +119,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))
                 .withOmYtelse(ytelseFra(søknad))
-                .withMottattDato(søknad.getMottattdato().toLocalDate())
+                .withMottattDato(søknad.getMottattdato())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
@@ -127,7 +127,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     private static Soeknad tilModell(Endringssøknad endringsøknad, AktorId søker) {
         return new Soeknad()
                 .withSprakvalg(språkFra(endringsøknad.getSøker()))
-                .withMottattDato(endringsøknad.getMottattdato().toLocalDate())
+                .withMottattDato(endringsøknad.getMottattdato())
                 .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(endringsøknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(endringsøknad.getPåkrevdeVedlegg()))

@@ -15,7 +15,6 @@ import static no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgs
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -95,11 +94,11 @@ public class ForeldrepengerTestUtils {
     private static final ValgfrittVedlegg IKKE_OPPLASTETV2 = ikkeOpplastet(ID143, I000063);
 
     public static Søknad foreldrepengeSøknad(Versjon v) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrepenger(v, false), VEDLEGG1);
+        return new Søknad(LocalDate.now(), TestUtils.søker(), foreldrepenger(v, false), VEDLEGG1);
     }
 
     public static Søknad foreldrepengeSøknadUtenVedlegg(Versjon v) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), foreldrepenger(v, false));
+        return new Søknad(LocalDate.now(), TestUtils.søker(), foreldrepenger(v, false));
     }
 
     public static Søknad svp() {
@@ -127,11 +126,11 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Søknad søknad(Versjon v, Ytelse ytelse, Vedlegg... vedlegg) {
-        return new Søknad(LocalDateTime.now(), TestUtils.søker(), ytelse, asList(vedlegg));
+        return new Søknad(LocalDate.now(), TestUtils.søker(), ytelse, asList(vedlegg));
     }
 
     public static Endringssøknad endringssøknad(Versjon v, Vedlegg... vedlegg) {
-        return new Endringssøknad(LocalDateTime.now(), søker(),
+        return new Endringssøknad(LocalDate.now(), søker(),
                 fordeling(v, vedleggRefs(vedlegg)), norskForelder(v),
                 fødsel(v),
                 rettigheter(v),

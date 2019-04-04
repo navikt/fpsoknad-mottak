@@ -5,11 +5,19 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjeningType;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
@@ -17,6 +25,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.AnnenOpptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.EgenNaering;
@@ -33,6 +43,39 @@ public class V3XMLMapperCommon {
 
     private V3XMLMapperCommon() {
 
+    }
+
+    static Medlemsskap tilMedlemsskap(Medlemskap medlemskap, LocalDate søknadsDato) {
+        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(ArbeidsInformasjon.IKKE_ARBEIDET,
+                utenlandsOppholdFør(medlemskap.getOppholdUtlandet(), søknadsDato));
+        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(
+                utenlandsOppholdEtter(medlemskap.getOppholdUtlandet(), søknadsDato));
+        return new Medlemsskap(tidligere, framtidig);
+    }
+
+    private static List<Utenlandsopphold> utenlandsOppholdFør(List<OppholdUtlandet> opphold, LocalDate søknadsDato) {
+        return utenlandsOpphold(opphold, søknadsDato, før(søknadsDato));
+    }
+
+    private static List<Utenlandsopphold> utenlandsOppholdEtter(List<OppholdUtlandet> opphold, LocalDate søknadsDato) {
+        return utenlandsOpphold(opphold, søknadsDato, etter(søknadsDato));
+    }
+
+    private static List<Utenlandsopphold> utenlandsOpphold(List<OppholdUtlandet> opphold, LocalDate søknadsDato,
+            Predicate<? super OppholdUtlandet> predicate) {
+        return safeStream(opphold)
+                .filter(predicate)
+                .map(u -> new Utenlandsopphold(tilLand(u.getLand()),
+                        new LukketPeriode(u.getPeriode().getFom(), u.getPeriode().getTom())))
+                .collect(toList());
+    }
+
+    private static Predicate<? super OppholdUtlandet> før(LocalDate søknadsDato) {
+        return f -> f.getPeriode().getFom().isBefore(søknadsDato);
+    }
+
+    private static Predicate<? super OppholdUtlandet> etter(LocalDate søknadsDato) {
+        return f -> f.getPeriode().getFom().isAfter(søknadsDato);
     }
 
     static CountryCode tilLand(Land land) {

@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -17,8 +16,11 @@ import com.neovisionaries.i18n.CountryCode;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 
 @Data
+@ToString(exclude = "vedlegg")
 @EqualsAndHashCode(exclude = "vedlegg")
 public class UtenlandskArbeidsforhold {
 

@@ -12,9 +12,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Opphold;
 
 @Data
+@ToString(exclude = "arbeidSiste12")
+@EqualsAndHashCode(exclude = "arbeidSiste12")
 public class TidligereOppholdsInformasjon {
 
     private final ArbeidsInformasjon arbeidSiste12;

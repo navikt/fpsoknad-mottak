@@ -83,7 +83,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
     private Søknad esPapir(String xml) {
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
-            Søknad s = new Søknad(søknad.getMottattDato().atStartOfDay(), tilSøker(søknad.getSoeker()),
+            Søknad s = new Søknad(søknad.getMottattDato(), tilSøker(søknad.getSoeker()),
                     tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()));
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
             s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());

@@ -1,16 +1,17 @@
 package no.nav.foreldrepenger.mottak.domain.felles.annenforelder;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
-import javax.validation.constraints.NotNull;
-
 @Data
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = "navn")
 @EqualsAndHashCode(callSuper = true, exclude = { "navn" })
 public final class NorskForelder extends AnnenForelder {
 
@@ -33,4 +34,3 @@ public final class NorskForelder extends AnnenForelder {
         return fnr != null && fnr.getFnr() != null;
     }
 }
-

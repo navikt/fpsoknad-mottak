@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,8 +22,8 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
@@ -152,7 +151,7 @@ public class PeriodeValidatorTest {
                 Collections.singletonList(uttaksPeriode(null, null)));
         Set<ConstraintViolation<Fordeling>> constraintViolations = validator.validate(fordeling);
         assertFalse(constraintViolations.isEmpty());
-        Endringssøknad es = new Endringssøknad(LocalDateTime.now(), new Søker(BrukerRolle.MOR), fordeling, null, null,
+        Endringssøknad es = new Endringssøknad(LocalDate.now(), new Søker(BrukerRolle.MOR), fordeling, null, null,
                 null, "42");
         assertFalse(validator.validate(es).isEmpty());
     }

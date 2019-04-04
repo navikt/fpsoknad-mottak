@@ -75,7 +75,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))
-                .withMottattDato(søknad.getMottattdato().toLocalDate())
+                .withMottattDato(søknad.getMottattdato())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger())
                 .withOmYtelse(engangsstønadFra(søknad));
     }

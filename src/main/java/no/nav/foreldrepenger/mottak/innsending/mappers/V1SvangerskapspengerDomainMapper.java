@@ -80,7 +80,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))
                 .withOmYtelse(ytelseFra(søknad))
-                .withMottattDato(søknad.getMottattdato().toLocalDate())
+                .withMottattDato(søknad.getMottattdato())
                 .withBegrunnelseForSenSoeknad(søknad.getBegrunnelseForSenSøknad())
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
