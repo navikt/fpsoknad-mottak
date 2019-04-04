@@ -152,7 +152,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
             no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
             LocalDate behovFra) {
         return Optional.ofNullable(ingen)
-                .map(i -> new IngenTilrettelegging(tilArbeidsForhold(arbeidsforhold), i.getSlutteArbeidFom(),
+                .map(i -> new IngenTilrettelegging(tilArbeidsForhold(arbeidsforhold), behovFra, i.getSlutteArbeidFom(),
                         null))
                 .orElse(null);
     }

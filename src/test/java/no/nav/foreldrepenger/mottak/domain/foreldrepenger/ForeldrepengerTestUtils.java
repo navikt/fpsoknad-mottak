@@ -163,7 +163,7 @@ public class ForeldrepengerTestUtils {
     }
 
     private static Tilrettelegging ingenTilrettelegging(String... vedleggRefs) {
-        return new IngenTilrettelegging(frilanser(), LocalDate.now().plusMonths(2),
+        return new IngenTilrettelegging(frilanser(), LocalDate.now().plusMonths(2), LocalDate.now().plusMonths(2),
                 asList(vedleggRefs));
 
     }

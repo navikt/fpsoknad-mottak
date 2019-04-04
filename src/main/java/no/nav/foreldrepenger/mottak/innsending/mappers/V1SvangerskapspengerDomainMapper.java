@@ -18,6 +18,8 @@ import javax.xml.bind.JAXBElement;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
@@ -42,10 +44,19 @@ import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 @Component
 public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
-    private static final SVPV1JAXBUtil JAXB = new SVPV1JAXBUtil();
+    private final SVPV1JAXBUtil JAXB;
 
     private static final no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory SVP_FACTORY_V1 = new no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory SØKNAD_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory();
+
+    @JsonCreator
+    public V1SvangerskapspengerDomainMapper() {
+        this(false);
+    }
+
+    public V1SvangerskapspengerDomainMapper(boolean validate) {
+        JAXB = new SVPV1JAXBUtil(validate);
+    }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
@@ -74,7 +85,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                 .withTilleggsopplysninger(søknad.getTilleggsopplysninger());
     }
 
-    private static OmYtelse ytelseFra(Søknad søknad) {
+    private OmYtelse ytelseFra(Søknad søknad) {
         no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger.class
                 .cast(søknad.getYtelse());
         return new OmYtelse().withAny(JAXB.marshalToElement(svangerskapspengerFra(ytelse)));
@@ -106,6 +117,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .cast(tilrettelegging);
             return new Tilrettelegging().withIngenTilrettelegging(new IngenTilrettelegging()
                     .withSlutteArbeidFom(ingen.getSlutteArbeidFom()))
+                    .withBehovForTilretteleggingFom(ingen.getBehovForTilretteleggingFom())
                     .withVedlegg(tilretteleggingVedleggFraIDs(ingen.getVedlegg()))
                     .withArbeidsforhold(arbeidsforholdFra(ingen.getArbeidsforhold()));
         }

@@ -3,7 +3,11 @@ package no.nav.foreldrepenger.mottak.util.jaxb;
 public final class SVPV1JAXBUtil extends AbstractJAXBUtil {
 
     public SVPV1JAXBUtil() {
-        this(false, false);
+        this(false);
+    }
+
+    public SVPV1JAXBUtil(boolean validate) {
+        this(validate, validate);
     }
 
     public SVPV1JAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {
