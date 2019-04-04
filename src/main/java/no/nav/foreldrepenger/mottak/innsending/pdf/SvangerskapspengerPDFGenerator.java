@@ -170,17 +170,11 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
 
     private Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold(
             List<Tilrettelegging> tilretteleggingsPerioder) {
-        HashMap<Arbeidsforhold, List<Tilrettelegging>> grouped = new HashMap<>();
-        for (Tilrettelegging periode : tilretteleggingsPerioder) {
-            if (!grouped.containsKey(periode.getArbeidsforhold())) {
-                List<Tilrettelegging> list = new ArrayList<>();
-                list.add(periode);
-                grouped.put(periode.getArbeidsforhold(), list);
-            }
-            else
-                grouped.get(periode.getArbeidsforhold()).add(periode);
-        }
-        return grouped;
+        Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold = new HashMap<>();
+        tilretteleggingsPerioder.forEach(tp -> tilretteleggingByArbeidsforhold
+                .computeIfAbsent(tp.getArbeidsforhold(), key -> new ArrayList<>())
+                .add(tp));
+        return tilretteleggingByArbeidsforhold;
     }
 
     private float renderMedlemskap(Medlemsskap medlemsskap, FontAwareCos cos, float y) throws IOException {
