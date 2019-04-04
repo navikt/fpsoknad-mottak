@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
@@ -12,7 +14,9 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.ar
 @ToString(callSuper = true)
 public class DelvisTilrettelegging extends Tilrettelegging {
 
+    @NotNull
     private final LocalDate tilrettelagtArbeidFom;
+    @NotNull
     private final ProsentAndel stillingsprosent;
 
     public DelvisTilrettelegging(Arbeidsforhold arbeidsforhold, LocalDate behovForTilretteleggingFom,

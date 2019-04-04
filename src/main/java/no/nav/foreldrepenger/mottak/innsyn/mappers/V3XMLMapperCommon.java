@@ -35,6 +35,14 @@ public class V3XMLMapperCommon {
 
     }
 
+    static CountryCode tilLand(Land land) {
+        return tilLand(land, null);
+    }
+
+    static CountryCode tilLand(Land land, CountryCode defaultLand) {
+        return land == null ? defaultLand : CountryCode.getByCode(land.getKode());
+    }
+
     static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening tilOpptjening(
             Opptjening opptjening) {
         if (opptjening == null) {
@@ -47,7 +55,7 @@ public class V3XMLMapperCommon {
                 tilFrilans(opptjening.getFrilans()));
     }
 
-    static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans tilFrilans(Frilans frilans) {
+    private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans tilFrilans(Frilans frilans) {
         if (frilans == null) {
             return null;
         }
@@ -59,13 +67,13 @@ public class V3XMLMapperCommon {
                 emptyList());
     }
 
-    static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
+    private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
         return safeStream(frilansoppdrag)
                 .map(V3XMLMapperCommon::tilFrilansOppdrag)
                 .collect(toList());
     }
 
-    static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
+    private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
         if (frilansoppdrag == null) {
             return null;
         }
@@ -74,11 +82,11 @@ public class V3XMLMapperCommon {
                 tilÅpenPeriode(frilansoppdrag.getPeriode()));
     }
 
-    static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
+    private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
         return periode == null || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
     }
 
-    static ÅpenPeriode tilÅpenPeriode(Periode periode) {
+    private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
         if (periode == null) {
             return null;
         }
@@ -87,7 +95,7 @@ public class V3XMLMapperCommon {
                 periode.getTom());
     }
 
-    static List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> tilAnnenOpptjening(
+    private static List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> tilAnnenOpptjening(
             List<AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
                 .map(V3XMLMapperCommon::tilAnnenOpptjening)
@@ -105,13 +113,13 @@ public class V3XMLMapperCommon {
                 emptyList());
     }
 
-    static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
+    private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
         return safeStream(egenNaering)
                 .map(V3XMLMapperCommon::tilEgenNæring)
                 .collect(toList());
     }
 
-    static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
+    private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
         if (egenNæring == null) {
             return null;
         }
@@ -153,15 +161,7 @@ public class V3XMLMapperCommon {
                 + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
     }
 
-    static CountryCode tilLand(Land land) {
-        return tilLand(land, null);
-    }
-
-    static CountryCode tilLand(Land land, CountryCode defaultLand) {
-        return land == null ? defaultLand : CountryCode.getByCode(land.getKode());
-    }
-
-    static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
+    private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
         if (regnskapsfoerer == null) {
             return emptyList();
         }
@@ -170,7 +170,7 @@ public class V3XMLMapperCommon {
                 regnskapsfoerer.getTelefon()));
     }
 
-    static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
+    private static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold> utenlandskeArbeidsforhold) {
         return safeStream(utenlandskeArbeidsforhold)
                 .map(V3XMLMapperCommon::tilUtenlandskArbeidsforhold)
@@ -186,7 +186,7 @@ public class V3XMLMapperCommon {
                 tilLand(arbeidforhold.getArbeidsland()));
     }
 
-    static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstyper) {
+    private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstyper) {
         return safeStream(virksomhetstyper)
                 .map(V3XMLMapperCommon::tilVirksomhetsType)
                 .collect(toList());

@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -29,6 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.ar
 public abstract class Tilrettelegging {
 
     private final Arbeidsforhold arbeidsforhold;
+    @NotNull
     private final LocalDate behovForTilretteleggingFom;
     private final List<String> vedlegg;
 

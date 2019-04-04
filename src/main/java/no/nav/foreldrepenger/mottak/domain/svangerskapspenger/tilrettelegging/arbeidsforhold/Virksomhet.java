@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,6 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 public class Virksomhet extends Arbeidsforhold {
 
     @Orgnr
+    @NotNull
     public final String orgnr;
 
     @JsonCreator
