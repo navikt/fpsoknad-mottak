@@ -114,7 +114,9 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                         søknad.getMottattDato(),
                         tilSøker(søknad.getSoeker()),
                         tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato(), egenskap.getType()).getFordeling(),
-                        saksnummer(søknad.getOmYtelse()));
+                        null, null, null,
+                        saksnummer(søknad.getOmYtelse()),
+                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
                 endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return endringssøknad;

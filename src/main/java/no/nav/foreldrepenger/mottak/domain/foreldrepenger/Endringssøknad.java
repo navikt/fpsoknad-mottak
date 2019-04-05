@@ -43,14 +43,14 @@ public class Endringssøknad extends Søknad {
     public Endringssøknad(LocalDate mottattDato, Søker søker, Fordeling fordeling, AnnenForelder annenForelder,
             Fødsel fødsel, Rettigheter rettigheter, String saksnr,
             Vedlegg... vedlegg) {
-        this(mottattDato, søker, annenForelder, fordeling, fødsel, rettigheter, saksnr, asList(vedlegg));
+        this(mottattDato, søker, fordeling, annenForelder, fødsel, rettigheter, saksnr, asList(vedlegg));
     }
 
     @JsonCreator
     public Endringssøknad(@JsonProperty("mottattdato") LocalDate mottattDato,
             @JsonProperty("søker") Søker søker,
-            @JsonProperty("annenForelder") AnnenForelder annenForelder,
             @JsonProperty("fordeling") Fordeling fordeling,
+            @JsonProperty("annenForelder") AnnenForelder annenForelder,
             @JsonProperty("fødsel") Fødsel fødsel,
             @JsonProperty("rettigheter") Rettigheter rettigheter,
             @JsonProperty("saksnr") String saksnr,
