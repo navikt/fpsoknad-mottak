@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
@@ -8,12 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -27,6 +23,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
@@ -93,12 +90,12 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                     FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                     float startY = STARTY;
                     startY = header(søker, doc, scratchcos, startY);
-                    float size = renderTilrettelegging(arbeidsgivere, arbeidsforhold, tilrettelegging, scratchcos,
+                    float size = renderTilrettelegging(arbeidsgivere, arbeidsforhold, tilrettelegging, søknad.getVedlegg(), scratchcos,
                             startY);
                     float behov = startY - size;
                     if (behov < y) {
                         scratchcos.close();
-                        y = renderTilrettelegging(arbeidsgivere, arbeidsforhold, tilrettelegging, cos, y);
+                        y = renderTilrettelegging(arbeidsgivere, arbeidsforhold, tilrettelegging, søknad.getVedlegg(), cos, y);
                     }
                     else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
@@ -132,37 +129,38 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     }
 
     private float renderTilrettelegging(List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere,
-            Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrætte, FontAwareCos cos, float y)
+                                        Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrettelegging,
+                                        List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
         if (arbeidsforhold instanceof Virksomhet) {
             y -= renderer.addLineOfRegularText(
-                    virksomhetsnavn(arbeidsgivere, ((Virksomhet) arbeidsforhold).getOrgnr()), cos, y);
-            y -= renderTilretteleggingsperioder(tilrætte, cos, y);
+                virksomhetsnavn(arbeidsgivere, Virksomhet.class.cast(arbeidsforhold).getOrgnr()), cos, y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= blankLine();
         }
         if (arbeidsforhold instanceof PrivatArbeidsgiver) {
             y -= renderer.addLineOfRegularText(txt("svp.privatarbeidsgiver"), cos, y);
-            y -= renderTilretteleggingsperioder(tilrætte, cos, y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= blankLine();
         }
         if (arbeidsforhold instanceof SelvstendigNæringsdrivende) {
             y -= renderer.addLineOfRegularText(txt("svp.selvstendig"), cos, y);
-            y -= renderTilretteleggingsperioder(tilrætte, cos, y);
-            y -= renderer.addBulletPoint(INDENT,
-                    txt("svp.risikofaktorer", ((SelvstendigNæringsdrivende) arbeidsforhold).getRisikoFaktorer()), cos,
-                    y);
-            y -= renderer.addBulletPoint(INDENT,
-                    txt("svp.tiltak", ((SelvstendigNæringsdrivende) arbeidsforhold).getTilretteleggingstiltak()), cos,
-                    y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
+                SelvstendigNæringsdrivende.class.cast(arbeidsforhold).getRisikoFaktorer()),
+                cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
+                SelvstendigNæringsdrivende.class.cast(arbeidsforhold).getTilretteleggingstiltak()),
+                cos, y);
             y -= blankLine();
         }
         if (arbeidsforhold instanceof Frilanser) {
             y -= renderer.addLineOfRegularText(txt("svp.frilans"), cos, y);
-            y -= renderTilretteleggingsperioder(tilrætte, cos, y);
-            y -= renderer.addBulletPoint(INDENT,
-                    txt("svp.risikofaktorer", ((Frilanser) arbeidsforhold).getRisikoFaktorer()), cos, y);
-            y -= renderer.addBulletPoint(INDENT,
-                    txt("svp.tiltak", ((Frilanser) arbeidsforhold).getTilretteleggingstiltak()), cos, y);
+            y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
+                Frilanser.class.cast(arbeidsforhold).getRisikoFaktorer()), cos, y);
+            y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
+                Frilanser.class.cast(arbeidsforhold).getTilretteleggingstiltak()), cos, y);
             y -= blankLine();
         }
         return y;
@@ -204,18 +202,19 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 .collect(Collectors.toList());
     }
 
-    private float renderTilretteleggingsperioder(List<Tilrettelegging> perioder, FontAwareCos cos, float y)
+    private float renderTilretteleggingsperioder(List<Tilrettelegging> perioder,
+                                                 List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         for (Tilrettelegging periode : perioder) {
             y -= renderer.addBulletPoint(INDENT,
                     txt("svp.behovfra", DATEFMT.format(periode.getBehovForTilretteleggingFom())), cos, y);
             if (periode instanceof HelTilrettelegging)
-                y -= renderHelTilrettelegging((HelTilrettelegging) periode, cos, y);
+                y -= renderHelTilrettelegging(HelTilrettelegging.class.cast(periode), vedlegg, cos, y);
             else if (periode instanceof DelvisTilrettelegging)
-                y -= renderDelvisTilrettelegging((DelvisTilrettelegging) periode, cos, y);
+                y -= renderDelvisTilrettelegging(DelvisTilrettelegging.class.cast(periode), vedlegg, cos, y);
             else if (periode instanceof IngenTilrettelegging)
-                y -= renderIngenTilrettelegging((IngenTilrettelegging) periode, cos, y);
+                y -= renderIngenTilrettelegging(IngenTilrettelegging.class.cast(periode), cos, y);
         }
         return startY - y;
     }
@@ -223,41 +222,63 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     private float renderIngenTilrettelegging(IngenTilrettelegging periode, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
-        y -= renderer.addBulletPoint(INDENT, txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos,
-                y);
-        y -= renderVedlegg(periode.getVedlegg(), cos, y);
+        y -= renderer.addBulletPoint(INDENT,
+                txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos, y);
+        //y -= renderVedlegg(vedlegg, .getVedlegg(), cos, y);
         return startY - y;
     }
 
-    private float renderDelvisTilrettelegging(DelvisTilrettelegging periode, FontAwareCos cos, float y)
+    private float renderDelvisTilrettelegging(DelvisTilrettelegging periode,
+                                              List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
-        y -= renderer.addBulletPoint(INDENT, txt("svp.stillingsprosent", periode.getStillingsprosent().getProsent()),
-                cos, y);
-        y -= renderVedlegg(periode.getVedlegg(), cos, y);
+        y -= renderer.addBulletPoint(INDENT,
+                txt("svp.stillingsprosent", periode.getStillingsprosent().getProsent()), cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "fiksfaks", cos, y);
         return startY - y;
     }
 
-    private float renderHelTilrettelegging(HelTilrettelegging helTilrettelegging, FontAwareCos cos, float y)
+    private float renderHelTilrettelegging(HelTilrettelegging periode,
+                                           List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
-                DATEFMT.format(helTilrettelegging.getTilrettelagtArbeidFom())), cos, y);
-        y -= renderVedlegg(helTilrettelegging.getVedlegg(), cos, y);
+                DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "fiksfaks", cos, y);
         return startY - y;
     }
 
-    private float renderVedlegg(List<String> vedleggRefs, FontAwareCos cos, float y) throws IOException {
+    private float renderVedlegg(List<Vedlegg> vedlegg, List<String> vedleggRefs, String keyIfAnnet,
+                                FontAwareCos cos, float y) throws IOException {
         float startY = y;
-        if (!vedleggRefs.isEmpty()) {
+        if (!vedleggRefs.isEmpty())
             y -= renderer.addBulletPoint(INDENT, txt("vedlegg1"), cos, y);
-            for (String vedleggRef : vedleggRefs) {
-                y -= renderer.addBulletPoint(INDENT * 2, vedleggRef, cos, y);
+        for (String vedleggRef : vedleggRefs) {
+            Optional<Vedlegg> details = safeStream(vedlegg)
+                .filter(s -> vedleggRef.equals(s.getId()))
+                .findFirst();
+            if (details.isPresent()) {
+                String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
+                y -= renderer.addBulletPoint(INDENT * 2,
+                    txt("vedlegg2", beskrivelse, details.get().getInnsendingsType().name()),
+                    cos, y);
+            }
+            else {
+                // Never, hopefully
+                y -= renderer.addBulletPoint(INDENT * 2, txt("vedlegg2", "vedlegg"), cos, y);
             }
         }
         return startY - y;
+    }
+
+    private String vedleggsBeskrivelse(String key, Vedlegg vedlegg) {
+        return erAnnenDokumentType(vedlegg) ? txt(key) : vedlegg.getBeskrivelse();
+    }
+
+    private static boolean erAnnenDokumentType(Vedlegg vedlegg) {
+        return vedlegg.getDokumentType().equals(I000060);
     }
 
     private String virksomhetsnavn(List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere,
