@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Data;
@@ -16,14 +17,11 @@ public class ProsentAndel {
     @Prosent
     private final Double prosent;
 
-    public static ProsentAndel of(int prosent) {
-        return new ProsentAndel(new Double(prosent));
-    }
-
     public ProsentAndel(Double prosent) {
         this.prosent = round(prosent, 1);
     }
 
+    @JsonCreator
     public static ProsentAndel valueOf(String prosent) {
         return new ProsentAndel(tilProsent(prosent));
     }

@@ -47,6 +47,7 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
@@ -72,6 +73,11 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testGosysKvittering() throws Exception {
         test(new FPFordelGosysKvittering("42"), true, mapper);
+    }
+
+    @Test
+    public void testProsentAndel() throws Exception {
+        test(new ProsentAndel(40d), true, mapper);
     }
 
     @Test

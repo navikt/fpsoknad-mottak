@@ -169,7 +169,7 @@ public class ForeldrepengerTestUtils {
 
     private static Tilrettelegging delvisTilrettelegging(String... vedleggRefs) {
         return new DelvisTilrettelegging(privat(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
-                ProsentAndel.of(100), asList(vedleggRefs));
+                new ProsentAndel(100d), asList(vedleggRefs));
     }
 
     private static Tilrettelegging helTilrettelegging(String... vedleggRefs) {
