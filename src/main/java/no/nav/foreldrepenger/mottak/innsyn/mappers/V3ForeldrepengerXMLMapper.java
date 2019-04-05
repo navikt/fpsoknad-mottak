@@ -9,6 +9,7 @@ import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilL
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilSøker;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilVedlegg;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.ytelse;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
@@ -17,7 +18,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -27,12 +27,6 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
@@ -68,7 +62,6 @@ import no.nav.vedtak.felles.xml.soeknad.felles.v3.Termin;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.UkjentForelder;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Dekningsgrad;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Foreldrepenger;
-import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.MorsAktivitetsTyper;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Oppholdsaarsaker;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Overfoeringsaarsaker;
@@ -142,32 +135,6 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
             LOG.debug("Feil ved unmarshalling av søknad {}, ikke kritisk", EGENSKAPER, e);
             return null;
         }
-    }
-
-    private static List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> påkrevd,
-            List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> valgfritt) {
-        Stream<Vedlegg> vf = safeStream(valgfritt)
-                .map(V3ForeldrepengerXMLMapper::metadataFra)
-                .map(s -> new ValgfrittVedlegg(s, null));
-        Stream<Vedlegg> pk = safeStream(påkrevd)
-                .map(V3ForeldrepengerXMLMapper::metadataFra)
-                .map(s -> new PåkrevdVedlegg(s, null));
-        return Stream.concat(vf, pk).collect(toList());
-    }
-
-    private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg vedlegg) {
-        return new VedleggMetaData(
-                vedlegg.getId(),
-                tilInnsendingsType(vedlegg.getInnsendingstype()),
-                tilDokumentType(vedlegg.getSkjemanummer()));
-    }
-
-    private static DokumentType tilDokumentType(String skjemanummer) {
-        return DokumentType.valueOf(skjemanummer);
-    }
-
-    private static InnsendingsType tilInnsendingsType(Innsendingstype innsendingstype) {
-        return InnsendingsType.valueOf(innsendingstype.getKode());
     }
 
     private static String saksnummer(OmYtelse omYtelse) {

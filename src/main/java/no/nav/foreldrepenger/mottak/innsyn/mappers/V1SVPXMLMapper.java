@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANG
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilSøker;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilVedlegg;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.ytelse;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -77,7 +78,8 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
         try {
             Soeknad søknad = jaxb.unmarshalToElement(xml, Soeknad.class).getValue();
             Søknad s = new Søknad(søknad.getMottattDato(), tilSøker(søknad.getSoeker()),
-                    tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()));
+                    tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()),
+                    tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
             s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             return s;

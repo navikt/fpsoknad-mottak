@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBElement;
 
@@ -18,7 +19,13 @@ import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
+import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
+import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
@@ -44,6 +51,7 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.NorskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Opptjening;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Regnskapsfoerer;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon;
+import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Innsendingstype;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
@@ -52,6 +60,32 @@ public class V3XMLMapperCommon {
 
     private V3XMLMapperCommon() {
 
+    }
+
+    static List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> påkrevd,
+            List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> valgfritt) {
+        Stream<Vedlegg> vf = safeStream(valgfritt)
+                .map(V3XMLMapperCommon::metadataFra)
+                .map(s -> new ValgfrittVedlegg(s, null));
+        Stream<Vedlegg> pk = safeStream(påkrevd)
+                .map(V3XMLMapperCommon::metadataFra)
+                .map(s -> new PåkrevdVedlegg(s, null));
+        return Stream.concat(vf, pk).collect(toList());
+    }
+
+    private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg vedlegg) {
+        return new VedleggMetaData(
+                vedlegg.getId(),
+                tilInnsendingsType(vedlegg.getInnsendingstype()),
+                tilDokumentType(vedlegg.getSkjemanummer()));
+    }
+
+    private static DokumentType tilDokumentType(String skjemanummer) {
+        return DokumentType.valueOf(skjemanummer);
+    }
+
+    private static InnsendingsType tilInnsendingsType(Innsendingstype innsendingstype) {
+        return InnsendingsType.valueOf(innsendingstype.getKode());
     }
 
     static <T> T ytelse(OmYtelse omYtelse, Class<T> clazz) {
