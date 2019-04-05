@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
@@ -262,7 +263,7 @@ public class V3XMLMapperCommon {
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
-        if (type == null || type.getKode().equals(XMLSøknadMapper.UKJENT_KODEVERKSVERDI)) {
+        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Virksomhetstype.valueOf(type.getKode());

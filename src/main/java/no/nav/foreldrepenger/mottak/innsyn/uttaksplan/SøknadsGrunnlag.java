@@ -10,7 +10,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
 
 @Data
 public class SøknadsGrunnlag {
-    private final FamiliehendelseType familieHendelseType;
+    private final FamilieHendelseType familieHendelseType;
     private final LocalDate familieHendelseDato;
 
     private final Dekningsgrad dekningsgrad;
@@ -25,7 +25,7 @@ public class SøknadsGrunnlag {
     private final Boolean farMedmorHarRett;
 
     @JsonCreator
-    public SøknadsGrunnlag(@JsonProperty("familieHendelseType") FamiliehendelseType familieHendelseType,
+    public SøknadsGrunnlag(@JsonProperty("familieHendelseType") FamilieHendelseType familieHendelseType,
             @JsonProperty("familieHendelseDato") LocalDate familieHendelseDato,
             @JsonProperty("dekningsgrad") Dekningsgrad dekningsgrad,
             @JsonProperty("antallBarn") Integer antallBarn,

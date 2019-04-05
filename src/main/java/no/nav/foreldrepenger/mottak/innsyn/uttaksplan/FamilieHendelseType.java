@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
 
-public enum FamiliehendelseType {
+public enum FamilieHendelseType {
     ADPSJN, OMSRGO, FODSL, TERM
 }

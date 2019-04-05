@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilLand;
@@ -138,23 +139,23 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 return null;
             }
         } catch (Exception e) {
-            LOG.debug("Feil ved unmarshalling av søknad {},  ikke kritisk", EGENSKAPER, e);
+            LOG.debug("Feil ved unmarshalling av søknad {}, ikke kritisk", EGENSKAPER, e);
             return null;
         }
     }
 
-    private List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> påkrevd,
+    private static List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> påkrevd,
             List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> valgfritt) {
         Stream<Vedlegg> vf = safeStream(valgfritt)
-                .map(this::metadataFra)
+                .map(V3ForeldrepengerXMLMapper::metadataFra)
                 .map(s -> new ValgfrittVedlegg(s, null));
         Stream<Vedlegg> pk = safeStream(påkrevd)
-                .map(this::metadataFra)
+                .map(V3ForeldrepengerXMLMapper::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
         return Stream.concat(vf, pk).collect(toList());
     }
 
-    private VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg vedlegg) {
+    private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg vedlegg) {
         return new VedleggMetaData(
                 vedlegg.getId(),
                 tilInnsendingsType(vedlegg.getInnsendingstype()),
@@ -335,7 +336,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     uttaksperiode.getSamtidigUttakProsent(),
                     emptyList());
         }
-        throw new UnexpectedInputException("Ikke-støttet periode " + periode.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent periode %s", periode.getClass().getSimpleName());
     }
 
     private static Boolean tilBoolean(boolean value) {

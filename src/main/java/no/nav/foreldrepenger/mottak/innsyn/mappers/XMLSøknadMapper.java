@@ -6,7 +6,5 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public interface XMLSøknadMapper extends Mappable {
 
-    final String UKJENT_KODEVERKSVERDI = "-";
-
     Søknad tilSøknad(String xml, SøknadEgenskap egenskap);
 }

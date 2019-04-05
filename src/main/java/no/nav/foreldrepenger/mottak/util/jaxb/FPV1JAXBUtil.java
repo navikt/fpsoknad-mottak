@@ -7,7 +7,11 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 public final class FPV1JAXBUtil extends AbstractJAXBUtil {
 
     public FPV1JAXBUtil() {
-        this(false, false);
+        this(false);
+    }
+
+    public FPV1JAXBUtil(boolean validate) {
+        this(validate, validate);
     }
 
     public FPV1JAXBUtil(boolean validateMarshalling, boolean validateUnmarshalling) {

@@ -6,6 +6,8 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,14 +29,19 @@ public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
 
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD_DOKMOT);
 
-    private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
-
+    private final ESV1JAXBUtil jaxb;
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadDokmotXMLMapper.class);
 
     private final Oppslag oppslag;
 
+    @Inject
     public V1EngangsstønadDokmotXMLMapper(Oppslag oppslag) {
+        this(oppslag, false);
+    }
+
+    public V1EngangsstønadDokmotXMLMapper(Oppslag oppslag, boolean validate) {
         this.oppslag = oppslag;
+        this.jaxb = new ESV1JAXBUtil(validate);
     }
 
     @Override
@@ -45,13 +52,13 @@ public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
     @Override
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
         return Optional.ofNullable(xml)
-                .map(V1EngangsstønadDokmotXMLMapper::esDokmot)
+                .map(this::esDokmot)
                 .orElse(null);
     }
 
-    private static Søknad esDokmot(String xml) {
+    private Søknad esDokmot(String xml) {
         try {
-            SoeknadsskjemaEngangsstoenad søknad = JAXB.unmarshal(xml, SoeknadsskjemaEngangsstoenad.class);
+            SoeknadsskjemaEngangsstoenad søknad = jaxb.unmarshal(xml, SoeknadsskjemaEngangsstoenad.class);
             søknad.getBruker();
             søknad.getOpplysningerOmBarn();
             søknad.getOpplysningerOmFar();

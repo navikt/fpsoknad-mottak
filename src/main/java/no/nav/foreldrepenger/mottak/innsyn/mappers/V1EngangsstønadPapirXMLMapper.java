@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -58,14 +60,20 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
 
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD);
 
-    private static final ESV1JAXBUtil JAXB = new ESV1JAXBUtil();
+    private final ESV1JAXBUtil JAXB;
 
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadPapirXMLMapper.class);
 
     private final Oppslag oppslag;
 
+    @Inject
     public V1EngangsstønadPapirXMLMapper(Oppslag oppslag) {
+        this(oppslag, false);
+    }
+
+    public V1EngangsstønadPapirXMLMapper(Oppslag oppslag, boolean validate) {
         this.oppslag = oppslag;
+        this.JAXB = new ESV1JAXBUtil(validate);
     }
 
     @Override

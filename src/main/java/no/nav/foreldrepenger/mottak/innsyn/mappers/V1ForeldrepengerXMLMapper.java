@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -111,12 +113,18 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
 
-    private static final FPV1JAXBUtil JAXB = new FPV1JAXBUtil();
+    private final FPV1JAXBUtil jaxb;
 
     private static final Logger LOG = LoggerFactory.getLogger(V1ForeldrepengerXMLMapper.class);
 
+    @Inject
     public V1ForeldrepengerXMLMapper(Oppslag oppslag) {
+        this(oppslag, false);
+    }
+
+    public V1ForeldrepengerXMLMapper(Oppslag oppslag, boolean validate) {
         super(oppslag);
+        this.jaxb = new FPV1JAXBUtil(validate);
     }
 
     @Override
@@ -131,7 +139,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
             return null;
         }
         try {
-            Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
+            Soeknad søknad = jaxb.unmarshalToElement(xml, Soeknad.class).getValue();
             switch (egenskap.getType()) {
             case ENDRING_FORELDREPENGER:
                 Endringssøknad endringssøknad = new Endringssøknad(

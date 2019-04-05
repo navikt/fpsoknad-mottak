@@ -14,6 +14,7 @@ import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 @Data
 public class UttaksPeriode {
 
+    private final UtsettelsePeriodeType utsettelsePeriodeType;
     private final PeriodeResultatType periodeResultatType;
     private final Boolean graderingInnvilget;
     private final Boolean samtidigUttak;
@@ -24,7 +25,8 @@ public class UttaksPeriode {
     private final ProsentAndel utbetalingprosent;
     private final Boolean gjelderAnnenPart;
 
-    public UttaksPeriode(@JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
+    public UttaksPeriode(@JsonProperty("UtsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
+            @JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
             @JsonProperty("samtidigUttak") Boolean samtidigUttak,
             @JsonProperty("fom") LocalDate fom,
@@ -34,6 +36,7 @@ public class UttaksPeriode {
             @JsonProperty("arbeidstidprosent") ProsentAndel arbeidstidProsent,
             @JsonProperty("utbetalingprosent") ProsentAndel utbetalingprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart) {
+        this.utsettelsePeriodeType = utsettelsePeriodeType;
         this.periodeResultatType = periodeResultatType;
         this.graderingInnvilget = graderingInnvilget;
         this.samtidigUttak = samtidigUttak;
