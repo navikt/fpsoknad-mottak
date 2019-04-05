@@ -46,11 +46,6 @@ public class ProsentValidatorTest {
     }
 
     @Test
-    public void testMedProsentTegn() {
-        testProsent(true, "50%", 50d);
-    }
-
-    @Test
     public void testOK() {
         testProsent(50d);
     }
@@ -78,10 +73,6 @@ public class ProsentValidatorTest {
     private void testProsent(double value) {
         testProsent(true, value, value);
 
-    }
-
-    private void testProsent(boolean shouldBeEmpty, String value, double expectedValue) {
-        testProsent(shouldBeEmpty, new ProsentBruker(ProsentAndel.valueOf(value)), expectedValue);
     }
 
     private void testProsent(boolean shouldBeEmpty, double value, double expectedValue) {
