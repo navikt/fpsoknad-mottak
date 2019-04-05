@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilSøker;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.ytelse;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.xml.bind.JAXBElement;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
@@ -40,7 +40,6 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.jaxb.SVPV1JAXBUtil;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
 import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
@@ -49,9 +48,18 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
 
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_SVANGERSKAPSPENGER);
 
-    private static final SVPV1JAXBUtil JAXB = new SVPV1JAXBUtil();
+    private final SVPV1JAXBUtil jaxb;
 
     private static final Logger LOG = LoggerFactory.getLogger(V1SVPXMLMapper.class);
+
+    @Inject
+    public V1SVPXMLMapper() {
+        this(false);
+    }
+
+    public V1SVPXMLMapper(boolean validate) {
+        jaxb = new SVPV1JAXBUtil(validate);
+    }
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
@@ -61,31 +69,27 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
     @Override
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
         return Optional.ofNullable(xml)
-                .map(V1SVPXMLMapper::svpSøknad)
+                .map(this::svpSøknad)
                 .orElse(null);
     }
 
-    private static Søknad svpSøknad(String xml) {
+    private Søknad svpSøknad(String xml) {
         try {
-            Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
+            Soeknad søknad = jaxb.unmarshalToElement(xml, Soeknad.class).getValue();
             Søknad s = new Søknad(søknad.getMottattDato(), tilSøker(søknad.getSoeker()),
                     tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()));
             s.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
             s.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             return s;
         } catch (Exception e) {
-            LOG.debug("Feil ved unmarshalling av svangerskapspengesøknad, ikke kritisk, vi bruker ikke dette til noe",
-                    e);
+            LOG.debug("Feil ved unmarshalling av søknad {}, ikke kritisk foreløpig", EGENSKAPER, e);
             return null;
         }
     }
 
-    private static Søker tilSøker(Bruker søker) {
-        return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()));
-    }
-
     private static Svangerskapspenger tilYtelse(OmYtelse omYtelse, LocalDate søknadsDato) {
-        no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger søknad = ytelse(omYtelse);
+        no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger søknad = ytelse(omYtelse,
+                no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger.class);
         return new Svangerskapspenger(søknad.getTermindato(), søknad.getFødselsdato(),
                 tilMedlemsskap(søknad.getMedlemskap(), søknadsDato), tilOpptjening(søknad.getOpptjening()),
                 tilTilrettelegging(søknad.getTilretteleggingListe().getTilrettelegging()));
@@ -172,24 +176,6 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
                     selvstendig.getOpplysningerOmTilretteleggingstiltak());
         }
         throw new UnexpectedInputException("UKjent arbeidsforhold %s", arbeidsforhold.getClass().getSimpleName());
-    }
-
-    private static no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger ytelse(OmYtelse omYtelse) {
-        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
-            LOG.warn("Ingen ytelse i søknaden");
-            return null;
-        }
-        if (omYtelse.getAny().size() > 1) {
-            LOG.warn("Fikk {} ytelser i søknaden, forventet 1, behandler kun den første", omYtelse.getAny().size());
-        }
-        return (no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Svangerskapspenger) ((JAXBElement<?>) omYtelse
-                .getAny().get(0)).getValue();
-    }
-
-    private static BrukerRolle tilRolle(String kode) {
-        return Optional.of(kode)
-                .map(BrukerRolle::valueOf)
-                .orElse(BrukerRolle.IKKE_RELEVANT);
     }
 
 }

@@ -7,10 +7,16 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
+import javax.xml.bind.JAXBElement;
+
+import com.google.common.collect.Iterables;
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
+import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
@@ -25,6 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Periode;
@@ -38,11 +45,21 @@ import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.Regnskapsfoerer;
 import no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskOrganisasjon;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Land;
 import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
+import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
 
 public class V3XMLMapperCommon {
 
     private V3XMLMapperCommon() {
 
+    }
+
+    static <T> T ytelse(OmYtelse omYtelse, Class<T> clazz) {
+        Object element = ((JAXBElement<?>) Iterables.getOnlyElement(omYtelse.getAny())).getValue();
+        return (T) element;
+    }
+
+    static Søker tilSøker(Bruker søker) {
+        return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()));
     }
 
     static Medlemsskap tilMedlemsskap(Medlemskap medlemskap, LocalDate søknadsDato) {
@@ -51,6 +68,12 @@ public class V3XMLMapperCommon {
         FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(
                 utenlandsOppholdEtter(medlemskap.getOppholdUtlandet(), søknadsDato));
         return new Medlemsskap(tidligere, framtidig);
+    }
+
+    private static BrukerRolle tilRolle(String kode) {
+        return Optional.of(kode)
+                .map(BrukerRolle::valueOf)
+                .orElse(BrukerRolle.IKKE_RELEVANT);
     }
 
     private static List<Utenlandsopphold> utenlandsOppholdFør(List<OppholdUtlandet> opphold, LocalDate søknadsDato) {
@@ -83,7 +106,10 @@ public class V3XMLMapperCommon {
     }
 
     static CountryCode tilLand(Land land, CountryCode defaultLand) {
-        return land == null ? defaultLand : CountryCode.getByCode(land.getKode());
+        return Optional.ofNullable(land)
+                .map(Land::getKode)
+                .map(CountryCode::getByCode)
+                .orElse(defaultLand);
     }
 
     static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening tilOpptjening(

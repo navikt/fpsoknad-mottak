@@ -7,6 +7,8 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FOREL
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilLand;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilSøker;
+import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.ytelse;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
@@ -16,15 +18,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.xml.bind.JAXBElement;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
@@ -51,6 +51,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesP
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -59,7 +60,6 @@ import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelder;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderUtenNorskIdent;
-import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Foedsel;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Rettigheter;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.SoekersRelasjonTilBarnet;
@@ -89,11 +89,16 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
             INITIELL_FORELDREPENGER);
 
     private static final Logger LOG = LoggerFactory.getLogger(V3ForeldrepengerXMLMapper.class);
+    private final FPV3JAXBUtil jaxb;
 
-    private static final FPV3JAXBUtil JAXB = new FPV3JAXBUtil();
-
+    @Inject
     public V3ForeldrepengerXMLMapper(Oppslag oppslag) {
+        this(oppslag, false);
+    }
+
+    public V3ForeldrepengerXMLMapper(Oppslag oppslag, boolean validate) {
         super(oppslag);
+        this.jaxb = new FPV3JAXBUtil(validate);
     }
 
     @Override
@@ -108,13 +113,13 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
             return null;
         }
         try {
-            Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
+            Soeknad søknad = jaxb.unmarshalToElement(xml, Soeknad.class).getValue();
             switch (egenskap.getType()) {
             case ENDRING_FORELDREPENGER:
                 Endringssøknad endringssøknad = new Endringssøknad(
                         søknad.getMottattDato(),
                         tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()).getFordeling(),
+                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato(), egenskap.getType()).getFordeling(),
                         saksnummer(søknad.getOmYtelse()));
                 endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
@@ -123,17 +128,17 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 Søknad førstegangssøknad = new Søknad(
                         søknad.getMottattDato(),
                         tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato()),
+                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato(), egenskap.getType()),
                         tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
                 førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
                 førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                 return førstegangssøknad;
             default:
-                LOG.warn("Ukjent søknad");
+                LOG.warn("Ukjent søknad {}", egenskap.getType());
                 return null;
             }
         } catch (Exception e) {
-            LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
+            LOG.debug("Feil ved unmarshalling av søknad {},  ikke kritisk", EGENSKAPER, e);
             return null;
         }
     }
@@ -165,37 +170,15 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static String saksnummer(OmYtelse omYtelse) {
-        Object ytelse = ytelse(omYtelse);
-        if (ytelse instanceof Endringssoeknad) {
-            return Endringssoeknad.class.cast(ytelse).getSaksnummer();
-        }
-        throw new UnexpectedInputException(ytelse.getClass().getSimpleName() + " er ikke en endringssøknad");
-    }
-
-    private static Object ytelse(OmYtelse omYtelse) {
-        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
-            LOG.warn("Ingen ytelse i søknaden");
-            return null;
-        }
-        if (omYtelse.getAny().size() > 1) {
-            LOG.warn("Fikk {} ytelser i søknaden, forventet 1, behandler kun den første", omYtelse.getAny().size());
-        }
-        return ((JAXBElement<?>) omYtelse.getAny().get(0)).getValue();
+        return ytelse(omYtelse, Endringssoeknad.class).getSaksnummer();
     }
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse,
-            LocalDate søknadsDato) {
+            LocalDate søknadsDato, SøknadType søknadType) {
 
-        Object førsteYtelse = ytelse(omYtelse);
-        if (førsteYtelse instanceof Endringssoeknad) {
-            Endringssoeknad søknad = Endringssoeknad.class.cast(førsteYtelse);
-            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                    .fordeling(tilFordeling(søknad.getFordeling()))
-                    .build();
-        }
-
-        if (førsteYtelse instanceof Foreldrepenger) {
-            Foreldrepenger søknad = Foreldrepenger.class.cast(førsteYtelse);
+        switch (søknadType) {
+        case INITIELL_FORELDREPENGER:
+            Foreldrepenger søknad = ytelse(omYtelse, Foreldrepenger.class);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
                     .annenForelder(tilAnnenForelder(søknad.getAnnenForelder()))
                     .dekningsgrad(tilDekningsgrad(søknad.getDekningsgrad()))
@@ -205,8 +188,14 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .relasjonTilBarn(tilRelasjonTilBarn(søknad.getRelasjonTilBarnet()))
                     .rettigheter(tilRettigheter(søknad.getRettigheter()))
                     .build();
+        case ENDRING_FORELDREPENGER:
+            Endringssoeknad endring = ytelse(omYtelse, Endringssoeknad.class);
+            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
+                    .fordeling(tilFordeling(endring.getFordeling()))
+                    .build();
+        default:
+            throw new UnexpectedInputException("Ukjent type {}", søknadType);
         }
-        throw new UnexpectedInputException("Ukjent type %s", førsteYtelse.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter tilRettigheter(
@@ -251,7 +240,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     adopsjon.getAnkomstdato(),
                     adopsjon.getFoedselsdato());
         }
-        throw new UnexpectedInputException("Ikke-støttet type " + relasjonTilBarnet.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent relasjon %s", relasjonTilBarnet.getClass().getSimpleName());
     }
 
     private static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling tilFordeling(
@@ -419,10 +408,6 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     null);
         }
         throw new UnexpectedInputException("Ikke-støttet annen forelder " + annenForelder.getClass().getSimpleName());
-    }
-
-    private static Søker tilSøker(Bruker søker) {
-        return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
     }
 
     @Override
