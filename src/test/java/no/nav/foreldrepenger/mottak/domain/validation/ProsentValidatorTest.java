@@ -42,7 +42,12 @@ public class ProsentValidatorTest {
 
     @Test
     public void test100() {
-        testProsent(true, 100d);
+        testProsent(true, 100d, 100d);
+    }
+
+    @Test
+    public void test100int() {
+        testProsent(true, 100, 100d);
     }
 
     @Test
@@ -52,7 +57,7 @@ public class ProsentValidatorTest {
 
     @Test
     public void testNegativ() {
-        testProsent(false, -50d);
+        testProsent(false, -50d, -50d);
     }
 
     @Test
@@ -62,12 +67,7 @@ public class ProsentValidatorTest {
 
     @Test
     public void testOver100() {
-        testProsent(false, 100.1d);
-    }
-
-    private void testProsent(boolean shouldBeEmpty, double value) {
-        testProsent(shouldBeEmpty, value, value);
-
+        testProsent(false, 100.1d, 100.1d);
     }
 
     private void testProsent(double value) {
@@ -75,11 +75,11 @@ public class ProsentValidatorTest {
 
     }
 
-    private void testProsent(boolean shouldBeEmpty, double value, double expectedValue) {
+    private void testProsent(boolean shouldBeEmpty, Object value, Double expectedValue) {
         testProsent(shouldBeEmpty, new ProsentBruker(new ProsentAndel(value)), expectedValue);
     }
 
-    private static void testProsent(boolean shouldBeEmpty, ProsentBruker prosent, double expectedValue) {
+    private static void testProsent(boolean shouldBeEmpty, ProsentBruker prosent, Double expectedValue) {
         Set<ConstraintViolation<ProsentBruker>> constraintViolations = validator.validate(prosent);
         if (shouldBeEmpty) {
             assertTrue(constraintViolations.isEmpty());
