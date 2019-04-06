@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -26,6 +27,7 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -34,12 +36,13 @@ public class InnsynTjeneste implements Innsyn {
 
     private final XMLSøknadHandler søknadHandler;
     private final XMLVedtakHandler vedtakHandler;
-
+    private final OppslagConnection oppslagConnection;
     private final InnsynConnection innsynConnection;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsynConnection) {
+            InnsynConnection innsynConnection, OppslagConnection oppslagConnection) {
         this.innsynConnection = innsynConnection;
+        this.oppslagConnection = oppslagConnection;
         this.søknadHandler = søknadHandler;
         this.vedtakHandler = vedtakHandler;
     }
@@ -142,7 +145,7 @@ public class InnsynTjeneste implements Innsyn {
                         w.getFagsakStatus(),
                         w.getBehandlingTema(),
                         w.getAktørId(),
-                        w.getAktørIdAnnenPart(),
+                        fnrForAktørId(w.getAktørIdAnnenPart()),
                         w.getAktørIdBarna(),
                         hentBehandlinger(
                                 w.getBehandlingsLenker(),
@@ -150,6 +153,18 @@ public class InnsynTjeneste implements Innsyn {
                         w.getOpprettetTidspunkt(),
                         w.getEndretTidspunkt()))
                 .orElse(null);
+    }
+
+    private Fødselsnummer fnrForAktørId(String aktørId) {
+        try {
+            return Optional.ofNullable(aktørId)
+                    .map(AktorId::new)
+                    .map(oppslagConnection::getFnr)
+                    .orElse(null);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke slå opp FNR for annen part for aktørid {}", aktørId);
+            return null;
+        }
     }
 
     private Behandling tilBehandling(BehandlingDTO wrapper) {
