@@ -77,7 +77,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testProsentAndel() throws Exception {
-        test(new ProsentAndel(40d), true, mapper);
+        test(new ProsentAndel(40), true, mapper);
     }
 
     @Test

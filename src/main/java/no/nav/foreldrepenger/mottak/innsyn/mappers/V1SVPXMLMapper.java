@@ -139,7 +139,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
             LocalDate behovFra) {
         return Optional.ofNullable(delvis)
                 .map(d -> new DelvisTilrettelegging(tilArbeidsForhold(arbeidsforhold), behovFra,
-                        d.getTilrettelagtArbeidFom(), new ProsentAndel(d.getStillingsprosent().doubleValue()), null))
+                        d.getTilrettelagtArbeidFom(), new ProsentAndel(d.getStillingsprosent().intValue()), null))
                 .orElse(null);
     }
 

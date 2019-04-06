@@ -41,41 +41,31 @@ public class ProsentValidatorTest {
     }
 
     @Test
-    public void test100() {
-        testProsent(true, 100d, 100d);
-    }
-
-    @Test
     public void test100int() {
         testProsent(true, 100, 100d);
     }
 
     @Test
-    public void testOK() {
-        testProsent(50d);
-    }
-
-    @Test
     public void testNegativ() {
-        testProsent(false, -50d, -50d);
+        testProsent(false, -50, -50d);
     }
 
     @Test
     public void test0() {
-        testProsent(0d);
+        testProsent(0);
     }
 
     @Test
     public void testOver100() {
-        testProsent(false, 100.1d, 100.1d);
+        testProsent(false, 101, 101d);
     }
 
-    private void testProsent(double value) {
-        testProsent(true, value, value);
+    private void testProsent(Integer value) {
+        testProsent(true, value, new Double(value));
 
     }
 
-    private void testProsent(boolean shouldBeEmpty, Object value, Double expectedValue) {
+    private void testProsent(boolean shouldBeEmpty, Integer value, Double expectedValue) {
         testProsent(shouldBeEmpty, new ProsentBruker(new ProsentAndel(value)), expectedValue);
     }
 

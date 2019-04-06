@@ -216,7 +216,7 @@ public final class InntektsmeldingXMLMapper {
     }
 
     private static GraderingsPeriode tilGraderingsPeriode(GraderingIForeldrepenger periode) {
-        return new GraderingsPeriode(new ProsentAndel(tilDoubleFraBigInteger(periode.getArbeidstidprosent())),
+        return new GraderingsPeriode(new ProsentAndel(tilIntFraBigInteger(periode.getArbeidstidprosent())),
                 tilLukketPeriode(periode.getPeriode()));
     }
 
@@ -332,8 +332,16 @@ public final class InntektsmeldingXMLMapper {
         return value == null ? null : value.getValue().doubleValue();
     }
 
+    private static Integer tilIntFraBigDecimal(JAXBElement<BigDecimal> value) {
+        return value == null ? null : value.getValue().intValue();
+    }
+
     private static Double tilDoubleFraBigInteger(JAXBElement<BigInteger> value) {
         return value == null ? null : new Double(value.getValue().intValue());
+    }
+
+    private static Integer tilIntFraBigInteger(JAXBElement<BigInteger> value) {
+        return value == null ? null : value.getValue().intValue();
     }
 
     private static boolean tilBoolean(JAXBElement<Boolean> value) {
