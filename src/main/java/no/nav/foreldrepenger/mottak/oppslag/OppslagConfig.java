@@ -14,6 +14,8 @@ public class OppslagConfig {
     private static final String AKTØRFNR = "oppslag/aktorfnr";
     private static final String FNR = "oppslag/fnr";
     private static final String PERSON = "person";
+    private static final String PERSONFNR = "person/fnr";
+
     private static final String ARBEID = "arbeidsforhold";
     private static final URI DEFAULT_BASE_URI = URI.create("http://fpsoknad-oppslag/api");
     private static final String DEFAULT_PING_PATH = "actuator/info";
@@ -23,10 +25,20 @@ public class OppslagConfig {
     private String aktørFnrPath;
     private String fnrPath;
     private String personPath;
+    private String personFnrPath;
+
     private String arbeidsforholdPath;
 
     private boolean enabled;
     private URI baseURI;
+
+    public String getPersonFnrPath() {
+        return Optional.ofNullable(personFnrPath).orElse(PERSONFNR);
+    }
+
+    public void setPersonFnrPath(String personFnrPath) {
+        this.personFnrPath = personFnrPath;
+    }
 
     public String getArbeidsforholdPath() {
         return Optional.ofNullable(arbeidsforholdPath).orElse(ARBEID);

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.innsyn.Behandling;
 import no.nav.foreldrepenger.mottak.innsyn.FagsakStatus;
 
@@ -19,7 +20,7 @@ public class Sak {
     private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
     private final String aktørId;
-    private final Fødselsnummer fnrAnnenPart;
+    private final AnnenPart annenPart;
     private final List<String> aktørIdBarn;
     private final List<Behandling> behandlinger;
     private final LocalDateTime opprettet;
@@ -30,7 +31,7 @@ public class Sak {
             @JsonProperty("status") FagsakStatus fagsakStatus,
             @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
-            @JsonProperty("fnrAnnenPart") Fødselsnummer fnrAnnenPart,
+            @JsonProperty("fnrAnnenPart") AnnenPart annenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
             @JsonProperty("behandlinger") List<Behandling> behandlinger,
             @JsonProperty("opprettet") LocalDateTime opprettet,
@@ -39,7 +40,7 @@ public class Sak {
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingTema;
         this.aktørId = aktørId;
-        this.fnrAnnenPart = fnrAnnenPart;
+        this.annenPart = annenPart;
         this.aktørIdBarn = Optional.ofNullable(aktørIdBarn).orElse(emptyList());
         this.behandlinger = Optional.ofNullable(behandlinger).orElse(emptyList());
         this.opprettet = opprettet;

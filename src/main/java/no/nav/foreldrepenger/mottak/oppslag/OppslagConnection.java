@@ -17,6 +17,7 @@ import org.springframework.web.client.RestOperations;
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
@@ -43,25 +44,31 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return uri(cfg.getBaseURI(), cfg.getPingPath());
     }
 
-    public Person getSøker() {
+    public Person hentSøker() {
         LOG.trace("Henter søker");
         Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
         søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktorId.class);
         return søker;
     }
 
-    public AktorId getAktørId(Fødselsnummer fnr) {
+    public AktorId hentAktørId(Fødselsnummer fnr) {
         return getForObject(
                 uri(cfg.getBaseURI(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktorId.class, true);
     }
 
-    public Fødselsnummer getFnr(AktorId aktørId) {
+    public Navn hentNavn(String fnr) {
+        Person person = getForObject(
+                uri(cfg.getBaseURI(), cfg.getPersonFnrPath(), queryParams("fnr", fnr)), Person.class);
+        return new Navn(person.fornavn, person.mellomnavn, person.etternavn);
+    }
+
+    public Fødselsnummer hentFnr(AktorId aktørId) {
         return getForObject(
                 uri(cfg.getBaseURI(), cfg.getFnrPath(), queryParams("aktorId", aktørId.getId())), Fødselsnummer.class,
                 true);
     }
 
-    public List<Arbeidsforhold> getArbeidsforhold() {
+    public List<Arbeidsforhold> hentArbeidsforhold() {
         LOG.trace("Henter arbeidsforhold");
         return Optional.ofNullable(getForObject(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()),
                 Arbeidsforhold[].class))

@@ -31,7 +31,7 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public Person getSøker() {
-        return connection.getSøker();
+        return connection.hentSøker();
     }
 
     @Override
@@ -42,17 +42,17 @@ public class OppslagTjeneste implements Oppslag {
     @Override
     @Cacheable(cacheNames = "aktoer")
     public AktorId getAktørId(Fødselsnummer fnr) {
-        return connection.getAktørId(fnr);
+        return connection.hentAktørId(fnr);
     }
 
     @Override
     public Fødselsnummer getFnr(AktorId aktørId) {
-        return connection.getFnr(aktørId);
+        return connection.hentFnr(aktørId);
     }
 
     @Override
     public List<Arbeidsforhold> getArbeidsforhold() {
-        return connection.getArbeidsforhold();
+        return connection.hentArbeidsforhold();
     }
 
     @Override

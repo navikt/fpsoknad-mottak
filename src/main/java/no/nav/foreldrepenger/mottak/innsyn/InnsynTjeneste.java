@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktorId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Sak;
+import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
@@ -145,7 +147,7 @@ public class InnsynTjeneste implements Innsyn {
                         w.getFagsakStatus(),
                         w.getBehandlingTema(),
                         w.getAktørId(),
-                        fnrForAktørId(w.getAktørIdAnnenPart()),
+                        annenPart(w.getAktørIdAnnenPart()),
                         w.getAktørIdBarna(),
                         hentBehandlinger(
                                 w.getBehandlingsLenker(),
@@ -155,11 +157,33 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
     }
 
-    private Fødselsnummer fnrForAktørId(String aktørId) {
+    private AnnenPart annenPart(String aktørId) {
+        Fødselsnummer fnr = fnr(aktørId);
+        return new AnnenPart(fnr, aktørId, navnFor(fnr));
+    }
+
+    private Navn navnFor(Fødselsnummer fnr) {
+        return Optional.ofNullable(fnr)
+                .map(Fødselsnummer::getFnr)
+                .map(this::navnFor)
+                .orElse(null);
+    }
+
+    private Navn navnFor(String fnr) {
+        try {
+            return oppslagConnection.hentNavn(fnr);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke slå opp navn for annen part for {}", fnr);
+            return null;
+        }
+
+    }
+
+    private Fødselsnummer fnr(String aktørId) {
         try {
             return Optional.ofNullable(aktørId)
                     .map(AktorId::new)
-                    .map(oppslagConnection::getFnr)
+                    .map(oppslagConnection::hentFnr)
                     .orElse(null);
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp FNR for annen part for aktørid {}", aktørId);
