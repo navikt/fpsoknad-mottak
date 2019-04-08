@@ -7,12 +7,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 
 @Data
 public class UttaksPeriode {
 
+    private final Oppholdsårsak oppholdÅrsak;
+    private final Overføringsårsak overføringÅrsak;
     private final UtsettelsePeriodeType utsettelsePeriodeType;
     private final PeriodeResultatType periodeResultatType;
     private final Boolean graderingInnvilget;
@@ -24,7 +28,9 @@ public class UttaksPeriode {
     private final Integer utbetalingprosent;
     private final Boolean gjelderAnnenPart;
 
-    public UttaksPeriode(@JsonProperty("UtsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
+    public UttaksPeriode(@JsonProperty("oppholdÅrsak") Oppholdsårsak oppholdÅrsak,
+            @JsonProperty("overføringÅrsak") Overføringsårsak overføringÅrsak,
+            @JsonProperty("UtsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
             @JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
             @JsonProperty("samtidigUttak") Boolean samtidigUttak,
@@ -35,6 +41,8 @@ public class UttaksPeriode {
             @JsonProperty("arbeidstidprosent") Integer arbeidstidProsent,
             @JsonProperty("utbetalingprosent") Integer utbetalingprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart) {
+        this.oppholdÅrsak = oppholdÅrsak;
+        this.overføringÅrsak = overføringÅrsak;
         this.utsettelsePeriodeType = utsettelsePeriodeType;
         this.periodeResultatType = periodeResultatType;
         this.graderingInnvilget = graderingInnvilget;
