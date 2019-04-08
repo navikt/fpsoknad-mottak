@@ -234,7 +234,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     private static Boolean tilBoolean(BooleanOpplysning value) {
         return Optional.ofNullable(value)
                 .map(BooleanOpplysning::isValue)
-                .orElse(false);
+                .orElse(Boolean.FALSE);
     }
 
     private static String tilString(StringOpplysning value) {
