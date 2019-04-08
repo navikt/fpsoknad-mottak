@@ -31,7 +31,7 @@ public class Sak {
             @JsonProperty("status") FagsakStatus fagsakStatus,
             @JsonProperty("behandlingTema") String behandlingTema,
             @JsonProperty("aktørId") String aktørId,
-            @JsonProperty("fnrAnnenPart") AnnenPart annenPart,
+            @JsonProperty("annenPart") AnnenPart annenPart,
             @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
             @JsonProperty("behandlinger") List<Behandling> behandlinger,
             @JsonProperty("opprettet") LocalDateTime opprettet,
