@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 import java.time.LocalDate;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
+import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
 
 @Data
 public class SaksInformasjon {
@@ -11,7 +11,7 @@ public class SaksInformasjon {
     public String fagsakAnnenForelderId;
     public String fagsakType;
     public String tema;
-    public BehandlingsTema behandlingsTema;
+    public BehandlingTema behandlingsTema;
     public String ansvarligSaksbehandlerIdent;
     public String ansvarligBeslutterIdent;
     public String behandlendeEnhet;

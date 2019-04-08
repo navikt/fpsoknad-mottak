@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
-import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
+import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
@@ -206,11 +206,11 @@ public class InnsynTjeneste implements Innsyn {
                         .endretTidspunkt(w.getEndretTidspunkt())
                         .behandlendeEnhet(w.getBehandlendeEnhet())
                         .behandlendeEnhetNavn(w.getBehandlendeEnhetNavn())
-                        .behandlingResultat(w.getBehandlingResultat())
-                        .status(w.getStatus())
-                        .årsak(w.getÅrsak())
+                        .behandlingResultat(tilResultat(w.getBehandlingResultat()))
+                        .status(tilBehandlingStatus(w.getStatus()))
+                        .årsak(tilÅrsak(w.getÅrsak()))
                         .tema(tilTema(w.getTema()))
-                        .type(w.getType())
+                        .type(tilType(w.getType()))
                         .inntektsmeldinger(w.getInntektsmeldinger())
                         .søknad(hentSøknad(w.getSøknadsLenke()))
                         .vedtak(hentVedtak(w.getVedtaksLenke()))
@@ -244,9 +244,33 @@ public class InnsynTjeneste implements Innsyn {
         }
     }
 
-    private static BehandlingsTema tilTema(String tema) {
+    private static BehandlingTema tilTema(String tema) {
         return Optional.ofNullable(tema)
-                .map(BehandlingsTema::valueOf)
+                .map(BehandlingTema::valueSafelyOf)
+                .orElse(null);
+    }
+
+    private static BehandlingÅrsak tilÅrsak(String årsak) {
+        return Optional.ofNullable(årsak)
+                .map(BehandlingÅrsak::valueSafelyOf)
+                .orElse(null);
+    }
+
+    private static BehandlingResultat tilResultat(String resultat) {
+        return Optional.ofNullable(resultat)
+                .map(BehandlingResultat::valueSafelyOf)
+                .orElse(null);
+    }
+
+    private static BehandlingType tilType(String type) {
+        return Optional.ofNullable(type)
+                .map(BehandlingType::valueSafelyOf)
+                .orElse(null);
+    }
+
+    private static BehandlingStatus tilBehandlingStatus(String status) {
+        return Optional.ofNullable(status)
+                .map(BehandlingStatus::valueSafelyOf)
                 .orElse(null);
     }
 

@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.felles.BehandlingsTema;
+import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
@@ -108,9 +108,9 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
         return saksInfo;
     }
 
-    private static BehandlingsTema tilBehandlingsTema(String kode) {
+    private static BehandlingTema tilBehandlingsTema(String kode) {
         return Optional.ofNullable(kode)
-                .map(BehandlingsTema::valueOf)
+                .map(BehandlingTema::valueOf)
                 .orElse(null);
     }
 
