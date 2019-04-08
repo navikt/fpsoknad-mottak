@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -47,13 +47,13 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
     public Person hentSøker() {
         LOG.trace("Henter søker");
         Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
-        søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktorId.class);
+        søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktørId.class);
         return søker;
     }
 
-    public AktorId hentAktørId(Fødselsnummer fnr) {
+    public AktørId hentAktørId(Fødselsnummer fnr) {
         return getForObject(
-                uri(cfg.getBaseURI(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktorId.class, true);
+                uri(cfg.getBaseURI(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktørId.class, true);
     }
 
     public Navn hentNavn(String fnr) {
@@ -62,7 +62,7 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return new Navn(person.fornavn, person.mellomnavn, person.etternavn);
     }
 
-    public Fødselsnummer hentFnr(AktorId aktørId) {
+    public Fødselsnummer hentFnr(AktørId aktørId) {
         return getForObject(
                 uri(cfg.getBaseURI(), cfg.getFnrPath(), queryParams("aktorId", aktørId.getId())), Fødselsnummer.class,
                 true);

@@ -89,7 +89,7 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     public void test1() {
-        assertEquals(new AktorId("42"), template.getForObject(INNSENDING_PREPROD + "/test", AktorId.class));
+        assertEquals(new AktørId("42"), template.getForObject(INNSENDING_PREPROD + "/test", AktørId.class));
     }
 
     @Test

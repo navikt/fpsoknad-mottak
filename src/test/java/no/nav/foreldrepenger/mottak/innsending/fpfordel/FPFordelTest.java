@@ -47,7 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
@@ -83,7 +83,7 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @MockitoSettings(strictness = LENIENT)
 public class FPFordelTest {
 
-    private static final AktorId AKTØRID = new AktorId("1111111111");
+    private static final AktørId AKTØRID = new AktørId("1111111111");
     private static final String FPFORDELURIBASE = "http://some.host.for.fpfordel";
     private static final String FPFORDELPOLLURISTRING = FPFORDELURIBASE + "/poll/id";
     private static final String FPINFOURISTRING = "http://some.host.for.fpinfo/status";

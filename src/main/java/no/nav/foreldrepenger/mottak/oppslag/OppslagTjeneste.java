@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -35,18 +35,18 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
-    public AktorId getAktørId() {
+    public AktørId getAktørId() {
         return getAktørId(tokenHelper.autentisertFNR());
     }
 
     @Override
     @Cacheable(cacheNames = "aktoer")
-    public AktorId getAktørId(Fødselsnummer fnr) {
+    public AktørId getAktørId(Fødselsnummer fnr) {
         return connection.hentAktørId(fnr);
     }
 
     @Override
-    public Fødselsnummer getFnr(AktorId aktørId) {
+    public Fødselsnummer getFnr(AktørId aktørId) {
         return connection.hentFnr(aktørId);
     }
 

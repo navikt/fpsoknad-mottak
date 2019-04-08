@@ -18,7 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
@@ -290,7 +290,7 @@ final class V3DomainMapperCommon {
                 .collect(toList());
     }
 
-    static Bruker søkerFra(AktorId aktørId, Søker søker) {
+    static Bruker søkerFra(AktørId aktørId, Søker søker) {
         return new Bruker()
                 .withAktoerId(aktørId.getId())
                 .withSoeknadsrolle(brukerRolleFra(søker.getSøknadsRolle()));

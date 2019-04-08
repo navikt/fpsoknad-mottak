@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 
@@ -12,15 +12,15 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 public class AnnenPart {
 
     private final Fødselsnummer fnr;
-    private final AktorId aktørId;
+    private final AktørId aktørId;
     private final Navn navn;
 
     @JsonCreator
-    public AnnenPart(@JsonProperty("fnr") Fødselsnummer fnr, @JsonProperty("aktørId") String aktørId,
+    public AnnenPart(@JsonProperty("fnr") Fødselsnummer fnr, @JsonProperty("aktørId") AktørId aktørId,
             @JsonProperty("navn") Navn navn) {
         super();
         this.fnr = fnr;
-        this.aktørId = new AktorId(aktørId);
+        this.aktørId = aktørId;
         this.navn = navn;
     }
 }

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Objects;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
 @JsonInclude(NON_NULL)
@@ -24,7 +24,7 @@ public class Person {
     public CountryCode land;
     public Boolean ikkeNordiskEøsLand;
     public Bankkonto bankkonto;
-    public AktorId aktørId;
+    public AktørId aktørId;
 
     @Override
     public int hashCode() {

@@ -22,7 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -119,7 +119,7 @@ public class FPFordelKonvoluttGenerator {
         return headers;
     }
 
-    private String metadata(Endringssøknad endringssøknad, SøknadEgenskap egenskap, AktorId aktørId, String ref) {
+    private String metadata(Endringssøknad endringssøknad, SøknadEgenskap egenskap, AktørId aktørId, String ref) {
         String metadata = metadataGenerator
                 .generer(new FPFordelMetadata(endringssøknad, egenskap.getType(), aktørId, ref));
         LOG.debug("Metadata for endringssøknad er {}", metadata);
@@ -127,14 +127,14 @@ public class FPFordelKonvoluttGenerator {
 
     }
 
-    private String metadata(Søknad søknad, SøknadEgenskap egenskap, AktorId aktørId, String ref) {
+    private String metadata(Søknad søknad, SøknadEgenskap egenskap, AktørId aktørId, String ref) {
         String metadata = metadataGenerator
                 .generer(new FPFordelMetadata(søknad, egenskap.getType(), aktørId, ref));
         LOG.debug("Metadata for førstegangssøknad er {}", metadata);
         return metadata;
     }
 
-    private String metadata(Ettersending ettersending, AktorId aktørId, String ref) {
+    private String metadata(Ettersending ettersending, AktørId aktørId, String ref) {
         String metadata = metadataGenerator.generer(new FPFordelMetadata(ettersending, aktørId, ref));
         LOG.debug("Metadata for ettersending er {}", metadata);
         return metadata;
@@ -148,13 +148,13 @@ public class FPFordelKonvoluttGenerator {
         return pdfGenerator.generate(endringssøknad, søker, egenskap);
     }
 
-    private String xmlHovedDokument(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
+    private String xmlHovedDokument(Søknad søknad, AktørId søker, SøknadEgenskap egenskap) {
         String hovedDokument = domainMapper.tilXML(søknad, søker, egenskap);
         LOG.debug(CONFIDENTIAL, "Hoveddokument er {}", hovedDokument);
         return hovedDokument;
     }
 
-    private String xmlHovedDokument(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
+    private String xmlHovedDokument(Endringssøknad endringssøknad, AktørId søker, SøknadEgenskap egenskap) {
         String hovedDokument = domainMapper.tilXML(endringssøknad, søker, egenskap);
         LOG.debug(CONFIDENTIAL, "Hoveddokument endringssøknad er {}", hovedDokument);
         return hovedDokument;

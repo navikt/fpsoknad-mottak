@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -40,12 +40,12 @@ public class DelegerendeDomainMapper implements DomainMapper {
     }
 
     @Override
-    public String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
+    public String tilXML(Søknad søknad, AktørId søker, SøknadEgenskap egenskap) {
         return mapperFor(mappers, egenskap).tilXML(søknad, søker, egenskap);
     }
 
     @Override
-    public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
+    public String tilXML(Endringssøknad endringssøknad, AktørId søker, SøknadEgenskap egenskap) {
         return mapperFor(mappers, egenskap).tilXML(endringssøknad, søker, egenskap);
     }
 

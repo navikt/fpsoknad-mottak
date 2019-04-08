@@ -25,7 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
@@ -111,7 +111,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testAktør() {
-        test(new AktorId("111111111"), false);
+        test(new AktørId("111111111"), false);
     }
 
     @Test

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
@@ -29,7 +29,7 @@ import no.nav.security.oidc.api.Unprotected;
 @Profile(PREPROD)
 public class SøknadPreprodController {
 
-    private static final AktorId SØKER = new AktorId("42");
+    private static final AktørId SØKER = new AktørId("42");
 
     public static final String INNSENDING_PREPROD = "/preprod";
 
@@ -48,7 +48,7 @@ public class SøknadPreprodController {
     }
 
     @GetMapping(value = "/test", produces = APPLICATION_JSON_VALUE)
-    public AktorId test() {
+    public AktørId test() {
         return SØKER;
     }
 

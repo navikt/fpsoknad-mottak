@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
@@ -20,7 +20,7 @@ public class TestMetadata {
 
     private static final String ID = "123";
     private static final String REF = "42";
-    private static final AktorId AKTOR_ID = new AktorId(ID);
+    private static final AktørId AKTOR_ID = new AktørId(ID);
 
     @Test
     public void testIgnorerIkkeLastetOpp() {

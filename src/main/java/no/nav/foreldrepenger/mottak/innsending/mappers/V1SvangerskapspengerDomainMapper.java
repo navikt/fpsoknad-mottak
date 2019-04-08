@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
@@ -64,16 +64,16 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
     }
 
     @Override
-    public String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
+    public String tilXML(Søknad søknad, AktørId søker, SøknadEgenskap egenskap) {
         return jaxb.marshal(SØKNAD_FACTORY_V3.createSoeknad(tilModell(søknad, søker)));
     }
 
     @Override
-    public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
+    public String tilXML(Endringssøknad endringssøknad, AktørId søker, SøknadEgenskap egenskap) {
         throw new UnexpectedInputException("Endringssøknad ikke støttet for svangerskapspenger");
     }
 
-    public Soeknad tilModell(Søknad søknad, AktorId søker) {
+    public Soeknad tilModell(Søknad søknad, AktørId søker) {
         return new Soeknad()
                 .withSprakvalg(språkFra(søknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))

@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V1SvangerskapspengerDomainMapper;
@@ -42,7 +42,7 @@ public class TestSvangerskapsepengerSerialization {
     @Test
     public void testInspeksjon() {
         Søknad svp = svp();
-        String xml = DOMAINMAPPER.tilXML(svp, new AktorId("42"), INSPEKTØR.inspiser(svp));
+        String xml = DOMAINMAPPER.tilXML(svp, new AktørId("42"), INSPEKTØR.inspiser(svp));
         System.out.println(xml);
         SøknadEgenskap resultat = INSPEKTØR.inspiser(xml);
         assertEquals(V1, resultat.getVersjon());
@@ -52,7 +52,7 @@ public class TestSvangerskapsepengerSerialization {
     @Test
     public void testRoundtrip() {
         Søknad svp = svp();
-        String xml = DOMAINMAPPER.tilXML(svp, new AktorId("42"), INSPEKTØR.inspiser(svp));
+        String xml = DOMAINMAPPER.tilXML(svp, new AktørId("42"), INSPEKTØR.inspiser(svp));
         SøknadEgenskap egenskap = INSPEKTØR.inspiser(xml);
         Søknad svp1 = new V1SVPXMLMapper().tilSøknad(xml, egenskap);
         Svangerskapspenger orig = (Svangerskapspenger) svp.getYtelse();

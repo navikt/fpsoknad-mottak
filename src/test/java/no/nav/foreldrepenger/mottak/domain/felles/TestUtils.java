@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -235,8 +235,8 @@ public class TestUtils {
         return LocalDate.now().minus(Period.ofYears(1));
     }
 
-    public static AktorId aktoer() {
-        return new AktorId("11111111111111111");
+    public static AktørId aktoer() {
+        return new AktørId("11111111111111111");
     }
 
     static Fødselsnummer fnr() {
@@ -253,7 +253,7 @@ public class TestUtils {
 
     public static Person person() {
         Person søker = new Person();
-        søker.aktørId = new AktorId("42");
+        søker.aktørId = new AktørId("42");
         søker.bankkonto = new Bankkonto("2000.20.20000", "Store Fiskerbank");
         søker.fnr = new Fødselsnummer("010101010101");
         søker.fornavn = "Åse";

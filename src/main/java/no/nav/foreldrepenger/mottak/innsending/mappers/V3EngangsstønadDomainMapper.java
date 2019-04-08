@@ -15,7 +15,7 @@ import javax.xml.bind.JAXBElement;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
@@ -61,16 +61,16 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     }
 
     @Override
-    public String tilXML(Søknad søknad, AktorId søker, SøknadEgenskap egenskap) {
+    public String tilXML(Søknad søknad, AktørId søker, SøknadEgenskap egenskap) {
         return JAXB.marshal(SØKNAD_FACTORY_V3.createSoeknad(tilModell(søknad, søker)));
     }
 
     @Override
-    public String tilXML(Endringssøknad endringssøknad, AktorId søker, SøknadEgenskap egenskap) {
+    public String tilXML(Endringssøknad endringssøknad, AktørId søker, SøknadEgenskap egenskap) {
         throw new UnsupportedOperationException("Endringssøknad ikke støttet");
     }
 
-    private Soeknad tilModell(Søknad søknad, AktorId søker) {
+    private Soeknad tilModell(Søknad søknad, AktørId søker) {
         return new Soeknad()
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))

@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
@@ -367,7 +367,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (annenForelder instanceof AnnenForelderMedNorskIdent) {
             AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
             return new NorskForelder(
-                    oppslag.getFnr(new AktorId(norskForelder.getAktoerId())),
+                    oppslag.getFnr(new AktørId(norskForelder.getAktoerId())),
                     null);
         }
         if (annenForelder instanceof AnnenForelderUtenNorskIdent) {

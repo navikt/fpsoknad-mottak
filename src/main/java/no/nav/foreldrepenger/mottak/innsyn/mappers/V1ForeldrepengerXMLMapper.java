@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -613,7 +613,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (annenForelder instanceof AnnenForelderMedNorskIdent) {
             AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
             return new NorskForelder(
-                    oppslag.getFnr(new AktorId(norskForelder.getAktoerId())),
+                    oppslag.getFnr(new AktørId(norskForelder.getAktoerId())),
                     null);
         }
         if (annenForelder instanceof AnnenForelderUtenNorskIdent) {

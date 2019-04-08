@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
@@ -30,17 +30,17 @@ public class OppslagServiceStub implements Oppslag {
     }
 
     @Override
-    public AktorId getAktørId() {
-        return new AktorId("11111111111");
+    public AktørId getAktørId() {
+        return new AktørId("11111111111");
     }
 
     @Override
-    public AktorId getAktørId(Fødselsnummer fnr) {
-        return new AktorId("11111111111");
+    public AktørId getAktørId(Fødselsnummer fnr) {
+        return new AktørId("11111111111");
     }
 
     @Override
-    public Fødselsnummer getFnr(AktorId aktørId) {
+    public Fødselsnummer getFnr(AktørId aktørId) {
         return new Fødselsnummer("01010111111");
     }
 
@@ -51,7 +51,7 @@ public class OppslagServiceStub implements Oppslag {
 
     private static Person person() {
         Person søker = new Person();
-        søker.aktørId = new AktorId("42");
+        søker.aktørId = new AktørId("42");
         søker.bankkonto = new Bankkonto("2000.20.20000", "Store Fiskerbank");
         søker.fnr = new Fødselsnummer("010101010101");
         søker.fornavn = "Mor";

@@ -47,7 +47,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -85,7 +85,7 @@ public class TestFPFordelSerialization {
     @Qualifier(DELEGERENDE)
     private DomainMapper domainMapper;
 
-    private static final AktorId AKTØRID = new AktorId("1111111111");
+    private static final AktørId AKTØRID = new AktørId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
     private static final List<Arbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 

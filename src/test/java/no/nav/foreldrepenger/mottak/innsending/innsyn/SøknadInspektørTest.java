@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.core.io.ClassPathResource;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
@@ -45,7 +45,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 public class SøknadInspektørTest {
 
-    private static final AktorId AKTØRID = new AktorId("1111111111");
+    private static final AktørId AKTØRID = new AktørId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
 
     @Mock
@@ -57,7 +57,7 @@ public class SøknadInspektørTest {
     @BeforeEach
     public void beforeEach() {
         when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
-        when(oppslag.getFnr(any(AktorId.class))).thenReturn(FNR);
+        when(oppslag.getFnr(any(AktørId.class))).thenReturn(FNR);
         inspektør = new XMLStreamSøknadInspektør();
         mapper = new DelegerendeXMLSøknadMapper(
                 new UkjentXMLSøknadMapper(),

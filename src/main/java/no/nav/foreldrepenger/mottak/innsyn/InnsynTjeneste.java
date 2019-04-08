@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Sak;
@@ -55,7 +55,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public Vedtak hentVedtak(AktorId aktørId, String saksnummer) {
+    public Vedtak hentVedtak(AktørId aktørId, String saksnummer) {
         return Optional.ofNullable(safeStream(hentSaker(aktørId))
                 .filter(s -> s.getSaksnummer().equals(saksnummer))
                 .findFirst()
@@ -78,7 +78,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public List<Sak> hentSaker(AktorId aktørId) {
+    public List<Sak> hentSaker(AktørId aktørId) {
         return hentSaker(aktørId.getId());
     }
 
@@ -134,14 +134,14 @@ public class InnsynTjeneste implements Innsyn {
         }
         else {
             LOG.info("Hentet vedtak med id {}", vedtak.getFagsakId());
-            LOG.info(CONFIDENTIAL, "{}", vedtak);
+            LOG.info(CONFIDENTIAL, "{}", vedtak.getMetadata());
         }
         return vedtak;
     }
 
     private Sak tilSak(SakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
-        return Optional.ofNullable(wrapper)
+        Sak sak = Optional.ofNullable(wrapper)
                 .map(w -> new Sak(
                         w.getSaksnummer(),
                         w.getFagsakStatus(),
@@ -155,13 +155,15 @@ public class InnsynTjeneste implements Innsyn {
                         w.getOpprettetTidspunkt(),
                         w.getEndretTidspunkt()))
                 .orElse(null);
+        LOG.trace(CONFIDENTIAL, "Mappet til sak {}", sak);
+        return sak;
     }
 
     private AnnenPart annenPart(String aktørId) {
         LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
         Fødselsnummer fnr = fnr(aktørId);
         LOG.trace(CONFIDENTIAL, "Fikk {}", fnr);
-        return new AnnenPart(fnr, aktørId, navnFor(fnr));
+        return new AnnenPart(fnr, new AktørId(aktørId), navnFor(fnr));
     }
 
     private Navn navnFor(Fødselsnummer fnr) {
@@ -187,7 +189,7 @@ public class InnsynTjeneste implements Innsyn {
     private Fødselsnummer fnr(String aktørId) {
         try {
             return Optional.ofNullable(aktørId)
-                    .map(AktorId::new)
+                    .map(AktørId::new)
                     .map(oppslagConnection::hentFnr)
                     .orElse(null);
         } catch (Exception e) {

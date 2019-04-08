@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import no.nav.foreldrepenger.mottak.domain.AktorId;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
@@ -38,9 +38,9 @@ public class MapperRoundtripTest {
 
     private static final XMLStreamSøknadInspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
-    private static final AktorId SØKER = new AktorId("42");
+    private static final AktørId SØKER = new AktørId("42");
 
-    private static final AktorId ID = SØKER;
+    private static final AktørId ID = SØKER;
 
     @Mock
     private Oppslag oppslag;
