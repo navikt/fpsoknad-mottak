@@ -158,7 +158,9 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private AnnenPart annenPart(String aktørId) {
+        LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
         Fødselsnummer fnr = fnr(aktørId);
+        LOG.trace(CONFIDENTIAL, "Fikk  {}", fnr);
         return new AnnenPart(fnr, aktørId, navnFor(fnr));
     }
 
@@ -171,7 +173,11 @@ public class InnsynTjeneste implements Innsyn {
 
     private Navn navnFor(String fnr) {
         try {
-            return oppslagConnection.hentNavn(fnr);
+            LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
+            Navn navn = oppslagConnection.hentNavn(fnr);
+            LOG.trace(CONFIDENTIAL, "Fikk navn {}", navn);
+
+            return navn;
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp navn for annen part for {}", fnr);
             return null;
