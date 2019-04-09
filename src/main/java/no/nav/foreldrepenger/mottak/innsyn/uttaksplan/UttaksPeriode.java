@@ -28,8 +28,8 @@ public class UttaksPeriode {
     private final Integer utbetalingprosent;
     private final Boolean gjelderAnnenPart;
 
-    public UttaksPeriode(@JsonProperty("oppholdÅrsak") Oppholdsårsak oppholdÅrsak,
-            @JsonProperty("overføringÅrsak") Overføringsårsak overføringÅrsak,
+    public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdÅrsak,
+            @JsonProperty("overfoeringAarsak") Overføringsårsak overføringÅrsak,
             @JsonProperty("UtsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
             @JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
