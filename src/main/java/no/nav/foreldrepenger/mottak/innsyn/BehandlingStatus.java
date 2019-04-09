@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public enum BehandlingStatus {
-    AVSLUTTET,
-    FATTER_VEDTAK,
-    IVERKSETTER_VEDTAK,
-    OPPRETTET,
-    UTREDES;
+    AVSLU,
+    FVED,
+    IVED,
+    OPPRE,
+    UTRED;
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingStatus.class);
 
