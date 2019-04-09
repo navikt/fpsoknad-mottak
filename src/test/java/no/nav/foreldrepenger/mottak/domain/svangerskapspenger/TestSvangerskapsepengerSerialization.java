@@ -32,7 +32,7 @@ public class TestSvangerskapsepengerSerialization {
 
     private static final Inspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
-    private static final DomainMapper DOMAINMAPPER = new V1SvangerskapspengerDomainMapper();
+    private static final DomainMapper DOMAINMAPPER = new V1SvangerskapspengerDomainMapper(false);
 
     @Test
     public void testSVP() {
@@ -53,8 +53,9 @@ public class TestSvangerskapsepengerSerialization {
     public void testRoundtrip() {
         Søknad svp = svp();
         String xml = DOMAINMAPPER.tilXML(svp, new AktørId("42"), INSPEKTØR.inspiser(svp));
+        System.out.println(xml);
         SøknadEgenskap egenskap = INSPEKTØR.inspiser(xml);
-        Søknad svp1 = new V1SVPXMLMapper().tilSøknad(xml, egenskap);
+        Søknad svp1 = new V1SVPXMLMapper(true).tilSøknad(xml, egenskap);
         Svangerskapspenger orig = (Svangerskapspenger) svp.getYtelse();
         Svangerskapspenger res = (Svangerskapspenger) svp1.getYtelse();
         assertEquals(orig.getOpptjening(), res.getOpptjening());
