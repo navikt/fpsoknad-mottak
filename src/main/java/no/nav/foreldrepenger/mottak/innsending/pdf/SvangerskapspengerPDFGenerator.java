@@ -166,7 +166,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return y;
     }
 
-    private Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold(
+    private static Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold(
             List<Tilrettelegging> tilretteleggingsPerioder) {
         Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold = new HashMap<>();
         tilretteleggingsPerioder.forEach(tp -> tilretteleggingByArbeidsforhold
@@ -332,15 +332,15 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return renderer.addBlankLine();
     }
 
-    private PDPage newPage() {
+    private static PDPage newPage() {
         return new PDPage(A4);
     }
 
-    private float nesteSideStart(float headerSize, float behov) {
+    private static float nesteSideStart(float headerSize, float behov) {
         return STARTY - behov - headerSize;
     }
 
-    private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch, FontAwareCos scratchcos)
+    private static FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch, FontAwareCos scratchcos)
             throws IOException {
         cos.close();
         doc.addPage(scratch);
