@@ -12,6 +12,7 @@ info.app :
     build.time : '@timestamp@'
 
 management:
+    metrics.web.server.auto-time-requests : true
     endpoints.web.exposure.include:  info, health, metrics, prometheus
     health :
       diskspace.enabled: false
@@ -31,13 +32,13 @@ spring :
        caffeine.spec: maximumSize=100,expireAfterAccess=3600s
     application.name : fpsoknad-mottak
     jackson :
-      default-property-inclusion :  NON_ABSENT
+      default-property-inclusion :  non-absent
       mapper :
-         ACCEPT_CASE_INSENSITIVE_PROPERTIES: true
+         accept-case-insensitive-properties: true
       deserialization :
-         ACCEPT_SINGLE_VALUE_AS_ARRAY: true
-         FAIL_ON_UNKNOWN_PROPERTIES: true
+         accept-single-value-as-array: true
+         fail-on-unknown-properties: true
       serialization :
+         write-empty-json-arrays: false
          fail-on-empty-beans: false
     main.banner-mode : 'off'
-management.metrics.web.server.auto-time-requests : true
