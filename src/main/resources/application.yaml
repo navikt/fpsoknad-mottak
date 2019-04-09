@@ -1,15 +1,15 @@
 
-no.nav.security.oidc:
-    issuers: selvbetjening
-    issuer.selvbetjening:
-      discoveryurl: <Set from FASIT>
-      accepted_audience: <Set from FASIT>
+no.nav.security.oidc :
+    issuers :  selvbetjening
+    issuer.selvbetjening :
+       discoveryurl : Set from FASIT
+       accepted_audience : <Set from FASIT>
 
 http.proxy : http://webproxy-nais.nav.no:8088
 
-info.app:
-    version: '@project.version@'
-    build.time:  '@timestamp@'
+info.app :
+    version : '@project.version@'
+    build.time : '@timestamp@'
 
 management:
     endpoints.web.exposure.include:  info, health, metrics, prometheus
@@ -17,8 +17,8 @@ management:
       diskspace.enabled: false
       jms.enabled: false
 
-server.servlet :
-    context-path :  /api
+server :
+    servlet.context-path :  /api
     use-forward-headers: true
 
 varsel:
@@ -31,15 +31,13 @@ spring :
        caffeine.spec: maximumSize=100,expireAfterAccess=3600s
     application.name : fpsoknad-mottak
     jackson :
-      default-property-inclusion :  non_null
+      default-property-inclusion :  NON_ABSENT
       mapper :
-         accept_case_insensitive_properties: true
+         ACCEPT_CASE_INSENSITIVE_PROPERTIES: true
       deserialization :
-         accept_single_value_as_array: true
-         fail-on-unknown-properties: true
+         ACCEPT_SINGLE_VALUE_AS_ARRAY: true
+         FAIL_ON_UNKNOWN_PROPERTIES: true
       serialization :
          fail-on-empty-beans: false
     main.banner-mode : 'off'
-    metrics.web.server.auto-time-requests: true
-
-
+management.metrics.web.server.auto-time-requests : true
