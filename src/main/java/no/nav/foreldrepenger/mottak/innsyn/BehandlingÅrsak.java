@@ -46,15 +46,12 @@ public enum BehandlingÅrsak {
         this.årsak = årsak;
     }
 
-    public static BehandlingÅrsak valueSafelyOf(final String årsak) {
-        return Arrays.stream(values())
-                .filter(v -> v.årsak.equals(årsak))
-                .findFirst()
-                .orElse(logNull(årsak));
-    }
-
-    private static BehandlingÅrsak logNull(String årsak) {
-        LOG.warn("Ingen enum verdi for {}", årsak);
-        return null;
+    public static BehandlingÅrsak valueSafelyOf(String name) {
+        try {
+            return BehandlingÅrsak.valueOf(name);
+        } catch (Exception e) {
+            LOG.warn("Ingen enum verdi for {}", name);
+            return null;
+        }
     }
 }
