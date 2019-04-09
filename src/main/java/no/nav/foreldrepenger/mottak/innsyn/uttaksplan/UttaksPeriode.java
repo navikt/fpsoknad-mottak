@@ -16,8 +16,8 @@ import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 @Data
 public class UttaksPeriode {
 
-    private final Oppholdsårsak oppholdÅrsak;
-    private final Overføringsårsak overføringÅrsak;
+    private final Oppholdsårsak oppholdAarsak;
+    private final Overføringsårsak overfoeringAarsak;
     private final UtsettelsePeriodeType utsettelsePeriodeType;
     private final PeriodeResultatType periodeResultatType;
     private final Boolean graderingInnvilget;
@@ -28,13 +28,13 @@ public class UttaksPeriode {
     private final Integer arbeidstidProsent;
     private final Integer utbetalingprosent;
     private final Boolean gjelderAnnenPart;
-    private final GraderingAvslagÅrsak graderingAvslagÅrsak;
+    private final GraderingAvslagÅrsak graderingAvslagAarsak;
     private final Boolean flerbarnsdager;
     private final Boolean manueltBehandlet;
     private final Integer  samtidigUttaksprosent;
 
-    public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdÅrsak,
-            @JsonProperty("overfoeringAarsak") Overføringsårsak overføringÅrsak,
+    public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdAarsak,
+            @JsonProperty("overfoeringAarsak") Overføringsårsak overfoeringAarsak,
             @JsonProperty("utsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
             @JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
@@ -46,12 +46,12 @@ public class UttaksPeriode {
             @JsonProperty("arbeidstidprosent") Integer arbeidstidProsent,
             @JsonProperty("utbetalingprosent") Integer utbetalingprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
-            @JsonProperty("graderingAvslagAarsak") GraderingAvslagÅrsak graderingAvslagÅrsak,
+            @JsonProperty("graderingAvslagAarsak") GraderingAvslagÅrsak graderingAvslagAarsak,
             @JsonProperty("manueltBehandlet") Boolean manueltBehandlet,
             @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
             @JsonProperty("flerbarnsdager") Boolean flerbarnsdager) {
-        this.oppholdÅrsak = oppholdÅrsak;
-        this.overføringÅrsak = overføringÅrsak;
+        this.oppholdAarsak = oppholdAarsak;
+        this.overfoeringAarsak = overfoeringAarsak;
         this.utsettelsePeriodeType = utsettelsePeriodeType;
         this.periodeResultatType = periodeResultatType;
         this.graderingInnvilget = graderingInnvilget;
@@ -62,7 +62,7 @@ public class UttaksPeriode {
         this.arbeidstidProsent = arbeidstidProsent;
         this.utbetalingprosent = utbetalingprosent;
         this.gjelderAnnenPart = gjelderAnnenPart;
-        this.graderingAvslagÅrsak = graderingAvslagÅrsak;
+        this.graderingAvslagAarsak = graderingAvslagAarsak;
         this.manueltBehandlet = manueltBehandlet;
         this.samtidigUttaksprosent = samtidigUttaksprosent;
         this.flerbarnsdager  = flerbarnsdager;
