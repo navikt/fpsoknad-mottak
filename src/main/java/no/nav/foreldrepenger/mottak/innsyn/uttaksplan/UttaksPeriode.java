@@ -35,7 +35,7 @@ public class UttaksPeriode {
 
     public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdÅrsak,
             @JsonProperty("overfoeringAarsak") Overføringsårsak overføringÅrsak,
-            @JsonProperty("UtsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
+            @JsonProperty("utsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
             @JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
             @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
             @JsonProperty("samtidigUttak") Boolean samtidigUttak,
