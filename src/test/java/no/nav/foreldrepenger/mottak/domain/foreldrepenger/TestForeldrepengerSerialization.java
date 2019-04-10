@@ -29,9 +29,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +48,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
@@ -93,31 +89,6 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testDekningsgrad() throws Exception {
         test(Dekningsgrad.GRAD100, true, mapper);
-    }
-
-    @Test
-    public void testPeriodeEnDag() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
-                LocalDate.of(2019, Month.MARCH, 1), Collections.emptyList()) {
-        };
-        assertEquals(1, periode.dager());
-
-    }
-
-    @Test
-    public void testPeriodeOverHelga() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
-                LocalDate.of(2019, Month.MARCH, 4), Collections.emptyList()) {
-        };
-        assertEquals(2, periode.dager());
-    }
-
-    @Test
-    public void testPeriodeOverToHelger() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
-                LocalDate.of(2019, Month.MARCH, 11), Collections.emptyList()) {
-        };
-        assertEquals(7, periode.dager());
     }
 
     @Test
@@ -209,7 +180,7 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testFordeling() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(fordeling(v));
+            test(fordeling(v), true);
         }
     }
 
@@ -317,13 +288,15 @@ public class TestForeldrepengerSerialization {
     }
 
     public static void test(Object expected, boolean log, ObjectMapper mapper) {
+        String serialized = serialize(expected, log, mapper);
+        if (log) {
+            LOG.info("Expected {}", expected);
+            LOG.info("Serialized {}", serialized);
+        }
         try {
-            String serialized = serialize(expected, log, mapper);
             Object deserialized = mapper.readValue(serialized, expected.getClass());
             if (log) {
-                LOG.info("{}", expected);
-                LOG.info("{}", serialized);
-                LOG.info("{}", deserialized);
+                LOG.info("Deserialized {}", deserialized);
             }
             assertEquals(expected, deserialized);
         } catch (IOException e) {

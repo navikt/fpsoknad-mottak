@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling;
 
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static java.util.Collections.emptyList;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -26,6 +26,7 @@ public class Fordeling {
             @JsonProperty("perioder") List<LukketPeriodeMedVedlegg> perioder) {
         this.erAnnenForelderInformert = erAnnenForelderInformert;
         this.ønskerKvoteOverført = årsak;
-        this.perioder = safeStream(perioder).sorted().collect(toList());
+        this.perioder = Optional.ofNullable(perioder).orElse(emptyList());
     }
+
 }

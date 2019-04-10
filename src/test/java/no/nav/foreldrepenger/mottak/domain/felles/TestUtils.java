@@ -178,9 +178,14 @@ public class TestUtils {
         return new FramtidigOppholdsInformasjon(emptyList());
     }
 
-    public static String serialize(Object obj, boolean print, ObjectMapper mapper) throws JsonProcessingException {
-        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        return print ? printSerialized(serialized) : serialized;
+    public static String serialize(Object obj, boolean print, ObjectMapper mapper) {
+        try {
+            String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+            return print ? printSerialized(serialized) : serialized;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     static String printSerialized(String serialized) {

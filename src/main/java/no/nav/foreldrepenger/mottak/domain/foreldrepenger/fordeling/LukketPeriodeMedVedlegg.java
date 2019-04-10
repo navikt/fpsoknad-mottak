@@ -4,16 +4,13 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 import static java.util.Collections.emptyList;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -24,7 +21,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
 
 @Data
 @EqualsAndHashCode(exclude = { "vedlegg" })
@@ -38,7 +34,7 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
         @Type(value = OppholdsPeriode.class, name = "opphold"),
         @Type(value = UtsettelsesPeriode.class, name = "utsettelse")
 })
-public abstract class LukketPeriodeMedVedlegg implements Comparable<LukketPeriodeMedVedlegg> {
+public abstract class LukketPeriodeMedVedlegg {
 
     @NotNull
     protected final LocalDate fom;
@@ -52,23 +48,5 @@ public abstract class LukketPeriodeMedVedlegg implements Comparable<LukketPeriod
         this.fom = fom;
         this.tom = tom;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
-    }
-
-    @JsonIgnore
-    public long dager() {
-        return arbeidsdager(fom, tom) + 1;
-    }
-
-    private static long arbeidsdager(final LocalDate start, final LocalDate end) {
-        final DayOfWeek startW = start.getDayOfWeek();
-        final long days = ChronoUnit.DAYS.between(start, end);
-        final long daysWithoutWeekends = days - 2 * ((days + startW.getValue()) / 7);
-
-        return daysWithoutWeekends;
-    }
-
-    @Override
-    public int compareTo(LukketPeriodeMedVedlegg other) {
-        return getFom().compareTo(other.getFom());
     }
 }
