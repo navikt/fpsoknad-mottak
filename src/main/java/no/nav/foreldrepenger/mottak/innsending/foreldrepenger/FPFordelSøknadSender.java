@@ -1,13 +1,15 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -16,34 +18,33 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
+@Primary
 @ConditionalOnProperty(name = "svangerskapspenger.enabled", havingValue = "true", matchIfMissing = true)
 public class FPFordelSøknadSender implements SøknadSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
 
     private final FPFordelConnection connection;
-    private final FPFordelKonvoluttGenerator payloadGenerator;
+    private final FPFordelKonvoluttGenerator generator;
 
     public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator payloadGenerator) {
         this.connection = connection;
-        this.payloadGenerator = payloadGenerator;
+        this.generator = payloadGenerator;
     }
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, søknad.getSøknadsRolle(), payloadGenerator.generer(søknad, søker, egenskap));
+        return doSend(egenskap, søknad.getSøknadsRolle(), generator.generer(søknad, søker, egenskap));
     }
 
     @Override
     public Kvittering endreSøknad(Endringssøknad endringssøknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, endringssøknad.getSøknadsRolle(),
-                payloadGenerator.generer(endringssøknad, søker, egenskap));
+        return doSend(egenskap, endringssøknad.getSøknadsRolle(), generator.generer(endringssøknad, søker, egenskap));
     }
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, null,
-                payloadGenerator.generer(ettersending, søker));
+        return doSend(egenskap, null, generator.generer(ettersending, søker));
     }
 
     @Override
@@ -56,18 +57,12 @@ public class FPFordelSøknadSender implements SøknadSender {
             return connection.send(egenskap.getType(), rolle, konvolutt);
         }
         LOG.warn("Sender ikke {}", egenskap);
-        return new Kvittering(LeveranseStatus.IKKE_SENDT_FPSAK);
-    }
-
-    @Override
-    public boolean skalSende(SøknadEgenskap egenskap) {
-        return true;
+        return new Kvittering(IKKE_SENDT_FPSAK);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", payloadGenerator=" + payloadGenerator
-                + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator + "]";
     }
 
 }
