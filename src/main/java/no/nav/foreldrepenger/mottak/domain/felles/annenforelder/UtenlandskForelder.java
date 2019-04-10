@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.felles.annenforelder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.neovisionaries.i18n.CountryCode;
 
