@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
 
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -17,6 +20,6 @@ public class Uttaksplan {
     public Uttaksplan(@JsonProperty("grunnlag") SøknadsGrunnlag grunnlag,
             @JsonProperty("perioder") List<UttaksPeriode> perioder) {
         this.grunnlag = grunnlag;
-        this.perioder = perioder;
+        this.perioder = safeStream(perioder).sorted().collect(toList());
     }
 }
