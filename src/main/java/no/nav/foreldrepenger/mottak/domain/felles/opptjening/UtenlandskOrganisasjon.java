@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.domain.felles.opptjening;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -23,6 +25,7 @@ public class UtenlandskOrganisasjon extends EgenNæring {
     @Length(max = 100)
     private String orgName;
     @JsonAlias("arbeidsland")
+    @NotNull
     private final CountryCode registrertILand;
 
     @Builder

@@ -23,9 +23,9 @@ public class FPFordelSøknadSender implements SøknadSender {
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator generator;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator payloadGenerator) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator) {
         this.connection = connection;
-        this.generator = payloadGenerator;
+        this.generator = generator;
     }
 
     @Override
@@ -60,5 +60,4 @@ public class FPFordelSøknadSender implements SøknadSender {
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator + "]";
     }
-
 }

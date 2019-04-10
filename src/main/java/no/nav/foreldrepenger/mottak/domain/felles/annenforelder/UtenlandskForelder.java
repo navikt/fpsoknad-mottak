@@ -15,6 +15,7 @@ public final class UtenlandskForelder extends AnnenForelder {
 
     @NotBlank
     private final String id;
+    @NotNull
     private final CountryCode land;
     private final String navn;
 
