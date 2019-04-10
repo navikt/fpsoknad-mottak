@@ -114,24 +114,21 @@ public class SakDTO {
             if (other.aktørId != null) {
                 return false;
             }
-        }
-        else if (!aktørId.equals(other.aktørId)) {
+        } else if (!aktørId.equals(other.aktørId)) {
             return false;
         }
         if (aktørIdAnnenPart == null) {
             if (other.aktørIdAnnenPart != null) {
                 return false;
             }
-        }
-        else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart)) {
+        } else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart)) {
             return false;
         }
         if (aktørIdBarna == null) {
             if (other.aktørIdBarna != null) {
                 return false;
             }
-        }
-        else if (!aktørIdBarna.equals(other.aktørIdBarna)) {
+        } else if (!aktørIdBarna.equals(other.aktørIdBarna)) {
             return false;
         }
         if (fagsakStatus != other.fagsakStatus) {
@@ -143,8 +140,7 @@ public class SakDTO {
 
         if (saksnummer == null) {
             return other.saksnummer == null;
-        }
-        else {
+        } else {
             return saksnummer.equals(other.saksnummer);
         }
     }

@@ -42,16 +42,14 @@ public class SøknadMetadata {
             if (other.journalpostId != null) {
                 return false;
             }
-        }
-        else if (!journalpostId.equals(other.journalpostId)) {
+        } else if (!journalpostId.equals(other.journalpostId)) {
             return false;
         }
         if (egenskaper == null) {
             if (other.egenskaper != null) {
                 return false;
             }
-        }
-        else if (!egenskaper.equals(other.egenskaper)) {
+        } else if (!egenskaper.equals(other.egenskaper)) {
             return false;
         }
         return true;

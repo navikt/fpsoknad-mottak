@@ -42,8 +42,7 @@ public class FPFordelGosysKvittering extends FPFordelKvittering {
             if (other.journalpostId != null) {
                 return false;
             }
-        }
-        else if (!journalpostId.equals(other.journalpostId)) {
+        } else if (!journalpostId.equals(other.journalpostId)) {
             return false;
         }
         return true;

@@ -10,3 +10,4 @@ varsel:
 
 fpfordel.max : 10
 fpinfo.max : 10
+svangerskapspenger.enabled : false

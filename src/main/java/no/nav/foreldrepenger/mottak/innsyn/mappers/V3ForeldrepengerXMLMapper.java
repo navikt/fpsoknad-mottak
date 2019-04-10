@@ -109,29 +109,29 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         try {
             Soeknad søknad = jaxb.unmarshalToElement(xml, Soeknad.class).getValue();
             switch (egenskap.getType()) {
-            case ENDRING_FORELDREPENGER:
-                Endringssøknad endringssøknad = new Endringssøknad(
-                        søknad.getMottattDato(),
-                        tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato(), egenskap.getType()).getFordeling(),
-                        null, null, null,
-                        saksnummer(søknad.getOmYtelse()),
-                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
-                endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return endringssøknad;
-            case INITIELL_FORELDREPENGER:
-                Søknad førstegangssøknad = new Søknad(
-                        søknad.getMottattDato(),
-                        tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato(), egenskap.getType()),
-                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
-                førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return førstegangssøknad;
-            default:
-                LOG.warn("Ukjent søknad {}", egenskap.getType());
-                return null;
+                case ENDRING_FORELDREPENGER:
+                    Endringssøknad endringssøknad = new Endringssøknad(
+                            søknad.getMottattDato(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato(), egenskap.getType()).getFordeling(),
+                            null, null, null,
+                            saksnummer(søknad.getOmYtelse()),
+                            tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
+                    endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    return endringssøknad;
+                case INITIELL_FORELDREPENGER:
+                    Søknad førstegangssøknad = new Søknad(
+                            søknad.getMottattDato(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse(), søknad.getMottattDato(), egenskap.getType()),
+                            tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
+                    førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    return førstegangssøknad;
+                default:
+                    LOG.warn("Ukjent søknad {}", egenskap.getType());
+                    return null;
             }
         } catch (Exception e) {
             LOG.debug("Feil ved unmarshalling av søknad {}, ikke kritisk", EGENSKAPER, e);
@@ -147,24 +147,24 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
             LocalDate søknadsDato, SøknadType søknadType) {
 
         switch (søknadType) {
-        case INITIELL_FORELDREPENGER:
-            Foreldrepenger søknad = ytelse(omYtelse, Foreldrepenger.class);
-            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                    .annenForelder(tilAnnenForelder(søknad.getAnnenForelder()))
-                    .dekningsgrad(tilDekningsgrad(søknad.getDekningsgrad()))
-                    .fordeling(tilFordeling(søknad.getFordeling()))
-                    .medlemsskap(tilMedlemsskap(søknad.getMedlemskap(), søknadsDato))
-                    .opptjening(tilOpptjening(søknad.getOpptjening()))
-                    .relasjonTilBarn(tilRelasjonTilBarn(søknad.getRelasjonTilBarnet()))
-                    .rettigheter(tilRettigheter(søknad.getRettigheter()))
-                    .build();
-        case ENDRING_FORELDREPENGER:
-            Endringssoeknad endring = ytelse(omYtelse, Endringssoeknad.class);
-            return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
-                    .fordeling(tilFordeling(endring.getFordeling()))
-                    .build();
-        default:
-            throw new UnexpectedInputException("Ukjent type {}", søknadType);
+            case INITIELL_FORELDREPENGER:
+                Foreldrepenger søknad = ytelse(omYtelse, Foreldrepenger.class);
+                return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
+                        .annenForelder(tilAnnenForelder(søknad.getAnnenForelder()))
+                        .dekningsgrad(tilDekningsgrad(søknad.getDekningsgrad()))
+                        .fordeling(tilFordeling(søknad.getFordeling()))
+                        .medlemsskap(tilMedlemsskap(søknad.getMedlemskap(), søknadsDato))
+                        .opptjening(tilOpptjening(søknad.getOpptjening()))
+                        .relasjonTilBarn(tilRelasjonTilBarn(søknad.getRelasjonTilBarnet()))
+                        .rettigheter(tilRettigheter(søknad.getRettigheter()))
+                        .build();
+            case ENDRING_FORELDREPENGER:
+                Endringssoeknad endring = ytelse(omYtelse, Endringssoeknad.class);
+                return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
+                        .fordeling(tilFordeling(endring.getFordeling()))
+                        .build();
+            default:
+                throw new UnexpectedInputException("Ukjent type {}", søknadType);
         }
     }
 

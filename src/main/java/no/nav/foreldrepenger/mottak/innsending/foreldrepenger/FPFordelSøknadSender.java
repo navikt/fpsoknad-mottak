@@ -1,9 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -12,7 +16,10 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
+@ConditionalOnProperty(name = "svangerskapspenger.enabled", havingValue = "true", matchIfMissing = true)
 public class FPFordelSøknadSender implements SøknadSender {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
 
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator payloadGenerator;
@@ -45,7 +52,16 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering doSend(SøknadEgenskap egenskap, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
-        return connection.send(egenskap.getType(), rolle, konvolutt);
+        if (skalSende(egenskap)) {
+            return connection.send(egenskap.getType(), rolle, konvolutt);
+        }
+        LOG.warn("Sender ikke {}", egenskap);
+        return new Kvittering(LeveranseStatus.IKKE_SENDT_FPSAK);
+    }
+
+    @Override
+    public boolean skalSende(SøknadEgenskap egenskap) {
+        return true;
     }
 
     @Override

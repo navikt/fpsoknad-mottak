@@ -22,15 +22,18 @@ public enum Versjon {
             "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1",
             "urn:no:nav:vedtak:felles:xml:vedtak:v1",
             "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
-            "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"), V2(
-                    "urn:no:nav:vedtak:felles:xml:soeknad:v2",
-                    "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v2",
-                    "urn:no:nav:vedtak:felles:xml:vedtak:v2",
-                    "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
-                    "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"), V3(
-                            "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v3",
-                            "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v3",
-                            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"), V20180924, UKJENT;
+            "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
+    V2(
+            "urn:no:nav:vedtak:felles:xml:soeknad:v2",
+            "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v2",
+            "urn:no:nav:vedtak:felles:xml:vedtak:v2",
+            "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
+            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"),
+    V3(
+            "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v3",
+            "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v3",
+            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"),
+    V20180924, UKJENT;
 
     private static final Logger LOG = LoggerFactory.getLogger(Versjon.class);
     public static final String VERSION_PROPERTY = "contract.version";
@@ -70,8 +73,9 @@ public enum Versjon {
     public static Versjon namespaceFra(String ns) {
 
         for (Versjon v : values()) {
-            if (v.namespaces.contains(ns))
+            if (v.namespaces.contains(ns)) {
                 return v;
+            }
         }
         return ukjent(ns);
     }

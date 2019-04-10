@@ -49,8 +49,7 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
                     LOG.debug("Periodene overlapper");
                     errorMessageOverlap(context, opphold, o);
                     valid = false;
-                }
-                else {
+                } else {
                     LOG.info("Periode {} validert OK", opphold);
                 }
             }

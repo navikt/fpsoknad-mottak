@@ -1,12 +1,12 @@
 package no.nav.foreldrepenger.mottak.domain.felles.opptjening;
 
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 
 @Data
 public class FrilansOppdrag {

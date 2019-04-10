@@ -1,11 +1,12 @@
 package no.nav.foreldrepenger.mottak.domain.felles.annenforelder;
 
+import javax.validation.constraints.NotBlank;
+
 import com.neovisionaries.i18n.CountryCode;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

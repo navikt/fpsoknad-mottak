@@ -45,12 +45,13 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     @Override
     public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         switch (egenskap.getType()) {
-        case INITIELL_FORELDREPENGER:
-            return generate(søknad, søker);
-        case ENDRING_FORELDREPENGER:
-            return generate(Endringssøknad.class.cast(søknad), søker);
-        default:
-            throw new UnexpectedInputException("Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
+            case INITIELL_FORELDREPENGER:
+                return generate(søknad, søker);
+            case ENDRING_FORELDREPENGER:
+                return generate(Endringssøknad.class.cast(søknad), søker);
+            default:
+                throw new UnexpectedInputException(
+                        "Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
         }
     }
 
@@ -78,8 +79,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 if (behov <= y) {
                     scratchcos.close();
                     y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(), cos, y);
-                }
-                else {
+                } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
@@ -102,8 +102,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 if (behov <= y) {
                     scratchcos.close();
                     y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(), cos, y);
-                }
-                else {
+                } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
@@ -121,8 +120,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 if (behov <= y) {
                     scratchcos.close();
                     y = fpRenderer.arbeidsforholdOpptjening(arbeidsforhold, cos, y);
-                }
-                else {
+                } else {
                     cos = nySide(doc, cos, scratch, scratchcos);
                     y = nesteSideStart(headerSize, behov);
                 }
@@ -141,8 +139,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                         y = fpRenderer.utenlandskeArbeidsforholdOpptjening(
                                 opptjening.getUtenlandskArbeidsforhold(),
                                 søknad.getVedlegg(), cos, y);
-                    }
-                    else {
+                    } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
@@ -161,8 +158,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                         y = fpRenderer.annenOpptjening(
                                 opptjening.getAnnenOpptjening(),
                                 søknad.getVedlegg(), cos, y);
-                    }
-                    else {
+                    } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
@@ -178,8 +174,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                     if (behov <= y) {
                         scratchcos.close();
                         y = fpRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
-                    }
-                    else {
+                    } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
@@ -196,8 +191,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                     if (behov <= y) {
                         scratchcos.close();
                         y = fpRenderer.frilansOpptjening(opptjening.getFrilans(), cos, y);
-                    }
-                    else {
+                    } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
@@ -214,8 +208,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                     if (behov <= y) {
                         scratchcos.close();
                         y = fpRenderer.medlemsskap(stønad.getMedlemsskap(), stønad.getRelasjonTilBarn(), cos, y);
-                    }
-                    else {
+                    } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
@@ -268,8 +261,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                     scratchcos.close();
                     y = fpRenderer.relasjonTilBarn(stønad.getRelasjonTilBarn(), søknad.getVedlegg(),
                             cos, y);
-                }
-                else {
+                } else {
                     cos = nySide(doc, cos, scratch1,
                             scratchcos);
                     y = nesteSideStart(headerSize, behov);
@@ -296,8 +288,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                     scratchcos.close();
                     y = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(),
                             cos, y);
-                }
-                else {
+                } else {
                     cos = nySide(doc, cos, scratch1,
                             scratchcos);
                     y = nesteSideStart(headerSize, behov);

@@ -320,14 +320,14 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         }
         String id = arbeidsgiver.get(0);
         switch (id.length()) {
-        case 11:
-            return new Person()
-                    .withIdentifikator(id);
-        case 9:
-            return new Virksomhet()
-                    .withIdentifikator(id);
-        default:
-            throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
+            case 11:
+                return new Person()
+                        .withIdentifikator(id);
+            case 9:
+                return new Virksomhet()
+                        .withIdentifikator(id);
+            default:
+                throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
         }
     }
 

@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import org.hibernate.validator.constraints.Length;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 
 @Data
@@ -27,11 +27,11 @@ public class NorskOrganisasjon extends EgenNæring {
 
     @Builder
     private NorskOrganisasjon(List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
-                              boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
-                              boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
-                              String beskrivelseEndring, Double stillingsprosent,
-                              List<String> vedlegg,
-                              String orgNummer, String orgName) {
+            boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
+            boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
+            String beskrivelseEndring, Double stillingsprosent,
+            List<String> vedlegg,
+            String orgNummer, String orgName) {
         super(virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,
                 erVarigEndring, erNyIArbeidslivet,
                 næringsinntektBrutto, endringsDato, oppstartsDato, beskrivelseEndring, stillingsprosent, vedlegg);

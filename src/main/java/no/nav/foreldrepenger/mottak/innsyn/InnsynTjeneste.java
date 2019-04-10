@@ -117,8 +117,7 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
         if (søknad == null) {
             LOG.info("Hentet ingen søknad");
-        }
-        else {
+        } else {
             LOG.info("Hentet søknad");
             LOG.info(CONFIDENTIAL, "{}", søknad);
         }
@@ -131,8 +130,7 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
         if (vedtak == null) {
             LOG.info("Hentet intet vedtak");
-        }
-        else {
+        } else {
             LOG.info("Hentet vedtak med id {}", vedtak.getFagsakId());
             LOG.info(CONFIDENTIAL, "{}", vedtak.getMetadata());
         }

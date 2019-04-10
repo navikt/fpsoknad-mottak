@@ -55,17 +55,17 @@ public class FPInfoSaksPoller extends AbstractRestConnection {
                 ForsendelsesStatusKvittering kvittering = respons.getBody();
                 LOG.info("Fikk respons kvittering {}", kvittering);
                 switch (kvittering.getForsendelseStatus()) {
-                case MOTTATT:
-                case AVSLÅTT:
-                case INNVILGET:
-                case PÅ_VENT:
-                    stop(timer);
-                    LOG.info("Sak har status {} etter {}ms", kvittering.getForsendelseStatus().name(),
-                            timer.getTime());
-                    return kvittering;
-                case PÅGÅR:
-                    LOG.info("Prosessering pågår fremdeles etter {}ms", timer.getTime());
-                    continue;
+                    case MOTTATT:
+                    case AVSLÅTT:
+                    case INNVILGET:
+                    case PÅ_VENT:
+                        stop(timer);
+                        LOG.info("Sak har status {} etter {}ms", kvittering.getForsendelseStatus().name(),
+                                timer.getTime());
+                        return kvittering;
+                    case PÅGÅR:
+                        LOG.info("Prosessering pågår fremdeles etter {}ms", timer.getTime());
+                        continue;
                 }
             }
             stop(timer);

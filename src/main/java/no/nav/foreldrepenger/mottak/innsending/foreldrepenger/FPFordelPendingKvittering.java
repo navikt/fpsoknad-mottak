@@ -46,8 +46,7 @@ public class FPFordelPendingKvittering extends FPFordelKvittering {
             if (other.pollInterval != null) {
                 return false;
             }
-        }
-        else if (!pollInterval.equals(other.pollInterval)) {
+        } else if (!pollInterval.equals(other.pollInterval)) {
             return false;
         }
         return true;

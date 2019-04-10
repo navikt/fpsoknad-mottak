@@ -31,5 +31,5 @@ public class OrgnrValidator implements ConstraintValidator<Orgnr, String> {
         }
         int result = 11 - sumForMod % 11;
         return result == 11 ? 0 : result;
-    };
+    }
 }

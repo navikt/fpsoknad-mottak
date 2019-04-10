@@ -65,19 +65,19 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     @Override
     public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
         switch (egenskap.getFagsakType()) {
-        case FORELDREPENGER:
-            return Optional.ofNullable(xml)
-                    .map(x -> tilFPVedtak(x))
-                    .orElse(null);
-        case ENGANGSSTØNAD:
-            return Optional.ofNullable(xml)
-                    .map(x -> tilESVedtak(x))
-                    .orElse(null);
-        case SVANGERSKAPSPENGER:
-            LOG.warn("Svangerskapspenger vedtak ikke støttet");
-            return null;
-        default:
-            throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
+            case FORELDREPENGER:
+                return Optional.ofNullable(xml)
+                        .map(x -> tilFPVedtak(x))
+                        .orElse(null);
+            case ENGANGSSTØNAD:
+                return Optional.ofNullable(xml)
+                        .map(x -> tilESVedtak(x))
+                        .orElse(null);
+            case SVANGERSKAPSPENGER:
+                LOG.warn("Svangerskapspenger vedtak ikke støttet");
+                return null;
+            default:
+                throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
         }
     }
 

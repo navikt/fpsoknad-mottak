@@ -141,26 +141,26 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         try {
             Soeknad søknad = jaxb.unmarshalToElement(xml, Soeknad.class).getValue();
             switch (egenskap.getType()) {
-            case ENDRING_FORELDREPENGER:
-                Endringssøknad endringssøknad = new Endringssøknad(
-                        søknad.getMottattDato(),
-                        tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
-                endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return endringssøknad;
-            case INITIELL_FORELDREPENGER:
-                Søknad førstegangssøknad = new Søknad(
-                        søknad.getMottattDato(),
-                        tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()),
-                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
-                førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return førstegangssøknad;
-            default:
-                LOG.warn("Ukjent søknad");
-                return null;
+                case ENDRING_FORELDREPENGER:
+                    Endringssøknad endringssøknad = new Endringssøknad(
+                            søknad.getMottattDato(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
+                    endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    return endringssøknad;
+                case INITIELL_FORELDREPENGER:
+                    Søknad førstegangssøknad = new Søknad(
+                            søknad.getMottattDato(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse()),
+                            tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
+                    førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    return førstegangssøknad;
+                default:
+                    LOG.warn("Ukjent søknad");
+                    return null;
             }
         } catch (Exception e) {
             LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);

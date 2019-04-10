@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public interface DomainMapper extends Mappable {
 
-    static final String KOSOVO = "XXK";
+    String KOSOVO = "XXK";
 
     String tilXML(Søknad søknad, AktørId søker, SøknadEgenskap egenskap);
 

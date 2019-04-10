@@ -62,15 +62,15 @@ public final class XMLStreamVedtakInspektør extends AbstractInspektør {
 
     private static SøknadType typeFra(String fagsakType) {
         switch (fagsakType) {
-        case ENGANGSSTØNAD:
-            return INITIELL_ENGANGSSTØNAD;
-        case SVANGERSKAPSPENGER:
-            return INITIELL_SVANGERSKAPSPENGER;
-        case FORELDREPENGER:
-            return INITIELL_FORELDREPENGER;
-        default:
-            LOG.warn("Ukjent fagsaktype {}", fagsakType);
-            return SøknadType.UKJENT;
+            case ENGANGSSTØNAD:
+                return INITIELL_ENGANGSSTØNAD;
+            case SVANGERSKAPSPENGER:
+                return INITIELL_SVANGERSKAPSPENGER;
+            case FORELDREPENGER:
+                return INITIELL_FORELDREPENGER;
+            default:
+                LOG.warn("Ukjent fagsaktype {}", fagsakType);
+                return SøknadType.UKJENT;
         }
     }
 }

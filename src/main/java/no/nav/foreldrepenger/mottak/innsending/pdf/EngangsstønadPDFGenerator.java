@@ -154,8 +154,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             return textFormatter.fromMessageSource("terminføderi",
                     textFormatter.countryName(medlemsskap.landVedDato(stønad.getRelasjonTilBarn().relasjonsDato())),
                     stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
-        }
-        else {
+        } else {
             Fødsel fødsel = (Fødsel) stønad.getRelasjonTilBarn();
             CountryCode land = stønad.getMedlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
             return textFormatter.fromMessageSource("fødtei",

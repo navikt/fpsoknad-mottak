@@ -45,15 +45,15 @@ public interface Inspektør {
     default SøknadEgenskap inspiser(Ettersending ettersending) {
         EttersendingsType type = ettersending.getType();
         switch (type) {
-        case engangsstønad:
-            return ETTERSENDING_ENGANGSSTØNAD;
-        case foreldrepenger:
-            return ETTERSENDING_FORELDREPENGER;
-        case svangerskapspenger:
-            return ETTERSENDING_SVANGERSKAPSPENGER;
-        default:
-            LOG.warn("Ukjent eller ikke satt ettersendingstype {}", type);
-            throw new UnexpectedInputException("Ukjent eller ikke satt ettersendingstype %s", type);
+            case engangsstønad:
+                return ETTERSENDING_ENGANGSSTØNAD;
+            case foreldrepenger:
+                return ETTERSENDING_FORELDREPENGER;
+            case svangerskapspenger:
+                return ETTERSENDING_SVANGERSKAPSPENGER;
+            default:
+                LOG.warn("Ukjent eller ikke satt ettersendingstype {}", type);
+                throw new UnexpectedInputException("Ukjent eller ikke satt ettersendingstype %s", type);
         }
     }
 

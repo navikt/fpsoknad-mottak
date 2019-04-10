@@ -135,14 +135,14 @@ public class FPFordelMetadata {
 
     private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType søknadType) {
         switch (søknadType.fagsakType()) {
-        case FORELDREPENGER:
-            return dokumentTypeFraRelasjonForForeldrepenger(søknad);
-        case ENGANGSSTØNAD:
-            return dokumentTypeFraRelasjonForEngangsstønad(søknad);
-        case SVANGERSKAPSPENGER:
-            return I000001;
-        default:
-            throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
+            case FORELDREPENGER:
+                return dokumentTypeFraRelasjonForForeldrepenger(søknad);
+            case ENGANGSSTØNAD:
+                return dokumentTypeFraRelasjonForEngangsstønad(søknad);
+            case SVANGERSKAPSPENGER:
+                return I000001;
+            default:
+                throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
         }
     }
 

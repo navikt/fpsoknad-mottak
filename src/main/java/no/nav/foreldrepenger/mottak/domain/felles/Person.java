@@ -48,64 +48,56 @@ public class Person {
             if (other.aktørId != null) {
                 return false;
             }
-        }
-        else if (!aktørId.equals(other.aktørId)) {
+        } else if (!aktørId.equals(other.aktørId)) {
             return false;
         }
         if (bankkonto == null) {
             if (other.bankkonto != null) {
                 return false;
             }
-        }
-        else if (!bankkonto.equals(other.bankkonto)) {
+        } else if (!bankkonto.equals(other.bankkonto)) {
             return false;
         }
         if (etternavn == null) {
             if (other.etternavn != null) {
                 return false;
             }
-        }
-        else if (!etternavn.equals(other.etternavn)) {
+        } else if (!etternavn.equals(other.etternavn)) {
             return false;
         }
         if (fnr == null) {
             if (other.fnr != null) {
                 return false;
             }
-        }
-        else if (!fnr.equals(other.fnr)) {
+        } else if (!fnr.equals(other.fnr)) {
             return false;
         }
         if (fornavn == null) {
             if (other.fornavn != null) {
                 return false;
             }
-        }
-        else if (!fornavn.equals(other.fornavn)) {
+        } else if (!fornavn.equals(other.fornavn)) {
             return false;
         }
         if (fødselsdato == null) {
             if (other.fødselsdato != null) {
                 return false;
             }
-        }
-        else if (!fødselsdato.equals(other.fødselsdato)) {
+        } else if (!fødselsdato.equals(other.fødselsdato)) {
             return false;
         }
         if (ikkeNordiskEøsLand == null) {
             if (other.ikkeNordiskEøsLand != null) {
                 return false;
             }
-        }
-        else if (!ikkeNordiskEøsLand.equals(other.ikkeNordiskEøsLand)) {
+        } else if (!ikkeNordiskEøsLand.equals(other.ikkeNordiskEøsLand)) {
             return false;
         }
         if (kjønn == null) {
             if (other.kjønn != null) {
                 return false;
             }
-        }
-        else if (!kjønn.equals(other.kjønn)) {
+        } else if (!kjønn.equals(other.kjønn)) {
             return false;
         }
         if (land != other.land) {
@@ -115,16 +107,14 @@ public class Person {
             if (other.mellomnavn != null) {
                 return false;
             }
-        }
-        else if (!mellomnavn.equals(other.mellomnavn)) {
+        } else if (!mellomnavn.equals(other.mellomnavn)) {
             return false;
         }
         if (målform == null) {
             if (other.målform != null) {
                 return false;
             }
-        }
-        else if (!målform.equals(other.målform)) {
+        } else if (!målform.equals(other.målform)) {
             return false;
         }
         return true;

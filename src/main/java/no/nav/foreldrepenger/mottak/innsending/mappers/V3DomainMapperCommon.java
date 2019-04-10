@@ -306,12 +306,12 @@ final class V3DomainMapperCommon {
     private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
 
         switch (innsendingsType) {
-        case SEND_SENERE:
-            return innsendingsTypeMedKodeverk(SEND_SENERE);
-        case LASTET_OPP:
-            return innsendingsTypeMedKodeverk(LASTET_OPP);
-        default:
-            throw new UnexpectedInputException("Innsendingstype " + innsendingsType + "  ikke støttet");
+            case SEND_SENERE:
+                return innsendingsTypeMedKodeverk(SEND_SENERE);
+            case LASTET_OPP:
+                return innsendingsTypeMedKodeverk(LASTET_OPP);
+            default:
+                throw new UnexpectedInputException("Innsendingstype " + innsendingsType + "  ikke støttet");
         }
     }
 

@@ -50,16 +50,14 @@ public class FPSakFordeltKvittering extends FPFordelKvittering {
             if (other.journalpostId != null) {
                 return false;
             }
-        }
-        else if (!journalpostId.equals(other.journalpostId)) {
+        } else if (!journalpostId.equals(other.journalpostId)) {
             return false;
         }
         if (saksnummer == null) {
             if (other.saksnummer != null) {
                 return false;
             }
-        }
-        else if (!saksnummer.equals(other.saksnummer)) {
+        } else if (!saksnummer.equals(other.saksnummer)) {
             return false;
         }
         return true;

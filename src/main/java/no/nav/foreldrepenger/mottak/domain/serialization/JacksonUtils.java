@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-
-import java.util.Optional;
 
 final class JacksonUtils {
 
@@ -25,6 +25,5 @@ final class JacksonUtils {
                 .map(TextNode::textValue)
                 .orElse(null);
     }
-
 
 }

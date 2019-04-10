@@ -48,16 +48,14 @@ public class SøknadDTO {
             if (other.journalpostId != null) {
                 return false;
             }
-        }
-        else if (!journalpostId.equals(other.journalpostId)) {
+        } else if (!journalpostId.equals(other.journalpostId)) {
             return false;
         }
         if (xml == null) {
             if (other.xml != null) {
                 return false;
             }
-        }
-        else if (!xml.equals(other.xml)) {
+        } else if (!xml.equals(other.xml)) {
             return false;
         }
         return true;

@@ -47,16 +47,14 @@ public class VedtakDTO {
             if (other.journalpostId != null) {
                 return false;
             }
-        }
-        else if (!journalpostId.equals(other.journalpostId)) {
+        } else if (!journalpostId.equals(other.journalpostId)) {
             return false;
         }
         if (xmlClob == null) {
             if (other.xmlClob != null) {
                 return false;
             }
-        }
-        else if (!xmlClob.equals(other.xmlClob)) {
+        } else if (!xmlClob.equals(other.xmlClob)) {
             return false;
         }
         return true;

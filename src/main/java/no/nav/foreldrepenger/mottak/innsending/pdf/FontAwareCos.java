@@ -67,7 +67,7 @@ public class FontAwareCos {
         return textWidth(string, fontHeading, HEADINGFONTSIZE);
     }
 
-    float regularTextWidth(String string) throws  IOException {
+    float regularTextWidth(String string) throws IOException {
         return textWidth(string, fontRegular, REGULARFONTSIZE);
     }
 

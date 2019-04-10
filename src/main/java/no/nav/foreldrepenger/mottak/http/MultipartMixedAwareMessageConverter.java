@@ -92,8 +92,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
                 writeParts(outputStream, parts, boundary);
                 writeEnd(outputStream, boundary);
             });
-        }
-        else {
+        } else {
             writeParts(outputMessage.getBody(), parts, boundary);
             writeEnd(outputMessage.getBody(), boundary);
         }

@@ -36,7 +36,7 @@ public class VarselJMSConnection implements VarselConnection {
         LOG.info("Pinger {} ({})", name(), varselConfig.getURI());
         try {
             template.getConnectionFactory().createConnection().close();
-            return (name() + " er i live på " + pingEndpoint());
+            return name() + " er i live på " + pingEndpoint();
         } catch (JMSException e) {
             LOG.warn("Kunne ikke pinge {}-kø ({})", name(), varselConfig.getURI(), e);
             throw new IllegalArgumentException("Kunne ikke pinge " + name() + "-kø", e);
@@ -72,8 +72,7 @@ public class VarselJMSConnection implements VarselConnection {
                 LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), varselConfig.getURI(), swallow);
                 VARSEL_FAILED.increment();
             }
-        }
-        else {
+        } else {
             LOG.info("Varsling er deaktivert");
         }
 

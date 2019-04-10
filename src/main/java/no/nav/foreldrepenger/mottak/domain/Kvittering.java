@@ -77,27 +77,27 @@ public class Kvittering {
             FPSakFordeltKvittering fordeltKvittering) {
 
         switch (forsendelsesStatus.getForsendelseStatus()) {
-        case AVSLÅTT:
-            REJECTED.increment();
-            return kvitteringMedType(AVSLÅTT, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case INNVILGET:
-            ACCEPTED.increment();
-            return kvitteringMedType(INNVILGET, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case MOTTATT:
-        case PÅ_VENT:
-            PENDING.increment();
-            return kvitteringMedType(PÅ_VENT, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case PÅGÅR:
-            RUNNING.increment();
-            return kvitteringMedType(PÅGÅR, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        default:
-            LOG.warn("Fikk forsendelsesstatus {}", forsendelsesStatus.getForsendelseStatus());
-            FAILED.increment();
-            return new Kvittering(FP_FORDEL_MESSED_UP);
+            case AVSLÅTT:
+                REJECTED.increment();
+                return kvitteringMedType(AVSLÅTT, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            case INNVILGET:
+                ACCEPTED.increment();
+                return kvitteringMedType(INNVILGET, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            case MOTTATT:
+            case PÅ_VENT:
+                PENDING.increment();
+                return kvitteringMedType(PÅ_VENT, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            case PÅGÅR:
+                RUNNING.increment();
+                return kvitteringMedType(PÅGÅR, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            default:
+                LOG.warn("Fikk forsendelsesstatus {}", forsendelsesStatus.getForsendelseStatus());
+                FAILED.increment();
+                return new Kvittering(FP_FORDEL_MESSED_UP);
         }
     }
 

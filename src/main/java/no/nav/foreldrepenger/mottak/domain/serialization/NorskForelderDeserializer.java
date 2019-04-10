@@ -1,15 +1,16 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
+import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
+
+import java.io.IOException;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-
-import java.io.IOException;
-
-import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
 
 public class NorskForelderDeserializer extends StdDeserializer<NorskForelder> {
 

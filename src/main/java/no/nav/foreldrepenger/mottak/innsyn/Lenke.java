@@ -52,24 +52,21 @@ public class Lenke {
             if (other.href != null) {
                 return false;
             }
-        }
-        else if (!href.equals(other.href)) {
+        } else if (!href.equals(other.href)) {
             return false;
         }
         if (rel == null) {
             if (other.rel != null) {
                 return false;
             }
-        }
-        else if (!rel.equals(other.rel)) {
+        } else if (!rel.equals(other.rel)) {
             return false;
         }
         if (type == null) {
             if (other.type != null) {
                 return false;
             }
-        }
-        else if (!type.equals(other.type)) {
+        } else if (!type.equals(other.type)) {
             return false;
         }
         return true;

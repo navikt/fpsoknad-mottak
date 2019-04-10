@@ -57,8 +57,7 @@ public class PDFElementRenderer {
             if (noSpaceOrLastSpaceInFirstHalf) {
                 line = str.substring(0, maxLength) + "-";
                 remainingStr = str.substring(maxLength);
-            }
-            else {
+            } else {
                 line = str.substring(0, lastSpace);
                 remainingStr = str.substring(lastSpace + 1);
             }
@@ -166,7 +165,6 @@ public class PDFElementRenderer {
         }
         return yTotal;
     }
-
 
     public float addCenteredHeading(String heading, FontAwareCos cos, float startY) throws IOException {
         cos.beginText();
