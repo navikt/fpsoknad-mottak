@@ -4,8 +4,6 @@ import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPS
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
@@ -18,8 +16,6 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
-@Primary
-@ConditionalOnProperty(name = "svangerskapspenger.enabled", havingValue = "true", matchIfMissing = true)
 public class FPFordelSøknadSender implements SøknadSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
