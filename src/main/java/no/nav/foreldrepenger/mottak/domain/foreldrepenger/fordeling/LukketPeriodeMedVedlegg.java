@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
 
 @Data
 @EqualsAndHashCode(exclude = { "vedlegg" })
@@ -37,7 +38,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
         @Type(value = OppholdsPeriode.class, name = "opphold"),
         @Type(value = UtsettelsesPeriode.class, name = "utsettelse")
 })
-public abstract class LukketPeriodeMedVedlegg {
+public abstract class LukketPeriodeMedVedlegg implements Comparable<LukketPeriodeMedVedlegg> {
 
     @NotNull
     protected final LocalDate fom;
@@ -66,4 +67,8 @@ public abstract class LukketPeriodeMedVedlegg {
         return daysWithoutWeekends;
     }
 
+    @Override
+    public int compareTo(LukketPeriodeMedVedlegg other) {
+        return getFom().compareTo(other.getFom());
+    }
 }

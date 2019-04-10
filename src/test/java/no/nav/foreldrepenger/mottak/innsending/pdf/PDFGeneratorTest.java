@@ -1,10 +1,24 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
-import no.nav.foreldrepenger.mottak.config.TestConfig;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.svp;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.FileOutputStream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +26,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.FileOutputStream;
-
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.*;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.*;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.*;
-import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.config.TestConfig;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,

@@ -74,8 +74,7 @@ public class ProsentValidatorTest {
         if (shouldBeEmpty) {
             assertTrue(constraintViolations.isEmpty());
             assertEquals(prosent.getProsent(), expectedValue, 0.1d);
-        }
-        else {
+        } else {
             assertFalse(constraintViolations.isEmpty());
         }
 

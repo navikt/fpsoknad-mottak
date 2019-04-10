@@ -46,7 +46,8 @@ public class PDFElementRendererTest {
     @Test
     public void charsNotRepresentedInFontGlyphStrippedOrReplaced() throws IOException {
 
-        PDFont font = PDType0Font.load(new PDDocument(), new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
+        PDFont font = PDType0Font.load(new PDDocument(),
+                new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());
 
         String dirtyText = "Left-to-right override strippes \u202D helt ut av teksten" +
                 "Tab\tog andre blanke tegn\u00A0erstattes med space" +

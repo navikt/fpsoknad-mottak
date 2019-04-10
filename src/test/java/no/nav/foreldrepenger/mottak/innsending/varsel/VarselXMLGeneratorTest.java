@@ -2,7 +2,13 @@ package no.nav.foreldrepenger.mottak.innsending.varsel;
 
 import static java.time.LocalDateTime.now;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.*;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.DATO;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.FORNAVN;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.URL;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.URL_VALUE;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.VARSEL_TYPE;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.formattertDato;
+import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.formattertNavn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;

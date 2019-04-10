@@ -8,8 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.*;
 import org.junit.jupiter.api.Test;
+
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 
 public class UtenlandsoppholdTest {
 
