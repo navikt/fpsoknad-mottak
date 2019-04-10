@@ -37,7 +37,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.LukketPeriode;
         @Type(value = OppholdsPeriode.class, name = "opphold"),
         @Type(value = UtsettelsesPeriode.class, name = "utsettelse")
 })
-public abstract class LukketPeriodeMedVedlegg {
+public abstract class LukketPeriodeMedVedlegg implements Comparable<LukketPeriodeMedVedlegg> {
 
     @NotNull
     protected final LocalDate fom;
@@ -64,6 +64,11 @@ public abstract class LukketPeriodeMedVedlegg {
         final long daysWithoutWeekends = days - 2 * ((days + startW.getValue()) / 7);
 
         return daysWithoutWeekends;
+    }
+
+    @Override
+    public int compareTo(LukketPeriodeMedVedlegg other) {
+        return getFom().compareTo(other.getFom());
     }
 
 }
