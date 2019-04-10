@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.innsyn.GraderingAvslagÅrsak;
 import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 
 @Data
-public class UttaksPeriode {
+public class UttaksPeriode implements Comparable<UttaksPeriode> {
 
     private final Oppholdsårsak oppholdAarsak;
     private final Overføringsårsak overfoeringAarsak;
@@ -31,7 +31,7 @@ public class UttaksPeriode {
     private final GraderingAvslagÅrsak graderingAvslagAarsak;
     private final Boolean flerbarnsdager;
     private final Boolean manueltBehandlet;
-    private final Integer  samtidigUttaksprosent;
+    private final Integer samtidigUttaksprosent;
 
     public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdAarsak,
             @JsonProperty("overfoeringAarsak") Overføringsårsak overfoeringAarsak,
@@ -65,6 +65,11 @@ public class UttaksPeriode {
         this.graderingAvslagAarsak = graderingAvslagAarsak;
         this.manueltBehandlet = manueltBehandlet;
         this.samtidigUttaksprosent = samtidigUttaksprosent;
-        this.flerbarnsdager  = flerbarnsdager;
+        this.flerbarnsdager = flerbarnsdager;
+    }
+
+    @Override
+    public int compareTo(UttaksPeriode other) {
+        return this.getPeriode().getFom().compareTo(other.getPeriode().getFom());
     }
 }

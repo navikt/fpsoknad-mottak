@@ -102,7 +102,15 @@ public class ForeldrepengerTestUtils {
     }
 
     public static Søknad svp() {
-        return søknad(Versjon.V1, svangerskapspenger(vedleggRefs(VEDLEGG1)), VEDLEGG1);
+        return svp(true);
+    }
+
+    public static Søknad svp(boolean vedlegg) {
+        if (vedlegg) {
+            return søknad(Versjon.V1, svangerskapspenger(vedleggRefs(VEDLEGG1)), VEDLEGG1);
+        }
+        return søknad(Versjon.V1, svangerskapspenger());
+
     }
 
     public static Søknad søknadMedEttVedlegg(Versjon v) {
@@ -301,15 +309,15 @@ public class ForeldrepengerTestUtils {
 
     static AnnenOpptjening annenOpptjening(Versjon v, String... vedleggRefs) {
         switch (v) {
-        case V1:
-            return new AnnenOpptjening(AnnenOpptjeningType.VENTELØNN, åpenPeriode(v),
-                    Arrays.asList(vedleggRefs));
-        case V2:
-        case V3:
-            return new AnnenOpptjening(AnnenOpptjeningType.VENTELØNN_VARTPENGER, åpenPeriode(v),
-                    Arrays.asList(vedleggRefs));
-        default:
-            throw new IllegalArgumentException();
+            case V1:
+                return new AnnenOpptjening(AnnenOpptjeningType.VENTELØNN, åpenPeriode(v),
+                        Arrays.asList(vedleggRefs));
+            case V2:
+            case V3:
+                return new AnnenOpptjening(AnnenOpptjeningType.VENTELØNN_VARTPENGER, åpenPeriode(v),
+                        Arrays.asList(vedleggRefs));
+            default:
+                throw new IllegalArgumentException();
         }
     }
 
@@ -346,26 +354,26 @@ public class ForeldrepengerTestUtils {
 
     static UttaksPeriode gradertPeriode(Versjon v, String... vedleggRefs) {
         switch (v) {
-        case V1:
-            return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
-                    FEDREKVOTE,
-                    true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
-                    Collections.singletonList("22222222222"), null, null,
-                    Arrays.asList(vedleggRefs));
-        case V2:
-            return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
-                    FEDREKVOTE,
-                    true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
-                    Collections.singletonList("22222222222"), null, null,
-                    Arrays.asList(vedleggRefs));
-        case V3:
-            return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
-                    FEDREKVOTE,
-                    true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
-                    Collections.singletonList("22222222222"), true, true,
-                    Arrays.asList(vedleggRefs));
-        default:
-            throw new IllegalStateException(v.toString());
+            case V1:
+                return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
+                        FEDREKVOTE,
+                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                        Collections.singletonList("22222222222"), null, null,
+                        Arrays.asList(vedleggRefs));
+            case V2:
+                return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
+                        FEDREKVOTE,
+                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                        Collections.singletonList("22222222222"), null, null,
+                        Arrays.asList(vedleggRefs));
+            case V3:
+                return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
+                        FEDREKVOTE,
+                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                        Collections.singletonList("22222222222"), true, true,
+                        Arrays.asList(vedleggRefs));
+            default:
+                throw new IllegalStateException(v.toString());
         }
 
     }
