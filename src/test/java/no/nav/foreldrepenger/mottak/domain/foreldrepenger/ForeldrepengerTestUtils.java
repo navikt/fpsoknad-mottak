@@ -329,7 +329,7 @@ public class ForeldrepengerTestUtils {
                 .periode(åpenPeriode(v)).build();
     }
 
-    private static List<LukketPeriodeMedVedlegg> perioder(Versjon v, String... vedleggRefs) {
+    static List<LukketPeriodeMedVedlegg> perioder(Versjon v, String... vedleggRefs) {
         return newArrayList(
                 oppholdsPeriode(v, vedleggRefs),
                 overføringsPeriode(v, vedleggRefs),
@@ -422,7 +422,7 @@ public class ForeldrepengerTestUtils {
         }
     }
 
-    private static LocalDate ukeDagNær(LocalDate dato) {
+    static LocalDate ukeDagNær(LocalDate dato) {
         LocalDate d = dato;
         while (!erUkedag(d)) {
             d = d.minusDays(1);
