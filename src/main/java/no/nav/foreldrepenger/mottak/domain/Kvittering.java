@@ -120,7 +120,7 @@ public class Kvittering {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [referanseId=" + referanseId + ", mottattDato=" + mottattDato
-                + ", leveranseStatus=" + leveranseStatus + ", journalId=" + journalId + ", saksNr=" + saksNr + ", pdf="
-                + limit(pdf, 50) + "]";
+                + ", førsteDag=" + førsteDag + ", leveranseStatus=" + leveranseStatus + ", journalId=" + journalId
+                + ", saksNr=" + saksNr + ", pdf=" + limit(pdf, 150) + "]";
     }
 }

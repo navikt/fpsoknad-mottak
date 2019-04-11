@@ -199,7 +199,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
                     tilLand(utenlandsForelder.getLand()),
                     null);
         }
-        throw new UnexpectedInputException("UKjent annen forelder %s", annenForelder.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent annen forelder %s", annenForelder.getClass().getSimpleName());
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v1.Engangsstønad ytelse(OmYtelse omYtelse) {
@@ -214,7 +214,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
     }
 
     private static BrukerRolle tilRolle(String kode) {
-        return Optional.of(kode)
+        return Optional.ofNullable(kode)
                 .map(BrukerRolle::valueOf)
                 .orElse(BrukerRolle.IKKE_RELEVANT);
     }
