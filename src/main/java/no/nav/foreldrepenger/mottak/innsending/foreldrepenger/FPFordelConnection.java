@@ -58,9 +58,7 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
             Kvittering kvittering = responseHandler.handle(
                     postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
                             FPFordelKvittering.class));
-            LOG.info("Sendte {} til {}, fikk kvittering {}", name(type), name().toLowerCase(),
-                    kvittering);
-
+            LOG.info("Sendte {} til {}, fikk kvittering {}", name(type), name().toLowerCase(), kvittering);
             stopWatch.stop();
             type.count();
             timer(type, rolle, kvittering.getLeveranseStatus()).record(stopWatch.getTime(), MILLISECONDS);

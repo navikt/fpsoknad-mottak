@@ -17,6 +17,7 @@ import static no.nav.foreldrepenger.mottak.util.CounterRegistry.RUNNING;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
@@ -38,6 +39,7 @@ public class Kvittering {
     private static final Logger LOG = LoggerFactory.getLogger(Kvittering.class);
     private final String referanseId;
     private final LocalDateTime mottattDato;
+    private LocalDate førsteDag;
     private final LeveranseStatus leveranseStatus;
     private String journalId;
     private String saksNr;

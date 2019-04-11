@@ -25,6 +25,7 @@ import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 
 @Data
 @Validated
@@ -77,5 +78,13 @@ public class Søknad {
     @JsonIgnore
     public BrukerRolle getSøknadsRolle() {
         return søker.getSøknadsRolle();
+    }
+
+    @JsonIgnore
+    public LocalDate getFørsteUttaksdag() {
+        if (ytelse instanceof Foreldrepenger) {
+            return Foreldrepenger.class.cast(ytelse).getFordeling().getFørsteUttaksdag();
+        }
+        return null;
     }
 }
