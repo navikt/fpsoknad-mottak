@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.validation.Valid;
 
@@ -29,16 +29,20 @@ public class Fordeling {
             @JsonProperty("perioder") List<LukketPeriodeMedVedlegg> perioder) {
         this.erAnnenForelderInformert = erAnnenForelderInformert;
         this.ønskerKvoteOverført = årsak;
-        this.perioder = Optional.ofNullable(perioder).orElse(emptyList()).stream().sorted().collect(toList());
+        this.perioder = Optional.ofNullable(perioder).orElse(emptyList());
     }
 
     @JsonIgnore
     public LocalDate getFørsteUttaksdag() {
-        for (LukketPeriodeMedVedlegg periode : perioder) {
-            if (periode instanceof UttaksPeriode || periode instanceof UtsettelsesPeriode) {
-                return periode.getFom();
-            }
-        }
-        return null;
+        return perioder.stream()
+                .sorted()
+                .filter(aktuellPeriode())
+                .findFirst()
+                .map(LukketPeriodeMedVedlegg::getFom)
+                .orElse(null);
+    }
+
+    private static Predicate<? super LukketPeriodeMedVedlegg> aktuellPeriode() {
+        return f -> f instanceof UttaksPeriode || f instanceof UtsettelsesPeriode;
     }
 }

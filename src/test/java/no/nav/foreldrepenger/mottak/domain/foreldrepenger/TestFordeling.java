@@ -29,6 +29,9 @@ public class TestFordeling {
 
         LocalDate utsettelseStart = LocalDate.now().plusMonths(2);
         Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
+                new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
+                        FEDREKVOTE,
+                        true, ARBEID_OG_UTDANNING, true, 75.0d, null),
                 new OppholdsPeriode(ukeDagNær(LocalDate.now().plusMonths(1)), ukeDagNær(utsettelseStart),
                         UTTAK_FEDREKVOTE_ANNEN_FORELDER, null),
                 new OverføringsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
@@ -36,10 +39,7 @@ public class TestFordeling {
                 new UtsettelsesPeriode(ukeDagNær(utsettelseStart),
                         ukeDagNær(LocalDate.now().plusMonths(3)), true, Collections.singletonList("222"),
                         INSTITUSJONSOPPHOLD_BARNET, FEDREKVOTE, null,
-                        null),
-                new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
-                        FEDREKVOTE,
-                        true, ARBEID_OG_UTDANNING, true, 75.0d, null)));
+                        null)));
         assertEquals(utsettelseStart, f.getFørsteUttaksdag());
     }
 
