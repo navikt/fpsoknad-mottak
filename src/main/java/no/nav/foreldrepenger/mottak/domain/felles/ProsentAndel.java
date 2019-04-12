@@ -13,7 +13,7 @@ public class ProsentAndel {
     private final Double prosent;
 
     @JsonCreator
-    public ProsentAndel(@JsonProperty("prosent") Integer prosent) {
-        this.prosent = prosent.doubleValue();
+    public ProsentAndel(@JsonProperty("prosent") Double prosent) {
+        this.prosent = prosent;
     }
 }

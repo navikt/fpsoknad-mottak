@@ -252,7 +252,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     private static ProsentAndel tilProsent(DecimalOpplysning prosent) {
         return Optional.ofNullable(prosent)
                 .map(DecimalOpplysning::getValue)
-                .map(BigDecimal::intValue)
+                .map(BigDecimal::doubleValue)
                 .map(ProsentAndel::new)
                 .orElse(null);
     }
