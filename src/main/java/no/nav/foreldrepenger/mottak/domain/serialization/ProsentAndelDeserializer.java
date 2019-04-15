@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
+import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.doubleValue;
+
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -27,10 +29,10 @@ public class ProsentAndelDeserializer extends StdDeserializer<ProsentAndel> {
             throws IOException {
         JsonNode rootNode = p.getCodec().readTree(p);
         if (rootNode instanceof DoubleNode) {
-            return new ProsentAndel(JacksonUtils.doubleValue(DoubleNode.class.cast(rootNode)));
+            return new ProsentAndel(doubleValue(DoubleNode.class.cast(rootNode)));
         }
         if (rootNode instanceof ObjectNode) {
-            return new ProsentAndel(JacksonUtils.doubleValue(ObjectNode.class.cast(rootNode)));
+            return new ProsentAndel(doubleValue(ObjectNode.class.cast(rootNode)));
         }
         throw new UnexpectedInputException("Ukjent node type %s", rootNode.getClass().getSimpleName());
     }

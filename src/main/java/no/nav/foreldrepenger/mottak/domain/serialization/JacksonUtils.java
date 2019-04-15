@@ -1,12 +1,17 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 
 final class JacksonUtils {
 
@@ -34,6 +39,16 @@ final class JacksonUtils {
     }
 
     static Double doubleValue(ObjectNode rootNode) {
-        return rootNode.findValue("prosent").doubleValue();
+        Iterator<Entry<String, JsonNode>> iterator = rootNode.fields();
+        while (iterator.hasNext()) {
+            JsonNode entry = iterator.next().getValue();
+            if (entry instanceof IntNode) {
+                return (double) IntNode.class.cast(entry).asInt();
+            }
+            if (entry instanceof DoubleNode) {
+                return DoubleNode.class.cast(entry).asDouble();
+            }
+        }
+        throw new UnexpectedInputException("Ukjent node type %s", rootNode.getClass().getSimpleName());
     }
 }
