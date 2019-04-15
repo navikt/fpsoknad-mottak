@@ -175,9 +175,9 @@ public class ForeldrepengerTestUtils {
 
     }
 
-    private static Tilrettelegging delvisTilrettelegging(String... vedleggRefs) {
+    public static Tilrettelegging delvisTilrettelegging(String... vedleggRefs) {
         return new DelvisTilrettelegging(privat(), LocalDate.now().plusMonths(1), LocalDate.now().plusMonths(2),
-                new ProsentAndel(100.0), asList(vedleggRefs));
+                new ProsentAndel(77.0), asList(vedleggRefs));
     }
 
     private static Tilrettelegging helTilrettelegging(String... vedleggRefs) {

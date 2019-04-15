@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.svangerskapspenger;
 
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.delvisTilrettelegging;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.svp;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.TestForeldrepengerSerialization.test;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
@@ -37,6 +38,11 @@ public class TestSvangerskapsepengerSerialization {
     @Test
     public void testSVP() {
         test(svp(), true, mapper);
+    }
+
+    @Test
+    public void testTilrettelegging() {
+        test(delvisTilrettelegging(), true, mapper);
     }
 
     @Test
