@@ -158,10 +158,13 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private AnnenPart annenPart(String aktørId) {
-        LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
-        Fødselsnummer fnr = fnr(aktørId);
-        LOG.trace(CONFIDENTIAL, "Fikk {}", fnr);
-        return new AnnenPart(fnr, new AktørId(aktørId), navnFor(fnr));
+        if (aktørId != null) {
+            LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
+            Fødselsnummer fnr = fnr(aktørId);
+            LOG.trace(CONFIDENTIAL, "Fikk {}", fnr);
+            return new AnnenPart(fnr, new AktørId(aktørId), navnFor(fnr));
+        }
+        return null;
     }
 
     private Navn navnFor(Fødselsnummer fnr) {

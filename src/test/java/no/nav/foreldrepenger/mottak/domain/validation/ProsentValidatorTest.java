@@ -27,7 +27,7 @@ public class ProsentValidatorTest {
             this.prosent = prosent;
         }
 
-        public Number getProsent() {
+        public Double getProsent() {
             return prosent.getProsent();
         }
 
