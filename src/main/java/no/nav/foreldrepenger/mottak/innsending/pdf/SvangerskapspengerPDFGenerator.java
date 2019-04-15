@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
@@ -242,9 +243,15 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         y -= renderer.addBulletPoint(INDENT,
-                txt("svp.stillingsprosent", periode.getStillingsprosent().getProsent()), cos, y);
+                txt("svp.stillingsprosent", prosentFra(periode.getStillingsprosent())), cos, y);
         y -= renderVedlegg(vedlegg, periode.getVedlegg(), "fiksfaks", cos, y);
         return startY - y;
+    }
+
+    private static double prosentFra(ProsentAndel prosent) {
+        return Optional.ofNullable(prosent)
+                .map(ProsentAndel::getProsent)
+                .orElse(0d);
     }
 
     private float renderHelTilrettelegging(HelTilrettelegging periode,
