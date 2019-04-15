@@ -77,6 +77,10 @@ public class TestForeldrepengerSerialization {
         test(orig, true, mapper);
         assertEquals(orig, mapper.readValue("{ \"p1\" : 40}", ProsentAndel.class));
         assertEquals(orig, mapper.readValue("{ \"p2\" : 40.0}", ProsentAndel.class));
+        orig = new ProsentAndel(40);
+        test(orig, true, mapper);
+        assertEquals(orig, mapper.readValue("{ \"p1\" : 40}", ProsentAndel.class));
+        assertEquals(orig, mapper.readValue("{ \"p2\" : 40.0}", ProsentAndel.class));
 
     }
 

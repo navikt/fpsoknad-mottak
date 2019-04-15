@@ -39,12 +39,12 @@ final class JacksonUtils {
                 .orElse(null);
     }
 
-    static Double doubleValue(ObjectNode rootNode) {
+    static Number fromNumber(ObjectNode rootNode) {
         Iterator<Entry<String, JsonNode>> iterator = rootNode.fields();
         while (iterator.hasNext()) {
             JsonNode entry = iterator.next().getValue();
             if (entry instanceof IntNode) {
-                return (double) IntNode.class.cast(entry).asInt();
+                return IntNode.class.cast(entry).asInt();
             }
             if (entry instanceof DoubleNode) {
                 return DoubleNode.class.cast(entry).asDouble();

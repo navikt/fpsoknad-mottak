@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -17,13 +15,7 @@ public class ProsentAndel {
     @JsonValue
     private final Double prosent;
     
-    public ProsentAndel( Integer prosent) {
-        this(prosent.doubleValue());  
-        
-    }
-
-    @JsonCreator
-    public ProsentAndel(@JsonProperty("prosent") Double prosent) {
-        this.prosent = prosent;
+    public ProsentAndel( Number prosent) {
+        this.prosent = prosent.doubleValue();  
     }
 }
