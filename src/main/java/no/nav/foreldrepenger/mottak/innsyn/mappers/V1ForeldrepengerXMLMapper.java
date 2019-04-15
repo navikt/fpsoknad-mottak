@@ -312,7 +312,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> perioder) {
         return Optional.ofNullable(perioder)
-                .filter(not(l -> l.isEmpty()))
+                .filter(not(List::isEmpty))
                 .map(p -> p.get(0))
                 .map(V1ForeldrepengerXMLMapper::tilÅpenPeriode)
                 .orElse(null);

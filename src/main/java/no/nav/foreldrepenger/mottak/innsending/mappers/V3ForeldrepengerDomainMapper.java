@@ -23,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
@@ -286,7 +287,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withMorsAktivitetIPerioden(morsAktivitetFra(gradertPeriode.getMorsAktivitetsType()))
                 .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                 .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
-                .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent().getProsent())
+                .withArbeidtidProsent(prosentFra(gradertPeriode.getArbeidstidProsent()))
                 .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getVirksomhetsnummer()))
                 .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                 .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
@@ -297,7 +298,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             gradering.setErSelvstNæringsdrivende(gradertPeriode.getSelvstendig().booleanValue());
         }
         return gradertPeriode.isØnskerSamtidigUttak()
-                ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent().getProsent())
+                ? gradering.withSamtidigUttakProsent(prosentFra(gradertPeriode.getSamtidigUttakProsent()))
                 : gradering;
     }
 
@@ -306,12 +307,18 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return new Uttaksperiode()
                 .withFom(uttaksPeriode.getFom())
                 .withTom(uttaksPeriode.getTom())
-                .withSamtidigUttakProsent(uttaksPeriode.getSamtidigUttakProsent().getProsent())
+                .withSamtidigUttakProsent(prosentFra(uttaksPeriode.getSamtidigUttakProsent()))
                 .withOenskerFlerbarnsdager(uttaksPeriode.isØnskerFlerbarnsdager())
                 .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
                 .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
                 .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
                 .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
+    }
+
+    private static double prosentFra(ProsentAndel prosent) {
+        return Optional.ofNullable(prosent)
+                .map(ProsentAndel::getProsent)
+                .orElse(0d);
     }
 
     private static Arbeidsgiver arbeidsGiverFra(List<String> arbeidsgiver) {
