@@ -27,7 +27,7 @@ public class ProsentValidatorTest {
             this.prosent = prosent;
         }
 
-        public Double getProsent() {
+        public Number getProsent() {
             return prosent.getProsent();
         }
 
@@ -73,7 +73,7 @@ public class ProsentValidatorTest {
         Set<ConstraintViolation<ProsentBruker>> constraintViolations = validator.validate(prosent);
         if (shouldBeEmpty) {
             assertTrue(constraintViolations.isEmpty());
-            assertEquals(prosent.getProsent(), expectedValue, 0.1d);
+            assertEquals(prosent.getProsent().doubleValue(), expectedValue, 0.1d);
         } else {
             assertFalse(constraintViolations.isEmpty());
         }

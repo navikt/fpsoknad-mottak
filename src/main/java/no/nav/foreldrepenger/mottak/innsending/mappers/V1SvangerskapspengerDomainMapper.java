@@ -126,7 +126,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .cast(tilrettelegging);
             return new Tilrettelegging().withDelvisTilrettelegging(new DelvisTilrettelegging()
                     .withTilrettelagtArbeidFom(delvis.getTilrettelagtArbeidFom())
-                    .withStillingsprosent(BigDecimal.valueOf(delvis.getStillingsprosent().getProsent())))
+                    .withStillingsprosent(BigDecimal.valueOf(delvis.getStillingsprosent().getProsent().doubleValue())))
                     .withBehovForTilretteleggingFom(delvis.getBehovForTilretteleggingFom())
                     .withVedlegg(tilretteleggingVedleggFraIDs(delvis.getVedlegg()))
                     .withArbeidsforhold(arbeidsforholdFra(delvis.getArbeidsforhold()));

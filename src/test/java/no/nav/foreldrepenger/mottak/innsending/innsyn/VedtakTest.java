@@ -41,7 +41,7 @@ class VedtakTest {
 
     @Test
     void testVedtakESV1() throws IOException {
-        String xml = load("ESVedtakV1.xml");
+        String xml = load("jalla.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V1, e.getVersjon());
         assertEquals(ENGANGSSTØNAD, e.getFagsakType());
