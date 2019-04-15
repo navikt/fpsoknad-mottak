@@ -662,7 +662,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", arbeidsforhold.getFrom());
         addIfSet(attributter, "tom", arbeidsforhold.getTo());
         if (arbeidsforhold.getStillingsprosent() != null) {
-            attributter.add(txt("stillingsprosent", arbeidsforhold.getStillingsprosent()));
+            attributter.add(txt("stillingsprosent", arbeidsforhold.getStillingsprosent().getProsent()));
         }
         return attributter;
     }
@@ -707,7 +707,7 @@ public class ForeldrepengeInfoRenderer {
                     textFormatter.dato(næring.getPeriode().getTom())));
         }
         if (næring.getStillingsprosent() != null) {
-            attributter.add(txt("stillingsprosent", næring.getStillingsprosent()));
+            attributter.add(txt("stillingsprosent", næring.getStillingsprosent().getProsent()));
         }
         attributter.add(txt("nyopprettet", jaNei(næring.isErNyOpprettet())));
         attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
