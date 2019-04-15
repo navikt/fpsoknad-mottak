@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -30,7 +31,7 @@ public class UttaksPeriode extends LukketPeriodeMedVedlegg {
     private final boolean ønskerSamtidigUttak;
     private final MorsAktivitet morsAktivitetsType;
     private final boolean ønskerFlerbarnsdager;
-    private final double samtidigUttakProsent;
+    private final ProsentAndel samtidigUttakProsent;
 
     @JsonCreator
     public UttaksPeriode(@JsonProperty("fom") LocalDate fom, @JsonProperty("tom") LocalDate tom,
@@ -38,7 +39,7 @@ public class UttaksPeriode extends LukketPeriodeMedVedlegg {
             @JsonProperty("ønskerSamtidigUttak") boolean ønskerSamtidigUttak,
             @JsonProperty("morsAktivitetsType") MorsAktivitet morsAktivitetsType,
             @JsonProperty("ønskerFlerbarnsdager") boolean ønskerFlerbarnsdager,
-            @JsonProperty("samtidigUttakProsent") double samtidigUttakProsent,
+            @JsonProperty("samtidigUttakProsent") ProsentAndel samtidigUttakProsent,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         super(fom, tom, vedlegg);
         this.uttaksperiodeType = uttaksperiodeType;

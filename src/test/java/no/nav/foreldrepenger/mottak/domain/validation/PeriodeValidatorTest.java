@@ -23,6 +23,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
@@ -94,7 +95,7 @@ public class PeriodeValidatorTest {
     public void testLukketPeriodeMedVedleggOK() {
         LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), now().plusMonths(6), StønadskontoType.FEDREKVOTE,
                 true,
-                MorsAktivitet.ARBEID, true, 100.0d,
+                MorsAktivitet.ARBEID, true, new ProsentAndel(100.0d),
                 Collections.emptyList());
         Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
         assertTrue(constraintViolations.isEmpty());
@@ -104,7 +105,7 @@ public class PeriodeValidatorTest {
     public void testLukketPeriodeMedVedleggNull() {
         LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), null, StønadskontoType.FEDREKVOTE,
                 true,
-                MorsAktivitet.ARBEID, true, 100.0d,
+                MorsAktivitet.ARBEID, true, new ProsentAndel(100.0d),
                 Collections.emptyList());
         Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
         assertFalse(constraintViolations.isEmpty());
@@ -114,7 +115,7 @@ public class PeriodeValidatorTest {
     public void testLukketPeriodeMedVedleggFomNull() {
         LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(null, now(), StønadskontoType.FEDREKVOTE,
                 true,
-                MorsAktivitet.ARBEID, true, 100.0d,
+                MorsAktivitet.ARBEID, true, new ProsentAndel(100.0d),
                 Collections.emptyList());
         Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
         assertFalse(constraintViolations.isEmpty());
@@ -124,7 +125,7 @@ public class PeriodeValidatorTest {
     public void testLukketPeriodeMedVedleggFomFørTom() {
         LukketPeriodeMedVedlegg periode1 = new UttaksPeriode(now(), now().minusDays(1), StønadskontoType.FEDREKVOTE,
                 true,
-                MorsAktivitet.ARBEID, true, 100.0d,
+                MorsAktivitet.ARBEID, true, new ProsentAndel(100.0d),
                 Collections.emptyList());
         Set<ConstraintViolation<LukketPeriodeMedVedlegg>> constraintViolations = validator.validate(periode1);
         assertFalse(constraintViolations.isEmpty());
@@ -140,7 +141,7 @@ public class PeriodeValidatorTest {
     private static UttaksPeriode uttaksPeriode(LocalDate fom, LocalDate tom) {
         return new UttaksPeriode(fom, tom, StønadskontoType.FEDREKVOTE,
                 true,
-                MorsAktivitet.ARBEID, true, 100.0d,
+                MorsAktivitet.ARBEID, true, new ProsentAndel(100.0d),
                 Collections.emptyList());
     }
 

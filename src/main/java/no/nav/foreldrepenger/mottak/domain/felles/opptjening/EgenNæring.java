@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 
 @Data
@@ -47,7 +48,7 @@ public abstract class EgenNæring {
     private final LocalDate oppstartsDato;
     @Length(max = 1000)
     private final String beskrivelseEndring;
-    private final Double stillingsprosent;
+    private final ProsentAndel stillingsprosent;
     private final List<String> vedlegg;
 
     @JsonCreator
@@ -63,7 +64,7 @@ public abstract class EgenNæring {
             @JsonProperty("endringsDato") LocalDate endringsDato,
             @JsonProperty("oppstartsDato") LocalDate oppstartsDato,
             @JsonProperty("beskrivelseEndring") String beskrivelseEndring,
-            @JsonProperty("stillingsprosent") Double stillingsprosent,
+            @JsonProperty("stillingsprosent") ProsentAndel stillingsprosent,
             @JsonProperty("vedlegg") List<String> vedlegg) {
         this.virksomhetsTyper = virksomhetsTyper;
         this.periode = periode;

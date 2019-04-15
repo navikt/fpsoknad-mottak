@@ -52,6 +52,7 @@ import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
@@ -98,7 +99,7 @@ public class FPFordelTest {
 
     private static final List<Arbeidsforhold> ARB_FORHOLD = Arrays
             .asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                    Optional.of(LocalDate.now()), 90.0, "El Bedrifto"));
+                    Optional.of(LocalDate.now()), new ProsentAndel(90.0), "El Bedrifto"));
 
     @Mock
     private RestOperations restOperations;

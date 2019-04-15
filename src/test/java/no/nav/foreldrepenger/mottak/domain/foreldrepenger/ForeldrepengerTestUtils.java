@@ -349,7 +349,7 @@ public class ForeldrepengerTestUtils {
     static UttaksPeriode uttaksPeriode(Versjon v, String... vedleggRefs) {
         return new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
                 FEDREKVOTE,
-                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 75.0d, Arrays.asList(vedleggRefs));
+                true, MorsAktivitet.ARBEID_OG_UTDANNING, true, new ProsentAndel(75.0d), Arrays.asList(vedleggRefs));
     }
 
     static UttaksPeriode gradertPeriode(Versjon v, String... vedleggRefs) {
@@ -357,19 +357,22 @@ public class ForeldrepengerTestUtils {
             case V1:
                 return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                         FEDREKVOTE,
-                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, new ProsentAndel(42d), new ProsentAndel(75d),
+                        true, true,
                         Collections.singletonList("22222222222"), null, null,
                         Arrays.asList(vedleggRefs));
             case V2:
                 return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                         FEDREKVOTE,
-                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, new ProsentAndel(42d), new ProsentAndel(75d),
+                        true, true,
                         Collections.singletonList("22222222222"), null, null,
                         Arrays.asList(vedleggRefs));
             case V3:
                 return new GradertUttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(4)), LocalDate.now().plusMonths(5),
                         FEDREKVOTE,
-                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, 42d, 75d, true, true,
+                        true, MorsAktivitet.ARBEID_OG_UTDANNING, true, new ProsentAndel(42d), new ProsentAndel(75d),
+                        true, true,
                         Collections.singletonList("22222222222"), true, true,
                         Arrays.asList(vedleggRefs));
             default:

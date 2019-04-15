@@ -29,6 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
@@ -529,8 +530,8 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     gradering.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()),
                     gradering.isOenskerFlerbarnsdager(),
-                    gradering.getSamtidigUttakProsent(),
-                    gradering.getArbeidtidProsent(),
+                    new ProsentAndel(gradering.getSamtidigUttakProsent()),
+                    new ProsentAndel(gradering.getArbeidtidProsent()),
                     gradering.isErArbeidstaker(),
                     gradering.isArbeidsforholdSomSkalGraderes(),
                     tilArbeidsgiver(gradering.getArbeidsgiver()), null, null,
@@ -546,7 +547,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     uttaksperiode.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
                     uttaksperiode.isOenskerFlerbarnsdager(),
-                    uttaksperiode.getSamtidigUttakProsent(),
+                    new ProsentAndel(uttaksperiode.getSamtidigUttakProsent()),
                     emptyList());
         }
         throw new IllegalArgumentException();

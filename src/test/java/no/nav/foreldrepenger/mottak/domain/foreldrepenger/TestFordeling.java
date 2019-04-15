@@ -15,6 +15,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
@@ -31,7 +32,7 @@ public class TestFordeling {
         Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
                 new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
                         FEDREKVOTE,
-                        true, ARBEID_OG_UTDANNING, true, 75.0d, null),
+                        true, ARBEID_OG_UTDANNING, true, new ProsentAndel(75.0), null),
                 new OppholdsPeriode(ukeDagNær(LocalDate.now().plusMonths(1)), ukeDagNær(utsettelseStart),
                         UTTAK_FEDREKVOTE_ANNEN_FORELDER, null),
                 new OverføringsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
@@ -58,7 +59,7 @@ public class TestFordeling {
                         null),
                 new UttaksPeriode(ukeDagNær(uttakStart), ukeDagNær(LocalDate.now().plusMonths(4)),
                         FEDREKVOTE,
-                        true, ARBEID_OG_UTDANNING, true, 75.0d, null)));
+                        true, ARBEID_OG_UTDANNING, true, new ProsentAndel(75.0), null)));
         assertEquals(uttakStart, f.getFørsteUttaksdag());
     }
 

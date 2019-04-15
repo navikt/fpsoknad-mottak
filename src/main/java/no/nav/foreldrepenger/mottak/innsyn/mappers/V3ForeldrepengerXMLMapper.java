@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
@@ -283,8 +284,8 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     gradering.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()),
                     gradering.isOenskerFlerbarnsdager(),
-                    gradering.getSamtidigUttakProsent(),
-                    gradering.getArbeidtidProsent(),
+                    new ProsentAndel(gradering.getSamtidigUttakProsent()),
+                    new ProsentAndel(gradering.getArbeidtidProsent()),
                     gradering.isErArbeidstaker(),
                     gradering.isArbeidsforholdSomSkalGraderes(),
                     tilArbeidsgiver(gradering.getArbeidsgiver()),
@@ -302,7 +303,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     uttaksperiode.isOenskerSamtidigUttak(),
                     tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
                     uttaksperiode.isOenskerFlerbarnsdager(),
-                    uttaksperiode.getSamtidigUttakProsent(),
+                    new ProsentAndel(uttaksperiode.getSamtidigUttakProsent()),
                     emptyList());
         }
         throw new UnexpectedInputException("Ukjent periode %s", periode.getClass().getSimpleName());

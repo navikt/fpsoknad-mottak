@@ -7,12 +7,14 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+
 public class Arbeidsforhold {
     private String arbeidsgiverId;
     private String arbeidsgiverIdType;
     private LocalDate from;
     private Optional<LocalDate> to;
-    private Double stillingsprosent;
+    private ProsentAndel stillingsprosent;
     private String arbeidsgiverNavn;
 
     @JsonCreator
@@ -20,7 +22,7 @@ public class Arbeidsforhold {
             @JsonProperty("arbeidsgiverIdType") String arbeidsgiverIdType,
             @JsonProperty("fom") LocalDate from,
             @JsonProperty("tom") Optional<LocalDate> to,
-            @JsonProperty("stillingsprosent") Double stillingsprosent,
+            @JsonProperty("stillingsprosent") ProsentAndel stillingsprosent,
             @JsonProperty("arbeidsgiverNavn") String arbeidsgiverNavn) {
         this.arbeidsgiverId = arbeidsgiverId;
         this.arbeidsgiverIdType = arbeidsgiverIdType;
@@ -46,7 +48,7 @@ public class Arbeidsforhold {
         return to;
     }
 
-    public Double getStillingsprosent() {
+    public ProsentAndel getStillingsprosent() {
         return stillingsprosent;
     }
 

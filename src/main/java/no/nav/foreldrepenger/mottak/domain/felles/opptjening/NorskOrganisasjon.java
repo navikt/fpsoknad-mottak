@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 
@@ -29,7 +30,7 @@ public class NorskOrganisasjon extends EgenNæring {
     private NorskOrganisasjon(List<Virksomhetstype> virksomhetsTyper, ÅpenPeriode periode,
             boolean nærRelasjon, List<Regnskapsfører> regnskapsførere, boolean erNyOpprettet, boolean erVarigEndring,
             boolean erNyIArbeidslivet, long næringsinntektBrutto, LocalDate endringsDato, LocalDate oppstartsDato,
-            String beskrivelseEndring, Double stillingsprosent,
+            String beskrivelseEndring, ProsentAndel stillingsprosent,
             List<String> vedlegg,
             String orgNummer, String orgName) {
         super(virksomhetsTyper, periode, nærRelasjon, regnskapsførere, erNyOpprettet,

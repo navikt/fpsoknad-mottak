@@ -286,7 +286,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withMorsAktivitetIPerioden(morsAktivitetFra(gradertPeriode.getMorsAktivitetsType()))
                 .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                 .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
-                .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent())
+                .withArbeidtidProsent(gradertPeriode.getArbeidstidProsent().getProsent())
                 .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getVirksomhetsnummer()))
                 .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                 .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
@@ -297,7 +297,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             gradering.setErSelvstNæringsdrivende(gradertPeriode.getSelvstendig().booleanValue());
         }
         return gradertPeriode.isØnskerSamtidigUttak()
-                ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent())
+                ? gradering.withSamtidigUttakProsent(gradertPeriode.getSamtidigUttakProsent().getProsent())
                 : gradering;
     }
 
@@ -306,7 +306,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return new Uttaksperiode()
                 .withFom(uttaksPeriode.getFom())
                 .withTom(uttaksPeriode.getTom())
-                .withSamtidigUttakProsent(uttaksPeriode.getSamtidigUttakProsent())
+                .withSamtidigUttakProsent(uttaksPeriode.getSamtidigUttakProsent().getProsent())
                 .withOenskerFlerbarnsdager(uttaksPeriode.isØnskerFlerbarnsdager())
                 .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
                 .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
