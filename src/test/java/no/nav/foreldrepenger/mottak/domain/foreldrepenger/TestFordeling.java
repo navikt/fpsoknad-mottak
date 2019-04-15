@@ -27,7 +27,7 @@ public class TestFordeling {
     @Test
     public void testFordelingUttakFørstErUtsettelse() {
 
-        LocalDate utsettelseStart = LocalDate.now().plusMonths(2);
+        LocalDate utsettelseStart = ukeDagNær(LocalDate.now().plusMonths(2));
         Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
                 new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
                         FEDREKVOTE,
@@ -46,7 +46,7 @@ public class TestFordeling {
     @Test
     public void testFordelingUttakFørstErUttak() {
 
-        LocalDate uttakStart = LocalDate.now().minusMonths(2);
+        LocalDate uttakStart = ukeDagNær(LocalDate.now().minusMonths(2));
         Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
                 new OppholdsPeriode(ukeDagNær(LocalDate.now().plusMonths(1)), ukeDagNær(LocalDate.now().plusMonths(2)),
                         UTTAK_FEDREKVOTE_ANNEN_FORELDER, null),
