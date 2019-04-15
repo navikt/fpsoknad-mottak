@@ -99,7 +99,7 @@ public class FPFordelTest {
 
     private static final List<Arbeidsforhold> ARB_FORHOLD = Arrays
             .asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                    Optional.of(LocalDate.now()), new ProsentAndel(90.0), "El Bedrifto"));
+                    Optional.of(LocalDate.now()), new ProsentAndel(90), "El Bedrifto"));
 
     @Mock
     private RestOperations restOperations;

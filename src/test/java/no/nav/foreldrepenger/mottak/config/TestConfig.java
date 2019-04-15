@@ -49,7 +49,7 @@ public class TestConfig {
             public List<Arbeidsforhold> getArbeidsforhold() {
                 return Arrays.asList(
                         new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                                Optional.of(LocalDate.now()), new ProsentAndel(90.0), "El Bedrifto"),
+                                Optional.of(LocalDate.now()), new ProsentAndel(90), "El Bedrifto"),
                         new Arbeidsforhold("2345", "", LocalDate.now().minusDays(300),
                                 Optional.of(LocalDate.now().minusDays(240)), new ProsentAndel(55.0), "Bedriftolainen"));
             }

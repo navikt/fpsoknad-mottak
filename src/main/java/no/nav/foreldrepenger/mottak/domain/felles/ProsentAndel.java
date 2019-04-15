@@ -16,6 +16,11 @@ public class ProsentAndel {
     @Prosent
     @JsonValue
     private final Double prosent;
+    
+    public ProsentAndel( Integer prosent) {
+        this(prosent.doubleValue());  
+        
+    }
 
     @JsonCreator
     public ProsentAndel(@JsonProperty("prosent") Double prosent) {

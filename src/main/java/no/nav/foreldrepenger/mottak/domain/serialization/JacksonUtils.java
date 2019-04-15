@@ -35,7 +35,8 @@ final class JacksonUtils {
 
     static Double doubleValue(DoubleNode rootNode) {
         return Optional.ofNullable(rootNode)
-                .map(DoubleNode::doubleValue).orElse(null);
+                .map(DoubleNode::doubleValue)
+                .orElse(null);
     }
 
     static Double doubleValue(ObjectNode rootNode) {
