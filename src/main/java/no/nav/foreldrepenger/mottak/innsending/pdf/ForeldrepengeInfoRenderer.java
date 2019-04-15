@@ -29,6 +29,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
@@ -558,11 +559,17 @@ public class ForeldrepengeInfoRenderer {
         if (antallBarn > 1) {
             attributter.add(txt("ønskerflerbarnsdager", jaNei(gradert.isØnskerFlerbarnsdager())));
         }
-        attributter.add(txt("gradertprosent", gradert.getArbeidstidProsent()));
+        attributter.add(txt("gradertprosent", prosentFra(gradert.getArbeidstidProsent())));
         attributter.add(txt("ønskersamtidiguttak", jaNei(gradert.isØnskerSamtidigUttak())));
         addIfSet(attributter, gradert.isØnskerSamtidigUttak(), "samtidiguttakprosent",
-                String.valueOf(gradert.getSamtidigUttakProsent()));
+                String.valueOf(prosentFra(gradert.getSamtidigUttakProsent())));
         return attributter;
+    }
+
+    private static double prosentFra(ProsentAndel prosent) {
+        return Optional.ofNullable(prosent)
+                .map(ProsentAndel::getProsent)
+                .orElse(0d);
     }
 
     private void addIfSet(List<String> attributter, String key, Boolean value) {
@@ -583,7 +590,7 @@ public class ForeldrepengeInfoRenderer {
         }
         attributter.add(txt("ønskersamtidiguttak", jaNei(uttak.isØnskerSamtidigUttak())));
         addIfSet(attributter, uttak.isØnskerSamtidigUttak(), "samtidiguttakprosent",
-                String.valueOf(uttak.getSamtidigUttakProsent()));
+                String.valueOf(prosentFra(uttak.getSamtidigUttakProsent())));
         return attributter;
     }
 
@@ -662,7 +669,7 @@ public class ForeldrepengeInfoRenderer {
         addIfSet(attributter, "fom", arbeidsforhold.getFrom());
         addIfSet(attributter, "tom", arbeidsforhold.getTo());
         if (arbeidsforhold.getStillingsprosent() != null) {
-            attributter.add(txt("stillingsprosent", arbeidsforhold.getStillingsprosent().getProsent()));
+            attributter.add(txt("stillingsprosent", prosentFra(arbeidsforhold.getStillingsprosent())));
         }
         return attributter;
     }
@@ -707,7 +714,7 @@ public class ForeldrepengeInfoRenderer {
                     textFormatter.dato(næring.getPeriode().getTom())));
         }
         if (næring.getStillingsprosent() != null) {
-            attributter.add(txt("stillingsprosent", næring.getStillingsprosent().getProsent()));
+            attributter.add(txt("stillingsprosent", prosentFra(næring.getStillingsprosent())));
         }
         attributter.add(txt("nyopprettet", jaNei(næring.isErNyOpprettet())));
         attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
