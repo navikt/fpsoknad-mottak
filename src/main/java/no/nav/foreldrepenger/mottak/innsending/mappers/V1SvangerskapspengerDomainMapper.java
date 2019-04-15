@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -126,7 +127,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .cast(tilrettelegging);
             return new Tilrettelegging().withDelvisTilrettelegging(new DelvisTilrettelegging()
                     .withTilrettelagtArbeidFom(delvis.getTilrettelagtArbeidFom())
-                    .withStillingsprosent(BigDecimal.valueOf(delvis.getStillingsprosent().getProsent().doubleValue())))
+                    .withStillingsprosent(BigDecimal.valueOf(prosentFra(delvis.getStillingsprosent()))))
                     .withBehovForTilretteleggingFom(delvis.getBehovForTilretteleggingFom())
                     .withVedlegg(tilretteleggingVedleggFraIDs(delvis.getVedlegg()))
                     .withArbeidsforhold(arbeidsforholdFra(delvis.getArbeidsforhold()));
@@ -141,6 +142,12 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                     .withArbeidsforhold(arbeidsforholdFra(hel.getArbeidsforhold()));
         }
         throw new UnexpectedInputException("Ukjent tilrettelegging %s", tilrettelegging.getClass().getSimpleName());
+    }
+
+    private static double prosentFra(ProsentAndel prosent) {
+        return Optional.ofNullable(prosent)
+                .map(ProsentAndel::getProsent)
+                .orElse(0d);
     }
 
     private static List<JAXBElement<Object>> tilretteleggingVedleggFraIDs(List<String> vedlegg) {
