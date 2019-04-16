@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import no.nav.foreldrepenger.mottak.domain.felles.*;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Periode;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Service;
@@ -87,6 +88,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             y -= omBarn(svp, cos, y);
             y -= blankLine();
 
+            Opptjening opptjening = svp.getOpptjening();
+
             if (!svp.getTilrettelegging().isEmpty()) {
                 List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere = oppslag.getArbeidsforhold();
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
@@ -117,23 +120,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 }
             }
 
-            if (svp.getMedlemsskap() != null) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float startY = STARTY;
-                startY -= header(søker, doc, scratchcos, startY);
-                float size = renderMedlemskap(svp.getMedlemsskap(), scratchcos, startY);
-                float behov = startY - size;
-                if (behov < y) {
-                    scratchcos.close();
-                    y = renderMedlemskap(svp.getMedlemsskap(), cos, y);
-                } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos);
-                    y = nesteSideStart(headerSize, behov);
-                }
-            }
-
-            if (svp.getOpptjening().getFrilans() != null) {
+            if (opptjening.getFrilans() != null) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
@@ -145,6 +132,38 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                     scratchcos.close();
                     y = infoRenderer.frilans(svp.getOpptjening().getFrilans(), cos, y);
                     //y = renderFrilansOpptjening(svp.getOpptjening().getFrilans(), søknad.getVedlegg(), cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+
+            if (!opptjening.getEgenNæring().isEmpty()) {
+                PDPage scratch1 = newPage();
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                float startY = STARTY;
+                startY -= header(søker, doc, scratchcos, startY);
+                float size = infoRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    scratchcos.close();
+                    y = infoRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+
+            if (svp.getMedlemsskap() != null) {
+                PDPage scratch1 = newPage();
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                float startY = STARTY;
+                startY -= header(søker, doc, scratchcos, startY);
+                float size = renderMedlemskap(svp.getMedlemsskap(), scratchcos, startY);
+                float behov = startY - size;
+                if (behov < y) {
+                    scratchcos.close();
+                    y = renderMedlemskap(svp.getMedlemsskap(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
