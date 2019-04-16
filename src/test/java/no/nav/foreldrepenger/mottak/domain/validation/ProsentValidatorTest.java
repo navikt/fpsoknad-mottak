@@ -1,20 +1,13 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Prosent;
 
 public class ProsentValidatorTest {
@@ -24,7 +17,7 @@ public class ProsentValidatorTest {
         @Valid
         @Prosent
         private final Double prosent;
-        @Prosent(max = 200)
+        @Prosent(max = 200, min = -10)
         private final Double prosent1;
 
         public ProsentBruker(Double prosent) {
@@ -37,12 +30,7 @@ public class ProsentValidatorTest {
         }
     }
 
-    private static Validator validator;
-
-    @BeforeAll
-    public static void setUp() {
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
-    }
+    private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
     public void testMax() {
@@ -65,13 +53,22 @@ public class ProsentValidatorTest {
     }
 
     @Test
+    public void testUnderMin2() {
+        testProsent(false, -2, -20);
+    }
+
+    @Test
     public void testMin() {
         testProsent(0);
     }
 
+    @Test
+    public void testMin2() {
+        testProsent(true, 0, -10);
+    }
+
     private void testProsent(Number value) {
         testProsent(true, value);
-
     }
 
     private void testProsent(boolean shouldBeEmpty, Number value) {
@@ -83,6 +80,6 @@ public class ProsentValidatorTest {
     }
 
     private static void testProsent(boolean shouldBeEmpty, ProsentBruker prosent) {
-        assertEquals(shouldBeEmpty, validator.validate(prosent).isEmpty());
+        assertEquals(shouldBeEmpty, VALIDATOR.validate(prosent).isEmpty());
     }
 }
