@@ -254,7 +254,7 @@ public class ForeldrepengeInfoRenderer {
         if (frilans.getPeriode().getTom() == null) {
             addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.getPeriode().getFom()));
         } else {
-            attributter.add(txt("frilansavsluttet", frilans.getPeriode().getFom(),
+            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().getFom()),
                     textFormatter.dato(frilans.getPeriode().getTom())));
         }
         attributter.add(txt("fosterhjem", jaNei(frilans.isHarInntektFraFosterhjem())));
