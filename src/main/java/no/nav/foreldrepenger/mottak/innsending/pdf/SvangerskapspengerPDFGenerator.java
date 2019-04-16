@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -7,6 +8,7 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -20,14 +22,15 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.mottak.domain.felles.*;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
+import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Periode;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
@@ -55,15 +58,17 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
 
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
+    private final SvangerskapspengerInfoRenderer infoRenderer;
     private final Oppslag oppslag;
 
     @Inject
     public SvangerskapspengerPDFGenerator(PDFElementRenderer renderer,
             SøknadTextFormatter textFormatter,
-            Oppslag oppslag) {
+            Oppslag oppslag, SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
         this.oppslag = oppslag;
+        this.infoRenderer = infoRenderer;
     }
 
     @Override
@@ -96,7 +101,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                     PDPage scratch1 = newPage();
                     FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                     float startY = STARTY;
-                    startY = header(søker, doc, scratchcos, startY);
+                    startY -= header(søker, doc, scratchcos, startY);
                     float size = renderTilrettelegging(arbeidsgivere, arbeidsforhold, tilrettelegging,
                             søknad.getVedlegg(), scratchcos,
                             startY);
@@ -116,7 +121,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
-                startY = header(søker, doc, scratchcos, startY);
+                startY -= header(søker, doc, scratchcos, startY);
                 float size = renderMedlemskap(svp.getMedlemsskap(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
@@ -127,6 +132,25 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                     y = nesteSideStart(headerSize, behov);
                 }
             }
+
+            if (svp.getOpptjening().getFrilans() != null) {
+                PDPage scratch1 = newPage();
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                float startY = STARTY;
+                startY -= header(søker, doc, scratchcos, startY);
+                float size = infoRenderer.frilans(svp.getOpptjening().getFrilans(), scratchcos, startY);
+                //float size = renderFrilansOpptjening(svp.getOpptjening().getFrilans(), søknad.getVedlegg(), scratchcos, startY);
+                float behov = startY - size;
+                if (behov < y) {
+                    scratchcos.close();
+                    y = infoRenderer.frilans(svp.getOpptjening().getFrilans(), cos, y);
+                    //y = renderFrilansOpptjening(svp.getOpptjening().getFrilans(), søknad.getVedlegg(), cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+
             cos.close();
             doc.save(baos);
             return baos.toByteArray();
@@ -173,6 +197,43 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return y;
     }
 
+    private float renderFrilansOpptjening(Frilans frilans, List<Vedlegg> vedlegg, FontAwareCos cos, float y)
+        throws IOException {
+        y -= renderer.addLeftHeading("Frilansopptjening", cos, y);
+        y -= renderer.addLineOfRegularText("Jeg har hatt inntekt fra fosterhjem: " + textFormatter.yesNo(frilans.isHarInntektFraFosterhjem()), cos, y);
+        y -= renderer.addLineOfRegularText("Frilansoppdrag fra " + formattertDatoFra(frilans.getPeriode().getFom()), cos, y);
+        if (frilans.getPeriode().getTom() != null) {
+            y -= renderer.addLineOfRegularText("Frilansoppdrag til " + formattertDatoFra(frilans.getPeriode().getTom()), cos, y);
+        }
+        y -= renderer.addLineOfRegularText("Jeg har hatt oppdrag fra nær venn eller familie de ti siste månedene: " +
+            textFormatter.yesNo(frilans.getFrilansOppdrag().size() > 0), cos, y);
+        if (frilans.getFrilansOppdrag().size() > 0) {
+            y -= renderFamiliæreOppdrag(frilans.getFrilansOppdrag(), cos, y);
+        }
+        return y;
+    }
+
+    private float renderFamiliæreOppdrag(List<FrilansOppdrag> frilansOppdrag, FontAwareCos cos, float y) throws IOException {
+        float startY = y;
+        for (FrilansOppdrag oppdrag : frilansOppdrag) {
+            String tekst = formattertPeriode(oppdrag.getPeriode()) + ": " + oppdrag.getOppdragsgiver();
+            y -= renderer.addBulletPoint(INDENT, tekst, cos, y);
+        }
+        return startY - y;
+    }
+
+
+    private String formattertPeriode(Object periode) { //TODO: rydd opp
+        if (periode instanceof LukketPeriode) {
+            return formattertDatoFra(LukketPeriode.class.cast(periode).getFom()) + " - " +
+                formattertDatoFra(LukketPeriode.class.cast(periode).getTom());
+        }
+        if (periode instanceof ÅpenPeriode) {
+            return formattertDatoFra(ÅpenPeriode.class.cast(periode).getFom()) + " - pågående";
+        }
+        return "";
+    }
+
     private static Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold(
             List<Tilrettelegging> tilretteleggingsPerioder) {
         Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold = new HashMap<>();
@@ -200,6 +261,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                     cos,
                     y);
         }
+        y -= renderer.addBlankLine();
         return y;
     }
 
@@ -319,6 +381,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return startY - y;
     }
 
+
+
     private float header(Person søker, FontAwarePDDocument doc, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
@@ -359,6 +423,10 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         cos.close();
         doc.addPage(scratch);
         return scratchcos;
+    }
+
+    private String formattertDatoFra(LocalDate date) {
+        return DATEFMT.format(date);
     }
 
     @Override
