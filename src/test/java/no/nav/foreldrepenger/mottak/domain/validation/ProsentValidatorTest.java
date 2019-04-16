@@ -15,22 +15,26 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.mottak.domain.validation.annotations.Prosent;
 
 public class ProsentValidatorTest {
 
     public class ProsentBruker {
 
         @Valid
-        private final ProsentAndel prosent;
+        @Prosent
+        private final Double prosent;
+        @Prosent(max = 200)
+        private final Double prosent1;
 
-        public ProsentBruker(ProsentAndel prosent) {
+        public ProsentBruker(Double prosent) {
+            this(prosent, prosent);
+        }
+
+        public ProsentBruker(Double prosent, Double prosent1) {
             this.prosent = prosent;
+            this.prosent1 = prosent1;
         }
-
-        public Double getProsent() {
-            return prosent.getProsent();
-        }
-
     }
 
     private static Validator validator;
@@ -41,42 +45,44 @@ public class ProsentValidatorTest {
     }
 
     @Test
-    public void test100int() {
-        testProsent(true, 100, 100d);
+    public void testMax() {
+        testProsent(true, 100);
     }
 
     @Test
-    public void testNegativ() {
-        testProsent(false, -50d, -50d);
+    public void testMax2() {
+        testProsent(true, 100, 200);
     }
 
     @Test
-    public void test0() {
+    public void testOverMax() {
+        testProsent(false, 100, 201);
+    }
+
+    @Test
+    public void testUnderMin() {
+        testProsent(false, -50);
+    }
+
+    @Test
+    public void testMin() {
         testProsent(0);
     }
 
-    @Test
-    public void testOver100() {
-        testProsent(false, 101d, 101d);
-    }
-
     private void testProsent(Number value) {
-        testProsent(true, value, value.doubleValue());
+        testProsent(true, value);
 
     }
 
-    private void testProsent(boolean shouldBeEmpty, Number value, Double expectedValue) {
-        testProsent(shouldBeEmpty, new ProsentBruker(new ProsentAndel(value.doubleValue())), expectedValue);
+    private void testProsent(boolean shouldBeEmpty, Number value) {
+        testProsent(shouldBeEmpty, value, value);
     }
 
-    private static void testProsent(boolean shouldBeEmpty, ProsentBruker prosent, Double expectedValue) {
-        Set<ConstraintViolation<ProsentBruker>> constraintViolations = validator.validate(prosent);
-        if (shouldBeEmpty) {
-            assertTrue(constraintViolations.isEmpty());
-            assertEquals(prosent.getProsent().doubleValue(), expectedValue, 0.1d);
-        } else {
-            assertFalse(constraintViolations.isEmpty());
-        }
+    private void testProsent(boolean shouldBeEmpty, Number value, Number value1) {
+        testProsent(shouldBeEmpty, new ProsentBruker(value.doubleValue(), value1.doubleValue()));
+    }
 
+    private static void testProsent(boolean shouldBeEmpty, ProsentBruker prosent) {
+        assertEquals(shouldBeEmpty, validator.validate(prosent).isEmpty());
     }
 }

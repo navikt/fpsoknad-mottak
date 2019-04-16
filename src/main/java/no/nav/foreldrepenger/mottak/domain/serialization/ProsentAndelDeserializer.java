@@ -26,8 +26,7 @@ public class ProsentAndelDeserializer extends StdDeserializer<ProsentAndel> {
     }
 
     @Override
-    public ProsentAndel deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException {
+    public ProsentAndel deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
         JsonNode rootNode = p.getCodec().readTree(p);
         if (rootNode instanceof DoubleNode) {
             return new ProsentAndel(doubleValue(DoubleNode.class.cast(rootNode)));

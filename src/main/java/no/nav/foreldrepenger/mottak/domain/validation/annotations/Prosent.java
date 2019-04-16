@@ -18,5 +18,9 @@ public @interface Prosent {
 
     Class<?>[] payload() default {};
 
+    public double min() default 0d;
+
+    public double max() default 100d;
+
     String message() default "{prosent.ugyldig}";
 }

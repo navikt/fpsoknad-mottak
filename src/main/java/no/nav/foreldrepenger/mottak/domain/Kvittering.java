@@ -68,6 +68,10 @@ public class Kvittering {
         return kvittering;
     }
 
+    public static Kvittering kvitteringMedType(LeveranseStatus type, String journalId) {
+        return kvitteringMedType(type, journalId, null);
+    }
+    
     public static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
         Kvittering kvittering = new Kvittering(type);
         kvittering.setJournalId(journalId);
@@ -114,7 +118,7 @@ public class Kvittering {
     public static Kvittering gosysKvittering(FPFordelGosysKvittering gosysKvittering) {
         LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}",
                 gosysKvittering.getJournalpostId());
-        return kvitteringMedType(GOSYS, gosysKvittering.getJournalpostId(), null);
+        return kvitteringMedType(GOSYS, gosysKvittering.getJournalpostId());
     }
 
     @Override
