@@ -43,7 +43,7 @@ public class SvangerskapspengerInfoRenderer {
         return y;
     }
 
-    public float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
+    private float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         List<String> attributter = new ArrayList<>();
         if (frilans.getPeriode().getTom() == null) {
@@ -161,15 +161,15 @@ public class SvangerskapspengerInfoRenderer {
             return y;
         }
         y -= renderer.addLeftHeading(txt("utenlandskarbeid"), cos, y);
-        for (UtenlandskArbeidsforhold forhold : sorterUtelandske(utenlandskArbeidsforhold)) {
-            y -= renderer.addLinesOfRegularText(INDENT, utenlandskeArbeidsforhold(forhold), cos, y);
-            y = renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
+        for (UtenlandskArbeidsforhold forhold : sorterUtenlandske(utenlandskArbeidsforhold)) {
+            y -= renderer.addLinesOfRegularText(utenlandskeArbeidsforhold(forhold), cos, y);
+            y -= renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
         }
         y -= renderer.addBlankLine();
         return y;
     }
 
-    private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
+    private static List<UtenlandskArbeidsforhold> sorterUtenlandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
         Collections.sort(arbeidsforhold, (o1, o2) -> {
             if (o1.getPeriode() != null && o2.getPeriode() != null
                 && o1.getPeriode().getFom() != null

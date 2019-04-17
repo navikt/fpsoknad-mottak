@@ -125,12 +125,12 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
-                float size = infoRenderer.frilans(svp.getOpptjening().getFrilans(), scratchcos, startY);
+                float size = infoRenderer.frilansOpptjening(svp.getOpptjening().getFrilans(), scratchcos, startY);
                 //float size = renderFrilansOpptjening(svp.getOpptjening().getFrilans(), søknad.getVedlegg(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
-                    y = infoRenderer.frilans(svp.getOpptjening().getFrilans(), cos, y);
+                    y = infoRenderer.frilansOpptjening(svp.getOpptjening().getFrilans(), cos, y);
                     //y = renderFrilansOpptjening(svp.getOpptjening().getFrilans(), søknad.getVedlegg(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
@@ -148,6 +148,27 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
+                }
+            }
+
+            if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
+                PDPage scratch1 = newPage();
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                float startY = STARTY;
+                startY -= header(søker, doc, scratchcos, startY);
+                float size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
+                    opptjening.getUtenlandskArbeidsforhold(),
+                    søknad.getVedlegg(),
+                    scratchcos, startY);
+                float behov = startY - size;
+                if (behov <= y) {
+                    scratchcos.close();
+                    y = infoRenderer.utenlandskeArbeidsforholdOpptjening(
+                        opptjening.getUtenlandskArbeidsforhold(),
+                        søknad.getVedlegg(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
