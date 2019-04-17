@@ -148,7 +148,7 @@ public class SvangerskapspengerInfoRenderer {
         }
         y -= renderer.addLeftHeading(txt("egennæring"), cos, y);
         for (List<String> næring : egneNæringer(egneNæringer)) {
-            y -= renderer.addLinesOfRegularText(INDENT, næring, cos, y);
+            y -= renderer.addLinesOfRegularText(næring, cos, y);
             y -= renderer.addBlankLine();
         }
         return y;
@@ -257,12 +257,12 @@ public class SvangerskapspengerInfoRenderer {
                 .findFirst();
             if (details.isPresent()) {
                 String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
-                y -= renderer.addBulletPoint(INDENT * 2,
+                y -= renderer.addBulletPoint(INDENT,
                     txt("vedlegg2", beskrivelse, details.get().getInnsendingsType().name()),
                     cos, y);
             } else {
                 // Never, hopefully
-                y -= renderer.addBulletPoint(INDENT * 2, txt("vedlegg2", "vedlegg"), cos, y);
+                y -= renderer.addBulletPoint(INDENT, txt("vedlegg2", "vedlegg"), cos, y);
             }
         }
         return startY - y;
