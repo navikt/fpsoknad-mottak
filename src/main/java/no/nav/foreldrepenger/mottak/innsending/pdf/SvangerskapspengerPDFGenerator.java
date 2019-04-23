@@ -323,18 +323,18 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             } else if (periode instanceof DelvisTilrettelegging) {
                 y -= renderDelvisTilrettelegging(DelvisTilrettelegging.class.cast(periode), vedlegg, cos, y);
             } else if (periode instanceof IngenTilrettelegging) {
-                y -= renderIngenTilrettelegging(IngenTilrettelegging.class.cast(periode), cos, y);
+                y -= renderIngenTilrettelegging(IngenTilrettelegging.class.cast(periode), vedlegg, cos, y);
             }
         }
         return startY - y;
     }
 
-    private float renderIngenTilrettelegging(IngenTilrettelegging periode, FontAwareCos cos, float y)
+    private float renderIngenTilrettelegging(IngenTilrettelegging periode, List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos, y);
-        //y -= renderVedlegg(vedlegg, .getVedlegg(), cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "svp.vedlegg.tilrettelegging", cos, y);
         return startY - y;
     }
 
