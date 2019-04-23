@@ -334,7 +334,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos, y);
-        // y -= renderVedlegg(vedlegg, .getVedlegg(), cos, y);
+        //y -= renderVedlegg(vedlegg, .getVedlegg(), cos, y);
         return startY - y;
     }
 
@@ -346,7 +346,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.stillingsprosent", prosentFra(periode.getStillingsprosent())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "fiksfaks", cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "svp.vedlegg.tilrettelegging", cos, y);
         return startY - y;
     }
 
@@ -362,7 +362,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
                 DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "fiksfaks", cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "svp.vedlegg.tilrettelegging", cos, y);
         return startY - y;
     }
 

@@ -6,6 +6,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.*;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -25,6 +27,8 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 @Component
 public class SvangerskapspengerInfoRenderer {
+    private static final Logger LOG = LoggerFactory.getLogger(SvangerskapspengerInfoRenderer.class);
+
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final int INDENT = 20;
     private final PDFElementRenderer renderer;
@@ -253,6 +257,7 @@ public class SvangerskapspengerInfoRenderer {
         }
         for (String vedleggRef : vedleggRefs) {
             Optional<Vedlegg> details = safeStream(vedlegg)
+                .peek(s -> LOG.debug("Sjekker vedlegg med id " + s.getId() + " mot " + vedleggRef)) //debug
                 .filter(s -> vedleggRef.equals(s.getId()))
                 .findFirst();
             if (details.isPresent()) {
