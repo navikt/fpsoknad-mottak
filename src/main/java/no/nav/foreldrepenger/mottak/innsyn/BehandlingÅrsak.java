@@ -50,7 +50,6 @@ public enum BehandlingÅrsak {
         try {
             return BehandlingÅrsak.valueOf(name);
         } catch (Exception e) {
-            LOG.trace("Ingen enum verdi for {}, prøver årsaksverdier", name);
             return Arrays.stream(values())
                     .filter(å -> name.equals(å.årsak))
                     .findFirst()
