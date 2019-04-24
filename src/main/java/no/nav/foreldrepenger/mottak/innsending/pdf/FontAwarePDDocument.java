@@ -30,21 +30,21 @@ public class FontAwarePDDocument extends PDDocument {
     private final PDFont regularFont;
     private final PDFont boldFont;
 
-    public FontAwarePDDocument() throws IOException {
+    FontAwarePDDocument() {
         regularFont = load(REGULAR);
         boldFont = load(BOLD);
         setPdfMetadata(this);
     }
 
-    public PDFont getRegularFont() {
+    PDFont getRegularFont() {
         return regularFont;
     }
 
-    public PDFont getBoldFont() {
+    PDFont getBoldFont() {
         return boldFont;
     }
 
-    private synchronized PDFont load(Resource res) throws IOException {
+    private synchronized PDFont load(Resource res) throws UnexpectedInputException {
         if (res.exists()) {
             try (InputStream is = res.getInputStream()) {
                 return PDType0Font.load(this, is);
@@ -55,12 +55,12 @@ public class FontAwarePDDocument extends PDDocument {
         throw new UnexpectedInputException("Font " + res.getFilename() + " finnes ikke");
     }
 
-    private static void setPdfMetadata(PDDocument doc) throws IOException {
+    private static void setPdfMetadata(PDDocument doc) {
         XMPMetadata xmp = XMPMetadata.createXMPMetadata();
 
         try {
             DublinCoreSchema dc = xmp.createAndAddDublinCoreSchema();
-            dc.setTitle("Søknad om foreldrepenger eller engangsstønad");
+            dc.setTitle("Søknad");
             dc.addCreator("NAV");
 
             PDFAIdentificationSchema id = xmp.createAndAddPFAIdentificationSchema();
