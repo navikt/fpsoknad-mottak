@@ -20,7 +20,7 @@ public enum BehandlingÅrsak {
     ENDRING_FRA_BRUKER("RE-END-FRA-BRUKER"),
     ENDRET_INNTEKTSMELDING("RE-END-INNTEKTSMELD"),
     KØET_BEHANDLING("KØET_BEHANDLING"),
-    BERØRT_BEHANDLING("BERØRT_BEHANDLING"),
+    BERØRT_BEHANDLING("BERØRT-BEHANDLING"),
     REGISTER_OPPLYSNING("RE-REGISTEROPPL"),
     YTELSE("RE-YTELSE"),
     KLAGE("RE-KLAG"),
@@ -37,8 +37,6 @@ public enum BehandlingÅrsak {
     TILSTØTENDE_YTELSE_OPPHØRT("RE-TILST-YT-OPPH"),
     ANNET("RE-ANNET");
 
-    private static final Logger LOG = LoggerFactory.getLogger(BehandlingÅrsak.class);
-
     @JsonValue
     private final String årsak;
 
@@ -53,12 +51,7 @@ public enum BehandlingÅrsak {
             return Arrays.stream(values())
                     .filter(å -> name.equals(å.årsak))
                     .findFirst()
-                    .orElse(nullValue(name));
+                    .orElse(null);
         }
-    }
-
-    private static BehandlingÅrsak nullValue(String name) {
-        LOG.warn("Ingen enum verdi for {}", name);
-        return null;
     }
 }
