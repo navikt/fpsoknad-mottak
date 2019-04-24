@@ -40,12 +40,6 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> handleBadRequest(HttpMessageNotReadableException e, WebRequest request) {
-        return logAndHandle(HttpStatus.BAD_REQUEST, e, request);
-    }
-
     @ResponseBody
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
