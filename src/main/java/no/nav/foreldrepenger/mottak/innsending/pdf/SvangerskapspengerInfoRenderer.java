@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 
 import com.google.common.base.Joiner;
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.*;
@@ -39,7 +40,7 @@ public class SvangerskapspengerInfoRenderer {
         this.textFormatter = textFormatter;
     }
 
-    public float frilansOpptjening(Frilans frilans, FontAwareCos cos, float y) throws IOException {
+    float frilansOpptjening(Frilans frilans, FontAwareCos cos, float y) throws IOException {
         if (frilans == null) {
             return y;
         }
@@ -145,7 +146,7 @@ public class SvangerskapspengerInfoRenderer {
         }
     }
 
-    public float egneNæringerOpptjening(List<EgenNæring> egneNæringer, FontAwareCos cos, float y)
+    float egneNæringerOpptjening(List<EgenNæring> egneNæringer, FontAwareCos cos, float y)
         throws IOException {
         if (CollectionUtils.isEmpty(egneNæringer)) {
             return y;
@@ -158,9 +159,44 @@ public class SvangerskapspengerInfoRenderer {
         return y;
     }
 
-    public float utenlandskeArbeidsforholdOpptjening(List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold,
-                                                     List<Vedlegg> vedlegg, FontAwareCos cos,
-                                                     float y) throws IOException {
+    float arbeidsforholdOpptjening(List<Arbeidsforhold> arbeidsforhold, FontAwareCos cos, float y)
+        throws IOException {
+        if (CollectionUtils.isEmpty(arbeidsforhold)) {
+            return y;
+        }
+        y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
+
+        for (Arbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
+            y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
+            y -= renderer.addBlankLine();
+        }
+        return y;
+    }
+
+    private static List<Arbeidsforhold> sorterArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
+        Collections.sort(arbeidsforhold, (o1, o2) -> {
+            if (o1.getFrom() != null && o2.getFrom() != null) {
+                return o1.getFrom().compareTo(o2.getFrom());
+            }
+            return 0;
+        });
+        return arbeidsforhold;
+    }
+
+    List<String> arbeidsforhold(no.nav.foreldrepenger.mottak.domain.Arbeidsforhold arbeidsforhold) {
+        List<String> attributter = new ArrayList<>();
+        addIfSet(attributter, "arbeidsgiver", arbeidsforhold.getArbeidsgiverNavn());
+        addIfSet(attributter, "fom", arbeidsforhold.getFrom());
+        addIfSet(attributter, "tom", arbeidsforhold.getTo());
+        if (arbeidsforhold.getStillingsprosent() != null) {
+            attributter.add(txt("stillingsprosent", prosentFra(arbeidsforhold.getStillingsprosent())));
+        }
+        return attributter;
+    }
+
+    float utenlandskeArbeidsforholdOpptjening(List<UtenlandskArbeidsforhold> utenlandskArbeidsforhold,
+                                              List<Vedlegg> vedlegg, FontAwareCos cos,
+                                              float y) throws IOException {
         if (CollectionUtils.isEmpty(utenlandskArbeidsforhold)) {
             return y;
         }

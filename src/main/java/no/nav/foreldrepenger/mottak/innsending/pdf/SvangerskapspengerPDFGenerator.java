@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -23,10 +22,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import no.nav.foreldrepenger.mottak.domain.felles.*;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
-import no.nav.foreldrepenger.mottak.domain.validation.annotations.Periode;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +71,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     @Override
     public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         Svangerskapspenger svp = (Svangerskapspenger) søknad.getYtelse();
+        List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
 
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -91,32 +88,48 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             Opptjening opptjening = svp.getOpptjening();
 
             if (!svp.getTilrettelegging().isEmpty()) {
-                List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere = oppslag.getArbeidsforhold();
+
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
                 Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(
                         svp.getTilrettelegging());
 
                 // type arbeidsforhold kommer i random rekkefølge
                 for (Map.Entry<Arbeidsforhold, List<Tilrettelegging>> arb : tilretteleggingsPerioder.entrySet()) {
-                    Arbeidsforhold arbeidsforhold = arb.getKey();
+                    Arbeidsforhold tilrettelagtArbeidsforhold = arb.getKey();
                     List<Tilrettelegging> tilrettelegging = sortertTilretteleggingsliste(arb.getValue());
 
                     PDPage scratch1 = newPage();
                     FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                     float startY = STARTY;
                     startY -= header(søker, doc, scratchcos, startY);
-                    float size = renderTilrettelegging(arbeidsgivere, arbeidsforhold, tilrettelegging,
+                    float size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
                             søknad.getVedlegg(), scratchcos,
                             startY);
                     float behov = startY - size;
                     if (behov < y) {
                         scratchcos.close();
-                        y = renderTilrettelegging(arbeidsgivere, arbeidsforhold, tilrettelegging, søknad.getVedlegg(),
+                        y = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging, søknad.getVedlegg(),
                                 cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
                         y = nesteSideStart(headerSize, behov);
                     }
+                }
+            }
+
+            if (arbeidsforhold.size() > 0) {
+                PDPage scratch1 = newPage();
+                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                float startY = STARTY;
+                startY -= header(søker, doc, scratchcos, startY);
+                float size = infoRenderer.arbeidsforholdOpptjening(arbeidsforhold, scratchcos, startY);
+                float behov = startY - size;
+                if (behov < y) {
+                    scratchcos.close();
+                    y = infoRenderer.arbeidsforholdOpptjening(arbeidsforhold, cos, y);
+                } else {
+                    cos = nySide(doc, cos, scratch1, scratchcos);
+                    y = nesteSideStart(headerSize, behov);
                 }
             }
 
@@ -235,43 +248,6 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             y -= blankLine();
         }
         return y;
-    }
-
-    private float renderFrilansOpptjening(Frilans frilans, List<Vedlegg> vedlegg, FontAwareCos cos, float y)
-        throws IOException {
-        y -= renderer.addLeftHeading("Frilansopptjening", cos, y);
-        y -= renderer.addLineOfRegularText("Jeg har hatt inntekt fra fosterhjem: " + textFormatter.yesNo(frilans.isHarInntektFraFosterhjem()), cos, y);
-        y -= renderer.addLineOfRegularText("Frilansoppdrag fra " + formattertDatoFra(frilans.getPeriode().getFom()), cos, y);
-        if (frilans.getPeriode().getTom() != null) {
-            y -= renderer.addLineOfRegularText("Frilansoppdrag til " + formattertDatoFra(frilans.getPeriode().getTom()), cos, y);
-        }
-        y -= renderer.addLineOfRegularText("Jeg har hatt oppdrag fra nær venn eller familie de ti siste månedene: " +
-            textFormatter.yesNo(frilans.getFrilansOppdrag().size() > 0), cos, y);
-        if (frilans.getFrilansOppdrag().size() > 0) {
-            y -= renderFamiliæreOppdrag(frilans.getFrilansOppdrag(), cos, y);
-        }
-        return y;
-    }
-
-    private float renderFamiliæreOppdrag(List<FrilansOppdrag> frilansOppdrag, FontAwareCos cos, float y) throws IOException {
-        float startY = y;
-        for (FrilansOppdrag oppdrag : frilansOppdrag) {
-            String tekst = formattertPeriode(oppdrag.getPeriode()) + ": " + oppdrag.getOppdragsgiver();
-            y -= renderer.addBulletPoint(INDENT, tekst, cos, y);
-        }
-        return startY - y;
-    }
-
-
-    private String formattertPeriode(Object periode) { //TODO: rydd opp
-        if (periode instanceof LukketPeriode) {
-            return formattertDatoFra(LukketPeriode.class.cast(periode).getFom()) + " - " +
-                formattertDatoFra(LukketPeriode.class.cast(periode).getTom());
-        }
-        if (periode instanceof ÅpenPeriode) {
-            return formattertDatoFra(ÅpenPeriode.class.cast(periode).getFom()) + " - pågående";
-        }
-        return "";
     }
 
     private static Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold(
@@ -420,8 +396,6 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         }
         return startY - y;
     }
-
-
 
     private float header(Person søker, FontAwarePDDocument doc, FontAwareCos cos, float y)
             throws IOException {
