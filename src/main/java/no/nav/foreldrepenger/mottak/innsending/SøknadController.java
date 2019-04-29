@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -57,20 +59,22 @@ public class SøknadController {
 
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
-        return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), inspektør.inspiser(søknad)),
-                "Førstegangssøknad");
+        SøknadEgenskap søknadEgenskap = inspektør.inspiser(søknad);
+        return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), søknadEgenskap),
+                "Førstegangssøknad", søknadEgenskap);
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
+        SøknadEgenskap søknadEgenskap = inspektør.inspiser(ettersending);
         return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.getSøker(),
-                inspektør.inspiser(ettersending)), "Ettersending", false);
+                søknadEgenskap), "Ettersending", søknadEgenskap, false);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
         return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER),
-                "Endringssøknad");
+                "Endringssøknad", ENDRING_FORELDREPENGER);
     }
 
     @GetMapping("/ping")
@@ -85,16 +89,16 @@ public class SøknadController {
         return innsyn.hentSaker(oppslag.getAktørId());
     }
 
-    private Kvittering sjekkStatus(Kvittering kvittering, String type) {
-        return sjekkStatus(kvittering, type, true);
+    private Kvittering sjekkStatus(Kvittering kvittering, String type, SøknadEgenskap søknadEgenskap) {
+        return sjekkStatus(kvittering, type, søknadEgenskap, true);
     }
 
-    private Kvittering sjekkStatus(Kvittering kvittering, String type, boolean varsle) {
+    private Kvittering sjekkStatus(Kvittering kvittering, String type, SøknadEgenskap søknadEgenskap, boolean varsle) {
         if (!kvittering.erVellykket()) {
             LOG.warn("{} fikk ikke entydig status ({}), dette bør sjekkes opp nærmere", type,
                     kvittering.getLeveranseStatus());
         }
-        if (varsle && kvittering.erVellykket()) {
+        if (varsle && kvittering.erVellykket() && søknadEgenskap != INITIELL_SVANGERSKAPSPENGER) {
             varselSender.varsle(varselFra(kvittering));
         }
         return kvittering;
