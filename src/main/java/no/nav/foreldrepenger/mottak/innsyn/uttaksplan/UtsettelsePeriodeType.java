@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum UtsettelsePeriodeType {
@@ -21,6 +23,7 @@ public enum UtsettelsePeriodeType {
 
     @JsonValue
     public String getValue() {
-        return value != null ? value : name();
+        return Optional.ofNullable(value)
+                .orElse(name());
     }
 }
