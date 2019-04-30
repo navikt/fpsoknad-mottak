@@ -55,6 +55,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvi
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UtsettelsePeriodeType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @AutoConfigureJsonTesters
@@ -92,6 +93,11 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testFordeltKvittering() throws Exception {
         test(new FPSakFordeltKvittering("123", "456"), true, mapper);
+    }
+
+    @Test
+    public void test123() throws Exception {
+        test(UtsettelsePeriodeType.FERIE, true, mapper);
     }
 
     @Test

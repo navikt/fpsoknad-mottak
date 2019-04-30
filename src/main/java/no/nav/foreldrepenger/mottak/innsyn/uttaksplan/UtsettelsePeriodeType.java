@@ -1,29 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
 
-import java.util.Optional;
-
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum UtsettelsePeriodeType {
     ARBEID,
-    FERIE("LOVBESTEMT_FERIE"),
+    LOVBESTEMT_FERIE,
+    @JsonProperty("LOVBESTEMT_FERIE")
+    FERIE,
     SYKDOM_SKADE,
     SØKER_INNLAGT,
-    BARN_INNLAGT;
-
-    private final String value;
-
-    UtsettelsePeriodeType() {
-        this(null);
-    }
-
-    UtsettelsePeriodeType(String value) {
-        this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-        return Optional.ofNullable(value)
-                .orElse(name());
-    }
+    BARN_INNLAGT
 }
