@@ -1,6 +1,26 @@
 package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
 
-public enum UtsettelsePeriodeType {
-    ARBEID, FERIE, SYKDOM_SKADE, SØKER_INNLAGT, BARN_INNLAGT
+import com.fasterxml.jackson.annotation.JsonValue;
 
+public enum UtsettelsePeriodeType {
+    ARBEID,
+    FERIE("LOVBESTEMT_FERIE"),
+    SYKDOM_SKADE,
+    SØKER_INNLAGT,
+    BARN_INNLAGT;
+
+    private final String value;
+
+    UtsettelsePeriodeType() {
+        this(null);
+    }
+
+    UtsettelsePeriodeType(String value) {
+        this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value != null ? value : name();
+    }
 }
