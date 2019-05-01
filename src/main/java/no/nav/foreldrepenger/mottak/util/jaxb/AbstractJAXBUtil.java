@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -171,6 +174,32 @@ public abstract class AbstractJAXBUtil {
         } catch (IOException e) {
             throw new IllegalArgumentException("Ingen input stream for " + res, e);
         }
+    }
+
+    public static Double tilDoubleFraBigDecimal(JAXBElement<BigDecimal> value) {
+        return Optional.ofNullable(value)
+                .map(JAXBElement::getValue)
+                .map(BigDecimal::doubleValue)
+                .orElse(null);
+    }
+
+    public static Double tilDoubleFraBigInteger(JAXBElement<BigInteger> value) {
+        return Optional.ofNullable(value)
+                .map(JAXBElement::getValue)
+                .map(BigInteger::doubleValue)
+                .orElse(null);
+    }
+
+    public static boolean tilBoolean(JAXBElement<Boolean> value) {
+        return Optional.ofNullable(value)
+                .map(JAXBElement::getValue)
+                .orElse(false);
+    }
+
+    public static String tilTekst(JAXBElement<String> tekst) {
+        return Optional.ofNullable(tekst)
+                .map(JAXBElement::getValue)
+                .orElse(null);
     }
 
     @Override

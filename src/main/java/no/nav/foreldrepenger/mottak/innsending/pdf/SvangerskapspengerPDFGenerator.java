@@ -7,7 +7,6 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -48,8 +47,9 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Service
 public class SvangerskapspengerPDFGenerator implements PDFGenerator {
-    private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    private static DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final String SVP_VEDLEGG_TILRETTELEGGING = "svp.vedlegg.tilrettelegging";
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private static final DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final int INDENT = 20;
 
@@ -108,7 +108,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                     float behov = startY - size;
                     if (behov < y) {
                         scratchcos.close();
-                        y = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging, søknad.getVedlegg(),
+                        y = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
+                                søknad.getVedlegg(),
                                 cos, y);
                     } else {
                         cos = nySide(doc, cos, scratch1, scratchcos);
@@ -117,7 +118,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 }
             }
 
-            if (arbeidsforhold.size() > 0) {
+            if (!arbeidsforhold.isEmpty()) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
@@ -139,12 +140,10 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = infoRenderer.frilansOpptjening(svp.getOpptjening().getFrilans(), scratchcos, startY);
-                //float size = renderFrilansOpptjening(svp.getOpptjening().getFrilans(), søknad.getVedlegg(), scratchcos, startY);
                 float behov = startY - size;
                 if (behov < y) {
                     scratchcos.close();
                     y = infoRenderer.frilansOpptjening(svp.getOpptjening().getFrilans(), cos, y);
-                    //y = renderFrilansOpptjening(svp.getOpptjening().getFrilans(), søknad.getVedlegg(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
@@ -173,15 +172,15 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
-                    opptjening.getUtenlandskArbeidsforhold(),
-                    søknad.getVedlegg(),
-                    scratchcos, startY);
+                        opptjening.getUtenlandskArbeidsforhold(),
+                        søknad.getVedlegg(),
+                        scratchcos, startY);
                 float behov = startY - size;
                 if (behov <= y) {
                     scratchcos.close();
                     y = infoRenderer.utenlandskeArbeidsforholdOpptjening(
-                        opptjening.getUtenlandskArbeidsforhold(),
-                        søknad.getVedlegg(), cos, y);
+                            opptjening.getUtenlandskArbeidsforhold(),
+                            søknad.getVedlegg(), cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = nesteSideStart(headerSize, behov);
@@ -305,12 +304,13 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return startY - y;
     }
 
-    private float renderIngenTilrettelegging(IngenTilrettelegging periode, List<Vedlegg> vedlegg, FontAwareCos cos, float y)
+    private float renderIngenTilrettelegging(IngenTilrettelegging periode, List<Vedlegg> vedlegg, FontAwareCos cos,
+            float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "svp.vedlegg.tilrettelegging", cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
@@ -322,7 +322,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.stillingsprosent", prosentFra(periode.getStillingsprosent())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "svp.vedlegg.tilrettelegging", cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
@@ -338,7 +338,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
                 DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), "svp.vedlegg.tilrettelegging", cos, y);
+        y -= renderVedlegg(vedlegg, periode.getVedlegg(), SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
@@ -437,10 +437,6 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         cos.close();
         doc.addPage(scratch);
         return scratchcos;
-    }
-
-    private String formattertDatoFra(LocalDate date) {
-        return DATEFMT.format(date);
     }
 
     @Override

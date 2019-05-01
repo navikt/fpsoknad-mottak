@@ -21,6 +21,7 @@ public enum BehandlingResultat {
     HENLAGT_KLAGE_TRUKKET,
     INNSYN_INNVILGET,
     INNSYN_DELVIS_INNVILGET,
+    INGEN_ENDRING,
     INNSYN_AVVIST;
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingResultat.class);

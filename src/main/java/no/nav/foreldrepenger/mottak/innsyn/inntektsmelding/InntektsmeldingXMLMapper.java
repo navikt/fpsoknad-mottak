@@ -4,8 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,7 +58,7 @@ public final class InntektsmeldingXMLMapper {
         }
         try {
             Skjemainnhold skjema = JAXB.unmarshalToElement(xml, InntektsmeldingM.class).getValue().getSkjemainnhold();
-            Inntektsmelding melding = new Inntektsmelding(tilYtelse(skjema.getYtelse()),
+            return new Inntektsmelding(tilYtelse(skjema.getYtelse()),
                     tilInnsendingsÅrsak(skjema.getAarsakTilInnsending()),
                     tilArbeidsgiver(skjema.getArbeidsgiver()),
                     new Fødselsnummer(skjema.getArbeidstakerFnr()),
@@ -73,7 +72,6 @@ public final class InntektsmeldingXMLMapper {
                     tilAvsender(skjema.getAvsendersystem()),
                     tilPleiepengePerioder(skjema.getPleiepengerPerioder()),
                     tilOmsorgsPenger(skjema.getOmsorgspenger()));
-            return melding;
         } catch (Exception e) {
             LOG.debug("Feil ved unmarshalling av inntektsmelding", e);
             return null;
@@ -285,15 +283,8 @@ public final class InntektsmeldingXMLMapper {
     private static no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Inntekt tilInntekt(
             JAXBElement<Inntekt> inntekt) {
         return new no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Inntekt(
-                tilBeløp(inntekt.getValue().getBeloep()),
+                tilDoubleFraBigDecimal(inntekt.getValue().getBeloep()),
                 tilÅrsak(inntekt.getValue().getAarsakVedEndring()));
-    }
-
-    private static double tilBeløp(JAXBElement<BigDecimal> beløp) {
-        return Optional.ofNullable(beløp)
-                .map(b -> b.getValue())
-                .map(b -> b.doubleValue())
-                .orElse(null);
     }
 
     private static BeregnetInntektEndringsÅrsak tilÅrsak(JAXBElement<String> årsak) {
@@ -328,23 +319,4 @@ public final class InntektsmeldingXMLMapper {
         return Ytelse.valueOf(ytelse);
     }
 
-    private static Double tilDoubleFraBigDecimal(JAXBElement<BigDecimal> value) {
-        return value == null ? null : value.getValue().doubleValue();
-    }
-
-    private static Integer tilIntFraBigInteger(JAXBElement<BigInteger> value) {
-        return value == null ? null : value.getValue().intValue();
-    }
-
-    private static Double tilDoubleFraBigInteger(JAXBElement<BigInteger> value) {
-        return value == null ? null : value.getValue().doubleValue();
-    }
-
-    private static boolean tilBoolean(JAXBElement<Boolean> value) {
-        return value == null ? false : value.getValue();
-    }
-
-    private static String tilTekst(JAXBElement<String> tekst) {
-        return Optional.ofNullable(tekst).map(t -> t.getValue()).orElse(null);
-    }
 }
