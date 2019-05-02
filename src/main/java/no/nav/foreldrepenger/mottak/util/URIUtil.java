@@ -6,9 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public final class URIUtil {
-
     private URIUtil() {
-
     }
 
     public static URI uri(URI base, String path) {
@@ -26,7 +24,6 @@ public final class URIUtil {
                 .fromUri(base)
                 .pathSegment(path)
                 .queryParams(queryParams);
-
     }
 
     public static HttpHeaders queryParams(String key, String value) {
@@ -34,5 +31,4 @@ public final class URIUtil {
         queryParams.add(key, value);
         return queryParams;
     }
-
 }

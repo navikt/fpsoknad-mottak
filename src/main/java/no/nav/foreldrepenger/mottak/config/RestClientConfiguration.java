@@ -13,7 +13,6 @@ import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
 
 @Configuration
 public class RestClientConfiguration {
-
     @Bean
     @Primary
     public RestOperations restTemplate(ClientHttpRequestInterceptor... interceptors) {

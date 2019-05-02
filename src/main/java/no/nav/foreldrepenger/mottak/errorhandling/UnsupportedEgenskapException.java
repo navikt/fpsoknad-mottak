@@ -9,7 +9,6 @@ import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public class UnsupportedEgenskapException extends SøknadEgenskapException {
-
     public UnsupportedEgenskapException(SøknadEgenskap egenskap) {
         this((String) null, egenskap);
     }

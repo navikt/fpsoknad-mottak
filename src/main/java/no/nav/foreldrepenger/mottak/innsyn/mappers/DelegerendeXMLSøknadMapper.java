@@ -19,9 +19,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 @Component
 @Qualifier(DELEGERENDE)
 public class DelegerendeXMLSøknadMapper implements XMLSøknadMapper {
-
     private final List<XMLSøknadMapper> mappers;
-
     private final MapperEgenskaper mapperEgenskaper;
 
     public DelegerendeXMLSøknadMapper(XMLSøknadMapper... mappers) {

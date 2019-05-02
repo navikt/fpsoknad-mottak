@@ -46,11 +46,8 @@ import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
 @Component
 public class V1SVPXMLMapper implements XMLSøknadMapper {
-
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_SVANGERSKAPSPENGER);
-
     private final SVPV1JAXBUtil jaxb;
-
     private static final Logger LOG = LoggerFactory.getLogger(V1SVPXMLMapper.class);
 
     @Inject
@@ -107,15 +104,12 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
 
     private static List<Tilrettelegging> create(
             no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Tilrettelegging tilrettelegging) {
-
         HelTilrettelegging hel = hel(tilrettelegging
                 .getHelTilrettelegging(), tilrettelegging.getArbeidsforhold(),
                 tilrettelegging.getBehovForTilretteleggingFom());
-
         DelvisTilrettelegging delvis = delvis(tilrettelegging
                 .getDelvisTilrettelegging(), tilrettelegging.getArbeidsforhold(),
                 tilrettelegging.getBehovForTilretteleggingFom());
-
         IngenTilrettelegging ingen = ingen(tilrettelegging
                 .getIngenTilrettelegging(), tilrettelegging.getArbeidsforhold(),
                 tilrettelegging.getBehovForTilretteleggingFom());
@@ -179,5 +173,4 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
         }
         throw new UnexpectedInputException("UKjent arbeidsforhold %s", arbeidsforhold.getClass().getSimpleName());
     }
-
 }

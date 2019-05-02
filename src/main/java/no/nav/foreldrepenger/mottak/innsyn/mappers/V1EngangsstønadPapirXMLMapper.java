@@ -57,13 +57,9 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
 public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
-
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD);
-
     private final ESV1JAXBUtil JAXB;
-
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadPapirXMLMapper.class);
-
     private final Oppslag oppslag;
 
     @Inject
@@ -203,7 +199,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v1.Engangsstønad ytelse(OmYtelse omYtelse) {
-        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
+        if ((omYtelse == null) || (omYtelse.getAny() == null) || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
         }
@@ -229,5 +225,4 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
                 .map(CountryCode::getByCode)
                 .orElse(defaultLand);
     }
-
 }

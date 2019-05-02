@@ -82,7 +82,6 @@ import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V3, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
-
     private static final Logger LOG = LoggerFactory.getLogger(V3ForeldrepengerXMLMapper.class);
     private final FPV3JAXBUtil jaxb;
 
@@ -146,7 +145,6 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse,
             LocalDate søknadsDato, SøknadType søknadType) {
-
         switch (søknadType) {
             case INITIELL_FORELDREPENGER:
                 Foreldrepenger søknad = ytelse(omYtelse, Foreldrepenger.class);
@@ -226,7 +224,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
-        if (årsak == null || årsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((årsak == null) || årsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Overføringsårsak.valueOf(årsak.getKode());
@@ -241,7 +239,6 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(
             no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg periode) {
-
         if (periode == null) {
             return null;
         }
@@ -274,7 +271,6 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     tilMorsAktivitet(utsettelse.getMorsAktivitetIPerioden()),
                     emptyList());
         }
-
         if (periode instanceof Gradering) {
             Gradering gradering = Gradering.class.cast(periode);
             return new GradertUttaksPeriode(
@@ -293,7 +289,6 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     tilBoolean(gradering.isErSelvstNæringsdrivende()),
                     emptyList());
         }
-
         if (periode instanceof Uttaksperiode) {
             Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
             return new UttaksPeriode(
@@ -321,28 +316,28 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
-        if (morsAktivitetIPerioden == null || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((morsAktivitetIPerioden == null) || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return MorsAktivitet.valueOf(morsAktivitetIPerioden.getKode());
     }
 
     private static StønadskontoType tilStønadKontoType(Uttaksperiodetyper type) {
-        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((type == null) || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return StønadskontoType.valueOf(type.getKode());
     }
 
     private static UtsettelsesÅrsak tilÅrsak(Utsettelsesaarsaker aarsak) {
-        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((aarsak == null) || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return UtsettelsesÅrsak.valueOf(aarsak.getKode());
     }
 
     private static Oppholdsårsak tilÅrsak(Oppholdsaarsaker aarsak) {
-        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((aarsak == null) || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Oppholdsårsak.valueOf(aarsak.getKode());

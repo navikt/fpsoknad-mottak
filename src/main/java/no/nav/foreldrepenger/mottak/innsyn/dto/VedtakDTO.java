@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class VedtakDTO {
-
     private final String xmlClob;
     private final String journalpostId;
 

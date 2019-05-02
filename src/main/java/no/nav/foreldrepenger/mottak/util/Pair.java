@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.util;
 import java.util.Objects;
 
 public final class Pair<T1, T2> {
-
     private final T1 first;
     private final T2 second;
 
@@ -48,5 +47,4 @@ public final class Pair<T1, T2> {
     public String toString() {
         return getClass().getSimpleName() + " [first=" + first + ", second=" + second + "]";
     }
-
 }

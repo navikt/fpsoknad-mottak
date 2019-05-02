@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 public enum BehandlingType {
     FP, ES, ENDRING_FP;
-
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingType.class);
 
     public static BehandlingType valueSafelyOf(String name) {
@@ -16,5 +15,4 @@ public enum BehandlingType {
             return null;
         }
     }
-
 }

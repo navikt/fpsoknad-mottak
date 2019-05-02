@@ -1,9 +1,7 @@
 package no.nav.foreldrepenger.mottak;
 
 public final class Constants {
-
     public static final String UKJENT_KODEVERKSVERDI = "-";
-
     public static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     public static final String NAV_CALL_ID = "Nav-CallId";
     public static final String NAV_USER_ID = "Nav-User-Id";
@@ -13,6 +11,5 @@ public final class Constants {
     public static final String NAV_TOKEN_EXPIRY_ID = "Nav-Token-Expiry";
 
     private Constants() {
-
     }
 }

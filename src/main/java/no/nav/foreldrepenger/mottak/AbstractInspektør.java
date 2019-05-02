@@ -14,10 +14,8 @@ import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public abstract class AbstractInspektør implements Inspektør {
-
     public static final String SØKNAD = "søknad";
     public static final String VEDTAK = "vedtak";
-
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
     private static final Logger LOG = LoggerFactory.getLogger(AbstractInspektør.class);
 

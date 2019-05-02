@@ -13,7 +13,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
 public abstract class AbstractRestConnection {
-
     private final RestOperations restOperations;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 

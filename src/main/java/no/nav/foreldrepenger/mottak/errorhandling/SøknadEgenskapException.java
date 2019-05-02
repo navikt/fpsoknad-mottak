@@ -5,7 +5,6 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public abstract class SøknadEgenskapException extends RuntimeException {
-
     private final SøknadEgenskap egenskap;
 
     public SøknadEgenskapException(SøknadEgenskap egenskap) {

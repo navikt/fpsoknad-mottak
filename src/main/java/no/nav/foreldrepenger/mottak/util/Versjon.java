@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 public enum Versjon {
-
     V1("urn:no:nav:vedtak:felles:xml:soeknad:v1",
             "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1",
             "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1",
@@ -34,13 +33,10 @@ public enum Versjon {
             "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v3",
             "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"),
     V20180924, UKJENT;
-
     private static final Logger LOG = LoggerFactory.getLogger(Versjon.class);
     public static final String VERSION_PROPERTY = "contract.version";
     private final List<String> namespaces;
-
     public static final List<Versjon> UKJENT_VERSJON = singletonList(UKJENT);
-
     public static final Versjon DEFAULT_VERSJON = V3;
     public static final Versjon DEFAULT_SVP_VERSJON = V1;
 
@@ -71,7 +67,6 @@ public enum Versjon {
     }
 
     public static Versjon namespaceFra(String ns) {
-
         for (Versjon v : values()) {
             if (v.namespaces.contains(ns)) {
                 return v;

@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.errorhandling;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class VersionMismatchException extends RuntimeException {
-
     public VersionMismatchException(String name, Object verdi, Versjon v) {
         this(name, verdi, v, null);
     }

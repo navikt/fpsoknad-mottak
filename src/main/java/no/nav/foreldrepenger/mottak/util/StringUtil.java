@@ -9,11 +9,9 @@ import org.springframework.util.CollectionUtils;
 import com.google.common.base.Strings;
 
 public final class StringUtil {
-
     private static final int DEFAULT_LENGTH = 50;
 
     private StringUtil() {
-
     }
 
     public static String endelse(List<?> liste) {
@@ -31,7 +29,6 @@ public final class StringUtil {
         return Optional.ofNullable(tekst)
                 .filter(t -> t.length() >= max)
                 .map(s -> s.substring(0, max - 1) + "...")
-
                 .orElse(tekst);
     }
 
@@ -40,6 +37,6 @@ public final class StringUtil {
     }
 
     public static String mask(String value) {
-        return value != null && value.length() == 11 ? Strings.padEnd(value.substring(0, 6), 11, '*') : value;
+        return (value != null) && (value.length() == 11) ? Strings.padEnd(value.substring(0, 6), 11, '*') : value;
     }
 }

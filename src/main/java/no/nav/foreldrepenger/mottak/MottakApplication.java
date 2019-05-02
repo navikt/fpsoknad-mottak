@@ -10,7 +10,6 @@ import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
 @SpringBootApplication
 @EnableCaching
 public class MottakApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(MottakApplication.class, args);
     }

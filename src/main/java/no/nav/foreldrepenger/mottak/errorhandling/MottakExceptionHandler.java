@@ -22,7 +22,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -34,10 +33,8 @@ import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedExcept
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
-
     @Inject
     private TokenUtil tokenUtil;
-
     private static final Logger LOG = LoggerFactory.getLogger(MottakExceptionHandler.class);
 
     @ResponseBody

@@ -26,5 +26,4 @@ public class MottakConfiguration {
         messageSource.setBasename(KVITTERINGSTEKSTER);
         return messageSource;
     }
-
 }

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 public class JacksonModulesConfiguration {
-
     @Bean
     public Module javaTimeModule() {
         return new JavaTimeModule();

@@ -9,7 +9,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.innsending.Pingable;
 
 public interface Oppslag extends Pingable {
-
     Person getSøker();
 
     AktørId getAktørId();
@@ -19,5 +18,4 @@ public interface Oppslag extends Pingable {
     Fødselsnummer getFnr(AktørId aktørId);
 
     List<Arbeidsforhold> getArbeidsforhold();
-
 }

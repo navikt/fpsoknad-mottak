@@ -29,14 +29,11 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.MultiValueMap;
 
 public final class MultipartMixedAwareMessageConverter extends FormHttpMessageConverter {
-
     private static final Logger LOG = LoggerFactory.getLogger(MultipartMixedAwareMessageConverter.class);
-
     public static final String MULTIPART_MIXED_VALUE = "multipart/mixed";
     public static final MediaType MULTIPART_MIXED = parseMediaType(MULTIPART_MIXED_VALUE);
     private Charset multipartCharset;
     private Charset charset = DEFAULT_CHARSET;
-
     private List<HttpMessageConverter<?>> partConverters = new ArrayList<>();
 
     public MultipartMixedAwareMessageConverter() {
@@ -73,17 +70,13 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
 
     private void writeMultipart(MultiValueMap<String, Object> parts, HttpOutputMessage outputMessage)
             throws IOException {
-
         byte[] boundary = generateMultipartBoundary();
         LOG.debug("Sender multipart ({} deler)", parts.size());
-
         Map<String, String> parameters = new HashMap<>(2);
         parameters.put("boundary", new String(boundary, "US-ASCII"));
-
         if (!isFilenameCharsetSet()) {
             parameters.put("charset", this.charset.name());
         }
-
         HttpHeaders headers = outputMessage.getHeaders();
         headers.setContentType(new MediaType(MULTIPART_MIXED, parameters));
         if (outputMessage instanceof StreamingHttpOutputMessage) {
@@ -177,13 +170,9 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
     }
 
     private static class MultipartHttpOutputMessage implements HttpOutputMessage {
-
         private final OutputStream outputStream;
-
         private final Charset charset;
-
         private final HttpHeaders headers = new HttpHeaders();
-
         private boolean headersWritten = false;
 
         public MultipartHttpOutputMessage(OutputStream outputStream, Charset charset) {
@@ -229,5 +218,4 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         return getClass().getSimpleName() + " [multipartCharset=" + multipartCharset + ", charset=" + charset
                 + ", partConverters=" + partConverters + "]";
     }
-
 }

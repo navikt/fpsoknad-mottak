@@ -17,7 +17,6 @@ import com.google.common.collect.Lists;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
-
     private final HttpStatus status;
     @JsonFormat(shape = STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private final LocalDateTime timestamp;

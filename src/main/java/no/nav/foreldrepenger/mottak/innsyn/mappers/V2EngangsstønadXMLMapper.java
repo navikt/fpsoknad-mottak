@@ -14,9 +14,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
 public class V2EngangsstønadXMLMapper extends AbstractXMLMapper {
-
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, INITIELL_ENGANGSSTØNAD);
-
     private static final Logger LOG = LoggerFactory.getLogger(V2EngangsstønadXMLMapper.class);
 
     public V2EngangsstønadXMLMapper(Oppslag oppslag) {
@@ -33,5 +31,4 @@ public class V2EngangsstønadXMLMapper extends AbstractXMLMapper {
         LOG.info("Mapper ikke {} tilbake til søknad foreløpig", mapperEgenskaper());
         return null;
     }
-
 }

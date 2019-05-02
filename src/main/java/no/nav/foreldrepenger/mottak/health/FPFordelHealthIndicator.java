@@ -6,7 +6,6 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection
 
 @Component
 public class FPFordelHealthIndicator extends EnvironmentAwareHealthIndicator {
-
     public FPFordelHealthIndicator(FPFordelConnection connection) {
         super(connection);
     }

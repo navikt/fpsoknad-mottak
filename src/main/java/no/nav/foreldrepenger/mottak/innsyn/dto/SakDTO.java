@@ -137,7 +137,6 @@ public class SakDTO {
         if (!behandlingTema.equals(other.behandlingTema)) {
             return false;
         }
-
         if (saksnummer == null) {
             return other.saksnummer == null;
         } else {
@@ -152,5 +151,4 @@ public class SakDTO {
                 + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarna="
                 + aktørIdBarna + ", lenker=" + lenker + "]";
     }
-
 }

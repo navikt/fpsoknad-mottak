@@ -15,7 +15,6 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagTjeneste implements Oppslag {
-
     private final OppslagConnection connection;
     private final TokenUtil tokenHelper;
 
@@ -59,5 +58,4 @@ public class OppslagTjeneste implements Oppslag {
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
     }
-
 }

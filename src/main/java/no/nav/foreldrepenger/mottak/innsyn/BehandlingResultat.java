@@ -34,5 +34,4 @@ public enum BehandlingResultat {
             return null;
         }
     }
-
 }

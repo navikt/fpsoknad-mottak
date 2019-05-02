@@ -10,7 +10,6 @@ import org.springframework.core.env.Environment;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 
 abstract class EnvironmentAwareHealthIndicator implements HealthIndicator, EnvironmentAware {
-
     private final PingEndpointAware pingable;
     private Environment env;
 

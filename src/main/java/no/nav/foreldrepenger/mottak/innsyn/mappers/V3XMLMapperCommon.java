@@ -57,9 +57,7 @@ import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 import no.nav.vedtak.felles.xml.soeknad.v3.OmYtelse;
 
 public class V3XMLMapperCommon {
-
     private V3XMLMapperCommon() {
-
     }
 
     static List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> påkrevd,
@@ -187,7 +185,7 @@ public class V3XMLMapperCommon {
     }
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
-        return periode == null || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
+        return (periode == null) || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
     }
 
     private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
@@ -297,10 +295,9 @@ public class V3XMLMapperCommon {
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
-        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((type == null) || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Virksomhetstype.valueOf(type.getKode());
     }
-
 }

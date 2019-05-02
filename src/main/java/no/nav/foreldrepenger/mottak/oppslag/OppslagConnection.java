@@ -24,9 +24,7 @@ import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection implements PingEndpointAware {
-
     public static final Logger LOG = LoggerFactory.getLogger(OppslagConnection.class);
-
     private final OppslagConfig cfg;
 
     public OppslagConnection(RestOperations restOperations, OppslagConfig config) {
@@ -83,5 +81,4 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
     public String name() {
         return "fpsoknad-oppslag";
     }
-
 }

@@ -21,7 +21,6 @@ import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
 
 @Component
 public class TokenUtil {
-
     private final OIDCRequestContextHolder ctxHolder;
 
     public TokenUtil(OIDCRequestContextHolder ctxHolder) {

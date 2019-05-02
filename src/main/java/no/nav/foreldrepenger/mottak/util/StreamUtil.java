@@ -14,7 +14,6 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public final class StreamUtil {
-
     private StreamUtil() {
     }
 

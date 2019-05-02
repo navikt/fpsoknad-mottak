@@ -14,9 +14,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Component
 public class V3EngangsstønadXMLMapper extends AbstractXMLMapper {
-
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V3, INITIELL_ENGANGSSTØNAD);
-
     private static final Logger LOG = LoggerFactory.getLogger(V3EngangsstønadXMLMapper.class);
 
     public V3EngangsstønadXMLMapper(Oppslag oppslag) {

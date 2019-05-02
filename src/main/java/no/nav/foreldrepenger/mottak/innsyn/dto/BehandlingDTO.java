@@ -13,10 +13,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import no.nav.foreldrepenger.mottak.innsyn.Lenke;
 
 public class BehandlingDTO {
-
     private static final String SØKNAD = "søknad";
     private static final String VEDTAK = "vedtak";
-
     private final String status;
     private final String type;
     private final String tema;

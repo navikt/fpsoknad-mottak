@@ -4,11 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class TimeUtil {
-
     private static final Logger LOG = LoggerFactory.getLogger(TimeUtil.class);
 
     private TimeUtil() {
-
     }
 
     public static void waitFor(long delayMillis) {
@@ -19,5 +17,4 @@ public final class TimeUtil {
             throw new RuntimeException("Kunne ikke vente i " + delayMillis + "ms", e);
         }
     }
-
 }

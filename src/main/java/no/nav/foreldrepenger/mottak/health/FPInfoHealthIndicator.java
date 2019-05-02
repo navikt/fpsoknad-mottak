@@ -6,7 +6,6 @@ import no.nav.foreldrepenger.mottak.innsyn.InnsynConnection;
 
 @Component
 public class FPInfoHealthIndicator extends EnvironmentAwareHealthIndicator {
-
     public FPInfoHealthIndicator(InnsynConnection connection) {
         super(connection);
     }

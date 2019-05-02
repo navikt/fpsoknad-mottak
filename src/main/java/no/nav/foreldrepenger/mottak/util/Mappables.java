@@ -16,13 +16,10 @@ import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public final class Mappables {
-
     private Mappables() {
-
     }
 
     public static final String DELEGERENDE = "delegerende";
-
     private static final Logger LOG = LoggerFactory.getLogger(Mappables.class);
 
     public static <T extends Mappable> MapperEgenskaper egenskaperFor(List<T> mappables) {

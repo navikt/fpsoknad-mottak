@@ -8,7 +8,6 @@ import org.slf4j.MDC;
 
 public final class MDCUtil {
     private MDCUtil() {
-
     }
 
     public static String callId() {

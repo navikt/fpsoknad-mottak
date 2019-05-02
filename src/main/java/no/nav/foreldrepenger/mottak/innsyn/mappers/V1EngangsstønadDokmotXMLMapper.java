@@ -26,12 +26,9 @@ import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.TilknytningNorge;
 
 @Component
 public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
-
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD_DOKMOT);
-
     private final ESV1JAXBUtil jaxb;
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadDokmotXMLMapper.class);
-
     private final Oppslag oppslag;
 
     @Inject
@@ -73,7 +70,6 @@ public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
             Søknad engangssøknad = new Søknad(LocalDate.now(), null, ytelse);
             engangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
             return engangssøknad;
-
         } catch (Exception e) {
             LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
             return null;
@@ -89,5 +85,4 @@ public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

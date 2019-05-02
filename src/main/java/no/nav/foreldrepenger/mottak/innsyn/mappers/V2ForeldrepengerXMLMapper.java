@@ -112,9 +112,7 @@ import no.nav.vedtak.felles.xml.soeknad.v2.Soeknad;
 public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V2, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
-
     private static final Logger LOG = LoggerFactory.getLogger(V2ForeldrepengerXMLMapper.class);
-
     private static final FPV2JAXBUtil JAXB = new FPV2JAXBUtil();
 
     public V2ForeldrepengerXMLMapper(Oppslag oppslag) {
@@ -197,7 +195,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Object ytelse(OmYtelse omYtelse) {
-        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
+        if ((omYtelse == null) || (omYtelse.getAny() == null) || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
         }
@@ -208,7 +206,6 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
-
         Object førsteYtelse = ytelse(omYtelse);
         if (førsteYtelse instanceof Endringssoeknad) {
             Endringssoeknad søknad = Endringssoeknad.class.cast(førsteYtelse);
@@ -216,7 +213,6 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .fordeling(tilFordeling(søknad.getFordeling()))
                     .build();
         }
-
         if (førsteYtelse instanceof Foreldrepenger) {
             Foreldrepenger søknad = Foreldrepenger.class.cast(førsteYtelse);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
@@ -301,7 +297,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
-        return periode == null || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
+        return (periode == null) || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
     }
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
@@ -412,7 +408,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
-        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((type == null) || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Virksomhetstype.valueOf(type.getKode());
@@ -472,7 +468,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
-        if (årsak == null || årsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((årsak == null) || årsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Overføringsårsak.valueOf(årsak.getKode());
@@ -487,7 +483,6 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(
             no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg periode) {
-
         if (periode == null) {
             return null;
         }
@@ -520,7 +515,6 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     tilMorsAktivitet(utsettelse.getMorsAktivitetIPerioden()),
                     emptyList());
         }
-
         if (periode instanceof Gradering) {
             Gradering gradering = Gradering.class.cast(periode);
             return new GradertUttaksPeriode(
@@ -537,7 +531,6 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     tilArbeidsgiver(gradering.getArbeidsgiver()), null, null,
                     emptyList());
         }
-
         if (periode instanceof Uttaksperiode) {
             Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
             return new UttaksPeriode(
@@ -561,28 +554,28 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
-        if (morsAktivitetIPerioden == null || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((morsAktivitetIPerioden == null) || morsAktivitetIPerioden.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return MorsAktivitet.valueOf(morsAktivitetIPerioden.getKode());
     }
 
     private static StønadskontoType tilStønadKontoType(Uttaksperiodetyper type) {
-        if (type == null || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((type == null) || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return StønadskontoType.valueOf(type.getKode());
     }
 
     private static UtsettelsesÅrsak tilÅrsak(Utsettelsesaarsaker aarsak) {
-        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((aarsak == null) || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return UtsettelsesÅrsak.valueOf(aarsak.getKode());
     }
 
     private static Oppholdsårsak tilÅrsak(Oppholdsaarsaker aarsak) {
-        if (aarsak == null || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
+        if ((aarsak == null) || aarsak.getKode().equals(UKJENT_KODEVERKSVERDI)) {
             return null;
         }
         return Oppholdsårsak.valueOf(aarsak.getKode());

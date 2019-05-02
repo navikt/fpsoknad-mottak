@@ -110,12 +110,9 @@ import no.nav.vedtak.felles.xml.soeknad.v1.Soeknad;
 
 @Component
 public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
-
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
-
     private final FPV1JAXBUtil jaxb;
-
     private static final Logger LOG = LoggerFactory.getLogger(V1ForeldrepengerXMLMapper.class);
 
     @Inject
@@ -178,7 +175,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 .map(this::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
         return Stream.concat(vf, pk).collect(toList());
-
     }
 
     private VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg vedlegg) {
@@ -205,7 +201,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Object ytelse(OmYtelse omYtelse) {
-        if (omYtelse == null || omYtelse.getAny() == null || omYtelse.getAny().isEmpty()) {
+        if ((omYtelse == null) || (omYtelse.getAny() == null) || omYtelse.getAny().isEmpty()) {
             LOG.warn("Ingen ytelse i søknaden");
             return null;
         }
@@ -224,7 +220,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .fordeling(tilFordeling(endringsSøknad.getFordeling()))
                     .build();
         }
-
         if (ytelse instanceof Foreldrepenger) {
             Foreldrepenger foreldrepengeSøknad = Foreldrepenger.class.cast(ytelse);
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
@@ -245,7 +240,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (rettigheter == null) {
             return null;
         }
-
         return new no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter(
                 rettigheter.isHarAnnenForelderRett(),
                 rettigheter.isHarOmsorgForBarnetIPeriodene(),
@@ -438,7 +432,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         return safeStream(utenlandskArbeidsforhold)
                 .map(V1ForeldrepengerXMLMapper::tilUtenlandskArbeidsforhold)
                 .collect(toList());
-
     }
 
     private static UtenlandskArbeidsforhold tilUtenlandskArbeidsforhold(
@@ -448,7 +441,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                 tilÅpenPeriode(arbeidforhold.getPeriode()),
                 null,
                 tilLand(arbeidforhold.getArbeidsland()));
-
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap) {
@@ -496,7 +488,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(
             no.nav.vedtak.felles.xml.soeknad.uttak.v1.LukketPeriodeMedVedlegg periode) {
-
         if (periode == null) {
             return null;
         }
@@ -529,7 +520,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     null,
                     emptyList());
         }
-
         if (periode instanceof Gradering) {
             Gradering gradering = Gradering.class.cast(periode);
             return new GradertUttaksPeriode(
@@ -546,7 +536,6 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     Collections.singletonList(gradering.getVirksomhetsnummer().toString()), null, null,
                     emptyList());
         }
-
         if (periode instanceof Uttaksperiode) {
             Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
             return new UttaksPeriode(
@@ -635,5 +624,4 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     public String toString() {
         return getClass().getSimpleName() + " [mapperEgenskaper=" + mapperEgenskaper() + "]";
     }
-
 }

@@ -15,7 +15,6 @@ import no.nav.foreldrepenger.mottak.domain.serialization.UtenlandskForelderDeser
 import no.nav.foreldrepenger.mottak.domain.serialization.UtenlandskForelderSerializer;
 
 public class CustomSerializerModule extends SimpleModule {
-
     public CustomSerializerModule() {
         super(VERSION);
         addSerializers();

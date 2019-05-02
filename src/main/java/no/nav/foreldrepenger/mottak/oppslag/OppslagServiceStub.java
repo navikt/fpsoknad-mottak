@@ -23,7 +23,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 @Profile({ PREPROD, DEV })
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "true")
 public class OppslagServiceStub implements Oppslag {
-
     @Override
     public Person getSøker() {
         return person();
@@ -69,5 +68,4 @@ public class OppslagServiceStub implements Oppslag {
     public String ping() {
         return "42";
     }
-
 }

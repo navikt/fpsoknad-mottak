@@ -10,7 +10,6 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
 public class UkjentXMLSøknadMapper implements XMLSøknadMapper {
-
     @Override
     public MapperEgenskaper mapperEgenskaper() {
         return UKJENT;
