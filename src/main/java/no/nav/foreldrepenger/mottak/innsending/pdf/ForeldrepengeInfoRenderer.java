@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
@@ -858,7 +859,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private static boolean erAnnenDokumentType(Vedlegg vedlegg) {
-        return vedlegg.getDokumentType().equals(I000060);
+        return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
     }
 
     private String txt(String key, Object... values) {

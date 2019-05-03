@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -370,7 +371,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     }
 
     private static boolean erAnnenDokumentType(Vedlegg vedlegg) {
-        return vedlegg.getDokumentType().equals(I000060);
+        return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
     }
 
     private String virksomhetsnavn(List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere,
