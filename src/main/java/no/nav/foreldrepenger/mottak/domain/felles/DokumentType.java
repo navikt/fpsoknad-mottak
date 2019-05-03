@@ -18,7 +18,7 @@ public enum DokumentType {
     I000044("Dokumentasjon av etterlønn eller sluttvederlag"),
     I000045("Beskrivelse/Dokumentasjon funksjonsnedsettelse"),
     I000047("Brukeropplastet dokumentasjon"),
-    I000049("Mor skal delta på heltid i introduksjonsprogrammet etter kapittel 2 for nyankomne innvandrere"),
+    I000049("Annet skjema (ikke NAV-skjema)"),
     I000050("Søknad om endring av uttak av foreldrepenger eller overføring av kvote"),
     I000051("Mor deltar i kvalifiseringsprogrammet"),
     I000060("Annet"),
