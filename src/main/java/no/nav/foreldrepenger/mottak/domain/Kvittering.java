@@ -44,6 +44,8 @@ public class Kvittering {
     private String journalId;
     private String saksNr;
     private byte[] pdf;
+    private LocalDate førsteInntektsmeldingDag;
+    private byte[] infoskrivPdf;
 
     public Kvittering(LeveranseStatus leveranseStatus) {
         this(leveranseStatus, LocalDateTime.now(), callId());

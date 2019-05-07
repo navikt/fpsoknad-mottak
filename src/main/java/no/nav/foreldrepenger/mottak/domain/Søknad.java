@@ -87,4 +87,11 @@ public class Søknad {
         }
         return null;
     }
+
+    @JsonIgnore
+    public LocalDate getFørsteInntektsmeldingDag() {
+        return Optional.ofNullable(getFørsteUttaksdag())
+            .map(d -> d.minusWeeks(4))
+            .orElse(null);
+    }
 }
