@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -67,7 +68,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriod
 @Component
 public class ForeldrepengeInfoRenderer {
 
-    private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final int INDENT = 20;
@@ -83,12 +84,13 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addLogo(doc, cos, y);
         y -= renderer.addCenteredHeading(
-                endring ? txt("endringsøknad_fp", FMT.format(LocalDateTime.now()))
-                        : txt("søknad_fp", FMT.format(LocalDateTime.now())),
+                endring ? txt("endringsøknad_fp")
+                        : txt("søknad_fp"),
                 cos, y);
-        y -= renderer.addCenteredHeadings(søker(søker), cos, y);
+        y -= renderer.addCenteredRegular(
+                textFormatter.fromMessageSource("mottatt", FMT.format(LocalDateTime.now())), cos, y);
+        y -= renderer.addCenteredRegulars(søker(søker), cos, y);
         y -= renderer.addDividerLine(cos, y);
-        y -= renderer.addBlankLine();
         return y;
     }
 
@@ -640,7 +642,9 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<String> søker(Person søker) {
-        return asList(søker.fnr.getFnr(), textFormatter.navn(søker));
+        return asList(
+            textFormatter.navn(new Navn(søker.fornavn, søker.mellomnavn, søker.etternavn)),
+            textFormatter.fromMessageSource("fødselsnummer", søker.fnr.getFnr()));
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
