@@ -68,17 +68,15 @@ public class SøknadTextFormatter {
 
     public String navn(Navn navn) {
         String sammensattnavn = Stream.of(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn())
-                .map(String::trim)
                 .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(" ")).trim();
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
     }
 
     public String navn(Person søker) {
         String sammensattnavn = Stream.of(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())
-                .map(String::trim)
                 .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(" ")).trim();
         return Optional.ofNullable(sammensattnavn)
                 .orElse("Ukjent");
     }
