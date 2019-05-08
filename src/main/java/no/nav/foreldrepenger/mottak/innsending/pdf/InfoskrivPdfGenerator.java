@@ -74,7 +74,7 @@ public class InfoskrivPdfGenerator {
             doc.save(baos);
             return baos.toByteArray();
         } catch (Exception e) {
-            LOG.warn("Generering av PDF til arbeidsgiver feilet", e);
+            LOG.warn("Generering av infoskrivPdf til arbeidsgiver feilet, ignorerer feil", e);
             return null;
         }
     }
