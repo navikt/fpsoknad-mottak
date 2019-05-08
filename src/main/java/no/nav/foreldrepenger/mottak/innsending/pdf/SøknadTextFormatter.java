@@ -12,18 +12,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -67,17 +65,16 @@ public class SøknadTextFormatter {
     }
 
     public String navn(Navn navn) {
-        String sammensattnavn = Stream.of(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn())
-                .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining(" ")).trim();
+        String sammensattnavn = Joiner.on(' ')
+                .skipNulls()
+                .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
     }
 
     public String navn(Person søker) {
-        String sammensattnavn = Stream.of(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())
-                .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining(" ")).trim();
-        return Optional.ofNullable(sammensattnavn)
+        return Optional.ofNullable(søker)
+                .map(s -> Joiner.on(' ').skipNulls().join(s.getFornavn(), s.getMellomnavn(), s.getEtternavn()))
+                .map(String::trim)
                 .orElse("Ukjent");
     }
 
