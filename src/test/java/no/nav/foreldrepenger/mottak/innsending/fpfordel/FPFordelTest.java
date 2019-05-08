@@ -71,6 +71,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
@@ -146,6 +147,7 @@ public class FPFordelTest {
         ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, jalla);
         EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(jalla2, jalla1);
         DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
+        InfoskrivPdfGenerator infoGenerator = new InfoskrivPdfGenerator(jalla1, jalla2);
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
@@ -155,7 +157,7 @@ public class FPFordelTest {
         return new FPFordelSøknadSender(
                 new FPFordelConnection(restOperations, cfg,
                         new FPFordelResponseHandler(restOperations, 3, 10000, poller), registry),
-                konvoluttGenerator);
+                konvoluttGenerator, infoGenerator);
     }
 
     private static ResponseEntity<FPFordelKvittering> gosysReceipt() {
