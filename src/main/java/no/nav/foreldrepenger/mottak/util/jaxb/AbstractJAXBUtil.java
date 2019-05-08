@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.util.jaxb;
 
+import static java.lang.String.format;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
@@ -10,7 +11,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -34,16 +34,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+
 public abstract class AbstractJAXBUtil {
-
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractJAXBUtil.class);
-
     private final JAXBContext context;
     private final Schema schema;
     private final boolean validateMarshalling;
     private final boolean validateUnarshalling;
-
-    private static final SchemaFactory SCHEMA_FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+    private final SchemaFactory schemaFactory;
 
     public AbstractJAXBUtil(JAXBContext context, boolean validateMarhsalling,
             boolean validateUnmarshalling, String... xsds) {
@@ -51,14 +50,15 @@ public abstract class AbstractJAXBUtil {
         this.schema = schemaFra(xsds);
         this.validateMarshalling = validateMarhsalling;
         this.validateUnarshalling = validateUnmarshalling;
+        this.schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
     }
 
     protected static JAXBContext contextFra(Class<?>... classes) {
         try {
             return JAXBContext.newInstance(classes);
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt med konfigurasjon av kontekst fra {}", Arrays.toString(classes), e);
-            throw new IllegalArgumentException(e);
+            throw new UnexpectedInputException(
+                    format("Feil ved konfigurasjon av kontekst fra %s", Arrays.toString(classes)), e);
         }
     }
 
@@ -68,8 +68,7 @@ public abstract class AbstractJAXBUtil {
             marshaller().marshal(model, res);
             return ((Document) res.getNode()).getDocumentElement();
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt ved marshalling til element av model {}", model.getClass(), e);
-            throw new IllegalArgumentException(e);
+            throw new UnexpectedInputException(format("Feil ved marshalling av model %s", model.getClass()), e);
         }
     }
 
@@ -79,8 +78,7 @@ public abstract class AbstractJAXBUtil {
             marshaller().marshal(model, sw);
             return sw.toString();
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt ved marshalling av model {}", model.getClass(), e);
-            throw new IllegalArgumentException(e);
+            throw new UnexpectedInputException(format("Feil ved marshalling av model %s", model.getClass()), e);
         }
     }
 
@@ -92,8 +90,7 @@ public abstract class AbstractJAXBUtil {
         try {
             return (T) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt ved unmarshalling av {} til klasse {}", xml, clazz.getName(), e);
-            throw new IllegalArgumentException(e);
+            throw new UnexpectedInputException(format("Feil ved unmarshalling av %s til  %s", xml, clazz.getName()), e);
         }
     }
 
@@ -101,17 +98,16 @@ public abstract class AbstractJAXBUtil {
         try {
             return (JAXBElement<T>) unmarshaller().unmarshal(new StringReader(unescapeHtml4(xml)));
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt ved unmarshalling av {} til klasse {}", xml, clazz.getName(), e);
-            throw new IllegalArgumentException(e);
+            throw new UnexpectedInputException(format("Feil ved unmarshalling av %s til  %s", xml, clazz.getName()), e);
         }
     }
 
-    private static Schema schemaFra(String... xsds) {
+    private Schema schemaFra(String... xsds) {
         try {
-            return SCHEMA_FACTORY.newSchema(sourcesFra(xsds));
+            return schemaFactory.newSchema(sourcesFra(xsds));
         } catch (SAXException e) {
             LOG.warn(
-                    "Noe gikk galt med konfigurasjon av skjema  fra {}, bruker ikke-validerende marshaller",
+                    "Noe gikk galt med konfigurasjon av skjema fra {}, bruker ikke-validerende marshaller",
                     Arrays.toString(xsds), e);
             return null;
         }
@@ -126,8 +122,8 @@ public abstract class AbstractJAXBUtil {
             }
             return unmarshaller;
         } catch (JAXBException e) {
-            LOG.warn("Noe gikk galt ved konstruksjon av unmarshaller fra kontekst {} og skjema {}", context, schema, e);
-            throw new IllegalArgumentException(e);
+            throw new UnexpectedInputException(
+                    format("Feil ved konstruksjon av unmarshaller fra kontekst %s og skjema  %s", context, schema), e);
         }
     }
 
@@ -140,9 +136,9 @@ public abstract class AbstractJAXBUtil {
                 marshaller.setSchema(schema);
             }
             return marshaller;
-        } catch (Exception e) {
-            LOG.warn("Noe gikk galt ved konstruksjon av marshaller fra kontekst {} ", context, e);
-            throw new IllegalArgumentException(e);
+        } catch (JAXBException e) {
+            throw new UnexpectedInputException(
+                    format("Feil ved konstruksjon av marshaller fra kontekst %s og skjema  %s", context, schema), e);
         }
     }
 
@@ -156,23 +152,22 @@ public abstract class AbstractJAXBUtil {
         try {
             return sourceFra(new ClassPathResource(re));
         } catch (Exception e) {
-            LOG.warn("Noe gikk galt ved lesing av ressurs {} fra classpath", re, new ClassPathResource(re), e);
-            throw new IllegalArgumentException(e);
+            throw new UnexpectedInputException(format("Noe gikk galt ved lesing av ressurs %s fra classpath", re), e);
         }
     }
 
-    private static Source sourceFra(ClassPathResource cpr) throws MalformedURLException, IOException {
+    private static Source sourceFra(ClassPathResource cpr) throws IOException {
         return new StreamSource(inputStreamFra(cpr), cpr.getURI().toURL().toExternalForm());
     }
 
     private static InputStream inputStreamFra(Resource res) {
         try {
             if (!res.exists()) {
-                throw new IllegalArgumentException("Ressursen  " + res + " finnes ikke");
+                throw new UnexpectedInputException(format("Ressursen  %s finnes ikke", res));
             }
             return res.getInputStream();
         } catch (IOException e) {
-            throw new IllegalArgumentException("Ingen input stream for " + res, e);
+            throw new UnexpectedInputException(format("Ingen input stream for %s", res));
         }
     }
 
@@ -206,5 +201,4 @@ public abstract class AbstractJAXBUtil {
     public String toString() {
         return getClass().getSimpleName() + " [context=" + context + ", schema=" + schema + "]";
     }
-
 }

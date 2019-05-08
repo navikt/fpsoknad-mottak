@@ -8,9 +8,6 @@ import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FOREL
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
@@ -23,9 +20,6 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public interface Inspektør {
-
-    Logger LOG = LoggerFactory.getLogger(Inspektør.class);
-
     SøknadEgenskap inspiser(String xml);
 
     default SøknadEgenskap inspiser(Søknad søknad) {
@@ -52,7 +46,6 @@ public interface Inspektør {
             case svangerskapspenger:
                 return ETTERSENDING_SVANGERSKAPSPENGER;
             default:
-                LOG.warn("Ukjent eller ikke satt ettersendingstype {}", type);
                 throw new UnexpectedInputException("Ukjent eller ikke satt ettersendingstype %s", type);
         }
     }

@@ -28,18 +28,18 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @Component
 @Qualifier(SØKNAD)
 public final class XMLStreamSøknadInspektør extends AbstractInspektør {
-
     private static final String ENGANGSSOEKNAD = "engangsstønad";
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
     private static final String SVANGERSKAPSPENGER = "svangerskapspenger";
-
     private static final List<String> KJENTE_TAGS = asList(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSOEKNAD,
             SVANGERSKAPSPENGER);
-
     private static final String OMYTELSE = "omYtelse";
-
     private static final Logger LOG = LoggerFactory.getLogger(XMLStreamSøknadInspektør.class);
+
+    public XMLStreamSøknadInspektør() {
+        super();
+    }
 
     @Override
     public SøknadEgenskap inspiser(String xml) {
@@ -56,29 +56,27 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør {
             while (reader.hasNext()) {
                 reader.next();
                 if (reader.getEventType() == START_ELEMENT) {
-                    if (reader.getLocalName().equals(OMYTELSE)) {
-                        if (reader.getAttributeCount() > 0) {
-                            String type = reader.getAttributeValue(reader.getAttributeName(0).getNamespaceURI(),
-                                    "type");
-                            if (type != null) {
-                                if (type.toLowerCase().contains(FORELDREPENGER.toLowerCase())) {
-                                    LOG.debug("Fant type INITIELL fra attributt på OMYTELSE");
-                                    return new SøknadEgenskap(
-                                            Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
-                                            INITIELL_FORELDREPENGER);
-                                }
-                                if (type.toLowerCase().contains(ENDRINGSSOEKNAD.toLowerCase())) {
-                                    LOG.debug("Fant type ENDRING fra attributt på OMYTELSE");
-                                    return new SøknadEgenskap(
-                                            Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
-                                            ENDRING_FORELDREPENGER);
-                                }
-                                if (type.toLowerCase().contains(SVANGERSKAPSPENGER.toLowerCase())) {
-                                    LOG.debug("Fant type SVANGERSKAPSPENGER fra attributt på OMYTELSE");
-                                    return new SøknadEgenskap(
-                                            Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
-                                            SøknadType.INITIELL_SVANGERSKAPSPENGER);
-                                }
+                    if (reader.getAttributeCount() > 0 && reader.getLocalName().equals(OMYTELSE)) {
+                        String type = reader.getAttributeValue(reader.getAttributeName(0).getNamespaceURI(),
+                                "type");
+                        if (type != null) {
+                            if (type.toLowerCase().contains(FORELDREPENGER.toLowerCase())) {
+                                LOG.debug("Fant type INITIELL fra attributt på OMYTELSE");
+                                return new SøknadEgenskap(
+                                        Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
+                                        INITIELL_FORELDREPENGER);
+                            }
+                            if (type.toLowerCase().contains(ENDRINGSSOEKNAD.toLowerCase())) {
+                                LOG.debug("Fant type ENDRING fra attributt på OMYTELSE");
+                                return new SøknadEgenskap(
+                                        Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
+                                        ENDRING_FORELDREPENGER);
+                            }
+                            if (type.toLowerCase().contains(SVANGERSKAPSPENGER.toLowerCase())) {
+                                LOG.debug("Fant type SVANGERSKAPSPENGER fra attributt på OMYTELSE");
+                                return new SøknadEgenskap(
+                                        Versjon.namespaceFra(reader.getAttributeName(0).getNamespaceURI()),
+                                        SøknadType.INITIELL_SVANGERSKAPSPENGER);
                             }
                         }
                     }

@@ -19,6 +19,9 @@ public abstract class AbstractInspektør implements Inspektør {
     private static final XMLInputFactory FACTORY = XMLInputFactory.newInstance();
     private static final Logger LOG = LoggerFactory.getLogger(AbstractInspektør.class);
 
+    protected AbstractInspektør() {
+    }
+
     protected static Versjon versjonFraXML(String xml) {
         return versjonFra(rootElementNamespace(xml));
     }
