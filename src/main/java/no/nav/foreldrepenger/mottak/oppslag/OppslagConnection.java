@@ -45,7 +45,7 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
     public Person hentSøker() {
         LOG.trace("Henter søker");
         Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
-        søker.aktørId = getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktørId.class);
+        søker.setAktørId(getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktørId.class));
         return søker;
     }
 

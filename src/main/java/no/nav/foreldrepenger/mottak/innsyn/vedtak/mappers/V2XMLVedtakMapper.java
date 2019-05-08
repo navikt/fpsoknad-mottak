@@ -51,9 +51,7 @@ import no.nav.vedtak.felles.xml.vedtak.uttak.fp.v2.UttaksresultatPeriodeAktivite
 
 @Component
 public class V2XMLVedtakMapper implements XMLVedtakMapper {
-
     private static final Logger LOG = LoggerFactory.getLogger(V2XMLVedtakMapper.class);
-
     private static final VedtakV2FPJAXBUtil JAXB_FP = new VedtakV2FPJAXBUtil(true);
     private static final VedtakV2ESJAXBUtil JAXB_ES = new VedtakV2ESJAXBUtil(true);
 
@@ -67,11 +65,11 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
         switch (egenskap.getFagsakType()) {
             case FORELDREPENGER:
                 return Optional.ofNullable(xml)
-                        .map(x -> tilFPVedtak(x))
+                        .map(V2XMLVedtakMapper::tilFPVedtak)
                         .orElse(null);
             case ENGANGSSTØNAD:
                 return Optional.ofNullable(xml)
-                        .map(x -> tilESVedtak(x))
+                        .map(V2XMLVedtakMapper::tilESVedtak)
                         .orElse(null);
             case SVANGERSKAPSPENGER:
                 LOG.warn("Svangerskapspenger vedtak ikke støttet");
@@ -182,7 +180,6 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     }
 
     private static PeriodeAktivitet tilPeriodeAktivitet(UttaksresultatPeriodeAktivitet aktivitet) {
-
         return new PeriodeAktivitet(tilString(aktivitet.getArbeidsforholdid()),
                 tilProsent(aktivitet.getArbeidstidsprosent()),
                 tilAvslagsÅrsak(aktivitet.getAvslagaarsak()),

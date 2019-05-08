@@ -3,10 +3,14 @@ package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilBoolean;
+import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilDoubleFraBigDecimal;
+import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilDoubleFraBigInteger;
+import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilTekst;
 
-import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,9 +50,7 @@ import no.seres.xsd.nav.inntektsmelding_m._20180924.UtsettelseAvForeldrepengerLi
 
 @Component
 public final class InntektsmeldingXMLMapper {
-
     private static final InntektsmeldingJAXBUtil JAXB = new InntektsmeldingJAXBUtil();
-
     private static final Logger LOG = LoggerFactory.getLogger(InntektsmeldingXMLMapper.class);
 
     public Inntektsmelding tilInntektsmelding(String xml) {
@@ -263,20 +265,20 @@ public final class InntektsmeldingXMLMapper {
     }
 
     private static UtsettelsesÅrsak tilUtsettelsesÅrsak(JAXBElement<String> årsak) {
-        if (årsak == null) {
-            return null;
-        }
-        return UtsettelsesÅrsak.valueOf(årsak.getValue());
+        return Optional.ofNullable(årsak)
+                .map(JAXBElement::getValue)
+                .map(UtsettelsesÅrsak::valueOf)
+                .orElse(null);
     }
 
     private static List<LukketPeriode> tilFeriePerioder(JAXBElement<AvtaltFerieListe> perioder) {
         // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyList();
     }
 
     private static String tilId(JAXBElement<String> id) {
         return Optional.ofNullable(id)
-                .map(i -> i.getValue())
+                .map(JAXBElement::getValue)
                 .orElse(null);
     }
 
@@ -289,7 +291,8 @@ public final class InntektsmeldingXMLMapper {
 
     private static BeregnetInntektEndringsÅrsak tilÅrsak(JAXBElement<String> årsak) {
         return Optional.ofNullable(årsak)
-                .map(å -> BeregnetInntektEndringsÅrsak.valueOf(å.getValue()))
+                .map(JAXBElement::getValue)
+                .map(BeregnetInntektEndringsÅrsak::valueOf)
                 .orElse(null);
     }
 
@@ -306,17 +309,14 @@ public final class InntektsmeldingXMLMapper {
     }
 
     private static InnsendingsÅrsak tilInnsendingsÅrsak(String årsak) {
-        if (årsak == null) {
-            return null;
-        }
-        return InnsendingsÅrsak.valueOf(årsak);
+        return Optional.ofNullable(årsak)
+                .map(InnsendingsÅrsak::valueOf)
+                .orElse(null);
     }
 
     private static Ytelse tilYtelse(String ytelse) {
-        if (ytelse == null) {
-            return null;
-        }
-        return Ytelse.valueOf(ytelse);
+        return Optional.ofNullable(ytelse)
+                .map(Ytelse::valueOf)
+                .orElse(null);
     }
-
 }

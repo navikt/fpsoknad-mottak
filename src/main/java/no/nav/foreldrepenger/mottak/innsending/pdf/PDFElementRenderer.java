@@ -1,4 +1,3 @@
-
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.text.Normalizer.Form.NFD;
@@ -24,15 +23,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
+import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+
 @Component
 public class PDFElementRenderer {
-
+    static final float BLANK_LINE = 20f;
     public static final Logger LOG = LoggerFactory.getLogger(PDFElementRenderer.class);
-
     private static final byte[] NAV_LOGO = logo();
-
-    private static final int MARGIN = 40;
-
+    private static final float MARGIN = 40f;
     private static final PDRectangle MEDIABOX = new PDPage(A4).getMediaBox();
 
     public static float calculateStartY() {
@@ -49,11 +47,10 @@ public class PDFElementRenderer {
         List<String> lineList = new ArrayList<>();
         if (str.length() > maxLength) {
             String candidateLine = str.substring(0, maxLength);
-            boolean noSpaceOrLastSpaceInFirstHalf = candidateLine.lastIndexOf(" ") < maxLength / 2;
-            int lastSpace = candidateLine.lastIndexOf(" ");
+            boolean noSpaceOrLastSpaceInFirstHalf = candidateLine.lastIndexOf(' ') < maxLength / 2;
+            int lastSpace = candidateLine.lastIndexOf(' ');
             String line;
             String remainingStr;
-
             if (noSpaceOrLastSpaceInFirstHalf) {
                 line = str.substring(0, maxLength) + "-";
                 remainingStr = str.substring(maxLength);
@@ -63,7 +60,6 @@ public class PDFElementRenderer {
             }
             lineList.add(line);
             lineList.addAll(splitLineIfNecessary(remainingStr, maxLength));
-
             return lineList;
         }
         return Arrays.asList(str);
@@ -78,7 +74,7 @@ public class PDFElementRenderer {
         String encodableLine = normalizeAndRemoveNonencodableChars(line, cos.fontRegular);
         List<String> lines = splitLineIfNecessary(
                 encodableLine,
-                characterLimitInCos(cos.fontRegular, cos.REGULARFONTSIZE, marginOffset));
+                characterLimitInCos(cos.fontRegular, FontAwareCos.REGULARFONTSIZE, marginOffset));
         int lineNumber = 0;
         for (String singleLine : lines) {
             cos.beginText();
@@ -132,7 +128,6 @@ public class PDFElementRenderer {
     public float addLinesOfRegularText(List<String> lines, FontAwareCos cos, float startY)
             throws IOException {
         return addLinesOfRegularText(0, lines, cos, startY);
-
     }
 
     public float addLinesOfRegularText(int marginOffset, List<String> lines, FontAwareCos cos, float startY)
@@ -226,20 +221,16 @@ public class PDFElementRenderer {
         PDImageXObject ximage = PDImageXObject.createFromByteArray(doc, NAV_LOGO, "logo");
         float startX = (MEDIABOX.getWidth() - 99) / 2;
         float offsetTop = 40;
-        startY -= 62 / 2 + offsetTop;
+        startY -= 62f / 2 + offsetTop;
         cos.getCos().drawImage(ximage, startX, startY, 99, 62);
         return 62 + offsetTop;
-    }
-
-    public float addBlankLine() {
-        return 20;
     }
 
     private static byte[] logo() {
         try {
             return StreamUtils.copyToByteArray(new ClassPathResource("/pdf/nav-logo_alphaless.png").getInputStream());
         } catch (IOException ex) {
-            throw new RuntimeException("Error while reading image", ex);
+            throw new UnexpectedInputException("Error while reading image", ex);
         }
     }
 

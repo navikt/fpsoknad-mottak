@@ -1,20 +1,22 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
-import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import javax.inject.Inject;
+
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 
 @Service
 public class InfoskrivPdfGenerator {
@@ -23,10 +25,8 @@ public class InfoskrivPdfGenerator {
     private static final String ALTINN_URL1 = "https://altinn.no/skjemaoversikt/arbeids--og-velferdsetaten-";
     private static final String ALTINN_URL2 = "nav/Inntektsmelding-til-NAV/";
     private static final String NAV_URL = "nav.no/inntektsmelding";
-
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
-
     private static final float STARTY = PDFElementRenderer.calculateStartY();
 
     @Inject
@@ -36,9 +36,8 @@ public class InfoskrivPdfGenerator {
     }
 
     public byte[] generate(Kvittering kvittering, Person søker) {
-
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             String navn = textFormatter.navn(søker);
             PDPage page = newPage();
             doc.addPage(page);
@@ -46,8 +45,9 @@ public class InfoskrivPdfGenerator {
             float y = STARTY;
             y = header(doc, cos, y);
             y -= renderer.addLeftHeading(
-                txt("infoskriv.header",
-                    textFormatter.navn(søker)), cos, y);
+                    txt("infoskriv.header",
+                            textFormatter.navn(søker)),
+                    cos, y);
             y -= renderer.addLineOfRegularText(txt("infoskriv.søkerdata", navn), cos, y);
             y -= tinyBlankLine();
             y -= renderer.addLineOfRegularText(txt("infoskriv1",
@@ -65,14 +65,11 @@ public class InfoskrivPdfGenerator {
             y -= renderer.addDividerLine(cos, y);
             y -= tinyBlankLine();
             y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navn), cos, y);
-
             List<String> opplysninger = new ArrayList<>();
-            opplysninger.add(txt("infoskriv.arbeidstaker", søker.fnr.getFnr()));
+            opplysninger.add(txt("infoskriv.arbeidstaker", søker.getFnr().getFnr()));
             opplysninger.add(txt("infoskriv.ytelse"));
             opplysninger.add(txt("infoskriv.startdato", FMT.format(kvittering.getFørsteDag())));
-
             y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
-
             cos.close();
             doc.save(baos);
             return baos.toByteArray();
@@ -83,7 +80,7 @@ public class InfoskrivPdfGenerator {
     }
 
     private float header(FontAwarePDDocument doc, FontAwareCos cos, float y) throws IOException {
-        return y-= renderer.addLogo(doc, cos, y);
+        return y -= renderer.addLogo(doc, cos, y);
     }
 
     private static PDPage newPage() {
@@ -97,7 +94,4 @@ public class InfoskrivPdfGenerator {
     private float tinyBlankLine() {
         return 10;
     }
-
-
-
 }

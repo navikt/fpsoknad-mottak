@@ -20,15 +20,12 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class MapperEgenskaper {
     private final List<SøknadEgenskap> egenskaper;
-
-    public static MapperEgenskaper SVANGERSKAPSPENGER = new MapperEgenskaper(DEFAULT_SVP_VERSJON,
+    public static final MapperEgenskaper SVANGERSKAPSPENGER = new MapperEgenskaper(DEFAULT_SVP_VERSJON,
             INITIELL_SVANGERSKAPSPENGER);
-    public static MapperEgenskaper UKJENT = new MapperEgenskaper(Versjon.UKJENT, SøknadType.UKJENT);
-
-    public static MapperEgenskaper FORELDREPENGER = new MapperEgenskaper(INITIELL_FORELDREPENGER,
+    public static final MapperEgenskaper UKJENT = new MapperEgenskaper(Versjon.UKJENT, SøknadType.UKJENT);
+    public static final MapperEgenskaper FORELDREPENGER = new MapperEgenskaper(INITIELL_FORELDREPENGER,
             ENDRING_FORELDREPENGER);
-
-    public static MapperEgenskaper ALLE_FORELDREPENGER = new MapperEgenskaper(
+    public static final MapperEgenskaper ALLE_FORELDREPENGER = new MapperEgenskaper(
             new SøknadEgenskap(V1, INITIELL_FORELDREPENGER),
             new SøknadEgenskap(V1, ENDRING_FORELDREPENGER),
             new SøknadEgenskap(V2, INITIELL_FORELDREPENGER),
@@ -74,5 +71,4 @@ public class MapperEgenskaper {
     public String toString() {
         return getClass().getSimpleName() + " [mapperEgenskaper=" + egenskaper + "]";
     }
-
 }

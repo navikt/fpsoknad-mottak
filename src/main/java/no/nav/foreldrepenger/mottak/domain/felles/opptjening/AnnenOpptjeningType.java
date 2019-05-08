@@ -10,7 +10,6 @@ import java.util.List;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public enum AnnenOpptjeningType {
-
     LØNN_UNDER_UTDANNING(V1, V2, V3),
     ETTERLØNN_ARBEIDSGIVER(V1),
     MILITÆR_ELLER_SIVILTJENESTE(V1, V2, V3),
@@ -19,14 +18,10 @@ public enum AnnenOpptjeningType {
     SLUTTPAKKE(V1),
     VENTELØNN_VARTPENGER(V2, V3),
     ETTERLØNN_SLUTTPAKKE(V2, V3);
-
-    public final List<Versjon> versjoner;
-
     AnnenOpptjeningType(Versjon... versjoner) {
         this(asList(versjoner));
     }
 
     AnnenOpptjeningType(List<Versjon> versjoner) {
-        this.versjoner = versjoner;
     }
 }

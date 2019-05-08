@@ -16,9 +16,7 @@ import no.nav.foreldrepenger.mottak.util.jaxb.VedtakV1ESJAXBUtil;
 
 @Component
 public class V1EngangsstønadXMLVedtakMapper implements XMLVedtakMapper {
-
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadXMLVedtakMapper.class);
-
     private static final VedtakV1ESJAXBUtil JAXB = new VedtakV1ESJAXBUtil(true);
 
     @Override
@@ -29,13 +27,13 @@ public class V1EngangsstønadXMLVedtakMapper implements XMLVedtakMapper {
     @Override
     public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
         return Optional.ofNullable(xml)
-                .map(x -> tilVedtak(x))
+                .map(V1EngangsstønadXMLVedtakMapper::tilVedtak)
                 .orElse(null);
     }
 
     private static Vedtak tilVedtak(String xml) {
         try {
-            no.nav.vedtak.felles.xml.vedtak.v1.Vedtak vedtak = unmarshal(xml);
+            unmarshal(xml);
             return new Vedtak(null, null);
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak fra {}", xml, e);
@@ -46,5 +44,4 @@ public class V1EngangsstønadXMLVedtakMapper implements XMLVedtakMapper {
     private static no.nav.vedtak.felles.xml.vedtak.v1.Vedtak unmarshal(String xml) {
         return JAXB.unmarshalToElement(xml, no.nav.vedtak.felles.xml.vedtak.v1.Vedtak.class).getValue();
     }
-
 }

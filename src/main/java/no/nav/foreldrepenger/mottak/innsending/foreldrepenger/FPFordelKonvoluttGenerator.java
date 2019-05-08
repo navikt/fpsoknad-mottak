@@ -34,9 +34,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
 public class FPFordelKonvoluttGenerator {
-
     private static final Logger LOG = LoggerFactory.getLogger(FPFordelKonvoluttGenerator.class);
-
     static final String HOVEDDOKUMENT = "hoveddokument";
     static final String VEDLEGG = "vedlegg";
     static final String METADATA = "metadata";
@@ -54,12 +52,11 @@ public class FPFordelKonvoluttGenerator {
     }
 
     public FPFordelKonvolutt generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         LOG.trace("Genererer payload med oversendelsesid {}", callId());
-        builder.part(METADATA, metadata(søknad, egenskap, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId, egenskap), APPLICATION_XML)
+        builder.part(METADATA, metadata(søknad, egenskap, søker.getAktørId(), callId()), APPLICATION_JSON_UTF8);
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
@@ -67,17 +64,14 @@ public class FPFordelKonvoluttGenerator {
         safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-
         return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));
     }
 
     public FPFordelKonvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
-
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-
-        builder.part(METADATA, metadata(endringsøknad, egenskap, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId, egenskap), APPLICATION_XML)
+        builder.part(METADATA, metadata(endringsøknad, egenskap, søker.getAktørId(), callId()), APPLICATION_JSON_UTF8);
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
@@ -91,10 +85,9 @@ public class FPFordelKonvoluttGenerator {
     public FPFordelKonvolutt generer(Ettersending ettersending, Person søker) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        builder.part(METADATA, metadata(ettersending, søker.aktørId, callId()), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadata(ettersending, søker.getAktørId(), callId()), APPLICATION_JSON_UTF8);
         safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-
         return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));
     }
 
@@ -124,7 +117,6 @@ public class FPFordelKonvoluttGenerator {
                 .generer(new FPFordelMetadata(endringssøknad, egenskap.getType(), aktørId, ref));
         LOG.debug("Metadata for endringssøknad er {}", metadata);
         return metadata;
-
     }
 
     private String metadata(Søknad søknad, SøknadEgenskap egenskap, AktørId aktørId, String ref) {

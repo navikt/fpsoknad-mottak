@@ -12,16 +12,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -31,9 +33,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
 
 @Component
 public class SøknadTextFormatter {
-
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
-
     private final MessageSource landkoder;
     private final MessageSource kvitteringstekster;
     private final Locale locale;
@@ -67,16 +67,19 @@ public class SøknadTextFormatter {
     }
 
     public String navn(Navn navn) {
-        String sammensattnavn = Joiner.on(' ')
-                .skipNulls()
-                .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
+        String sammensattnavn = Stream.of(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn())
+                .map(String::trim)
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining(" "));
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
     }
 
     public String navn(Person søker) {
-        return Optional.ofNullable(søker)
-                .map(s -> Joiner.on(' ').skipNulls().join(s.fornavn, s.mellomnavn, s.etternavn))
+        String sammensattnavn = Stream.of(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())
                 .map(String::trim)
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining(" "));
+        return Optional.ofNullable(sammensattnavn)
                 .orElse("Ukjent");
     }
 

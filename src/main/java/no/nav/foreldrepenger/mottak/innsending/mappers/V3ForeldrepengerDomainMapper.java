@@ -80,18 +80,14 @@ import no.nav.vedtak.felles.xml.soeknad.v3.Soeknad;
 
 @Component
 public class V3ForeldrepengerDomainMapper implements DomainMapper {
-
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V3, ENDRING_FORELDREPENGER,
             INITIELL_FORELDREPENGER);
-
     private static final FPV3JAXBUtil JAXB = new FPV3JAXBUtil();
-
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory FELLES_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.felles.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory SØKNAD_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.uttak.v3.ObjectFactory UTTAK_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.uttak.v3.ObjectFactory();
     private static final no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.ObjectFactory ENDRING_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.ObjectFactory();
-
     private final Oppslag oppslag;
 
     public V3ForeldrepengerDomainMapper(Oppslag oppslag) {
@@ -168,13 +164,11 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(endringssøknad.getYtelse());
         return fordelingFra(ytelse.getFordeling());
-
     }
 
     private static boolean erAnnenForelderUkjent(
             no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder annenForelder) {
-        return annenForelder != null
-                && annenForelder instanceof no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
+        return annenForelder instanceof no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
     }
 
     private static Dekningsgrad dekningsgradFra(
@@ -210,7 +204,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return safeStream(perioder)
                 .map(V3ForeldrepengerDomainMapper::lukketPeriodeFra)
                 .collect(toList());
-
     }
 
     private static List<JAXBElement<Object>> lukketPeriodeVedleggFra(List<String> vedlegg) {
@@ -417,11 +410,9 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static Rettigheter rettigheterFra(
             no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
-
         if (ukjentForelder) {
             return rettigheterForUkjentForelder();
         }
-
         return Optional.ofNullable(rettigheter)
                 .map(V3ForeldrepengerDomainMapper::create)
                 .orElse(null);
@@ -443,7 +434,6 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private AnnenForelder annenForelderFra(
             no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder annenForelder) {
-
         if (erAnnenForelderUkjent(annenForelder)) {
             return new UkjentForelder();
         }
@@ -536,5 +526,4 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     public String toString() {
         return getClass().getSimpleName() + " [oppslag=" + oppslag + ", mapperEgenskaper=" + mapperEgenskaper() + "]";
     }
-
 }

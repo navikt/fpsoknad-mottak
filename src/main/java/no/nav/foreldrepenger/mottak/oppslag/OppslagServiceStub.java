@@ -49,19 +49,10 @@ public class OppslagServiceStub implements Oppslag {
     }
 
     private static Person person() {
-        Person søker = new Person();
-        søker.aktørId = new AktørId("42");
-        søker.bankkonto = new Bankkonto("2000.20.20000", "Store Fiskerbank");
-        søker.fnr = new Fødselsnummer("010101010101");
-        søker.fornavn = "Mor";
-        søker.mellomnavn = "Mellommor";
-        søker.etternavn = "Moro";
-        søker.fødselsdato = LocalDate.now().minusYears(25);
-        søker.kjønn = "K";
-        søker.ikkeNordiskEøsLand = false;
-        søker.land = CountryCode.NO;
-        søker.målform = "NN";
-        return søker;
+        return new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", "K",
+                LocalDate.now().minusYears(25), "NN",
+                CountryCode.NO, false,
+                new Bankkonto("2000.20.20000", "Store Fiskerbank"));
     }
 
     @Override

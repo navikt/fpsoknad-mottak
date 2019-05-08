@@ -415,7 +415,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
         return Optional.ofNullable(type)
                 .map(Virksomhetstyper::getKode)
-                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .filter(not(UKJENT_KODEVERKSVERDI::equals))
                 .map(Virksomhetstype::valueOf)
                 .orElse(null);
     }
@@ -474,7 +474,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static Overføringsårsak tilÅrsak(Overfoeringsaarsaker årsak) {
         return Optional.ofNullable(årsak)
                 .map(Overfoeringsaarsaker::getKode)
-                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .filter(not(UKJENT_KODEVERKSVERDI::equals))
                 .map(Overføringsårsak::valueOf)
                 .orElse(null);
     }
@@ -554,7 +554,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static MorsAktivitet tilMorsAktivitet(MorsAktivitetsTyper morsAktivitetIPerioden) {
         return Optional.ofNullable(morsAktivitetIPerioden)
                 .map(MorsAktivitetsTyper::getKode)
-                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .filter(not(UKJENT_KODEVERKSVERDI::equals))
                 .map(MorsAktivitet::valueOf)
                 .orElse(null);
     }
@@ -562,7 +562,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static StønadskontoType tilStønadKontoType(Uttaksperiodetyper type) {
         return Optional.ofNullable(type)
                 .map(Uttaksperiodetyper::getKode)
-                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .filter(not(UKJENT_KODEVERKSVERDI::equals))
                 .map(StønadskontoType::valueOf)
                 .orElse(null);
     }
@@ -570,7 +570,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static UtsettelsesÅrsak tilÅrsak(Utsettelsesaarsaker aarsak) {
         return Optional.ofNullable(aarsak)
                 .map(Utsettelsesaarsaker::getKode)
-                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .filter(not(UKJENT_KODEVERKSVERDI::equals))
                 .map(UtsettelsesÅrsak::valueOf)
                 .orElse(null);
     }
@@ -578,7 +578,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static Oppholdsårsak tilÅrsak(Oppholdsaarsaker aarsak) {
         return Optional.ofNullable(aarsak)
                 .map(Oppholdsaarsaker::getKode)
-                .filter(not(k -> UKJENT_KODEVERKSVERDI.equals(k)))
+                .filter(not(UKJENT_KODEVERKSVERDI::equals))
                 .map(Oppholdsårsak::valueOf)
                 .orElse(null);
     }

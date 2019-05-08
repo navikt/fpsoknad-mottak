@@ -24,14 +24,11 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.Varslingstyper;
 @Service
 public class VarselXMLGenerator {
     private static final ObjectFactory VARSEL_FACTORY_V1 = new ObjectFactory();
-
     static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel";
     static final String FORNAVN = "FORNAVN";
     static final String DATO = "DATO";
-
     static final String URL = "URL";
     static final String URL_VALUE = "https://foreldrepenger.nav.no";
-
     private final V1VarselJAXBUtil jaxb;
 
     @Inject
@@ -52,7 +49,6 @@ public class VarselXMLGenerator {
     }
 
     private static Varsel tilVarselModel(no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel) {
-
         return new Varsel()
                 .withMottaker(mottaker(varsel.getSøker()))
                 .withVarslingstype(varslingsType())
@@ -61,7 +57,7 @@ public class VarselXMLGenerator {
 
     private static AktoerId mottaker(Person søker) {
         return new AktoerId()
-                .withAktoerId(søker.aktørId.getId());
+                .withAktoerId(søker.getAktørId().getId());
     }
 
     private static Varslingstyper varslingsType() {
@@ -73,7 +69,7 @@ public class VarselXMLGenerator {
         return Arrays.asList(
                 new Parameter()
                         .withKey(FORNAVN)
-                        .withValue(formattertNavn(varsel.getSøker().fornavn)),
+                        .withValue(formattertNavn(varsel.getSøker().getFornavn())),
                 new Parameter()
                         .withKey(DATO)
                         .withValue(formattertDato(varsel.getDato())),
@@ -84,7 +80,7 @@ public class VarselXMLGenerator {
 
     static String formattertNavn(String name) {
         return Optional.ofNullable(name)
-                .map(n -> n.toLowerCase())
+                .map(String::toLowerCase)
                 .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
                 .orElse("");
     }

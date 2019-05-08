@@ -22,19 +22,18 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.Parameter;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Varsel;
 
 class VarselXMLGeneratorTest {
-
     @Test
     void testVarselXMLRoundtrip() throws IOException {
         V1VarselJAXBUtil jaxb = new V1VarselJAXBUtil(true);
         VarselXMLGenerator varselXmlGenerator = new VarselXMLGenerator(jaxb);
         no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel = varsel();
         Varsel v = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(varsel), Varsel.class).getValue();
-        assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.getSøker().aktørId.getId());
+        assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.getSøker().getAktørId().getId());
         assertEquals(VARSEL_TYPE, v.getVarslingstype().getValue());
         List<Parameter> parametre = v.getParameterListe();
         assertEquals(3, parametre.size());
         assertParameter(parametre, DATO, formattertDato(varsel.getDato()));
-        assertParameter(parametre, FORNAVN, formattertNavn(varsel.getSøker().fornavn));
+        assertParameter(parametre, FORNAVN, formattertNavn(varsel.getSøker().getFornavn()));
         assertParameter(parametre, URL, URL_VALUE);
     }
 

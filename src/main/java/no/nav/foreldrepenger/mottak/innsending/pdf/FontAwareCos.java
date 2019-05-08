@@ -9,11 +9,11 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 public class FontAwareCos {
     final PDFont fontRegular;
     final PDFont fontHeading;
-    final int fontHeightRegular;
-    final int fontHeightHeading;
-    final int REGULARFONTSIZE = 11;
+    final float fontHeightRegular;
+    final float fontHeightHeading;
+    static final int REGULARFONTSIZE = 11;
     private final PDPageContentStream cos;
-    private final int HEADINGFONTSIZE = 12;
+    private static final int HEADINGFONTSIZE = 12;
 
     public FontAwareCos(FontAwarePDDocument doc, PDPage page) throws IOException {
         this.cos = new PDPageContentStream(doc, page);
@@ -23,7 +23,7 @@ public class FontAwareCos {
         this.fontHeightHeading = fontHeight(fontHeading, HEADINGFONTSIZE);
     }
 
-    private static int fontHeight(PDFont font, int size) {
+    private static float fontHeight(PDFont font, int size) {
         return Math.round(font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * size);
     }
 

@@ -83,7 +83,7 @@ public enum Versjon {
     private static List<String> allNamespaces() {
         return stream(values())
                 .map(e -> e.namespaces)
-                .flatMap(e -> e.stream())
+                .flatMap(List::stream)
                 .collect(toList());
     }
 

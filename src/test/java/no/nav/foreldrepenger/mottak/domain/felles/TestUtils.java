@@ -44,7 +44,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBar
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class TestUtils {
-
     public static boolean hasPdfSignature(byte[] bytes) {
         return bytes[0] == 0x25 &&
                 bytes[1] == 0x50 &&
@@ -257,19 +256,12 @@ public class TestUtils {
     }
 
     public static Person person() {
-        Person søker = new Person();
-        søker.aktørId = new AktørId("42");
-        søker.bankkonto = new Bankkonto("2000.20.20000", "Store Fiskerbank");
-        søker.fnr = new Fødselsnummer("010101010101");
-        søker.fornavn = "Åse";
-        søker.mellomnavn = "Mañana";
-        søker.etternavn = "Pålsen";
-        søker.fødselsdato = LocalDate.now().minusYears(25);
-        søker.kjønn = "K";
-        søker.ikkeNordiskEøsLand = false;
-        søker.land = CountryCode.NO;
-        søker.målform = "NN";
-        return søker;
+        Person person = new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", "K",
+                LocalDate.now().minusYears(25), "NN",
+                CountryCode.NO, false,
+                new Bankkonto("2000.20.20000", "Store Fiskerbank"));
+        person.setAktørId(new AktørId("42"));
+        return person;
     }
 
     public static String load(String file) throws IOException {

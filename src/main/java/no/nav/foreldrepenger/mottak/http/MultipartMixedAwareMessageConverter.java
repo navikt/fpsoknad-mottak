@@ -42,7 +42,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         partConverters.add(new ByteArrayHttpMessageConverter());
         partConverters.add(stringHttpMessageConverter);
         partConverters.add(new ResourceHttpMessageConverter());
-        applyDefaultCharset();
+        applyTheDefaultCharset();
     }
 
     @Override
@@ -50,14 +50,14 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         return MultiValueMap.class.isAssignableFrom(clazz);
     }
 
-    private boolean isFilenameCharsetSet() {
+    private boolean isTheFilenameCharsetSet() {
         return this.multipartCharset != null;
     }
 
-    private void applyDefaultCharset() {
+    private void applyTheDefaultCharset() {
         safeStream(partConverters)
                 .filter(s -> s instanceof AbstractHttpMessageConverter)
-                .map(s -> AbstractHttpMessageConverter.class.cast(s))
+                .map(AbstractHttpMessageConverter.class::cast)
                 .filter(s -> s.getDefaultCharset() != null)
                 .forEach(s -> s.setDefaultCharset(charset));
     }
@@ -65,16 +65,16 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
     @Override
     public void write(MultiValueMap<String, ?> map, MediaType contentType, HttpOutputMessage outputMessage)
             throws IOException {
-        writeMultipart((MultiValueMap<String, Object>) map, outputMessage);
+        writeTheMultipart((MultiValueMap<String, Object>) map, outputMessage);
     }
 
-    private void writeMultipart(MultiValueMap<String, Object> parts, HttpOutputMessage outputMessage)
+    private void writeTheMultipart(MultiValueMap<String, Object> parts, HttpOutputMessage outputMessage)
             throws IOException {
         byte[] boundary = generateMultipartBoundary();
         LOG.debug("Sender multipart ({} deler)", parts.size());
         Map<String, String> parameters = new HashMap<>(2);
-        parameters.put("boundary", new String(boundary, "US-ASCII"));
-        if (!isFilenameCharsetSet()) {
+        parameters.put("boundary", new String(boundary, StandardCharsets.US_ASCII));
+        if (!isTheFilenameCharsetSet()) {
             parameters.put("charset", this.charset.name());
         }
         HttpHeaders headers = outputMessage.getHeaders();
@@ -82,16 +82,16 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         if (outputMessage instanceof StreamingHttpOutputMessage) {
             StreamingHttpOutputMessage streamingOutputMessage = (StreamingHttpOutputMessage) outputMessage;
             streamingOutputMessage.setBody(outputStream -> {
-                writeParts(outputStream, parts, boundary);
-                writeEnd(outputStream, boundary);
+                writeTheParts(outputStream, parts, boundary);
+                writeTheEnd(outputStream, boundary);
             });
         } else {
-            writeParts(outputMessage.getBody(), parts, boundary);
-            writeEnd(outputMessage.getBody(), boundary);
+            writeTheParts(outputMessage.getBody(), parts, boundary);
+            writeTheEnd(outputMessage.getBody(), boundary);
         }
     }
 
-    private void writeParts(OutputStream os, MultiValueMap<String, Object> parts, byte[] boundary)
+    private void writeTheParts(OutputStream os, MultiValueMap<String, Object> parts, byte[] boundary)
             throws IOException {
         LOG.debug("Sender {} deler", parts.size());
         for (Map.Entry<String, List<Object>> entry : parts.entrySet()) {
@@ -99,14 +99,14 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
             for (Object part : entry.getValue()) {
                 if (part != null) {
                     writeBoundary(os, boundary);
-                    writePart(name, getHttpEntity(part), os);
+                    writeThePart(name, getHttpEntity(part), os);
                     writeNewLine(os);
                 }
             }
         }
     }
 
-    private void writePart(String name, HttpEntity<?> partEntity, OutputStream os) throws IOException {
+    private void writeThePart(String name, HttpEntity<?> partEntity, OutputStream os) throws IOException {
         Object partBody = partEntity.getBody();
         if (partBody == null) {
             throw new IllegalStateException("Intet innhold for del '" + name + "': " + partEntity);
@@ -116,8 +116,8 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         MediaType partContentType = partHeaders.getContentType();
         for (HttpMessageConverter<?> converter : partConverters) {
             if (converter.canWrite(partType, partContentType)) {
-                Charset charset = isFilenameCharsetSet() ? StandardCharsets.US_ASCII : this.charset;
-                HttpOutputMessage multipartMessage = new MultipartHttpOutputMessage(os, charset);
+                Charset chs = isTheFilenameCharsetSet() ? StandardCharsets.US_ASCII : this.charset;
+                HttpOutputMessage multipartMessage = new MultipartHttpOutputMessage(os, chs);
                 multipartMessage.getHeaders().setContentDispositionFormData(name, getFilename(partBody));
                 if (!partHeaders.isEmpty()) {
                     multipartMessage.getHeaders().putAll(partHeaders);
@@ -155,7 +155,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         writeNewLine(os);
     }
 
-    private static void writeEnd(OutputStream os, byte[] boundary) throws IOException {
+    private static void writeTheEnd(OutputStream os, byte[] boundary) throws IOException {
         os.write('-');
         os.write('-');
         os.write(boundary);
