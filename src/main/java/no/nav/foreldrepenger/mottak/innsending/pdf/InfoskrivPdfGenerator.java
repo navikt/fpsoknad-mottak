@@ -4,6 +4,7 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,32 +40,26 @@ public class InfoskrivPdfGenerator {
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             String navn = textFormatter.navn(søker);
+            LocalDate datoInntektsmelding = kvittering.getFørsteInntektsmeldingDag();
             PDPage page = newPage();
             doc.addPage(page);
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = STARTY;
             y = header(doc, cos, y);
-            y -= renderer.addLeftHeading(
-                    txt("infoskriv.header",
-                            textFormatter.navn(søker)),
-                    cos, y);
-            y -= renderer.addLineOfRegularText(txt("infoskriv.søkerdata", navn), cos, y);
-            y -= tinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv1",
-                    FMT.format(kvittering.getFørsteInntektsmeldingDag())), cos, y);
-            y -= tinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv2"), cos, y);
-            y -= tinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv3"), cos, y);
-            y -= renderer.addLineOfRegularText(ALTINN_URL1, cos, y);
-            y -= renderer.addLineOfRegularText(ALTINN_URL2, cos, y);
-            y -= tinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv4", NAV_URL), cos, y);
-            y -= tinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv5"), cos, y);
-            y -= renderer.addDividerLine(cos, y);
-            y -= tinyBlankLine();
+            y -= addBlankLine();
+            y -= renderer.addLeftHeading(txt("infoskriv.header",
+                    tilFristTekst(datoInntektsmelding)), cos, y);
+            y -= addTinyBlankLine();
+            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf1",
+                    navn, tilFristTekst(datoInntektsmelding)), cos, y);
+            y -= addTinyBlankLine();
+            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", NAV_URL), cos, y);
+            y -= addTinyBlankLine();
+            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3"), cos, y);
+            y -= addTinyBlankLine();
+            y -= addBlankLine();
             y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navn), cos, y);
+            y -= addTinyBlankLine();
             List<String> opplysninger = new ArrayList<>();
             opplysninger.add(txt("infoskriv.arbeidstaker", søker.getFnr().getFnr()));
             opplysninger.add(txt("infoskriv.ytelse"));
@@ -91,7 +86,21 @@ public class InfoskrivPdfGenerator {
         return textFormatter.fromMessageSource(key, values);
     }
 
-    private float tinyBlankLine() {
+    private float addTinyBlankLine() {
         return 10;
     }
+
+    private float addBlankLine() {
+        return 20;
+    }
+
+    private String tilFristTekst(LocalDate dato) {
+        if (dato.isBefore(LocalDate.now())) {
+            return "";
+        }
+        return " etter " + FMT.format(dato);
+    }
+
+
+
 }
