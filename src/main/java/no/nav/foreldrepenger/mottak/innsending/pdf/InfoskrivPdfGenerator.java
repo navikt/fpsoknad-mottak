@@ -1,8 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,25 +35,23 @@ public class InfoskrivPdfGenerator {
         this.textFormatter = textFormatter;
     }
 
-    public byte[] generate(Søknad søknad, Person søker) {
+    public byte[] generate(Kvittering kvittering, Person søker) {
 
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            Foreldrepenger ytelse = (Foreldrepenger) søknad.getYtelse();
             String navn = textFormatter.navn(søker);
-
             PDPage page = newPage();
             doc.addPage(page);
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = STARTY;
             y = header(doc, cos, y);
-            float headerSize = STARTY - y;
             y -= renderer.addLeftHeading(
                 txt("infoskriv.header",
-                    textFormatter.navn(søker)), cos, y); // add dato fom
+                    textFormatter.navn(søker)), cos, y);
             y -= renderer.addLineOfRegularText(txt("infoskriv.søkerdata", navn), cos, y);
             y -= tinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv1", FMT.format(søknad.getFørsteUttaksdag())), cos, y);
+            y -= renderer.addLineOfRegularText(txt("infoskriv1",
+                    FMT.format(kvittering.getFørsteInntektsmeldingDag())), cos, y);
             y -= tinyBlankLine();
             y -= renderer.addLineOfRegularText(txt("infoskriv2"), cos, y);
             y -= tinyBlankLine();
@@ -72,7 +69,7 @@ public class InfoskrivPdfGenerator {
             List<String> opplysninger = new ArrayList<>();
             opplysninger.add(txt("infoskriv.arbeidstaker", søker.fnr.getFnr()));
             opplysninger.add(txt("infoskriv.ytelse"));
-            opplysninger.add(txt("infoskriv.startdato", FMT.format(søknad.getFørsteUttaksdag())));
+            opplysninger.add(txt("infoskriv.startdato", FMT.format(kvittering.getFørsteDag())));
 
             y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
 

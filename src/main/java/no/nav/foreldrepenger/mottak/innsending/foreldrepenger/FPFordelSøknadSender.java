@@ -37,7 +37,7 @@ public class FPFordelSøknadSender implements SøknadSender {
         Kvittering kvittering = doSend(egenskap, søknad.getSøknadsRolle(), generator.generer(søknad, søker, egenskap));
         kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
         kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
-        kvittering.setInfoskrivPdf(infoGenerator.generate(søknad, søker));
+        kvittering.setInfoskrivPdf(infoGenerator.generate(kvittering, søker));
         return kvittering;
     }
 
