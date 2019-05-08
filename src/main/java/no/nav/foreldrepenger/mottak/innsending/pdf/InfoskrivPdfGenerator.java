@@ -23,12 +23,11 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 public class InfoskrivPdfGenerator {
     public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfGenerator.class);
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
-    private static final String ALTINN_URL1 = "https://altinn.no/skjemaoversikt/arbeids--og-velferdsetaten-";
-    private static final String ALTINN_URL2 = "nav/Inntektsmelding-til-NAV/";
     private static final String NAV_URL = "nav.no/inntektsmelding";
+    private static final float STARTY = PDFElementRenderer.calculateStartY();
+
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
-    private static final float STARTY = PDFElementRenderer.calculateStartY();
 
     @Inject
     public InfoskrivPdfGenerator(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
