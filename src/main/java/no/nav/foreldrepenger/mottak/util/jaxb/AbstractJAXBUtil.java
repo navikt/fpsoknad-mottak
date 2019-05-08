@@ -42,7 +42,6 @@ public abstract class AbstractJAXBUtil {
     private final Schema schema;
     private final boolean validateMarshalling;
     private final boolean validateUnarshalling;
-    private final SchemaFactory schemaFactory;
 
     public AbstractJAXBUtil(JAXBContext context, boolean validateMarhsalling,
             boolean validateUnmarshalling, String... xsds) {
@@ -50,7 +49,6 @@ public abstract class AbstractJAXBUtil {
         this.schema = schemaFra(xsds);
         this.validateMarshalling = validateMarhsalling;
         this.validateUnarshalling = validateUnmarshalling;
-        this.schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
     }
 
     protected static JAXBContext contextFra(Class<?>... classes) {
@@ -102,9 +100,9 @@ public abstract class AbstractJAXBUtil {
         }
     }
 
-    private Schema schemaFra(String... xsds) {
+    private static Schema schemaFra(String... xsds) {
         try {
-            return schemaFactory.newSchema(sourcesFra(xsds));
+            return SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(sourcesFra(xsds));
         } catch (SAXException e) {
             LOG.warn(
                     "Noe gikk galt med konfigurasjon av skjema fra {}, bruker ikke-validerende marshaller",
