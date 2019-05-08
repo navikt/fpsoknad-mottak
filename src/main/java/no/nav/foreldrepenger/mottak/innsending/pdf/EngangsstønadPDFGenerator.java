@@ -5,6 +5,8 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,7 @@ import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Service
 public class EngangsstønadPDFGenerator implements PDFGenerator {
+    private static DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final SøknadTextFormatter textFormatter;
     private final PDFElementRenderer renderer;
 
@@ -107,7 +110,9 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
         float startY = y;
         y -= renderer.addLogo(doc, cos, y);
         y -= renderer.addCenteredHeading(textFormatter.fromMessageSource("søknad_engang"), cos, y);
-        y -= renderer.addCenteredHeadings(søker(søker), cos, y);
+        y -= renderer.addCenteredRegular(
+            textFormatter.fromMessageSource("mottatt", FMT.format(LocalDateTime.now())), cos, y);
+        y -= renderer.addCenteredRegulars(søker(søker), cos, y);
         y -= renderer.addDividerLine(cos, y);
         return startY - y;
     }
@@ -170,8 +175,9 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> søker(Person søker) {
-        return Arrays.asList(søker.fnr.getFnr(),
-                textFormatter.navn(new Navn(søker.fornavn, søker.mellomnavn, søker.etternavn)));
+        return Arrays.asList(
+            textFormatter.navn(new Navn(søker.fornavn, søker.mellomnavn, søker.etternavn)),
+            textFormatter.fromMessageSource("fødselsnummer", søker.fnr.getFnr()));
     }
 
     private List<String> fødsel(Søknad søknad, Engangsstønad stønad) {
