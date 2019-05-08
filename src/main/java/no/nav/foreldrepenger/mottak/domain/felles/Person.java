@@ -5,6 +5,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Data;
@@ -25,4 +26,25 @@ public class Person {
     private final Boolean ikkeNordiskEøsLand;
     private final Bankkonto bankkonto;
     private  AktørId aktørId;
+    public Person(@JsonProperty("fnr") Fødselsnummer fnr,
+            @JsonProperty("fornavn")  String fornavn,
+            @JsonProperty("mellomnavn")  String mellomnavn,
+            @JsonProperty("etternavn")  String etternavn,
+            @JsonProperty("kjønn") String kjønn,
+            @JsonProperty("fødselsdato") LocalDate fødselsdato,
+            @JsonProperty("målform") String målform, 
+            @JsonProperty("land") CountryCode land, 
+            @JsonProperty("ikkeNordiskEøsLand") Boolean ikkeNordiskEøsLand,
+            @JsonProperty("bankkonto") Bankkonto bankkonto) {
+       this.fnr = fnr;
+       this.fornavn  = fornavn;
+       this.mellomnavn  = mellomnavn;
+       this.etternavn = etternavn;
+       this.kjønn = kjønn;
+       this.fødselsdato = fødselsdato;
+       this.målform = målform;
+       this.land = land;
+       this.ikkeNordiskEøsLand = ikkeNordiskEøsLand;
+       this.bankkonto = bankkonto;
+    }
 }
