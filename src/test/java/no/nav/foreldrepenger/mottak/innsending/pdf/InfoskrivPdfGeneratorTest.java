@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
+import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,7 @@ import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
     MottakConfiguration.class,
     InfoskrivPdfGenerator.class,
     PDFElementRenderer.class,
+    TestConfig.class,
     SøknadTextFormatter.class
 })
 class InfoskrivPdfGeneratorTest {

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
@@ -23,6 +24,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttak
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,17 +42,20 @@ public class InfoskrivPdfGenerator {
 
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
+    private final Oppslag oppslag;
 
     @Inject
-    public InfoskrivPdfGenerator(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
+    public InfoskrivPdfGenerator(PDFElementRenderer renderer, SøknadTextFormatter textFormatter, Oppslag oppslag) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
+        this.oppslag = oppslag;
     }
 
     public byte[] generate(Søknad søknad, Person søker, Kvittering kvittering) {
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Foreldrepenger ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
+            List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
             String navn = textFormatter.navn(søker);
             LocalDate datoInntektsmelding = kvittering.getFørsteInntektsmeldingDag();
             PDPage page = newPage();
@@ -79,7 +84,7 @@ public class InfoskrivPdfGenerator {
             y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
             y -= addBlankLine();
             List<LukketPeriodeMedVedlegg> perioder = sorted(ytelse.getFordeling().getPerioder());
-            List<UtsettelsesPeriode> ferieArbeidsperioder = ferieEllerArbeidsperioder(perioder);
+            List<UtsettelsesPeriode> ferieArbeidsperioder = ferieOgArbeid(perioder);
 
             if (!ferieArbeidsperioder.isEmpty()) {
                 PDPage scratch1 = newPage();
@@ -100,11 +105,11 @@ public class InfoskrivPdfGenerator {
             if (!gradertePerioder.isEmpty()) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderGradertePerioder(gradertePerioder, scratchcos, STARTY);
+                float x = renderGradertePerioder(gradertePerioder, arbeidsforhold, scratchcos, STARTY);
                 float behov = STARTY - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderGradertePerioder(gradertePerioder, cos, y);
+                    y = renderGradertePerioder(gradertePerioder, arbeidsforhold, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos);
                     y = STARTY - behov;
@@ -120,25 +125,38 @@ public class InfoskrivPdfGenerator {
         }
     }
 
-    private float renderGradertePerioder(List<GradertUttaksPeriode> gradertePerioder, FontAwareCos cos, float y) throws IOException {
+    private float renderGradertePerioder(List<GradertUttaksPeriode> gradertePerioder,
+                                         List<Arbeidsforhold> arbeidsforhold, FontAwareCos cos,
+                                         float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.kombinertarbeid"), cos, y);
         y -= addTinyBlankLine();
         for (GradertUttaksPeriode periode : gradertePerioder) {
             y -= renderer.addLineOfRegularText(txt("fom", FMT.format(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", FMT.format(periode.getTom())), cos, y);
-            y -= renderer.addLineOfRegularText(txt("arbeidstidprosent", prosentFra(periode.getArbeidstidProsent())), cos, y);
+            y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()), cos, y);
+            y -= renderer.addLineOfRegularText(txt("arbeidstidprosent",
+                prosentFra(periode.getArbeidstidProsent())), cos, y);
             y -= addTinyBlankLine();
         }
         return y;
     }
 
-    private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder, FontAwareCos cos, float y) throws IOException {
+    private List<String> arbeidsgivere(List<Arbeidsforhold> arbeidsforhold, List<String> virksomhetsnummer) {
+        return arbeidsforhold.stream()
+            .filter(a -> virksomhetsnummer.contains(a))
+            .map(a -> a.getArbeidsgiverNavn())
+            .collect(Collectors.toList());
+    }
+
+    private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder,
+                                             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.utsettelse"), cos, y);
         y -= addTinyBlankLine();
         for (UtsettelsesPeriode periode : ferieArbeidsperioder) {
             y -= renderer.addLineOfRegularText(txt("fom", FMT.format(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", FMT.format(periode.getTom())), cos, y);
-            y -= renderer.addLineOfRegularText(txt("utsettelsesårsak", textFormatter.capitalize(periode.getÅrsak().name())), cos, y);
+            y -= renderer.addLineOfRegularText(txt("utsettelsesårsak",
+                textFormatter.capitalize(periode.getÅrsak().name())), cos, y);
             y -= addTinyBlankLine();
         }
         y -= addBlankLine();
@@ -184,6 +202,7 @@ public class InfoskrivPdfGenerator {
         return perioder.stream()
             .filter(this::isGradertPeriode)
             .map(GradertUttaksPeriode.class::cast)
+            .filter(GradertUttaksPeriode::isErArbeidstaker)
             .collect(Collectors.toList());
     }
 
@@ -191,14 +210,14 @@ public class InfoskrivPdfGenerator {
         return periode instanceof GradertUttaksPeriode;
     }
 
-    private List<UtsettelsesPeriode> ferieEllerArbeidsperioder(List<LukketPeriodeMedVedlegg> periode) {
+    private List<UtsettelsesPeriode> ferieOgArbeid(List<LukketPeriodeMedVedlegg> periode) {
         return periode.stream()
-            .filter(this::isFerieOrArbeidsperiode)
+            .filter(this::isFerieOrArbeid)
             .map(UtsettelsesPeriode.class::cast)
             .collect(Collectors.toList());
     }
 
-    private boolean isFerieOrArbeidsperiode(LukketPeriodeMedVedlegg periode) {
+    private boolean isFerieOrArbeid(LukketPeriodeMedVedlegg periode) {
         if (periode instanceof UtsettelsesPeriode) {
             UtsettelsesÅrsak årsak = UtsettelsesPeriode.class.cast(periode).getÅrsak();
             return årsak.equals(LOVBESTEMT_FERIE) || årsak.equals(ARBEID);
