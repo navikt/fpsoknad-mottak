@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class FPFordelSøknadSender implements SøknadSender {
         kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
         kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
         if (egenskap == SøknadEgenskap.INITIELL_FORELDREPENGER) {
-            kvittering.setInfoskrivPdf(infoGenerator.generate(kvittering, søker));
+            kvittering.setInfoskrivPdf(infoGenerator.generate(søknad, søker, kvittering));
         }
         return kvittering;
     }
