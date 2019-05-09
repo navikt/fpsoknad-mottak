@@ -171,6 +171,8 @@ public class InfoskrivPdfGenerator {
             .orElse(0d);
     }
 
+    // gir NPE når det ikke finnes inntektsmeldingsdato.
+    // fikser når vi vet hvorfor denne er null - mulig bruker ikke skal ha infoskriv
     private String tilFristTekst(LocalDate dato) {
         if (dato.isBefore(LocalDate.now())) {
             return "";
