@@ -143,8 +143,8 @@ public class InfoskrivPdfGenerator {
 
     private List<String> arbeidsgivere(List<Arbeidsforhold> arbeidsforhold, List<String> virksomhetsnummer) {
         return arbeidsforhold.stream()
-            .map(a -> a.getArbeidsgiverNavn())
-            .filter(a -> virksomhetsnummer.contains(a))
+            .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
+            .map(Arbeidsforhold::getArbeidsgiverNavn)
             .collect(Collectors.toList());
     }
 
