@@ -145,6 +145,7 @@ public class InfoskrivPdfGenerator {
         return arbeidsforhold.stream()
             .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
             .map(Arbeidsforhold::getArbeidsgiverNavn)
+            .map(s -> txt("arbeidsgiver", s))
             .collect(Collectors.toList());
     }
 
