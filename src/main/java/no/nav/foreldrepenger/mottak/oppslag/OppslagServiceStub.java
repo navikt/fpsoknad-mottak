@@ -17,6 +17,7 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 
 @Service
@@ -49,7 +50,7 @@ public class OppslagServiceStub implements Oppslag {
     }
 
     private static Person person() {
-        return new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", "K",
+        return new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", Kjønn.K,
                 LocalDate.now().minusYears(25), "NN",
                 CountryCode.NO, false,
                 new Bankkonto("2000.20.20000", "Store Fiskerbank"));

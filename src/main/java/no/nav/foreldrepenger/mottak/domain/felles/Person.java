@@ -19,7 +19,7 @@ public class Person {
     private final String fornavn;
     private final String mellomnavn;
     private final String etternavn;
-    private final String kjønn;
+    private final Kjønn kjønn;
     private final LocalDate fødselsdato;
     private final String målform;
     private final CountryCode land;
@@ -30,7 +30,7 @@ public class Person {
             @JsonProperty("fornavn")  String fornavn,
             @JsonProperty("mellomnavn")  String mellomnavn,
             @JsonProperty("etternavn")  String etternavn,
-            @JsonProperty("kjønn") String kjønn,
+            @JsonProperty("kjønn") Kjønn kjønn,
             @JsonProperty("fødselsdato") LocalDate fødselsdato,
             @JsonProperty("målform") String målform, 
             @JsonProperty("land") CountryCode land, 

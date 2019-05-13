@@ -200,7 +200,7 @@ public class TestUtils {
     }
 
     private static Navn navn() {
-        return new Navn("Mor", "Godhjerta", "Morsen");
+        return new Navn("Mor", "Godhjerta", "Morsen", Kjønn.K);
     }
 
     public static RelasjonTilBarn termin() {
@@ -248,7 +248,7 @@ public class TestUtils {
     }
 
     public static Navn navnUtenMellomnavn() {
-        return new Navn("Mor", null, "Monsen");
+        return new Navn("Mor", null, "Monsen", Kjønn.K);
     }
 
     public static AnnenForelder ukjentForelder() {
@@ -256,7 +256,7 @@ public class TestUtils {
     }
 
     public static Person person() {
-        Person person = new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", "K",
+        Person person = new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", Kjønn.K,
                 LocalDate.now().minusYears(25), "NN",
                 CountryCode.NO, false,
                 new Bankkonto("2000.20.20000", "Store Fiskerbank"));
