@@ -147,7 +147,7 @@ public class FPFordelTest {
         ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, jalla);
         EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(jalla2, jalla1);
         DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
-        InfoskrivPdfGenerator infoGenerator = new InfoskrivPdfGenerator(jalla1, jalla2);
+        InfoskrivPdfGenerator infoGenerator = new InfoskrivPdfGenerator(jalla1, jalla2, oppslag);
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
