@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.FamilieHendelseType;
-import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
 
 @Data
 public class UttaksplanDTO {
@@ -27,7 +26,8 @@ public class UttaksplanDTO {
 
     private final Boolean farMedmorErAleneOmOmsorg;
     private final Boolean farMedmorHarRett;
-    private final List<UttaksPeriode> uttaksPerioder;
+    private final Boolean annenForelderErInformert;
+    private final List<UttaksPeriodeDTO> uttaksPerioder;
 
     @JsonCreator
     public UttaksplanDTO(@JsonProperty("familieHendelseType") FamilieHendelseType familieHendelseType,
@@ -40,7 +40,8 @@ public class UttaksplanDTO {
             @JsonProperty("morErUfør") Boolean morErUfør,
             @JsonProperty("farMedmorErAleneOmOmsorg") Boolean farMedmorErAleneOmOmsorg,
             @JsonProperty("farMedmorHarRett") Boolean farMedmorHarRett,
-            @JsonProperty("uttaksPerioder") List<UttaksPeriode> uttaksPerioder) {
+            @JsonProperty("annenForelderErInformert") Boolean annenForelderErInformert,
+            @JsonProperty("uttaksPerioder") List<UttaksPeriodeDTO> uttaksPerioder) {
         this.familieHendelseType = familieHendelseType;
         this.familieHendelseDato = familieHendelseDato;
         this.dekningsgrad = dekningsgrad;
@@ -51,6 +52,7 @@ public class UttaksplanDTO {
         this.morErUfør = morErUfør;
         this.farMedmorErAleneOmOmsorg = farMedmorErAleneOmOmsorg;
         this.farMedmorHarRett = farMedmorHarRett;
+        this.annenForelderErInformert = annenForelderErInformert;
         this.uttaksPerioder = uttaksPerioder;
     }
 }

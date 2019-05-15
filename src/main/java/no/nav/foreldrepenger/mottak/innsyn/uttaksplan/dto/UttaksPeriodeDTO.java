@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
+package no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto;
 
 import java.time.LocalDate;
 
@@ -14,9 +14,11 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Stønadskont
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 import no.nav.foreldrepenger.mottak.innsyn.GraderingAvslagÅrsak;
 import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UtsettelsePeriodeType;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttakArbeidType;
 
 @Data
-public class UttaksPeriode implements Comparable<UttaksPeriode> {
+public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
 
     private final Oppholdsårsak oppholdAarsak;
     private final Overføringsårsak overfoeringAarsak;
@@ -25,6 +27,8 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
     private final Boolean graderingInnvilget;
     private final Boolean samtidigUttak;
     private final LukketPeriode periode;
+    private final LocalDate fom;
+    private final LocalDate tom;
     private final StønadskontoType stønadskontotype;
     private final Integer trekkDager;
     private final Integer arbeidstidProsent;
@@ -35,9 +39,12 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
     private final Boolean manueltBehandlet;
     private final Integer samtidigUttaksprosent;
     private final UttakArbeidType uttakArbeidType;
-    private final ArbeidsgiverInfo arbeidsgiverInfo;
-   
-    public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdAarsak,
+    private final AktørId arbeidsgiverAktoerId;
+    @Orgnr
+    private final String arbeidsgiverOrgnr;
+    
+
+    public UttaksPeriodeDTO(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdAarsak,
             @JsonProperty("overfoeringAarsak") Overføringsårsak overfoeringAarsak,
             @JsonProperty("graderingAvslagAarsak") GraderingAvslagÅrsak graderingAvslagAarsak,
             @JsonProperty("utsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
@@ -55,7 +62,8 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
             @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
             @JsonProperty("flerbarnsdager") Boolean flerbarnsdager,
             @JsonProperty("uttakArbeidType") UttakArbeidType uttakArbeidType,
-            @JsonProperty("arbeidsgiverInfo") ArbeidsgiverInfo arbeidsgiverInfo) {
+            @JsonProperty("arbeidsgiverOrgnr") String arbeidsgiverOrgnr,
+            @JsonProperty("arbeidsgiverAktoerId") AktørId arbeidsgiverAktoerId) {
         this.oppholdAarsak = oppholdAarsak;
         this.overfoeringAarsak = overfoeringAarsak;
         this.utsettelsePeriodeType = utsettelsePeriodeType;
@@ -73,11 +81,14 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
         this.samtidigUttaksprosent = samtidigUttaksprosent;
         this.flerbarnsdager = flerbarnsdager;
         this.uttakArbeidType = uttakArbeidType;
-        this.arbeidsgiverInfo = arbeidsgiverInfo;
+        this.fom = fom;
+        this.tom = tom;
+        this.arbeidsgiverOrgnr = arbeidsgiverOrgnr;
+        this.arbeidsgiverAktoerId = arbeidsgiverAktoerId;
     }
 
     @Override
-    public int compareTo(UttaksPeriode other) {
+    public int compareTo(UttaksPeriodeDTO other) {
         return this.getPeriode().getFom().compareTo(other.getPeriode().getFom());
     }
 }

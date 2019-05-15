@@ -9,19 +9,17 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "innsyn")
 @Configuration
 public class InnsynConfig {
-
     private static final URI DEFAULT_URI = URI.create("http://fpinfo");
     private static final String DEFAULT_BASE_PATH = "fpinfo/api/dokumentforsendelse/";
     private static final String DEFAULT_PING_PATH = "fpinfo/internal/isReady";
-
     static final String AKTOR_ID = "aktorId";
     static final String SAKSNUMMER = "saksnummer";
+    static final String ORGNR = "orgnr";
     static final String BEHANDLING_ID = "behandlingId";
     static final String SØKNAD = DEFAULT_BASE_PATH + "søknad";
     static final String SAK = DEFAULT_BASE_PATH + "sak";
     static final String UTTAKSPLAN = DEFAULT_BASE_PATH + "uttaksplan";
     static final String BEHANDLING = DEFAULT_BASE_PATH + "behandling";
-
     String pingPath;
     boolean enabled;
     URI uri;
@@ -65,5 +63,4 @@ public class InnsynConfig {
                 + ", basePath=" + basePath
                 + "]";
     }
-
 }

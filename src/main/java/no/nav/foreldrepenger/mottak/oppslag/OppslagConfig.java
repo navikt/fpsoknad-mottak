@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "oppslag")
 @Configuration
 public class OppslagConfig {
+    static final String ORGNR = "orgnr";
     private static final String AKTØR = "oppslag/aktor";
     private static final String AKTØRFNR = "oppslag/aktorfnr";
     private static final String FNR = "oppslag/fnr";
     private static final String PERSON = "person";
     private static final String PERSONNAVN = "person/navn";
     private static final String ARBEID = "arbeidsforhold";
+    private static final String ORGNAVN = ARBEID + "/navn";
     private static final URI DEFAULT_BASE_URI = URI.create("http://fpsoknad-oppslag/api");
     private static final String DEFAULT_PING_PATH = "actuator/info";
     private String pingPath;
@@ -26,6 +28,10 @@ public class OppslagConfig {
     private String arbeidsforholdPath;
     private boolean enabled;
     private URI baseURI;
+
+    public String getOrgNavnPath() {
+        return ORGNAVN;
+    }
 
     public String getPersonNavnPath() {
         return Optional.ofNullable(personNavnPath).orElse(PERSONNAVN);

@@ -23,6 +23,8 @@ public class SøknadsGrunnlag {
 
     private final Boolean farMedmorErAleneOmOmsorg;
     private final Boolean farMedmorHarRett;
+    private final Boolean annenForelderErInformert;
+
 
     @JsonCreator
     public SøknadsGrunnlag(@JsonProperty("familieHendelseType") FamilieHendelseType familieHendelseType,
@@ -34,7 +36,8 @@ public class SøknadsGrunnlag {
             @JsonProperty("morHarRett") Boolean morHarRett,
             @JsonProperty("morErUfør") Boolean morErUfør,
             @JsonProperty("farMedmorErAleneOmOmsorg") Boolean farMedmorErAleneOmOmsorg,
-            @JsonProperty("farMedmorHarRett") Boolean farMedmorHarRett) {
+            @JsonProperty("farMedmorHarRett") Boolean farMedmorHarRett,
+            @JsonProperty("annenForelderErInformert") Boolean annenForelderErInformert) {
         this.familieHendelseType = familieHendelseType;
         this.familieHendelseDato = familieHendelseDato;
         this.dekningsgrad = dekningsgrad;
@@ -45,5 +48,6 @@ public class SøknadsGrunnlag {
         this.morErUfør = morErUfør;
         this.farMedmorErAleneOmOmsorg = farMedmorErAleneOmOmsorg;
         this.farMedmorHarRett = farMedmorHarRett;
+        this.annenForelderErInformert = annenForelderErInformert;
     }
 }

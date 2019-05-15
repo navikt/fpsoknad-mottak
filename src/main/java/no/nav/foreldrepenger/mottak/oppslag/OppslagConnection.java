@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
 import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.oppslag.OppslagConfig.ORGNR;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
@@ -70,6 +71,11 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
                 Arbeidsforhold[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
+    }
+
+    public String organisasjonsNavn(String orgnr) {
+        LOG.trace("Henter navn for organisasjon {}", orgnr);
+        return getForObject(uri(cfg.getBaseURI(), cfg.getOrgNavnPath(), queryParams(ORGNR, orgnr)), String.class);
     }
 
     @Override
