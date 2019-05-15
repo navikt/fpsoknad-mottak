@@ -111,6 +111,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     private UttaksPeriode map(UttaksPeriodeDTO periode) {
+        LOG.trace("Mapper periode {}", periode);
         return Optional.ofNullable(periode)
                 .map(p -> new UttaksPeriode(p.getOppholdAarsak(), p.getOverfoeringAarsak(),
                         p.getGraderingAvslagAarsak(),
@@ -127,6 +128,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     }
 
     private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
+        LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
         return Optional.ofNullable(orgnr)
                 .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslag.organisasjonsNavn(orgnr)))
                 .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId).map(AktørId::getId).orElse(null), PRIVAT,
