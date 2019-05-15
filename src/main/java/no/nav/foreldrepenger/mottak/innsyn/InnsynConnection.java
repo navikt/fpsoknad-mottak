@@ -129,7 +129,8 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
         return Optional.ofNullable(orgnr)
                 .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslag.organisasjonsNavn(orgnr)))
-                .orElse(new ArbeidsgiverInfo(aktørId.getId(), PRIVAT, null));
+                .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId).map(AktørId::getId).orElse(null), PRIVAT,
+                        null));
     }
 
     @Override
