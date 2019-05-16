@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
+import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinctByKey;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -25,7 +27,12 @@ import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverInfo;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.SøknadsGrunnlag;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksPeriodeDTO;
+import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
@@ -33,9 +40,7 @@ import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
-
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
-
     private final XMLSøknadHandler søknadHandler;
     private final XMLVedtakHandler vedtakHandler;
     private final OppslagConnection oppslagConnection;
@@ -74,7 +79,9 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public Uttaksplan hentUttaksplan(String saksnummer) {
-        return innsynConnection.hentUttaksplan(saksnummer);
+        return Optional.ofNullable(innsynConnection.hentUttaksplan(saksnummer))
+                .map(this::map)
+                .orElse(null);
     }
 
     @Override
@@ -184,7 +191,6 @@ public class InnsynTjeneste implements Innsyn {
             LOG.warn("Kunne ikke slå opp navn for annen part for {}", fnr);
             return null;
         }
-
     }
 
     private Fødselsnummer fnr(String aktørId) {
@@ -275,10 +281,55 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
     }
 
+    private Uttaksplan map(UttaksplanDTO dto) {
+        SøknadsGrunnlag grunnlag = new SøknadsGrunnlag(dto.getFamilieHendelseType(), dto.getFamilieHendelseDato(),
+                dto.getDekningsgrad(), dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(),
+                dto.getMorHarRett(), dto.getMorErUfør(), dto.getFarMedmorErAleneOmOmsorg(), dto.getFarMedmorHarRett(),
+                dto.getAnnenForelderErInformert());
+        return new Uttaksplan(grunnlag, map(dto.getUttaksPerioder()));
+    }
+
+    private List<UttaksPeriode> map(List<UttaksPeriodeDTO> perioder) {
+        return safeStream(perioder)
+                .map(this::map)
+                .collect(toList());
+    }
+
+    private UttaksPeriode map(UttaksPeriodeDTO periode) {
+        LOG.trace("Mapper periode {}", periode);
+        return Optional.ofNullable(periode)
+                .map(p -> new UttaksPeriode(p.getOppholdAarsak(), p.getOverfoeringAarsak(),
+                        p.getGraderingAvslagAarsak(),
+                        p.getUtsettelsePeriodeType(),
+                        p.getPeriodeResultatType(),
+                        p.getGraderingInnvilget(),
+                        p.getSamtidigUttak(),
+                        p.getFom(),
+                        p.getTom(),
+                        p.getStønadskontotype(),
+                        p.getTrekkDager(),
+                        p.getArbeidstidProsent(),
+                        p.getUtbetalingprosent(),
+                        p.getGjelderAnnenPart(),
+                        p.getManueltBehandlet(),
+                        p.getSamtidigUttaksprosent(),
+                        p.getFlerbarnsdager(),
+                        p.getUttakArbeidType(),
+                        map(periode.getArbeidsgiverAktoerId(), periode.getArbeidsgiverOrgnr())))
+                .orElse(null);
+    }
+
+    private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
+        LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
+        return Optional.ofNullable(orgnr)
+                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslagConnection.organisasjonsNavn(o)))
+                .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId).map(AktørId::getId).orElse(null), PRIVAT,
+                        null));
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [søknadHandler=" + søknadHandler + ", vedtakHandler=" + vedtakHandler
                 + ", innsynConnection=" + innsynConnection + "]";
     }
-
 }
