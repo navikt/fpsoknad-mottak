@@ -120,7 +120,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                         p.getSamtidigUttak(),
                         p.getFom(), p.getTom(), p.getStønadskontotype(), p.getTrekkDager(),
                         p.getArbeidstidProsent(),
-                        p.getArbeidstidProsent(), p.getGjelderAnnenPart(), p.getManueltBehandlet(),
+                        p.getUtbetalingprosent(), p.getGjelderAnnenPart(), p.getManueltBehandlet(),
                         p.getSamtidigUttaksprosent(),
                         p.getFlerbarnsdager(), p.getUttakArbeidType(),
                         map(periode.getArbeidsgiverAktoerId(), periode.getArbeidsgiverOrgnr())))
