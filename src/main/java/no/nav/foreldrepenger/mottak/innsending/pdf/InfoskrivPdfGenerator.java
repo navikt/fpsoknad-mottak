@@ -67,12 +67,19 @@ public class InfoskrivPdfGenerator {
             y -= renderer.addLeftHeading(txt("infoskriv.header",
                     tilFristTekst(datoInntektsmelding)), cos, y);
             y -= addTinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf1",
-                    navn, tilFristTekst(datoInntektsmelding)), cos, y);
+
+            if (kanSendeInntektsmelding(datoInntektsmelding)) {
+                y -= renderer.addLineOfRegularText(
+                    txt("infoskriv.paragraf1.passert", navn), cos, y);
+            } else {
+                y -= renderer.addLineOfRegularText(
+                    txt("infoskriv.paragraf1.passert", navn, FMT.format(datoInntektsmelding)), cos, y);
+            }
+
             y -= addTinyBlankLine();
             y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", NAV_URL), cos, y);
             y -= addTinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3"), cos, y);
+            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3", fornavn(navn)), cos, y);
             y -= addTinyBlankLine();
             y -= addBlankLine();
             y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navn), cos, y);
@@ -184,19 +191,21 @@ public class InfoskrivPdfGenerator {
         return 20;
     }
 
-    private static double prosentFra(ProsentAndel prosent) {
+    private static String prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
             .map(ProsentAndel::getProsent)
-            .orElse(0d);
+            .map(p -> p.intValue() + " %")
+            .orElse("Ukjent");
     }
 
     // gir NPE når det ikke finnes inntektsmeldingsdato.
     // fikser når vi vet hvorfor denne er null - mulig bruker ikke skal ha infoskriv
     private String tilFristTekst(LocalDate dato) {
-        if (dato.isBefore(LocalDate.now())) {
-            return "";
-        }
-        return " etter " + FMT.format(dato);
+        return kanSendeInntektsmelding(dato) ? "" : " etter " + FMT.format(dato);
+    }
+
+    private boolean kanSendeInntektsmelding(LocalDate dato) {
+        return dato.isBefore(LocalDate.now().plusDays(1));
     }
 
     private List<GradertUttaksPeriode> tilGradertePerioder(List<LukketPeriodeMedVedlegg> perioder) {
@@ -238,5 +247,13 @@ public class InfoskrivPdfGenerator {
         doc.addPage(scratch);
         cos = scratchcos;
         return cos;
+    }
+
+    static String fornavn(String name) {
+        return Optional.ofNullable(name)
+            .map(String::toLowerCase)
+            .map(n -> n.substring(0, n.indexOf(" ")))
+            .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
+            .orElse("");
     }
 }
