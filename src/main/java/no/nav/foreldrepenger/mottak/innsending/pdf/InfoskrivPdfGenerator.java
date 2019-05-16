@@ -58,6 +58,11 @@ public class InfoskrivPdfGenerator {
             List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
             String navn = textFormatter.navn(søker);
             LocalDate datoInntektsmelding = kvittering.getFørsteInntektsmeldingDag();
+
+            if (arbeidsforhold.isEmpty()) { // vi avbryter hvis bruker ikke har arbeidsgivere
+                return null;
+            }
+
             PDPage page = newPage();
             doc.addPage(page);
             FontAwareCos cos = new FontAwareCos(doc, page);
@@ -90,6 +95,7 @@ public class InfoskrivPdfGenerator {
             opplysninger.add(txt("infoskriv.startdato", FMT.format(kvittering.getFørsteDag())));
             y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
             y -= addBlankLine();
+
             List<LukketPeriodeMedVedlegg> perioder = sorted(ytelse.getFordeling().getPerioder());
             List<UtsettelsesPeriode> ferieArbeidsperioder = ferieOgArbeid(perioder);
 
