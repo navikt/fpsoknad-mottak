@@ -33,14 +33,14 @@ class InfoskrivPdfGeneratorTest {
     @Test
     void testInfoskriv() throws Exception {
 
-        Kvittering kvittering = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
-        kvittering.setFørsteDag(LocalDate.now());
-        kvittering.setFørsteInntektsmeldingDag(LocalDate.now().minusWeeks(4));
+        //Kvittering kvittering = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
+        //kvittering.setFørsteDag(LocalDate.now());
+        //kvittering.setFørsteInntektsmeldingDag(LocalDate.now().minusWeeks(4));
 
         Søknad søknad = ForeldrepengerTestUtils.foreldrepengeSøknad(Versjon.DEFAULT_VERSJON);
 
         try (FileOutputStream fos = new FileOutputStream("infoskriv.pdf")) {
-            fos.write(gen.generate(søknad, person(), kvittering));
+            fos.write(gen.generate(søknad, person()));
         }
 
     }

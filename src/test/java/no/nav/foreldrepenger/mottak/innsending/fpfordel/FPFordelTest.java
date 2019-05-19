@@ -64,16 +64,16 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvi
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelResponseHandler;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelSøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
+import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
+import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
@@ -144,10 +144,10 @@ public class FPFordelTest {
         SøknadTextFormatter jalla2 = new SøknadTextFormatter(mottakConfig.landkoder(),
                 mottakConfig.kvitteringstekster());
         ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
-        ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, jalla);
+        InfoskrivRenderer infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
+        ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, jalla, infoskrivRenderer);
         EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(jalla2, jalla1);
         DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
-        InfoskrivPdfGenerator infoGenerator = new InfoskrivPdfGenerator(jalla1, jalla2, oppslag);
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
@@ -157,7 +157,7 @@ public class FPFordelTest {
         return new FPFordelSøknadSender(
                 new FPFordelConnection(restOperations, cfg,
                         new FPFordelResponseHandler(restOperations, 3, 10000, poller), registry),
-                konvoluttGenerator, infoGenerator);
+                konvoluttGenerator);
     }
 
     private static ResponseEntity<FPFordelKvittering> gosysReceipt() {

@@ -31,10 +31,12 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private final Oppslag oppslag;
     private final ForeldrepengeInfoRenderer fpRenderer;
+    private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer) {
+    public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer, InfoskrivRenderer infoskrivRenderer) {
         this.oppslag = oppslag;
         this.fpRenderer = fpRenderer;
+        this.infoskrivRenderer = infoskrivRenderer;
     }
 
     @Override
@@ -220,6 +222,10 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                             søknad.getVedlegg(),
                             stønad.getRelasjonTilBarn().getAntallBarn(), false,
                             cos, y);
+                }
+
+                if (!arbeidsforhold.isEmpty()) {
+                    cos = infoskrivRenderer.renderInfoskriv(arbeidsforhold, søker, søknad, cos, doc);
                 }
             }
             cos.close();

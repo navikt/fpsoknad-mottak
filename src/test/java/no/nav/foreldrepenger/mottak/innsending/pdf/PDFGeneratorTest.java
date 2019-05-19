@@ -39,6 +39,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         ForeldrepengerPDFGenerator.class,
         EngangsstønadPDFGenerator.class,
         SvangerskapspengerPDFGenerator.class,
+        InfoskrivRenderer.class,
         SvangerskapspengerInfoRenderer.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 

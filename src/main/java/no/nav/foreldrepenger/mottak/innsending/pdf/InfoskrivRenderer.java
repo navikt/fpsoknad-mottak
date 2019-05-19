@@ -1,10 +1,19 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,127 +23,98 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-
-@Service
-public class InfoskrivPdfGenerator {
-    public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfGenerator.class);
+@Component
+public class InfoskrivRenderer {
+    public static final Logger LOG = LoggerFactory.getLogger(InfoskrivRenderer.class);
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
+    private final PDFElementRenderer renderer;
+    private final SøknadTextFormatter textFormatter;
+
     private static final String NAV_URL = "nav.no/inntektsmelding";
     private static final float STARTY = PDFElementRenderer.calculateStartY();
 
-    private final PDFElementRenderer renderer;
-    private final SøknadTextFormatter textFormatter;
-    private final Oppslag oppslag;
 
-    @Inject
-    public InfoskrivPdfGenerator(PDFElementRenderer renderer, SøknadTextFormatter textFormatter, Oppslag oppslag) {
+    public InfoskrivRenderer(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
-        this.oppslag = oppslag;
     }
 
-    public byte[] generate(Søknad søknad, Person søker) {
-        try (FontAwarePDDocument doc = new FontAwarePDDocument();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            Foreldrepenger ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
-            List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
-            String navn = textFormatter.navn(søker);
-            LocalDate datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
 
-            if (arbeidsforhold.isEmpty()) { // vi avbryter hvis bruker ikke har arbeidsgivere
-                return null;
-            }
+    FontAwareCos renderInfoskriv(List<Arbeidsforhold> arbeidsforhold, Person søker, Søknad søknad, FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
+        String navn = textFormatter.navn(søker);
+        LocalDate datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
+        Foreldrepenger ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
 
-            PDPage page = newPage();
-            doc.addPage(page);
-            FontAwareCos cos = new FontAwareCos(doc, page);
-            float y = STARTY;
-            y = header(doc, cos, y);
-            y -= addBlankLine();
-            y -= renderer.addLeftHeading(txt("infoskriv.header",
-                    tilFristTekst(datoInntektsmelding)), cos, y);
-            y -= addTinyBlankLine();
+        FontAwareCos cos = nySide(doc, cosOriginal);
 
-            if (kanSendeInntektsmelding(datoInntektsmelding)) {
-                y -= renderer.addLineOfRegularText(
-                    txt("infoskriv.paragraf1.passert", navn), cos, y);
-            } else {
-                y -= renderer.addLineOfRegularText(
-                    txt("infoskriv.paragraf1.passert", navn, FMT.format(datoInntektsmelding)), cos, y);
-            }
+        float y = STARTY;
+        y = header(doc, cos, y);
+        y -= addBlankLine();
+        y -= renderer.addLeftHeading(txt("infoskriv.header",
+            tilFristTekst(datoInntektsmelding)), cos, y);
+        y -= addTinyBlankLine();
 
-            y -= addTinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", NAV_URL), cos, y);
-            y -= addTinyBlankLine();
-            y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3", fornavn(navn)), cos, y);
-            y -= addTinyBlankLine();
-            y -= addBlankLine();
-            y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navn), cos, y);
-            y -= addTinyBlankLine();
-            List<String> opplysninger = new ArrayList<>();
-            opplysninger.add(txt("infoskriv.arbeidstaker", søker.getFnr().getFnr()));
-            opplysninger.add(txt("infoskriv.ytelse"));
-            opplysninger.add(txt("infoskriv.startdato", FMT.format(søknad.getFørsteUttaksdag())));
-            y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
-            y -= addBlankLine();
-
-            List<LukketPeriodeMedVedlegg> perioder = sorted(ytelse.getFordeling().getPerioder());
-            List<UtsettelsesPeriode> ferieArbeidsperioder = ferieOgArbeid(perioder);
-
-            if (!ferieArbeidsperioder.isEmpty()) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderFerieArbeidsperioder(ferieArbeidsperioder, scratchcos, STARTY);
-                float behov = STARTY - x;
-                if (behov < y) {
-                    scratchcos.close();
-                    y = renderFerieArbeidsperioder(ferieArbeidsperioder, cos, y);
-                } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos);
-                    y = STARTY - behov;
-                }
-            }
-
-            List<GradertUttaksPeriode> gradertePerioder = tilGradertePerioder(perioder);
-
-            if (!gradertePerioder.isEmpty()) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderGradertePerioder(gradertePerioder, arbeidsforhold, scratchcos, STARTY);
-                float behov = STARTY - x;
-                if (behov < y) {
-                    scratchcos.close();
-                    y = renderGradertePerioder(gradertePerioder, arbeidsforhold, cos, y);
-                } else {
-                    cos = nySide(doc, cos, scratch1, scratchcos);
-                    y = STARTY - behov;
-                }
-            }
-
-            cos.close();
-            doc.save(baos);
-            return baos.toByteArray();
-        } catch (Exception e) {
-            LOG.warn("Generering av infoskrivPdf feilet, produserer ikke infoskriv til arbeidsgiver", e);
-            return null;
+        if (kanSendeInntektsmelding(datoInntektsmelding)) {
+            y -= renderer.addLineOfRegularText(
+                txt("infoskriv.paragraf1.passert", navn), cos, y);
+        } else {
+            y -= renderer.addLineOfRegularText(
+                txt("infoskriv.paragraf1.passert", navn, FMT.format(datoInntektsmelding)), cos, y);
         }
+
+        y -= addTinyBlankLine();
+        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", NAV_URL), cos, y);
+        y -= addTinyBlankLine();
+        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3", fornavn(navn)), cos, y);
+        y -= addTinyBlankLine();
+        y -= addBlankLine();
+        y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navn), cos, y);
+        y -= addTinyBlankLine();
+        List<String> opplysninger = new ArrayList<>();
+        opplysninger.add(txt("infoskriv.arbeidstaker", søker.getFnr().getFnr()));
+        opplysninger.add(txt("infoskriv.ytelse"));
+        opplysninger.add(txt("infoskriv.startdato", FMT.format(søknad.getFørsteUttaksdag())));
+        y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
+        y -= addBlankLine();
+
+        List<LukketPeriodeMedVedlegg> perioder = sorted(ytelse.getFordeling().getPerioder());
+        List<UtsettelsesPeriode> ferieArbeidsperioder = ferieOgArbeid(perioder);
+
+        if (!ferieArbeidsperioder.isEmpty()) {
+            PDPage scratch1 = newPage();
+            FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+            float x = renderFerieArbeidsperioder(ferieArbeidsperioder, scratchcos, STARTY);
+            float behov = STARTY - x;
+            if (behov < y) {
+                scratchcos.close();
+                y = renderFerieArbeidsperioder(ferieArbeidsperioder, cos, y);
+            } else {
+                cos = nySide(doc, cos, scratch1, scratchcos);
+                y = STARTY - behov;
+            }
+        }
+
+        List<GradertUttaksPeriode> gradertePerioder = tilGradertePerioder(perioder);
+
+        if (!gradertePerioder.isEmpty()) {
+            PDPage scratch1 = newPage();
+            FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+            float x = renderGradertePerioder(gradertePerioder, arbeidsforhold, scratchcos, STARTY);
+            float behov = STARTY - x;
+            if (behov < y) {
+                scratchcos.close();
+                y = renderGradertePerioder(gradertePerioder, arbeidsforhold, cos, y);
+            } else {
+                cos = nySide(doc, cos, scratch1, scratchcos);
+                y = STARTY - behov;
+            }
+        }
+
+        return cos;
     }
 
     private float renderGradertePerioder(List<GradertUttaksPeriode> gradertePerioder,
@@ -252,6 +232,13 @@ public class InfoskrivPdfGenerator {
         doc.addPage(scratch);
         cos = scratchcos;
         return cos;
+    }
+
+    private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos) throws IOException {
+        cos.close();
+        PDPage newPage = newPage();
+        doc.addPage(newPage);
+        return new FontAwareCos(doc, newPage);
     }
 
     static String fornavn(String name) {
