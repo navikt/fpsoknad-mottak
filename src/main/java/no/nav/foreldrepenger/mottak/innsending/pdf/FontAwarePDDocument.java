@@ -9,6 +9,8 @@ import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.xmpbox.XMPMetadata;
 import org.apache.xmpbox.schema.DublinCoreSchema;
 import org.apache.xmpbox.schema.PDFAIdentificationSchema;
@@ -30,10 +32,18 @@ public class FontAwarePDDocument extends PDDocument {
     private final PDFont regularFont;
     private final PDFont boldFont;
 
+    private final PDDocumentOutline outline = new PDDocumentOutline();
+
     FontAwarePDDocument() {
         regularFont = load(REGULAR);
         boldFont = load(BOLD);
         setPdfMetadata(this);
+        this.getDocumentCatalog().setDocumentOutline(outline);
+        setPagesOutline();
+    }
+
+    PDDocumentOutline getOutline() {
+        return outline;
     }
 
     PDFont getRegularFont() {
@@ -84,6 +94,12 @@ public class FontAwarePDDocument extends PDDocument {
         } catch (Exception e) {
             LOG.warn("Setting PDF metadata failed, ignoring error. ", e);
         }
+    }
+
+    private void setPagesOutline() {
+        PDOutlineItem pagesOutline = new PDOutlineItem();
+        pagesOutline.setTitle("Søknad");
+        outline.addLast(pagesOutline);
     }
 
     @Override
