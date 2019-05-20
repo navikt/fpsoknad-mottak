@@ -34,6 +34,8 @@ public class FontAwarePDDocument extends PDDocument {
 
     private final PDDocumentOutline outline = new PDDocumentOutline();
 
+    private PDOutlineItem pagesOutline;
+
     FontAwarePDDocument() {
         regularFont = load(REGULAR);
         boldFont = load(BOLD);
@@ -42,16 +44,16 @@ public class FontAwarePDDocument extends PDDocument {
         setPagesOutline();
     }
 
-    PDDocumentOutline getOutline() {
-        return outline;
-    }
-
     PDFont getRegularFont() {
         return regularFont;
     }
 
     PDFont getBoldFont() {
         return boldFont;
+    }
+
+    PDOutlineItem getPagesOutline() {
+        return pagesOutline;
     }
 
     private synchronized PDFont load(Resource res) throws UnexpectedInputException {
@@ -97,7 +99,7 @@ public class FontAwarePDDocument extends PDDocument {
     }
 
     private void setPagesOutline() {
-        PDOutlineItem pagesOutline = new PDOutlineItem();
+        pagesOutline = new PDOutlineItem();
         pagesOutline.setTitle("Søknad");
         outline.addLast(pagesOutline);
     }

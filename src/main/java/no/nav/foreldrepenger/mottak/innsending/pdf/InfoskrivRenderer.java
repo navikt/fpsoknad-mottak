@@ -9,6 +9,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttak
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
+import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +46,16 @@ public class InfoskrivRenderer {
 
 
     FontAwareCos renderInfoskriv(List<Arbeidsforhold> arbeidsforhold, Person søker, Søknad søknad, FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
+        if (søknad.getFørsteInntektsmeldingDag() == null) {
+            LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
+            return cosOriginal;
+        }
+
         String navn = textFormatter.navn(søker);
         LocalDate datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
         Foreldrepenger ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
 
-        FontAwareCos cos = nySide(doc, cosOriginal);
+        FontAwareCos cos = førstesideInfoskriv(doc, cosOriginal);
 
         float y = STARTY;
         y = header(doc, cos, y);
@@ -87,13 +93,13 @@ public class InfoskrivRenderer {
         if (!ferieArbeidsperioder.isEmpty()) {
             PDPage scratch1 = newPage();
             FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-            float x = renderFerieArbeidsperioder(ferieArbeidsperioder, scratchcos, STARTY);
+            float x = renderFerieArbeidsperioder(ferieArbeidsperioder, arbeidsforhold, scratchcos, STARTY);
             float behov = STARTY - x;
             if (behov < y) {
                 scratchcos.close();
-                y = renderFerieArbeidsperioder(ferieArbeidsperioder, cos, y);
+                y = renderFerieArbeidsperioder(ferieArbeidsperioder, arbeidsforhold, cos, y);
             } else {
-                cos = nySide(doc, cos, scratch1, scratchcos);
+                cos = førstesideInfoskriv(doc, cos, scratch1, scratchcos);
                 y = STARTY - behov;
             }
         }
@@ -109,7 +115,7 @@ public class InfoskrivRenderer {
                 scratchcos.close();
                 y = renderGradertePerioder(gradertePerioder, arbeidsforhold, cos, y);
             } else {
-                cos = nySide(doc, cos, scratch1, scratchcos);
+                cos = førstesideInfoskriv(doc, cos, scratch1, scratchcos);
                 y = STARTY - behov;
             }
         }
@@ -142,12 +148,14 @@ public class InfoskrivRenderer {
     }
 
     private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder,
+                                             List<Arbeidsforhold> arbeidsforhold,
                                              FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.utsettelse"), cos, y);
         y -= addTinyBlankLine();
         for (UtsettelsesPeriode periode : ferieArbeidsperioder) {
             y -= renderer.addLineOfRegularText(txt("fom", FMT.format(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", FMT.format(periode.getTom())), cos, y);
+            y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()), cos, y);
             y -= renderer.addLineOfRegularText(txt("utsettelsesårsak",
                 textFormatter.capitalize(periode.getÅrsak().name())), cos, y);
             y -= addTinyBlankLine();
@@ -226,18 +234,19 @@ public class InfoskrivRenderer {
         return perioder;
     }
 
-    private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
-                                FontAwareCos scratchcos) throws IOException {
+    private FontAwareCos førstesideInfoskriv(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
+                                             FontAwareCos scratchcos) throws IOException {
         cos.close();
         doc.addPage(scratch);
         cos = scratchcos;
         return cos;
     }
 
-    private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos) throws IOException {
+    private FontAwareCos førstesideInfoskriv(FontAwarePDDocument doc, FontAwareCos cos) throws IOException {
         cos.close();
         PDPage newPage = newPage();
         doc.addPage(newPage);
+        renderer.addOutlineItem(doc, newPage, "Informasjon til arbeidsgiver(e)");
         return new FontAwareCos(doc, newPage);
     }
 

@@ -17,6 +17,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageFitWidthDestination;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -232,6 +235,15 @@ public class PDFElementRenderer {
         } catch (IOException ex) {
             throw new UnexpectedInputException("Error while reading image", ex);
         }
+    }
+
+    public void addOutlineItem(FontAwarePDDocument doc, PDPage page, String title) {
+        PDPageDestination dest = new PDPageFitWidthDestination();
+        dest.setPage(page);
+        PDOutlineItem bookmark = new PDOutlineItem();
+        bookmark.setDestination(dest);
+        bookmark.setTitle(title);
+        doc.getPagesOutline().addLast(bookmark);
     }
 
     public float addBulletList(List<String> lines, FontAwareCos cos, float y) throws IOException {

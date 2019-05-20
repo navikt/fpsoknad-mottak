@@ -856,4 +856,8 @@ public class ForeldrepengeInfoRenderer {
     public String toString() {
         return getClass().getSimpleName() + " [renderer=" + renderer + ", textFormatter=" + textFormatter + "]";
     }
+
+    public void addOutlineItem(FontAwarePDDocument doc, PDPage page, String title) {
+        renderer.addOutlineItem(doc, page, title);
+    }
 }

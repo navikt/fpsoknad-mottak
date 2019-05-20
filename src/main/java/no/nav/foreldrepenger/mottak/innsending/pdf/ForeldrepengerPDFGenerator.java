@@ -9,6 +9,9 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageFitWidthDestination;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -65,6 +68,9 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PDPage page = newPage();
             doc.addPage(page);
+
+            fpRenderer.addOutlineItem(doc, page, "Søknad om foreldrepenger");
+
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = yTop;
             y = fpRenderer.header(søker, doc, cos, false, y);
