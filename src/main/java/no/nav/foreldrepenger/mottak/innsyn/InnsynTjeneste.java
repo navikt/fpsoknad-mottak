@@ -309,7 +309,7 @@ public class InnsynTjeneste implements Innsyn {
                         p.getStønadskontotype(),
                         p.getTrekkDager(),
                         p.getArbeidstidProsent(),
-                        p.getUtbetalingprosent(),
+                        p.getUtbetalingsprosent(),
                         p.getGjelderAnnenPart(),
                         p.getManueltBehandlet(),
                         p.getSamtidigUttaksprosent(),

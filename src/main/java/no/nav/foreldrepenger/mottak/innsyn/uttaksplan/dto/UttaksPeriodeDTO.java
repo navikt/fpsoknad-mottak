@@ -32,7 +32,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
     private final StønadskontoType stønadskontotype;
     private final Integer trekkDager;
     private final Integer arbeidstidProsent;
-    private final Integer utbetalingprosent;
+    private final Integer utbetalingsprosent;
     private final Boolean gjelderAnnenPart;
     private final GraderingAvslagÅrsak graderingAvslagAarsak;
     private final Boolean flerbarnsdager;
@@ -56,7 +56,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
             @JsonProperty("stønadskontotype") @JsonAlias("trekkonto") StønadskontoType stønadskontotype,
             @JsonProperty("trekkDager") Integer trekkDager,
             @JsonProperty("arbeidstidprosent") Integer arbeidstidProsent,
-            @JsonProperty("utbetalingprosent") Integer utbetalingprosent,
+            @JsonProperty("utbetalingsprosent") Integer utbetalingsprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
             @JsonProperty("manueltBehandlet") Boolean manueltBehandlet,
             @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
@@ -74,7 +74,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
         this.stønadskontotype = stønadskontotype;
         this.trekkDager = trekkDager;
         this.arbeidstidProsent = arbeidstidProsent;
-        this.utbetalingprosent = utbetalingprosent;
+        this.utbetalingsprosent = utbetalingsprosent;
         this.gjelderAnnenPart = gjelderAnnenPart;
         this.graderingAvslagAarsak = graderingAvslagAarsak;
         this.manueltBehandlet = manueltBehandlet;
