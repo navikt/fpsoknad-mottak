@@ -37,7 +37,6 @@ public class InfoskrivPdfExtracter {
         pe.setStartPage(page);
         PDDocument infodoc = pe.extract();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        doc.close();
         infodoc.save(baos);
         return baos.toByteArray();
     }
