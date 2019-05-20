@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
@@ -140,7 +141,7 @@ public class InfoskrivRenderer {
     }
 
     private List<String> arbeidsgivere(List<Arbeidsforhold> arbeidsforhold, List<String> virksomhetsnummer) {
-        return arbeidsforhold.stream()
+        return safeStream(arbeidsforhold)
             .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
             .map(Arbeidsforhold::getArbeidsgiverNavn)
             .map(s -> txt("arbeidsgiver", s))
