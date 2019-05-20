@@ -132,7 +132,7 @@ public class InfoskrivRenderer {
         for (GradertUttaksPeriode periode : gradertePerioder) {
             y -= renderer.addLineOfRegularText(txt("fom", FMT.format(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", FMT.format(periode.getTom())), cos, y);
-            if (!periode.getVirksomhetsnummer().isEmpty()) {
+            if (periode.getVirksomhetsnummer() != null) {
                 y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()), cos, y);
             }
             y -= renderer.addLineOfRegularText(txt("arbeidstidprosent",
@@ -158,7 +158,7 @@ public class InfoskrivRenderer {
         for (UtsettelsesPeriode periode : ferieArbeidsperioder) {
             y -= renderer.addLineOfRegularText(txt("fom", FMT.format(periode.getFom())), cos, y);
             y -= renderer.addLineOfRegularText(txt("tom", FMT.format(periode.getTom())), cos, y);
-            if (!periode.getVirksomhetsnummer().isEmpty()) {
+            if (periode.getVirksomhetsnummer() != null) {
                 y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()), cos, y);
             }
             y -= renderer.addLineOfRegularText(txt("utsettelsesårsak",
