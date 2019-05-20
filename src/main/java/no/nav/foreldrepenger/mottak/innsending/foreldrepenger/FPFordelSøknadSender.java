@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfExtracter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,12 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator generator;
+    private final InfoskrivPdfExtracter pdfExtracter;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator) {
+    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator, InfoskrivPdfExtracter pdfExtracter) {
         this.connection = connection;
         this.generator = generator;
+        this.pdfExtracter = pdfExtracter;
     }
 
     @Override
@@ -33,9 +36,9 @@ public class FPFordelSøknadSender implements SøknadSender {
         Kvittering kvittering = doSend(egenskap, søknad.getSøknadsRolle(), generator.generer(søknad, søker, egenskap));
         kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
         kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
-        //if (egenskap == SøknadEgenskap.INITIELL_FORELDREPENGER) {
-          //  kvittering.setInfoskrivPdf(infoskrivRenderer.generate(søknad, søker));
-        //}
+        if (egenskap == SøknadEgenskap.INITIELL_FORELDREPENGER) {
+            kvittering.setInfoskrivPdf(pdfExtracter.extractInfoskriv(kvittering.getPdf()));
+        }
         return kvittering;
     }
 
