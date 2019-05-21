@@ -88,7 +88,8 @@ node {
                             message: "Unable to deploy ${application} version ${releaseVersion} to Q1. See https://jira.adeo.no/browse/${deploy} for details"
                         ])
                         throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", ex)
-                    }           
+                    }
+            }                   
     }
 
     stage('Deploy to Prod') {
