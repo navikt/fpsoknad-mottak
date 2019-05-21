@@ -94,8 +94,12 @@ public class FPFordelKonvoluttGenerator {
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {
         LOG.info("Legger til vedlegg av type {} og størrelse {}", vedlegg.getDokumentType(),
                 vedlegg.getStørrelse());
-        builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
-                .headers(headers(vedlegg, contentId));
+        if (vedlegg.getStørrelse() == 0) {
+            LOG.warn("Vedlegg {} har størrelse 0, kan ikke sendes", vedlegg);
+        } else {
+            builder.part(VEDLEGG, vedlegg.getVedlegg(), APPLICATION_PDF)
+                    .headers(headers(vedlegg, contentId));
+        }
     }
 
     private static VedleggHeaderConsumer headers(Vedlegg vedlegg, AtomicInteger contentId) {
