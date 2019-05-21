@@ -84,7 +84,7 @@ public abstract class Vedlegg {
     @JsonIgnore
     public long getStørrelse() {
         return Optional.ofNullable(vedlegg)
-                .map(v -> vedlegg.length)
+                .map(v -> v.length)
                 .orElse(0);
     }
 
