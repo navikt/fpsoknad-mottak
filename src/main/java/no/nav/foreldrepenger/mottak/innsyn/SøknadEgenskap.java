@@ -14,8 +14,9 @@ import no.nav.foreldrepenger.mottak.util.Pair;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class SøknadEgenskap {
+    public static final String FØRSTEGANGSSØKNAD = "Førstegangssøknad";
+    public static final String ENDRINGSSØKNAD = "Endringssøknad";
     Pair<Versjon, SøknadType> egenskap;
-
     public static final SøknadEgenskap INITIELL_SVANGERSKAPSPENGER = new SøknadEgenskap(
             SøknadType.INITIELL_SVANGERSKAPSPENGER);
     public static final SøknadEgenskap ETTERSENDING_SVANGERSKAPSPENGER = new SøknadEgenskap(
@@ -29,7 +30,6 @@ public class SøknadEgenskap {
     public static final SøknadEgenskap INITIELL_ENGANGSSTØNAD = new SøknadEgenskap(
             SøknadType.INITIELL_ENGANGSSTØNAD);
     public static final SøknadEgenskap ENDRING_FORELDREPENGER = new SøknadEgenskap(SøknadType.ENDRING_FORELDREPENGER);
-
     public static final SøknadEgenskap DOKMOT_ES_V1 = new SøknadEgenskap(V1, SøknadType.INITIELL_ENGANGSSTØNAD_DOKMOT);
     public static final SøknadEgenskap UKJENT = new SøknadEgenskap(Versjon.UKJENT, SøknadType.UKJENT);
 

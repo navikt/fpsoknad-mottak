@@ -1,8 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRINGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.FØRSTEGANGSSØKNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -29,6 +30,7 @@ import no.nav.foreldrepenger.mottak.innsending.varsel.Varsel;
 import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.oidc.api.ProtectedWithClaims;
 import no.nav.security.oidc.api.Unprotected;
@@ -37,11 +39,8 @@ import no.nav.security.oidc.api.Unprotected;
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @RestController
 public class SøknadController {
-
     private static final Logger LOG = LoggerFactory.getLogger(SøknadController.class);
-
     public static final String INNSENDING = "/mottak";
-
     private final Innsyn innsyn;
     private final Oppslag oppslag;
     private final SøknadSender søknadSender;
@@ -60,24 +59,20 @@ public class SøknadController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         SøknadEgenskap søknadEgenskap = inspektør.inspiser(søknad);
-        if (søknadEgenskap == INITIELL_SVANGERSKAPSPENGER) {
-            return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), søknadEgenskap),
-                "Førstegangssøknad", false);
-        }
         return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), søknadEgenskap),
-            "Førstegangssøknad");
+                FØRSTEGANGSSØKNAD, varsleHvisVellykket(søknadEgenskap));
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
         return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.getSøker(),
-            inspektør.inspiser(ettersending)), "Ettersending", false);
+                inspektør.inspiser(ettersending)), "Ettersending", false);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
         return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER),
-            "Endringssøknad");
+                ENDRINGSSØKNAD);
     }
 
     @GetMapping("/ping")
@@ -90,6 +85,10 @@ public class SøknadController {
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
         return innsyn.hentSaker(oppslag.getAktørId());
+    }
+
+    private static boolean varsleHvisVellykket(SøknadEgenskap søknadEgenskap) {
+        return søknadEgenskap != INITIELL_SVANGERSKAPSPENGER;
     }
 
     private Kvittering sjekkStatus(Kvittering kvittering, String type) {
