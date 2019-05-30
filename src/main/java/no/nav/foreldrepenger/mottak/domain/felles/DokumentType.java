@@ -26,12 +26,18 @@ public enum DokumentType {
     I000062("Terminbekreftelse"),
     I000063("Fødselsattest"),
     I000065("Bekreftelse fra arbeidsgiver"),
+    I000107("Skjema for tilrettelegging og omplassering ved graviditet"),
+    I000108("Dokumentasjon av aleneomsorg"),
+    I000109("Dokumentasjon av begrunnelse for hvorfor man søker tilbake i tid"),
+    I000110("Dokumentasjon av deltakelse i introduksjonsprogrammet"),
     I500002("Ettersendelse til søknad om foreldrepenger ved adopsjon"),
     I500003("Ettersendelse til søknad om engangsstønad ved fødsel"),
     I500004("Ettersendelse til søknad om engangsstønad ved adopsjon"),
     I500005("Ettersendelse til søknad om foreldrepenger ved fødsel"),
     I500006("Ettersendelse til utsettelse eller gradert uttak av foreldrepenger (fleksibelt uttak)"),
     I500050("Ettersendelse til søknad om endring av uttak av foreldrepenger eller overføring av kvote");
+
+
 
     public final String beskrivelse;
 
