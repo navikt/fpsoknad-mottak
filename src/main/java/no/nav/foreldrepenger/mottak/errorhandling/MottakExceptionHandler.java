@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -94,18 +93,13 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
             List<Object> messages) {
-        ApiError apiError = apiErrorFra(status, e, req, messages);
+        ApiError apiError = apiErrorFra(status, e, messages);
         LOG.warn("{} {} ({})", status, apiError.getMessages(), status.value(), e);
         return handleExceptionInternal(e, apiError, headers, status, req);
     }
 
-    private static ApiError apiErrorFra(HttpStatus status, Exception e, WebRequest req, List<Object> messages) {
-        return req instanceof ServletWebRequest ? new ApiError(status, e, destFra(req), messages)
-                : new ApiError(status, e, messages);
-    }
-
-    private static String destFra(WebRequest req) {
-        return ServletWebRequest.class.cast(req).getRequest().getRequestURI();
+    private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {
+        return new ApiError(status, e, messages);
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {

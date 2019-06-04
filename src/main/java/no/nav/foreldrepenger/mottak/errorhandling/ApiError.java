@@ -8,6 +8,7 @@ import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 
@@ -29,10 +30,6 @@ class ApiError {
     }
 
     ApiError(HttpStatus status, Throwable t, List<Object> objects) {
-        this(status, t, null, objects);
-    }
-
-    ApiError(HttpStatus status, Throwable t, String destination, List<Object> objects) {
         this.timestamp = LocalDateTime.now();
         this.status = status;
         this.messages = messages(t, objects);
@@ -59,7 +56,7 @@ class ApiError {
         List<Object> messages = Lists.newArrayList(objects);
         messages.add(getMostSpecificCause(t).getMessage());
         return messages.stream()
-                .filter(s -> s != null)
+                .filter(Objects::nonNull)
                 .map(Object::toString)
                 .collect(toList());
     }

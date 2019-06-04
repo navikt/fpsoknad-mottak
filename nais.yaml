@@ -1,5 +1,5 @@
 name: fpsoknad-mottak
-team: bris
+team: teamforeldrepenger
 image: repo.adeo.no:5443/fpsoknad-mottak
 replicas:
     min: 2
