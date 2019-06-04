@@ -9,7 +9,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttak
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
-import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,21 +34,19 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 @Component
 public class InfoskrivRenderer {
     public static final Logger LOG = LoggerFactory.getLogger(InfoskrivRenderer.class);
-    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.uuuu");
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
 
     private static final String NAV_URL = "nav.no/inntektsmelding";
     private static final float STARTY = PDFElementRenderer.calculateStartY();
 
-
     public InfoskrivRenderer(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
     }
 
-
-    FontAwareCos renderInfoskriv(List<Arbeidsforhold> arbeidsforhold, Person søker, Søknad søknad, FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
+    FontAwareCos renderInfoskriv(List<Arbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
+                                 FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
         if (søknad.getFørsteInntektsmeldingDag() == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
             return cosOriginal;
@@ -62,15 +62,15 @@ public class InfoskrivRenderer {
         y = header(doc, cos, y);
         y -= addBlankLine();
         y -= renderer.addLeftHeading(txt("infoskriv.header",
-            tilFristTekst(datoInntektsmelding)), cos, y);
+            fristTekstFra(datoInntektsmelding)), cos, y);
         y -= addTinyBlankLine();
 
-        if (kanSendeInntektsmelding(datoInntektsmelding)) {
+        if (!erSperreFristPassert(datoInntektsmelding)) {
             y -= renderer.addLineOfRegularText(
-                txt("infoskriv.paragraf1.passert", navn), cos, y);
+                txt("infoskriv.paragraf1", navn, fristTekstFra(datoInntektsmelding)), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(
-                txt("infoskriv.paragraf1.passert", navn, FMT.format(datoInntektsmelding)), cos, y);
+                txt("infoskriv.paragraf1.passert", navn), cos, y);
         }
 
         y -= addTinyBlankLine();
@@ -84,7 +84,7 @@ public class InfoskrivRenderer {
         List<String> opplysninger = new ArrayList<>();
         opplysninger.add(txt("infoskriv.arbeidstaker", søker.getFnr().getFnr()));
         opplysninger.add(txt("infoskriv.ytelse"));
-        opplysninger.add(txt("infoskriv.startdato", FMT.format(søknad.getFørsteUttaksdag())));
+        opplysninger.add(txt("infoskriv.startdato", formattertDato(søknad.getFørsteUttaksdag())));
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);
         y -= addBlankLine();
 
@@ -130,10 +130,11 @@ public class InfoskrivRenderer {
         y -= renderer.addLineOfRegularText(txt("svp.kombinertarbeid"), cos, y);
         y -= addTinyBlankLine();
         for (GradertUttaksPeriode periode : gradertePerioder) {
-            y -= renderer.addLineOfRegularText(txt("fom", FMT.format(periode.getFom())), cos, y);
-            y -= renderer.addLineOfRegularText(txt("tom", FMT.format(periode.getTom())), cos, y);
+            y -= renderer.addLineOfRegularText(txt("fom", formattertDato(periode.getFom())), cos, y);
+            y -= renderer.addLineOfRegularText(txt("tom", formattertDato(periode.getTom())), cos, y);
             if (periode.getVirksomhetsnummer() != null) {
-                y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()), cos, y);
+                y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()),
+                    cos, y);
             }
             y -= renderer.addLineOfRegularText(txt("arbeidstidprosent",
                 prosentFra(periode.getArbeidstidProsent())), cos, y);
@@ -156,10 +157,11 @@ public class InfoskrivRenderer {
         y -= renderer.addLineOfRegularText(txt("svp.utsettelse"), cos, y);
         y -= addTinyBlankLine();
         for (UtsettelsesPeriode periode : ferieArbeidsperioder) {
-            y -= renderer.addLineOfRegularText(txt("fom", FMT.format(periode.getFom())), cos, y);
-            y -= renderer.addLineOfRegularText(txt("tom", FMT.format(periode.getTom())), cos, y);
+            y -= renderer.addLineOfRegularText(txt("fom", formattertDato(periode.getFom())), cos, y);
+            y -= renderer.addLineOfRegularText(txt("tom", formattertDato(periode.getTom())), cos, y);
             if (periode.getVirksomhetsnummer() != null) {
-                y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()), cos, y);
+                y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()),
+                    cos, y);
             }
             y -= renderer.addLineOfRegularText(txt("utsettelsesårsak",
                 textFormatter.capitalize(periode.getÅrsak().name())), cos, y);
@@ -171,6 +173,13 @@ public class InfoskrivRenderer {
 
     private float header(FontAwarePDDocument doc, FontAwareCos cos, float y) throws IOException {
         return y -= renderer.addLogo(doc, cos, y);
+    }
+
+    private static String formattertDato(LocalDate date) {
+        return date.format(DateTimeFormatter
+            .ofLocalizedDate(FormatStyle.LONG)
+            .withLocale(Locale.forLanguageTag("nb"))
+            .withZone(ZoneId.systemDefault()));
     }
 
     private static PDPage newPage() {
@@ -198,12 +207,12 @@ public class InfoskrivRenderer {
 
     // gir NPE når det ikke finnes inntektsmeldingsdato.
     // fikser når vi vet hvorfor denne er null - mulig bruker ikke skal ha infoskriv
-    private String tilFristTekst(LocalDate dato) {
-        return kanSendeInntektsmelding(dato) ? "" : " etter " + FMT.format(dato);
+    private String fristTekstFra(LocalDate dato) {
+        return erSperreFristPassert(dato) ? "" : " etter " + formattertDato(dato);
     }
 
-    private boolean kanSendeInntektsmelding(LocalDate dato) {
-        return dato.isBefore(LocalDate.now().plusDays(1));
+    private boolean erSperreFristPassert(LocalDate fristDato) {
+        return fristDato.isBefore(LocalDate.now().plusDays(1));
     }
 
     private List<GradertUttaksPeriode> tilGradertePerioder(List<LukketPeriodeMedVedlegg> perioder) {

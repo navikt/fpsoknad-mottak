@@ -40,6 +40,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         EngangsstønadPDFGenerator.class,
         SvangerskapspengerPDFGenerator.class,
         InfoskrivRenderer.class,
+        InfoskrivPdfExtracter.class,
         SvangerskapspengerInfoRenderer.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 
@@ -51,6 +52,9 @@ public class PDFGeneratorTest {
     @Autowired
     @Qualifier(DELEGERENDE)
     PDFGenerator gen;
+
+    @Autowired
+    InfoskrivPdfExtracter pdfExtracter;
 
     @Test
     public void signature() {
@@ -87,6 +91,18 @@ public class PDFGeneratorTest {
     public void svanger() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("svangerskapspenger.pdf")) {
             fos.write(gen.generate(svp(), person(), INITIELL_SVANGERSKAPSPENGER));
+        }
+    }
+
+    @Test
+    public void infoskrivSplitter() throws Exception {
+        try (FileOutputStream fos = new FileOutputStream("infoskriv.pdf")) {
+            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
+            søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
+            byte[] fullSøknadPdf = gen.generate(søknad, person(), INITIELL_FORELDREPENGER);
+            byte[] infoskriv = pdfExtracter.extractInfoskriv(fullSøknadPdf);
+            fos.write(infoskriv);
+            assertTrue(hasPdfSignature(infoskriv));
         }
     }
 }

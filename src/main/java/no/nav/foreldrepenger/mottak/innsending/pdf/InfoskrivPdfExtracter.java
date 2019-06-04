@@ -22,17 +22,17 @@ public class InfoskrivPdfExtracter {
         try (PDDocument doc = PDDocument.load(pdf)) {
             PDDocumentOutline outline = doc.getDocumentCatalog().getDocumentOutline();
             PDOutlineNode node = outline.getFirstChild();
-            int splitFrom = infoskrivStartpage(node);
-            if (splitFrom > -1) {
-                return extractPagesFromPdf(doc, splitFrom);
+            int startpageExtraction = infoskrivStartpage(node);
+            if (startpageExtraction > -1) {
+                return extractPagesFrom(doc, startpageExtraction);
             }
         } catch (IOException e) {
-            LOG.warn("Feil ved ekstrahering av infoskriv fra søknadspdf, dropper infoskriv", e);
+            LOG.warn("Feil ved ekstrahering fra søknadspdf, dropper infoskriv", e);
         }
         return null;
     }
 
-    private static byte[] extractPagesFromPdf(PDDocument doc, int page) throws IOException {
+    private static byte[] extractPagesFrom(PDDocument doc, int page) throws IOException {
         PageExtractor pe = new PageExtractor(doc);
         pe.setStartPage(page);
         PDDocument infodoc = pe.extract();
@@ -51,7 +51,7 @@ public class InfoskrivPdfExtracter {
                 }
             }
         } catch (IOException swallow) {
-            LOG.warn("Ingen PDPageDestination på noden, defaulter til ingen treff på søk etter infoskriv");
+            LOG.warn("Feil ved leting etter PDPageDestination på noden, defaulter til ingen treff");
         }
         return -1;
     }
