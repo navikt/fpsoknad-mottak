@@ -1,17 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 public enum PdfOutlineItems {
-    SØKNAD("Søknad"),
-    INFOSKRIV("Informasjon til arbeidsgiver(e)");
+    SØKNAD_OUTLINE("Søknad"),
+    FORELDREPENGER_OUTLINE("Søknad om foreldrepenger"),
+    INFOSKRIV_OUTLINE("Informasjon til arbeidsgiver(e)");
 
     private String title;
 
-    PdfOutlineItems(String dekode) {
-        this.title = dekode;
+    PdfOutlineItems(String title) {
+        this.title = title;
     }
 
     public String getTitle() {
         return title;
     }
-
 }

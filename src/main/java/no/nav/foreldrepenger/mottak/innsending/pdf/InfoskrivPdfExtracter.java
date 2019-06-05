@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItems.INFOSKRIV;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItems.INFOSKRIV_OUTLINE;
 
 @Component
 public class InfoskrivPdfExtracter {
@@ -46,7 +46,7 @@ public class InfoskrivPdfExtracter {
     private static int infoskrivStartpage(PDOutlineNode bm) {
         try {
             for (PDOutlineItem node : bm.children()) {
-                if (node.getTitle().equals(INFOSKRIV.getTitle())) {
+                if (node.getTitle().equals(INFOSKRIV_OUTLINE.getTitle())) {
                     PDPageDestination destination = (PDPageDestination) node.getDestination();
                     return destination.retrievePageNumber() + 1;
                 }
