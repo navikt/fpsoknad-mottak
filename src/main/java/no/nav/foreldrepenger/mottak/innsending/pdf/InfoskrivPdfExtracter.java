@@ -13,10 +13,11 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItems.INFOSKRIV;
+
 @Component
 public class InfoskrivPdfExtracter {
     public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfExtracter.class);
-    private final static String INFOSKRIV_OUTLINETITLE = "Informasjon til arbeidsgiver(e)";
 
     public byte[] extractInfoskriv(byte[] pdf) {
         try (PDDocument doc = PDDocument.load(pdf)) {
@@ -45,7 +46,7 @@ public class InfoskrivPdfExtracter {
     private static int infoskrivStartpage(PDOutlineNode bm) {
         try {
             for (PDOutlineItem node : bm.children()) {
-                if (node.getTitle().equals(INFOSKRIV_OUTLINETITLE)) {
+                if (node.getTitle().equals(INFOSKRIV.getTitle())) {
                     PDPageDestination destination = (PDPageDestination) node.getDestination();
                     return destination.retrievePageNumber() + 1;
                 }
@@ -55,4 +56,6 @@ public class InfoskrivPdfExtracter {
         }
         return -1;
     }
+
+
 }
