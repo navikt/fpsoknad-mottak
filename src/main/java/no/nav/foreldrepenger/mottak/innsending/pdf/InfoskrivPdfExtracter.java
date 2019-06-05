@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItems.INFOSKRIV_OUTLINE;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
 
 @Component
 public class InfoskrivPdfExtracter {

@@ -22,7 +22,7 @@ import org.springframework.core.io.Resource;
 
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItems.SØKNAD_OUTLINE;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.SØKNAD_OUTLINE;
 
 public class FontAwarePDDocument extends PDDocument {
     private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
