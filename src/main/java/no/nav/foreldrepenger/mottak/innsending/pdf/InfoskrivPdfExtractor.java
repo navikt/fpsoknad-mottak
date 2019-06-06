@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InfoskrivPdfExtracter {
+public class InfoskrivPdfExtractor {
 
-    public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfExtracter.class);
+    public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfExtractor.class);
 
     public byte[] extractInfoskriv(byte[] pdf) {
         try (PDDocument doc = PDDocument.load(pdf)) {

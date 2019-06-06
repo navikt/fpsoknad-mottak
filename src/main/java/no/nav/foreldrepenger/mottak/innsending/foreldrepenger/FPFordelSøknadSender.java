@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfExtracter;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfExtractor;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
@@ -24,14 +24,14 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator generator;
-    private final InfoskrivPdfExtracter pdfExtracter;
+    private final InfoskrivPdfExtractor pdfExtractor;
     private final InnsendingDomainEventPublisher publisher;
 
     public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator,
-            InfoskrivPdfExtracter pdfExtracter, InnsendingDomainEventPublisher publisher) {
+            InfoskrivPdfExtractor pdfExtractor, InnsendingDomainEventPublisher publisher) {
         this.connection = connection;
         this.generator = generator;
-        this.pdfExtracter = pdfExtracter;
+        this.pdfExtractor = pdfExtractor;
         this.publisher = publisher;
     }
 
@@ -40,10 +40,6 @@ public class FPFordelSøknadSender implements SøknadSender {
         Kvittering kvittering = doSend(egenskap, søknad.getSøknadsRolle(), generator.generer(søknad, søker, egenskap));
         kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
         kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
-        if (INITIELL_FORELDREPENGER.equals(egenskap)) {
-            kvittering.setInfoskrivPdf(pdfExtracter.extractInfoskriv(kvittering.getPdf()));
-        }
-        publisher.publishEvent(kvittering);
         return kvittering;
     }
 
@@ -52,15 +48,12 @@ public class FPFordelSøknadSender implements SøknadSender {
         Kvittering kvittering = doSend(egenskap, endringssøknad.getSøknadsRolle(),
                 generator.generer(endringssøknad, søker, egenskap));
         kvittering.setFørsteDag(endringssøknad.getFørsteUttaksdag());
-        publisher.publishEvent(kvittering);
         return kvittering;
     }
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        Kvittering kvittering = doSend(egenskap, null, generator.generer(ettersending, søker));
-        publisher.publishEvent(kvittering);
-        return kvittering;
+        return doSend(egenskap, null, generator.generer(ettersending, søker));
     }
 
     @Override
@@ -70,7 +63,12 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     private Kvittering doSend(SøknadEgenskap egenskap, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
         if (skalSende(egenskap)) {
-            return connection.send(egenskap.getType(), rolle, konvolutt);
+            Kvittering kvittering = connection.send(egenskap.getType(), rolle, konvolutt);
+            if (INITIELL_FORELDREPENGER.equals(egenskap)) {
+                kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
+            }
+            publisher.publishEvent(kvittering, egenskap);
+            return kvittering;
         }
         LOG.warn("Sender ikke {}", egenskap);
         return new Kvittering(IKKE_SENDT_FPSAK);
@@ -78,6 +76,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator
+                + ", pdfExtractor=" + pdfExtractor + ", publisher=" + publisher + "]";
     }
 }

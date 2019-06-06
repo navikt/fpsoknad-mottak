@@ -75,7 +75,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfExtracter;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfExtractor;
 import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
@@ -150,7 +150,7 @@ public class FPFordelTest {
         ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, jalla, infoskrivRenderer);
         EngangsstønadPDFGenerator es = new EngangsstønadPDFGenerator(jalla2, jalla1);
         DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
-        InfoskrivPdfExtracter pdfSplitter = new InfoskrivPdfExtracter();
+        InfoskrivPdfExtractor pdfSplitter = new InfoskrivPdfExtractor();
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
         FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(

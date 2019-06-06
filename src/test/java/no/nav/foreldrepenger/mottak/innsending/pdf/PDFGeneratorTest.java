@@ -40,7 +40,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         EngangsstønadPDFGenerator.class,
         SvangerskapspengerPDFGenerator.class,
         InfoskrivRenderer.class,
-        InfoskrivPdfExtracter.class,
+        InfoskrivPdfExtractor.class,
         SvangerskapspengerInfoRenderer.class,
         SpringOIDCRequestContextHolder.class, TestConfig.class })
 
@@ -54,7 +54,7 @@ public class PDFGeneratorTest {
     PDFGenerator gen;
 
     @Autowired
-    InfoskrivPdfExtracter pdfExtracter;
+    InfoskrivPdfExtractor pdfExtracter;
 
     @Test
     public void signature() {

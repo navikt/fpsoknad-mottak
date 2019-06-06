@@ -6,12 +6,10 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
-import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 import no.nav.foreldrepenger.mottak.innsyn.GraderingAvslagÅrsak;
 import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 
@@ -36,7 +34,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
     private final Integer samtidigUttaksprosent;
     private final UttakArbeidType uttakArbeidType;
     private final ArbeidsgiverInfo arbeidsgiverInfo;
-   
+
     public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdAarsak,
             @JsonProperty("overfoeringAarsak") Overføringsårsak overfoeringAarsak,
             @JsonProperty("graderingAvslagAarsak") GraderingAvslagÅrsak graderingAvslagAarsak,

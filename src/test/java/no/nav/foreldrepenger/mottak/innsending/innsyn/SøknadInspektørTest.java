@@ -62,7 +62,7 @@ public class SøknadInspektørTest {
         mapper = new DelegerendeXMLSøknadMapper(
                 new UkjentXMLSøknadMapper(),
                 new V1EngangsstønadPapirXMLMapper(oppslag),
-                new V1EngangsstønadDokmotXMLMapper(oppslag),
+                new V1EngangsstønadDokmotXMLMapper(true),
                 new V1ForeldrepengerXMLMapper(oppslag),
                 new V2ForeldrepengerXMLMapper(oppslag));
     }
