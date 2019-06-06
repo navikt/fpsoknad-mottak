@@ -1,8 +1,8 @@
-
-no.nav:
-   foreldrepenger.mottak:
-      søknadsender.domainevent:
+mottak:
+   søknadsender:
+      domainevent:
          enabled : false
+no.nav:
    security.oidc :
        issuers :  selvbetjening
        issuer.selvbetjening :

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 
 @Component
-@ConditionalOnProperty(value = "no.nav.foreldrepenger.mottak.søknadsender.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(value = "mottak.søknadsender.domainevent.enabled", havingValue = "false", matchIfMissing = true)
 public class LoggingDomainEventPublisher implements InnsendingDomainEventPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingDomainEventPublisher.class);
