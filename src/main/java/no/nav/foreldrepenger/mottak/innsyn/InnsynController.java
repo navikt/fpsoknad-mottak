@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
@@ -39,12 +39,12 @@ public class InnsynController {
 
     @GetMapping(value = "/uttaksplan")
     public Uttaksplan uttaksplan(@RequestParam(name = "saksnummer") String saksnummer,
-            @RequestParam(name = "annenPart") AktørId annenPart) {
+            @RequestParam(name = "annenPart") Fødselsnummer annenPart) {
         if (saksnummer != null) {
             return innsyn.hentUttaksplan(saksnummer);
         }
         if (annenPart != null) {
-            return innsyn.hentUttaksplan(oppslag.getAktørId(), annenPart);
+            return innsyn.hentUttaksplan(oppslag.getAktørId(), oppslag.getAktørId(annenPart));
         }
         throw new UnexpectedInputException("En av saksnummer og annenPart må være satt (men ikke begge)");
     }

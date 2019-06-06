@@ -1,5 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.apache.pdfbox.multipdf.PageExtractor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
@@ -10,13 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
-
 @Component
 public class InfoskrivPdfExtracter {
+
     public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfExtracter.class);
 
     public byte[] extractInfoskriv(byte[] pdf) {
@@ -56,6 +57,5 @@ public class InfoskrivPdfExtracter {
         }
         return -1;
     }
-
 
 }
