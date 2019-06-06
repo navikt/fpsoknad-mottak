@@ -28,6 +28,7 @@ fasitResources:
     - alias: srvfpinfo-historikk
       resourceType: credential
       propertyMap:
+        password: kafka_username
         password: kafka_password
     - alias: aad_b2c_clientid
       resourceType: credential
