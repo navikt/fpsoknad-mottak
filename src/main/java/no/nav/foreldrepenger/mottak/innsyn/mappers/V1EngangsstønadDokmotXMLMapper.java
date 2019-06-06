@@ -6,6 +6,8 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,11 @@ public class V1EngangsstønadDokmotXMLMapper implements XMLSøknadMapper {
     private static final MapperEgenskaper EGENSKAPER = new MapperEgenskaper(V1, INITIELL_ENGANGSSTØNAD_DOKMOT);
     private final ESV1JAXBUtil jaxb;
     private static final Logger LOG = LoggerFactory.getLogger(V1EngangsstønadDokmotXMLMapper.class);
+
+    @Inject
+    public V1EngangsstønadDokmotXMLMapper() {
+        this(true);
+    }
 
     public V1EngangsstønadDokmotXMLMapper(boolean validate) {
         this.jaxb = new ESV1JAXBUtil(validate);
