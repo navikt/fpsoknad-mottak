@@ -31,4 +31,11 @@ public final class URIUtil {
         queryParams.add(key, value);
         return queryParams;
     }
+
+    public static HttpHeaders queryParams(String key, String value, String key1, String value1) {
+        HttpHeaders queryParams = new HttpHeaders();
+        queryParams.add(key, value);
+        queryParams.add(key1, value1);
+        return queryParams;
+    }
 }

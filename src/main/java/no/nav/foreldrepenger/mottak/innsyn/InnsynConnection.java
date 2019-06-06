@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
+import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.ANNENPART;
+import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.BRUKER;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAKSNUMMER;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.UTTAKSPLAN;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
@@ -60,6 +63,13 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         return getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)), UttaksplanDTO.class);
     }
 
+    public UttaksplanDTO hentUttaksplan(AktørId aktørId, AktørId annenPart) {
+        LOG.trace("Henter uttaksplan for {} med annen part {}", aktørId, annenPart);
+        return getForObject(
+                uri(config.getUri(), UTTAKSPLAN, queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId())),
+                UttaksplanDTO.class);
+    }
+
     public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
         return hent(behandlingsLenke, BehandlingDTO.class);
     }
@@ -89,4 +99,5 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     public String toString() {
         return getClass().getSimpleName() + " [config=" + config + "]";
     }
+
 }

@@ -17,4 +17,6 @@ public interface Innsyn extends Pingable {
 
     Vedtak hentVedtak(AktørId aktørId, String saksnummer);
 
+    Uttaksplan hentUttaksplan(AktørId aktørId, AktørId annenPart);
+
 }

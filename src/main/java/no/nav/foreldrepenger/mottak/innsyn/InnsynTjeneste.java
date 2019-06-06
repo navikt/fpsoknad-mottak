@@ -85,6 +85,13 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
+    public Uttaksplan hentUttaksplan(AktørId aktørId, AktørId annenPart) {
+        return Optional.ofNullable(innsynConnection.hentUttaksplan(aktørId, annenPart))
+                .map(this::map)
+                .orElse(null);
+    }
+
+    @Override
     public List<Sak> hentSaker(AktørId aktørId) {
         return hentSaker(aktørId.getId());
     }
@@ -332,4 +339,5 @@ public class InnsynTjeneste implements Innsyn {
         return getClass().getSimpleName() + " [søknadHandler=" + søknadHandler + ", vedtakHandler=" + vedtakHandler
                 + ", innsynConnection=" + innsynConnection + "]";
     }
+
 }
