@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -38,15 +37,14 @@ public class InnsynController {
     }
 
     @GetMapping(value = "/uttaksplan")
-    public Uttaksplan uttaksplan(@RequestParam(name = "saksnummer") String saksnummer,
+    public Uttaksplan uttaksplan(@RequestParam(name = "saksnummer") String saksnummer) {
+        return innsyn.hentUttaksplan(saksnummer);
+    }
+
+    @GetMapping(value = "/uttaksplanannen")
+    public Uttaksplan uttaksplan(
             @RequestParam(name = "annenPart") Fødselsnummer annenPart) {
-        if (saksnummer != null) {
-            return innsyn.hentUttaksplan(saksnummer);
-        }
-        if (annenPart != null) {
-            return innsyn.hentUttaksplan(oppslag.getAktørId(), oppslag.getAktørId(annenPart));
-        }
-        throw new UnexpectedInputException("En av saksnummer og annenPart må være satt (men ikke begge)");
+        return innsyn.hentUttaksplan(oppslag.getAktørId(), oppslag.getAktørId(annenPart));
     }
 
     @GetMapping(value = "/vedtak")
