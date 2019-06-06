@@ -75,7 +75,7 @@ public class InfoskrivRenderer {
         }
 
         y -= addTinyBlankLine();
-        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", NAV_URL), cos, y);
+        y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf2", fornavn(navn), NAV_URL), cos, y);
         y -= addTinyBlankLine();
         y -= renderer.addLineOfRegularText(txt("infoskriv.paragraf3", fornavn(navn)), cos, y);
         y -= addTinyBlankLine();
