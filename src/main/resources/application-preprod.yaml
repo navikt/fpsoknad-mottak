@@ -3,7 +3,23 @@ management :
    endpoint:
      health.show-details : always
      security.enabled : false
-spring.http.log-request-details : true
+spring:
+   kafka:   
+      listener.ack-mode: MANUAL  
+      properties:
+         security:
+            protocol: SASL_SSL
+         sasl: 
+            mechanism: PLAIN
+            jaas:
+               config: org.apache.kafka.common.security.plain.PlainLoginModule required username=srvfpinfo-historikk password=${kafka.password};
+     
+      producer:
+         bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
+         key-serializer: org.apache.kafka.common.serialization.StringSerializer
+         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+   http:
+     log-request-details : true
 varsel:
     username : srvappserver
     enabled : true
