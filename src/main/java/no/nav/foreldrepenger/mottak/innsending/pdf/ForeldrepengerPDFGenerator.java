@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.ALLE_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -66,7 +67,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             PDPage page = newPage();
             doc.addPage(page);
 
-            fpRenderer.addOutlineItem(doc, page, "Søknad om foreldrepenger");
+            fpRenderer.addOutlineItem(doc, page, FORELDREPENGER_OUTLINE);
 
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = yTop;

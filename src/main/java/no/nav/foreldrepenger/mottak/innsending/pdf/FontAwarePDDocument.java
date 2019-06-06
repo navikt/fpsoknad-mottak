@@ -22,6 +22,8 @@ import org.springframework.core.io.Resource;
 
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.SØKNAD_OUTLINE;
+
 public class FontAwarePDDocument extends PDDocument {
     private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
 
@@ -100,7 +102,7 @@ public class FontAwarePDDocument extends PDDocument {
 
     private void setPagesOutline() {
         pagesOutline = new PDOutlineItem();
-        pagesOutline.setTitle("Søknad");
+        pagesOutline.setTitle(SØKNAD_OUTLINE.getTitle());
         outline.addLast(pagesOutline);
     }
 

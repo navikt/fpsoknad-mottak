@@ -237,12 +237,12 @@ public class PDFElementRenderer {
         }
     }
 
-    public void addOutlineItem(FontAwarePDDocument doc, PDPage page, String title) {
+    public void addOutlineItem(FontAwarePDDocument doc, PDPage page, PdfOutlineItem title) {
         PDPageDestination dest = new PDPageFitWidthDestination();
         dest.setPage(page);
         PDOutlineItem bookmark = new PDOutlineItem();
         bookmark.setDestination(dest);
-        bookmark.setTitle(title);
+        bookmark.setTitle(title.getTitle());
         doc.getPagesOutline().addLast(bookmark);
     }
 

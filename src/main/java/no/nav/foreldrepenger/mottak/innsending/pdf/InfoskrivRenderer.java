@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
@@ -260,7 +261,7 @@ public class InfoskrivRenderer {
         cos.close();
         PDPage newPage = newPage();
         doc.addPage(newPage);
-        renderer.addOutlineItem(doc, newPage, "Informasjon til arbeidsgiver(e)");
+        renderer.addOutlineItem(doc, newPage, INFOSKRIV_OUTLINE);
         return new FontAwareCos(doc, newPage);
     }
 
