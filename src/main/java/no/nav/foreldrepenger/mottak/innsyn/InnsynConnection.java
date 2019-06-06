@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
+import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.ANNENFORELDERPLAN;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.ANNENPART;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.BRUKER;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
@@ -66,7 +67,8 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     public UttaksplanDTO hentUttaksplan(AktørId aktørId, AktørId annenPart) {
         LOG.trace("Henter uttaksplan for {} med annen part {}", aktørId, annenPart);
         return getForObject(
-                uri(config.getUri(), UTTAKSPLAN, queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId())),
+                uri(config.getUri(), ANNENFORELDERPLAN,
+                        queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId())),
                 UttaksplanDTO.class);
     }
 

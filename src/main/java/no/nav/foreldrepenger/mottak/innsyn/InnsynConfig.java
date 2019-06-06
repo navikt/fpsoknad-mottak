@@ -19,6 +19,7 @@ public class InnsynConfig {
     static final String BEHANDLING_ID = "behandlingId";
     static final String SØKNAD = DEFAULT_BASE_PATH + "søknad";
     static final String SAK = DEFAULT_BASE_PATH + "sak";
+    static final String ANNENFORELDERPLAN = DEFAULT_BASE_PATH + "annenforelderplan";
     static final String UTTAKSPLAN = DEFAULT_BASE_PATH + "uttaksplan";
     static final String BEHANDLING = DEFAULT_BASE_PATH + "behandling";
     String pingPath;
