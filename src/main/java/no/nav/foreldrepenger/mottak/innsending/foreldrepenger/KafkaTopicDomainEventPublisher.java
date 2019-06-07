@@ -19,7 +19,7 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     private final String topic;
     private final KafkaOperations<String, Kvittering> KafkaOperations;
 
-    public KafkaTopicDomainEventPublisher(@Value("${mottak.søknadsender.domainevent.topic}") String topic,
+    public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
             KafkaTemplate<String, Kvittering> KafkaOperations) {
         this.topic = topic;
         this.KafkaOperations = KafkaOperations;
