@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-@Component
+//@Component
 //@ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "false", matchIfMissing = true)
 public class LoggingDomainEventPublisher implements InnsendingDomainEventPublisher {
 

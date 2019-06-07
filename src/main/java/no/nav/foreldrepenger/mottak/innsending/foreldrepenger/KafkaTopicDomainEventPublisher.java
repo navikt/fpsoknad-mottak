@@ -5,15 +5,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-//@Component
-@ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
+@Component
+//@ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
 public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaTopicDomainEventPublisher.class);
