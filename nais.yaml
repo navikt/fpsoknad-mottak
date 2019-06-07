@@ -25,10 +25,10 @@ resources:
       memory: 1536Mi
 fasitResources:
   used:
-    - alias: srvfpinfo-historikk
+    - alias: srvfpsoknad-mottak
       resourceType: credential
       propertyMap:
-        password: kafka_username
+        username: kafka_username
         password: kafka_password
     - alias: aad_b2c_clientid
       resourceType: credential
