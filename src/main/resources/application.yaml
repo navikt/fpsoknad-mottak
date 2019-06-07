@@ -2,6 +2,7 @@ mottak:
    sender:
       domainevent:
          enabled : false
+         topic : fpsoknad-mottak
 no.nav:
    security.oidc :
        issuers :  selvbetjening
