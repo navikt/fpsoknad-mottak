@@ -11,8 +11,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,7 @@ public class FPFordelKonvoluttGenerator {
         AtomicInteger id = new AtomicInteger(1);
         LOG.trace("Genererer payload med oversendelsesid {}", callId());
         FPFordelMetadata metadata = metadataFor(søknad, egenskap.getType(), søker.getAktørId(), callId());
+        LOG.info("Vedlegg initiell er " + vedleggFra(metadata, false));
         builder.part(METADATA, metadata(metadata), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
@@ -73,6 +76,7 @@ public class FPFordelKonvoluttGenerator {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         FPFordelMetadata metadata = metadataFor(endringsøknad, egenskap, søker.getAktørId(), callId());
+        LOG.info("Vedlegg endring er " + vedleggFra(metadata, false));
         builder.part(METADATA, metadata(metadata), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
@@ -89,6 +93,7 @@ public class FPFordelKonvoluttGenerator {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         FPFordelMetadata metadata = metadataFor(ettersending, søker.getAktørId(), callId());
+        LOG.info("Vedlegg ettersending er " + vedleggFra(metadata));
         builder.part(METADATA, metadata(metadata), APPLICATION_JSON_UTF8);
         safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
@@ -157,6 +162,24 @@ public class FPFordelKonvoluttGenerator {
         String hovedDokument = domainMapper.tilXML(endringssøknad, søker, egenskap);
         LOG.debug(CONFIDENTIAL, "Hoveddokument endringssøknad er {}", hovedDokument);
         return hovedDokument;
+    }
+
+    private static List<String> vedleggFra(FPFordelMetadata metadata) {
+        return vedleggFra(metadata, true);
+    }
+
+    private static List<String> vedleggFra(FPFordelMetadata metadata, boolean erEttersending) {
+        if (erEttersending) {
+            return metadata.getFiler()
+                    .stream()
+                    .map(Del::getDokumentTypeId)
+                    .collect(Collectors.toList());
+        }
+        return metadata.getFiler()
+                .stream()
+                .skip(2)
+                .map(Del::getDokumentTypeId)
+                .collect(Collectors.toList());
     }
 
     @Override
