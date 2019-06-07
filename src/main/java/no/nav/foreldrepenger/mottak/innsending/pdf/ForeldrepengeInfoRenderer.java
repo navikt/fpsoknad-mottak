@@ -597,7 +597,11 @@ public class ForeldrepengeInfoRenderer {
 
     private void addIfSet(List<String> attributter, MorsAktivitet morsAktivitetsType) {
         if (morsAktivitetsType != null) {
-            attributter.add(txt("morsaktivitet", cap(morsAktivitetsType.name())));
+            if (morsAktivitetsType.getKey() != null) {
+                attributter.add(txt("morsaktivitet", txt(morsAktivitetsType.getKey())));
+            } else {
+                attributter.add(txt("morsaktivitet", cap(morsAktivitetsType.name())));
+            }
         }
     }
 
