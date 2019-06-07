@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,8 +15,7 @@ public class MeldingKonsument {
     private static final Logger LOG = LoggerFactory.getLogger(MeldingKonsument.class);
 
     @KafkaListener(topics = "#{'${mottak.sender.domainevent.topic}'}", groupId = "#{'${spring.kafka.consumer.group-id}'}")
-    public void listen(String json, Acknowledgment ack) {
+    public void listen(String json) {
         LOG.info("Mottok melding {}", json);
-        ack.acknowledge();
     }
 }
