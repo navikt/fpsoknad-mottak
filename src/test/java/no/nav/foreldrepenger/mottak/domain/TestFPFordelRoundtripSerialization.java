@@ -12,7 +12,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDI
 import static no.nav.foreldrepenger.mottak.innsending.SøknadPreprodController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
@@ -45,7 +44,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.oidc.test.support.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
-@ActiveProfiles(profiles = { DEV, PREPROD })
+@ActiveProfiles(profiles = { DEV })
 public class TestFPFordelRoundtripSerialization {
 
     @Autowired
