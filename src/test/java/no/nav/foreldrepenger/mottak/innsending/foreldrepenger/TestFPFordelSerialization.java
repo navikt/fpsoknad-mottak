@@ -75,6 +75,8 @@ public class TestFPFordelSerialization {
 
     @MockBean
     private Oppslag oppslag;
+    @MockBean
+    private InnsendingDomainEventPublisher publisher;
 
     @Inject
     private FPFordelKonvoluttGenerator konvoluttGenerator;

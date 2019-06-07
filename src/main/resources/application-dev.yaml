@@ -1,3 +1,9 @@
+mottak:
+   sender:
+      domainevent:
+         enabled : false
+         topic : fpsoknad-mottak
+
 management:
     endpoints.web.exposure.include:  '*'
     endpoint:
