@@ -6,12 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-@Component
+//@Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
 public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPublisher {
 
