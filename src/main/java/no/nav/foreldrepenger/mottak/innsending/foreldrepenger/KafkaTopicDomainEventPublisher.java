@@ -30,7 +30,7 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     @Override
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
         LOG.info("Publiserer hendelse fra {} for søknad {} med vedlegg {}", kvittering, egenskap, vedlegg);
-        KafkaOperations.send(topic, kvittering);
+        // KafkaOperations.send(topic, kvittering);
     }
 
     @Override
