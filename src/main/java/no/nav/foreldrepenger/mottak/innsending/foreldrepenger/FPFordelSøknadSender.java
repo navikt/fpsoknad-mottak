@@ -65,7 +65,7 @@ public class FPFordelSøknadSender implements SøknadSender {
         if (INITIELL_FORELDREPENGER.equals(egenskap)) {
             kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
         }
-        publisher.publishEvent(kvittering, egenskap);
+        publisher.publishEvent(kvittering, egenskap, konvolutt.getVedleggIds());
         return kvittering;
 
     }

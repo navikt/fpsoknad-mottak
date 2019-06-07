@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +27,8 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     }
 
     @Override
-    public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap) {
-        LOG.info("Publiserer hendelse fra {} for søknad {}", kvittering, egenskap);
+    public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
+        LOG.info("Publiserer hendelse fra {} for søknad {} med vedlegg {}", kvittering, egenskap, vedlegg);
         KafkaOperations.send(topic, kvittering);
     }
 

@@ -20,13 +20,19 @@ import org.springframework.util.MultiValueMap;
 
 public class FPFordelKonvolutt {
     private final HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload;
+    private final List<String> vedlegg;
 
-    public FPFordelKonvolutt(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload) {
+    public FPFordelKonvolutt(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, List<String> vedlegg) {
         this.payload = payload;
+        this.vedlegg = vedlegg;
     }
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getPayload() {
         return payload;
+    }
+
+    public List<String> getVedleggIds() {
+        return vedlegg;
     }
 
     public String getMetadata() {
