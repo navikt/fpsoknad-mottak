@@ -9,7 +9,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
-@ConditionalOnProperty(value = "mottak.søknadsender.domainevent.enabled", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "false")
 public class LoggingDomainEventPublisher implements InnsendingDomainEventPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingDomainEventPublisher.class);

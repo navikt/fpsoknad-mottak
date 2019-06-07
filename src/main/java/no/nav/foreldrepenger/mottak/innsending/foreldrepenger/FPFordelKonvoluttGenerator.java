@@ -28,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -55,7 +56,8 @@ public class FPFordelKonvoluttGenerator {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         LOG.trace("Genererer payload med oversendelsesid {}", callId());
-        builder.part(METADATA, metadata(søknad, egenskap, søker.getAktørId(), callId()), APPLICATION_JSON_UTF8);
+        FPFordelMetadata metadata = metadataFor(søknad, egenskap.getType(), søker.getAktørId(), callId());
+        builder.part(METADATA, metadata(metadata), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap), APPLICATION_PDF)
@@ -70,7 +72,8 @@ public class FPFordelKonvoluttGenerator {
     public FPFordelKonvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        builder.part(METADATA, metadata(endringsøknad, egenskap, søker.getAktørId(), callId()), APPLICATION_JSON_UTF8);
+        FPFordelMetadata metadata = metadataFor(endringsøknad, egenskap, søker.getAktørId(), callId());
+        builder.part(METADATA, metadata(metadata), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap), APPLICATION_PDF)
@@ -85,7 +88,8 @@ public class FPFordelKonvoluttGenerator {
     public FPFordelKonvolutt generer(Ettersending ettersending, Person søker) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        builder.part(METADATA, metadata(ettersending, søker.getAktørId(), callId()), APPLICATION_JSON_UTF8);
+        FPFordelMetadata metadata = metadataFor(ettersending, søker.getAktørId(), callId());
+        builder.part(METADATA, metadata(metadata), APPLICATION_JSON_UTF8);
         safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()));
@@ -116,24 +120,23 @@ public class FPFordelKonvoluttGenerator {
         return headers;
     }
 
-    private String metadata(Endringssøknad endringssøknad, SøknadEgenskap egenskap, AktørId aktørId, String ref) {
-        String metadata = metadataGenerator
-                .generer(new FPFordelMetadata(endringssøknad, egenskap.getType(), aktørId, ref));
-        LOG.debug("Metadata for endringssøknad er {}", metadata);
+    private String metadata(FPFordelMetadata m) {
+        String metadata = metadataGenerator.generer(m);
+        LOG.debug("Metadata er {}", metadata);
         return metadata;
     }
 
-    private String metadata(Søknad søknad, SøknadEgenskap egenskap, AktørId aktørId, String ref) {
-        String metadata = metadataGenerator
-                .generer(new FPFordelMetadata(søknad, egenskap.getType(), aktørId, ref));
-        LOG.debug("Metadata for førstegangssøknad er {}", metadata);
-        return metadata;
+    private static FPFordelMetadata metadataFor(Endringssøknad endringssøknad, SøknadEgenskap egenskap, AktørId aktørId,
+            String ref) {
+        return new FPFordelMetadata(endringssøknad, egenskap.getType(), aktørId, ref);
     }
 
-    private String metadata(Ettersending ettersending, AktørId aktørId, String ref) {
-        String metadata = metadataGenerator.generer(new FPFordelMetadata(ettersending, aktørId, ref));
-        LOG.debug("Metadata for ettersending er {}", metadata);
-        return metadata;
+    private static FPFordelMetadata metadataFor(Søknad søknad, SøknadType type, AktørId aktørId, String ref) {
+        return new FPFordelMetadata(søknad, type, aktørId, ref);
+    }
+
+    private static FPFordelMetadata metadataFor(Ettersending ettersending, AktørId aktørId, String ref) {
+        return new FPFordelMetadata(ettersending, aktørId, ref);
     }
 
     private byte[] pdfHovedDokument(Søknad søknad, Person søker, SøknadEgenskap egenskap) {

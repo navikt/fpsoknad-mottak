@@ -1,8 +1,8 @@
 mottak:
-   søknadsender:
+   sender:
       domainevent:
-         enabled : false
-         topic : fpinfo-historikk
+         enabled : true
+         topic : fpsoknad-mottak
 
 management :
    endpoints.web.exposure.include:  '*'
@@ -28,6 +28,3 @@ spring:
 varsel:
     username : srvappserver
     enabled : true
-
-fpfordel.max : 10
-fpinfo.max : 10

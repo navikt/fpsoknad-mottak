@@ -15,7 +15,4 @@ public interface SøknadSender extends Pingable {
 
     Kvittering endreSøknad(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap);
 
-    default boolean skalSende(SøknadEgenskap egenskap) {
-        return true;
-    }
 }

@@ -135,14 +135,14 @@ public class FPFordelMetadata {
 
     private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType søknadType) {
         switch (søknadType.fagsakType()) {
-            case FORELDREPENGER:
-                return dokumentTypeFraRelasjonForForeldrepenger(søknad);
-            case ENGANGSSTØNAD:
-                return dokumentTypeFraRelasjonForEngangsstønad(søknad);
-            case SVANGERSKAPSPENGER:
-                return I000001;
-            default:
-                throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
+        case FORELDREPENGER:
+            return dokumentTypeFraRelasjonForForeldrepenger(søknad);
+        case ENGANGSSTØNAD:
+            return dokumentTypeFraRelasjonForEngangsstønad(søknad);
+        case SVANGERSKAPSPENGER:
+            return I000001;
+        default:
+            throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
         }
     }
 
@@ -154,7 +154,7 @@ public class FPFordelMetadata {
         }
         if (relasjon instanceof Omsorgsovertakelse
                 || relasjon instanceof Adopsjon) {
-            return I000003; // TODO separate type ?
+            return I000003;
         }
         throw new UnexpectedInputException("Ukjent relasjon %s", relasjon.getClass().getSimpleName());
     }

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 
 import org.slf4j.Logger;
@@ -62,16 +61,13 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering doSend(SøknadEgenskap egenskap, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
-        if (skalSende(egenskap)) {
-            Kvittering kvittering = connection.send(egenskap.getType(), rolle, konvolutt);
-            if (INITIELL_FORELDREPENGER.equals(egenskap)) {
-                kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
-            }
-            publisher.publishEvent(kvittering, egenskap);
-            return kvittering;
+        Kvittering kvittering = connection.send(egenskap.getType(), rolle, konvolutt);
+        if (INITIELL_FORELDREPENGER.equals(egenskap)) {
+            kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
         }
-        LOG.warn("Sender ikke {}", egenskap);
-        return new Kvittering(IKKE_SENDT_FPSAK);
+        publisher.publishEvent(kvittering, egenskap);
+        return kvittering;
+
     }
 
     @Override
