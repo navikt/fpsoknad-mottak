@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 
 import org.slf4j.Logger;
@@ -10,7 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile({ DEV, PREPROD })
+@Profile({ PREPROD })
 public class MeldingKonsument {
     private static final Logger LOG = LoggerFactory.getLogger(MeldingKonsument.class);
 
