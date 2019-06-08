@@ -15,7 +15,8 @@ management :
      security:
         enabled : false
 spring:
-   kafka:   
+   kafka:  
+      listener.ack-mode: MANUAL
       properties:
          security:
             protocol: SASL_SSL
