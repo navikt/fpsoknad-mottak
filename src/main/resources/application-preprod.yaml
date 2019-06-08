@@ -23,7 +23,7 @@ spring:
          sasl: 
             mechanism: PLAIN
             jaas:
-               config: org.apache.kafka.common.security.plain.PlainLoginModule required username=${kafka.username} password=${kafka.password};
+               config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
       consumer: 
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
          group-id: group_id 
