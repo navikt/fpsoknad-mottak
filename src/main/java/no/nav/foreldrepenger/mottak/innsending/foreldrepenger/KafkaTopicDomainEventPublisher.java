@@ -20,8 +20,6 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     private static final Logger LOG = LoggerFactory.getLogger(KafkaTopicDomainEventPublisher.class);
     private final String topic;
     private final KafkaOperations<String, Kvittering> KafkaOperations;
-    @Value("${spring.kafka.properties.sasl.jaas.config}")
-    String config;
 
     public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
             KafkaTemplate<String, Kvittering> KafkaOperations) {
@@ -32,7 +30,6 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     @Override
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
         LOG.info("Publiserer hendelse fra {} for søknad {} med vedlegg {}", kvittering, egenskap, vedlegg);
-        LOG.info("KONFIG " + config);
         KafkaOperations.send(topic, kvittering);
     }
 
