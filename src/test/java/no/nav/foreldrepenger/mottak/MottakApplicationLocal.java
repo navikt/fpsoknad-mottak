@@ -27,4 +27,5 @@ public class MottakApplicationLocal {
                 .main(MottakApplicationLocal.class)
                 .run(args);
     }
+
 }
