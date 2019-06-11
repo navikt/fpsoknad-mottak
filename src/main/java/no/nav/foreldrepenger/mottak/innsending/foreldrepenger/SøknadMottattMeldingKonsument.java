@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Profile({ PREPROD })
-public class MeldingKonsument {
-    private static final Logger LOG = LoggerFactory.getLogger(MeldingKonsument.class);
+public class SøknadMottattMeldingKonsument {
+    private static final Logger LOG = LoggerFactory.getLogger(SøknadMottattMeldingKonsument.class);
 
     @KafkaListener(topics = "#{'${mottak.sender.domainevent.topic}'}", groupId = "#{'${spring.kafka.consumer.group-id}'}")
     public void listen(String json) {
