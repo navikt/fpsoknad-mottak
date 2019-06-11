@@ -15,6 +15,6 @@ public class SøknadMottattMeldingKonsument {
 
     @KafkaListener(topics = "#{'${mottak.sender.domainevent.topic}'}", groupId = "#{'${spring.kafka.consumer.group-id}'}")
     public void listen(String json) {
-        LOG.info("Mottok melding {}", json);
+        LOG.info("Mottok melding");
     }
 }
