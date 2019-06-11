@@ -19,10 +19,10 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaTopicDomainEventPublisher.class);
     private final String topic;
-    private final KafkaOperations<String, Kvittering> KafkaOperations;
+    private final KafkaOperations<String, SøknadEgenskap> KafkaOperations;
 
     public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, Kvittering> KafkaOperations) {
+            KafkaTemplate<String, SøknadEgenskap> KafkaOperations) {
         this.topic = topic;
         this.KafkaOperations = KafkaOperations;
     }
@@ -31,7 +31,7 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
         LOG.info("Publiserer hendelse på topic {} fra {} for søknad {} med vedlegg {}", topic, kvittering, egenskap,
                 vedlegg);
-        KafkaOperations.send(topic, kvittering);
+        KafkaOperations.send(topic, egenskap);
     }
 
     @Override
