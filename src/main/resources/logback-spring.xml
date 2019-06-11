@@ -27,8 +27,8 @@
      <springProfile name="dev,preprod">
         <logger name="no.nav.security.spring.oidc" level="info"/>
         <logger name="no.nav.foreldrepenger" level="trace" />
-        <logger name="org.apache.kafka" level="info" />
-        <logger name="org.springframework.kafka" level="info" />
+        <logger name="org.apache.kafka" level="trace" />
+        <logger name="org.springframework.kafka" level="trace" />
     </springProfile>
 </configuration>
 
