@@ -8,9 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 @Profile({ PREPROD })
 public class SøknadMottattMeldingKonsument {
     private static final Logger LOG = LoggerFactory.getLogger(SøknadMottattMeldingKonsument.class);
