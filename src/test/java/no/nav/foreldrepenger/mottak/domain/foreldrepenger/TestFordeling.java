@@ -13,15 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.time.LocalDate;
 import java.util.Collections;
 
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.*;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
 
 public class TestFordeling {
 
@@ -32,11 +27,10 @@ public class TestFordeling {
         Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
                 new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
                         FEDREKVOTE,
-                        true, ARBEID_OG_UTDANNING, true, new ProsentAndel(75), null),
+                        true, ARBEID_OG_UTDANNING, true, new ProsentAndel(75),
+                        null),
                 new OppholdsPeriode(ukeDagNær(LocalDate.now().plusMonths(1)), ukeDagNær(utsettelseStart),
                         UTTAK_FEDREKVOTE_ANNEN_FORELDER, null),
-                new OverføringsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
-                        Overføringsårsak.ALENEOMSORG, FEDREKVOTE, null),
                 new UtsettelsesPeriode(ukeDagNær(utsettelseStart),
                         ukeDagNær(LocalDate.now().plusMonths(3)), true, Collections.singletonList("222"),
                         INSTITUSJONSOPPHOLD_BARNET, FEDREKVOTE, null,
@@ -59,17 +53,27 @@ public class TestFordeling {
                         null),
                 new UttaksPeriode(ukeDagNær(uttakStart), ukeDagNær(LocalDate.now().plusMonths(4)),
                         FEDREKVOTE,
-                        true, ARBEID_OG_UTDANNING, true, new ProsentAndel(75), null)));
+                        true, ARBEID_OG_UTDANNING, true, new ProsentAndel(75),
+                        null)));
         assertEquals(uttakStart, f.getFørsteUttaksdag());
+    }
+
+    @Test
+    public void testOverføringsperiodeErUttak() {
+
+        LocalDate uttaksStart = ukeDagNær(LocalDate.now().minusMonths(1));
+        Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
+            new OverføringsPeriode(uttaksStart, ukeDagNær(LocalDate.now().plusMonths(2)),
+                IKKE_RETT_ANNEN_FORELDER, FEDREKVOTE, null)));
+        assertEquals(uttaksStart, f.getFørsteUttaksdag());
     }
 
     @Test
     public void testIngenFørsteDag() {
 
         Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
-
-                new OverføringsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
-                        Overføringsårsak.ALENEOMSORG, FEDREKVOTE, null)));
+                new OppholdsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
+                        UTTAK_FEDREKVOTE_ANNEN_FORELDER, null)));
         assertNull(f.getFørsteUttaksdag());
     }
 

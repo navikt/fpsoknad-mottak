@@ -43,6 +43,6 @@ public class Fordeling {
     }
 
     private static Predicate<? super LukketPeriodeMedVedlegg> aktuellPeriode() {
-        return f -> f instanceof UttaksPeriode || f instanceof UtsettelsesPeriode;
+        return f -> f instanceof UttaksPeriode || f instanceof UtsettelsesPeriode || f instanceof OverføringsPeriode;
     }
 }
