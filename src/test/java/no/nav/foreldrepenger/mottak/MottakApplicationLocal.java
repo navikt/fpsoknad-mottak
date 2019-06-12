@@ -13,8 +13,6 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingDomainEventPublisher;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.LoggingDomainEventPublisher;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration;
@@ -60,11 +58,4 @@ public class MottakApplicationLocal {
             }
         };
     }
-
-    @Bean
-    @Profile(DEV)
-    InnsendingDomainEventPublisher domainPublisher() {
-        return new LoggingDomainEventPublisher();
-    }
-
 }
