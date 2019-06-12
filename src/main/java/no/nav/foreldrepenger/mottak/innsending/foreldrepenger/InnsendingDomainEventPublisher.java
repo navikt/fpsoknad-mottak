@@ -8,5 +8,4 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 public interface InnsendingDomainEventPublisher {
 
     void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg);
-
 }

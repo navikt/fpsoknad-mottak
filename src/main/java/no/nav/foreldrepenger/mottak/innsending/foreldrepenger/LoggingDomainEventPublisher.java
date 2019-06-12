@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-//@Component
-//@ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "false", matchIfMissing = true)
 public class LoggingDomainEventPublisher implements InnsendingDomainEventPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingDomainEventPublisher.class);
