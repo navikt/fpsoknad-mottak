@@ -42,11 +42,11 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
 
     @Override
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
-        LOG.info("Publiserer hendelse på topic {} fra {} for søknad {} med vedlegg {}", topic, kvittering, egenskap,
-                vedlegg);
+        InnsendingEvent event = new InnsendingEvent(kvittering, egenskap, vedlegg);
+        LOG.info("Publiserer hendelse {} på topic {}", event, topic);
         try {
             Message<String> message = MessageBuilder
-                    .withPayload(mapper.writeValueAsString(kvittering))
+                    .withPayload(mapper.writeValueAsString(event))
                     .setHeader(KafkaHeaders.TOPIC, topic)
                     .setHeader(NAV_CALL_ID, MDCUtil.callId())
                     .build();
