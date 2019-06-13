@@ -6,17 +6,18 @@ import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -28,15 +29,15 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaTopicDomainEventPublisher.class);
     private final String topic;
-    private final KafkaOperations<String, String> KafkaOperations;
+    private final KafkaOperations<String, String> kafkaOperations;
 
-    @Inject
-    private JacksonUtil mapper;
+    private final JacksonUtil mapper;
 
     public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> KafkaOperations) {
+            KafkaTemplate<String, String> kafkaOperations, JacksonUtil mapper) {
         this.topic = topic;
-        this.KafkaOperations = KafkaOperations;
+        this.kafkaOperations = kafkaOperations;
+        this.mapper = mapper;
     }
 
     @Override
@@ -48,11 +49,25 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
                 .setHeader(TOPIC, topic)
                 .setHeader(NAV_CALL_ID, callId())
                 .build();
-        KafkaOperations.send(message);
+        ListenableFuture<SendResult<String, String>> future = kafkaOperations.send(message);
+        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                LOG.info("Sendte hendelse {} med offset{}", message,
+                        result.getRecordMetadata().offset());
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOG.warn("Kunne ikke sende melding {}", message, ex);
+            }
+        });
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [topic=" + topic + ", KafkaOperations=" + KafkaOperations + "]";
+        return getClass().getSimpleName() + "[topic=" + topic + ", kafkaOperations=" + kafkaOperations + ", mapper="
+                + mapper + "]";
     }
 }
