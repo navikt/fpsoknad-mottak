@@ -27,6 +27,34 @@ public class InnsendingEvent {
         this.vedlegg = vedlegg;
     }
 
+    public String getJournalId() {
+        return journalId;
+    }
+
+    public String getReferanseId() {
+        return referanseId;
+    }
+
+    public String getSaksNr() {
+        return saksNr;
+    }
+
+    public LeveranseStatus getLeveranseStatus() {
+        return leveranseStatus;
+    }
+
+    public SøknadType getType() {
+        return type;
+    }
+
+    public String getVersjon() {
+        return versjon;
+    }
+
+    public List<String> getVedlegg() {
+        return vedlegg;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [journalId=" + journalId + ", referanseId=" + referanseId + ", saksNr="
