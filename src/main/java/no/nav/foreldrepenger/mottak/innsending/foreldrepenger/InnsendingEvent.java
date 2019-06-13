@@ -6,7 +6,6 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class InnsendingEvent {
 
@@ -15,7 +14,7 @@ public class InnsendingEvent {
     private final String saksNr;
     private final LeveranseStatus leveranseStatus;
     private final SøknadType type;
-    private final Versjon versjon;
+    private final String versjon;
     private List<String> vedlegg;
 
     public InnsendingEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
@@ -24,7 +23,7 @@ public class InnsendingEvent {
         this.saksNr = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
         this.type = egenskap.getType();
-        this.versjon = egenskap.getVersjon();
+        this.versjon = egenskap.getVersjon().name();
         this.vedlegg = vedlegg;
     }
 
