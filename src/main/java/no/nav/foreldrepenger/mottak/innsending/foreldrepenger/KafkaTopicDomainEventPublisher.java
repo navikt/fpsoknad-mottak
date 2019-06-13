@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
 import java.util.List;
 
@@ -12,16 +14,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.MDCUtil;
+import no.nav.foreldrepenger.mottak.util.JacksonUtil;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
@@ -32,7 +31,7 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     private final KafkaOperations<String, String> KafkaOperations;
 
     @Inject
-    private ObjectMapper mapper;
+    private JacksonUtil mapper;
 
     public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
             KafkaTemplate<String, String> KafkaOperations) {
@@ -42,20 +41,14 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
 
     @Override
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
-        try {
-            InnsendingEvent event = new InnsendingEvent(kvittering, egenskap, vedlegg);
-            String payload = mapper.writeValueAsString(event);
-            LOG.info("Publiserer hendelse {} ({}) på topic {}", event, payload, topic);
-
-            Message<String> message = MessageBuilder
-                    .withPayload(payload)
-                    .setHeader(KafkaHeaders.TOPIC, topic)
-                    .setHeader(NAV_CALL_ID, MDCUtil.callId())
-                    .build();
-            KafkaOperations.send(message);
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke publisere hendelse", e);
-        }
+        InnsendingEvent event = new InnsendingEvent(kvittering, egenskap, vedlegg);
+        LOG.info("Publiserer hendelse {} på topic {}", event, topic);
+        Message<String> message = MessageBuilder
+                .withPayload(mapper.writeValueAsString(event))
+                .setHeader(TOPIC, topic)
+                .setHeader(NAV_CALL_ID, callId())
+                .build();
+        KafkaOperations.send(message);
     }
 
     @Override
