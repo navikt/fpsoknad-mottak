@@ -16,11 +16,11 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonUtil;
 
 @Component
@@ -30,27 +30,32 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     private static final Logger LOG = LoggerFactory.getLogger(KafkaTopicDomainEventPublisher.class);
     private final String topic;
     private final KafkaOperations<String, String> kafkaOperations;
+    private final Oppslag oppslag;
 
     private final JacksonUtil mapper;
 
     public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> kafkaOperations, JacksonUtil mapper) {
+            KafkaTemplate<String, String> kafkaOperations, JacksonUtil mapper, Oppslag oppslag) {
         this.topic = topic;
         this.kafkaOperations = kafkaOperations;
         this.mapper = mapper;
+        this.oppslag = oppslag;
     }
 
     @Override
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
-        InnsendingEvent event = new InnsendingEvent(kvittering, egenskap, vedlegg);
+        InnsendingEvent event = new InnsendingEvent(oppslag.getAktørIdAsString(), kvittering, egenskap, vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", event, topic);
         Message<String> message = MessageBuilder
                 .withPayload(mapper.writeValueAsString(event))
                 .setHeader(TOPIC, topic)
                 .setHeader(NAV_CALL_ID, callId())
                 .build();
-        ListenableFuture<SendResult<String, String>> future = kafkaOperations.send(message);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+        send(message);
+    }
+
+    private void send(Message<String> message) {
+        kafkaOperations.send(message).addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 
             @Override
             public void onSuccess(SendResult<String, String> result) {

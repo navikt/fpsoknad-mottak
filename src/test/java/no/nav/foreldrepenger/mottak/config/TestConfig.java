@@ -46,6 +46,13 @@ public class TestConfig {
             }
 
             @Override
+            public String getAktørIdAsString() {
+                return Optional.ofNullable(getAktørId())
+                        .map(AktørId::getId)
+                        .orElse(null);
+            }
+
+            @Override
             public List<Arbeidsforhold> getArbeidsforhold() {
                 return Arrays.asList(
                         new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),

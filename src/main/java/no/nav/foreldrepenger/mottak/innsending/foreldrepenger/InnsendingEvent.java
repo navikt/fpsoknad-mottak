@@ -9,6 +9,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public class InnsendingEvent {
 
+    private final String aktørId;
     private final String journalId;
     private final String referanseId;
     private final String saksNr;
@@ -17,7 +18,8 @@ public class InnsendingEvent {
     private final String versjon;
     private List<String> vedlegg;
 
-    public InnsendingEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
+    public InnsendingEvent(String aktørId, Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
+        this.aktørId = aktørId;
         this.journalId = kvittering.getJournalId();
         this.referanseId = kvittering.getReferanseId();
         this.saksNr = kvittering.getSaksNr();
@@ -25,6 +27,10 @@ public class InnsendingEvent {
         this.type = egenskap.getType();
         this.versjon = egenskap.getVersjon().name();
         this.vedlegg = vedlegg;
+    }
+
+    public String getAktørId() {
+        return aktørId;
     }
 
     public String getJournalId() {

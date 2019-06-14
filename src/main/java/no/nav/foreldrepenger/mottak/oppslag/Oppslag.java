@@ -18,4 +18,6 @@ public interface Oppslag extends Pingable {
     Fødselsnummer getFnr(AktørId aktørId);
 
     List<Arbeidsforhold> getArbeidsforhold();
+
+    String getAktørIdAsString();
 }

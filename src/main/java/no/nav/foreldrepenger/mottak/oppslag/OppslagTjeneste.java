@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.Cacheable;
@@ -45,6 +46,13 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
+    public String getAktørIdAsString() {
+        return Optional.ofNullable(getAktørId())
+                .map(AktørId::getId)
+                .orElse(null);
+    }
+
+    @Override
     public Fødselsnummer getFnr(AktørId aktørId) {
         return connection.hentFnr(aktørId);
     }
@@ -58,4 +66,5 @@ public class OppslagTjeneste implements Oppslag {
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
     }
+
 }

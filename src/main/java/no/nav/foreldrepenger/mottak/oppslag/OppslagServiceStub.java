@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
@@ -42,6 +43,13 @@ public class OppslagServiceStub implements Oppslag {
     @Override
     public Fødselsnummer getFnr(AktørId aktørId) {
         return new Fødselsnummer("01010111111");
+    }
+
+    @Override
+    public String getAktørIdAsString() {
+        return Optional.ofNullable(getAktørId())
+                .map(AktørId::getId)
+                .orElse(null);
     }
 
     @Override
