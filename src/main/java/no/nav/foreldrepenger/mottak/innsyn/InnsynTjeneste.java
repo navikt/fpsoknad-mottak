@@ -289,7 +289,8 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private Uttaksplan map(UttaksplanDTO dto) {
-        SøknadsGrunnlag grunnlag = new SøknadsGrunnlag(dto.getFamilieHendelseType(), dto.getFamilieHendelseDato(),
+        SøknadsGrunnlag grunnlag = new SøknadsGrunnlag(dto.getTermindato(), dto.getFødselsdato(),
+                dto.getOmsorgsovertakelsesdato(),
                 dto.getDekningsgrad(), dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(),
                 dto.getMorHarRett(), dto.getMorErUfør(), dto.getFarMedmorErAleneOmOmsorg(), dto.getFarMedmorHarRett(),
                 dto.getAnnenForelderErInformert());

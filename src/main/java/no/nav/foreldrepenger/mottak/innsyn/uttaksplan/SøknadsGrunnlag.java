@@ -10,8 +10,9 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
 
 @Data
 public class SøknadsGrunnlag {
-    private final FamilieHendelseType familieHendelseType;
-    private final LocalDate familieHendelseDato;
+    private final LocalDate termindato;
+    private final LocalDate fødselsdato;
+    private final LocalDate omsorgsovertakelsesdato;
 
     private final Dekningsgrad dekningsgrad;
     private final Integer antallBarn;
@@ -25,10 +26,10 @@ public class SøknadsGrunnlag {
     private final Boolean farMedmorHarRett;
     private final Boolean annenForelderErInformert;
 
-
     @JsonCreator
-    public SøknadsGrunnlag(@JsonProperty("familieHendelseType") FamilieHendelseType familieHendelseType,
-            @JsonProperty("familieHendelseDato") LocalDate familieHendelseDato,
+    public SøknadsGrunnlag(@JsonProperty("termindato") LocalDate termindato,
+            @JsonProperty("fødselsdato") LocalDate fødselsdato,
+            @JsonProperty("omsorgsovertakelsesdato") LocalDate omsorgsovertakelsesdato,
             @JsonProperty("dekningsgrad") Dekningsgrad dekningsgrad,
             @JsonProperty("antallBarn") Integer antallBarn,
             @JsonProperty("søkerErFarEllerMedmor") Boolean søkerErFarEllerMedmor,
@@ -38,8 +39,9 @@ public class SøknadsGrunnlag {
             @JsonProperty("farMedmorErAleneOmOmsorg") Boolean farMedmorErAleneOmOmsorg,
             @JsonProperty("farMedmorHarRett") Boolean farMedmorHarRett,
             @JsonProperty("annenForelderErInformert") Boolean annenForelderErInformert) {
-        this.familieHendelseType = familieHendelseType;
-        this.familieHendelseDato = familieHendelseDato;
+        this.omsorgsovertakelsesdato = omsorgsovertakelsesdato;
+        this.fødselsdato = fødselsdato;
+        this.termindato = termindato;
         this.dekningsgrad = dekningsgrad;
         this.antallBarn = antallBarn;
         this.søkerErFarEllerMedmor = søkerErFarEllerMedmor;
