@@ -21,6 +21,7 @@ public enum Versjon {
             "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1",
             "urn:no:nav:vedtak:felles:xml:vedtak:v1",
             "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
+            "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v1",
             "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
     V2(
             "urn:no:nav:vedtak:felles:xml:soeknad:v2",
