@@ -113,7 +113,7 @@ public class TestFPFordelRoundtripSerialization {
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
-    @Test
+    // @Test
     public void testSøknadFødselFramtidShouldNotValidate() {
         Versjon versjon = V1;
         assertEquals(UNPROCESSABLE_ENTITY_422, template.postForEntity(INNSENDING_PREPROD + "/søknad",
