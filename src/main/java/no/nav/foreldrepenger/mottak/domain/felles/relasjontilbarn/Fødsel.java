@@ -13,7 +13,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.BarnOgFødselsdatoer;
-import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,8 +20,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 @BarnOgFødselsdatoer
 public class Fødsel extends RelasjonTilBarn {
 
-    private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") LocalDate> fødselsdato;
-    @PastOrToday(nullable = true)
+    private final List</* @PastOrToday(message = "{ytelse.relasjontilbarn.fødsel.fødselsdato}") */ LocalDate> fødselsdato;
     private final LocalDate termindato;
 
     public Fødsel(LocalDate fødselsdato) {
