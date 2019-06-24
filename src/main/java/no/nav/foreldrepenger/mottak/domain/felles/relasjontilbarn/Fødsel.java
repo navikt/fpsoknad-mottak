@@ -29,7 +29,7 @@ public class Fødsel extends RelasjonTilBarn {
     }
 
     public Fødsel(int antallBarn, LocalDate foedselsdato) {
-        this(foedselsdato, null);
+        this(antallBarn, foedselsdato, null);
     }
 
     public Fødsel(LocalDate fødselsdato, LocalDate termindato) {
