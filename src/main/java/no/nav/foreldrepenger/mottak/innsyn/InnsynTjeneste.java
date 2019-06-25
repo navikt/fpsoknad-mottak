@@ -37,6 +37,7 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
+import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -240,7 +241,7 @@ public class InnsynTjeneste implements Innsyn {
             return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
                     søknadHandler.tilSøknad(xml, egenskaper));
         } catch (Exception e) {
-            LOG.warn("Feil ved mapping av søknad fra {}", xml, e);
+            LOG.warn("Feil ved mapping av søknad fra {}", StringUtil.limit(xml, 50), e);
             return null;
         }
     }
@@ -253,7 +254,7 @@ public class InnsynTjeneste implements Innsyn {
             return vedtakHandler.tilVedtak(xml, e)
                     .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e));
         } catch (Exception e) {
-            LOG.warn("Feil ved mapping av vedtak fra {}", xml, e);
+            LOG.warn("Feil ved mapping av vedtak fra {}", StringUtil.limit(xml, 50), e);
             return null;
         }
     }
