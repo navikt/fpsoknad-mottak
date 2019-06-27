@@ -53,7 +53,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
             @JsonProperty("manueltBehandlet") Boolean manueltBehandlet,
             @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
-            @JsonProperty("morsAktivitet") MorsAktivitet  morsAktivitet,
+            @JsonProperty("morsAktivitet") MorsAktivitet morsAktivitet,
             @JsonProperty("flerbarnsdager") Boolean flerbarnsdager,
             @JsonProperty("uttakArbeidType") UttakArbeidType uttakArbeidType,
             @JsonProperty("arbeidsgiverInfo") ArbeidsgiverInfo arbeidsgiverInfo) {
