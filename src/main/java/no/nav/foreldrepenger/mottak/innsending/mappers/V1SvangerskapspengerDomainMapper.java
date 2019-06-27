@@ -108,17 +108,13 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                         relasjonsDatoFra(ytelse.getTermindato(), ytelse.getFødselsdato()))));
     }
 
-
-    private static TilretteleggingListe tilretteleggingFra(
-        List<no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging> tilrettelegginger) {
-
-        List<Tilrettelegging> tilRetteleggingsListe = tilretteleggingByArbeidsforhold(tilrettelegginger)
-            .entrySet().stream()
-            .map(e -> create(e.getValue()))
-            .collect(toList());
-
+    private static TilretteleggingListe tilretteleggingFra(List<no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging> tilrettelegginger) {
         return new TilretteleggingListe()
-            .withTilrettelegging(tilRetteleggingsListe);
+            .withTilrettelegging(
+                tilretteleggingByArbeidsforhold(tilrettelegginger)
+                .entrySet().stream()
+                .map(e -> create(e.getValue()))
+                .collect(toList()));
     }
 
 
