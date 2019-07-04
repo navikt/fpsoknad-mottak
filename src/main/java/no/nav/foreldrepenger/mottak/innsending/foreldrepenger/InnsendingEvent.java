@@ -10,23 +10,28 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 public class InnsendingEvent {
 
     private final String aktørId;
+    private final String fnr;
     private final String journalId;
     private final String referanseId;
     private final String saksNr;
     private final LeveranseStatus leveranseStatus;
     private final SøknadType type;
-    private final String versjon;
     private List<String> vedlegg;
 
-    public InnsendingEvent(String aktørId, Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
+    public InnsendingEvent(String aktørId, String fnr, Kvittering kvittering, SøknadEgenskap egenskap,
+            List<String> vedlegg) {
         this.aktørId = aktørId;
+        this.fnr = fnr;
         this.journalId = kvittering.getJournalId();
         this.referanseId = kvittering.getReferanseId();
         this.saksNr = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
         this.type = egenskap.getType();
-        this.versjon = egenskap.getVersjon().name();
         this.vedlegg = vedlegg;
+    }
+
+    public String getFnr() {
+        return fnr;
     }
 
     public String getAktørId() {
@@ -53,10 +58,6 @@ public class InnsendingEvent {
         return type;
     }
 
-    public String getVersjon() {
-        return versjon;
-    }
-
     public List<String> getVedlegg() {
         return vedlegg;
     }
@@ -64,7 +65,7 @@ public class InnsendingEvent {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [journalId=" + journalId + ", referanseId=" + referanseId + ", saksNr="
-                + saksNr + ", leveranseStatus=" + leveranseStatus + ", type=" + type + ", versjon=" + versjon
+                + saksNr + ", leveranseStatus=" + leveranseStatus + ", type=" + type
                 + ", vedlegg=" + vedlegg + "]";
     }
 }

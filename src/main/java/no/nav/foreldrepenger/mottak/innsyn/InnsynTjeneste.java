@@ -249,8 +249,8 @@ public class InnsynTjeneste implements Innsyn {
     private Vedtak tilVedtak(VedtakDTO wrapper) {
         String xml = wrapper.getXml();
         try {
-            LOG.trace(CONFIDENTIAL, "Mapper vedtak fra {}", wrapper);
             SøknadEgenskap e = vedtakHandler.inspiser(xml);
+            LOG.trace(CONFIDENTIAL, "Mapper vedtak av type {} fra {}", e, wrapper);
             return vedtakHandler.tilVedtak(xml, e)
                     .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e));
         } catch (Exception e) {

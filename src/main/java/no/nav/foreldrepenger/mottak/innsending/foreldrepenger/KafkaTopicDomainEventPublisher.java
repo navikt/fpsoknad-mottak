@@ -22,6 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonUtil;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
@@ -31,20 +32,23 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     private final String topic;
     private final KafkaOperations<String, String> kafkaOperations;
     private final Oppslag oppslag;
-
     private final JacksonUtil mapper;
+    private final TokenUtil tokenUtil;
 
     public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> kafkaOperations, JacksonUtil mapper, Oppslag oppslag) {
+            KafkaTemplate<String, String> kafkaOperations, JacksonUtil mapper, Oppslag oppslag, TokenUtil tokenUtil) {
         this.topic = topic;
         this.kafkaOperations = kafkaOperations;
         this.mapper = mapper;
         this.oppslag = oppslag;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
-        InnsendingEvent event = new InnsendingEvent(oppslag.getAktørIdAsString(), kvittering, egenskap, vedlegg);
+        InnsendingEvent event = new InnsendingEvent(oppslag.getAktørIdAsString(), tokenUtil.getSubject(), kvittering,
+                egenskap,
+                vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", event, topic);
         Message<String> message = MessageBuilder
                 .withPayload(mapper.writeValueAsString(event))

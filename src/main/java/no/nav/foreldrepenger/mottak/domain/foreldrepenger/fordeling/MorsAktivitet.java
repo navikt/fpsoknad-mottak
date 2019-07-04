@@ -1,9 +1,15 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling;
 
 public enum MorsAktivitet {
-    ARBEID, UTDANNING, KVALPROG("morsaktivitet.kvalprog"), INTROPROG("morsaktivitet.introprog"),
-    TRENGER_HJELP("morsaktivitet.sykdom"), INNLAGT, ARBEID_OG_UTDANNING,
-    SAMTIDIGUTTAK("morsaktivitet.samtidig"), UFØRE;
+    ARBEID,
+    UTDANNING,
+    KVALPROG("morsaktivitet.kvalprog"),
+    INTROPROG("morsaktivitet.introprog"),
+    TRENGER_HJELP("morsaktivitet.sykdom"),
+    INNLAGT,
+    ARBEID_OG_UTDANNING,
+    SAMTIDIGUTTAK("morsaktivitet.samtidig"),
+    UFØRE;
 
     private final String key;
 
