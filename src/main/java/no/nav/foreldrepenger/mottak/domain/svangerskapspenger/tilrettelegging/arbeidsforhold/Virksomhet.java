@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class Virksomhet extends Arbeidsforhold {
 
     @Orgnr

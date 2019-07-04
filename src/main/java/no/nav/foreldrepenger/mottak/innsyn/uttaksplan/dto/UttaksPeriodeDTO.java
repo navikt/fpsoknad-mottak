@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
@@ -35,6 +36,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
     private final Integer utbetalingsprosent;
     private final Boolean gjelderAnnenPart;
     private final GraderingAvslagÅrsak graderingAvslagAarsak;
+    private final MorsAktivitet morsAktivitet;
     private final Boolean flerbarnsdager;
     private final Boolean manueltBehandlet;
     private final Integer samtidigUttaksprosent;
@@ -60,6 +62,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
             @JsonProperty("manueltBehandlet") Boolean manueltBehandlet,
             @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
+            @JsonProperty("morsAktivitet") MorsAktivitet morsAktivitet,
             @JsonProperty("flerbarnsdager") Boolean flerbarnsdager,
             @JsonProperty("uttakArbeidType") UttakArbeidType uttakArbeidType,
             @JsonProperty("arbeidsgiverOrgnr") String arbeidsgiverOrgnr,
@@ -79,6 +82,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
         this.graderingAvslagAarsak = graderingAvslagAarsak;
         this.manueltBehandlet = manueltBehandlet;
         this.samtidigUttaksprosent = samtidigUttaksprosent;
+        this.morsAktivitet = morsAktivitet;
         this.flerbarnsdager = flerbarnsdager;
         this.uttakArbeidType = uttakArbeidType;
         this.fom = fom;

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
@@ -22,6 +23,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
     private final PeriodeResultatType periodeResultatType;
     private final Boolean graderingInnvilget;
     private final Boolean samtidigUttak;
+    private final MorsAktivitet morsAktivitet;
     private final LukketPeriode periode;
     private final StønadskontoType stønadskontotype;
     private final Integer trekkDager;
@@ -51,6 +53,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
             @JsonProperty("manueltBehandlet") Boolean manueltBehandlet,
             @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
+            @JsonProperty("morsAktivitet") MorsAktivitet morsAktivitet,
             @JsonProperty("flerbarnsdager") Boolean flerbarnsdager,
             @JsonProperty("uttakArbeidType") UttakArbeidType uttakArbeidType,
             @JsonProperty("arbeidsgiverInfo") ArbeidsgiverInfo arbeidsgiverInfo) {
@@ -69,6 +72,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
         this.graderingAvslagAarsak = graderingAvslagAarsak;
         this.manueltBehandlet = manueltBehandlet;
         this.samtidigUttaksprosent = samtidigUttaksprosent;
+        this.morsAktivitet = morsAktivitet;
         this.flerbarnsdager = flerbarnsdager;
         this.uttakArbeidType = uttakArbeidType;
         this.arbeidsgiverInfo = arbeidsgiverInfo;

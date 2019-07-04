@@ -27,7 +27,6 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.ar
         @JsonSubTypes.Type(value = DelvisTilrettelegging.class, name = "delvis"),
         @JsonSubTypes.Type(value = IngenTilrettelegging.class, name = "ingen")
 })
-
 public abstract class Tilrettelegging {
 
     private final Arbeidsforhold arbeidsforhold;
