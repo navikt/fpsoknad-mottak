@@ -1,5 +1,7 @@
 name: fpsoknad-mottak
 team: teamforeldrepenger
+vault.enabled : true
+secrets: true
 image: repo.adeo.no:5443/fpsoknad-mottak
 replicas:
     min: 2
