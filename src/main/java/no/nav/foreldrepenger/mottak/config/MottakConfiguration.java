@@ -11,7 +11,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
 public class MottakConfiguration {
-    @Value("${testpreprod:jalla}")
+    @Value("${test:jalla}")
     private String test;
 
     private static final Logger LOG = LoggerFactory.getLogger(MottakConfiguration.class);
