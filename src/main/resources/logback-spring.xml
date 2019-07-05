@@ -29,6 +29,7 @@
         <logger name="no.nav.foreldrepenger" level="trace" />
         <logger name="org.apache.kafka" level="info" />
         <logger name="org.springframework.kafka" level="info" />
+        <logger name="org.springframework.vault" level="trace" />
     </springProfile>
 </configuration>
 
