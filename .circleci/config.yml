@@ -1,0 +1,58 @@
+version: 2.1
+orbs:
+  nais: navikt/nais-deployment@1.1.0
+  
+jobs:
+   build:
+     working_directory: ~/fpsoknad-mottak 
+     docker:
+       - image: circleci/openjdk:11-jdk
+     steps:
+       - checkout       
+       - restore_cache: 
+          key: fpsoknad-mottak-{{ checksum "pom.xml" }}
+      
+       - run: mvn dependency:go-offline
+      
+       - save_cache:
+          paths:
+            - ~/.m2
+          key: fpsoknad-mottak-{{ checksum "pom.xml" }}
+       - run: mvn package 
+       - run:
+           name: Save test results
+           command: |
+             mkdir -p ~/test-results/junit/
+             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+           when: always
+
+       - store_test_results:
+          path: ~/test-results
+
+       - store_artifacts:
+          path: ~/test-results/junit  
+
+       - nais/docker-deploy:
+          image: navikt/fpsoknad-mottak	
+
+          
+workflows:
+   version: 2
+   deploy-nais-dev:
+     jobs:
+      - build:
+          context: NAIS deployment
+      - nais/deploy:
+          build-and-push-docker-image: false
+          context: NAIS deployment
+          repo: navikt/fpsoknad-mottak
+          image: navikt/fpsoknad-mottak
+          github-app-id: 20250
+          nais-template: naiserator.yaml
+          environment: dev-fss
+          team: teamforeldrepenger
+          filters:
+            branches:
+              only: master
+          requires:
+            - build
