@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.5.RELEASE</version>
+		<version>2.1.6.RELEASE</version>
 		<relativePath />
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
 	<artifactId>fpsoknad-mottak</artifactId>
 	<version>0-SNAPSHOT</version>
 	<properties>
-		<pdfbox.version>2.0.15</pdfbox.version>
+		<pdfbox.version>2.0.16</pdfbox.version>
 		<oidc-spring-support.version>0.2.18</oidc-spring-support.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -23,6 +23,7 @@
 		<jaxb.location>${project.build.directory}/classes/</jaxb.location>
 		<xsd.location>src/main/xsd</xsd.location>
 		<xjb.location>src/main/xjb</xjb.location>
+        <mq.version>9.1.2.0</mq.version>
 		<kontrakter.version>5.0_20190491092911_ae77aec</kontrakter.version>
 	</properties>
 	<scm>
@@ -233,12 +234,12 @@
 		<dependency>
 			<groupId>com.ibm.mq</groupId>
 			<artifactId>com.ibm.mq.allclient</artifactId>
-			<version>9.1.2.0</version>
+            <version>${mq.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.neovisionaries</groupId>
 			<artifactId>nv-i18n</artifactId>
-			<version>1.24</version>
+			<version>1.25</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -329,7 +330,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
-			<version>1.6</version>
+			<version>1.7</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
