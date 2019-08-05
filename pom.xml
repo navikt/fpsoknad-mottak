@@ -24,7 +24,7 @@
 		<xsd.location>src/main/xsd</xsd.location>
 		<xjb.location>src/main/xjb</xjb.location>
         <mq.version>9.1.2.0</mq.version>
-		<kontrakter.version>5.0_20190491092911_ae77aec</kontrakter.version>
+		<kontrakter.version>5.0_20190801134117_1f810f2</kontrakter.version>
 	</properties>
 	<scm>
 		<connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>

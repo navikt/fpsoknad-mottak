@@ -63,19 +63,19 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     @Override
     public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
         switch (egenskap.getFagsakType()) {
-            case FORELDREPENGER:
-                return Optional.ofNullable(xml)
-                        .map(V2XMLVedtakMapper::tilFPVedtak)
-                        .orElse(null);
-            case ENGANGSSTØNAD:
-                return Optional.ofNullable(xml)
-                        .map(V2XMLVedtakMapper::tilESVedtak)
-                        .orElse(null);
-            case SVANGERSKAPSPENGER:
-                LOG.warn("Svangerskapspenger vedtak ikke støttet");
-                return null;
-            default:
-                throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
+        case FORELDREPENGER:
+            return Optional.ofNullable(xml)
+                    .map(V2XMLVedtakMapper::tilFPVedtak)
+                    .orElse(null);
+        case ENGANGSSTØNAD:
+            return Optional.ofNullable(xml)
+                    .map(V2XMLVedtakMapper::tilESVedtak)
+                    .orElse(null);
+        case SVANGERSKAPSPENGER:
+            LOG.warn("Svangerskapspenger vedtak ikke støttet");
+            return null;
+        default:
+            throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
         }
     }
 
@@ -184,7 +184,8 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
                 tilProsent(aktivitet.getArbeidstidsprosent()),
                 tilAvslagsÅrsak(aktivitet.getAvslagaarsak()),
                 tilBoolean(aktivitet.getGradering()),
-                tilInt(aktivitet.getTrekkdager()),
+                // tilInt(aktivitet.getTrekkdager())
+                0, // TODO
                 tiltrekkonto(aktivitet.getTrekkkonto()),
                 tilProsent(aktivitet.getUtbetalingsprosent()),
                 tilArbeidType(aktivitet.getUttakarbeidtype()),
