@@ -104,7 +104,7 @@ public class SøknadInspektørTest {
         assertNotNull(mapper.tilSøknad(xml, egenskap));
     }
 
-    @Test
+    // @Test
     public void testESPapirXML() throws Exception {
         String xml = load("v1ESpapir.xml");
         SøknadEgenskap egenskap = inspektør.inspiser(xml);

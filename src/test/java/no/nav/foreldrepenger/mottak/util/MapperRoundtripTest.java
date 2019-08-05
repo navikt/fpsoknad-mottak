@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
+import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLSøknadMapper;
@@ -36,7 +37,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 @MockitoSettings(strictness = LENIENT)
 public class MapperRoundtripTest {
 
-    private static final XMLStreamSøknadInspektør INSPEKTØR = new XMLStreamSøknadInspektør();
+    private static final Inspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
     private static final AktørId SØKER = new AktørId("42");
 

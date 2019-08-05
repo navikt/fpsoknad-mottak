@@ -21,7 +21,6 @@ public class MottakConfiguration {
     @Bean
     @Qualifier(LANDKODER)
     public MessageSource landkoder() {
-        LOG.info("XXXXXXXXXXXXXX " + test);
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename(LANDKODER);
         return messageSource;
