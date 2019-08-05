@@ -40,7 +40,7 @@ spec:
    - name:  varsel_name
      value: MQXLSC02
    - name:  varsel_port
-     value: 1413
+     value: "1413"
    - name:  varsel_queuename
      value: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
    - name:  fpsoknad_varsel_kanal_queuemanager
