@@ -26,7 +26,7 @@ spec:
       max: 2
       cpuThresholdPercentage: 50
   ingresses:
-    - "https://https://fpsoknad-mottak.nais.preprod.local/api"
+    - "https://https://fpsoknad-mottak.nais.preprod.local"
   resources:
       limits:
         cpu: 1500m
