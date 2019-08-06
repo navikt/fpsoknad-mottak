@@ -41,6 +41,7 @@ jobs:
           path: ~/test-results/junit  
           
        - nais/docker-deploy:
+          context: NAIS deployment
           image: navikt/fpsoknad-mottak	
 
 workflows:
