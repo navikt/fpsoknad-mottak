@@ -1,28 +1,41 @@
 mottak:
    sender:
       domainevent:
-         enabled : false
+         enabled : true
 
-management:
-    endpoints.web.exposure.include:  '*'
-    endpoint:
-        health.enabled: false
-        health.show-details : always
-        security.enabled : false
-
+management :
+   endpoints:
+      web:
+         exposure:
+            include:  '*'
+   endpoint:
+     health:
+        show-details : always
+     security:
+        enabled : false
+spring:
+   kafka:  
+      properties:
+         security:
+            protocol: SASL_SSL
+         sasl: 
+            mechanism: PLAIN
+            jaas:
+               config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
+      consumer: 
+         bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
+         group-id: group_id1
+         enable-auto-commit: true
+         auto-offset-reset: earliest
+         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+         value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+       
+      producer:
+         bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
+         key-serializer: org.apache.kafka.common.serialization.StringSerializer
+         value-serializer: org.apache.kafka.common.serialization.StringSerializer
+   http:
+     log-request-details : true
 varsel:
-    queuename: DEV.QUEUE.1
-    hostname: localhost
-    port: 1414
-    name: QM1
-    channelname: DEV.APP.SVRCONN
-
-no.nav.security.oidc:
-    issuers: selvbetjening
-    issuer:
-        selvbetjening.discoveryurl: http://metadata
-        selvbetjening.accepted_audience: aud-localhost
-        selvbetjening.cookie_name: localhost-idtoken
-
-server.port: 9001
-spring.http.log-request-details : true
+    username : srvappserver
+    enabled : true

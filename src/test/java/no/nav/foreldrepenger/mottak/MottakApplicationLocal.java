@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,13 +26,13 @@ public class MottakApplicationLocal {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(MottakApplicationLocal.class)
-                .profiles(DEV)
+                .profiles(LOCAL)
                 .main(MottakApplicationLocal.class)
                 .run(args);
     }
 
     @Bean
-    @Profile(DEV)
+    @Profile(LOCAL)
     @ConditionalOnMissingBean(SpringOIDCRequestContextHolder.class)
     OIDCRequestContextHolder dummyContextHolderForDev() {
         return new OIDCRequestContextHolder() {

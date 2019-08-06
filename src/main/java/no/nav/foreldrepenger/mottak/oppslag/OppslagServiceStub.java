@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 
 @Service
-@Profile({ PREPROD, DEV })
+@Profile({ DEV, LOCAL })
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "true")
 public class OppslagServiceStub implements Oppslag {
     @Override

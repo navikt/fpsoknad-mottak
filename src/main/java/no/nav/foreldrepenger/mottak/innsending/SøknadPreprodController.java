@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.PREPROD;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -27,7 +27,7 @@ import no.nav.security.oidc.api.Unprotected;
 @Unprotected
 @RestController
 @RequestMapping(path = SøknadPreprodController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
-@Profile({ PREPROD, DEV })
+@Profile({ DEV, LOCAL })
 public class SøknadPreprodController {
 
     private static final AktørId SØKER = new AktørId("42");
