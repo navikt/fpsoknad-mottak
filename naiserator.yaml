@@ -52,9 +52,7 @@ spec:
    - name:  fpfordel_uri
      value: http://fpfordel.q1
    - name: fpfordel_enabled
-     value: true
-   - name: dokmot_enabled
-     value: true
+     value: "true"
    - name:  innsyn_uri
      value: http://fpinfo.q1
    - name:  no_nav_security_oidc_issuer_selvbetjening_discoveryurl
