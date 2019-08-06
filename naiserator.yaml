@@ -38,7 +38,7 @@ spec:
       enabled: true      
   env: 
    - name:  varsel_hostname
-     value: b27apvl171.preprod.local
+     value: b27apvl176.preprod.local
    - name:  varsel_name
      value: MQ1LSC02
    - name:  varsel_port
