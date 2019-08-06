@@ -40,14 +40,17 @@ jobs:
        - store_artifacts:
           path: ~/test-results/junit  
           
-      
+       - nais/docker-deploy:
+          image: navikt/fpsoknad-mottak	
+
 workflows:
    version: 2
    deploy-nais-dev:
      jobs:
-      - build
+      - build:
+          context: NAIS deployment 
       - nais/deploy:
-          build-and-push-docker-image: true
+          build-and-push-docker-image: false
           context: NAIS deployment
           repo: navikt/fpsoknad-mottak
           image: navikt/fpsoknad-mottak
