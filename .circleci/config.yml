@@ -10,17 +10,21 @@ jobs:
      steps:
        - checkout       
        - restore_cache: 
+          name: Hente cache 
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
       
-       - run: mvn dependency:go-offline
+       - run:
+          name: Lagre avhengigheter  
+          command : mvn dependency:go-offline
       
        - save_cache:
+          name: Lagre cache 
           paths:
             - ~/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
        - run: mvn package 
        - run:
-           name: Save test results
+           name: Lagre testresultater
            command: |
              mkdir -p ~/test-results/junit/
              find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
@@ -31,17 +35,17 @@ jobs:
 
        - store_artifacts:
           path: ~/test-results/junit  
-
-    
-
           
+       - nais/docker-deploy:
+          image: navikt/fpsoknad-mottak	
+
 workflows:
    version: 2
    deploy-nais-dev:
      jobs:
       - build
       - nais/deploy:
-          build-and-push-docker-image: true
+          build-and-push-docker-image: false
           context: NAIS deployment
           repo: navikt/fpsoknad-mottak
           image: navikt/fpsoknad-mottak
