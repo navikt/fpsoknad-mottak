@@ -9,6 +9,7 @@ jobs:
        - image: circleci/openjdk:11-jdk
      steps:
        - checkout       
+      
        - restore_cache: 
           name: Hente cache 
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
@@ -22,21 +23,28 @@ jobs:
           paths:
             - ~/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
-       - run: mvn package 
+          
+       - run: 
+         name: Bygge 
+         command: mvn clean package 
+      
        - run:
-           name: Lagre testresultater
+           name: Flytte testresultater
            command: |
              mkdir -p ~/test-results/junit/
              find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
            when: always
 
        - store_test_results:
+          name: Lagre testresultater
           path: ~/test-results
 
        - store_artifacts:
+          name: Lagre testartifakter
           path: ~/test-results/junit  
           
        - nais/docker-deploy:
+          name: Deploy to Dockerhub
           image: navikt/fpsoknad-mottak	
 
 workflows:
