@@ -1,1 +1,7 @@
-{}
+{
+  "application_name": "fpsoknad-mottak",
+  "env": {
+    "MY_ENV_VAR": "cluster specific value",
+    "SECOND_ENV_VAR": "another one"
+  }
+}

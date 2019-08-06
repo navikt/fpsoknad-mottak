@@ -37,6 +37,10 @@ spec:
   vault:
       enabled: true      
   env: 
+  {{#each env}}
+    name: '{{@key}}'
+    value: '{{this}}'
+  {{/each}}
    - name:  varsel_hostname
      value: b27apvl176.preprod.local
    - name:  varsel_name
@@ -53,7 +57,6 @@ spec:
      value: http://fpfordel.q1
    - name: fpfordel_enabled
      value: "true"
-
    - name:  innsyn_uri
      value: http://fpinfo.q1
    - name:  no_nav_security_oidc_issuer_selvbetjening_discoveryurl
