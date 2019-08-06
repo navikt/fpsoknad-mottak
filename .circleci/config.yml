@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  nais: navikt/nais-deployment@1.1.0
+  nais: navikt/nais-deployment@1.4.0
   
 jobs:
    build:
