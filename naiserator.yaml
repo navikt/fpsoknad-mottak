@@ -40,7 +40,7 @@ spec:
    - name:  varsel_hostname
      value: b27apvl171.preprod.local
    - name:  varsel_name
-     value: MQXLSC02
+     value: MQ1LSC02
    - name:  varsel_port
      value: "1413"
    - name:  varsel_queuename
