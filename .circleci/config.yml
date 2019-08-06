@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  nais: navikt/nais-deployment@1.4.0
+  nais: navikt/nais-deployment@dev:mybranch bare. Så @dev:issue/14-enable-vars
   
 jobs:
    build:
