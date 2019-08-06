@@ -46,14 +46,18 @@ spec:
    - name:  varsel_queuename
      value: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
    - name:  fpsoknad_varsel_kanal_queuemanager
-     value: mq://b27apvl176.preprod.local:1413/MQ1LSC02    
+     value: mq://b27apvl176.preprod.local:1413/MQ1LSC02
    - name:  varsel_channelname
      value: Q1_FPSOKNAD_VARSEL
    - name:  fpfordel_uri
      value: http://fpfordel.q1
+   - name: fpfordel_enabled
+     value: true
+   - name: dokmot_enabled
+     value: true
    - name:  innsyn_uri
      value: http://fpinfo.q1
    - name:  no_nav_security_oidc_issuer_selvbetjening_discoveryurl
-     value: https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1 
+     value: https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1
    - name:  spring_profiles_active
-     value: preprod   
+     value: preprod
