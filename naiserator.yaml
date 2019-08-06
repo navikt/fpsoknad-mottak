@@ -38,8 +38,8 @@ spec:
       enabled: true      
   env: 
   {{#each env}}
-    name: '{{@key}}'
-    value: '{{this}}'
+   - name: '{{@key}}'
+     value: '{{this}}'
   {{/each}}
    - name:  varsel_hostname
      value: b27apvl176.preprod.local
