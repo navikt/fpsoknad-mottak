@@ -41,12 +41,11 @@ workflows:
    deploy-nais-dev:
      jobs:
       - build:
-          context: NAIS deployment
- 
-     - hold:
+      
+	  - hold:
           type: approval 
           requires:
-           - build
+           - build 
  
       - nais/deploy:
           build-and-push-docker-image: false
