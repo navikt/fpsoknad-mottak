@@ -49,6 +49,10 @@ workflows:
      jobs:
       - build:
           context: NAIS deployment 
+      - hold: 
+          type: approval 
+          requires: 
+              - build    
       - nais/deploy:
           enable-vars: true
           template-vars: dev.json
@@ -64,4 +68,4 @@ workflows:
             branches:
               only: master
           requires:
-            - build
+            - hold
