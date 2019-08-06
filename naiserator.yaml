@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: fpsoknad-mottak
+  name: {{application_name}}
   namespace: default
   labels:
     team: {{team}}
@@ -26,7 +26,7 @@ spec:
       max: 2
       cpuThresholdPercentage: 50
   ingresses:
-    - "https://fpsoknad-mottak.nais.preprod.local"
+    - "https://{{application_name}}.nais.preprod.local"
   resources:
       limits:
         cpu: 1500m
