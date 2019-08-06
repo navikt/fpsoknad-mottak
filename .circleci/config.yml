@@ -50,6 +50,7 @@ workflows:
       - build:
           context: NAIS deployment 
       - nais/deploy:
+          enable-vars: true
           template-vars: dev.json
           build-and-push-docker-image: false
           context: NAIS deployment
