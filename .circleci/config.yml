@@ -43,6 +43,10 @@ jobs:
           
        - nais/docker-deploy:
           image: navikt/fpsoknad-mottak	
+       
+       - slack/status:
+           success_message: "Please approve next job: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_ID"
+           failure_message: "Failed to build."
 
 workflows:
    version: 2
