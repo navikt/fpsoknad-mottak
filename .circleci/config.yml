@@ -19,7 +19,6 @@ jobs:
           command : mvn dependency:go-offline
       
        - save_cache:
-          name: Lagre cache 
           paths:
             - ~/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
@@ -36,11 +35,9 @@ jobs:
            when: always
 
        - store_test_results:
-          name: Lagre testresultater
           path: ~/test-results
 
        - store_artifacts:
-          name: Lagre testartifakter
           path: ~/test-results/junit  
           
        - nais/docker-deploy:
