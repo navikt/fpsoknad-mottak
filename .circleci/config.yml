@@ -41,7 +41,6 @@ jobs:
           path: ~/test-results/junit  
           
        - nais/docker-deploy:
-          name: Deploy to Dockerhub
           image: navikt/fpsoknad-mottak	
 
 workflows:
