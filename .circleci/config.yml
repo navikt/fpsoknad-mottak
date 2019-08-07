@@ -50,20 +50,24 @@ workflows:
      jobs:
       - build:
           context: NAIS deployment 
-      
+       
+      - hold:
+          type: approval
+          filters:
+            branches:
+              only: master
+          requires:
+            - dev_deploy 
+              
       - slack/approval-notification:
            webhook: https://hooks.slack.com/services/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
            message: "Godkjenn deploy til prod"
            url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
            requires:
-            - build
-   
-      - hold: 
-          type: approval 
-          requires: 
-              - build    
-   
+            - dev_deploy 
+                      
       - nais/deploy:
+          name: dev_deploy
           enable-vars: true
           template-vars: dev.json
           build-and-push-docker-image: false
@@ -79,3 +83,24 @@ workflows:
               only: master
           requires:
             - hold
+            
+      - nais/deploy:
+          name: prod_deploy
+          enable-vars: true
+          template-vars: prod.json
+          build-and-push-docker-image: false
+          context: NAIS deployment
+          repo: navikt/$CIRCLE_PROJECT_REPONAME
+          image: navikt/$CIRCLE_PROJECT_REPONAME
+          github-app-id: 20250
+          nais-template: naiserator.yaml
+          environment: prod-fss
+          team: teamforeldrepenger
+          filters:
+            branches:
+              only: master
+          requires:
+            - hold      
+            
+     
+              
