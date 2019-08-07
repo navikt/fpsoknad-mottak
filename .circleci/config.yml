@@ -46,6 +46,8 @@ jobs:
           image: navikt/$CIRCLE_PROJECT_REPONAME	
    
    hold-and-notify:
+     docker:
+       - image: circleci/openjdk:11-jdk
      steps: 
        - slack/approval-notification: 
           webhook: https://hooks.slack.com/services/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
