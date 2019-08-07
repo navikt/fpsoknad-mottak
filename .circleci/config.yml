@@ -27,6 +27,7 @@ jobs:
       - image: circleci/openjdk:11-jdk
     steps:
       - slack/notify:
+          webhook: https://hooks.slack.com/services/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
           message: |
             Please check and approve Job to deploy.
             https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}
