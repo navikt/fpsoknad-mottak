@@ -50,22 +50,7 @@ workflows:
      jobs:
       - build:
           context: NAIS deployment 
-       
-      - hold:
-          type: approval
-          filters:
-            branches:
-              only: master
-          requires:
-            - dev_deploy 
-              
-      - slack/approval-notification:
-           webhook: https://hooks.slack.com/services/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
-           message: "Godkjenn deploy til prod"
-           url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
-           requires:
-            - dev_deploy 
-                      
+                            
       - nais/deploy:
           name: dev_deploy
           enable-vars: true
@@ -82,8 +67,23 @@ workflows:
             branches:
               only: master
           requires:
-            - hold
+            - build
             
+      - hold:
+          type: approval
+          filters:
+            branches:
+              only: master
+          requires:
+            - dev_deploy 
+              
+      - slack/approval-notification:
+           webhook: https://hooks.slack.com/services/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
+           message: "Godkjenn deploy til prod"
+           url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
+           requires:
+            - dev_deploy 
+                   
       - nais/deploy:
           name: prod_deploy
           enable-vars: true
