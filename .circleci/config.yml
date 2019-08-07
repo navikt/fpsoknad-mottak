@@ -44,6 +44,19 @@ jobs:
           
        - nais/docker-deploy:
           image: navikt/$CIRCLE_PROJECT_REPONAME	
+   
+   hold-and-notify:
+     steps: 
+       - slack/approval-notification: 
+          webhook: https://hooks.slack.com/services/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
+          message: "Godkjenn deploy til prod av $CIRCLE_PROJECT_REPONAME"
+          url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
+       - hold:
+          type: approval   
+       - expiration/set:
+          ttl: 60   
+       - hold:
+          type: approval   
           
 workflows:
    version: 2
@@ -70,18 +83,10 @@ workflows:
           requires:
             - build
             
-      - hold:
-          type: approval
-          filters:
+      - hold-and-notify:
+           filters:
             branches:
               only: master
-          requires:
-            - dev_deploy 
-              
-      - slack/approval-notification:
-           webhook: https://hooks.slack.com/services/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
-           message: "Godkjenn deploy til prod av $CIRCLE_PROJECT_REPONAME"
-           url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
            requires:
             - dev_deploy 
                    
