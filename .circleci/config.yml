@@ -5,60 +5,110 @@ orbs:
   expiration: azihsoyn/job-expiration@0.1.0
   
 jobs:
-  build:
-    docker:
-      - image: circleci/openjdk:11-jdk
-    steps:
-      - run:
-          command: |
-            echo "build"
-          name: build
-  deploy:
-    docker:
-      - image: circleci/openjdk:11-jdk
-    steps:
-      - expiration/check
-      - run:
-          command: |
-            echo "deploy"
-          name: deploy
-  send-approval-link:
-    docker:
-      - image: circleci/openjdk:11-jdk
-    steps:
-      - slack/notify:
+   build:
+     working_directory: ~/fpsoknad-mottak
+     docker:
+       - image: circleci/openjdk:11-jdk
+     steps:
+       - checkout       
+      
+       - restore_cache: 
+          name: Hente cache 
+          key: fpsoknad-mottak-{{ checksum "pom.xml" }}
+      
+       - run:
+          name: Lagre avhengigheter  
+          command : mvn dependency:go-offline
+      
+       - save_cache:
+          paths:
+            - ~/.m2
+          key: fpsoknad-mottak-{{ checksum "pom.xml" }}
+          
+       - run: 
+           name: Bygge 
+           command: mvn clean package 
+      
+       - run:
+           name: Flytte testresultater
+           command: |
+             mkdir -p ~/test-results/junit/
+             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+           when: always
+
+       - store_test_results:
+          path: ~/test-results
+
+       - store_artifacts:
+          path: ~/test-results/junit  
+          
+       - nais/docker-deploy:
+          image: navikt/$CIRCLE_PROJECT_REPONAME	
+   
+   hold-and-notify:
+     docker:
+       - image: circleci/openjdk:11-jdk
+     steps: 
+       - slack/approval-notification: 
           webhook: https://hooks.slack.com/services/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
-          message: |
-            Please check and approve Job to deploy.
-            https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}
-      - expiration/set:
-          ttl: 600
-
-
+          message: "Godkjenn deploy til prod av $CIRCLE_PROJECT_REPONAME"
+          url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
+       - hold:
+          type: approval   
+       - expiration/set:
+          ttl: 60   
+       - hold:
+          type: approval   
+          
 workflows:
-  example-workflow:
-    jobs:
+   version: 2
+   deploy-nais-dev:
+     jobs:
       - build:
-          filters:
-            branches:
-              only: master
-      - send-approval-link:
+          context: NAIS deployment 
+                            
+      - nais/deploy:
+          name: dev_deploy
+          enable-vars: true
+          template-vars: dev.json
+          build-and-push-docker-image: false
+          context: NAIS deployment
+          repo: navikt/$CIRCLE_PROJECT_REPONAME
+          image: navikt/$CIRCLE_PROJECT_REPONAME
+          github-app-id: 20250
+          nais-template: naiserator.yaml
+          environment: dev-fss
+          team: teamforeldrepenger
           filters:
             branches:
               only: master
           requires:
             - build
-      - pending-approval:
+            
+      - hold-and-notify:
+           filters:
+            branches:
+              only: master
+           requires:
+            - dev_deploy 
+                   
+      - nais/deploy:
+          name: prod_deploy
+          enable-vars: true
+          template-vars: prod.json
+          build-and-push-docker-image: false
+          context: NAIS deployment
+          repo: navikt/$CIRCLE_PROJECT_REPONAME
+          image: navikt/$CIRCLE_PROJECT_REPONAME
+          github-app-id: 20250
+          nais-template: naiserator.yaml
+          environment: prod-fss
+          team: teamforeldrepenger
           filters:
             branches:
               only: master
           requires:
-            - send-approval-link
-          type: approval
-      - deploy:
-          filters:
-            branches:
-              only: master
-          requires:
-            - pending-approval
-  version: 2       
+            - hold      
+            
+     
+              
