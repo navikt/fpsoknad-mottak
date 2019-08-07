@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   nais: navikt/nais-deployment@1.4.1
   slack: circleci/slack@3.3.0
+  expiration: azihsoyn/job-expiration@0.1.0
   
 jobs:
    build:
@@ -79,7 +80,7 @@ workflows:
               
       - slack/approval-notification:
            webhook: https://hooks.slack.com/services/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
-           message: "Godkjenn deploy til prod"
+           message: "Godkjenn deploy til prod av $CIRCLE_PROJECT_REPONAME"
            url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
            requires:
             - dev_deploy 
