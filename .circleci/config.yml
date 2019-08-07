@@ -46,7 +46,7 @@ jobs:
        
        - slack/status:
            webhook: https://hooks.slack.com/services/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
-           success_message: "Please approve next job: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_ID"
+           success_message: "Please approve next job: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID"
            failure_message: "Failed to build."
 
 workflows:
