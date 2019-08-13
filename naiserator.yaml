@@ -26,7 +26,7 @@ spec:
       max: 2
       cpuThresholdPercentage: 50
   ingresses:
-    - "https://{{application_name}}.nais.preprod.local"
+    - {{ingress}}
   resources:
       limits:
         cpu: 1500m
