@@ -6,6 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 
 public final class EnvUtil {
+    public static final String DEFAULT = "default";
     public static final String DEV = "dev";
     public static final String LOCAL = "local";
     public static final Marker CONFIDENTIAL = MarkerFactory.getMarker("CONFIDENTIAL");

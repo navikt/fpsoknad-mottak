@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
+import no.nav.foreldrepenger.mottak.config.ClusterAwareSpringProfileResolver;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.OIDCValidationContext;
 import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration;
@@ -26,7 +27,7 @@ public class MottakApplicationLocal {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(MottakApplicationLocal.class)
-                .profiles(LOCAL)
+                .profiles(new ClusterAwareSpringProfileResolver().getProfile())
                 .main(MottakApplicationLocal.class)
                 .run(args);
     }
