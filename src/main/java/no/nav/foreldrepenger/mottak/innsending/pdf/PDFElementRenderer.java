@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,7 +66,7 @@ public class PDFElementRenderer {
             lineList.addAll(splitLineIfNecessary(remainingStr, maxLength));
             return lineList;
         }
-        return Arrays.asList(str);
+        return Collections.singletonList(str);
     }
 
     public float addLineOfRegularText(String line, FontAwareCos cos, float startY) throws IOException {

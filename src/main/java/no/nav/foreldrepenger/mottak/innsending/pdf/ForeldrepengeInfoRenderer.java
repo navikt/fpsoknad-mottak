@@ -338,6 +338,11 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
+    private static boolean skalSkjules(LukketPeriodeMedVedlegg periode) {
+        return periode instanceof GradertUttaksPeriode
+                && GradertUttaksPeriode.class.cast(periode).isØnskerSamtidigUttak();
+    }
+
     public FontAwareCos fordeling(FontAwarePDDocument doc, Person søker, BrukerRolle rolle, Fordeling fordeling,
             Dekningsgrad dekningsgrad,
             List<Vedlegg> vedlegg,
@@ -364,7 +369,7 @@ public class ForeldrepengeInfoRenderer {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof GradertUttaksPeriode) {
+            } else if (periode instanceof GradertUttaksPeriode && !skalSkjules(periode)) {
                 PDPage scratch1 = newPage();
                 FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
                 float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
@@ -387,8 +392,7 @@ public class ForeldrepengeInfoRenderer {
                 float behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, cos,
-                            y);
+                    y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
