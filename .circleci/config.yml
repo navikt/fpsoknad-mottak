@@ -10,8 +10,9 @@ jobs:
        - image: circleci/openjdk:11-jdk
        
      steps:
-       - checkout       
-       - run: echo "Versjon er 2-$CIRCLE_BUILD_NUM-$CIRCLE_SHA1" 
+       - checkout 
+       -run : echo 'export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)' >> ~/.bashrc     
+       - run: echo "Versjon er $COMMIT_TAG" 
        - restore_cache: 
           name: Hente cache 
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
