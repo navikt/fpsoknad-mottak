@@ -11,7 +11,7 @@ jobs:
        
      steps:
        - checkout 
-       -run : echo 'export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)' >> ~/.bashrc     
+       - run : echo 'export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)' >> ~/.bashrc     
        - run: echo "Versjon er $COMMIT_TAG" 
        - restore_cache: 
           name: Hente cache 
