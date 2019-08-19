@@ -8,13 +8,13 @@ jobs:
      working_directory: ~/fpsoknad-mottak
      docker:
        - image: circleci/openjdk:11-jdk
-     environment:
-       SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)  
+       
      steps:
        - checkout 
+       - run : echo "export COMMIT_TAG=\"$(git rev-parse --short HEAD)\"" >> $BASH_ENV
        - run: 
           name: "What is the tag?"
-          command: echo ${SHORT_GIT_HASH}
+          command: echo ${COMMIT_TAG}
        - restore_cache: 
           name: Hente cache 
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
