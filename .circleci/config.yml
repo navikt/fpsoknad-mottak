@@ -27,14 +27,15 @@ jobs:
           paths:
             - ~/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
+          
        - run
-           name Set maven versjon
-           command :  mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
+           name : Set maven versjon
+           command : mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
        - run: 
            name: Bygge 
            command: mvn clean package 
        - run
-           name Revert maven versjon
+           name : Revert maven versjon
            command :  mvn versions:revert
 
        - store_artifacts:
