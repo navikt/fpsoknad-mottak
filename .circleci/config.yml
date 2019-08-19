@@ -11,10 +11,10 @@ jobs:
        
      steps:
        - checkout 
-       - run : echo "export COMMIT_TAG=\"2-$CIRCLE_BUILD_NUM-$(git rev-parse --short HEAD)\"" >> $BASH_ENV
-       - run: 
-          name: "What is the tag?"
-          command: echo ${COMMIT_TAG}
+       - run : 
+          name : Set environment vars
+          command : echo "export RELEASE_VERSION=\"$MAJOR_VERSION-$CIRCLE_BUILD_NUM-$(git rev-parse --short HEAD)\"" >> $BASH_ENV
+         
        - restore_cache: 
           name: Hente cache 
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
@@ -27,11 +27,15 @@ jobs:
           paths:
             - ~/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
-          
+       - run
+           name Set maven versjon
+           command :  mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
        - run: 
            name: Bygge 
            command: mvn clean package 
-      
+       - run
+           name Revert maven versjon
+           command :  mvn versions:revert
 
        - store_artifacts:
           path: target/surefire-reports
