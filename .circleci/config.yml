@@ -13,7 +13,7 @@ jobs:
        
      steps:
        - checkout       
-      
+       - run: echo "Versjon er $VERSJON" 
        - restore_cache: 
           name: Hente cache 
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
