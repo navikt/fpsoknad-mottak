@@ -31,18 +31,20 @@ jobs:
        - run:
            name: Flytte testresultater
            command: |
-             mkdir -p test-results/junit/
+             mkdir -p test-results
              find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} test-results \;
            when: always
 
        - store_test_results:
-          path: test-results
+          path: test-results/* 
 
        - store_artifacts:
           path: test-results  
           
        - nais/docker-deploy:
           image: navikt/$CIRCLE_PROJECT_REPONAME	
+          
+          
           
 workflows:
    version: 2
