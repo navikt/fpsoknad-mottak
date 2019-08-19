@@ -12,7 +12,7 @@ jobs:
        BASH_ENV: "~/.bashrc"  
      steps:
        - checkout 
-       - run : echo 'export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)' >> $BASH_ENV     
+       - run : echo 'export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)' > $BASH_ENV     
        - run: echo "Versjon er $COMMIT_TAG" 
        - restore_cache: 
           name: Hente cache 
