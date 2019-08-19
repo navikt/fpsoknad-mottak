@@ -27,19 +27,12 @@ jobs:
        - run: 
            name: Bygge 
            command: mvn clean package 
-      
-       - run:
-           name: Flytte testresultater
-           command: |
-             mkdir -p test-results
-             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} test-results \;
-           when: always
 
        - store_test_results:
-          path: test-results
+          path: target/surefire-reports
 
        - store_artifacts:
-          path: test-results  
+          path: target/surefire-reports 
           
        - nais/docker-deploy:
           image: navikt/$CIRCLE_PROJECT_REPONAME	
