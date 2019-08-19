@@ -10,7 +10,7 @@ jobs:
        - image: circleci/openjdk:11-jdk
      steps:
        - checkout 
-       - run :'export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)' >> $BASH_ENV     
+       - run : "export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)" >> $BASH_ENV     
        - run: 
           name: "What is the tag?"
           command: echo ${COMMIT_TAG}
