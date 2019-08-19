@@ -5,7 +5,6 @@ orbs:
   
 jobs:
    build:
-     working_directory: ~/fpsoknad-mottak
      docker:
        - image: circleci/openjdk:11-jdk
      steps:
