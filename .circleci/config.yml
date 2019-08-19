@@ -8,8 +8,6 @@ jobs:
      working_directory: ~/fpsoknad-mottak
      docker:
        - image: circleci/openjdk:11-jdk
-     environment:
-       BASH_ENV: "~/.bashrc"  
      steps:
        - checkout 
        - run : echo 'export COMMIT_TAG=$(eval echo ${CIRCLE_SHA1} | cut -c1-7)' > $BASH_ENV     
