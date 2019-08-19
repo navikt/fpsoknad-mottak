@@ -28,15 +28,16 @@ jobs:
             - ~/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
           
-       - run
-           name : Set maven versjon
-           command : mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
+       - run :
+          name : Set maven versjon
+          command : mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
        - run: 
-           name: Bygge 
-           command: mvn clean package 
-       - run
-           name : Revert maven versjon
-           command :  mvn versions:revert
+          name: Bygge 
+          command: mvn clean package 
+           
+       - run :
+          name : Revert maven versjon
+          command :  mvn versions:revert
 
        - store_artifacts:
           path: target/surefire-reports
