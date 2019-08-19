@@ -21,7 +21,7 @@ jobs:
       
        - save_cache:
           paths:
-            - ~/.m2
+            - ~/fpsoknad-mottak/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
           
        - run: 
@@ -32,13 +32,13 @@ jobs:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
-            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex "fpsoknad-mottak/target/surefire-reports/.*xml" -exec cp {} fpsoknad-mottak/test-results/junit/ \;
           when: always
           
        - store_test_results:
-          path: ~/test-results
+          path: fpsoknad-mottak/test-results
        - store_artifacts:
-          path: ~/test-results/junit   
+          path: fpsoknad-mottak/junit   
           
        - nais/docker-deploy:
           image: navikt/$CIRCLE_PROJECT_REPONAME	
