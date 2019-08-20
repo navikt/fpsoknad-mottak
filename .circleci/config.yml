@@ -34,6 +34,10 @@ jobs:
        - run: 
           name: Bygge 
           command: mvn clean package 
+     
+       - run:
+           name: Sonar
+           command mvn sonar:sonar  -Dsonar.projectKey=navikt_fpsoknad-mottak -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR       
            
        - run :
           name : Revert maven versjon
@@ -46,7 +50,7 @@ jobs:
           path: target/surefire-reports
           
        - nais/docker-deploy:
-          image: navikt/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION
+          image: navikt/$CIRCLE_PROJECT_REPONAME
           
 workflows:
    version: 2
