@@ -3,28 +3,39 @@ mottak:
       domainevent:
          enabled : false
          topic : fpsoknad-mottak
+         
 no.nav:
-   security.oidc :
-       issuers :  selvbetjening
-       issuer.selvbetjening :
-          discoveryurl : Set from FASIT
-          accepted_audience : <Set from FASIT>
+    security:
+      oidc:
+        issuers :  selvbetjening
 
-http.proxy : http://webproxy-nais.nav.no:8088
+http:
+  proxy : http://webproxy-nais.nav.no:8088
 
-info.app :
+info:
+  app :
     version : '@project.version@'
-    build.time : '@timestamp@'
+    build:
+      time : '@timestamp@'
 
 management:
-    metrics.web.server.auto-time-requests : true
-    endpoints.web.exposure.include:  info, health, metrics, prometheus
+    metrics:
+      web:
+        server:
+          auto-time-requests : true
+    endpoints:
+      web:
+        exposure:
+           include:  info, health, metrics, prometheus
     health :
-      diskspace.enabled: false
-      jms.enabled: false
+      diskspace:
+        enabled : false
+      jms:
+        enabled: false
 
 server :
-    servlet.context-path :  /api
+    servlet:
+      context-path :  /api
     use-forward-headers: true
 
 varsel:
@@ -34,8 +45,10 @@ varsel:
 spring :
     cache :
        cache-names : aktoer
-       caffeine.spec: maximumSize=100,expireAfterAccess=3600s
-    application.name : fpsoknad-mottak
+       caffeine:
+         spec: maximumSize=100,expireAfterAccess=3600s
+    application:
+      name : fpsoknad-mottak
     jackson :
       default-property-inclusion :  non-absent
       mapper :
@@ -46,4 +59,5 @@ spring :
       serialization :
          write-empty-json-arrays: false
          fail-on-empty-beans: false
-    main.banner-mode : 'off'
+    main:
+      banner-mode : 'off'        

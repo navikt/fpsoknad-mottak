@@ -15,5 +15,9 @@
   {
     "name": "no.nav.mottak",
     "description": "A description for 'no.nav.mottak'"
+  },
+  {
+    "name": "mottak",
+    "description": "A description for 'mottak'"
   }
 ]}
