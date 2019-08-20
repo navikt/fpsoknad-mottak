@@ -37,7 +37,7 @@ jobs:
      
        - run:
            name: Sonar
-           command mvn sonar:sonar  -Dsonar.projectKey=navikt_fpsoknad-mottak -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR       
+           command: mvn sonar:sonar  -Dsonar.projectKey=navikt_fpsoknad-mottak -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR       
            
        - run :
           name : Revert maven versjon
