@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,8 +35,7 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     }
 
     @Override
-    public Medlemsskap deserialize(JsonParser parser, DeserializationContext ctx)
-            throws IOException, JsonProcessingException {
+    public Medlemsskap deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
         JsonNode rootNode = parser.getCodec().readTree(parser);
         return new Medlemsskap(tidligereOpphold(rootNode, parser), framtidigOpphold(rootNode, parser));
     }
