@@ -33,7 +33,7 @@ jobs:
           command : mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
        - run: 
           name: Bygge 
-          command: mvn -Dsonar.projectKey=$CIRCLE_PROJECT_USERNAME_$CIRCLE_PROJECT_REPONAME -Dsonar.projectKey=navikt_fpsoknad-mottak -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io clean package sonar:sonar 
+          command: mvn -Dsonar.projectKey=navikt_fpsoknad-mottak -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io clean package sonar:sonar 
           
        - run :
           name : Revert maven versjon
