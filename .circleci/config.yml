@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  nais: navikt/nais-deployment@1.4.1
+  nais: navikt/nais-deployment@dev:issue/16-custom-tag
   slack: circleci/slack@3.3.0
   
 jobs:
@@ -33,7 +33,7 @@ jobs:
           command : mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
        - run: 
           name: Bygge 
-          command: mvn -Dsonar.projectKey=navikt_fpsoknad-mottak -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR clean package sonar:sonar 
+          command: mvn -Dsonar.projectKey=$CIRCLE_PROJECT_USERNAME_$CIRCLE_PROJECT_REPONAME -Dsonar.organization=$CIRCLE_PROJECT_REPONAME -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR clean package sonar:sonar 
           
        - run :
           name : Revert maven versjon
