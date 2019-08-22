@@ -7,15 +7,15 @@ import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
 
 @Data
 public class SaksInformasjon {
-    public String fagsakId;
-    public String fagsakAnnenForelderId;
-    public String fagsakType;
-    public String tema;
-    public BehandlingTema behandlingsTema;
-    public String ansvarligSaksbehandlerIdent;
-    public String ansvarligBeslutterIdent;
-    public String behandlendeEnhet;
-    public LocalDate søknadsdato;
-    public LocalDate klagedato;
-    public LocalDate vedtaksdato;
+    private String fagsakId;
+    private String fagsakAnnenForelderId;
+    private String fagsakType;
+    private String tema;
+    private BehandlingTema behandlingsTema;
+    private String ansvarligSaksbehandlerIdent;
+    private String ansvarligBeslutterIdent;
+    private String behandlendeEnhet;
+    private LocalDate søknadsdato;
+    private LocalDate klagedato;
+    private LocalDate vedtaksdato;
 }

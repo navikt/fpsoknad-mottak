@@ -93,16 +93,16 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
 
     private static SaksInformasjon tilSaksInformasjon(no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak) {
         SaksInformasjon saksInfo = new SaksInformasjon();
-        saksInfo.ansvarligBeslutterIdent = vedtak.getAnsvarligBeslutterIdent();
-        saksInfo.ansvarligSaksbehandlerIdent = vedtak.getAnsvarligSaksbehandlerIdent();
-        saksInfo.behandlendeEnhet = vedtak.getBehandlendeEnhet();
-        saksInfo.behandlingsTema = tilBehandlingsTema(vedtak.getBehandlingsTema().getKode());
-        saksInfo.fagsakAnnenForelderId = vedtak.getFagsakAnnenForelderId();
-        saksInfo.fagsakId = vedtak.getFagsakId();
-        saksInfo.fagsakType = vedtak.getFagsakType().getKode();
-        saksInfo.søknadsdato = vedtak.getSoeknadsdato();
-        saksInfo.vedtaksdato = vedtak.getVedtaksdato();
-        saksInfo.klagedato = vedtak.getKlagedato();
+        saksInfo.setAnsvarligBeslutterIdent(vedtak.getAnsvarligBeslutterIdent());
+        saksInfo.setAnsvarligSaksbehandlerIdent(vedtak.getAnsvarligSaksbehandlerIdent());
+        saksInfo.setBehandlendeEnhet(vedtak.getBehandlendeEnhet());
+        saksInfo.setBehandlingsTema(tilBehandlingsTema(vedtak.getBehandlingsTema().getKode()));
+        saksInfo.setFagsakAnnenForelderId(vedtak.getFagsakAnnenForelderId());
+        saksInfo.setFagsakId(vedtak.getFagsakId());
+        saksInfo.setFagsakType(vedtak.getFagsakType().getKode());
+        saksInfo.setSøknadsdato(vedtak.getSoeknadsdato());
+        saksInfo.setVedtaksdato(vedtak.getVedtaksdato());
+        saksInfo.setKlagedato(vedtak.getKlagedato());
         return saksInfo;
     }
 
