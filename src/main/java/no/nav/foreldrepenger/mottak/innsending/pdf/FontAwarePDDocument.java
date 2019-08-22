@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.SØKNAD_OUTLINE;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +24,9 @@ import org.springframework.core.io.Resource;
 
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.SØKNAD_OUTLINE;
-
 public class FontAwarePDDocument extends PDDocument {
+    private static final String S_RGB_IEC61966_2_1 = "sRGB IEC61966-2.1";
+
     private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
 
     private static final Resource REGULAR = new ClassPathResource("/pdf/NotoSans-Regular.ttf");
@@ -58,7 +60,7 @@ public class FontAwarePDDocument extends PDDocument {
         return pagesOutline;
     }
 
-    private synchronized PDFont load(Resource res) throws UnexpectedInputException {
+    private synchronized PDFont load(Resource res) {
         if (res.exists()) {
             try (InputStream is = res.getInputStream()) {
                 return PDType0Font.load(this, is);
@@ -90,9 +92,9 @@ public class FontAwarePDDocument extends PDDocument {
 
             InputStream colorProfile = ICC.getInputStream();
             PDOutputIntent intent = new PDOutputIntent(doc, colorProfile);
-            intent.setInfo("sRGB IEC61966-2.1");
-            intent.setOutputCondition("sRGB IEC61966-2.1");
-            intent.setOutputConditionIdentifier("sRGB IEC61966-2.1");
+            intent.setInfo(S_RGB_IEC61966_2_1);
+            intent.setOutputCondition(S_RGB_IEC61966_2_1);
+            intent.setOutputConditionIdentifier(S_RGB_IEC61966_2_1);
             intent.setRegistryName("http://www.color.org");
             doc.getDocumentCatalog().addOutputIntent(intent);
         } catch (Exception e) {
