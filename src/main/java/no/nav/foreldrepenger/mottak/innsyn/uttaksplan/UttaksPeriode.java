@@ -26,7 +26,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
     private final MorsAktivitet morsAktivitet;
     private final LukketPeriode periode;
     private final StønadskontoType stønadskontotype;
-    private final Integer trekkDager;
+    private final Double trekkDager;
     private final Integer arbeidstidProsent;
     private final Integer utbetalingsprosent;
     private final Boolean gjelderAnnenPart;
@@ -47,7 +47,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
             @JsonProperty("fom") LocalDate fom,
             @JsonProperty("tom") LocalDate tom,
             @JsonProperty("stønadskontotype") @JsonAlias("trekkonto") StønadskontoType stønadskontotype,
-            @JsonProperty("trekkDager") Integer trekkDager,
+            @JsonProperty("trekkDager") Double trekkDager,
             @JsonProperty("arbeidstidprosent") Integer arbeidstidProsent,
             @JsonProperty("utbetalingsprosent") Integer utbetalingsprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,

@@ -10,6 +10,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinctByKey;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -316,7 +317,7 @@ public class InnsynTjeneste implements Innsyn {
                         p.getFom(),
                         p.getTom(),
                         p.getStønadskontotype(),
-                        p.getTrekkDager(),
+                        tilDoubleFraBigDecimal(p.getTrekkDager()),
                         p.getArbeidstidProsent(),
                         p.getUtbetalingsprosent(),
                         p.getGjelderAnnenPart(),
@@ -335,6 +336,12 @@ public class InnsynTjeneste implements Innsyn {
                 .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslagConnection.organisasjonsNavn(o)))
                 .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId).map(AktørId::getId).orElse(null), PRIVAT,
                         null));
+    }
+
+    public static Double tilDoubleFraBigDecimal(BigDecimal value) {
+        return Optional.ofNullable(value)
+                .map(BigDecimal::doubleValue)
+                .orElse(null);
     }
 
     @Override
