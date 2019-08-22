@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -32,7 +31,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
     private final LocalDate fom;
     private final LocalDate tom;
     private final StønadskontoType stønadskontotype;
-    private final BigDecimal trekkdager;
+    private final Integer trekkDager;
     private final Integer arbeidstidProsent;
     private final Integer utbetalingsprosent;
     private final Boolean gjelderAnnenPart;
@@ -57,7 +56,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
             @JsonProperty("fom") LocalDate fom,
             @JsonProperty("tom") LocalDate tom,
             @JsonProperty("stønadskontotype") @JsonAlias("trekkonto") StønadskontoType stønadskontotype,
-            @JsonProperty("trekkDager") BigDecimal trekkdager,
+            @JsonProperty("trekkDager") Integer trekkDager,
             @JsonProperty("arbeidstidprosent") Integer arbeidstidProsent,
             @JsonProperty("utbetalingsprosent") Integer utbetalingsprosent,
             @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
@@ -76,7 +75,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
         this.samtidigUttak = samtidigUttak;
         this.periode = new LukketPeriode(fom, tom);
         this.stønadskontotype = stønadskontotype;
-        this.trekkdager = trekkdager;
+        this.trekkDager = trekkDager;
         this.arbeidstidProsent = arbeidstidProsent;
         this.utbetalingsprosent = utbetalingsprosent;
         this.gjelderAnnenPart = gjelderAnnenPart;
