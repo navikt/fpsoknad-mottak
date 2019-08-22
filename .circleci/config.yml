@@ -2,106 +2,128 @@ version: 2.1
 orbs:
   nais: navikt/nais-deployment@1.4.1
   slack: circleci/slack@3.3.0
-  
+  env: christeredvartsen/persist-env@0.0.4
+
+executors:
+  openjdk:
+    working_directory: ~/fpsoknad-mottak
+    docker:
+      - image: circleci/openjdk:11-jdk
+
 jobs:
-   build:
-     working_directory: ~/fpsoknad-mottak
-     docker:
-       - image: circleci/openjdk:11-jdk
-       
-     steps:
-       - checkout 
-       - run : 
-          name : Set environment variables
-          command : echo "export RELEASE_VERSION=\"$MAJOR_VERSION-$CIRCLE_BUILD_NUM-$(git rev-parse --short HEAD)\"" >> $BASH_ENV
-         
-       - restore_cache: 
-          name: Hente cache 
+  build:
+    executor: openjdk
+    steps:
+      - checkout
+
+      - env/set-env-var:
+          var-name: RELEASE_VERSION
+          var-value: $MAJOR_VERSION-$CIRCLE_BUILD_NUM-$(git rev-parse --short HEAD)
+
+      - restore_cache:
+          name: Hente cache
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
-      
-       - run:
-          name: Lagre avhengigheter  
-          command : mvn dependency:go-offline
-      
-       - save_cache:
+
+      - run:
+          name: Lagre avhengigheter
+          command: mvn dependency:go-offline
+
+      - save_cache:
           paths:
             - ~/.m2
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
-          
-       - run :
-          name : Set maven versjon
-          command : mvn versions:set -B -DnewVersion=$RELEASE_VERSION 
-       - run: 
-          name: Bygge 
-          command: mvn -Dsonar.projectKey=navikt_$CIRCLE_PROJECT_REPONAME -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR clean package sonar:sonar 
-          
-       - run :
-          name : Revert maven versjon
-          command :  mvn versions:revert
 
-       - store_artifacts:
+      - run:
+          name: Set maven versjon
+          command: mvn versions:set -B -DnewVersion=$RELEASE_VERSION
+
+      - run:
+          name: Bygge
+          command: mvn -Dsonar.projectKey=navikt_$CIRCLE_PROJECT_REPONAME -Dsonar.organization=navit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR clean package sonar:sonar
+
+      - run:
+          name: Revert maven versjon
+          command: mvn versions:revert
+
+      - store_artifacts:
           path: target/surefire-reports
-          
-       - store_test_results:
+
+      - store_test_results:
           path: target/surefire-reports
-          
-       - nais/docker-deploy:
+
+      - nais/docker-deploy:
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          
-workflows:
-   version: 2
-   deploy-nais:
-     jobs:
-      - build:
-          context: NAIS deployment 
-                           
-      - nais/deploy:
-          name: dev_deploy
-          enable-vars: true
+
+      - env/persist-env
+
+  dev-deploy:
+    executor: openjdk
+    steps:
+      - nais-deploy:
           template-vars: dev.json
+          environment: dev-fss
+
+  prod-deploy:
+    executor: openjdk
+    steps:
+      - nais-deploy:
+          template-vars: prod.json
+          environment: prod-fss
+
+commands:
+  nais-deploy:
+    parameters:
+      template-vars:
+        type: string
+      environment:
+        type: string
+    steps:
+      - env/attach-env
+      - nais/deploy:
+          enable-vars: true
+          template-vars: << parameters.template-vars >>
           build-and-push-docker-image: false
           context: NAIS deployment
           repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          tag: $RELEASE_VERSION
           github-app-id: 20250
           nais-template: naiserator.yaml
-          environment: dev-fss
+          environment: << parameters.environment >>
           team: teamforeldrepenger
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build:
+          context: NAIS deployment
+
+      - dev-deploy:
           filters:
             branches:
               only: master
           requires:
             - build
-            
+
       - hold:
           type: approval
           filters:
             branches:
               only: master
           requires:
-            - dev_deploy 
-              
+            - dev-deploy
+
       - slack/approval-notification:
-           webhook: $SLACK
-           message: "Godkjenn deploy til prod av $CIRCLE_PROJECT_REPONAME"
-           url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
-           requires:
-            - dev_deploy 
-                   
-      - nais/deploy:
-          name: prod_deploy
-          enable-vars: true
-          template-vars: prod.json
-          build-and-push-docker-image: false
-          context: NAIS deployment
-          repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
-          github-app-id: 20250
-          nais-template: naiserator.yaml
-          environment: prod-fss
-          team: teamforeldrepenger
+          webhook: $SLACK
+          message: "Godkjenn deploy til prod av $CIRCLE_PROJECT_REPONAME"
+          url: https://circleci.com/workflow-run/$CIRCLE_WORKFLOW_WORKSPACE_ID
+          requires:
+            - dev-deploy
+
+      - prod-deploy:
           filters:
             branches:
               only: master
           requires:
-            - hold      
+            - hold
