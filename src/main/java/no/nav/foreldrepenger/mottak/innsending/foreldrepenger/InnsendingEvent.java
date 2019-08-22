@@ -64,8 +64,9 @@ public class InnsendingEvent {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [journalId=" + journalId + ", referanseId=" + referanseId + ", saksNr="
-                + saksNr + ", leveranseStatus=" + leveranseStatus + ", type=" + type
-                + ", vedlegg=" + vedlegg + "]";
+        return getClass().getSimpleName() + "[aktørId=" + aktørId + ", fnr=" + fnr + ", journalId=" + journalId
+                + ", referanseId=" + referanseId + ", saksNr=" + saksNr + ", leveranseStatus=" + leveranseStatus
+                + ", type=" + type + ", vedlegg=" + vedlegg + "]";
     }
+
 }
