@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  nais: navikt/nais-deployment@1.4.1
+  nais: navikt/nais-deployment@dev:issue/16-custom-tag
   slack: circleci/slack@3.3.0
   env: christeredvartsen/persist-env@0.0.4
 
@@ -79,18 +79,16 @@ commands:
         type: string
     steps:
       - env/attach-env
-      - nais/deploy:
-          enable-vars: true
-          template-vars: << parameters.template-vars >>
-          build-and-push-docker-image: false
-          context: NAIS deployment
+      - nais/generate-nais-deployment:
           repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          nais-template: naiserator.yaml
+          team: teamforeldrepenger
+          github-app-id: 20250
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           tag: $RELEASE_VERSION
-          github-app-id: 20250
-          nais-template: naiserator.yaml
           environment: << parameters.environment >>
-          team: teamforeldrepenger
+          enable-vars: true
+          template-vars: << parameters.template-vars >>
 
 workflows:
   version: 2
@@ -100,6 +98,7 @@ workflows:
           context: NAIS deployment
 
       - dev-deploy:
+          context: NAIS deployment
           filters:
             branches:
               only: master
@@ -122,6 +121,7 @@ workflows:
             - dev-deploy
 
       - prod-deploy:
+          context: NAIS deployment
           filters:
             branches:
               only: master
