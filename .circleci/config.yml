@@ -110,8 +110,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build:
-          context: NAIS deployment
+      - build
 
       - dev-deploy:
           context: NAIS deployment
