@@ -79,6 +79,7 @@ commands:
         type: string
     steps:
       - env/attach-env
+      - checkout
       - nais/generate-nais-deployment:
           repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           nais-template: naiserator.yaml
