@@ -100,7 +100,7 @@ commands:
           nais-template: naiserator.yaml
           team: teamforeldrepenger
           github-app-id: 20250
-          image: $IMAGE
+          image: docker.pkg.github.com/$IMAGE
           tag: $RELEASE_VERSION
           environment: << parameters.environment >>
           enable-vars: true
