@@ -9,6 +9,9 @@ executors:
     working_directory: ~/fpsoknad-mottak
     docker:
       - image: circleci/openjdk:11-jdk
+  go:
+    docker:
+      - image: navikt/deployment-cli:v0.2.0
 
 jobs:
   build:
@@ -57,14 +60,14 @@ jobs:
       - env/persist-env
 
   dev-deploy:
-    executor: openjdk
+    executor: go
     steps:
       - nais-deploy:
           template-vars: dev.json
           environment: dev-fss
 
   prod-deploy:
-    executor: openjdk
+    executor: go
     steps:
       - nais-deploy:
           template-vars: prod.json
