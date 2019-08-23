@@ -95,7 +95,6 @@ commands:
       - env/attach-env
       - checkout
       - nais/generate-nais-deployment:
-          context: familie-ci
           repo: $REPO
           nais-template: naiserator.yaml
           team: teamforeldrepenger
@@ -110,8 +109,8 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - build
-
+      - build:
+          context: familie-ci 
       - dev-deploy:
           context: NAIS deployment
           filters:
