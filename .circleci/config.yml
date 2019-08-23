@@ -1,4 +1,5 @@
 version: 2.1
+
 orbs:
   nais: navikt/nais-deployment@1.5.0
   slack: circleci/slack@3.3.0
