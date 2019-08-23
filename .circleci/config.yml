@@ -62,8 +62,6 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
 
-      - run: echo $DOCKER_LOGIN
-
       - nais/docker-deploy:
           registry: docker.pkg.github.com
           image: $IMAGE
