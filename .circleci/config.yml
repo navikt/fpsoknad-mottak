@@ -23,6 +23,14 @@ jobs:
           var-name: RELEASE_VERSION
           var-value: $MAJOR_VERSION-$CIRCLE_BUILD_NUM-$(git rev-parse --short HEAD)
 
+      - env/set-env-var:
+          var-name: REPO
+          var-value: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+
+      - env/set-env-var:
+          var-name: IMAGE
+          var-value: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME
+
       - restore_cache:
           name: Hente cache
           key: fpsoknad-mottak-{{ checksum "pom.xml" }}
@@ -55,7 +63,8 @@ jobs:
           path: target/surefire-reports
 
       - nais/docker-deploy:
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          registry: docker.pkg.github.com
+          image: $IMAGE
           tag: $RELEASE_VERSION
 
       - env/persist-env
@@ -84,14 +93,13 @@ commands:
     steps:
       - env/attach-env
       - checkout
-      - run: cat /tmp/.env-to-persist
-      - run: echo $RELEASE_VERSION
       - nais/generate-nais-deployment:
-          repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          repo: $REPO
           nais-template: naiserator.yaml
           team: teamforeldrepenger
           github-app-id: 20250
-          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          registry: docker.pkg.github.com
+          image: $IMAGE
           tag: $RELEASE_VERSION
           environment: << parameters.environment >>
           enable-vars: true
