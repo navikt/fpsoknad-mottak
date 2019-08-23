@@ -98,7 +98,6 @@ commands:
           nais-template: naiserator.yaml
           team: teamforeldrepenger
           github-app-id: 20250
-          registry: docker.pkg.github.com
           image: $IMAGE
           tag: $RELEASE_VERSION
           environment: << parameters.environment >>
