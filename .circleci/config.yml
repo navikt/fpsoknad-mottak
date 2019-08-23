@@ -83,6 +83,7 @@ commands:
     steps:
       - env/attach-env
       - checkout
+      - run: cat /tmp/.env-to-persist
       - run: echo $RELEASE_VERSION
       - nais/generate-nais-deployment:
           repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
