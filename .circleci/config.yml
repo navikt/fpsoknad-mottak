@@ -13,7 +13,8 @@ executors:
   go:
     docker:
       - image: navikt/deployment-cli:v0.2.0
-
+  environment:
+          MAJOR_VERSION: 2 
 jobs:
   build:
     executor: openjdk
