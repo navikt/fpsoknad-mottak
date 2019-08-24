@@ -61,14 +61,14 @@ jobs:
            name: Flytte testresultater
            command: |
              mkdir -p ~/test-results/junit/
-             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
            when: always
 
       - store_test_results:
-          path: ~/test-results
+          path: $CIRCLE_TEST_REPORTS
 
       - store_artifacts:
-          path: ~/test-results/junit
+          path: $CIRCLE_TEST_REPORTS/junit
 
       - nais/docker-deploy:
           registry: docker.pkg.github.com
