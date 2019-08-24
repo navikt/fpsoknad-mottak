@@ -57,11 +57,18 @@ jobs:
           name: Revert maven versjon
           command: mvn versions:revert
 
-      - store_artifacts:
-          path: target/surefire-reports
+      - run:
+           name: Flytte testresultater
+           command: |
+             mkdir -p ~/test-results/junit/
+             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+           when: always
 
       - store_test_results:
-          path: target/surefire-reports
+          path: ~/test-results
+
+      - store_artifacts:
+          path: ~/test-results/junit
 
       - nais/docker-deploy:
           registry: docker.pkg.github.com
