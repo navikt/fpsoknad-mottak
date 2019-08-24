@@ -10,11 +10,12 @@ executors:
     working_directory: ~/fpsoknad-mottak
     docker:
       - image: circleci/openjdk:11-jdk
+    environment:
+          MAJOR_VERSION: 2   
   go:
     docker:
       - image: navikt/deployment-cli:v0.2.0
-    environment:
-          MAJOR_VERSION: 2 
+    
 jobs:
   build:
     executor: openjdk
