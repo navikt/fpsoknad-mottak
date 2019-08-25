@@ -19,9 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
 
+import javax.inject.Inject;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -49,11 +50,11 @@ public class PDFGeneratorTest {
     private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +
             "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
             "mulighet til å søke om utsettelse.";
-    @Autowired
+    @Inject
     @Qualifier(DELEGERENDE)
     PDFGenerator gen;
 
-    @Autowired
+    @Inject
     InfoskrivPdfExtractor pdfExtracter;
 
     @Test

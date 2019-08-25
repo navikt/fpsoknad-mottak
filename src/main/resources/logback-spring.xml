@@ -3,7 +3,7 @@
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="net.logstash.logback.encoder.LogstashEncoder" />
 	</appender>
-	<springProfile name="dev">
+	<springProfile name="local">
 		<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 			<layout class="ch.qos.logback.classic.PatternLayout">
 				<Pattern>
@@ -23,13 +23,8 @@
     </turboFilter>
  </springProfile>
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
-
      <springProfile name="dev,local">
-        <logger name="no.nav.security.spring.oidc" level="info"/>
         <logger name="no.nav.foreldrepenger" level="trace" />
-        <logger name="org.apache.kafka" level="info" />
-        <logger name="org.springframework.kafka" level="info" />
-        <logger name="org.springframework.vault" level="trace" />
     </springProfile>
 </configuration>
 
