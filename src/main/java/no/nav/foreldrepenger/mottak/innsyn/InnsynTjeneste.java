@@ -9,6 +9,7 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinctByKey;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,7 +39,6 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
-import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -242,7 +242,7 @@ public class InnsynTjeneste implements Innsyn {
             return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
                     søknadHandler.tilSøknad(xml, egenskaper));
         } catch (Exception e) {
-            LOG.warn("Feil ved mapping av søknad fra {}", StringUtil.limit(xml, 50), e);
+            LOG.trace("Feil ved mapping av søknad fra {}", limit(xml, 50), e);
             return null;
         }
     }
@@ -252,10 +252,11 @@ public class InnsynTjeneste implements Innsyn {
         try {
             SøknadEgenskap e = vedtakHandler.inspiser(xml);
             LOG.trace(CONFIDENTIAL, "Mapper vedtak av type {} fra {}", e, wrapper);
-            return vedtakHandler.tilVedtak(xml, e)
-                    .withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e));
+            return Optional.ofNullable(vedtakHandler.tilVedtak(xml, e))
+                    .map(v -> v.withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e)))
+                    .orElse(null);
         } catch (Exception e) {
-            LOG.warn("Feil ved mapping av vedtak fra {}", StringUtil.limit(xml, 50), e);
+            LOG.trace("Feil ved mapping av vedtak fra {}", limit(xml, 50), e);
             return null;
         }
     }

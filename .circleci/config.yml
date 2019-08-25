@@ -11,7 +11,7 @@ executors:
     docker:
       - image: circleci/openjdk:11-jdk
     environment:
-          MAJOR_VERSION: 2   
+      MAJOR_VERSION: 2   
   go:
     docker:
       - image: navikt/deployment-cli:v0.2.0
