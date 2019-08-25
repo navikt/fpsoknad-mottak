@@ -36,7 +36,6 @@ class VedtakTest {
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNotNull(vedtak);
         assertNotNull(vedtak.getUttak());
-        System.out.println(vedtak.getSaksInformasjon());
     }
 
     @Test
@@ -57,6 +56,5 @@ class VedtakTest {
         assertEquals(ENGANGSSTØNAD, e.getFagsakType());
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNotNull(vedtak);
-        System.out.println(vedtak.getSaksInformasjon());
     }
 }

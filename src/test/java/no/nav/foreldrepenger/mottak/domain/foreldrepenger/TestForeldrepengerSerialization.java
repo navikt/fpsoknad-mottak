@@ -69,17 +69,17 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testGosysKvittering() throws Exception {
-        test(new FPFordelGosysKvittering("42"), true, mapper);
+        test(new FPFordelGosysKvittering("42"), false, mapper);
     }
 
     @Test
     public void testProsentAndel() throws Exception {
         ProsentAndel orig = new ProsentAndel(40.0);
-        test(orig, true, mapper);
+        test(orig, false, mapper);
         assertEquals(orig, mapper.readValue("{ \"p1\" : 40}", ProsentAndel.class));
         assertEquals(orig, mapper.readValue("{ \"p2\" : 40.0}", ProsentAndel.class));
         orig = new ProsentAndel(40);
-        test(orig, true, mapper);
+        test(orig, false, mapper);
         assertEquals(orig, mapper.readValue("{ \"p1\" : 40}", ProsentAndel.class));
         assertEquals(orig, mapper.readValue("{ \"p2\" : 40.0}", ProsentAndel.class));
 
@@ -87,22 +87,22 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testPollKvittering() throws Exception {
-        test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), true, mapper);
+        test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), false, mapper);
     }
 
     @Test
     public void testFordeltKvittering() throws Exception {
-        test(new FPSakFordeltKvittering("123", "456"), true, mapper);
+        test(new FPSakFordeltKvittering("123", "456"), false, mapper);
     }
 
     @Test
     public void test123() throws Exception {
-        test(UtsettelsePeriodeType.FERIE, true, mapper);
+        test(UtsettelsePeriodeType.FERIE, false, mapper);
     }
 
     @Test
     public void testDekningsgrad() throws Exception {
-        test(Dekningsgrad.GRAD100, true, mapper);
+        test(Dekningsgrad.GRAD100, false, mapper);
     }
 
     @Test
@@ -112,27 +112,27 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEttersending() throws Exception {
-        test(ettersending(), true);
+        test(ettersending(), false);
     }
 
     @Test
     public void testEndringssøknad() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(endringssøknad(v), true);
+            test(endringssøknad(v), false);
         }
     }
 
     @Test
     public void testForeldrepenger() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(foreldrepenger(v, false), true);
+            test(foreldrepenger(v, false), false);
         }
     }
 
     @Test
     public void testSøknad() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), true);
+            test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), false);
         }
 
     }
@@ -159,17 +159,17 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testStønadskontoType() {
-        test(StønadskontoType.IKKE_SATT, true);
+        test(StønadskontoType.IKKE_SATT, false);
     }
 
     @Test
     public void testSøknadMetadata() {
-        test(new SøknadMetadata(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), "42"), true);
+        test(new SøknadMetadata(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), "42"), false);
     }
 
     @Test
     public void testSøknadInspeksjon() {
-        test(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), true);
+        test(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), false);
     }
 
     @Test
@@ -194,28 +194,28 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testFordeling() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(fordeling(v), true);
+            test(fordeling(v), false);
         }
     }
 
     @Test
     public void testUttaksPeride() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(uttaksPeriode(v), true);
+            test(uttaksPeriode(v), false);
         }
     }
 
     @Test
     public void testGradertPeriode() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(gradertPeriode(v), true);
+            test(gradertPeriode(v), false);
         }
     }
 
     @Test
     public void testOverføringsperiode() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(overføringsPeriode(v), true);
+            test(overføringsPeriode(v), false);
         }
     }
 
@@ -271,7 +271,7 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testUtenlandskArbeidsforhold() {
         for (Versjon v : alleSøknadVersjoner()) {
-            test(utenlandskArbeidsforhold(v), true);
+            test(utenlandskArbeidsforhold(v), false);
         }
     }
 
@@ -281,7 +281,7 @@ public class TestForeldrepengerSerialization {
         UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
         assertEquals(CountryCode.UG, org.getRegistrertILand());
         for (Versjon v : alleSøknadVersjoner()) {
-            test(utenlandskEgenNæring(v), true);
+            test(utenlandskEgenNæring(v), false);
         }
     }
 

@@ -13,4 +13,7 @@
         <appender-ref ref="stdout" />
     </root>
         <logger name="no.nav.foreldrepenger.mottak" level="info" />
+        <logger name="org.springframework" level="warn" />
+        <logger name="org.eclipse.jetty" level="warn" />
+        <logger name="springfox.documentation" level="warn" />         
 </configuration>

@@ -113,7 +113,6 @@ public class SøknadInspektørTest {
         assertTrue(mapper.kanMappe(egenskap));
         Søknad søknad = mapper.tilSøknad(xml, egenskap);
         assertNotNull(søknad);
-        System.out.println(søknad.getYtelse());
     }
 
     @Test

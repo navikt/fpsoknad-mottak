@@ -24,9 +24,7 @@ public class InntektsmeldingTest {
     public void testFørstegangssøknadRoundtrip() throws IOException {
         String xml = StreamUtils.copyToString(new ClassPathResource("inntektsmelding.xml").getInputStream(),
                 Charset.defaultCharset());
-        System.out.println(xml);
         Inntektsmelding melding = xmlMapper.tilInntektsmelding(xml);
-        System.out.println(melding);
     }
 
 }

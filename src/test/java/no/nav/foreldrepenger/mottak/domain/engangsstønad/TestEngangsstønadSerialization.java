@@ -47,7 +47,7 @@ public class TestEngangsstønadSerialization {
         Kvittering kvittering = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
         kvittering.setJournalId("555");
         kvittering.setSaksNr("666");
-        test(kvittering, true);
+        test(kvittering, false);
     }
 
     @Test
@@ -59,13 +59,12 @@ public class TestEngangsstønadSerialization {
     public void testSøknadNorge() throws Exception {
         Søknad engangssøknad = engangssøknad(Versjon.V1, false, fødsel(), norskForelder(Versjon.V1),
                 påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
-        test(engangssøknad, true);
+        test(engangssøknad, false);
     }
 
     @Test
     public void testEngangsstønadNorge() throws Exception {
         Engangsstønad engangstønad = engangstønad(Versjon.V1, false, termin(), norskForelder(Versjon.V1));
-        System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(engangstønad));
         test(engangstønad, false);
     }
 
@@ -101,7 +100,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testMedlemsskapUtland() {
-        test(TestUtils.medlemsskap(Versjon.V1, true));
+        test(TestUtils.medlemsskap(Versjon.V1, false));
     }
 
     @Test
@@ -174,7 +173,7 @@ public class TestEngangsstønadSerialization {
     }
 
     void test(Object object) {
-        test(object, true);
+        test(object, false);
 
     }
 
