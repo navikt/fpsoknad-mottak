@@ -24,7 +24,7 @@ public class FPFordelKonvolutt {
 
     public FPFordelKonvolutt(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, List<String> vedlegg) {
         this.payload = payload;
-        this.vedlegg = vedlegg;
+        this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getPayload() {

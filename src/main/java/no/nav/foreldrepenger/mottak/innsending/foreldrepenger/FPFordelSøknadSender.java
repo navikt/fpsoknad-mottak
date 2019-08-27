@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
@@ -18,8 +16,6 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
 public class FPFordelSøknadSender implements SøknadSender {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FPFordelSøknadSender.class);
 
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator generator;
@@ -36,23 +32,22 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        Kvittering kvittering = doSend(egenskap, søknad.getSøknadsRolle(), generator.generer(søknad, søker, egenskap));
+        Kvittering kvittering = doSend(egenskap, søknad.getSøknadsRolle(), konvolutt(søknad, søker, egenskap));
         kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
         kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
         return kvittering;
     }
 
     @Override
-    public Kvittering endreSøknad(Endringssøknad endringssøknad, Person søker, SøknadEgenskap egenskap) {
-        Kvittering kvittering = doSend(egenskap, endringssøknad.getSøknadsRolle(),
-                generator.generer(endringssøknad, søker, egenskap));
-        kvittering.setFørsteDag(endringssøknad.getFørsteUttaksdag());
+    public Kvittering endreSøknad(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
+        Kvittering kvittering = doSend(egenskap, endring.getSøknadsRolle(), konvolutt(endring, søker, egenskap));
+        kvittering.setFørsteDag(endring.getFørsteUttaksdag());
         return kvittering;
     }
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, null, generator.generer(ettersending, søker));
+        return doSend(egenskap, null, konvolutt(ettersending, søker));
     }
 
     @Override
@@ -68,6 +63,18 @@ public class FPFordelSøknadSender implements SøknadSender {
         publisher.publishEvent(kvittering, egenskap, konvolutt.getVedleggIds());
         return kvittering;
 
+    }
+
+    private FPFordelKonvolutt konvolutt(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        return generator.generer(søknad, søker, egenskap);
+    }
+
+    private FPFordelKonvolutt konvolutt(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
+        return generator.generer(endring, søker, egenskap);
+    }
+
+    private FPFordelKonvolutt konvolutt(Ettersending ettersending, Person søker) {
+        return generator.generer(ettersending, søker);
     }
 
     @Override
