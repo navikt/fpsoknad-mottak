@@ -1,5 +1,5 @@
 {
-  "ingress" : "https://fpsoknad-mottak.nais.oera.local",
+  "ingress" : "https://fpsoknad-mottak.nais.adeo.no",
   "application_name": "fpsoknad-mottak",
   "env": {
     "varsel_hostname": "a01apvl063.adeo.no",
