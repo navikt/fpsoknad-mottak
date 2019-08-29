@@ -47,8 +47,7 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     @Override
     public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
         InnsendingEvent event = new InnsendingEvent(oppslag.getAktørIdAsString(), tokenUtil.getSubject(), kvittering,
-                egenskap,
-                vedlegg);
+                egenskap, vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", event, topic);
         Message<String> message = MessageBuilder
                 .withPayload(mapper.writeValueAsString(event))

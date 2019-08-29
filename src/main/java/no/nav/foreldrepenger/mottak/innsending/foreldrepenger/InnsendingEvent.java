@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
@@ -16,7 +17,8 @@ public class InnsendingEvent {
     private final String saksNr;
     private final LeveranseStatus leveranseStatus;
     private final SøknadType type;
-    private List<String> vedlegg;
+    private final List<String> vedlegg;
+    private final LocalDate førsteBehandlingsdato;
 
     public InnsendingEvent(String aktørId, String fnr, Kvittering kvittering, SøknadEgenskap egenskap,
             List<String> vedlegg) {
@@ -28,6 +30,11 @@ public class InnsendingEvent {
         this.leveranseStatus = kvittering.getLeveranseStatus();
         this.type = egenskap.getType();
         this.vedlegg = vedlegg;
+        this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
+    }
+
+    public LocalDate getFørsteBehandlingsdato() {
+        return førsteBehandlingsdato;
     }
 
     public String getFnr() {
@@ -66,7 +73,7 @@ public class InnsendingEvent {
     public String toString() {
         return getClass().getSimpleName() + "[aktørId=" + aktørId + ", fnr=" + fnr + ", journalId=" + journalId
                 + ", referanseId=" + referanseId + ", saksNr=" + saksNr + ", leveranseStatus=" + leveranseStatus
-                + ", type=" + type + ", vedlegg=" + vedlegg + "]";
+                + ", type=" + type + ", vedlegg=" + vedlegg + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
     }
 
 }
