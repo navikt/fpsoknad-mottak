@@ -62,7 +62,7 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
 
             @Override
             public void onSuccess(SendResult<String, String> result) {
-                LOG.info("Sendte hendelse {} med offset{}", message,
+                LOG.info("Sendte hendelse {} med offset {}", message,
                         result.getRecordMetadata().offset());
             }
 

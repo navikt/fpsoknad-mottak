@@ -68,7 +68,8 @@ public class FPFordelKonvoluttGenerator {
         safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-        return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()), vedleggFra(metadata, false));
+        return new FPFordelKonvolutt(egenskap, søknad, new HttpEntity<>(builder.build(), headers()),
+                vedleggFra(metadata, false));
     }
 
     public FPFordelKonvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
@@ -84,17 +85,19 @@ public class FPFordelKonvoluttGenerator {
         safeStream(endringsøknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-        return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()), vedleggFra(metadata, false));
+        return new FPFordelKonvolutt(egenskap, endringsøknad, new HttpEntity<>(builder.build(), headers()),
+                vedleggFra(metadata, false));
     }
 
-    public FPFordelKonvolutt generer(Ettersending ettersending, Person søker) {
+    public FPFordelKonvolutt generer(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         FPFordelMetadata metadata = metadataFor(ettersending, søker.getAktørId(), callId());
         builder.part(METADATA, metadata(metadata), APPLICATION_JSON_UTF8);
         safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
-        return new FPFordelKonvolutt(new HttpEntity<>(builder.build(), headers()), vedleggFra(metadata));
+        return new FPFordelKonvolutt(egenskap, ettersending, new HttpEntity<>(builder.build(), headers()),
+                vedleggFra(metadata));
     }
 
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {

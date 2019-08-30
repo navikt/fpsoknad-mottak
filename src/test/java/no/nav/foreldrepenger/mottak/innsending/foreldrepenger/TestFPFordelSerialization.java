@@ -128,7 +128,8 @@ public class TestFPFordelSerialization {
     @Test
     public void testKonvoluttEttersending() {
         Ettersending es = new Ettersending(foreldrepenger, "42", VEDLEGG1, V2);
-        FPFordelKonvolutt konvolutt = konvoluttGenerator.generer(es, person());
+        FPFordelKonvolutt konvolutt = konvoluttGenerator.generer(es,
+                person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
         assertNotNull(konvolutt.getMetadata());
         assertEquals(2, konvolutt.getVedlegg().size());
         assertNull(konvolutt.XMLHovedDokument());

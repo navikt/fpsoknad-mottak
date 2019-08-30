@@ -18,13 +18,29 @@ import java.util.stream.Stream;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
+import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+
 public class FPFordelKonvolutt {
+    private final SøknadEgenskap egenskap;
     private final HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload;
     private final List<String> vedlegg;
+    private final Object innsending;
 
-    public FPFordelKonvolutt(HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload, List<String> vedlegg) {
+    public FPFordelKonvolutt(SøknadEgenskap egenskap, Object innsending,
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload,
+            List<String> vedlegg) {
+        this.egenskap = egenskap;
+        this.innsending = innsending;
         this.payload = payload;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
+    }
+
+    public SøknadEgenskap getEgenskap() {
+        return egenskap;
+    }
+
+    public Object getInnsending() {
+        return innsending;
     }
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getPayload() {

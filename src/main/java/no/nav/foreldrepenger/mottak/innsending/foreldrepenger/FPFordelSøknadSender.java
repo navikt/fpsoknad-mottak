@@ -32,7 +32,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        Kvittering kvittering = doSend(egenskap, søknad.getSøknadsRolle(), konvolutt(søknad, søker, egenskap));
+        Kvittering kvittering = doSend(søknad.getSøknadsRolle(), konvolutt(søknad, søker, egenskap));
         kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
         kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
         return kvittering;
@@ -40,14 +40,14 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering endreSøknad(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
-        Kvittering kvittering = doSend(egenskap, endring.getSøknadsRolle(), konvolutt(endring, søker, egenskap));
+        Kvittering kvittering = doSend(endring.getSøknadsRolle(), konvolutt(endring, søker, egenskap));
         kvittering.setFørsteDag(endring.getFørsteUttaksdag());
         return kvittering;
     }
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(egenskap, null, konvolutt(ettersending, søker));
+        return doSend(null, konvolutt(ettersending, søker, egenskap));
     }
 
     @Override
@@ -55,12 +55,13 @@ public class FPFordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering doSend(SøknadEgenskap egenskap, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
-        Kvittering kvittering = connection.send(egenskap.getType(), rolle, konvolutt);
-        if (INITIELL_FORELDREPENGER.equals(egenskap)) {
+    private Kvittering doSend(BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
+        Kvittering kvittering = connection.send(konvolutt.getEgenskap().getType(), rolle, konvolutt);
+        if (INITIELL_FORELDREPENGER.equals(konvolutt.getEgenskap())) {
             kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
         }
-        publisher.publishEvent(kvittering, egenskap, konvolutt.getVedleggIds());
+
+        publisher.publishEvent(kvittering, konvolutt.getEgenskap(), konvolutt.getVedleggIds());
         return kvittering;
 
     }
@@ -73,8 +74,8 @@ public class FPFordelSøknadSender implements SøknadSender {
         return generator.generer(endring, søker, egenskap);
     }
 
-    private FPFordelKonvolutt konvolutt(Ettersending ettersending, Person søker) {
-        return generator.generer(ettersending, søker);
+    private FPFordelKonvolutt konvolutt(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
+        return generator.generer(ettersending, søker, egenskap);
     }
 
     @Override
