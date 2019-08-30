@@ -74,6 +74,19 @@ public enum SøknadType {
         if (counter != null) {
             counter.increment();
         }
+    }
 
+    public boolean erEttersending() {
+        return this.equals(ETTERSENDING_SVANGERSKAPSPENGER) ||
+                this.equals(ETTERSENDING_ENGANGSSTØNAD) ||
+                this.equals(ETTERSENDING_FORELDREPENGER);
+    }
+
+    public boolean erEndring() {
+        return this.equals(ENDRING_FORELDREPENGER);
+    }
+
+    public boolean erInitiellForeldrepenger() {
+        return this.equals(INITIELL_FORELDREPENGER);
     }
 }

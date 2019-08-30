@@ -62,6 +62,18 @@ public class SøknadEgenskap {
         return getType().erUkjent() || getVersjon().erUkjent();
     }
 
+    public boolean erEttersending() {
+        return getType().erEttersending();
+    }
+
+    public boolean erEndring() {
+        return getType().erEndring();
+    }
+
+    public boolean erInitiellForeldrepenger() {
+        return getType().erInitiellForeldrepenger();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(egenskap);
@@ -87,4 +99,5 @@ public class SøknadEgenskap {
         return getClass().getSimpleName() + " [versjon=" + egenskap.getFirst() + ", søknadType=" + egenskap.getSecond()
                 + "]";
     }
+
 }

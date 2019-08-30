@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "false")
@@ -17,7 +17,7 @@ public class LoggingDomainEventPublisher implements InnsendingDomainEventPublish
     private static final Logger LOG = LoggerFactory.getLogger(LoggingDomainEventPublisher.class);
 
     @Override
-    public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
-        LOG.info("Publiserer hendelse fra {} for søknad {} med vedlegg {}", kvittering, egenskap, vedlegg);
+    public void publishEvent(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
+        LOG.info("Publiserer hendelse fra {} for søknad av type {} med vedlegg {}", kvittering, type, vedlegg);
     }
 }

@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
-
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
@@ -32,17 +30,12 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        Kvittering kvittering = doSend(søknad.getSøknadsRolle(), konvolutt(søknad, søker, egenskap));
-        kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
-        kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
-        return kvittering;
+        return doSend(søknad.getSøknadsRolle(), konvolutt(søknad, søker, egenskap));
     }
 
     @Override
     public Kvittering endreSøknad(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
-        Kvittering kvittering = doSend(endring.getSøknadsRolle(), konvolutt(endring, søker, egenskap));
-        kvittering.setFørsteDag(endring.getFørsteUttaksdag());
-        return kvittering;
+        return doSend(endring.getSøknadsRolle(), konvolutt(endring, søker, egenskap));
     }
 
     @Override
@@ -56,12 +49,19 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering doSend(BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
-        Kvittering kvittering = connection.send(konvolutt.getEgenskap().getType(), rolle, konvolutt);
-        if (INITIELL_FORELDREPENGER.equals(konvolutt.getEgenskap())) {
+        Kvittering kvittering = connection.send(konvolutt.getType(), rolle, konvolutt);
+        if (konvolutt.erInitiellForeldrepenger()) {
+            Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
+            kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
+            kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
             kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
         }
+        if (konvolutt.erEndring()) {
+            Endringssøknad endringssøknad = Endringssøknad.class.cast(konvolutt.getInnsending());
+            kvittering.setFørsteDag(endringssøknad.getFørsteUttaksdag());
+        }
 
-        publisher.publishEvent(kvittering, konvolutt.getEgenskap(), konvolutt.getVedleggIds());
+        publisher.publishEvent(kvittering, konvolutt.getType(), konvolutt.getVedleggIds());
         return kvittering;
 
     }

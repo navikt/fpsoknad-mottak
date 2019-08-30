@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public class FPFordelKonvolutt {
@@ -35,8 +36,24 @@ public class FPFordelKonvolutt {
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }
 
+    public boolean erInitiellForeldrepenger() {
+        return getEgenskap().erInitiellForeldrepenger();
+    }
+
+    public boolean erEndring() {
+        return getEgenskap().erEndring();
+    }
+
+    public boolean erEttersending() {
+        return getEgenskap().erEttersending();
+    }
+
     public SøknadEgenskap getEgenskap() {
         return egenskap;
+    }
+
+    public SøknadType getType() {
+        return getEgenskap().getType();
     }
 
     public Object getInnsending() {
@@ -107,4 +124,5 @@ public class FPFordelKonvolutt {
     public String toString() {
         return getClass().getSimpleName() + " [payload=" + payload + "]";
     }
+
 }

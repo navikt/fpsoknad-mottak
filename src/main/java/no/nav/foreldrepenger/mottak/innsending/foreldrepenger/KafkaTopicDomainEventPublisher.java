@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -45,9 +45,9 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     }
 
     @Override
-    public void publishEvent(Kvittering kvittering, SøknadEgenskap egenskap, List<String> vedlegg) {
+    public void publishEvent(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
         InnsendingEvent event = new InnsendingEvent(oppslag.getAktørIdAsString(), tokenUtil.getSubject(), kvittering,
-                egenskap, vedlegg);
+                type, vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", event, topic);
         Message<String> message = MessageBuilder
                 .withPayload(mapper.writeValueAsString(event))

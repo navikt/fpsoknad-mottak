@@ -6,7 +6,6 @@ import java.util.List;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public class InnsendingEvent {
 
@@ -20,7 +19,7 @@ public class InnsendingEvent {
     private final List<String> vedlegg;
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingEvent(String aktørId, String fnr, Kvittering kvittering, SøknadEgenskap egenskap,
+    public InnsendingEvent(String aktørId, String fnr, Kvittering kvittering, SøknadType type,
             List<String> vedlegg) {
         this.aktørId = aktørId;
         this.fnr = fnr;
@@ -28,7 +27,7 @@ public class InnsendingEvent {
         this.referanseId = kvittering.getReferanseId();
         this.saksNr = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
-        this.type = egenskap.getType();
+        this.type = type;
         this.vedlegg = vedlegg;
         this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
     }
