@@ -24,6 +24,7 @@ import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
@@ -134,6 +135,9 @@ public class TestFPFordelSerialization {
         assertEquals(2, konvolutt.getVedlegg().size());
         assertNull(konvolutt.XMLHovedDokument());
         assertNull(konvolutt.PDFHovedDokument());
+        assertEquals(es, konvolutt.getInnsending());
+        assertTrue(konvolutt.erEttersending());
+
     }
 
     private void testSøknadRoundtrip(Versjon v) {
@@ -166,8 +170,11 @@ public class TestFPFordelSerialization {
         assertNotNull(konvolutt.getMetadata());
         assertEquals(1, konvolutt.getVedlegg().size());
         assertMediaType(konvolutt.getPayload(), MULTIPART_MIXED_VALUE);
+        assertEquals(søknad, konvolutt.getInnsending());
         assertNotNull(konvolutt.XMLHovedDokument());
         assertNotNull(konvolutt.PDFHovedDokument());
+        assertTrue(konvolutt.erInitiellForeldrepenger());
+
     }
 
     private void testKonvoluttEndring(Versjon v) {
@@ -177,7 +184,10 @@ public class TestFPFordelSerialization {
         assertNotNull(konvolutt.getMetadata());
         assertNotNull(konvolutt.XMLHovedDokument());
         assertNotNull(konvolutt.PDFHovedDokument());
+        assertEquals(es, konvolutt.getInnsending());
         assertEquals(2, konvolutt.getVedlegg().size());
+        assertTrue(konvolutt.erEndring());
+
     }
 
     private static List<Arbeidsforhold> arbeidsforhold() {

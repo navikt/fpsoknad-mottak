@@ -37,11 +37,13 @@ public enum DokumentType {
     I500006("Ettersendelse til utsettelse eller gradert uttak av foreldrepenger (fleksibelt uttak)"),
     I500050("Ettersendelse til søknad om endring av uttak av foreldrepenger eller overføring av kvote");
 
-
-
-    public final String beskrivelse;
+    private final String beskrivelse;
 
     DokumentType(String beskrivelse) {
         this.beskrivelse = beskrivelse;
+    }
+
+    public String getBeskrivelse() {
+        return beskrivelse;
     }
 }

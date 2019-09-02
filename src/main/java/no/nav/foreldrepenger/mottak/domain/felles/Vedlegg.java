@@ -38,7 +38,7 @@ public abstract class Vedlegg {
     private static final Logger LOG = LoggerFactory.getLogger(Vedlegg.class);
 
     private final VedleggMetaData metadata;
-    protected final byte[] vedlegg;
+    private final byte[] vedlegg;
 
     @JsonCreator
     public Vedlegg(@JsonProperty("metadata") VedleggMetaData metadata, @JsonProperty("vedlegg") byte[] vedlegg) {
@@ -49,7 +49,7 @@ public abstract class Vedlegg {
     @JsonIgnore
     public String getBeskrivelse() {
         return Optional.ofNullable(metadata.getBeskrivelse())
-                .orElse(getDokumentType().beskrivelse);
+                .orElse(getDokumentType().getBeskrivelse());
     }
 
     @JsonIgnore
@@ -64,8 +64,8 @@ public abstract class Vedlegg {
         }
         if (type == null) {
             LOG.info(
-                    "Innsendingstype for {} er ikke satt, setter til LASTET_OPP, siden vi har vedlegg med størrelse {}",
-                    metadata.getDokumentType(), getStørrelse());
+                    "Innsendingstype for {} er ikke satt, setter til {}, siden vi har vedlegg med størrelse {}",
+                    metadata.getDokumentType(), LASTET_OPP, getStørrelse());
             return LASTET_OPP;
         }
         return type;

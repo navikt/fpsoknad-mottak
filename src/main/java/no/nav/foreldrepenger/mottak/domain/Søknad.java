@@ -91,7 +91,7 @@ public class Søknad {
     @JsonIgnore
     public LocalDate getFørsteInntektsmeldingDag() {
         return Optional.ofNullable(getFørsteUttaksdag())
-            .map(d -> d.minusWeeks(4))
-            .orElse(null);
+                .map(d -> d.minusWeeks(4))
+                .orElse(null);
     }
 }

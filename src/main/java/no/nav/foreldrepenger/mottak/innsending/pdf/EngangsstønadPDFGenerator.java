@@ -52,7 +52,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     @Override
-    public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         Engangsstønad stønad = (Engangsstønad) søknad.getYtelse();
         Medlemsskap medlemsskap = stønad.getMedlemsskap();
         final PDPage page = newPage();

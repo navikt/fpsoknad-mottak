@@ -46,7 +46,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     }
 
     @Override
-    public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         switch (egenskap.getType()) {
             case INITIELL_FORELDREPENGER:
                 return generate(søknad, søker);

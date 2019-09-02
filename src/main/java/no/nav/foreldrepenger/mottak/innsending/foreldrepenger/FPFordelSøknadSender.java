@@ -57,8 +57,8 @@ public class FPFordelSøknadSender implements SøknadSender {
             kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
         }
         if (konvolutt.erEndring()) {
-            Endringssøknad endringssøknad = Endringssøknad.class.cast(konvolutt.getInnsending());
-            kvittering.setFørsteDag(endringssøknad.getFørsteUttaksdag());
+            Endringssøknad es = Endringssøknad.class.cast(konvolutt.getInnsending());
+            kvittering.setFørsteDag(es.getFørsteUttaksdag());
         }
 
         publisher.publishEvent(kvittering, konvolutt.getType(), konvolutt.getVedleggIds());

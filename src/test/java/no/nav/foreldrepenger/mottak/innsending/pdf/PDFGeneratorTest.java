@@ -60,7 +60,7 @@ public class PDFGeneratorTest {
     @Test
     public void signature() {
         assertTrue(hasPdfSignature(
-                gen.generate(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
+                gen.generer(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class PDFGeneratorTest {
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            fos.write(gen.generate(søknad, person(), INITIELL_FORELDREPENGER));
+            fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER));
         }
     }
 
@@ -77,21 +77,21 @@ public class PDFGeneratorTest {
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
             Endringssøknad endringssøknad = endringssøknad(DEFAULT_VERSJON, VEDLEGG1);
             endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            fos.write(gen.generate(endringssøknad, person(), ENDRING_FORELDREPENGER));
+            fos.write(gen.generer(endringssøknad, person(), ENDRING_FORELDREPENGER));
         }
     }
 
     @Test
     public void engangs() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
-            fos.write(gen.generate(engangssøknad(DEFAULT_VERSJON, fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
+            fos.write(gen.generer(engangssøknad(DEFAULT_VERSJON, fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
         }
     }
 
     @Test
     public void svanger() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("svangerskapspenger.pdf")) {
-            fos.write(gen.generate(svp(), person(), INITIELL_SVANGERSKAPSPENGER));
+            fos.write(gen.generer(svp(), person(), INITIELL_SVANGERSKAPSPENGER));
         }
     }
 
@@ -100,7 +100,7 @@ public class PDFGeneratorTest {
         try (FileOutputStream fos = new FileOutputStream("infoskriv.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
-            byte[] fullSøknadPdf = gen.generate(søknad, person(), INITIELL_FORELDREPENGER);
+            byte[] fullSøknadPdf = gen.generer(søknad, person(), INITIELL_FORELDREPENGER);
             byte[] infoskriv = pdfExtracter.extractInfoskriv(fullSøknadPdf);
             fos.write(infoskriv);
             assertTrue(hasPdfSignature(infoskriv));

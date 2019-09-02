@@ -60,7 +60,7 @@ public class FPFordelKonvolutt {
         return innsending;
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getPayload() {
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> getPayload() {
         return payload;
     }
 
@@ -68,7 +68,7 @@ public class FPFordelKonvolutt {
         return vedlegg;
     }
 
-    public String getMetadata() {
+    String getMetadata() {
         return get(METADATA)
                 .filter(mediaType(APPLICATION_JSON_UTF8_VALUE))
                 .findFirst()

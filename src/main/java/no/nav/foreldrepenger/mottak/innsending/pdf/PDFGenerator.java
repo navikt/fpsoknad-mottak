@@ -7,6 +7,6 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public interface PDFGenerator extends Mappable {
 
-    byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap);
+    byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap);
 
 }

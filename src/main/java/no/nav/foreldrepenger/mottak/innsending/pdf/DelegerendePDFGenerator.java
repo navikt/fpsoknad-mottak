@@ -40,8 +40,8 @@ public class DelegerendePDFGenerator implements PDFGenerator {
     }
 
     @Override
-    public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return mapperFor(generatorer, egenskap).generate(søknad, søker, egenskap);
+    public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        return mapperFor(generatorer, egenskap).generer(søknad, søker, egenskap);
     }
 
     @Override

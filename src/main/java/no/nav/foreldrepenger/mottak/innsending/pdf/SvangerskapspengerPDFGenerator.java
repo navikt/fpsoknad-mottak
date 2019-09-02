@@ -71,7 +71,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     }
 
     @Override
-    public byte[] generate(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         Svangerskapspenger svp = (Svangerskapspenger) søknad.getYtelse();
         List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
         try (FontAwarePDDocument doc = new FontAwarePDDocument();
