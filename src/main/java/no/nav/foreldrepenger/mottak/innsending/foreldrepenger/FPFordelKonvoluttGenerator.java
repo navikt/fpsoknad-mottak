@@ -59,8 +59,7 @@ public class FPFordelKonvoluttGenerator {
     public FPFordelKonvolutt generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        String metadata = metadataFor(søknad, egenskap.getType(), søker.getAktørId());
-        builder.part(METADATA, metadata, APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.getAktørId()), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap), APPLICATION_PDF)
@@ -76,8 +75,8 @@ public class FPFordelKonvoluttGenerator {
     public FPFordelKonvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        String metadata = metadataFor(endringsøknad, egenskap.getType(), søker.getAktørId());
-        builder.part(METADATA, metadata, APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadataFor(endringsøknad, egenskap.getType(), søker.getAktørId()),
+                APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap), APPLICATION_PDF)
@@ -93,8 +92,7 @@ public class FPFordelKonvoluttGenerator {
     public FPFordelKonvolutt generer(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
-        String metadata = metadataFor(ettersending, søker.getAktørId());
-        builder.part(METADATA, metadata, APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadataFor(ettersending, søker.getAktørId()), APPLICATION_JSON_UTF8);
         safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new FPFordelKonvolutt(egenskap, ettersending, new HttpEntity<>(builder.build(), headers()),
@@ -159,14 +157,14 @@ public class FPFordelKonvoluttGenerator {
     }
 
     private static List<String> vedleggFra(Søknad søknad) {
-        return søknad.getVedlegg().stream()
+        return safeStream(søknad.getVedlegg())
                 .map(Vedlegg::getDokumentType)
                 .map(DokumentType::name)
                 .collect(toList());
     }
 
     private static List<String> vedleggFra(Ettersending es) {
-        return es.getVedlegg().stream()
+        return safeStream(es.getVedlegg())
                 .map(Vedlegg::getDokumentType)
                 .map(DokumentType::name)
                 .collect(toList());
