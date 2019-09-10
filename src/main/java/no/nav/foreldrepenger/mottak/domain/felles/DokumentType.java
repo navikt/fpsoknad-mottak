@@ -28,6 +28,7 @@ public enum DokumentType {
     I000065("Bekreftelse fra arbeidsgiver"),
     I000107("Vurdering av arbeidsmulighet/sykmelding"),
     I000108("Opplysninger om muligheter og behov for tilrettelegging ved svangerskap"),
+    I000109("Skjema for tilrettelegging og omplassering ved graviditet"),
     I000110("Dokumentasjon av aleneomsorg"),
     I000111("Dokumentasjon av begrunnelse for hvorfor man søker tilbake i tid"),
     I000112("Dokumentasjon av deltakelse i introduksjonsprogrammet"),
