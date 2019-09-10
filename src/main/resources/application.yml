@@ -44,7 +44,7 @@ varsel:
 
 spring :
     cache :
-       cache-names : aktoer
+       cache-names : aktoer, organisasjon
        caffeine:
          spec: maximumSize=100,expireAfterAccess=3600s
     application:
