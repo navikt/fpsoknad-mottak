@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -63,8 +64,19 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
+    @Cacheable(cacheNames = "organisasjon")
+    public String organisasjonsNavn(String orgnr) {
+        return connection.organisasjonsNavn(orgnr);
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
+    }
+
+    @Override
+    public Navn hentNavn(String fnr) {
+        return connection.hentNavn(fnr);
     }
 
 }

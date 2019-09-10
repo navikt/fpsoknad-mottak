@@ -12,7 +12,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
@@ -66,7 +65,7 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
                 true);
     }
 
-    public List<Arbeidsforhold> hentArbeidsforhold() {
+    List<Arbeidsforhold> hentArbeidsforhold() {
         LOG.trace("Henter arbeidsforhold");
         return Optional.ofNullable(getForObject(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()),
                 Arbeidsforhold[].class))
@@ -74,8 +73,7 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
                 .orElse(emptyList());
     }
 
-    @Cacheable(cacheNames = "organisasjon")
-    public String organisasjonsNavn(String orgnr) {
+    String organisasjonsNavn(String orgnr) {
         LOG.trace("Henter navn for organisasjon {}", orgnr);
         return getForObject(uri(cfg.getBaseURI(), cfg.getOrgNavnPath(), queryParams(ORGNR, orgnr)), String.class);
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.innsending.Pingable;
 
@@ -20,4 +21,8 @@ public interface Oppslag extends Pingable {
     List<Arbeidsforhold> getArbeidsforhold();
 
     String getAktørIdAsString();
+
+    String organisasjonsNavn(String orgnr);
+
+    Navn hentNavn(String fnr);
 }

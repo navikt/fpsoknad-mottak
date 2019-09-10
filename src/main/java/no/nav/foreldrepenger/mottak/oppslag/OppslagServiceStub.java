@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -17,6 +17,7 @@ import com.neovisionaries.i18n.CountryCode;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -67,5 +68,15 @@ public class OppslagServiceStub implements Oppslag {
     @Override
     public String ping() {
         return "42";
+    }
+
+    @Override
+    public String organisasjonsNavn(String orgnr) {
+        return "NAV";
+    }
+
+    @Override
+    public Navn hentNavn(String fnr) {
+        return new Navn("Ole", "Mellom", "Olsen", Kjønn.M);
     }
 }

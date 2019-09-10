@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Primary;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
@@ -64,6 +66,16 @@ public class TestConfig {
             @Override
             public String ping() {
                 return "42";
+            }
+
+            @Override
+            public String organisasjonsNavn(String orgnr) {
+                return "NAV";
+            }
+
+            @Override
+            public Navn hentNavn(String fnr) {
+                return new Navn("Ole", "Olsen", fnr, Kjønn.M);
             }
         };
     }

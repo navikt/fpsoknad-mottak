@@ -38,20 +38,20 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
     private final XMLSøknadHandler søknadHandler;
     private final XMLVedtakHandler vedtakHandler;
-    private final OppslagConnection oppslagConnection;
+    private final Oppslag oppslagTjeneste;
     private final InnsynConnection innsynConnection;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsynConnection, OppslagConnection oppslagConnection) {
+            InnsynConnection innsynConnection, Oppslag oppslagTjeneste) {
         this.innsynConnection = innsynConnection;
-        this.oppslagConnection = oppslagConnection;
+        this.oppslagTjeneste = oppslagTjeneste;
         this.søknadHandler = søknadHandler;
         this.vedtakHandler = vedtakHandler;
     }
@@ -193,7 +193,7 @@ public class InnsynTjeneste implements Innsyn {
     private Navn navnFor(String fnr) {
         try {
             LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
-            Navn navn = oppslagConnection.hentNavn(fnr);
+            Navn navn = oppslagTjeneste.hentNavn(fnr);
             LOG.trace(CONFIDENTIAL, "Fikk navn {}", navn);
             return navn;
         } catch (Exception e) {
@@ -206,7 +206,7 @@ public class InnsynTjeneste implements Innsyn {
         try {
             return Optional.ofNullable(aktørId)
                     .map(AktørId::new)
-                    .map(oppslagConnection::hentFnr)
+                    .map(oppslagTjeneste::getFnr)
                     .orElse(null);
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp FNR for annen part for aktørid {}", aktørId);
@@ -334,7 +334,7 @@ public class InnsynTjeneste implements Innsyn {
     private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
         LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
         return Optional.ofNullable(orgnr)
-                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslagConnection.organisasjonsNavn(o)))
+                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslagTjeneste.organisasjonsNavn(o)))
                 .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId).map(AktørId::getId).orElse(null), PRIVAT,
                         null));
     }
