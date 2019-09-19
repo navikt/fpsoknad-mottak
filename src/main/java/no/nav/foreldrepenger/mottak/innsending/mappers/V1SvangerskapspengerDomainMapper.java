@@ -112,8 +112,8 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
         return new TilretteleggingListe()
             .withTilrettelegging(
                 tilretteleggingByArbeidsforhold(tilrettelegginger)
-                .entrySet().stream()
-                .map(e -> create(e.getValue()))
+                .values().stream()
+                .map(V1SvangerskapspengerDomainMapper::create)
                 .collect(toList()));
     }
 

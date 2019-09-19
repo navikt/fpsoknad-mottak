@@ -165,7 +165,7 @@ public class ForeldrepengerTestUtils {
     }
 
     private static List<Tilrettelegging> tilrettelegging(String... vedleggRefs) {
-        return Lists.newArrayList(helTilrettelegging(vedleggRefs), delvisTilrettelegging(vedleggRefs),
+        return Lists.newArrayList(helTilrettelegging(vedleggRefs), helTilrettelegging(vedleggRefs), delvisTilrettelegging(vedleggRefs),
                 ingenTilrettelegging(vedleggRefs));
     }
 
