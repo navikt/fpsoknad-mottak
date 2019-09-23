@@ -11,9 +11,9 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -21,8 +21,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.google.common.collect.Lists;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -104,18 +102,17 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
 
     private static List<Tilrettelegging> create(
             no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Tilrettelegging tilrettelegging) {
-        HelTilrettelegging hel = hel(tilrettelegging
+        List<Tilrettelegging> tilretteleggingsliste = new ArrayList<>();
+        tilretteleggingsliste.addAll(hel(tilrettelegging
                 .getHelTilrettelegging(), tilrettelegging.getArbeidsforhold(),
-                tilrettelegging.getBehovForTilretteleggingFom());
-        DelvisTilrettelegging delvis = delvis(tilrettelegging
+            tilrettelegging.getBehovForTilretteleggingFom()));
+        tilretteleggingsliste.addAll(delvis(tilrettelegging
                 .getDelvisTilrettelegging(), tilrettelegging.getArbeidsforhold(),
-                tilrettelegging.getBehovForTilretteleggingFom());
-        IngenTilrettelegging ingen = ingen(tilrettelegging
+            tilrettelegging.getBehovForTilretteleggingFom()));
+        tilretteleggingsliste.addAll(ingen(tilrettelegging
                 .getIngenTilrettelegging(), tilrettelegging.getArbeidsforhold(),
-                tilrettelegging.getBehovForTilretteleggingFom());
-        return Lists.newArrayList(hel, delvis, ingen)
-                .stream().filter(Objects::nonNull)
-                .collect(toList());
+            tilrettelegging.getBehovForTilretteleggingFom()));
+        return tilretteleggingsliste;
     }
 
     private static HelTilrettelegging hel(no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.HelTilrettelegging hel,
@@ -125,6 +122,30 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
                 .map(h -> new HelTilrettelegging(tilArbeidsForhold(arbeidsforhold), behovFra,
                         h.getTilrettelagtArbeidFom(), null))
                 .orElse(null);
+    }
+
+    private static List<HelTilrettelegging> hel(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.HelTilrettelegging> hele,
+                                                no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+                                                LocalDate behovFra) {
+        return safeStream(hele)
+            .map(h -> hel(h, arbeidsforhold, behovFra))
+            .collect(toList());
+    }
+
+    private static List<DelvisTilrettelegging> delvis(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.DelvisTilrettelegging> delvise,
+                                                no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+                                                LocalDate behovFra) {
+        return safeStream(delvise)
+            .map(d -> delvis(d, arbeidsforhold, behovFra))
+            .collect(toList());
+    }
+
+    private static List<IngenTilrettelegging> ingen(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.IngenTilrettelegging> ingen,
+                                                no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+                                                LocalDate behovFra) {
+        return safeStream(ingen)
+            .map(i -> ingen(i, arbeidsforhold, behovFra))
+            .collect(toList());
     }
 
     private static DelvisTilrettelegging delvis(
