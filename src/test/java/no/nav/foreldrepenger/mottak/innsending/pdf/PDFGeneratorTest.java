@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
@@ -43,7 +43,7 @@ import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
         InfoskrivRenderer.class,
         InfoskrivPdfExtractor.class,
         SvangerskapspengerInfoRenderer.class,
-        SpringOIDCRequestContextHolder.class, TestConfig.class })
+        SpringTokenValidationContextHolder.class, TestConfig.class })
 
 public class PDFGeneratorTest {
 

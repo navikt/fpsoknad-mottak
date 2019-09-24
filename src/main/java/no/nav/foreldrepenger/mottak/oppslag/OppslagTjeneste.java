@@ -70,13 +70,13 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
+    public Navn hentNavn(String fnr) {
+        return connection.hentNavn(fnr);
     }
 
     @Override
-    public Navn hentNavn(String fnr) {
-        return connection.hentNavn(fnr);
+    public String toString() {
+        return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
     }
 
 }

@@ -27,8 +27,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
-import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
-import no.nav.security.spring.oidc.validation.interceptor.OIDCUnauthorizedException;
+import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
+import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
 
 @ControllerAdvice
 public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
@@ -57,8 +57,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
-    @ExceptionHandler({ OIDCUnauthorizedException.class })
-    public ResponseEntity<Object> handleUnauthorizedException(OIDCUnauthorizedException e, WebRequest req) {
+    @ExceptionHandler({ JwtTokenUnauthorizedException.class })
+    public ResponseEntity<Object> handleUnauthorizedException(JwtTokenUnauthorizedException e, WebRequest req) {
         return logAndHandle(UNAUTHORIZED, e, req);
     }
 
@@ -72,8 +72,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
     }
 
-    @ExceptionHandler({ OIDCTokenValidatorException.class })
-    public ResponseEntity<Object> handleUnauthenticatedOIDCException(OIDCTokenValidatorException e, WebRequest req) {
+    @ExceptionHandler({ JwtTokenValidatorException.class })
+    public ResponseEntity<Object> handleUnauthenticatedJwtException(JwtTokenValidatorException e, WebRequest req) {
         return logAndHandle(FORBIDDEN, e, req, e.getExpiryDate());
     }
 

@@ -6,9 +6,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.kafka.annotation.EnableKafka;
 
 import no.nav.foreldrepenger.mottak.config.ClusterAwareSpringProfileResolver;
-import no.nav.security.spring.oidc.api.EnableOIDCTokenValidation;
+import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 
-@EnableOIDCTokenValidation(ignore = { "org.springframework", "springfox.documentation" })
+@EnableJwtTokenValidation(ignore = { "org.springframework", "springfox.documentation" })
 @SpringBootApplication
 @EnableCaching
 @EnableKafka

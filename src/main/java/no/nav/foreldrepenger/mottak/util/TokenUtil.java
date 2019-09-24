@@ -1,30 +1,34 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static java.time.Instant.now;
 import static no.nav.foreldrepenger.mottak.Constants.ISSUER;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 
 import java.util.Date;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.springframework.stereotype.Component;
 
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.util.DateUtils;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.security.oidc.context.OIDCClaims;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.oidc.context.OIDCValidationContext;
-import no.nav.security.oidc.context.TokenContext;
-import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
+import no.nav.security.token.support.core.context.TokenValidationContext;
+import no.nav.security.token.support.core.context.TokenValidationContextHolder;
+import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
+import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 
 @Component
 public class TokenUtil {
-    private final OIDCRequestContextHolder ctxHolder;
+    private final TokenValidationContextHolder ctxHolder;
 
-    public TokenUtil(OIDCRequestContextHolder ctxHolder) {
+    public TokenUtil(TokenValidationContextHolder ctxHolder) {
         this.ctxHolder = ctxHolder;
+    }
+
+    public boolean erUtløpt() {
+        return Optional.ofNullable(getExpiryDate())
+                .filter(d -> d.after(Date.from(now())))
+                .isPresent();
     }
 
     public boolean erAutentisert() {
@@ -33,13 +37,14 @@ public class TokenUtil {
 
     public Date getExpiryDate() {
         return Optional.ofNullable(claimSet())
-                .map(JWTClaimsSet::getExpirationTime)
+                .map(c -> c.get("exp"))
+                .map(this::getDateClaim)
                 .orElse(null);
     }
 
     public String getSubject() {
         return Optional.ofNullable(claimSet())
-                .map(JWTClaimsSet::getSubject)
+                .map(JwtTokenClaims::getSubject)
                 .orElse(null);
     }
 
@@ -52,33 +57,33 @@ public class TokenUtil {
         return new Fødselsnummer(autentisertBruker());
     }
 
-    private static Supplier<? extends OIDCTokenValidatorException> unauthenticated(String msg) {
-        return () -> new OIDCTokenValidatorException(msg);
+    private static Supplier<? extends JwtTokenValidatorException> unauthenticated(String msg) {
+        return () -> new JwtTokenValidatorException(msg);
     }
 
-    private JWTClaimsSet claimSet() {
-        return Optional.ofNullable(claims())
-                .map(OIDCClaims::getClaimSet)
-                .orElse(null);
-    }
-
-    private OIDCClaims claims() {
+    private JwtTokenClaims claimSet() {
         return Optional.ofNullable(context())
                 .map(s -> s.getClaims(ISSUER))
                 .orElse(null);
     }
 
-    private OIDCValidationContext context() {
-        return Optional.ofNullable(ctxHolder.getOIDCValidationContext())
+    private TokenValidationContext context() {
+        return Optional.ofNullable(ctxHolder.getTokenValidationContext())
                 .orElse(null);
     }
 
-    public String getToken() {
-        return Optional.ofNullable(context())
-                .map(c -> c.getToken(ISSUER))
-                .filter(not(Objects::isNull))
-                .map(TokenContext::getIdToken)
-                .orElseThrow(unauthenticated("Fant ikke ID-token"));
+    private Date getDateClaim(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Date) {
+            return (Date) value;
+        }
+        if (value instanceof Number) {
+            return DateUtils.fromSecondsSinceEpoch(((Number) value).longValue());
+        }
+        return null;
+
     }
 
     @Override

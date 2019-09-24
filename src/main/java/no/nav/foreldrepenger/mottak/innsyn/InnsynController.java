@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.security.oidc.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 
 @RestController
 @RequestMapping(path = InnsynController.INNSYN, produces = APPLICATION_JSON_VALUE)

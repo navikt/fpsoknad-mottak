@@ -44,7 +44,7 @@ import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.util.Versjon;
-import no.nav.security.oidc.test.support.JwtTokenGenerator;
+import no.nav.security.token.support.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { LOCAL })

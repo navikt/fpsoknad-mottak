@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 import no.nav.foreldrepenger.mottak.config.ClusterAwareSpringProfileResolver;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.oidc.context.OIDCValidationContext;
-import no.nav.security.oidc.test.support.spring.TokenGeneratorConfiguration;
-import no.nav.security.spring.oidc.SpringOIDCRequestContextHolder;
+import no.nav.security.token.support.core.context.TokenValidationContext;
+import no.nav.security.token.support.core.context.TokenValidationContextHolder;
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
+import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration;
 
 @SpringBootApplication
 @EnableCaching
@@ -34,29 +34,19 @@ public class MottakApplicationLocal {
 
     @Bean
     @Profile(LOCAL)
-    @ConditionalOnMissingBean(SpringOIDCRequestContextHolder.class)
-    OIDCRequestContextHolder dummyContextHolderForDev() {
-        return new OIDCRequestContextHolder() {
+    @ConditionalOnMissingBean(SpringTokenValidationContextHolder.class)
+    TokenValidationContextHolder dummyContextHolderForDev() {
+        return new TokenValidationContextHolder() {
 
             @Override
-            public void setRequestAttribute(String name, Object value) {
-
-            }
-
-            @Override
-            public void setOIDCValidationContext(OIDCValidationContext oidcValidationContext) {
-
-            }
-
-            @Override
-            public Object getRequestAttribute(String name) {
+            public TokenValidationContext getTokenValidationContext() {
                 return null;
             }
 
             @Override
-            public OIDCValidationContext getOIDCValidationContext() {
-                return null;
+            public void setTokenValidationContext(TokenValidationContext tokenValidationContext) {
             }
+
         };
     }
 }

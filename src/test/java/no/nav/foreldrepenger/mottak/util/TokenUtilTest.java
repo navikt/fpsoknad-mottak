@@ -9,6 +9,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +20,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.security.oidc.context.OIDCClaims;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.oidc.context.OIDCValidationContext;
-import no.nav.security.oidc.exceptions.OIDCTokenValidatorException;
+import no.nav.security.token.support.core.context.TokenValidationContext;
+import no.nav.security.token.support.core.context.TokenValidationContextHolder;
+import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
+import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)
@@ -30,53 +32,59 @@ public class TokenUtilTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("42");
     @Mock
-    private OIDCRequestContextHolder holder;
+    private TokenValidationContextHolder holder;
     @Mock
-    private OIDCValidationContext context;
+    private TokenValidationContext context;
     @Mock
-    private OIDCClaims claims;
+    private JwtTokenClaims claims;
 
     private TokenUtil tokenHelper;
 
     @BeforeEach
     public void before() {
-        when(holder.getOIDCValidationContext()).thenReturn(context);
+        when(holder.getTokenValidationContext()).thenReturn(context);
         when(context.getClaims(eq(ISSUER))).thenReturn(claims);
         tokenHelper = new TokenUtil(holder);
     }
 
     @Test
-    public void testExtractorOK() {
-        when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().subject(FNR.getFnr()).build());
+    public void testOK() {
+        when(claims.get(eq("exp")))
+                .thenReturn(toDate(LocalDateTime.now().minusHours(1)).toInstant().getEpochSecond());
+        when(claims.getSubject()).thenReturn(FNR.getFnr());
         assertEquals(FNR.getFnr(), tokenHelper.autentisertBruker());
         assertTrue(tokenHelper.erAutentisert());
     }
 
     @Test
-    public void testExtractorNoContext() {
-        when(holder.getOIDCValidationContext()).thenReturn(null);
+    public void testNoContext() {
+        when(holder.getTokenValidationContext()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
-    public void testExtractorNoClaims() {
+    public void testNoClaims() {
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
-    public void testExtractorNoClaimset() {
-        when(claims.getClaimSet()).thenReturn(null);
+    public void testNoClaimset() {
+        when(context.getClaims(eq(ISSUER))).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
-    public void testExtractorNoSubject() {
-        when(claims.getClaimSet()).thenReturn(new JWTClaimsSet.Builder().build());
+    public void testNoSubject() {
+        when(claims.getSubject()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
-        assertThrows(OIDCTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+        assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+    }
+
+    private static Date toDate(LocalDateTime date) {
+        return Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

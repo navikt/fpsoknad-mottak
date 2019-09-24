@@ -32,8 +32,8 @@ import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.security.oidc.api.ProtectedWithClaims;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.Unprotected;
 
 @RequestMapping(path = SøknadController.INNSENDING, produces = APPLICATION_JSON_VALUE)
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })

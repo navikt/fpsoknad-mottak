@@ -10,7 +10,6 @@
     "varsel_channelname": "Q1_FPSOKNAD_VARSEL",
     "fpfordel_uri": "http://fpfordel.q1",
     "fpfordel_enabled": "true",
-    "innsyn_uri": "http://fpinfo.q1",
-    "no_nav_security_oidc_issuer_selvbetjening_discoveryurl": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1"
+    "innsyn_uri": "http://fpinfo.q1"
   }
 }

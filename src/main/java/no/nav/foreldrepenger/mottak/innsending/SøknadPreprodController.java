@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.Unprotected;
 
 @Unprotected
 @RestController
