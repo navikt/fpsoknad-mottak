@@ -15,8 +15,9 @@
     <version>0-SNAPSHOT</version>
     <properties>
         <httpclient.version>4.5.8</httpclient.version>
-        <pdfbox.version>2.0.16</pdfbox.version>
         <token-validation-version>1.0.1</token-validation-version>
+        <pdfbox.version>2.0.17</pdfbox.version>
+        <oidc-spring-support.version>0.2.18</oidc-spring-support.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <springfox.version>2.9.2</springfox.version>
@@ -25,7 +26,7 @@
         <xsd.location>src/main/xsd</xsd.location>
         <xjb.location>src/main/xjb</xjb.location>
         <mq.version>9.1.3.0</mq.version>
-        <kontrakter.version>5.0_20190814104704_1d84eee</kontrakter.version>
+        <kontrakter.version>5.0_20190919102021_4bdf74a</kontrakter.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
