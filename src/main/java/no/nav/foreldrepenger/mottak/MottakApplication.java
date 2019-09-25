@@ -15,7 +15,7 @@ import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 public class MottakApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder(MottakApplication.class)
-                .profiles(new ClusterAwareSpringProfileResolver().getProfile())
+                .profiles(ClusterAwareSpringProfileResolver.profiles())
                 .main(MottakApplication.class)
                 .run(args);
     }

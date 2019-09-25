@@ -27,7 +27,7 @@ public class MottakApplicationLocal {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(MottakApplicationLocal.class)
-                .profiles(new ClusterAwareSpringProfileResolver().getProfile())
+                .profiles(ClusterAwareSpringProfileResolver.profiles())
                 .main(MottakApplicationLocal.class)
                 .run(args);
     }
