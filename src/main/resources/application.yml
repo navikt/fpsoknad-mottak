@@ -23,6 +23,9 @@ management:
       web:
         server:
           auto-time-requests : true
+    endpoint:
+      health:    
+         show-details : never      
     endpoints:
       web:
         exposure:

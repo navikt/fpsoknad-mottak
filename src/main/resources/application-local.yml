@@ -4,6 +4,7 @@ mottak:
          enabled : false
 
 management:
+    
     endpoints:
       web:
         exposure:
