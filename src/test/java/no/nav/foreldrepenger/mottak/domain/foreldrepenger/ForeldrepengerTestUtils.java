@@ -199,10 +199,6 @@ public class ForeldrepengerTestUtils {
         return new Frilanser("risiko", "tiltak");
     }
 
-    private static Arbeidsforhold selvstendig() {
-        return new SelvstendigNæringsdrivende("risiko", "tiltak");
-    }
-
     static Foreldrepenger foreldrepenger(Versjon v, boolean utland, String... vedleggRefs) {
         return Foreldrepenger.builder()
                 .rettigheter(rettigheter(v))

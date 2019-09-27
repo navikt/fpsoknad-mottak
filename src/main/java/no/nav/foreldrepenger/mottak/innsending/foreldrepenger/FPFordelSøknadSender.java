@@ -40,7 +40,7 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(konvolutt(ettersending, søker, egenskap));
+        return doSend(konvolutt(ettersending, søker, egenskap), ettersending.getReferanseId());
     }
 
     @Override
@@ -48,11 +48,15 @@ public class FPFordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering doSend(FPFordelKonvolutt konvolutt) {
-        return doSend(null, konvolutt);
+    private Kvittering doSend(FPFordelKonvolutt konvolutt, String referanseId) {
+        return doSend(null, referanseId, konvolutt);
     }
 
     private Kvittering doSend(BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
+        return doSend(rolle, null, konvolutt);
+    }
+
+    private Kvittering doSend(BrukerRolle rolle, String referanseId, FPFordelKonvolutt konvolutt) {
         Kvittering kvittering = connection.send(konvolutt.getType(), rolle, konvolutt);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
@@ -65,7 +69,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             kvittering.setFørsteDag(es.getFørsteUttaksdag());
         }
 
-        publisher.publiser(kvittering, konvolutt.getType(), konvolutt.getVedleggIds());
+        publisher.publiser(kvittering, referanseId, konvolutt.getType(), konvolutt.getVedleggIds());
         return kvittering;
 
     }

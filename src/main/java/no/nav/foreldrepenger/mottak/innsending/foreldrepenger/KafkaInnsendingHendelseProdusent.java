@@ -36,7 +36,8 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     private final TokenUtil tokenUtil;
 
     public KafkaInnsendingHendelseProdusent(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag, TokenUtil tokenUtil) {
+            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag,
+            TokenUtil tokenUtil) {
         this.topic = topic;
         this.kafkaOperations = kafkaOperations;
         this.mapper = mapper;
@@ -45,8 +46,9 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     }
 
     @Override
-    public void publiser(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
-        InnsendingHendelse hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), tokenUtil.getSubject(),
+    public void publiser(Kvittering kvittering, String referanseId, SøknadType type, List<String> vedlegg) {
+        InnsendingHendelse hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), referanseId,
+                tokenUtil.getSubject(),
                 kvittering,
                 type, vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", hendelse, topic);

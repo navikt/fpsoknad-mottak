@@ -19,12 +19,12 @@ public class InnsendingHendelse {
     private final List<String> vedlegg;
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(String aktørId, String fnr, Kvittering kvittering, SøknadType type,
+    public InnsendingHendelse(String aktørId, String referanseId, String fnr, Kvittering kvittering, SøknadType type,
             List<String> vedlegg) {
         this.aktørId = aktørId;
         this.fnr = fnr;
         this.journalId = kvittering.getJournalId();
-        this.referanseId = kvittering.getReferanseId();
+        this.referanseId = referanseId;
         this.saksNr = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
         this.type = type;

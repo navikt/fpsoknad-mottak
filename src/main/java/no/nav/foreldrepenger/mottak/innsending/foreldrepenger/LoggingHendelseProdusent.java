@@ -17,7 +17,9 @@ public class LoggingHendelseProdusent implements InnsendingHendelseProdusent {
     private static final Logger LOG = LoggerFactory.getLogger(LoggingHendelseProdusent.class);
 
     @Override
-    public void publiser(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
-        LOG.info("Publiserer hendelse fra {} for søknad av type {} med vedlegg {}", kvittering, type, vedlegg);
+    public void publiser(Kvittering kvittering, String referanseId, SøknadType type, List<String> vedlegg) {
+        LOG.info("Publiserer hendelse fra {} for søknad av type {} med vedlegg {} og referanseId {}", kvittering, type,
+                vedlegg, referanseId);
     }
+
 }

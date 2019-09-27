@@ -7,5 +7,5 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 public interface InnsendingHendelseProdusent {
 
-    void publiser(Kvittering kvittering, SøknadType type, List<String> vedlegg);
+    void publiser(Kvittering kvittering, String referanseId, SøknadType type, List<String> vedlegg);
 }
