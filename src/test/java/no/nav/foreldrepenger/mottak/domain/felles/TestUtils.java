@@ -130,11 +130,11 @@ public class TestUtils {
     }
 
     public static PåkrevdVedlegg påkrevdVedlegg(String id) {
-        return påkrevdVedlegg(id, "terminbekreftelse.pdf");
+        return påkrevdVedlegg(id, "pdf/terminbekreftelse.pdf");
     }
 
     public static ValgfrittVedlegg valgfrittVedlegg(String id, InnsendingsType type) {
-        return valgfrittVedlegg(id, type, "terminbekreftelse.pdf");
+        return valgfrittVedlegg(id, type, "pdf/terminbekreftelse.pdf");
     }
 
     public static PåkrevdVedlegg påkrevdVedlegg(String id, String name) {

@@ -22,7 +22,7 @@ public class InntektsmeldingTest {
 
     @Test
     public void testFørstegangssøknadRoundtrip() throws IOException {
-        String xml = StreamUtils.copyToString(new ClassPathResource("inntektsmelding.xml").getInputStream(),
+        String xml = StreamUtils.copyToString(new ClassPathResource("xml/inntektsmelding.xml").getInputStream(),
                 Charset.defaultCharset());
         Inntektsmelding melding = xmlMapper.tilInntektsmelding(xml);
     }

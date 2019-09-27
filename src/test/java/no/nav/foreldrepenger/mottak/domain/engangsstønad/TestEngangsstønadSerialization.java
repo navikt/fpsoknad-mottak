@@ -52,7 +52,7 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testVedlegg() {
-        test(påkrevdVedlegg("terminbekreftelse.pdf"), false);
+        test(påkrevdVedlegg("pdf/terminbekreftelse.pdf"), false);
     }
 
     @Test

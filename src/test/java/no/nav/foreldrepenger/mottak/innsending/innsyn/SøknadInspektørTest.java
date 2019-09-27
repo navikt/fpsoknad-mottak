@@ -86,7 +86,7 @@ public class SøknadInspektørTest {
 
     @Test
     public void testFPV1XML() throws Exception {
-        String xml = load("v1fp.xml");
+        String xml = load("xml/v1fp.xml");
         SøknadEgenskap egenskap = inspektør.inspiser(xml);
         assertEquals(V1, egenskap.getVersjon());
         assertEquals(INITIELL_FORELDREPENGER, egenskap.getType());
@@ -96,7 +96,7 @@ public class SøknadInspektørTest {
 
     @Test
     public void testESDokmotV1XML() throws Exception {
-        String xml = load("esdokmotV1.xml");
+        String xml = load("xml/esdokmotV1.xml");
         SøknadEgenskap egenskap = inspektør.inspiser(xml);
         assertEquals(V1, egenskap.getVersjon());
         assertEquals(INITIELL_ENGANGSSTØNAD_DOKMOT, egenskap.getType());
@@ -106,7 +106,7 @@ public class SøknadInspektørTest {
 
     // @Test
     public void testESPapirXML() throws Exception {
-        String xml = load("v1ESpapir.xml");
+        String xml = load("xml/v1ESpapir.xml");
         SøknadEgenskap egenskap = inspektør.inspiser(xml);
         assertEquals(V1, egenskap.getVersjon());
         assertEquals(INITIELL_ENGANGSSTØNAD, egenskap.getType());
@@ -117,7 +117,7 @@ public class SøknadInspektørTest {
 
     @Test
     public void testInspektørWellFormedJunk() throws Exception {
-        assertEquals(UKJENT, inspektør.inspiser(load("junk.xml")));
+        assertEquals(UKJENT, inspektør.inspiser(load("xml/junk.xml")));
     }
 
     private static String load(String file) throws IOException {

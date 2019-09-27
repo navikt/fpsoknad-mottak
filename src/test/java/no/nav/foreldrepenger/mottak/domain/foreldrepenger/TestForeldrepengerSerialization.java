@@ -277,7 +277,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEgenNæringUtenlandskOrganisasjon() throws Exception {
-        ClassPathResource res = new ClassPathResource("utenlandskOrg.json");
+        ClassPathResource res = new ClassPathResource("json/utenlandskOrg.json");
         UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
         assertEquals(CountryCode.UG, org.getRegistrertILand());
         for (Versjon v : alleSøknadVersjoner()) {

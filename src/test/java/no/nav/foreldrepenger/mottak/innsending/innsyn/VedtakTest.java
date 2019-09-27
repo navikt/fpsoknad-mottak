@@ -29,7 +29,7 @@ class VedtakTest {
 
     @Test
     void testVedtakFPV2() throws IOException {
-        String xml = load("FPVedtakV2.xml");
+        String xml = load("xml/FPVedtakV2.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V2, e.getVersjon());
         assertEquals(FORELDREPENGER, e.getFagsakType());
@@ -40,7 +40,7 @@ class VedtakTest {
 
     @Test
     void testVedtakESV1() throws IOException {
-        String xml = load("ESVedtakV1.xml");
+        String xml = load("xml/ESVedtakV1.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V1, e.getVersjon());
         assertEquals(ENGANGSSTØNAD, e.getFagsakType());
@@ -50,7 +50,7 @@ class VedtakTest {
 
     @Test
     void testVedtakESV2() throws IOException {
-        String xml = load("ESVedtakV2.xml");
+        String xml = load("xml/ESVedtakV2.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V2, e.getVersjon());
         assertEquals(ENGANGSSTØNAD, e.getFagsakType());
