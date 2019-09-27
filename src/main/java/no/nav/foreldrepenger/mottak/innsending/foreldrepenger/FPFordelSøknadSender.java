@@ -18,10 +18,10 @@ public class FPFordelSøknadSender implements SøknadSender {
     private final FPFordelConnection connection;
     private final FPFordelKonvoluttGenerator generator;
     private final InfoskrivPdfExtractor pdfExtractor;
-    private final InnsendingDomainEventPublisher publisher;
+    private final InnsendingHendelseProdusent publisher;
 
     public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator,
-            InfoskrivPdfExtractor pdfExtractor, InnsendingDomainEventPublisher publisher) {
+            InfoskrivPdfExtractor pdfExtractor, InnsendingHendelseProdusent publisher) {
         this.connection = connection;
         this.generator = generator;
         this.pdfExtractor = pdfExtractor;
@@ -40,12 +40,16 @@ public class FPFordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(null, konvolutt(ettersending, søker, egenskap));
+        return doSend(konvolutt(ettersending, søker, egenskap));
     }
 
     @Override
     public String ping() {
         return connection.ping();
+    }
+
+    private Kvittering doSend(FPFordelKonvolutt konvolutt) {
+        return doSend(null, konvolutt);
     }
 
     private Kvittering doSend(BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
@@ -54,16 +58,20 @@ public class FPFordelSøknadSender implements SøknadSender {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
             kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
             kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
-            kvittering.setInfoskrivPdf(pdfExtractor.extractInfoskriv(kvittering.getPdf()));
+            kvittering.setInfoskrivPdf(infoskrivPdf(kvittering.getPdf()));
         }
         if (konvolutt.erEndring()) {
             Endringssøknad es = Endringssøknad.class.cast(konvolutt.getInnsending());
             kvittering.setFørsteDag(es.getFørsteUttaksdag());
         }
 
-        publisher.publishEvent(kvittering, konvolutt.getType(), konvolutt.getVedleggIds());
+        publisher.publiser(kvittering, konvolutt.getType(), konvolutt.getVedleggIds());
         return kvittering;
 
+    }
+
+    private byte[] infoskrivPdf(byte[] pdf) {
+        return pdfExtractor.extractInfoskriv(pdf);
     }
 
     private FPFordelKonvolutt konvolutt(Søknad søknad, Person søker, SøknadEgenskap egenskap) {

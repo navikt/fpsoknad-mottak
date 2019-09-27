@@ -39,7 +39,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingDomainEventPublisher;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingHendelseProdusent;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
@@ -58,7 +58,7 @@ public class TestFPFordelRoundtripSerialization {
     FPFordelConnection connection;
 
     @MockBean
-    InnsendingDomainEventPublisher publisher;
+    InnsendingHendelseProdusent publisher;
     @Autowired
     ObjectMapper mapper;
 

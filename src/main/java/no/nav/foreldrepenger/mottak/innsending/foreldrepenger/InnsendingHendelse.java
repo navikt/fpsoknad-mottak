@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
-public class InnsendingEvent {
+public class InnsendingHendelse {
 
     private final String aktørId;
     private final String fnr;
@@ -19,7 +19,7 @@ public class InnsendingEvent {
     private final List<String> vedlegg;
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingEvent(String aktørId, String fnr, Kvittering kvittering, SøknadType type,
+    public InnsendingHendelse(String aktørId, String fnr, Kvittering kvittering, SøknadType type,
             List<String> vedlegg) {
         this.aktørId = aktørId;
         this.fnr = fnr;

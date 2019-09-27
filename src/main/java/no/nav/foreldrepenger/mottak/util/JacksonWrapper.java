@@ -10,11 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 
 @Component
-public class JacksonUtil {
+public class JacksonWrapper {
 
     private final ObjectMapper mapper;
 
-    public JacksonUtil(ObjectMapper mapper) {
+    public JacksonWrapper(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 

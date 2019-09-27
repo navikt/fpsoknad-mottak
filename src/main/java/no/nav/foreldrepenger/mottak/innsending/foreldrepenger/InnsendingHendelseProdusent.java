@@ -5,7 +5,7 @@ import java.util.List;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
-public interface InnsendingDomainEventPublisher {
+public interface InnsendingHendelseProdusent {
 
-    void publishEvent(Kvittering kvittering, SøknadType type, List<String> vedlegg);
+    void publiser(Kvittering kvittering, SøknadType type, List<String> vedlegg);
 }

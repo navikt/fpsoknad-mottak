@@ -12,12 +12,12 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "false")
-public class LoggingDomainEventPublisher implements InnsendingDomainEventPublisher {
+public class LoggingHendelseProdusent implements InnsendingHendelseProdusent {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LoggingDomainEventPublisher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingHendelseProdusent.class);
 
     @Override
-    public void publishEvent(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
+    public void publiser(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
         LOG.info("Publiserer hendelse fra {} for søknad av type {} med vedlegg {}", kvittering, type, vedlegg);
     }
 }

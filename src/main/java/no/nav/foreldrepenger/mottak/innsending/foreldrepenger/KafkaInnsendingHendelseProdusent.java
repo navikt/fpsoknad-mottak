@@ -21,22 +21,22 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.util.JacksonUtil;
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
-public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPublisher {
+public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdusent {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KafkaTopicDomainEventPublisher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaInnsendingHendelseProdusent.class);
     private final String topic;
     private final KafkaOperations<String, String> kafkaOperations;
     private final Oppslag oppslag;
-    private final JacksonUtil mapper;
+    private final JacksonWrapper mapper;
     private final TokenUtil tokenUtil;
 
-    public KafkaTopicDomainEventPublisher(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> kafkaOperations, JacksonUtil mapper, Oppslag oppslag, TokenUtil tokenUtil) {
+    public KafkaInnsendingHendelseProdusent(@Value("${mottak.sender.domainevent.topic}") String topic,
+            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag, TokenUtil tokenUtil) {
         this.topic = topic;
         this.kafkaOperations = kafkaOperations;
         this.mapper = mapper;
@@ -45,30 +45,30 @@ public class KafkaTopicDomainEventPublisher implements InnsendingDomainEventPubl
     }
 
     @Override
-    public void publishEvent(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
-        InnsendingEvent event = new InnsendingEvent(oppslag.getAktørIdAsString(), tokenUtil.getSubject(), kvittering,
+    public void publiser(Kvittering kvittering, SøknadType type, List<String> vedlegg) {
+        InnsendingHendelse hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), tokenUtil.getSubject(),
+                kvittering,
                 type, vedlegg);
-        LOG.info("Publiserer hendelse {} på topic {}", event, topic);
+        LOG.info("Publiserer hendelse {} på topic {}", hendelse, topic);
         Message<String> message = MessageBuilder
-                .withPayload(mapper.writeValueAsString(event))
+                .withPayload(mapper.writeValueAsString(hendelse))
                 .setHeader(TOPIC, topic)
                 .setHeader(NAV_CALL_ID, callId())
                 .build();
         send(message);
     }
 
-    private void send(Message<String> message) {
-        kafkaOperations.send(message).addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+    private void send(Message<String> melding) {
+        kafkaOperations.send(melding).addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 
             @Override
             public void onSuccess(SendResult<String, String> result) {
-                LOG.info("Sendte hendelse {} med offset {}", message,
-                        result.getRecordMetadata().offset());
+                LOG.info("Sendte hendelse {} med offset {}", melding, result.getRecordMetadata().offset());
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                LOG.warn("Kunne ikke sende melding {}", message, ex);
+                LOG.warn("Kunne ikke sende melding {}", melding, ex);
             }
         });
     }
