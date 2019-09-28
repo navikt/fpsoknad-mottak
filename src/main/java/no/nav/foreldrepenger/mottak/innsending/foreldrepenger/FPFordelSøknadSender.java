@@ -57,7 +57,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering doSend(BrukerRolle rolle, String referanseId, FPFordelKonvolutt konvolutt) {
-        var kvittering = connection.send(konvolutt.getType(), rolle, konvolutt);
+        var kvittering = connection.send(konvolutt, rolle);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
             kvittering.setFørsteDag(søknad.getFørsteUttaksdag());

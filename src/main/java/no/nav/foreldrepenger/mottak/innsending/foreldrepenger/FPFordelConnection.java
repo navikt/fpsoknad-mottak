@@ -41,27 +41,29 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
         this.registry = registry;
     }
 
-    public Kvittering send(SøknadType type, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
+    public Kvittering send(FPFordelKonvolutt konvolutt, BrukerRolle rolle) {
         if (isEnabled()) {
-            return doSend(type, rolle, konvolutt);
+            return doSend(konvolutt, rolle);
         }
-        LOG.info("Sending av {} er deaktivert, ingenting å sende", type);
+        LOG.info("Sending av {} er deaktivert, ingenting å sende", konvolutt.getType());
         return ikkeSendt(konvolutt.PDFHovedDokument());
     }
 
-    private Kvittering doSend(SøknadType type, BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
+    private Kvittering doSend(FPFordelKonvolutt konvolutt, BrukerRolle rolle) {
         try {
 
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            LOG.info("Sender {} til {}", name(type), name().toLowerCase());
+            LOG.info("Sender {} til {}", name(konvolutt.getType()), name().toLowerCase());
             Kvittering kvittering = responseHandler.handle(
                     postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
                             FPFordelKvittering.class));
-            LOG.info("Sendte {} til {}, fikk kvittering {}", name(type), name().toLowerCase(), kvittering);
+            LOG.info("Sendte {} til {}, fikk kvittering {}", name(konvolutt.getType()), name().toLowerCase(),
+                    kvittering);
             stopWatch.stop();
-            type.count();
-            timer(type, rolle, kvittering.getLeveranseStatus()).record(stopWatch.getTime(), MILLISECONDS);
+            konvolutt.getType().count();
+            timer(konvolutt.getType(), rolle, kvittering.getLeveranseStatus()).record(stopWatch.getTime(),
+                    MILLISECONDS);
             kvittering.setPdf(konvolutt.PDFHovedDokument());
             return kvittering;
         } catch (Exception e) {
