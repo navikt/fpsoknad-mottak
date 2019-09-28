@@ -57,7 +57,7 @@ public class FPFordelKonvoluttGenerator {
     }
 
     public FPFordelKonvolutt generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        var builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.getAktørId()), APPLICATION_JSON_UTF8);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
@@ -73,7 +73,7 @@ public class FPFordelKonvoluttGenerator {
     }
 
     public FPFordelKonvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
-        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        var builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         builder.part(METADATA, metadataFor(endringsøknad, egenskap.getType(), søker.getAktørId()),
                 APPLICATION_JSON_UTF8);
@@ -90,7 +90,7 @@ public class FPFordelKonvoluttGenerator {
     }
 
     public FPFordelKonvolutt generer(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        var builder = new MultipartBodyBuilder();
         AtomicInteger id = new AtomicInteger(1);
         builder.part(METADATA, metadataFor(ettersending, søker.getAktørId()), APPLICATION_JSON_UTF8);
         safeStream(ettersending.getVedlegg())

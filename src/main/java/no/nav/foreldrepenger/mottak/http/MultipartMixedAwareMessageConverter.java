@@ -51,7 +51,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
     }
 
     private boolean isTheFilenameCharsetSet() {
-        return this.multipartCharset != null;
+        return multipartCharset != null;
     }
 
     private void applyTheDefaultCharset() {
@@ -72,7 +72,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
             throws IOException {
         byte[] boundary = generateMultipartBoundary();
         LOG.debug("Sender multipart ({} deler)", parts.size());
-        Map<String, String> parameters = new HashMap<>(2);
+        Map<String, String> parameters = new HashMap<String, String>(2);
         parameters.put("boundary", new String(boundary, StandardCharsets.US_ASCII));
         if (!isTheFilenameCharsetSet()) {
             parameters.put("charset", this.charset.name());
@@ -94,7 +94,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
     private void writeTheParts(OutputStream os, MultiValueMap<String, Object> parts, byte[] boundary)
             throws IOException {
         LOG.debug("Sender {} deler", parts.size());
-        for (Map.Entry<String, List<Object>> entry : parts.entrySet()) {
+        for (var entry : parts.entrySet()) {
             String name = entry.getKey();
             for (Object part : entry.getValue()) {
                 if (part != null) {
@@ -114,7 +114,7 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         Class<?> partType = partBody.getClass();
         HttpHeaders partHeaders = partEntity.getHeaders();
         MediaType partContentType = partHeaders.getContentType();
-        for (HttpMessageConverter<?> converter : partConverters) {
+        for (var converter : partConverters) {
             if (converter.canWrite(partType, partContentType)) {
                 Charset chs = isTheFilenameCharsetSet() ? StandardCharsets.US_ASCII : this.charset;
                 HttpOutputMessage multipartMessage = new MultipartHttpOutputMessage(os, chs);
@@ -192,24 +192,24 @@ public final class MultipartMixedAwareMessageConverter extends FormHttpMessageCo
         }
 
         private void writeHeaders() throws IOException {
-            if (!this.headersWritten) {
-                for (Map.Entry<String, List<String>> entry : this.headers.entrySet()) {
+            if (!headersWritten) {
+                for (var entry : headers.entrySet()) {
                     byte[] headerName = getBytes(entry.getKey());
                     for (String headerValueString : entry.getValue()) {
-                        this.outputStream.write(headerName);
-                        this.outputStream.write(':');
-                        this.outputStream.write(' ');
-                        this.outputStream.write(getBytes(headerValueString));
-                        writeNewLine(this.outputStream);
+                        outputStream.write(headerName);
+                        outputStream.write(':');
+                        outputStream.write(' ');
+                        outputStream.write(getBytes(headerValueString));
+                        writeNewLine(outputStream);
                     }
                 }
-                writeNewLine(this.outputStream);
-                this.headersWritten = true;
+                writeNewLine(outputStream);
+                headersWritten = true;
             }
         }
 
         private byte[] getBytes(String name) {
-            return name.getBytes(this.charset);
+            return name.getBytes(charset);
         }
     }
 

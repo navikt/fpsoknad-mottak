@@ -25,7 +25,7 @@ public abstract class AbstractRestConnection {
     }
 
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
-        ResponseEntity<T> respons = restOperations.postForEntity(uri, payload, responseType);
+        var respons = restOperations.postForEntity(uri, payload, responseType);
         if (respons.hasBody()) {
             LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
         }

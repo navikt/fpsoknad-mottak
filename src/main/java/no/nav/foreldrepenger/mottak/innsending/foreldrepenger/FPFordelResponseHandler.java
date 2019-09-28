@@ -51,7 +51,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
             return new Kvittering(FP_FORDEL_MESSED_UP);
         }
         LOG.info("Behandler respons {}", leveranseRespons.getBody());
-        FPFordelKvittering fpFordelKvittering = FPFordelKvittering.class.cast(leveranseRespons.getBody());
+        var fpFordelKvittering = FPFordelKvittering.class.cast(leveranseRespons.getBody());
         switch (leveranseRespons.getStatusCode()) {
         case ACCEPTED:
             if (fpFordelKvittering instanceof FPFordelPendingKvittering) {
@@ -67,8 +67,7 @@ public class FPFordelResponseHandler extends AbstractRestConnection {
                         LOG.info("Vi burde antagelig gi oss nå, brukt {}ms mer enn øvre grense",
                                 maxMillis + timer.getTime());
                     }
-                    ResponseEntity<FPFordelKvittering> fpInfoRespons = pollFPFordel(pollURI,
-                            pending.getPollInterval().toMillis());
+                    var fpInfoRespons = pollFPFordel(pollURI, pending.getPollInterval().toMillis());
                     fpFordelKvittering = FPFordelKvittering.class.cast(fpInfoRespons.getBody());
                     LOG.info("Behandler poll respons {} etter {}ms", fpInfoRespons.getBody(), timer.getTime());
                     switch (fpInfoRespons.getStatusCode()) {

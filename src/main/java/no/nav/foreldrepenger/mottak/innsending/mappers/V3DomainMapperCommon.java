@@ -139,7 +139,7 @@ final class V3DomainMapperCommon {
     }
 
     private static Virksomhetstyper virksomhetsTypeFra(String type) {
-        Virksomhetstyper vt = new Virksomhetstyper().withKode(type);
+        var vt = new Virksomhetstyper().withKode(type);
         vt.setKodeverk(vt.getKodeverk());
         return vt;
     }
@@ -158,12 +158,12 @@ final class V3DomainMapperCommon {
 
     private static EgenNaering create(EgenNæring egenNæring) {
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon) {
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon norskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.class
+            var norskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.class
                     .cast(egenNæring);
             return create(norskOrg);
         }
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon) {
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon utenlandskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.class
+            var utenlandskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.class
                     .cast(egenNæring);
             return create(utenlandskOrg);
         }
@@ -230,7 +230,7 @@ final class V3DomainMapperCommon {
     }
 
     private static AnnenOpptjeningTyper create(String kode) {
-        AnnenOpptjeningTyper type = new AnnenOpptjeningTyper().withKode(kode);
+        var type = new AnnenOpptjeningTyper().withKode(kode);
         type.setKodeverk(type.getKodeverk());
         return type;
     }
@@ -253,7 +253,7 @@ final class V3DomainMapperCommon {
         if (CollectionUtils.isEmpty(regnskapsførere)) {
             return null;
         }
-        Regnskapsfører regnskapsfører = regnskapsførere.get(0);
+        var regnskapsfører = regnskapsførere.get(0);
         return new Regnskapsfoerer()
                 .withTelefon(regnskapsfører.getTelefon())
                 .withNavn(regnskapsfører.getNavn());
@@ -306,12 +306,12 @@ final class V3DomainMapperCommon {
     private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
 
         switch (innsendingsType) {
-            case SEND_SENERE:
-                return innsendingsTypeMedKodeverk(SEND_SENERE);
-            case LASTET_OPP:
-                return innsendingsTypeMedKodeverk(LASTET_OPP);
-            default:
-                throw new UnexpectedInputException("Innsendingstype " + innsendingsType + "  ikke støttet");
+        case SEND_SENERE:
+            return innsendingsTypeMedKodeverk(SEND_SENERE);
+        case LASTET_OPP:
+            return innsendingsTypeMedKodeverk(LASTET_OPP);
+        default:
+            throw new UnexpectedInputException("Innsendingstype " + innsendingsType + "  ikke støttet");
         }
     }
 
@@ -382,7 +382,7 @@ final class V3DomainMapperCommon {
     }
 
     private static Innsendingstype innsendingsTypeMedKodeverk(InnsendingsType type) {
-        Innsendingstype typeMedKodeverk = new Innsendingstype().withKode(type.name());
+        var typeMedKodeverk = new Innsendingstype().withKode(type.name());
         return typeMedKodeverk.withKodeverk(typeMedKodeverk.getKodeverk());
     }
 
@@ -391,7 +391,7 @@ final class V3DomainMapperCommon {
     }
 
     private static Brukerroller brukerRolleFra(String rolle) {
-        Brukerroller brukerRolle = new Brukerroller().withKode(rolle);
+        var brukerRolle = new Brukerroller().withKode(rolle);
         return brukerRolle.withKodeverk(brukerRolle.getKodeverk());
     }
 

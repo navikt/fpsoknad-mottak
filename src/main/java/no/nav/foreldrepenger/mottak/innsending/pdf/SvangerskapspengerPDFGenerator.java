@@ -29,9 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
@@ -72,13 +70,12 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
 
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        Svangerskapspenger svp = (Svangerskapspenger) søknad.getYtelse();
+        var svp = (Svangerskapspenger) søknad.getYtelse();
         List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
-        try (FontAwarePDDocument doc = new FontAwarePDDocument();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            PDPage page = newPage();
+        try (var doc = new FontAwarePDDocument(); var baos = new ByteArrayOutputStream()) {
+            var page = newPage();
             doc.addPage(page);
-            FontAwareCos cos = new FontAwareCos(doc, page);
+            var cos = new FontAwareCos(doc, page);
             float y = STARTY;
             y -= header(søker, doc, cos, y);
             float headerSize = STARTY - y;
@@ -87,14 +84,14 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             Opptjening opptjening = svp.getOpptjening();
             if (!svp.getTilrettelegging().isEmpty()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
-                Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(
+                var tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(
                         svp.getTilrettelegging());
                 // type arbeidsforhold kommer i random rekkefølge
-                for (Map.Entry<Arbeidsforhold, List<Tilrettelegging>> arb : tilretteleggingsPerioder.entrySet()) {
-                    Arbeidsforhold tilrettelagtArbeidsforhold = arb.getKey();
+                for (var arb : tilretteleggingsPerioder.entrySet()) {
+                    var tilrettelagtArbeidsforhold = arb.getKey();
                     List<Tilrettelegging> tilrettelegging = sortertTilretteleggingsliste(arb.getValue());
-                    PDPage scratch1 = newPage();
-                    FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                    var scratch1 = newPage();
+                    var scratchcos = new FontAwareCos(doc, scratch1);
                     float startY = STARTY;
                     startY -= header(søker, doc, scratchcos, startY);
                     float size = renderTilrettelegging(arbeidsforhold, tilrettelagtArbeidsforhold, tilrettelegging,
@@ -113,8 +110,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 }
             }
             if (!arbeidsforhold.isEmpty()) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = infoRenderer.arbeidsforholdOpptjening(arbeidsforhold, scratchcos, startY);
@@ -128,8 +125,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 }
             }
             if (opptjening.getFrilans() != null) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = infoRenderer.frilansOpptjening(svp.getOpptjening().getFrilans(), scratchcos, startY);
@@ -143,8 +140,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 }
             }
             if (!opptjening.getEgenNæring().isEmpty()) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = infoRenderer.egneNæringerOpptjening(opptjening.getEgenNæring(), scratchcos, startY);
@@ -158,8 +155,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 }
             }
             if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = infoRenderer.utenlandskeArbeidsforholdOpptjening(
@@ -178,8 +175,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 }
             }
             if (svp.getMedlemsskap() != null) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY -= header(søker, doc, scratchcos, startY);
                 float size = renderMedlemskap(svp.getMedlemsskap(), scratchcos, startY);
@@ -249,8 +246,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
 
     private float renderMedlemskap(Medlemsskap medlemsskap, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
+        var tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
+        var framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
         y -= renderer.addLineOfRegularText(txt("siste12") +
                 (tidligereOpphold.isBoddINorge() ? " Norge" : ":"), cos, y);
         if (!tidligereOpphold.getUtenlandsOpphold().isEmpty()) {

@@ -5,7 +5,7 @@ public enum PdfOutlineItem {
     FORELDREPENGER_OUTLINE("Søknad om foreldrepenger"),
     INFOSKRIV_OUTLINE("Informasjon til arbeidsgiver(e)");
 
-    private String title;
+    private final String title;
 
     PdfOutlineItem(String title) {
         this.title = title;

@@ -25,7 +25,7 @@ public class VarselConfiguration {
 
     @Bean
     public JmsTemplate varselTemplate(VarselConfig cfg, ConnectionFactory cf) {
-        JmsTemplate jmsTemplate = new JmsTemplate(cf);
+        var jmsTemplate = new JmsTemplate(cf);
         jmsTemplate.setDefaultDestinationName(cfg.getQueueName());
         jmsTemplate.setDestinationResolver(new DynamicDestinationResolver());
         return jmsTemplate;
@@ -33,14 +33,14 @@ public class VarselConfiguration {
 
     @Bean
     ConnectionFactory connectionFactory(VarselConfig cfg) throws JMSException {
-        UserCredentialsConnectionFactoryAdapter cf = new UserCredentialsConnectionFactoryAdapter();
+        var cf = new UserCredentialsConnectionFactoryAdapter();
         cf.setUsername(cfg.getUsername());
         cf.setTargetConnectionFactory(targetFrom(cfg));
         return cf;
     }
 
     private static ConnectionFactory targetFrom(VarselConfig cfg) throws JMSException {
-        MQQueueConnectionFactory cf = new MQQueueConnectionFactory();
+        var cf = new MQQueueConnectionFactory();
         cf.setHostName(cfg.getHostname());
         cf.setPort(cfg.getPort());
         cf.setChannel(cfg.getChannelname());

@@ -53,11 +53,10 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
 
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        Engangsstønad stønad = (Engangsstønad) søknad.getYtelse();
-        Medlemsskap medlemsskap = stønad.getMedlemsskap();
+        var stønad = (Engangsstønad) søknad.getYtelse();
+        var medlemsskap = stønad.getMedlemsskap();
         final PDPage page = newPage();
-        try (FontAwarePDDocument doc = new FontAwarePDDocument();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (var doc = new FontAwarePDDocument(); var baos = new ByteArrayOutputStream()) {
             FontAwareCos cos = new FontAwareCos(doc, page);
             float y = PDFElementRenderer.calculateStartY();
             y -= header(søker, doc, cos, y);
@@ -68,7 +67,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             y -= PDFElementRenderer.BLANK_LINE;
             y -= renderer.addLineOfRegularText(fødselssted(medlemsskap, stønad), cos, y);
             y -= PDFElementRenderer.BLANK_LINE;
-            AnnenForelder annenForelder = stønad.getAnnenForelder();
+            var annenForelder = stønad.getAnnenForelder();
             if (annenForelder.hasId()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
                 renderer.addLinesOfRegularText(omFar(stønad), cos, y);
@@ -110,7 +109,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> omFar(Engangsstønad stønad) {
-        AnnenForelder annenForelder = stønad.getAnnenForelder();
+        var annenForelder = stønad.getAnnenForelder();
         List<String> farInfo = new ArrayList<>();
         if (annenForelder instanceof NorskForelder) {
             farInfo.addAll(norskForelder(annenForelder));
@@ -125,7 +124,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
-        UtenlandskForelder utenlandsForelder = (UtenlandskForelder) annenForelder;
+        var utenlandsForelder = (UtenlandskForelder) annenForelder;
         List<String> lines = new ArrayList<>(Arrays.asList(textFormatter.fromMessageSource("nasjonalitet",
                 textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())),
                 textFormatter.navn(utenlandsForelder.getNavn())));
@@ -136,7 +135,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> norskForelder(AnnenForelder annenForelder) {
-        NorskForelder norskForelder = (NorskForelder) annenForelder;
+        var norskForelder = (NorskForelder) annenForelder;
         List<String> lines = new ArrayList<>();
         lines.add(textFormatter.fromMessageSource("nasjonalitet", "Norsk"));
         lines.add(textFormatter.navn(norskForelder.getNavn()));
@@ -171,7 +170,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private List<String> fødsel(Søknad søknad, Engangsstønad stønad) {
-        FremtidigFødsel ff = (FremtidigFødsel) stønad.getRelasjonTilBarn();
+        var ff = (FremtidigFødsel) stønad.getRelasjonTilBarn();
         List<String> texts = new ArrayList<>();
         texts.add(textFormatter.fromMessageSource("termindato", textFormatter.dato(ff.getTerminDato())));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
@@ -181,7 +180,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     }
 
     private String født(Engangsstønad stønad) {
-        Fødsel ff = (Fødsel) stønad.getRelasjonTilBarn();
+        var ff = (Fødsel) stønad.getRelasjonTilBarn();
         return textFormatter.fromMessageSource("fødselsdato", textFormatter.datoer(ff.getFødselsdato()));
     }
 

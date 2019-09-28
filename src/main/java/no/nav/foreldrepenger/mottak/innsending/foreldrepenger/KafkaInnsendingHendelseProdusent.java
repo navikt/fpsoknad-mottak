@@ -47,12 +47,12 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
 
     @Override
     public void publiser(Kvittering kvittering, String referanseId, SøknadType type, List<String> vedlegg) {
-        InnsendingHendelse hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), referanseId,
+        var hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), referanseId,
                 tokenUtil.getSubject(),
                 kvittering,
                 type, vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", hendelse, topic);
-        Message<String> message = MessageBuilder
+        var message = MessageBuilder
                 .withPayload(mapper.writeValueAsString(hendelse))
                 .setHeader(TOPIC, topic)
                 .setHeader(NAV_CALL_ID, callId())

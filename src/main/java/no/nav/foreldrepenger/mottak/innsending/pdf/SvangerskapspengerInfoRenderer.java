@@ -175,7 +175,7 @@ public class SvangerskapspengerInfoRenderer {
             return y;
         }
         y -= renderer.addLeftHeading(txt("utenlandskarbeid"), cos, y);
-        for (UtenlandskArbeidsforhold forhold : sorterUtenlandske(utenlandskArbeidsforhold)) {
+        for (var forhold : sorterUtenlandske(utenlandskArbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(utenlandskeArbeidsforhold(forhold), cos, y);
             y -= renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
         }

@@ -52,7 +52,7 @@ public class TimingAndLoggingClientHttpRequestInterceptor implements ClientHttpR
         LOG.info("{} - {}", request.getMethodValue(), uri);
         StopWatch timer = new StopWatch();
         timer.start();
-        ClientHttpResponse respons = execution.execute(request, body);
+        var respons = execution.execute(request, body);
         Metrics.counter("url", "endpoint", uri.toString(), "method", request.getMethodValue(), "status",
                 String.valueOf(respons.getRawStatusCode()))
                 .increment();

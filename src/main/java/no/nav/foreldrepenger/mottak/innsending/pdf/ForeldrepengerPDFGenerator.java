@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
@@ -34,7 +33,8 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     private final ForeldrepengeInfoRenderer fpRenderer;
     private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer, InfoskrivRenderer infoskrivRenderer) {
+    public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer,
+            InfoskrivRenderer infoskrivRenderer) {
         this.oppslag = oppslag;
         this.fpRenderer = fpRenderer;
         this.infoskrivRenderer = infoskrivRenderer;
@@ -48,28 +48,28 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         switch (egenskap.getType()) {
-            case INITIELL_FORELDREPENGER:
-                return generate(søknad, søker);
-            case ENDRING_FORELDREPENGER:
-                return generate(Endringssøknad.class.cast(søknad), søker);
-            default:
-                throw new UnexpectedInputException(
-                        "Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
+        case INITIELL_FORELDREPENGER:
+            return generate(søknad, søker);
+        case ENDRING_FORELDREPENGER:
+            return generate(Endringssøknad.class.cast(søknad), søker);
+        default:
+            throw new UnexpectedInputException(
+                    "Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
         }
     }
 
     private byte[] generate(Søknad søknad, Person søker) {
-        Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
+        var stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (FontAwarePDDocument doc = new FontAwarePDDocument();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (var doc = new FontAwarePDDocument();
+                var baos = new ByteArrayOutputStream()) {
             PDPage page = newPage();
             doc.addPage(page);
 
             fpRenderer.addOutlineItem(doc, page, FORELDREPENGER_OUTLINE);
 
-            FontAwareCos cos = new FontAwareCos(doc, page);
+            var cos = new FontAwareCos(doc, page);
             float y = yTop;
             y = fpRenderer.header(søker, doc, cos, false, y);
             float headerSize = yTop - y;
@@ -91,15 +91,15 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 }
             }
 
-            AnnenForelder annenForelder = stønad.getAnnenForelder();
+            var annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder, stønad.getFordeling().isErAnnenForelderInformert(),
                         stønad.getRettigheter(), cos, y);
             }
 
             if (søknad.getTilleggsopplysninger() != null) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, true, startY);
                 float size = fpRenderer.renderTilleggsopplysninger(søknad.getTilleggsopplysninger(), scratchcos,
@@ -117,8 +117,8 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             Opptjening opptjening = stønad.getOpptjening();
             List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
             if (opptjening != null) {
-                PDPage scratch = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch);
+                var scratch = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
                 float size = fpRenderer.arbeidsforholdOpptjening(arbeidsforhold, scratchcos, startY);
@@ -131,7 +131,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                     y = nesteSideStart(headerSize, behov);
                 }
                 if (!opptjening.getUtenlandskArbeidsforhold().isEmpty()) {
-                    PDPage scratch1 = newPage();
+                    var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -152,7 +152,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 }
 
                 if (!opptjening.getAnnenOpptjening().isEmpty()) {
-                    PDPage scratch1 = newPage();
+                    var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -171,7 +171,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 }
 
                 if (!opptjening.getEgenNæring().isEmpty()) {
-                    PDPage scratch1 = newPage();
+                    var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -187,7 +187,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 }
 
                 if (opptjening.getFrilans() != null) {
-                    PDPage scratch1 = newPage();
+                    var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -204,7 +204,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 }
 
                 if (stønad.getMedlemsskap() != null) {
-                    PDPage scratch1 = newPage();
+                    var scratch1 = newPage();
                     scratchcos = new FontAwareCos(doc, scratch1);
                     startY = STARTY;
                     startY = fpRenderer.header(søker, doc, scratchcos, false, startY);
@@ -245,22 +245,22 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     }
 
     private byte[] generate(Endringssøknad søknad, Person søker) {
-        Foreldrepenger stønad = Foreldrepenger.class.cast(søknad.getYtelse());
+        var stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (FontAwarePDDocument doc = new FontAwarePDDocument();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            PDPage page = newPage();
+        try (var doc = new FontAwarePDDocument();
+                var baos = new ByteArrayOutputStream()) {
+            var page = newPage();
             doc.addPage(page);
-            FontAwareCos cos = new FontAwareCos(doc, page);
+            var cos = new FontAwareCos(doc, page);
             float y = yTop;
             y = fpRenderer.header(søker, doc, cos, true,
                     y);
             float headerSize = yTop - y;
 
             if (stønad.getRelasjonTilBarn() != null) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos,
                         true, startY);
@@ -278,7 +278,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
                 }
             }
 
-            AnnenForelder annenForelder = stønad.getAnnenForelder();
+            var annenForelder = stønad.getAnnenForelder();
             if (annenForelder != null) {
                 y = fpRenderer.annenForelder(annenForelder,
                         stønad.getFordeling().isErAnnenForelderInformert(), stønad.getRettigheter(),
@@ -286,8 +286,8 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             }
 
             if (søknad.getTilleggsopplysninger() != null) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
                 float startY = STARTY;
                 startY = fpRenderer.header(søker, doc, scratchcos,
                         true, startY);

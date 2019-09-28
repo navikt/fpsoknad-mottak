@@ -58,7 +58,7 @@ public class SøknadController {
 
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
-        SøknadEgenskap søknadEgenskap = inspektør.inspiser(søknad);
+        var søknadEgenskap = inspektør.inspiser(søknad);
         return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), søknadEgenskap),
                 FØRSTEGANGSSØKNAD, varsleHvisVellykket(søknadEgenskap));
     }

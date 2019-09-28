@@ -4,7 +4,6 @@ import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.SØKNAD
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
@@ -14,8 +13,6 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.xmpbox.XMPMetadata;
-import org.apache.xmpbox.schema.DublinCoreSchema;
-import org.apache.xmpbox.schema.PDFAIdentificationSchema;
 import org.apache.xmpbox.xml.XmpSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +59,7 @@ public class FontAwarePDDocument extends PDDocument {
 
     private synchronized PDFont load(Resource res) {
         if (res.exists()) {
-            try (InputStream is = res.getInputStream()) {
+            try (var is = res.getInputStream()) {
                 return PDType0Font.load(this, is);
             } catch (IOException e) {
                 throw new UnexpectedInputException("Kunne ikke lese InputStream under lasting av fonter", e);
@@ -75,23 +72,23 @@ public class FontAwarePDDocument extends PDDocument {
         XMPMetadata xmp = XMPMetadata.createXMPMetadata();
 
         try {
-            DublinCoreSchema dc = xmp.createAndAddDublinCoreSchema();
+            var dc = xmp.createAndAddDublinCoreSchema();
             dc.setTitle("Søknad");
             dc.addCreator("NAV");
 
-            PDFAIdentificationSchema id = xmp.createAndAddPFAIdentificationSchema();
+            var id = xmp.createAndAddPFAIdentificationSchema();
             id.setPart(1);
             id.setConformance("B");
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            var baos = new ByteArrayOutputStream();
             new XmpSerializer().serialize(xmp, baos, true);
 
-            PDMetadata metadata = new PDMetadata(doc);
+            var metadata = new PDMetadata(doc);
             metadata.importXMPMetadata(baos.toByteArray());
             doc.getDocumentCatalog().setMetadata(metadata);
 
-            InputStream colorProfile = ICC.getInputStream();
-            PDOutputIntent intent = new PDOutputIntent(doc, colorProfile);
+            var colorProfile = ICC.getInputStream();
+            var intent = new PDOutputIntent(doc, colorProfile);
             intent.setInfo(S_RGB_IEC61966_2_1);
             intent.setOutputCondition(S_RGB_IEC61966_2_1);
             intent.setOutputConditionIdentifier(S_RGB_IEC61966_2_1);

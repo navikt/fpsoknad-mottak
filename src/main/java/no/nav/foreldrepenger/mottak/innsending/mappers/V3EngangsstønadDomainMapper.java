@@ -81,7 +81,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private OmYtelse engangsstønadFra(Søknad søknad) {
-        Engangsstønad ytelse = Engangsstønad.class.cast(søknad.getYtelse());
+        var ytelse = Engangsstønad.class.cast(søknad.getYtelse());
         return new OmYtelse().withAny(JAXB.marshalToElement(engangsstønadFra(ytelse, søknad.getVedlegg())));
     }
 

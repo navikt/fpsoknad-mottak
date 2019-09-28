@@ -155,13 +155,13 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private OmYtelse ytelseFra(Søknad søknad) {
-        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        var ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(søknad.getYtelse());
         return new OmYtelse().withAny(JAXB.marshalToElement(foreldrepengerFra(ytelse)));
     }
 
     private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
-        no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        var ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(endringssøknad.getYtelse());
         return fordelingFra(ytelse.getFordeling());
     }
@@ -181,7 +181,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static Dekningsgrader dekningsgradFra(String kode) {
-        Dekningsgrader dekningsgrad = new Dekningsgrader().withKode(kode);
+        var dekningsgrad = new Dekningsgrader().withKode(kode);
         return dekningsgrad.withKodeverk(dekningsgrad.getKodeverk());
     }
 
@@ -272,7 +272,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
             GradertUttaksPeriode gradertPeriode) {
-        Gradering gradering = new Gradering()
+        var gradering = new Gradering()
                 .withFom(gradertPeriode.getFom())
                 .withTom(gradertPeriode.getTom())
                 .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
@@ -352,7 +352,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(String type) {
-        Uttaksperiodetyper periodeType = new Uttaksperiodetyper().withKode(type);
+        var periodeType = new Uttaksperiodetyper().withKode(type);
         return periodeType.withKodeverk(periodeType.getKodeverk());
     }
 
@@ -364,7 +364,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static MorsAktivitetsTyper morsAktivitetFra(String aktivitet) {
-        MorsAktivitetsTyper morsAktivitet = new MorsAktivitetsTyper().withKode(aktivitet);
+        var morsAktivitet = new MorsAktivitetsTyper().withKode(aktivitet);
         return morsAktivitet.withKodeverk(morsAktivitet.getKodeverk());
     }
 
@@ -376,7 +376,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static Utsettelsesaarsaker utsettelsesÅrsakFra(String årsak) {
-        Utsettelsesaarsaker utsettelsesÅrsak = new Utsettelsesaarsaker().withKode(årsak);
+        var utsettelsesÅrsak = new Utsettelsesaarsaker().withKode(årsak);
         return utsettelsesÅrsak.withKodeverk(utsettelsesÅrsak.getKodeverk());
     }
 
@@ -407,7 +407,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static Overfoeringsaarsaker overføringsÅrsakFra(String årsak) {
-        Overfoeringsaarsaker overføringsÅrsak = new Overfoeringsaarsaker().withKode(årsak);
+        var overføringsÅrsak = new Overfoeringsaarsaker().withKode(årsak);
         return overføringsÅrsak.withKodeverk(overføringsÅrsak.getKodeverk());
     }
 

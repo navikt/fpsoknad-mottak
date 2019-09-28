@@ -57,7 +57,7 @@ public class FPFordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering doSend(BrukerRolle rolle, String referanseId, FPFordelKonvolutt konvolutt) {
-        Kvittering kvittering = connection.send(konvolutt.getType(), rolle, konvolutt);
+        var kvittering = connection.send(konvolutt.getType(), rolle, konvolutt);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
             kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
@@ -65,7 +65,7 @@ public class FPFordelSøknadSender implements SøknadSender {
             kvittering.setInfoskrivPdf(infoskrivPdf(kvittering.getPdf()));
         }
         if (konvolutt.erEndring()) {
-            Endringssøknad es = Endringssøknad.class.cast(konvolutt.getInnsending());
+            var es = Endringssøknad.class.cast(konvolutt.getInnsending());
             kvittering.setFørsteDag(es.getFørsteUttaksdag());
         }
 

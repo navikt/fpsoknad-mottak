@@ -1,5 +1,28 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -9,28 +32,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttak
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Locale;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.ARBEID;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
-import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.INFOSKRIV_OUTLINE;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 @Component
 public class InfoskrivRenderer {
@@ -47,7 +48,7 @@ public class InfoskrivRenderer {
     }
 
     FontAwareCos renderInfoskriv(List<Arbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
-                                 FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
+            FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
         if (søknad.getFørsteInntektsmeldingDag() == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
             return cosOriginal;
@@ -55,23 +56,23 @@ public class InfoskrivRenderer {
 
         String navn = textFormatter.navn(søker);
         LocalDate datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
-        Foreldrepenger ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
+        var ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
 
-        FontAwareCos cos = førstesideInfoskriv(doc, cosOriginal);
+        var cos = førstesideInfoskriv(doc, cosOriginal);
 
         float y = STARTY;
         y = header(doc, cos, y);
         y -= addBlankLine();
         y -= renderer.addLeftHeading(txt("infoskriv.header",
-            fristTekstFra(datoInntektsmelding)), cos, y);
+                fristTekstFra(datoInntektsmelding)), cos, y);
         y -= addTinyBlankLine();
 
         if (!erSperreFristPassert(datoInntektsmelding)) {
             y -= renderer.addLineOfRegularText(
-                txt("infoskriv.paragraf1", navn, fristTekstFra(datoInntektsmelding)), cos, y);
+                    txt("infoskriv.paragraf1", navn, fristTekstFra(datoInntektsmelding)), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(
-                txt("infoskriv.paragraf1.passert", navn), cos, y);
+                    txt("infoskriv.paragraf1.passert", navn), cos, y);
         }
 
         y -= addTinyBlankLine();
@@ -126,8 +127,8 @@ public class InfoskrivRenderer {
     }
 
     private float renderGradertePerioder(List<GradertUttaksPeriode> gradertePerioder,
-                                         List<Arbeidsforhold> arbeidsforhold, FontAwareCos cos,
-                                         float y) throws IOException {
+            List<Arbeidsforhold> arbeidsforhold, FontAwareCos cos,
+            float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.kombinertarbeid"), cos, y);
         y -= addTinyBlankLine();
         for (GradertUttaksPeriode periode : gradertePerioder) {
@@ -135,10 +136,10 @@ public class InfoskrivRenderer {
             y -= renderer.addLineOfRegularText(txt("tom", formattertDato(periode.getTom())), cos, y);
             if (periode.getVirksomhetsnummer() != null) {
                 y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()),
-                    cos, y);
+                        cos, y);
             }
             y -= renderer.addLineOfRegularText(txt("arbeidstidprosent",
-                prosentFra(periode.getArbeidstidProsent())), cos, y);
+                    prosentFra(periode.getArbeidstidProsent())), cos, y);
             y -= addTinyBlankLine();
         }
         return y;
@@ -146,15 +147,15 @@ public class InfoskrivRenderer {
 
     private List<String> arbeidsgivere(List<Arbeidsforhold> arbeidsforhold, List<String> virksomhetsnummer) {
         return safeStream(arbeidsforhold)
-            .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
-            .map(Arbeidsforhold::getArbeidsgiverNavn)
-            .map(s -> txt("arbeidsgiver", s))
-            .collect(Collectors.toList());
+                .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
+                .map(Arbeidsforhold::getArbeidsgiverNavn)
+                .map(s -> txt("arbeidsgiver", s))
+                .collect(Collectors.toList());
     }
 
     private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder,
-                                             List<Arbeidsforhold> arbeidsforhold,
-                                             FontAwareCos cos, float y) throws IOException {
+            List<Arbeidsforhold> arbeidsforhold,
+            FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.utsettelse"), cos, y);
         y -= addTinyBlankLine();
         for (UtsettelsesPeriode periode : ferieArbeidsperioder) {
@@ -162,10 +163,10 @@ public class InfoskrivRenderer {
             y -= renderer.addLineOfRegularText(txt("tom", formattertDato(periode.getTom())), cos, y);
             if (periode.getVirksomhetsnummer() != null) {
                 y -= renderer.addLinesOfRegularText(arbeidsgivere(arbeidsforhold, periode.getVirksomhetsnummer()),
-                    cos, y);
+                        cos, y);
             }
             y -= renderer.addLineOfRegularText(txt("utsettelsesårsak",
-                textFormatter.capitalize(periode.getÅrsak().name())), cos, y);
+                    textFormatter.capitalize(periode.getÅrsak().name())), cos, y);
             y -= addTinyBlankLine();
         }
         y -= addBlankLine();
@@ -178,9 +179,9 @@ public class InfoskrivRenderer {
 
     private static String formattertDato(LocalDate date) {
         return date.format(DateTimeFormatter
-            .ofLocalizedDate(FormatStyle.LONG)
-            .withLocale(Locale.forLanguageTag("nb"))
-            .withZone(ZoneId.systemDefault()));
+                .ofLocalizedDate(FormatStyle.LONG)
+                .withLocale(Locale.forLanguageTag("nb"))
+                .withZone(ZoneId.systemDefault()));
     }
 
     private static PDPage newPage() {
@@ -201,9 +202,9 @@ public class InfoskrivRenderer {
 
     private static String prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
-            .map(ProsentAndel::getProsent)
-            .map(p -> p.intValue() + " %")
-            .orElse("Ukjent");
+                .map(ProsentAndel::getProsent)
+                .map(p -> p.intValue() + " %")
+                .orElse("Ukjent");
     }
 
     // gir NPE når det ikke finnes inntektsmeldingsdato.
@@ -218,10 +219,10 @@ public class InfoskrivRenderer {
 
     private List<GradertUttaksPeriode> tilGradertePerioder(List<LukketPeriodeMedVedlegg> perioder) {
         return perioder.stream()
-            .filter(this::isGradertPeriode)
-            .map(GradertUttaksPeriode.class::cast)
-            .filter(GradertUttaksPeriode::isErArbeidstaker)
-            .collect(Collectors.toList());
+                .filter(this::isGradertPeriode)
+                .map(GradertUttaksPeriode.class::cast)
+                .filter(GradertUttaksPeriode::isErArbeidstaker)
+                .collect(Collectors.toList());
     }
 
     private boolean isGradertPeriode(LukketPeriodeMedVedlegg periode) {
@@ -230,9 +231,9 @@ public class InfoskrivRenderer {
 
     private List<UtsettelsesPeriode> ferieOgArbeid(List<LukketPeriodeMedVedlegg> periode) {
         return periode.stream()
-            .filter(this::isFerieOrArbeid)
-            .map(UtsettelsesPeriode.class::cast)
-            .collect(Collectors.toList());
+                .filter(this::isFerieOrArbeid)
+                .map(UtsettelsesPeriode.class::cast)
+                .collect(Collectors.toList());
     }
 
     private boolean isFerieOrArbeid(LukketPeriodeMedVedlegg periode) {
@@ -245,12 +246,12 @@ public class InfoskrivRenderer {
 
     private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
         Collections.sort(perioder,
-            (o1, o2) -> o1.getFom().compareTo(o2.getFom()));
+                (o1, o2) -> o1.getFom().compareTo(o2.getFom()));
         return perioder;
     }
 
     private FontAwareCos førstesideInfoskriv(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
-                                             FontAwareCos scratchcos) throws IOException {
+            FontAwareCos scratchcos) throws IOException {
         cos.close();
         doc.addPage(scratch);
         cos = scratchcos;
@@ -267,9 +268,9 @@ public class InfoskrivRenderer {
 
     static String fornavn(String name) {
         return Optional.ofNullable(name)
-            .map(String::toLowerCase)
-            .map(n -> n.substring(0, n.indexOf(" ")))
-            .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
-            .orElse("");
+                .map(String::toLowerCase)
+                .map(n -> n.substring(0, n.indexOf(" ")))
+                .map(n -> Character.toUpperCase(n.charAt(0)) + n.substring(1))
+                .orElse("");
     }
 }
