@@ -331,8 +331,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
             }
         }
-        throw new UnexpectedInputException("Ingen id for arbeidsgiver");
-
+        return null;
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
