@@ -319,7 +319,8 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             return null;
         }
         String id = arbeidsgiver.get(0);
-        switch (id.length()) {
+        if (id != null) {
+            switch (id.length()) {
             case 11:
                 return new Person()
                         .withIdentifikator(id);
@@ -328,7 +329,10 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                         .withIdentifikator(id);
             default:
                 throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
+            }
         }
+        throw new UnexpectedInputException("Ingen id for arbeidsgiver");
+
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
