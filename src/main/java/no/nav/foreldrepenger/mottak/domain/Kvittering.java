@@ -70,17 +70,6 @@ public class Kvittering {
         return kvittering;
     }
 
-    public static Kvittering kvitteringMedType(LeveranseStatus type, String journalId) {
-        return kvitteringMedType(type, journalId, null);
-    }
-
-    public static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
-        Kvittering kvittering = new Kvittering(type);
-        kvittering.setJournalId(journalId);
-        kvittering.setSaksNr(saksnr);
-        return kvittering;
-    }
-
     public static Kvittering forsendelsesStatusKvittering(ForsendelsesStatusKvittering forsendelsesStatus,
             FPSakFordeltKvittering fordeltKvittering) {
 
@@ -123,10 +112,23 @@ public class Kvittering {
         return kvitteringMedType(GOSYS, gosysKvittering.getJournalpostId());
     }
 
+    private static Kvittering kvitteringMedType(LeveranseStatus type, String journalId) {
+        return kvitteringMedType(type, journalId, null);
+    }
+
+    private static Kvittering kvitteringMedType(LeveranseStatus type, String journalId, String saksnr) {
+        Kvittering kvittering = new Kvittering(type);
+        kvittering.setJournalId(journalId);
+        kvittering.setSaksNr(saksnr);
+        return kvittering;
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [referanseId=" + referanseId + ", mottattDato=" + mottattDato
+        return getClass().getSimpleName() + "[referanseId=" + referanseId + ", mottattDato=" + mottattDato
                 + ", førsteDag=" + førsteDag + ", leveranseStatus=" + leveranseStatus + ", journalId=" + journalId
-                + ", saksNr=" + saksNr + ", pdf=" + limit(pdf, 20) + "]";
+                + ", saksNr=" + saksNr + ", pdf=" + limit(pdf, 20) + ", førsteInntektsmeldingDag="
+                + førsteInntektsmeldingDag + ", infoskrivPdf=" + limit(infoskrivPdf, 20) + "]";
     }
+
 }

@@ -122,7 +122,8 @@ public class FPFordelKonvolutt {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [payload=" + payload + "]";
+        return getClass().getSimpleName() + "[egenskap=" + egenskap + ", payload=" + payload + ", vedlegg=" + vedlegg
+                + ", innsending=" + innsending + "]";
     }
 
 }
