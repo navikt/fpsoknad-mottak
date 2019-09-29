@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.HOVEDDOKUMENT;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.METADATA;
-import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator.VEDLEGG;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.HOVEDDOKUMENT;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.METADATA;
+import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.VEDLEGG;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
@@ -21,13 +21,13 @@ import org.springframework.util.MultiValueMap;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
-public class FPFordelKonvolutt {
+public class Konvolutt {
     private final SøknadEgenskap egenskap;
     private final HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload;
     private final List<String> vedlegg;
     private final Object innsending;
 
-    public FPFordelKonvolutt(SøknadEgenskap egenskap, Object innsending,
+    public Konvolutt(SøknadEgenskap egenskap, Object innsending,
             HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload,
             List<String> vedlegg) {
         this.egenskap = egenskap;

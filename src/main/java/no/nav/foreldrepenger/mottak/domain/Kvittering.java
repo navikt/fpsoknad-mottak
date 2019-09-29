@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.GosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 
@@ -106,7 +106,7 @@ public class Kvittering {
                 kvittering.getSaksnummer());
     }
 
-    public static Kvittering gosysKvittering(FPFordelGosysKvittering gosysKvittering) {
+    public static Kvittering gosysKvittering(GosysKvittering gosysKvittering) {
         LOG.info("Søknaden er sendt til manuell behandling i Gosys, journalId er {}",
                 gosysKvittering.getJournalpostId());
         return kvitteringMedType(GOSYS, gosysKvittering.getJournalpostId());

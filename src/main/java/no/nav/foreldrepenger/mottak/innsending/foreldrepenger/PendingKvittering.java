@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FPFordelPendingKvittering extends FPFordelKvittering {
+public class PendingKvittering extends FordelKvittering {
 
     static final String STATUS = "PENDING";
     @JsonFormat(shape = STRING)
@@ -20,7 +20,7 @@ public class FPFordelPendingKvittering extends FPFordelKvittering {
     }
 
     @JsonCreator
-    public FPFordelPendingKvittering(@JsonProperty("pollInterval") Duration pollInterval) {
+    public PendingKvittering(@JsonProperty("pollInterval") Duration pollInterval) {
         super(STATUS);
         this.pollInterval = pollInterval;
     }
@@ -41,7 +41,7 @@ public class FPFordelPendingKvittering extends FPFordelKvittering {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        FPFordelPendingKvittering other = (FPFordelPendingKvittering) obj;
+        PendingKvittering other = (PendingKvittering) obj;
         if (pollInterval == null) {
             if (other.pollInterval != null) {
                 return false;

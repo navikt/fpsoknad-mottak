@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetadata;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelMetadata;
 
 public class TestMetadata {
 
@@ -25,7 +25,7 @@ public class TestMetadata {
     @Test
     public void testIgnorerIkkeLastetOpp() {
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(DEFAULT_VERSJON);
-        FPFordelMetadata metadata = new FPFordelMetadata(søknad, INITIELL_FORELDREPENGER, AKTOR_ID, REF);
+        FordelMetadata metadata = new FordelMetadata(søknad, INITIELL_FORELDREPENGER, AKTOR_ID, REF);
         assertEquals(2, søknad.getVedlegg().size());
         assertEquals(3, metadata.getFiler().size());
         assertEquals(ID, metadata.getBrukerId());
@@ -34,7 +34,7 @@ public class TestMetadata {
     @Test
     public void test2LastetOpp() {
         Søknad søknad = søknadMedToVedlegg(DEFAULT_VERSJON);
-        FPFordelMetadata metadata = new FPFordelMetadata(søknad, ENDRING_FORELDREPENGER, AKTOR_ID, REF);
+        FordelMetadata metadata = new FordelMetadata(søknad, ENDRING_FORELDREPENGER, AKTOR_ID, REF);
         assertEquals(2, søknad.getVedlegg().size());
         assertEquals(4, metadata.getFiler().size());
     }
@@ -42,7 +42,7 @@ public class TestMetadata {
     @Test
     public void test2ES() {
         Søknad søknad = TestUtils.engangssøknad(DEFAULT_VERSJON, ForeldrepengerTestUtils.V3);
-        FPFordelMetadata metadata = new FPFordelMetadata(søknad, INITIELL_ENGANGSSTØNAD, AKTOR_ID, REF);
+        FordelMetadata metadata = new FordelMetadata(søknad, INITIELL_ENGANGSSTØNAD, AKTOR_ID, REF);
         assertEquals(1, søknad.getVedlegg().size());
         assertEquals(3, metadata.getFiler().size());
     }

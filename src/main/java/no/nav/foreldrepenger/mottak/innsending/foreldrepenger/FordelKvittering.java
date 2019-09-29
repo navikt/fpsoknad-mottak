@@ -10,11 +10,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = NAME, include = PROPERTY, property = "forsendelseStatus")
 @JsonSubTypes({
-        @Type(value = FPFordelPendingKvittering.class, name = FPFordelPendingKvittering.STATUS),
-        @Type(value = FPFordelGosysKvittering.class, name = FPFordelGosysKvittering.STATUS),
+        @Type(value = PendingKvittering.class, name = PendingKvittering.STATUS),
+        @Type(value = GosysKvittering.class, name = GosysKvittering.STATUS),
         @Type(value = FPSakFordeltKvittering.class, name = FPSakFordeltKvittering.STATUS)
 })
-public abstract class FPFordelKvittering {
+public abstract class FordelKvittering {
 
     private final String forsendelseStatus;
 
@@ -23,7 +23,7 @@ public abstract class FPFordelKvittering {
         return forsendelseStatus;
     }
 
-    public FPFordelKvittering(String forsendelseStatus) {
+    public FordelKvittering(String forsendelseStatus) {
         this.forsendelseStatus = forsendelseStatus;
     }
 }

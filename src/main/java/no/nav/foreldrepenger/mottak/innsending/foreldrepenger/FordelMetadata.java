@@ -37,7 +37,7 @@ import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @JsonPropertyOrder({ "forsendelsesId", "saksnummer", "brukerId", "forsendelseMottatt", "filer" })
-public class FPFordelMetadata {
+public class FordelMetadata {
     private final String forsendelsesId;
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private final LocalDateTime forsendelseMottatt;
@@ -46,23 +46,23 @@ public class FPFordelMetadata {
     private final List<Del> deler;
     private final String saksnummer;
 
-    public FPFordelMetadata(Ettersending ettersending, AktørId aktorId, String ref) {
+    public FordelMetadata(Ettersending ettersending, AktørId aktorId, String ref) {
         this(ettersendingsDeler(ettersending), aktorId, ref, ettersending.getSaksnr());
     }
 
-    public FPFordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref) {
+    public FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref) {
         this(søknad, søknadType, aktorId, ref, null);
     }
 
-    public FPFordelMetadata(Endringssøknad endringssøknad, SøknadType søknadType, AktørId aktorId, String ref) {
+    public FordelMetadata(Endringssøknad endringssøknad, SøknadType søknadType, AktørId aktorId, String ref) {
         this(endringssøknadsDeler(endringssøknad, søknadType), aktorId, ref, endringssøknad.getSaksnr());
     }
 
-    public FPFordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref, String saksnr) {
+    public FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref, String saksnr) {
         this(søknadsDeler(søknad, søknadType), aktorId, ref, saksnr);
     }
 
-    public FPFordelMetadata(List<Del> deler, AktørId aktorId, String ref, String saksnr) {
+    public FordelMetadata(List<Del> deler, AktørId aktorId, String ref, String saksnr) {
         this.forsendelsesId = ref;
         this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();

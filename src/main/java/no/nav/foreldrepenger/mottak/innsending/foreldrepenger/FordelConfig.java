@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @ConfigurationProperties(prefix = "fpfordel")
 @Configuration
-public class FPFordelConfig {
+public class FordelConfig {
 
     public static final String PING_PATH = "fpfordel/internal/isReady";
     public static final String BASE_PATH = "fpfordel/api/dokumentforsendelse";

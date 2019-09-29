@@ -50,8 +50,8 @@ import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.GosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
@@ -69,7 +69,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testGosysKvittering() throws Exception {
-        test(new FPFordelGosysKvittering("42"), false, mapper);
+        test(new GosysKvittering("42"), false, mapper);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testPollKvittering() throws Exception {
-        test(new FPFordelPendingKvittering(Duration.ofSeconds(6)), false, mapper);
+        test(new PendingKvittering(Duration.ofSeconds(6)), false, mapper);
     }
 
     @Test

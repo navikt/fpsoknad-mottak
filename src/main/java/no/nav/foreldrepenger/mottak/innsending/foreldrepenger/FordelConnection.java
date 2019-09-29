@@ -25,23 +25,23 @@ import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @Component
-public class FPFordelConnection extends AbstractRestConnection implements PingEndpointAware {
+public class FordelConnection extends AbstractRestConnection implements PingEndpointAware {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FPFordelConnection.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FordelConnection.class);
 
-    private final FPFordelConfig config;
-    private final FPFordelResponseHandler responseHandler;
+    private final FordelConfig config;
+    private final ResponseHandler responseHandler;
     private final MeterRegistry registry;
 
-    public FPFordelConnection(RestOperations restOperations, FPFordelConfig config,
-            FPFordelResponseHandler responseHandler, MeterRegistry registry) {
+    public FordelConnection(RestOperations restOperations, FordelConfig config,
+            ResponseHandler responseHandler, MeterRegistry registry) {
         super(restOperations);
         this.config = config;
         this.responseHandler = responseHandler;
         this.registry = registry;
     }
 
-    public Kvittering send(FPFordelKonvolutt konvolutt, BrukerRolle rolle) {
+    public Kvittering send(Konvolutt konvolutt, BrukerRolle rolle) {
         if (isEnabled()) {
             return doSend(konvolutt, rolle);
         }
@@ -49,14 +49,14 @@ public class FPFordelConnection extends AbstractRestConnection implements PingEn
         return ikkeSendt(konvolutt.PDFHovedDokument());
     }
 
-    private Kvittering doSend(FPFordelKonvolutt konvolutt, BrukerRolle rolle) {
+    private Kvittering doSend(Konvolutt konvolutt, BrukerRolle rolle) {
         try {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             LOG.info("Sender {} til {}", name(konvolutt.getType()), name().toLowerCase());
             Kvittering kvittering = responseHandler.handle(
                     postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
-                            FPFordelKvittering.class));
+                            FordelKvittering.class));
             stopWatch.stop();
             kvittering.setPdf(konvolutt.PDFHovedDokument());
             LOG.info("Sendte {} til {}, fikk kvittering {}", name(konvolutt.getType()), name().toLowerCase(),

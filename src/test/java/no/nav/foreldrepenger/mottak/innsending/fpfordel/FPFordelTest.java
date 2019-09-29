@@ -54,15 +54,15 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConfig;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelGosysKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelMetdataGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelPendingKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelResponseHandler;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelSøknadSender;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConnection;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.GosysKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.MetdataGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PendingKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ResponseHandler;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelSøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.LoggingHendelseProdusent;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
@@ -114,17 +114,17 @@ public class FPFordelTest {
     private FPInfoSaksPoller poller;
     @Mock
     private TokenUtil tokenHelper;
-    private FPFordelConfig cfg;
+    private FordelConfig cfg;
 
-    private ResponseEntity<FPFordelKvittering> pollReceipt202, pollReceipt200;
-    private ResponseEntity<FPFordelKvittering> goysReceipt;
-    private ResponseEntity<FPFordelKvittering> fordeltReceipt;
+    private ResponseEntity<FordelKvittering> pollReceipt202, pollReceipt200;
+    private ResponseEntity<FordelKvittering> goysReceipt;
+    private ResponseEntity<FordelKvittering> fordeltReceipt;
 
-    private FPFordelSøknadSender sender;
+    private FordelSøknadSender sender;
 
     @BeforeEach
     public void before() {
-        cfg = new FPFordelConfig();
+        cfg = new FordelConfig();
         cfg.setEnabled(true);
         cfg.setUri(URI.create(FPFORDELURIBASE));
 
@@ -135,12 +135,12 @@ public class FPFordelTest {
 
         goysReceipt = gosysReceipt();
         fordeltReceipt = fordelt();
-        when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class)))
+        when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class)))
                 .thenReturn(pollReceipt202);
         sender = sender();
     }
 
-    private FPFordelSøknadSender sender() {
+    private FordelSøknadSender sender() {
         MottakConfiguration mottakConfig = new MottakConfiguration();
         PDFElementRenderer jalla1 = new PDFElementRenderer();
         SøknadTextFormatter jalla2 = new SøknadTextFormatter(mottakConfig.landkoder(),
@@ -153,38 +153,38 @@ public class FPFordelTest {
         InfoskrivPdfExtractor pdfSplitter = new InfoskrivPdfExtractor();
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
-        FPFordelKonvoluttGenerator konvoluttGenerator = new FPFordelKonvoluttGenerator(
-                new FPFordelMetdataGenerator(new ObjectMapper()),
+        KonvoluttGenerator konvoluttGenerator = new KonvoluttGenerator(
+                new MetdataGenerator(new ObjectMapper()),
                 domainMapper,
                 pdfGenerator);
-        return new FPFordelSøknadSender(
-                new FPFordelConnection(restOperations, cfg,
-                        new FPFordelResponseHandler(restOperations, 3, 10000, poller), registry),
+        return new FordelSøknadSender(
+                new FordelConnection(restOperations, cfg,
+                        new ResponseHandler(restOperations, 3, 10000, poller), registry),
                 konvoluttGenerator, pdfSplitter, new LoggingHendelseProdusent());
     }
 
-    private static ResponseEntity<FPFordelKvittering> gosysReceipt() {
-        return new ResponseEntity<>(new FPFordelGosysKvittering(JOURNALID), OK);
+    private static ResponseEntity<FordelKvittering> gosysReceipt() {
+        return new ResponseEntity<>(new GosysKvittering(JOURNALID), OK);
     }
 
-    private static ResponseEntity<FPFordelKvittering> pollReceipt(HttpStatus status) {
+    private static ResponseEntity<FordelKvittering> pollReceipt(HttpStatus status) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(LOCATION, FPFORDELPOLLURISTRING);
-        return new ResponseEntity<>(new FPFordelPendingKvittering(Duration.ofMillis(100)), headers, status);
+        return new ResponseEntity<>(new PendingKvittering(Duration.ofMillis(100)), headers, status);
     }
 
-    private static ResponseEntity<FPFordelKvittering> pollReceiptNoLocation() {
-        return new ResponseEntity<>(new FPFordelPendingKvittering(Duration.ofMillis(100)), ACCEPTED);
+    private static ResponseEntity<FordelKvittering> pollReceiptNoLocation() {
+        return new ResponseEntity<>(new PendingKvittering(Duration.ofMillis(100)), ACCEPTED);
     }
 
-    private static ResponseEntity<FPFordelKvittering> nullBody() {
+    private static ResponseEntity<FordelKvittering> nullBody() {
         return new ResponseEntity<>(null, OK);
     }
 
-    private static ResponseEntity<FPFordelKvittering> fpfordelPollReceiptError() {
+    private static ResponseEntity<FordelKvittering> fpfordelPollReceiptError() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(LOCATION, FPFORDELPOLLURISTRING);
-        return new ResponseEntity<>(new FPFordelPendingKvittering(Duration.ofMillis(100)), headers, BAD_REQUEST);
+        return new ResponseEntity<>(new PendingKvittering(Duration.ofMillis(100)), headers, BAD_REQUEST);
     }
 
     private static ResponseEntity<ForsendelsesStatusKvittering> fpinfoInnvilget() {
@@ -207,7 +207,7 @@ public class FPFordelTest {
         return new ResponseEntity<>(new ForsendelsesStatusKvittering(status), OK);
     }
 
-    private static ResponseEntity<FPFordelKvittering> fordelt() {
+    private static ResponseEntity<FordelKvittering> fordelt() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(LOCATION, FPINFOURISTRING);
         return new ResponseEntity<>(new FPSakFordeltKvittering(JOURNALID, SAKSNR), headers, SEE_OTHER);
@@ -215,28 +215,28 @@ public class FPFordelTest {
 
     @Test
     public void pollTwiceThenGosys() throws Exception {
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
+        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 goysReceipt);
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), GOSYS);
         assertEquals(kvittering.getJournalId(), JOURNALID);
         assertNull(kvittering.getSaksNr());
-        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
-        verify(restOperations, times(2)).getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class));
+        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
+        verify(restOperations, times(2)).getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class));
     }
 
     @Test
     public void poll3GivesUp() throws Exception {
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
+        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 pollReceipt200, pollReceipt200);
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
         assertNull(kvittering.getJournalId());
         assertNull(kvittering.getSaksNr());
-        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
-        verify(restOperations, times(3)).getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class));
+        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
+        verify(restOperations, times(3)).getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class));
     }
 
     @Test
@@ -247,7 +247,7 @@ public class FPFordelTest {
         when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
                 .thenReturn(value);
 
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
+        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class))).thenReturn(
                 fpinfoPågår(),
@@ -266,7 +266,7 @@ public class FPFordelTest {
         value.setSaksNr(SAKSNR);
         when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
                 .thenReturn(value);
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
+        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
                 .thenReturn(fpinfoNull());
@@ -275,8 +275,8 @@ public class FPFordelTest {
         assertEquals(kvittering.getLeveranseStatus(), SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
         assertEquals(kvittering.getJournalId(), JOURNALID);
         assertEquals(kvittering.getSaksNr(), SAKSNR);
-        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
-        verify(restOperations, times(2)).getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class));
+        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
+        verify(restOperations, times(2)).getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class));
     }
 
     @Test
@@ -287,7 +287,7 @@ public class FPFordelTest {
         when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
                 .thenReturn(value);
 
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
+        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
                 .thenReturn(fpinfoPågår());
@@ -296,17 +296,17 @@ public class FPFordelTest {
         assertEquals(kvittering.getLeveranseStatus(), PÅGÅR);
         assertEquals(kvittering.getJournalId(), JOURNALID);
         assertEquals(kvittering.getSaksNr(), SAKSNR);
-        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
+        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
     }
 
     @Test
     public void pollNoLocation() throws Exception {
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt202,
+        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt202,
                 pollReceiptNoLocation());
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
-        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class));
+        verify(restOperations).postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class));
     }
 
     @Test
@@ -317,7 +317,7 @@ public class FPFordelTest {
         when(poller.poll(eq(FPINFOURI), any(StopWatch.class), any(Duration.class), any(FPSakFordeltKvittering.class)))
                 .thenReturn(value);
 
-        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FPFordelKvittering.class))).thenReturn(pollReceipt200,
+        when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 fordeltReceipt);
         when(restOperations.getForEntity(eq(FPINFOURI), eq(ForsendelsesStatusKvittering.class)))
                 .thenReturn(fpinfoFailed());
@@ -330,25 +330,25 @@ public class FPFordelTest {
 
     @Test
     public void unexpectedStatusCode() throws Exception {
-        when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class)))
+        when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class)))
                 .thenReturn(fpfordelPollReceiptError());
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
         assertNull(kvittering.getJournalId());
         assertNull(kvittering.getSaksNr());
-        verify(restOperations, never()).getForEntity(eq(POSTURI), eq(FPFordelKvittering.class));
+        verify(restOperations, never()).getForEntity(eq(POSTURI), eq(FordelKvittering.class));
     }
 
     @Test
     public void testNullBody() throws Exception {
-        when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FPFordelKvittering.class)))
+        when(restOperations.postForEntity(eq(POSTURI), any(HttpEntity.class), eq(FordelKvittering.class)))
                 .thenReturn(nullBody());
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
                 new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), FP_FORDEL_MESSED_UP);
         assertNull(kvittering.getJournalId());
         assertNull(kvittering.getSaksNr());
-        verify(restOperations, never()).getForEntity(eq(POSTURI), eq(FPFordelKvittering.class));
+        verify(restOperations, never()).getForEntity(eq(POSTURI), eq(FordelKvittering.class));
     }
 }

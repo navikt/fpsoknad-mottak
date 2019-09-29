@@ -37,8 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelConnection;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPFordelKonvoluttGenerator;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConnection;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingHendelseProdusent;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -55,7 +55,7 @@ public class TestFPFordelRoundtripSerialization {
     private TestRestTemplate template;
 
     @Autowired
-    FPFordelConnection connection;
+    FordelConnection connection;
 
     @MockBean
     InnsendingHendelseProdusent publisher;
@@ -71,7 +71,7 @@ public class TestFPFordelRoundtripSerialization {
     @Qualifier(DELEGERENDE)
     XMLSøknadMapper xmlMapper;
     @Autowired
-    FPFordelKonvoluttGenerator konvoluttGenerator;
+    KonvoluttGenerator konvoluttGenerator;
 
     @Autowired
     SøknadSender sender;

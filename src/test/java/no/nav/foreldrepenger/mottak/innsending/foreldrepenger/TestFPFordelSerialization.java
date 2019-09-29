@@ -80,7 +80,7 @@ public class TestFPFordelSerialization {
     private InnsendingHendelseProdusent publisher;
 
     @Inject
-    private FPFordelKonvoluttGenerator konvoluttGenerator;
+    private KonvoluttGenerator konvoluttGenerator;
 
     @Inject
     @Qualifier(DELEGERENDE)
@@ -129,7 +129,7 @@ public class TestFPFordelSerialization {
     @Test
     public void testKonvoluttEttersending() {
         Ettersending es = new Ettersending(foreldrepenger, "42", VEDLEGG1, V2);
-        FPFordelKonvolutt konvolutt = konvoluttGenerator.generer(es,
+        Konvolutt konvolutt = konvoluttGenerator.generer(es,
                 person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
         assertNotNull(konvolutt.getMetadata());
         assertEquals(2, konvolutt.getVedlegg().size());
@@ -165,7 +165,7 @@ public class TestFPFordelSerialization {
 
     private void testKonvolutt(Versjon v) {
         Søknad søknad = søknad(v, false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
-        FPFordelKonvolutt konvolutt = konvoluttGenerator.generer(søknad, person(),
+        Konvolutt konvolutt = konvoluttGenerator.generer(søknad, person(),
                 new SøknadEgenskap(v, INITIELL_FORELDREPENGER));
         assertNotNull(konvolutt.getMetadata());
         assertEquals(1, konvolutt.getVedlegg().size());
@@ -179,7 +179,7 @@ public class TestFPFordelSerialization {
 
     private void testKonvoluttEndring(Versjon v) {
         Endringssøknad es = endringssøknad(v, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
-        FPFordelKonvolutt konvolutt = konvoluttGenerator.generer(es, person(),
+        Konvolutt konvolutt = konvoluttGenerator.generer(es, person(),
                 new SøknadEgenskap(v, ENDRING_FORELDREPENGER));
         assertNotNull(konvolutt.getMetadata());
         assertNotNull(konvolutt.XMLHovedDokument());

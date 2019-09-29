@@ -13,14 +13,14 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfExtractor;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
-public class FPFordelSøknadSender implements SøknadSender {
+public class FordelSøknadSender implements SøknadSender {
 
-    private final FPFordelConnection connection;
-    private final FPFordelKonvoluttGenerator generator;
+    private final FordelConnection connection;
+    private final KonvoluttGenerator generator;
     private final InfoskrivPdfExtractor pdfExtractor;
     private final InnsendingHendelseProdusent publisher;
 
-    public FPFordelSøknadSender(FPFordelConnection connection, FPFordelKonvoluttGenerator generator,
+    public FordelSøknadSender(FordelConnection connection, KonvoluttGenerator generator,
             InfoskrivPdfExtractor pdfExtractor, InnsendingHendelseProdusent publisher) {
         this.connection = connection;
         this.generator = generator;
@@ -48,15 +48,15 @@ public class FPFordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering doSend(FPFordelKonvolutt konvolutt, String referanseId) {
+    private Kvittering doSend(Konvolutt konvolutt, String referanseId) {
         return doSend(null, referanseId, konvolutt);
     }
 
-    private Kvittering doSend(BrukerRolle rolle, FPFordelKonvolutt konvolutt) {
+    private Kvittering doSend(BrukerRolle rolle, Konvolutt konvolutt) {
         return doSend(rolle, null, konvolutt);
     }
 
-    private Kvittering doSend(BrukerRolle rolle, String referanseId, FPFordelKonvolutt konvolutt) {
+    private Kvittering doSend(BrukerRolle rolle, String referanseId, Konvolutt konvolutt) {
         var kvittering = connection.send(konvolutt, rolle);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
@@ -78,15 +78,15 @@ public class FPFordelSøknadSender implements SøknadSender {
         return pdfExtractor.extractInfoskriv(pdf);
     }
 
-    private FPFordelKonvolutt konvolutt(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+    private Konvolutt konvolutt(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         return generator.generer(søknad, søker, egenskap);
     }
 
-    private FPFordelKonvolutt konvolutt(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
+    private Konvolutt konvolutt(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
         return generator.generer(endring, søker, egenskap);
     }
 
-    private FPFordelKonvolutt konvolutt(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
+    private Konvolutt konvolutt(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
         return generator.generer(ettersending, søker, egenskap);
     }
 

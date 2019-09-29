@@ -6,15 +6,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class FPFordelMetdataGenerator {
+public class MetdataGenerator {
 
     private final ObjectMapper mapper;
 
-    public FPFordelMetdataGenerator(ObjectMapper mapper) {
+    public MetdataGenerator(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-    public String generer(FPFordelMetadata metadata) {
+    public String generer(FordelMetadata metadata) {
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(metadata);
         } catch (JsonProcessingException e) {

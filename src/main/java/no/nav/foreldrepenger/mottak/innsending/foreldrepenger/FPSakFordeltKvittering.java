@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FPSakFordeltKvittering extends FPFordelKvittering {
+public class FPSakFordeltKvittering extends FordelKvittering {
 
     static final String STATUS = "FPSAK";
 
