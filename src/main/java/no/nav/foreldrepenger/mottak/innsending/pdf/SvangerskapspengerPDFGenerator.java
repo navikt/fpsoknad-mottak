@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -275,9 +276,10 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
+        var tilrettelegging = perioder.stream().findAny().orElseThrow(IllegalArgumentException::new);
+        y -= renderer.addBulletPoint(INDENT,
+            txt("svp.behovfra", DATEFMT.format(tilrettelegging.getBehovForTilretteleggingFom())), cos, y);
         for (Tilrettelegging periode : perioder) {
-            y -= renderer.addBulletPoint(INDENT,
-                    txt("svp.behovfra", DATEFMT.format(periode.getBehovForTilretteleggingFom())), cos, y);
             if (periode instanceof HelTilrettelegging) {
                 y -= renderHelTilrettelegging(HelTilrettelegging.class.cast(periode), vedlegg, cos, y);
             } else if (periode instanceof DelvisTilrettelegging) {
@@ -286,6 +288,12 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 y -= renderIngenTilrettelegging(IngenTilrettelegging.class.cast(periode), vedlegg, cos, y);
             }
         }
+        List<String> vedleggRefs = perioder.stream()
+            .map(Tilrettelegging::getVedlegg)
+            .findAny()
+            .orElseGet(Collections::emptyList);
+
+        y -= renderVedlegg(vedlegg, vedleggRefs, SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
@@ -295,7 +303,6 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.sluttearbeid", DATEFMT.format(periode.getSlutteArbeidFom())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
@@ -307,7 +314,6 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 txt("svp.tilretteleggingfra", DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.stillingsprosent", prosentFra(periode.getStillingsprosent())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
@@ -323,7 +329,6 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",
                 DATEFMT.format(periode.getTilrettelagtArbeidFom())), cos, y);
-        y -= renderVedlegg(vedlegg, periode.getVedlegg(), SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
     }
 
