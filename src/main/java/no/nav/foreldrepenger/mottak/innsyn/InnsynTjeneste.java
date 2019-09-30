@@ -81,14 +81,14 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public Uttaksplan uttaksplan(String saksnummer) {
-        return Optional.ofNullable(innsyn.hentUttaksplan(saksnummer))
+        return Optional.ofNullable(innsyn.uttaksplan(saksnummer))
                 .map(this::map)
                 .orElse(null);
     }
 
     @Override
     public Uttaksplan uttaksplan(AktørId aktørId, AktørId annenPart) {
-        return Optional.ofNullable(innsyn.hentUttaksplan(aktørId, annenPart))
+        return Optional.ofNullable(innsyn.uttaksplan(aktørId, annenPart))
                 .map(this::map)
                 .orElse(null);
     }
@@ -101,7 +101,7 @@ public class InnsynTjeneste implements Innsyn {
     @Override
     public List<Sak> hentSaker(String aktørId) {
         LOG.info("Henter sak(er) for {}", aktørId);
-        List<Sak> saker = safeStream(innsyn.hentSaker(aktørId))
+        List<Sak> saker = safeStream(innsyn.saker(aktørId))
                 .filter(distinctByKey(SakDTO::getSaksnummer))
                 .map(this::tilSak)
                 .collect(toList());
@@ -116,7 +116,7 @@ public class InnsynTjeneste implements Innsyn {
         LOG.info("Henter {} behandling{} for sak {} fra {}", lenker.size(), endelse(lenker), saksnr, lenker);
         List<Behandling> behandlinger = safeStream(lenker)
                 .filter(distinctByKey(Lenke::getHref))
-                .map(innsyn::hentBehandling)
+                .map(innsyn::behandling)
                 .map(this::tilBehandling)
                 .collect(toList());
         LOG.info("Hentet {} behandling{}", behandlinger.size(), endelse(behandlinger));
@@ -127,7 +127,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private InnsynsSøknad hentSøknad(Lenke lenke) {
-        InnsynsSøknad søknad = Optional.ofNullable(innsyn.hentSøknad(lenke))
+        InnsynsSøknad søknad = Optional.ofNullable(innsyn.søknad(lenke))
                 .map(this::tilSøknad)
                 .orElse(null);
         if (søknad == null) {
@@ -140,7 +140,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private Vedtak hentVedtak(Lenke lenke) {
-        Vedtak vedtak = Optional.ofNullable(innsyn.hentVedtak(lenke))
+        Vedtak vedtak = Optional.ofNullable(innsyn.vedtak(lenke))
                 .map(this::tilVedtak)
                 .orElse(null);
         if (vedtak == null) {

@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.domain.felles.annenforelder;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -31,6 +34,9 @@ public final class NorskForelder extends AnnenForelder {
 
     @Override
     public boolean hasId() {
-        return fnr != null && fnr.getFnr() != null;
+        return Optional.ofNullable(fnr)
+                .map(Fødselsnummer::getFnr)
+                .filter(Objects::nonNull)
+                .isPresent();
     }
 }

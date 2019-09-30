@@ -43,7 +43,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20180924.OpphoerAvNaturalytelseListe;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.Periode;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.PleiepengerPeriodeListe;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.Refusjon;
-import no.seres.xsd.nav.inntektsmelding_m._20180924.Skjemainnhold;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.SykepengerIArbeidsgiverperioden;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.UtsettelseAvForeldrepenger;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.UtsettelseAvForeldrepengerListe;
@@ -59,7 +58,7 @@ public final class InntektsmeldingXMLMapper {
             return null;
         }
         try {
-            Skjemainnhold skjema = JAXB.unmarshalToElement(xml, InntektsmeldingM.class).getValue().getSkjemainnhold();
+            var skjema = JAXB.unmarshalToElement(xml, InntektsmeldingM.class).getValue().getSkjemainnhold();
             return new Inntektsmelding(tilYtelse(skjema.getYtelse()),
                     tilInnsendingsÅrsak(skjema.getAarsakTilInnsending()),
                     tilArbeidsgiver(skjema.getArbeidsgiver()),

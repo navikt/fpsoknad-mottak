@@ -4,7 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public enum BehandlingTema {
-    FORP_FODS, FORP_ADOP, ENGST_FODS, ENGST_ADOP, FORP, ENGST;
+    FORP_FODS,
+    FORP_ADOP,
+    ENGST_FODS,
+    ENGST_ADOP,
+    FORP,
+    ENGST;
 
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingTema.class);
 

@@ -22,7 +22,7 @@ import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
+import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 
 @Component
 public class ResponseHandler extends AbstractRestConnection {
@@ -30,12 +30,12 @@ public class ResponseHandler extends AbstractRestConnection {
     private static final Logger LOG = LoggerFactory.getLogger(ResponseHandler.class);
     private final int fpfordelMax;
     private final long maxMillis;
-    private final FPInfoSaksPoller poller;
+    private final SakStatusPoller poller;
 
     public ResponseHandler(RestOperations restOperations,
             @Value("${fpfordel.max:10}") int maxAntallForsøk,
             @Value("${fpfordel.maxMillis:10000}") long maxMillis,
-            FPInfoSaksPoller poller) {
+            SakStatusPoller poller) {
         super(restOperations);
         this.fpfordelMax = maxAntallForsøk;
         this.maxMillis = maxMillis;

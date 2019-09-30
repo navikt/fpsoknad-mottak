@@ -4,7 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public enum BehandlingType {
-    FP, ES, ENDRING_FP, SVP;
+    FP,
+    ES,
+    ENDRING_FP,
+    SVP;
+
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingType.class);
 
     public static BehandlingType valueSafelyOf(String name) {

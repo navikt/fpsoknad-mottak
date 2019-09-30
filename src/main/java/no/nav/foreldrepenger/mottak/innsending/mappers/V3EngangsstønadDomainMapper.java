@@ -81,7 +81,8 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private OmYtelse engangsstønadFra(Søknad søknad) {
-        return new OmYtelse().withAny(JAXB.marshalToElement(engangsstønadFra(Engangsstønad.class.cast(søknad.getYtelse()), søknad.getVedlegg())));
+        return new OmYtelse().withAny(JAXB
+                .marshalToElement(engangsstønadFra(Engangsstønad.class.cast(søknad.getYtelse()), søknad.getVedlegg())));
     }
 
     private JAXBElement<no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v3.Engangsstønad> engangsstønadFra(

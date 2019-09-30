@@ -1,10 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
+@Data
 public class Bankkonto {
 
     private final String kontonummer;
@@ -16,31 +17,4 @@ public class Bankkonto {
         this.kontonummer = kontonummer;
         this.banknavn = banknavn;
     }
-
-    public String getKontonummer() {
-        return kontonummer;
-    }
-
-    public String getBanknavn() {
-        return banknavn;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Bankkonto bankkonto = (Bankkonto) o;
-        return Objects.equals(kontonummer, bankkonto.kontonummer) &&
-                Objects.equals(banknavn, bankkonto.banknavn);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(kontonummer, banknavn);
-    }
-
 }

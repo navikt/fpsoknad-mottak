@@ -76,7 +76,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
-import no.nav.foreldrepenger.mottak.innsyn.FPInfoSaksPoller;
+import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -111,7 +111,7 @@ public class FPFordelTest {
     @Mock
     private Oppslag oppslag;
     @Mock
-    private FPInfoSaksPoller poller;
+    private SakStatusPoller poller;
     @Mock
     private TokenUtil tokenHelper;
     private FordelConfig cfg;

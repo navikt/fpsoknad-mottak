@@ -15,8 +15,7 @@ public class XMLSøknadHandler {
     private final XMLSøknadMapper mapper;
     private final Inspektør inspektør;
 
-    public XMLSøknadHandler(@Qualifier(DELEGERENDE) XMLSøknadMapper mapper,
-            @Qualifier(SØKNAD) Inspektør inspektør) {
+    public XMLSøknadHandler(@Qualifier(DELEGERENDE) XMLSøknadMapper mapper, @Qualifier(SØKNAD) Inspektør inspektør) {
         this.inspektør = inspektør;
         this.mapper = mapper;
     }

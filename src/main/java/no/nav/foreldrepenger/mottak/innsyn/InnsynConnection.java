@@ -51,7 +51,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         return uri(config.getUri(), config.getPingPath());
     }
 
-    public List<SakDTO> hentSaker(String aktørId) {
+    public List<SakDTO> saker(String aktørId) {
         LOG.trace("Henter saker for {}", aktørId);
         return Optional.ofNullable(
                 getForObject(uri(config.getUri(), SAK, queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
@@ -59,12 +59,12 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 .orElse(emptyList());
     }
 
-    public UttaksplanDTO hentUttaksplan(String saksnummer) {
+    public UttaksplanDTO uttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan for sak {}", saksnummer);
         return getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)), UttaksplanDTO.class);
     }
 
-    public UttaksplanDTO hentUttaksplan(AktørId aktørId, AktørId annenPart) {
+    public UttaksplanDTO uttaksplan(AktørId aktørId, AktørId annenPart) {
         LOG.trace("Henter uttaksplan for {} med annen part {}", aktørId, annenPart);
         return getForObject(
                 uri(config.getUri(), ANNENFORELDERPLAN,
@@ -72,15 +72,15 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 UttaksplanDTO.class);
     }
 
-    public BehandlingDTO hentBehandling(Lenke lenke) {
+    public BehandlingDTO behandling(Lenke lenke) {
         return hent(lenke, BehandlingDTO.class);
     }
 
-    public VedtakDTO hentVedtak(Lenke lenke) {
+    public VedtakDTO vedtak(Lenke lenke) {
         return hent(lenke, VedtakDTO.class);
     }
 
-    public SøknadDTO hentSøknad(Lenke lenke) {
+    public SøknadDTO søknad(Lenke lenke) {
         return hent(lenke, SøknadDTO.class);
     }
 

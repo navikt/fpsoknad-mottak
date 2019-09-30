@@ -42,8 +42,7 @@ public class InnsynController {
     }
 
     @GetMapping(value = "/uttaksplanannen")
-    public Uttaksplan uttaksplan(
-            @RequestParam(name = "annenPart") Fødselsnummer annenPart) {
+    public Uttaksplan uttaksplan(@RequestParam(name = "annenPart") Fødselsnummer annenPart) {
         return innsyn.uttaksplan(oppslag.getAktørId(), oppslag.getAktørId(annenPart));
     }
 
