@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:soeknadsskjemaEngangsstoenad xmlns:ns2="http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1" xmlns:ns3="http://nav.no/melding/virksomhet/dokumentforsendelse/v1">
-    <bruker xsi:type="ns2:Bruker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ns2:soeknadsskjemaEngangsstoenad
+    xmlns:ns2="http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"
+    xmlns:ns3="http://nav.no/melding/virksomhet/dokumentforsendelse/v1">
+    <bruker xsi:type="ns2:Bruker"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <personidentifikator>010101010101</personidentifikator>
     </bruker>
     <soknadsvalg>
@@ -13,35 +16,35 @@
         <fremtidigOppholdNorge>false</fremtidigOppholdNorge>
         <fremtidigOppholdUtenlands>
             <utenlandsopphold>
-                <land kode="GRC"/>
+                <land kode="GRC" />
                 <periode>
                     <fom>2019-01-14</fom>
                     <tom>2019-07-14</tom>
                 </periode>
             </utenlandsopphold>
             <utenlandsopphold>
-                <land kode="GRC"/>
+                <land kode="GRC" />
                 <periode>
                     <fom>2019-01-14</fom>
                     <tom>2019-07-14</tom>
                 </periode>
             </utenlandsopphold>
             <utenlandsopphold>
-                <land kode="GRC"/>
+                <land kode="GRC" />
                 <periode>
                     <fom>2019-01-14</fom>
                     <tom>2019-07-14</tom>
                 </periode>
             </utenlandsopphold>
             <utenlandsopphold>
-                <land kode="GRC"/>
+                <land kode="GRC" />
                 <periode>
                     <fom>2019-01-14</fom>
                     <tom>2019-07-14</tom>
                 </periode>
             </utenlandsopphold>
             <utenlandsopphold>
-                <land kode="DEU"/>
+                <land kode="DEU" />
                 <periode>
                     <fom>2019-07-15</fom>
                     <tom>2020-01-14</tom>
@@ -50,14 +53,14 @@
         </fremtidigOppholdUtenlands>
         <tidligereOppholdUtenlands>
             <utenlandsopphold>
-                <land kode="AUT"/>
+                <land kode="AUT" />
                 <periode>
                     <fom>2018-01-14</fom>
                     <tom>2018-07-13</tom>
                 </periode>
             </utenlandsopphold>
             <utenlandsopphold>
-                <land kode="FIN"/>
+                <land kode="FIN" />
                 <periode>
                     <fom>2018-07-14</fom>
                     <tom>2019-01-14</tom>
@@ -77,7 +80,7 @@
         <kanIkkeOppgiFar>
             <utenlandskfnrEllerForklaring>123456</utenlandskfnrEllerForklaring>
             <aarsak>utenlandsk</aarsak>
-            <utenlandskfnrLand kode="SWE"/>
+            <utenlandskfnrLand kode="SWE" />
         </kanIkkeOppgiFar>
     </opplysningerOmFar>
     <tilleggsopplysninger>Intet å tilføye</tilleggsopplysninger>

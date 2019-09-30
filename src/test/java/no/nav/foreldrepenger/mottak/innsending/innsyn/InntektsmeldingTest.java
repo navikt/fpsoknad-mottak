@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
-import no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.Inntektsmelding;
 import no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.InntektsmeldingXMLMapper;
 
 public class InntektsmeldingTest {
@@ -24,7 +23,7 @@ public class InntektsmeldingTest {
     public void testFørstegangssøknadRoundtrip() throws IOException {
         String xml = StreamUtils.copyToString(new ClassPathResource("xml/inntektsmelding.xml").getInputStream(),
                 Charset.defaultCharset());
-        Inntektsmelding melding = xmlMapper.tilInntektsmelding(xml);
+        xmlMapper.tilInntektsmelding(xml);
     }
 
 }

@@ -9,7 +9,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfExtractor;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Service
@@ -17,30 +17,30 @@ public class FordelSøknadSender implements SøknadSender {
 
     private final FordelConnection connection;
     private final KonvoluttGenerator generator;
-    private final InfoskrivPdfExtractor pdfExtractor;
-    private final InnsendingHendelseProdusent publisher;
+    private final InfoskrivPdfEkstraktor ekstraktor;
+    private final InnsendingHendelseProdusent hendelseProdusent;
 
     public FordelSøknadSender(FordelConnection connection, KonvoluttGenerator generator,
-            InfoskrivPdfExtractor pdfExtractor, InnsendingHendelseProdusent publisher) {
+            InfoskrivPdfEkstraktor ekstraktor, InnsendingHendelseProdusent hendelseProdusent) {
         this.connection = connection;
         this.generator = generator;
-        this.pdfExtractor = pdfExtractor;
-        this.publisher = publisher;
+        this.ekstraktor = ekstraktor;
+        this.hendelseProdusent = hendelseProdusent;
     }
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return doSend(søknad.getSøknadsRolle(), konvolutt(søknad, søker, egenskap));
+        return send(konvolutt(søknad, søker, egenskap), søknad.getSøknadsRolle());
     }
 
     @Override
     public Kvittering endreSøknad(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
-        return doSend(endring.getSøknadsRolle(), konvolutt(endring, søker, egenskap));
+        return send(konvolutt(endring, søker, egenskap), endring.getSøknadsRolle());
     }
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return doSend(konvolutt(ettersending, søker, egenskap), ettersending.getReferanseId());
+        return send(konvolutt(ettersending, søker, egenskap), ettersending.getReferanseId());
     }
 
     @Override
@@ -48,15 +48,15 @@ public class FordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering doSend(Konvolutt konvolutt, String referanseId) {
-        return doSend(null, referanseId, konvolutt);
+    private Kvittering send(Konvolutt konvolutt, String referanseId) {
+        return send(konvolutt, null, referanseId);
     }
 
-    private Kvittering doSend(BrukerRolle rolle, Konvolutt konvolutt) {
-        return doSend(rolle, null, konvolutt);
+    private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle) {
+        return send(konvolutt, rolle, null);
     }
 
-    private Kvittering doSend(BrukerRolle rolle, String referanseId, Konvolutt konvolutt) {
+    private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle, String referanseId) {
         var kvittering = connection.send(konvolutt, rolle);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
@@ -68,14 +68,12 @@ public class FordelSøknadSender implements SøknadSender {
             var es = Endringssøknad.class.cast(konvolutt.getInnsending());
             kvittering.setFørsteDag(es.getFørsteUttaksdag());
         }
-
-        publisher.publiser(kvittering, referanseId, konvolutt.getType(), konvolutt.getVedleggIds());
+        hendelseProdusent.publiser(kvittering, referanseId, konvolutt.getType(), konvolutt.getVedleggIds());
         return kvittering;
-
     }
 
     private byte[] infoskrivPdf(byte[] pdf) {
-        return pdfExtractor.extractInfoskriv(pdf);
+        return ekstraktor.infoskriv(pdf);
     }
 
     private Konvolutt konvolutt(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
@@ -93,6 +91,6 @@ public class FordelSøknadSender implements SøknadSender {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator
-                + ", pdfExtractor=" + pdfExtractor + ", publisher=" + publisher + "]";
+                + ", ekstraktor=" + ekstraktor + ", hendelseProdusent=" + hendelseProdusent + "]";
     }
 }

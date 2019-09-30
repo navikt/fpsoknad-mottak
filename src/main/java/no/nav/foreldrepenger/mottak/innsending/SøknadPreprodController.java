@@ -34,12 +34,12 @@ public class SøknadPreprodController {
 
     public static final String INNSENDING_PREPROD = "/preprod";
 
-    private final DomainMapper domainMapper;
+    private final DomainMapper mapper;
     private final Inspektør inspektør;
 
-    public SøknadPreprodController(@Qualifier(DELEGERENDE) DomainMapper domainMapper,
+    public SøknadPreprodController(@Qualifier(DELEGERENDE) DomainMapper mapper,
             @Qualifier(SØKNAD) Inspektør inspektør) {
-        this.domainMapper = domainMapper;
+        this.mapper = mapper;
         this.inspektør = inspektør;
     }
 
@@ -59,15 +59,15 @@ public class SøknadPreprodController {
     }
 
     private String fpSøknad(Søknad søknad) {
-        return domainMapper.tilXML(søknad, SØKER, inspektør.inspiser(søknad));
+        return mapper.tilXML(søknad, SØKER, inspektør.inspiser(søknad));
     }
 
     private String fpEndringsSøknad(Endringssøknad endringssøknad) {
-        return domainMapper.tilXML(endringssøknad, SØKER, inspektør.inspiser(endringssøknad));
+        return mapper.tilXML(endringssøknad, SØKER, inspektør.inspiser(endringssøknad));
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [domainMapper=" + domainMapper + "]";
+        return getClass().getSimpleName() + " [mapper=" + mapper + "]";
     }
 }

@@ -40,7 +40,7 @@ public class Ettersending {
         return referanseId;
     }
 
-    public void setReferanseId() {
+    public void setReferanseId(String referanseId) {
         this.referanseId = referanseId;
     }
 }

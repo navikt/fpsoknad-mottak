@@ -18,7 +18,8 @@
     xmlns:ns14="urn:no:nav:vedtak:felles:xml:vedtak:ytelse:es:v2">
     <ns7:fagsakId>42</ns7:fagsakId>
     <ns7:fagsakType>ENGANGSSTOENAD</ns7:fagsakType>
-    <ns7:tema kode="FOR_SVA" kodeverk="TEMA">Foreldre- ogsvangerskapspenger</ns7:tema>
+    <ns7:tema kode="FOR_SVA" kodeverk="TEMA">Foreldre-
+        ogsvangerskapspenger</ns7:tema>
     <ns7:behandlingsTema kode="ENGST_FODS"
         kodeverk="BEHANDLING_TEMA">Engangsstønad ved fødsel</ns7:behandlingsTema>
     <ns7:ansvarligSaksbehandlerIdent>142</ns7:ansvarligSaksbehandlerIdent>

@@ -41,7 +41,6 @@ import no.nav.foreldrepenger.mottak.util.jaxb.VedtakV2FPJAXBUtil;
 import no.nav.vedtak.felles.xml.felles.v2.BooleanOpplysning;
 import no.nav.vedtak.felles.xml.felles.v2.DateOpplysning;
 import no.nav.vedtak.felles.xml.felles.v2.DecimalOpplysning;
-import no.nav.vedtak.felles.xml.felles.v2.IntOpplysning;
 import no.nav.vedtak.felles.xml.felles.v2.KodeverksOpplysning;
 import no.nav.vedtak.felles.xml.felles.v2.PeriodeOpplysning;
 import no.nav.vedtak.felles.xml.felles.v2.StringOpplysning;
@@ -220,12 +219,6 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     private static LukketPeriode tilPeriode(PeriodeOpplysning periode) {
         return Optional.ofNullable(periode)
                 .map(p -> new LukketPeriode(p.getFom(), p.getTom()))
-                .orElse(null);
-    }
-
-    private static Integer tilInt(IntOpplysning value) {
-        return Optional.ofNullable(value)
-                .map(IntOpplysning::getValue)
                 .orElse(null);
     }
 

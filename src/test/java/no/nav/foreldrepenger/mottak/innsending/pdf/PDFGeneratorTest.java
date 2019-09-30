@@ -41,7 +41,7 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
         EngangsstønadPDFGenerator.class,
         SvangerskapspengerPDFGenerator.class,
         InfoskrivRenderer.class,
-        InfoskrivPdfExtractor.class,
+        InfoskrivPdfEkstraktor.class,
         SvangerskapspengerInfoRenderer.class,
         SpringTokenValidationContextHolder.class, TestConfig.class })
 
@@ -55,7 +55,7 @@ public class PDFGeneratorTest {
     PDFGenerator gen;
 
     @Inject
-    InfoskrivPdfExtractor pdfExtracter;
+    InfoskrivPdfEkstraktor pdfExtracter;
 
     @Test
     public void signature() {
@@ -101,7 +101,7 @@ public class PDFGeneratorTest {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             byte[] fullSøknadPdf = gen.generer(søknad, person(), INITIELL_FORELDREPENGER);
-            byte[] infoskriv = pdfExtracter.extractInfoskriv(fullSøknadPdf);
+            byte[] infoskriv = pdfExtracter.infoskriv(fullSøknadPdf);
             fos.write(infoskriv);
             assertTrue(hasPdfSignature(infoskriv));
         }

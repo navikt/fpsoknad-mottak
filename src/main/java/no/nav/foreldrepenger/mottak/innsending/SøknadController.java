@@ -84,7 +84,7 @@ public class SøknadController {
 
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
-        return innsyn.hentSaker(oppslag.getAktørId());
+        return innsyn.saker(oppslag.getAktørId());
     }
 
     private static boolean varsleHvisVellykket(SøknadEgenskap søknadEgenskap) {

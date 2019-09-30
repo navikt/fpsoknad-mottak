@@ -155,15 +155,14 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private OmYtelse ytelseFra(Søknad søknad) {
-        var ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                .cast(søknad.getYtelse());
-        return new OmYtelse().withAny(JAXB.marshalToElement(foreldrepengerFra(ytelse)));
+        return new OmYtelse()
+                .withAny(JAXB.marshalToElement(foreldrepengerFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                        .cast(søknad.getYtelse()))));
     }
 
     private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
-        var ytelse = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                .cast(endringssøknad.getYtelse());
-        return fordelingFra(ytelse.getFordeling());
+        return fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                .cast(endringssøknad.getYtelse()).getFordeling());
     }
 
     private static boolean erAnnenForelderUkjent(

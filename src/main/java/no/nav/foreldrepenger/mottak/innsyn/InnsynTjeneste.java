@@ -45,25 +45,25 @@ public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
     private final XMLSøknadHandler søknadHandler;
     private final XMLVedtakHandler vedtakHandler;
-    private final Oppslag oppslagTjeneste;
-    private final InnsynConnection innsynConnection;
+    private final Oppslag oppslag;
+    private final InnsynConnection innsyn;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsynConnection, Oppslag oppslagTjeneste) {
-        this.innsynConnection = innsynConnection;
-        this.oppslagTjeneste = oppslagTjeneste;
+            InnsynConnection innsyn, Oppslag oppslag) {
+        this.innsyn = innsyn;
+        this.oppslag = oppslag;
         this.søknadHandler = søknadHandler;
         this.vedtakHandler = vedtakHandler;
     }
 
     @Override
     public String ping() {
-        return innsynConnection.ping();
+        return innsyn.ping();
     }
 
     @Override
-    public Vedtak hentVedtak(AktørId aktørId, String saksnummer) {
-        return Optional.ofNullable(safeStream(hentSaker(aktørId))
+    public Vedtak vedtak(AktørId aktørId, String saksnummer) {
+        return Optional.ofNullable(safeStream(saker(aktørId))
                 .filter(s -> s.getSaksnummer().equals(saksnummer))
                 .findFirst()
                 .orElse(null))
@@ -80,28 +80,28 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public Uttaksplan hentUttaksplan(String saksnummer) {
-        return Optional.ofNullable(innsynConnection.hentUttaksplan(saksnummer))
+    public Uttaksplan uttaksplan(String saksnummer) {
+        return Optional.ofNullable(innsyn.hentUttaksplan(saksnummer))
                 .map(this::map)
                 .orElse(null);
     }
 
     @Override
-    public Uttaksplan hentUttaksplan(AktørId aktørId, AktørId annenPart) {
-        return Optional.ofNullable(innsynConnection.hentUttaksplan(aktørId, annenPart))
+    public Uttaksplan uttaksplan(AktørId aktørId, AktørId annenPart) {
+        return Optional.ofNullable(innsyn.hentUttaksplan(aktørId, annenPart))
                 .map(this::map)
                 .orElse(null);
     }
 
     @Override
-    public List<Sak> hentSaker(AktørId aktørId) {
+    public List<Sak> saker(AktørId aktørId) {
         return hentSaker(aktørId.getId());
     }
 
     @Override
     public List<Sak> hentSaker(String aktørId) {
         LOG.info("Henter sak(er) for {}", aktørId);
-        List<Sak> saker = safeStream(innsynConnection.hentSaker(aktørId))
+        List<Sak> saker = safeStream(innsyn.hentSaker(aktørId))
                 .filter(distinctByKey(SakDTO::getSaksnummer))
                 .map(this::tilSak)
                 .collect(toList());
@@ -112,12 +112,11 @@ public class InnsynTjeneste implements Innsyn {
         return saker;
     }
 
-    private List<Behandling> hentBehandlinger(List<Lenke> behandlingsLenker, String saksnr) {
-        LOG.info("Henter {} behandling{} for sak {} fra {}", behandlingsLenker.size(), endelse(behandlingsLenker),
-                saksnr, behandlingsLenker);
-        List<Behandling> behandlinger = safeStream(behandlingsLenker)
+    private List<Behandling> hentBehandlinger(List<Lenke> lenker, String saksnr) {
+        LOG.info("Henter {} behandling{} for sak {} fra {}", lenker.size(), endelse(lenker), saksnr, lenker);
+        List<Behandling> behandlinger = safeStream(lenker)
                 .filter(distinctByKey(Lenke::getHref))
-                .map(innsynConnection::hentBehandling)
+                .map(innsyn::hentBehandling)
                 .map(this::tilBehandling)
                 .collect(toList());
         LOG.info("Hentet {} behandling{}", behandlinger.size(), endelse(behandlinger));
@@ -127,8 +126,8 @@ public class InnsynTjeneste implements Innsyn {
         return behandlinger;
     }
 
-    private InnsynsSøknad hentSøknad(Lenke søknadsLenke) {
-        InnsynsSøknad søknad = Optional.ofNullable(innsynConnection.hentSøknad(søknadsLenke))
+    private InnsynsSøknad hentSøknad(Lenke lenke) {
+        InnsynsSøknad søknad = Optional.ofNullable(innsyn.hentSøknad(lenke))
                 .map(this::tilSøknad)
                 .orElse(null);
         if (søknad == null) {
@@ -140,8 +139,8 @@ public class InnsynTjeneste implements Innsyn {
         return søknad;
     }
 
-    private Vedtak hentVedtak(Lenke vedtaksLenke) {
-        Vedtak vedtak = Optional.ofNullable(innsynConnection.hentVedtak(vedtaksLenke))
+    private Vedtak hentVedtak(Lenke lenke) {
+        Vedtak vedtak = Optional.ofNullable(innsyn.hentVedtak(lenke))
                 .map(this::tilVedtak)
                 .orElse(null);
         if (vedtak == null) {
@@ -193,7 +192,7 @@ public class InnsynTjeneste implements Innsyn {
     private Navn navnFor(String fnr) {
         try {
             LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
-            Navn navn = oppslagTjeneste.hentNavn(fnr);
+            Navn navn = oppslag.hentNavn(fnr);
             LOG.trace(CONFIDENTIAL, "Fikk navn {}", navn);
             return navn;
         } catch (Exception e) {
@@ -206,7 +205,7 @@ public class InnsynTjeneste implements Innsyn {
         try {
             return Optional.ofNullable(aktørId)
                     .map(AktørId::new)
-                    .map(oppslagTjeneste::getFnr)
+                    .map(oppslag::getFnr)
                     .orElse(null);
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp FNR for annen part for aktørid {}", aktørId);
@@ -334,7 +333,7 @@ public class InnsynTjeneste implements Innsyn {
     private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
         LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
         return Optional.ofNullable(orgnr)
-                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslagTjeneste.organisasjonsNavn(o)))
+                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslag.organisasjonsNavn(o)))
                 .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId).map(AktørId::getId).orElse(null), PRIVAT,
                         null));
     }
@@ -347,8 +346,8 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [søknadHandler=" + søknadHandler + ", vedtakHandler=" + vedtakHandler
-                + ", innsynConnection=" + innsynConnection + "]";
+        return getClass().getSimpleName() + "[søknadHandler=" + søknadHandler + ", vedtakHandler=" + vedtakHandler
+                + ", oppslag=" + oppslag + ", innsyn=" + innsyn + "]";
     }
 
 }

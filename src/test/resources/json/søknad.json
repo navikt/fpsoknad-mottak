@@ -1,162 +1,173 @@
 {
-  "mottattdato" : "2018-07-06T11:17:42.685",
-  "søker" : {
-    "søknadsRolle" : "MOR"
-  },
-  "ytelse" : {
-    "type" : "foreldrepenger",
-    "annenForelder" : {
-      "type" : "norsk",
-      "aktørId" : {
-        "id" : "42"
-      }
-    },
-    "relasjonTilBarn" : {
-      "type" : "termin",
-      "antallBarn" : 1,
-      "terminDato" : "2018-07-06",
-      "utstedtDato" : "2018-07-06",
-      "vedlegg" : [ ]
-    },
-    "rettigheter" : {
-      "harAnnenForelderRett" : true,
-      "harOmsorgForBarnetIPeriodene" : true,
-      "harAleneOmsorgForBarnet" : true
-    },
-    "dekningsgrad" : "GRAD100",
-    "opptjening" : {
-      "arbeidsforhold" : {
-        "arbeidsgiverNavn" : "boss",
-        "periode" : {
-          "fom" : "2018-02-06"
-        },
-        "vedlegg" : "42",
-        "land" : "PL"
-      },
-      "egenNæring" : [ {
-        "type" : "utenlandsk",
-        "arbeidsland" : "SE",
-        "virksomhetsTyper" : "FISKE",
-        "periode" : {
-          "fom" : "2018-02-06"
-        },
-        "nærRelasjon" : true,
-        "regnskapsførere" : {
-          "navn" : {
-            "fornavn" : "Mor",
-            "etternavn" : "Monsen"
-          },
-          "telefon" : "+4746929061"
-        },
-        "erNyOpprettet" : true,
-        "erVarigEndring" : true,
-        "næringsinntektBrutto" : 100000,
-        "endringsDato" : "2018-07-06",
-        "beskrivelseEndring" : "Stor endring",
-        "vedlegg" : [ ],
-        "orgName" : "My org"
-      }, {
-        "type" : "norsk",
-        "arbeidsland" : "SE",
-        "virksomhetsTyper" : "FISKE",
-        "periode" : {
-          "fom" : "2018-02-06"
-        },
-        "nærRelasjon" : true,
-        "regnskapsførere" : {
-          "navn" : {
-            "fornavn" : "Mor",
-            "etternavn" : "Monsen"
-          },
-          "telefon" : "+4746929061"
-        },
-        "erNyOpprettet" : true,
-        "erVarigEndring" : true,
-        "næringsinntektBrutto" : 100000,
-        "endringsDato" : "2018-07-06",
-        "beskrivelseEndring" : "Stor endring",
-        "vedlegg" : [ ],
-        "orgNummer" : "82828282",
-        "orgName" : "My org"
-      } ],
-      "annenOpptjening" : {
-        "type" : "LØNN_UNDER_UTDANNING",
-        "periode" : {
-          "fom" : "2018-02-06"
-        },
-        "vedlegg" : [ ]
-      },
-      "frilans" : {
-        "periode" : {
-          "fom" : "2018-02-06",
-          "tom" : "2018-07-06"
-        },
-        "harInntektFraFosterhjem" : false,
-        "nyOppstartet" : false,
-        "nærRelasjon" : false,
-         "frilansOppdrag" : [ {
-          "oppdragsgiver" : "bror min",
-          "periode" : {
-            "fom" : "2018-02-06",
-            "tom" : "2018-07-06"
-          }
-        }, {
-          "oppdragsgiver" : "far min",
-          "periode" : {
-            "fom" : "2018-02-06",
-            "tom" : "2018-07-06"
-          }
-        } ]
-      }
-    },
-    "fordeling" : {
-      "erAnnenForelderInformert" : true,
-      "perioder" : [ {
-        "type" : "opphold",
-        "fom" : "2018-06-06",
-        "tom" : "2018-07-06",
-        "vedlegg" : "42",
-        "årsak" : "UTTAK_FELLSP_ANNEN_FORLDER"
-      }, {
-        "type" : "overføring",
-        "fom" : "2018-06-06",
-        "tom" : "2018-07-06",
-        "vedlegg" : "42",
-        "årsak" : "ALENEOMSORG"
-      }, {
-        "type" : "utsettelse",
-        "fom" : "2018-06-06",
-        "tom" : "2018-07-06",
-        "vedlegg" : "42",
-        "årsak" : "INSTITUSJONSOPPHOLD_BARNET"
-      }, {
-        "type" : "gradert",
-        "fom" : "2018-06-06",
-        "tom" : "2018-07-06",
-        "vedlegg" : "42",
-        "UttaksperiodeType" : "FEDREKVOTE",
-        "ønskerSamtidigUttak" : true,
-        "morsAktivitetsType" : "ARBEID_OG_UTDANNING",
-        "arbeidstidProsent" : 75.0,
-        "erArbeidstaker" : true,
-        "virksomhetsNummer" : "222222",
-        "arbeidsForholdSomskalGraderes" : true
-      } ],
-      "ønskerKvoteOverført" : "IKKE_RETT_ANNEN_FORELDER"
-    },
-    "medlemsskap" : {
-      "norgeSiste12" : true,
-      "arbeidSiste12" : "ARBEIDET_I_NORGE",
-      "fødselNorge" : true,
-      "norgeNeste12" : true
-    }
-  },
-  "vedlegg" : {
-    "type" : "valgfritt",
-    "metadata" : {
-      "beskrivelse" : "I000062",
-      "skjemanummer" : "TERMINBEKREFTELSE"
-    },
-    "vedlegg" : "blob" 
-   }
+	"mottattdato": "2018-07-06T11:17:42.685",
+	"søker": {
+		"søknadsRolle": "MOR"
+	},
+	"ytelse": {
+		"type": "foreldrepenger",
+		"annenForelder": {
+			"type": "norsk",
+			"aktørId": {
+				"id": "42"
+			}
+		},
+		"relasjonTilBarn": {
+			"type": "termin",
+			"antallBarn": 1,
+			"terminDato": "2018-07-06",
+			"utstedtDato": "2018-07-06",
+			"vedlegg": []
+		},
+		"rettigheter": {
+			"harAnnenForelderRett": true,
+			"harOmsorgForBarnetIPeriodene": true,
+			"harAleneOmsorgForBarnet": true
+		},
+		"dekningsgrad": "GRAD100",
+		"opptjening": {
+			"arbeidsforhold": {
+				"arbeidsgiverNavn": "boss",
+				"periode": {
+					"fom": "2018-02-06"
+				},
+				"vedlegg": "42",
+				"land": "PL"
+			},
+			"egenNæring": [
+				{
+					"type": "utenlandsk",
+					"arbeidsland": "SE",
+					"virksomhetsTyper": "FISKE",
+					"periode": {
+						"fom": "2018-02-06"
+					},
+					"nærRelasjon": true,
+					"regnskapsførere": {
+						"navn": {
+							"fornavn": "Mor",
+							"etternavn": "Monsen"
+						},
+						"telefon": "+4746929061"
+					},
+					"erNyOpprettet": true,
+					"erVarigEndring": true,
+					"næringsinntektBrutto": 100000,
+					"endringsDato": "2018-07-06",
+					"beskrivelseEndring": "Stor endring",
+					"vedlegg": [],
+					"orgName": "My org"
+				},
+				{
+					"type": "norsk",
+					"arbeidsland": "SE",
+					"virksomhetsTyper": "FISKE",
+					"periode": {
+						"fom": "2018-02-06"
+					},
+					"nærRelasjon": true,
+					"regnskapsførere": {
+						"navn": {
+							"fornavn": "Mor",
+							"etternavn": "Monsen"
+						},
+						"telefon": "+4746929061"
+					},
+					"erNyOpprettet": true,
+					"erVarigEndring": true,
+					"næringsinntektBrutto": 100000,
+					"endringsDato": "2018-07-06",
+					"beskrivelseEndring": "Stor endring",
+					"vedlegg": [],
+					"orgNummer": "82828282",
+					"orgName": "My org"
+				}
+			],
+			"annenOpptjening": {
+				"type": "LØNN_UNDER_UTDANNING",
+				"periode": {
+					"fom": "2018-02-06"
+				},
+				"vedlegg": []
+			},
+			"frilans": {
+				"periode": {
+					"fom": "2018-02-06",
+					"tom": "2018-07-06"
+				},
+				"harInntektFraFosterhjem": false,
+				"nyOppstartet": false,
+				"nærRelasjon": false,
+				"frilansOppdrag": [
+					{
+						"oppdragsgiver": "bror min",
+						"periode": {
+							"fom": "2018-02-06",
+							"tom": "2018-07-06"
+						}
+					},
+					{
+						"oppdragsgiver": "far min",
+						"periode": {
+							"fom": "2018-02-06",
+							"tom": "2018-07-06"
+						}
+					}
+				]
+			}
+		},
+		"fordeling": {
+			"erAnnenForelderInformert": true,
+			"perioder": [
+				{
+					"type": "opphold",
+					"fom": "2018-06-06",
+					"tom": "2018-07-06",
+					"vedlegg": "42",
+					"årsak": "UTTAK_FELLSP_ANNEN_FORLDER"
+				},
+				{
+					"type": "overføring",
+					"fom": "2018-06-06",
+					"tom": "2018-07-06",
+					"vedlegg": "42",
+					"årsak": "ALENEOMSORG"
+				},
+				{
+					"type": "utsettelse",
+					"fom": "2018-06-06",
+					"tom": "2018-07-06",
+					"vedlegg": "42",
+					"årsak": "INSTITUSJONSOPPHOLD_BARNET"
+				},
+				{
+					"type": "gradert",
+					"fom": "2018-06-06",
+					"tom": "2018-07-06",
+					"vedlegg": "42",
+					"UttaksperiodeType": "FEDREKVOTE",
+					"ønskerSamtidigUttak": true,
+					"morsAktivitetsType": "ARBEID_OG_UTDANNING",
+					"arbeidstidProsent": 75.0,
+					"erArbeidstaker": true,
+					"virksomhetsNummer": "222222",
+					"arbeidsForholdSomskalGraderes": true
+				}
+			],
+			"ønskerKvoteOverført": "IKKE_RETT_ANNEN_FORELDER"
+		},
+		"medlemsskap": {
+			"norgeSiste12": true,
+			"arbeidSiste12": "ARBEIDET_I_NORGE",
+			"fødselNorge": true,
+			"norgeNeste12": true
+		}
+	},
+	"vedlegg": {
+		"type": "valgfritt",
+		"metadata": {
+			"beskrivelse": "I000062",
+			"skjemanummer": "TERMINBEKREFTELSE"
+		},
+		"vedlegg": "blob"
+	}
 }

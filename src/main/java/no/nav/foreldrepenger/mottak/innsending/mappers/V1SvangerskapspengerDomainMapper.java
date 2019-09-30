@@ -12,12 +12,10 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBElement;
 
@@ -92,9 +90,10 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
     }
 
     private OmYtelse ytelseFra(Søknad søknad) {
-        no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger ytelse = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger.class
+        var ytelse = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger.class
                 .cast(søknad.getYtelse());
-        return new OmYtelse().withAny(jaxb.marshalToElement(svangerskapspengerFra(ytelse)));
+        return new OmYtelse()
+                .withAny(jaxb.marshalToElement(svangerskapspengerFra(ytelse)));
     }
 
     private static JAXBElement<Svangerskapspenger> svangerskapspengerFra(
@@ -120,7 +119,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     private static Tilrettelegging create(
             List<no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging> tiltakListe) {
-        Tilrettelegging tilrettelegging = new Tilrettelegging();
+        var tilrettelegging = new Tilrettelegging();
 
         for (no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging tiltak : tiltakListe) {
             if (tiltak instanceof no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging) {
@@ -155,7 +154,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     private static DelvisTilrettelegging delvisTilretteleggingFra(
             no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging delvis) {
-        no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging delvisTilrettelegging = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging.class
+        var delvisTilrettelegging = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging.class
                 .cast(delvis);
         return new DelvisTilrettelegging()
                 .withTilrettelagtArbeidFom(delvisTilrettelegging.getTilrettelagtArbeidFom())
@@ -164,7 +163,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
 
     private static HelTilrettelegging helTilretteleggingFra(
             no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging hel) {
-        no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging helTilrettelegging = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging.class
+        var helTilrettelegging = no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging.class
                 .cast(hel);
         return new HelTilrettelegging().withTilrettelagtArbeidFom(helTilrettelegging.getTilrettelagtArbeidFom());
     }

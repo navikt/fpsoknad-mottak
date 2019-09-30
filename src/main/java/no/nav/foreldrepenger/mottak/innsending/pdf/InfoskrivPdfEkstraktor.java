@@ -14,11 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InfoskrivPdfExtractor {
+public class InfoskrivPdfEkstraktor {
 
-    public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfExtractor.class);
+    public static final Logger LOG = LoggerFactory.getLogger(InfoskrivPdfEkstraktor.class);
 
-    public byte[] extractInfoskriv(byte[] pdf) {
+    public byte[] infoskriv(byte[] pdf) {
         try (var doc = PDDocument.load(pdf)) {
             var outline = doc.getDocumentCatalog().getDocumentOutline();
             var node = outline.getFirstChild();

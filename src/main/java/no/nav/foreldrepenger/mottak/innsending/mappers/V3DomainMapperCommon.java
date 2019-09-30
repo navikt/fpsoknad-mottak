@@ -158,14 +158,12 @@ final class V3DomainMapperCommon {
 
     private static EgenNaering create(EgenNæring egenNæring) {
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon) {
-            var norskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.class
-                    .cast(egenNæring);
-            return create(norskOrg);
+            return create(no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.class
+                    .cast(egenNæring));
         }
         if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon) {
-            var utenlandskOrg = no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.class
-                    .cast(egenNæring);
-            return create(utenlandskOrg);
+            return create(no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.class
+                    .cast(egenNæring));
         }
         throw new UnexpectedInputException("Vil aldri skje");
     }

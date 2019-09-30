@@ -72,16 +72,16 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 UttaksplanDTO.class);
     }
 
-    public BehandlingDTO hentBehandling(Lenke behandlingsLenke) {
-        return hent(behandlingsLenke, BehandlingDTO.class);
+    public BehandlingDTO hentBehandling(Lenke lenke) {
+        return hent(lenke, BehandlingDTO.class);
     }
 
-    public VedtakDTO hentVedtak(Lenke vedtaksLenke) {
-        return hent(vedtaksLenke, VedtakDTO.class);
+    public VedtakDTO hentVedtak(Lenke lenke) {
+        return hent(lenke, VedtakDTO.class);
     }
 
-    public SøknadDTO hentSøknad(Lenke søknadsLenke) {
-        return hent(søknadsLenke, SøknadDTO.class);
+    public SøknadDTO hentSøknad(Lenke lenke) {
+        return hent(lenke, SøknadDTO.class);
     }
 
     private <T> T hent(Lenke lenke, Class<T> clazz) {
@@ -94,7 +94,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public String name() {
-        return "fpinfo";
+        return config.getUri().getHost();
     }
 
     @Override

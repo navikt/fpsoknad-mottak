@@ -1,23 +1,25 @@
-{"properties": [
-  {
-    "name": "http.proxy",
-    "type": "java.lang.String",
-    "description": "A description for 'http.proxy'"
-  },
-  {
-    "name": "info.app",
-    "description": "A description for 'info.app'"
-  },
-  {
-    "name": "no.nav.security.oidc",
-    "description": "A description for 'no.nav.security.oidc'"
-  },
-  {
-    "name": "no.nav.mottak",
-    "description": "A description for 'no.nav.mottak'"
-  },
-  {
-    "name": "mottak",
-    "description": "A description for 'mottak'"
-  }
-]}
+{
+	"properties": [
+		{
+			"name": "http.proxy",
+			"type": "java.lang.String",
+			"description": "A description for 'http.proxy'"
+		},
+		{
+			"name": "info.app",
+			"description": "A description for 'info.app'"
+		},
+		{
+			"name": "no.nav.security.oidc",
+			"description": "A description for 'no.nav.security.oidc'"
+		},
+		{
+			"name": "no.nav.mottak",
+			"description": "A description for 'no.nav.mottak'"
+		},
+		{
+			"name": "mottak",
+			"description": "A description for 'mottak'"
+		}
+	]
+}
