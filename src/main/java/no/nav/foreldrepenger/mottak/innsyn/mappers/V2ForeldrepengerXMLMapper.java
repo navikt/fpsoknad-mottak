@@ -63,7 +63,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Stønadskont
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -127,32 +127,32 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     @Override
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
         if (xml == null) {
-            LOG.debug("Ingen søknad ble funnet");
+            LOG.debug("Ingen søknad å mappe");
             return null;
         }
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
             switch (egenskap.getType()) {
-                case ENDRING_FORELDREPENGER:
-                    Endringssøknad endringssøknad = new Endringssøknad(
-                            søknad.getMottattDato(),
-                            tilSøker(søknad.getSoeker()),
-                            tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
-                    endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                    endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                    return endringssøknad;
-                case INITIELL_FORELDREPENGER:
-                    Søknad førstegangssøknad = new Søknad(
-                            søknad.getMottattDato(),
-                            tilSøker(søknad.getSoeker()),
-                            tilYtelse(søknad.getOmYtelse()),
-                            tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
-                    førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                    førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                    return førstegangssøknad;
-                default:
-                    LOG.warn("Ukjent søknad");
-                    return null;
+            case ENDRING_FORELDREPENGER:
+                Endringssøknad endringssøknad = new Endringssøknad(
+                        søknad.getMottattDato(),
+                        tilSøker(søknad.getSoeker()),
+                        tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
+                endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return endringssøknad;
+            case INITIELL_FORELDREPENGER:
+                Søknad førstegangssøknad = new Søknad(
+                        søknad.getMottattDato(),
+                        tilSøker(søknad.getSoeker()),
+                        tilYtelse(søknad.getOmYtelse()),
+                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
+                førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                return førstegangssøknad;
+            default:
+                LOG.warn("Ukjent søknad");
+                return null;
             }
         } catch (Exception e) {
             LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
@@ -611,7 +611,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     tilLand(utenlandsForelder.getLand()),
                     null);
         }
-        throw new UnexpectedInputException("UKjent annen forelder %s", annenForelder.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ukjent annen forelder %s", annenForelder.getClass().getSimpleName());
     }
 
     private static Søker tilSøker(Bruker søker) {

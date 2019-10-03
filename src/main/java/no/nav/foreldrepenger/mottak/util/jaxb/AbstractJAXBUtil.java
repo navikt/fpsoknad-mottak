@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 
 public abstract class AbstractJAXBUtil {
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractJAXBUtil.class);

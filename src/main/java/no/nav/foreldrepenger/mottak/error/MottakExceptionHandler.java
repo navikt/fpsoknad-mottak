@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.errorhandling;
+package no.nav.foreldrepenger.mottak.error;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -8,6 +8,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -94,8 +95,13 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
             List<Object> messages) {
         ApiError apiError = apiErrorFra(status, e, messages);
-        LOG.warn("({}) {} {} ({})", tokenUtil.getSubject(), status, apiError.getMessages(), status.value(), e);
+        LOG.warn("({}) {} {} ({})", subject(), status, apiError.getMessages(), status.value(), e);
         return handleExceptionInternal(e, apiError, headers, status, req);
+    }
+
+    private String subject() {
+        return Optional.ofNullable(tokenUtil.getSubject())
+                .orElse("Uautentisert");
     }
 
     private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {

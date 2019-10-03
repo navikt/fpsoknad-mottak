@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.errorhandling;
+package no.nav.foreldrepenger.mottak.error;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.errorhandling;
+package no.nav.foreldrepenger.mottak.error;
 
 public class UnexpectedInputException extends RuntimeException {
     public UnexpectedInputException(String msg) {

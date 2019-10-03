@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
-import no.nav.foreldrepenger.mottak.errorhandling.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;

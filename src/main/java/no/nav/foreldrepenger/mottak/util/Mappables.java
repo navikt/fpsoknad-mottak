@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import no.nav.foreldrepenger.mottak.errorhandling.UnsupportedEgenskapException;
+import no.nav.foreldrepenger.mottak.error.UnsupportedEgenskapException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;

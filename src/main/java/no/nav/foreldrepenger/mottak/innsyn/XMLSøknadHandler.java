@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ public class XMLSøknadHandler {
 
     private final XMLSøknadMapper mapper;
     private final Inspektør inspektør;
+    private static final Logger LOG = LoggerFactory.getLogger(XMLSøknadHandler.class);
 
     public XMLSøknadHandler(@Qualifier(DELEGERENDE) XMLSøknadMapper mapper, @Qualifier(SØKNAD) Inspektør inspektør) {
         this.inspektør = inspektør;
@@ -25,6 +28,7 @@ public class XMLSøknadHandler {
     }
 
     public Søknad tilSøknad(String xml, SøknadEgenskap egenskap) {
+        LOG.info("Konverterer til søknad for {}", egenskap);
         return mapper.tilSøknad(xml, egenskap);
     }
 

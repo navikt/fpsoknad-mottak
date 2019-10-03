@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.errorhandling;
+package no.nav.foreldrepenger.mottak.error;
 
 import no.nav.foreldrepenger.mottak.util.Versjon;
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.errorhandling;
+package no.nav.foreldrepenger.mottak.error;
 
 import static java.util.stream.Collectors.joining;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
