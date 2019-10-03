@@ -65,8 +65,7 @@ public class FordelSøknadSender implements SøknadSender {
             kvittering.setInfoskrivPdf(infoskrivPdf(kvittering.getPdf()));
         }
         if (konvolutt.erEndring()) {
-            var es = Endringssøknad.class.cast(konvolutt.getInnsending());
-            kvittering.setFørsteDag(es.getFørsteUttaksdag());
+            kvittering.setFørsteDag(Endringssøknad.class.cast(konvolutt.getInnsending()).getFørsteUttaksdag());
         }
         hendelseProdusent.publiser(kvittering, referanseId, konvolutt.getType(), konvolutt.getVedleggIds());
         return kvittering;
