@@ -15,11 +15,12 @@ public class InnsendingHendelse {
     private final String referanseId;
     private final String saksNr;
     private final LeveranseStatus leveranseStatus;
-    private final SøknadType type;
+    private final SøknadType hendelseType;
     private final List<String> vedlegg;
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(String aktørId, String referanseId, String fnr, Kvittering kvittering, SøknadType type,
+    public InnsendingHendelse(String aktørId, String referanseId, String fnr, Kvittering kvittering,
+            SøknadType hendelseType,
             List<String> vedlegg) {
         this.aktørId = aktørId;
         this.fnr = fnr;
@@ -27,7 +28,7 @@ public class InnsendingHendelse {
         this.referanseId = referanseId;
         this.saksNr = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
-        this.type = type;
+        this.hendelseType = hendelseType;
         this.vedlegg = vedlegg;
         this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
     }
@@ -60,8 +61,8 @@ public class InnsendingHendelse {
         return leveranseStatus;
     }
 
-    public SøknadType getType() {
-        return type;
+    public SøknadType getHendelseType() {
+        return hendelseType;
     }
 
     public List<String> getVedlegg() {
@@ -72,7 +73,9 @@ public class InnsendingHendelse {
     public String toString() {
         return getClass().getSimpleName() + "[aktørId=" + aktørId + ", fnr=" + fnr + ", journalId=" + journalId
                 + ", referanseId=" + referanseId + ", saksNr=" + saksNr + ", leveranseStatus=" + leveranseStatus
-                + ", type=" + type + ", vedlegg=" + vedlegg + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
+                + ", hendelseType=" + hendelseType + ", vedlegg=" + vedlegg + ", førsteBehandlingsdato="
+                + førsteBehandlingsdato
+                + "]";
     }
 
 }
