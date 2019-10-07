@@ -33,7 +33,7 @@ public enum DokumentType {
     I000110("Dokumentasjon av aleneomsorg"),
     I000111("Dokumentasjon av begrunnelse for hvorfor man søker tilbake i tid"),
     I000112("Dokumentasjon av deltakelse i introduksjonsprogrammet"),
-    I000114("Svar på varsel om tilbakebetalin"),
+    I000114("Svar på varsel om tilbakebetaling"),
     I500002("Ettersendelse til søknad om foreldrepenger ved adopsjon"),
     I500003("Ettersendelse til søknad om engangsstønad ved fødsel"),
     I500004("Ettersendelse til søknad om engangsstønad ved adopsjon"),
