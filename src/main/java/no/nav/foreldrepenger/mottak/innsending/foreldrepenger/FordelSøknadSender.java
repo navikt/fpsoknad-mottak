@@ -11,6 +11,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.util.MDCUtil;
 
 @Service
 public class FordelSøknadSender implements SøknadSender {
@@ -53,7 +54,7 @@ public class FordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle) {
-        return send(konvolutt, rolle, null);
+        return send(konvolutt, rolle, MDCUtil.callId());
     }
 
     private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle, String referanseId) {
