@@ -22,7 +22,6 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
@@ -33,22 +32,18 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     private final KafkaOperations<String, String> kafkaOperations;
     private final Oppslag oppslag;
     private final JacksonWrapper mapper;
-    private final TokenUtil tokenUtil;
 
     public KafkaInnsendingHendelseProdusent(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag,
-            TokenUtil tokenUtil) {
+            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag) {
         this.topic = topic;
         this.kafkaOperations = kafkaOperations;
         this.mapper = mapper;
         this.oppslag = oppslag;
-        this.tokenUtil = tokenUtil;
     }
 
     @Override
     public void publiser(Kvittering kvittering, String referanseId, SøknadType type, List<String> vedlegg) {
         var hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), referanseId,
-                tokenUtil.getSubject(),
                 kvittering,
                 type, vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", hendelse, topic);

@@ -10,7 +10,6 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 public class InnsendingHendelse {
 
     private final String aktørId;
-    private final String fnr;
     private final String journalId;
     private final String referanseId;
     private final String saksNr;
@@ -19,11 +18,10 @@ public class InnsendingHendelse {
     private final List<String> vedlegg;
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(String aktørId, String referanseId, String fnr, Kvittering kvittering,
+    public InnsendingHendelse(String aktørId, String referanseId, Kvittering kvittering,
             SøknadType hendelseType,
             List<String> vedlegg) {
         this.aktørId = aktørId;
-        this.fnr = fnr;
         this.journalId = kvittering.getJournalId();
         this.referanseId = referanseId;
         this.saksNr = kvittering.getSaksNr();
@@ -35,10 +33,6 @@ public class InnsendingHendelse {
 
     public LocalDate getFørsteBehandlingsdato() {
         return førsteBehandlingsdato;
-    }
-
-    public String getFnr() {
-        return fnr;
     }
 
     public String getAktørId() {
@@ -71,7 +65,7 @@ public class InnsendingHendelse {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[aktørId=" + aktørId + ", fnr=" + fnr + ", journalId=" + journalId
+        return getClass().getSimpleName() + "[aktørId=" + aktørId + ", journalId=" + journalId
                 + ", referanseId=" + referanseId + ", saksNr=" + saksNr + ", leveranseStatus=" + leveranseStatus
                 + ", hendelseType=" + hendelseType + ", vedlegg=" + vedlegg + ", førsteBehandlingsdato="
                 + førsteBehandlingsdato
