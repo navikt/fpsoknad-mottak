@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
@@ -16,6 +18,7 @@ import no.nav.foreldrepenger.mottak.util.MDCUtil;
 @Service
 public class FordelSøknadSender implements SøknadSender {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FordelSøknadSender.class);
     private final FordelConnection connection;
     private final KonvoluttGenerator generator;
     private final InfoskrivPdfEkstraktor ekstraktor;
@@ -68,8 +71,16 @@ public class FordelSøknadSender implements SøknadSender {
         if (konvolutt.erEndring()) {
             kvittering.setFørsteDag(Endringssøknad.class.cast(konvolutt.getInnsending()).getFørsteUttaksdag());
         }
-        hendelseProdusent.publiser(kvittering, referanseId, konvolutt.getType(), konvolutt.getVedleggIds());
+        publiserHendelse(konvolutt, referanseId, kvittering);
         return kvittering;
+    }
+
+    private void publiserHendelse(Konvolutt konvolutt, String referanseId, Kvittering kvittering) {
+        try {
+            hendelseProdusent.publiser(kvittering, referanseId, konvolutt.getType(), konvolutt.getVedleggIds());
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke publisere hendelse", e);
+        }
     }
 
     private byte[] infoskrivPdf(byte[] pdf) {

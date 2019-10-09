@@ -47,12 +47,11 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
                 kvittering,
                 type, vedlegg);
         LOG.info("Publiserer hendelse {} på topic {}", hendelse, topic);
-        var message = MessageBuilder
+        send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(hendelse))
                 .setHeader(TOPIC, topic)
                 .setHeader(NAV_CALL_ID, callId())
-                .build();
-        send(message);
+                .build());
     }
 
     private void send(Message<String> melding) {
@@ -64,8 +63,8 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
             }
 
             @Override
-            public void onFailure(Throwable ex) {
-                LOG.warn("Kunne ikke sende melding {}", melding, ex);
+            public void onFailure(Throwable e) {
+                LOG.warn("Kunne ikke sende melding {}", melding, e);
             }
         });
     }
