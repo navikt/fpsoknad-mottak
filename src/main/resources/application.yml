@@ -1,7 +1,7 @@
 mottak:
    sender:
       domainevent:
-         enabled : false
+         enabled : true
          topic : fpsoknad-mottak
          
 no.nav:
