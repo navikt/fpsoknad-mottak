@@ -1,75 +1,68 @@
 mottak:
    sender:
       domainevent:
-         enabled : true
-         topic : fpsoknad-mottak
-         
+         enabled: true
+         topic: fpsoknad-mottak
 no.nav:
-     security.jwt.issuer.selvbetjening:
-        discoveryurl: https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten
-        cookie_name: selvbetjening-idtoken
-
+   security.jwt.issuer.selvbetjening:
+      discoveryurl: https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten
+      cookie_name: selvbetjening-idtoken
 http:
-  proxy : http://webproxy-nais.nav.no:8088
-
+   proxy: http://webproxy-nais.nav.no:8088
 info:
-  app :
-    version : '@project.version@'
-    build:
-      time : '@timestamp@'
-
+   app:
+      version: '@project.version@'
+      build:
+         time: '@timestamp@'
 management:
-    metrics:
+   metrics:
       web:
-        server:
-          auto-time-requests : true
-    endpoint:
-      health:    
-         show-details : never      
-    endpoints:
+         server:
+            auto-time-requests: true
+   endpoint:
+      health:
+         show-details: never
+   endpoints:
       web:
-        exposure:
-           include:  info, health, metrics, prometheus, env
-    health :
+         exposure:
+            include: info, health, metrics, prometheus, env
+   health:
       diskspace:
-        enabled : false
+         enabled: false
       jms:
-        enabled: false
-
-server :
-    servlet:
-      context-path :  /api
-    use-forward-headers: true
-
+         enabled: false
+server:
+   servlet:
+      context-path: /api
+   use-forward-headers: true
 varsel:
-    username : srvappserver
-    enabled : true
-
-spring :
-    cache :
-       cache-names : aktør, organisasjon
-       caffeine:
+   username: srvappserver
+   enabled: true
+spring:
+   cache:
+      cache-names: aktør, organisasjon
+      caffeine:
          spec: maximumSize=100,expireAfterAccess=3600s
-    application:
-      name : fpsoknad-mottak
-    jackson :
-      default-property-inclusion :  non-absent
-      mapper :
+   application:
+      name: fpsoknad-mottak
+   jackson:
+      default-property-inclusion: non-absent
+      mapper:
          accept-case-insensitive-properties: true
-      deserialization :
+      deserialization:
          accept-single-value-as-array: true
          fail-on-unknown-properties: true
-      serialization :
+      serialization:
          write-empty-json-arrays: false
          fail-on-empty-beans: false
-    kafka:
+   kafka:
       properties:
          security:
             protocol: SASL_SSL
          sasl:
             mechanism: PLAIN
             jaas:
-               config: org.apache.kafka.common.security.plain.PlainLoginModule required username=${kafka.username} password=${kafka.password};
+               config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
       consumer:
          enable-auto-commit: false
          bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
@@ -81,5 +74,5 @@ spring :
          bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
          key-serializer: org.apache.kafka.common.serialization.StringSerializer
          value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    main:
-      banner-mode : 'off'        
+   main:
+      banner-mode: 'off'
