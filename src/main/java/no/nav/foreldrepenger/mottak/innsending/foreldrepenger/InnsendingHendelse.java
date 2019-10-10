@@ -12,23 +12,28 @@ public class InnsendingHendelse {
     private final String aktørId;
     private final String journalId;
     private final String referanseId;
+    private final String dialogId;
     private final String saksNr;
     private final LeveranseStatus leveranseStatus;
     private final SøknadType hendelseType;
     private final List<String> vedlegg;
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(String aktørId, String referanseId, Kvittering kvittering,
-            SøknadType hendelseType,
+    public InnsendingHendelse(String aktørId, String dialogId, Kvittering kvittering, SøknadType hendelseType,
             List<String> vedlegg) {
         this.aktørId = aktørId;
         this.journalId = kvittering.getJournalId();
-        this.referanseId = referanseId;
+        this.referanseId = kvittering.getReferanseId();
+        this.dialogId = dialogId;
         this.saksNr = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
         this.hendelseType = hendelseType;
         this.vedlegg = vedlegg;
         this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
+    }
+
+    public String getDialogId() {
+        return dialogId;
     }
 
     public LocalDate getFørsteBehandlingsdato() {

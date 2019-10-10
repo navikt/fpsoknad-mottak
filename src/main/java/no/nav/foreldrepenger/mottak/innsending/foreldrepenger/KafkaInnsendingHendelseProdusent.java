@@ -32,8 +32,6 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     private final KafkaOperations<String, String> kafkaOperations;
     private final Oppslag oppslag;
     private final JacksonWrapper mapper;
-    @Value("${kafka.password:XXX}")
-    private String pw;
 
     public KafkaInnsendingHendelseProdusent(@Value("${mottak.sender.domainevent.topic}") String topic,
             KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag) {
@@ -44,13 +42,11 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     }
 
     @Override
-    public void publiser(Kvittering kvittering, String referanseId, SøknadType type, List<String> vedlegg) {
-        var hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), referanseId,
-                kvittering,
-                type, vedlegg);
-        LOG.info("Publiserer hendelse {} på topic {} ({})", hendelse, topic, pw.substring(0, 2));
+    public void publiser(Kvittering kvittering, String dialogId, SøknadType type, List<String> vedlegg) {
+        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), dialogId, kvittering, type, vedlegg);
+        LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder
-                .withPayload(mapper.writeValueAsString(hendelse))
+                .withPayload(mapper.writeValueAsString(h))
                 .setHeader(TOPIC, topic)
                 .setHeader(NAV_CALL_ID, callId())
                 .build());

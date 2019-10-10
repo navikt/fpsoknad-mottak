@@ -54,8 +54,8 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             LOG.info("Sender {} til {}", name(konvolutt.getType()), name().toLowerCase());
-            Kvittering kvittering = responseHandler.handle(
-                    postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
+            var kvittering = responseHandler
+                    .handle(postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
                             FordelKvittering.class));
             stopWatch.stop();
             kvittering.setPdf(konvolutt.PDFHovedDokument());

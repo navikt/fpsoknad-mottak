@@ -4,7 +4,7 @@ import static com.google.common.base.Predicates.or;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadController.INNSENDING;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadPreprodController.INNSENDING_PREPROD;
+import static no.nav.foreldrepenger.mottak.innsending.SøknadDevController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynController.INNSYN;
 import static springfox.documentation.builders.PathSelectors.regex;
 

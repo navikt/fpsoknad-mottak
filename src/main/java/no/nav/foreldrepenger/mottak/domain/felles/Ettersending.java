@@ -21,7 +21,7 @@ public class Ettersending {
     @NotNull
     private final EttersendingsType type;
     private final List<Vedlegg> vedlegg;
-    private String referanseId;
+    private String dialogId;
 
     public Ettersending(EttersendingsType type, String saksnr, Vedlegg... vedlegg) {
         this(type, saksnr, asList(vedlegg));
@@ -36,11 +36,11 @@ public class Ettersending {
         this.vedlegg = vedlegg;
     }
 
-    public String getReferanseId() {
-        return referanseId;
+    public String getDialogId() {
+        return dialogId;
     }
 
-    public void setReferanseId(String referanseId) {
-        this.referanseId = referanseId;
+    public void setDialogId(String dialogId) {
+        this.dialogId = dialogId;
     }
 }

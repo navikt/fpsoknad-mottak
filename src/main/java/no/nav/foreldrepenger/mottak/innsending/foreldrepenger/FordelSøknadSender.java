@@ -13,7 +13,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.MDCUtil;
 
 @Service
 public class FordelSøknadSender implements SøknadSender {
@@ -22,14 +21,14 @@ public class FordelSøknadSender implements SøknadSender {
     private final FordelConnection connection;
     private final KonvoluttGenerator generator;
     private final InfoskrivPdfEkstraktor ekstraktor;
-    private final InnsendingHendelseProdusent hendelseProdusent;
+    private final InnsendingHendelseProdusent hendelser;
 
     public FordelSøknadSender(FordelConnection connection, KonvoluttGenerator generator,
             InfoskrivPdfEkstraktor ekstraktor, InnsendingHendelseProdusent hendelseProdusent) {
         this.connection = connection;
         this.generator = generator;
         this.ekstraktor = ekstraktor;
-        this.hendelseProdusent = hendelseProdusent;
+        this.hendelser = hendelseProdusent;
     }
 
     @Override
@@ -44,7 +43,7 @@ public class FordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering ettersend(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        return send(konvolutt(ettersending, søker, egenskap), ettersending.getReferanseId());
+        return send(konvolutt(ettersending, søker, egenskap), ettersending.getDialogId());
     }
 
     @Override
@@ -52,15 +51,15 @@ public class FordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
-    private Kvittering send(Konvolutt konvolutt, String referanseId) {
-        return send(konvolutt, null, referanseId);
+    private Kvittering send(Konvolutt konvolutt, String dialogId) {
+        return send(konvolutt, null, dialogId);
     }
 
     private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle) {
-        return send(konvolutt, rolle, MDCUtil.callId());
+        return send(konvolutt, rolle, null);
     }
 
-    private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle, String referanseId) {
+    private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle, String dialogId) {
         var kvittering = connection.send(konvolutt, rolle);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
@@ -71,13 +70,13 @@ public class FordelSøknadSender implements SøknadSender {
         if (konvolutt.erEndring()) {
             kvittering.setFørsteDag(Endringssøknad.class.cast(konvolutt.getInnsending()).getFørsteUttaksdag());
         }
-        publiserHendelse(konvolutt, referanseId, kvittering);
+        publiserHendelse(konvolutt, dialogId, kvittering);
         return kvittering;
     }
 
-    private void publiserHendelse(Konvolutt konvolutt, String referanseId, Kvittering kvittering) {
+    private void publiserHendelse(Konvolutt konvolutt, String dialogId, Kvittering kvittering) {
         try {
-            hendelseProdusent.publiser(kvittering, referanseId, konvolutt.getType(), konvolutt.getVedleggIds());
+            hendelser.publiser(kvittering, dialogId, konvolutt.getType(), konvolutt.getVedleggIds());
         } catch (Exception e) {
             LOG.warn("Kunne ikke publisere hendelse", e);
         }
@@ -102,6 +101,6 @@ public class FordelSøknadSender implements SøknadSender {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator
-                + ", ekstraktor=" + ekstraktor + ", hendelseProdusent=" + hendelseProdusent + "]";
+                + ", ekstraktor=" + ekstraktor + ", hendelseProdusent=" + hendelser + "]";
     }
 }
