@@ -4,9 +4,7 @@
     <appender name="stdout"
         class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                %d{yyyy-MM-dd HH:mm:ss} %X{Nav-CallId} [%thread]
-                %-5level %logger{70} - %msg%n
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} %X{Nav-CallId} [%thread] %-5level %logger{70} - %msg%n
             </Pattern>
         </layout>
     </appender>
@@ -15,7 +13,7 @@
         <appender-ref ref="stdout" />
     </root>
     <logger name="no.nav.foreldrepenger.mottak" level="info" />
-    <logger name="org.springframework" level="warn" />
+    <logger name="org.springframework" level="info" />
     <logger name="org.eclipse.jetty" level="warn" />
     <logger name="springfox.documentation" level="warn" />
 </configuration>
