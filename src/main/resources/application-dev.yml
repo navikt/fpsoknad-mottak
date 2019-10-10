@@ -14,25 +14,10 @@ management :
         show-details : always   
 spring:
    kafka:  
-      properties:
-         security:
-            protocol: SASL_SSL
-         sasl: 
-            mechanism: PLAIN
-            jaas:
-               config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${kafka.username}" password="${kafka.password}";
-      consumer: 
+       consumer: 
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
-         group-id: group_id1
-         enable-auto-commit: true
-         auto-offset-reset: earliest
-         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-         value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-       
-      producer:
+       producer:
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
-         key-serializer: org.apache.kafka.common.serialization.StringSerializer
-         value-serializer: org.apache.kafka.common.serialization.StringSerializer
    http:
      log-request-details : true
 varsel:

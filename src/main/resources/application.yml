@@ -62,5 +62,25 @@ spring :
       serialization :
          write-empty-json-arrays: false
          fail-on-empty-beans: false
+    kafka:
+      properties:
+         security:
+            protocol: SASL_SSL
+         sasl:
+            mechanism: PLAIN
+            jaas:
+               config: org.apache.kafka.common.security.plain.PlainLoginModule required username=${kafka.username} password=${kafka.password};
+      consumer:
+         enable-auto-commit: false
+         bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
+         group-id: group_id
+         auto-offset-reset: earliest
+         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+         value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      producer:
+         bootstrap-servers: a01apvl00145.adeo.no:8443,a01apvl00146.adeo.no:8443,a01apvl00147.adeo.no:8443
+         key-serializer: org.apache.kafka.common.serialization.StringSerializer
+         value-serializer: org.apache.kafka.common.serialization.StringSerializer
+         transaction-id-prefix: tx.      
     main:
       banner-mode : 'off'        
