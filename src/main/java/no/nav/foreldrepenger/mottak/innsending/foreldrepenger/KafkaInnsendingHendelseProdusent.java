@@ -32,6 +32,8 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     private final KafkaOperations<String, String> kafkaOperations;
     private final Oppslag oppslag;
     private final JacksonWrapper mapper;
+    @Value("${kafka.password:XXX}")
+    private String pw;
 
     public KafkaInnsendingHendelseProdusent(@Value("${mottak.sender.domainevent.topic}") String topic,
             KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag) {
@@ -46,7 +48,7 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
         var hendelse = new InnsendingHendelse(oppslag.getAktørIdAsString(), referanseId,
                 kvittering,
                 type, vedlegg);
-        LOG.info("Publiserer hendelse {} på topic {}", hendelse, topic);
+        LOG.info("Publiserer hendelse {} på topic {} ({})", hendelse, topic, pw.substring(0, 2));
         send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(hendelse))
                 .setHeader(TOPIC, topic)
