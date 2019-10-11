@@ -228,7 +228,7 @@ public class InnsynTjeneste implements Innsyn {
                         .type(tilType(w.getType()))
                         .inntektsmeldinger(w.getInntektsmeldinger())
                         .søknad(hentSøknad(w.getSøknadsLenke()))
-                        .vedtak(hentVedtak(w.getVedtaksLenke()))
+                        //.vedtak(hentVedtak(w.getVedtaksLenke()))
                         .build())
                 .orElse(null);
     }
