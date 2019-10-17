@@ -2,11 +2,14 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.ALLE_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -115,7 +118,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             }
 
             Opptjening opptjening = stønad.getOpptjening();
-            List<Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
+            List<Arbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(stønad.getRelasjonTilBarn().relasjonsDato());
             if (opptjening != null) {
                 var scratch = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch);
@@ -242,6 +245,12 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             LOG.warn("Kunne ikke lage PDF", e);
             throw new UnexpectedInputException("Kunne ikke lage PDF", e);
         }
+    }
+
+    private List<Arbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
+        return safeStream(oppslag.getArbeidsforhold())
+                .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
+                .collect(Collectors.toList());
     }
 
     private byte[] generate(Endringssøknad søknad, Person søker) {
