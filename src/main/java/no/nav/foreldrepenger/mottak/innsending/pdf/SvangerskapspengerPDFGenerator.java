@@ -8,6 +8,7 @@ import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -72,7 +73,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         var svp = (Svangerskapspenger) søknad.getYtelse();
-        List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold = oppslag.getArbeidsforhold();
+        List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(
+                oppslag.getArbeidsforhold(), svp.getTermindato(), svp.getFødselsdato());
         try (var doc = new FontAwarePDDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();
             doc.addPage(page);
@@ -198,6 +200,15 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         }
     }
 
+    private List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> aktiveArbeidsforhold(
+            List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold, LocalDate termindato,
+            LocalDate fødselsdato) {
+        LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
+        return safeStream(oppslag.getArbeidsforhold())
+                .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
+                .collect(Collectors.toList());
+    }
+
     private float renderTilrettelegging(List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere,
             Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrettelegging,
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
@@ -278,7 +289,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         float startY = y;
         var tilrettelegging = perioder.stream().findAny().orElseThrow(IllegalArgumentException::new);
         y -= renderer.addBulletPoint(INDENT,
-            txt("svp.behovfra", DATEFMT.format(tilrettelegging.getBehovForTilretteleggingFom())), cos, y);
+                txt("svp.behovfra", DATEFMT.format(tilrettelegging.getBehovForTilretteleggingFom())), cos, y);
         for (Tilrettelegging periode : perioder) {
             if (periode instanceof HelTilrettelegging) {
                 y -= renderHelTilrettelegging(HelTilrettelegging.class.cast(periode), vedlegg, cos, y);
@@ -289,9 +300,9 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             }
         }
         List<String> vedleggRefs = perioder.stream()
-            .map(Tilrettelegging::getVedlegg)
-            .findAny()
-            .orElseGet(Collections::emptyList);
+                .map(Tilrettelegging::getVedlegg)
+                .findAny()
+                .orElseGet(Collections::emptyList);
 
         y -= renderVedlegg(vedlegg, vedleggRefs, SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
