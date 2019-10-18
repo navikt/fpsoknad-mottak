@@ -4,8 +4,6 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 
@@ -42,8 +39,8 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     }
 
     @Override
-    public void publiser(Kvittering kvittering, String dialogId, SøknadType type, List<String> vedlegg) {
-        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), dialogId, kvittering, type, vedlegg);
+    public void publiser(Kvittering kvittering, String dialogId, Konvolutt konvolutt) {
+        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), dialogId, kvittering, konvolutt);
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(h))

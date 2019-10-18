@@ -16,19 +16,21 @@ public class InnsendingHendelse {
     private final String saksNr;
     private final LeveranseStatus leveranseStatus;
     private final SøknadType hendelseType;
-    private final List<String> vedlegg;
+    private final List<String> opplastedeVedlegg;
+    private final List<String> ikkeOpplastedeVedlegg;
+
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(String aktørId, String dialogId, Kvittering kvittering, SøknadType hendelseType,
-            List<String> vedlegg) {
+    public InnsendingHendelse(String aktørId, String dialogId, Kvittering kvittering, Konvolutt konvolutt) {
         this.aktørId = aktørId;
         this.journalId = kvittering.getJournalId();
         this.referanseId = kvittering.getReferanseId();
         this.dialogId = dialogId;
         this.saksNr = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
-        this.hendelseType = hendelseType;
-        this.vedlegg = vedlegg;
+        this.hendelseType = konvolutt.getType();
+        this.opplastedeVedlegg = konvolutt.getOpplastedeVedlegg();
+        this.ikkeOpplastedeVedlegg = konvolutt.getIkkeOpplastedeVedlegg();
         this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
     }
 
@@ -64,17 +66,21 @@ public class InnsendingHendelse {
         return hendelseType;
     }
 
-    public List<String> getVedlegg() {
-        return vedlegg;
+    public List<String> getOpplastedeVedlegg() {
+        return opplastedeVedlegg;
+    }
+
+    public List<String> getIkkeOpplastedeVedlegg() {
+        return ikkeOpplastedeVedlegg;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[aktørId=" + aktørId + ", journalId=" + journalId
-                + ", referanseId=" + referanseId + ", saksNr=" + saksNr + ", leveranseStatus=" + leveranseStatus
-                + ", hendelseType=" + hendelseType + ", vedlegg=" + vedlegg + ", førsteBehandlingsdato="
-                + førsteBehandlingsdato
-                + "]";
+        return getClass().getSimpleName() + "[aktørId=" + aktørId + ", journalId=" + journalId + ", referanseId="
+                + referanseId + ", dialogId=" + dialogId + ", saksNr=" + saksNr + ", leveranseStatus=" + leveranseStatus
+                + ", hendelseType=" + hendelseType + ", opplastedeVedlegg=" + opplastedeVedlegg
+                + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", førsteBehandlingsdato="
+                + førsteBehandlingsdato + "]";
     }
 
 }

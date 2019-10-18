@@ -2,13 +2,14 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 
@@ -28,6 +29,7 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
+import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
@@ -59,7 +61,7 @@ public class KonvoluttGenerator {
     public Konvolutt generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         AtomicInteger id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
-        builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.getAktørId()), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.getAktørId()), APPLICATION_JSON);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap), APPLICATION_PDF)
@@ -69,14 +71,14 @@ public class KonvoluttGenerator {
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new Konvolutt(egenskap, søknad, new HttpEntity<>(builder.build(), headers()),
-                vedleggFra(søknad));
+                opplastedeVedleggFra(søknad), ikkeOpplastedeVedleggFra(søknad));
     }
 
     public Konvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
         AtomicInteger id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
         builder.part(METADATA, metadataFor(endringsøknad, egenskap.getType(), søker.getAktørId()),
-                APPLICATION_JSON_UTF8);
+                APPLICATION_JSON);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.getAktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap), APPLICATION_PDF)
@@ -86,17 +88,17 @@ public class KonvoluttGenerator {
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new Konvolutt(egenskap, endringsøknad, new HttpEntity<>(builder.build(), headers()),
-                vedleggFra(endringsøknad));
+                opplastedeVedleggFra(endringsøknad), ikkeOpplastedeVedleggFra(endringsøknad));
     }
 
     public Konvolutt generer(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
         AtomicInteger id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
-        builder.part(METADATA, metadataFor(ettersending, søker.getAktørId()), APPLICATION_JSON_UTF8);
+        builder.part(METADATA, metadataFor(ettersending, søker.getAktørId()), APPLICATION_JSON);
         safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new Konvolutt(egenskap, ettersending, new HttpEntity<>(builder.build(), headers()),
-                vedleggFra(ettersending));
+                opplastedeVedleggFra(ettersending), ikkeOpplastedeVedleggFra(ettersending));
     }
 
     private static void addVedlegg(MultipartBodyBuilder builder, Vedlegg vedlegg, AtomicInteger contentId) {
@@ -156,15 +158,25 @@ public class KonvoluttGenerator {
         return hovedDokument;
     }
 
-    private static List<String> vedleggFra(Søknad søknad) {
-        return safeStream(søknad.getVedlegg())
-                .map(Vedlegg::getDokumentType)
-                .map(DokumentType::name)
-                .collect(toList());
+    private static List<String> opplastedeVedleggFra(Søknad søknad) {
+        return vedleggMedTypeFra(søknad.getVedlegg(), LASTET_OPP);
     }
 
-    private static List<String> vedleggFra(Ettersending es) {
-        return safeStream(es.getVedlegg())
+    private static List<String> ikkeOpplastedeVedleggFra(Søknad søknad) {
+        return vedleggMedTypeFra(søknad.getVedlegg(), SEND_SENERE);
+    }
+
+    private static List<String> opplastedeVedleggFra(Ettersending es) {
+        return vedleggMedTypeFra(es.getVedlegg(), LASTET_OPP);
+    }
+
+    private static List<String> ikkeOpplastedeVedleggFra(Ettersending es) {
+        return vedleggMedTypeFra(es.getVedlegg(), SEND_SENERE);
+    }
+
+    private static List<String> vedleggMedTypeFra(List<Vedlegg> vedlegg, InnsendingsType type) {
+        return safeStream(vedlegg)
+                .filter(v -> type.equals(v.getInnsendingsType()))
                 .map(Vedlegg::getDokumentType)
                 .map(DokumentType::name)
                 .collect(toList());

@@ -6,7 +6,7 @@ import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGe
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.VEDLEGG;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
@@ -24,16 +24,27 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 public class Konvolutt {
     private final SøknadEgenskap egenskap;
     private final HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload;
-    private final List<String> vedlegg;
+    private final List<String> opplastedeVedlegg;
+    private final List<String> ikkeOpplastedeVedlegg;
+
     private final Object innsending;
 
     public Konvolutt(SøknadEgenskap egenskap, Object innsending,
             HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload,
-            List<String> vedlegg) {
+            List<String> opplastedeVedlegg, List<String> ikkeOpplastedeVedlegg) {
         this.egenskap = egenskap;
         this.innsending = innsending;
         this.payload = payload;
-        this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
+        this.opplastedeVedlegg = Optional.ofNullable(opplastedeVedlegg).orElse(emptyList());
+        this.ikkeOpplastedeVedlegg = Optional.ofNullable(ikkeOpplastedeVedlegg).orElse(emptyList());
+    }
+
+    public List<String> getOpplastedeVedlegg() {
+        return opplastedeVedlegg;
+    }
+
+    public List<String> getIkkeOpplastedeVedlegg() {
+        return ikkeOpplastedeVedlegg;
     }
 
     public boolean erInitiellForeldrepenger() {
@@ -64,13 +75,9 @@ public class Konvolutt {
         return payload;
     }
 
-    public List<String> getVedleggIds() {
-        return vedlegg;
-    }
-
     String getMetadata() {
         return get(METADATA)
-                .filter(mediaType(APPLICATION_JSON_UTF8_VALUE))
+                .filter(mediaType(APPLICATION_JSON_VALUE))
                 .findFirst()
                 .filter(HttpEntity::hasBody)
                 .map(HttpEntity::getBody)
@@ -122,7 +129,8 @@ public class Konvolutt {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[egenskap=" + egenskap + ", payload=" + payload + ", vedlegg=" + vedlegg
+        return getClass().getSimpleName() + "[egenskap=" + egenskap + ", payload=" + payload + ", vedlegg="
+                + opplastedeVedlegg
                 + ", innsending=" + innsending + "]";
     }
 
