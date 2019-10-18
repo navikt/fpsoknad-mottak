@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@ConfigurationProperties(prefix = "oppslag")
+@ConfigurationProperties(prefix = "oppslag", ignoreInvalidFields = true)
 @Configuration
 public class OppslagConfig {
     static final String ORGNR = "orgnr";
