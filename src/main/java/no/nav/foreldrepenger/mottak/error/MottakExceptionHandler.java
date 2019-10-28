@@ -50,32 +50,32 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, headers);
     }
 
-    @ExceptionHandler(HttpStatusCodeException.class)
+    @ExceptionHandler
     public ResponseEntity<Object> handleHttpStatusCodeException(HttpStatusCodeException e, WebRequest request) {
         return logAndHandle(e.getStatusCode(), e, request);
     }
 
-    @ExceptionHandler(JwtTokenUnauthorizedException.class)
+    @ExceptionHandler
     public ResponseEntity<Object> handleUnauthorizedException(JwtTokenUnauthorizedException e, WebRequest req) {
         return logAndHandle(UNAUTHORIZED, e, req);
     }
 
-    @ExceptionHandler(SøknadEgenskapException.class)
+    @ExceptionHandler
     public ResponseEntity<Object> handleVersionException(SøknadEgenskapException e, WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req, e.getVersjon());
     }
 
-    @ExceptionHandler(UnexpectedInputException.class)
+    @ExceptionHandler
     public ResponseEntity<Object> handleIncompleteException(UnexpectedInputException e, WebRequest req) {
         return logAndHandle(UNPROCESSABLE_ENTITY, e, req);
     }
 
-    @ExceptionHandler(JwtTokenValidatorException.class)
+    @ExceptionHandler
     public ResponseEntity<Object> handleUnauthenticatedJwtException(JwtTokenValidatorException e, WebRequest req) {
         return logAndHandle(FORBIDDEN, e, req);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler
     protected ResponseEntity<Object> handleUncaught(Exception e, WebRequest req) {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
     }
