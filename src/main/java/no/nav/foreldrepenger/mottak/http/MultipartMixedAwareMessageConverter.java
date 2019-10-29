@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static org.springframework.http.MediaType.parseMediaType;
+import static org.springframework.http.MediaType.MULTIPART_MIXED;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,8 +30,6 @@ import org.springframework.util.MultiValueMap;
 
 public final class MultipartMixedAwareMessageConverter extends FormHttpMessageConverter {
     private static final Logger LOG = LoggerFactory.getLogger(MultipartMixedAwareMessageConverter.class);
-    public static final String MULTIPART_MIXED_VALUE = "multipart/mixed";
-    public static final MediaType MULTIPART_MIXED = parseMediaType(MULTIPART_MIXED_VALUE);
     private Charset multipartCharset;
     private Charset charset = DEFAULT_CHARSET;
     private List<HttpMessageConverter<?>> partConverters = new ArrayList<>();

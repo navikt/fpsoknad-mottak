@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
-import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
@@ -12,6 +11,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.APPLICATION_XML;
+import static org.springframework.http.MediaType.MULTIPART_MIXED;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -15,7 +15,6 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
-import static no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter.MULTIPART_MIXED_VALUE;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -29,6 +28,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.MULTIPART_MIXED_VALUE;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -102,7 +102,8 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testEndringssøknadRoundtrip() {
-        alleSøknadVersjoner().forEach(this::testEndringssøknadRoundtrip);
+        alleSøknadVersjoner()
+                .forEach(this::testEndringssøknadRoundtrip);
     }
 
     @Test
@@ -113,17 +114,20 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtrip() {
-        alleSøknadVersjoner().stream().forEach(v -> testSøknadRoundtrip(v));
+        alleSøknadVersjoner().stream()
+                .forEach(this::testSøknadRoundtrip);
     }
 
     @Test
     public void testKonvolutt() {
-        alleSøknadVersjoner().forEach(this::testKonvolutt);
+        alleSøknadVersjoner()
+                .forEach(this::testKonvolutt);
     }
 
     @Test
     public void testKonvoluttEndring() {
-        alleSøknadVersjoner().forEach(this::testKonvoluttEndring);
+        alleSøknadVersjoner()
+                .forEach(this::testKonvoluttEndring);
     }
 
     @Test
