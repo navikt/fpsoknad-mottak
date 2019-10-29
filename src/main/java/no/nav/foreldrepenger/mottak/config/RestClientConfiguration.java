@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 
-import no.nav.foreldrepenger.mottak.http.MultipartMixedAwareMessageConverter;
 import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
 
 @Configuration
@@ -30,8 +30,9 @@ public class RestClientConfiguration {
                 .interceptors(interceptors)
                 .build();
 
-        // template.getMessageConverters().add(new FormHttpMessageConverter());
-        template.getMessageConverters().add(new MultipartMixedAwareMessageConverter());
+        template.getMessageConverters().add(new FormHttpMessageConverter());
+        // template.getMessageConverters().add(new
+        // MultipartMixedAwareMessageConverter());
         return template;
     }
 
