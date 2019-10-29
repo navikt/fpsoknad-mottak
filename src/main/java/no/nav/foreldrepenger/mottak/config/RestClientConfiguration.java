@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.retry.listener.RetryListenerSupport;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
@@ -31,8 +30,6 @@ public class RestClientConfiguration {
                 .build();
 
         template.getMessageConverters().add(new FormHttpMessageConverter());
-        // template.getMessageConverters().add(new
-        // MultipartMixedAwareMessageConverter());
         return template;
     }
 
@@ -40,29 +37,13 @@ public class RestClientConfiguration {
     public List<RetryListener> retryListeners() {
         Logger log = LoggerFactory.getLogger(getClass());
 
-        return Collections.singletonList(new RetryListener() {
-
-            @Override
-            public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
-                Field labelField = ReflectionUtils.findField(callback.getClass(), "val$label");
-                ReflectionUtils.makeAccessible(labelField);
-                String label = (String) ReflectionUtils.getField(labelField, callback);
-                log.trace("Starting retryable method {}", label);
-                return true;
-            }
+        return Collections.singletonList(new RetryListenerSupport() {
 
             @Override
             public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
                     Throwable throwable) {
-                log.warn("Retryable method {} threw {}th exception {}",
-                        context.getAttribute("context.name"), context.getRetryCount(), throwable.toString());
-            }
-
-            @Override
-            public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback,
-                    Throwable throwable) {
-                log.trace("Finished retryable method {} {}", context.getRetryCount(),
-                        context.getAttribute("context.name"));
+                log.warn("Metode {} kastet exception {} for {}. gang",
+                        context.getAttribute(RetryContext.NAME), throwable.toString(), context.getRetryCount());
             }
         });
     }
