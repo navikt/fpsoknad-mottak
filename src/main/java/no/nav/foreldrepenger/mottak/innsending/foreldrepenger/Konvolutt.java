@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
@@ -26,7 +28,7 @@ public class Konvolutt {
     private final HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload;
     private final List<String> opplastedeVedlegg;
     private final List<String> ikkeOpplastedeVedlegg;
-
+    private static final Logger LOG = LoggerFactory.getLogger(Konvolutt.class);
     private final Object innsending;
 
     public Konvolutt(SøknadEgenskap egenskap, Object innsending,
@@ -37,6 +39,7 @@ public class Konvolutt {
         this.payload = payload;
         this.opplastedeVedlegg = Optional.ofNullable(opplastedeVedlegg).orElse(emptyList());
         this.ikkeOpplastedeVedlegg = Optional.ofNullable(ikkeOpplastedeVedlegg).orElse(emptyList());
+        LOG.trace("Konvolutt er {}", this);
     }
 
     public List<String> getOpplastedeVedlegg() {
@@ -129,9 +132,8 @@ public class Konvolutt {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[egenskap=" + egenskap + ", payload=" + payload + ", vedlegg="
-                + opplastedeVedlegg
-                + ", innsending=" + innsending + "]";
+        return getClass().getSimpleName() + "[egenskap=" + egenskap + ", payload=" + payload + ", opplastedeVedlegg="
+                + opplastedeVedlegg + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsending=" + innsending
+                + "]";
     }
-
 }
