@@ -13,9 +13,9 @@ public class InnsendingHendelse {
     private final String journalId;
     private final String referanseId;
     private final String dialogId;
-    private final String saksNr;
+    private final String saksnummer;
     private final LeveranseStatus leveranseStatus;
-    private final SøknadType hendelseType;
+    private final SøknadType hendelse;
     private final List<String> opplastedeVedlegg;
     private final List<String> ikkeOpplastedeVedlegg;
 
@@ -26,9 +26,9 @@ public class InnsendingHendelse {
         this.journalId = kvittering.getJournalId();
         this.referanseId = kvittering.getReferanseId();
         this.dialogId = dialogId;
-        this.saksNr = kvittering.getSaksNr();
+        this.saksnummer = kvittering.getSaksNr();
         this.leveranseStatus = kvittering.getLeveranseStatus();
-        this.hendelseType = konvolutt.getType();
+        this.hendelse = konvolutt.getType();
         this.opplastedeVedlegg = konvolutt.getOpplastedeVedlegg();
         this.ikkeOpplastedeVedlegg = konvolutt.getIkkeOpplastedeVedlegg();
         this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
@@ -54,16 +54,16 @@ public class InnsendingHendelse {
         return referanseId;
     }
 
-    public String getSaksNr() {
-        return saksNr;
+    public String getSaksnummer() {
+        return saksnummer;
     }
 
     public LeveranseStatus getLeveranseStatus() {
         return leveranseStatus;
     }
 
-    public SøknadType getHendelseType() {
-        return hendelseType;
+    public SøknadType getHendelse() {
+        return hendelse;
     }
 
     public List<String> getOpplastedeVedlegg() {
@@ -77,8 +77,9 @@ public class InnsendingHendelse {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[aktørId=" + aktørId + ", journalId=" + journalId + ", referanseId="
-                + referanseId + ", dialogId=" + dialogId + ", saksNr=" + saksNr + ", leveranseStatus=" + leveranseStatus
-                + ", hendelseType=" + hendelseType + ", opplastedeVedlegg=" + opplastedeVedlegg
+                + referanseId + ", dialogId=" + dialogId + ", saksnummer=" + saksnummer + ", leveranseStatus="
+                + leveranseStatus
+                + ", hendelseType=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
                 + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", førsteBehandlingsdato="
                 + førsteBehandlingsdato + "]";
     }
