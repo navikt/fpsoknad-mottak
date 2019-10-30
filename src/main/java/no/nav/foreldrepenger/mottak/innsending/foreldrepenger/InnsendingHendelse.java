@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
@@ -18,6 +19,7 @@ public class InnsendingHendelse {
     private final SøknadType hendelse;
     private final List<String> opplastedeVedlegg;
     private final List<String> ikkeOpplastedeVedlegg;
+    private final LocalDateTime innsendt;
 
     private final LocalDate førsteBehandlingsdato;
 
@@ -32,6 +34,11 @@ public class InnsendingHendelse {
         this.opplastedeVedlegg = konvolutt.getOpplastedeVedlegg();
         this.ikkeOpplastedeVedlegg = konvolutt.getIkkeOpplastedeVedlegg();
         this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
+        this.innsendt = konvolutt.getOpprettet();
+    }
+
+    public LocalDateTime getInnsendt() {
+        return innsendt;
     }
 
     public String getDialogId() {
@@ -78,10 +85,9 @@ public class InnsendingHendelse {
     public String toString() {
         return getClass().getSimpleName() + "[aktørId=" + aktørId + ", journalId=" + journalId + ", referanseId="
                 + referanseId + ", dialogId=" + dialogId + ", saksnummer=" + saksnummer + ", leveranseStatus="
-                + leveranseStatus
-                + ", hendelseType=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
-                + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", førsteBehandlingsdato="
-                + førsteBehandlingsdato + "]";
+                + leveranseStatus + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
+                + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsendt=" + innsendt
+                + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
     }
 
 }

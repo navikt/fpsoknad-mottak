@@ -10,6 +10,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -30,6 +31,7 @@ public class Konvolutt {
     private final List<String> ikkeOpplastedeVedlegg;
     private static final Logger LOG = LoggerFactory.getLogger(Konvolutt.class);
     private final Object innsending;
+    private final LocalDateTime opprettet;
 
     public Konvolutt(SøknadEgenskap egenskap, Object innsending,
             HttpEntity<MultiValueMap<String, HttpEntity<?>>> payload,
@@ -39,7 +41,12 @@ public class Konvolutt {
         this.payload = payload;
         this.opplastedeVedlegg = Optional.ofNullable(opplastedeVedlegg).orElse(emptyList());
         this.ikkeOpplastedeVedlegg = Optional.ofNullable(ikkeOpplastedeVedlegg).orElse(emptyList());
+        this.opprettet = LocalDateTime.now();
         LOG.trace("Konvolutt er {}", this);
+    }
+
+    public LocalDateTime getOpprettet() {
+        return opprettet;
     }
 
     public List<String> getOpplastedeVedlegg() {
