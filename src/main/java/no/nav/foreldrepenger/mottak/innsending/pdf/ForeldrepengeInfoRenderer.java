@@ -836,6 +836,7 @@ public class ForeldrepengeInfoRenderer {
     private List<String> fødsel(Fødsel fødsel) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, FØDSELSDATO, distinct(fødsel.getFødselsdato()));
+        addIfSet(attributter, "termindato", fødsel.getTermindato());
         return attributter;
     }
 
