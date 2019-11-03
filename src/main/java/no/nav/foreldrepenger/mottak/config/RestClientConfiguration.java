@@ -50,9 +50,10 @@ public class RestClientConfiguration {
 
             @Override
             public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback,
-                    Throwable throwable) {
-                log.warn("Metode {} avslutter retry grunnet {} etter {}. forsøk",
-                        context.getAttribute(NAME), throwable.toString(), context.getRetryCount());
+                    Throwable t) {
+                log.warn("Metode {} avslutter {} retry grunnet {} etter {}. forsøk",
+                        context.getAttribute(NAME), t != null ? "ikke vellykket" : "vellykket",
+                        context.getRetryCount());
             }
 
             @Override
