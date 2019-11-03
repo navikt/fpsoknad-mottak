@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import java.util.Collections;
+import static java.util.Collections.singletonList;
+import static org.springframework.retry.RetryContext.NAME;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,13 +39,27 @@ public class RestClientConfiguration {
     public List<RetryListener> retryListeners() {
         Logger log = LoggerFactory.getLogger(getClass());
 
-        return Collections.singletonList(new RetryListenerSupport() {
+        return singletonList(new RetryListenerSupport() {
 
             @Override
             public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
                     Throwable throwable) {
                 log.warn("Metode {} kastet exception {} for {}. gang",
-                        context.getAttribute(RetryContext.NAME), throwable.toString(), context.getRetryCount());
+                        context.getAttribute(NAME), throwable.toString(), context.getRetryCount());
+            }
+
+            @Override
+            public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback,
+                    Throwable throwable) {
+                log.warn("Metode {} avslutter retry grunnet {} etter {}. forsøk",
+                        context.getAttribute(NAME), throwable.toString(), context.getRetryCount());
+            }
+
+            @Override
+            public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
+                log.info("Metode {} gjør retry for {}. gang",
+                        context.getAttribute(NAME), context.getRetryCount());
+                return super.open(context, callback);
             }
         });
     }
