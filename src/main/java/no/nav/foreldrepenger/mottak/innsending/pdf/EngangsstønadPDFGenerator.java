@@ -174,7 +174,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
         List<String> texts = new ArrayList<>();
         texts.add(textFormatter.fromMessageSource("termindatotekst", textFormatter.dato(ff.getTerminDato())));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
-            texts.add(textFormatter.fromMessageSource("termindatodatert", textFormatter.dato(ff.getUtstedtDato())));
+            texts.add(textFormatter.fromMessageSource("terminbekreftelsedatert", textFormatter.dato(ff.getUtstedtDato())));
         }
         return texts;
     }
