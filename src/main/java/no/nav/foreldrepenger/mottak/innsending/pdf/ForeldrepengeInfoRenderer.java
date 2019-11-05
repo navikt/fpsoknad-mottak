@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.LOVBESTEMT_FERIE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinct;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
@@ -489,7 +490,9 @@ public class ForeldrepengeInfoRenderer {
         attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addIfSet(attributter, utsettelse.getMorsAktivitetsType());
         addListIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
-        attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
+        if (!utsettelse.getÅrsak().equals(LOVBESTEMT_FERIE)) {
+            attributter.add(txt("erarbeidstaker", jaNei(utsettelse.isErArbeidstaker())));
+        }
         return attributter;
     }
 
