@@ -16,7 +16,6 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
-import org.springframework.retry.listener.RetryListenerSupport;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
@@ -39,7 +38,7 @@ public class RestClientConfiguration {
     public List<RetryListener> retryListeners() {
         Logger log = LoggerFactory.getLogger(getClass());
 
-        return singletonList(new RetryListenerSupport() {
+        return singletonList(new RetryListener() {
 
             @Override
             public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
@@ -60,7 +59,7 @@ public class RestClientConfiguration {
             public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
                 log.info("Metode {} gjør retry for {}. gang",
                         context.getAttribute(NAME), context.getRetryCount());
-                return super.open(context, callback);
+                return true;
             }
         });
     }
