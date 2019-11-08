@@ -72,7 +72,7 @@ public class RestClientConfiguration {
                 if (context.getRetryCount() > 0) {
                     log.info("Metode {} gjør retry for {}. gang", metode, context.getRetryCount());
                 } else {
-                    log.info("Metode {} initierer retry", metode);
+                    log.trace("Metode {} initierer retry", metode);
                 }
                 return true;
             }
