@@ -16,6 +16,7 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
@@ -48,25 +49,31 @@ public class RestClientConfiguration {
             }
 
             @Override
-            public <T, E extends Throwable> void close(RetryContext context, RetryCallback<T, E> callback,
+            public <T, E extends Throwable> void close(RetryContext ctx, RetryCallback<T, E> callback,
                     Throwable t) {
                 if (t != null) {
                     log.warn("Metode {} avslutter ikke-vellykket retry etter {}. forsøk",
-                            context.getAttribute(NAME), context.getRetryCount());
+                            ctx.getAttribute(NAME), ctx.getRetryCount());
                 } else {
-                    if (context.getRetryCount() > 0) {
+                    if (ctx.getRetryCount() > 0) {
                         log.info("Metode {} avslutter vellykket retry etter {}. forsøk",
-                                context.getAttribute(NAME), context.getRetryCount());
+                                ctx.getAttribute(NAME), ctx.getRetryCount());
                     } else {
-                        log.trace("Metode {} avslutter vellykket uten retry", context.getAttribute(NAME));
+                        log.trace("Metode {} avslutter vellykket uten retry", ctx.getAttribute(NAME));
                     }
                 }
             }
 
             @Override
             public <T, E extends Throwable> boolean open(RetryContext context, RetryCallback<T, E> callback) {
-                log.info("Metode {} gjør retry for {}. gang",
-                        context.getAttribute(NAME), context.getRetryCount());
+                var labelField = ReflectionUtils.findField(callback.getClass(), "val$label");
+                ReflectionUtils.makeAccessible(labelField);
+                String metode = (String) ReflectionUtils.getField(labelField, callback);
+                if (context.getRetryCount() > 0) {
+                    log.info("Metode {} gjør retry for {}. gang", metode, context.getRetryCount());
+                } else {
+                    log.info("Metode {} initierer retry", metode);
+                }
                 return true;
             }
         });
