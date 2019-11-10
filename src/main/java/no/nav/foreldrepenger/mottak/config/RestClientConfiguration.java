@@ -53,7 +53,7 @@ public class RestClientConfiguration {
                     Throwable t) {
                 if (t != null) {
                     log.warn("Metode {} avslutter ikke-vellykket retry etter {}. forsøk",
-                            ctx.getAttribute(NAME), ctx.getRetryCount());
+                            ctx.getAttribute(NAME), ctx.getRetryCount(), t);
                 } else {
                     if (ctx.getRetryCount() > 0) {
                         log.info("Metode {} avslutter vellykket retry etter {}. forsøk",
