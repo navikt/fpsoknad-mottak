@@ -8,6 +8,7 @@ public enum GraderingAvslagÅrsak {
     GRADERING_FØR_UKE_7,
     FOR_SEN_SØKNAD,
     MANGLENDE_GRADERINGSAVTALE,
+    MOR_OPPFYLLER_IKKE_AKTIVITETSKRAV,
     AVSLAG_PGA_100_PROSENT_ARBEID;
 
     private static final Logger LOG = LoggerFactory.getLogger(GraderingAvslagÅrsak.class);
