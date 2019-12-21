@@ -30,8 +30,8 @@ jobs:
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
       - shell: bash    
         run: |
-          tag = $(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)
-          echo "TAG er $tag"
+          ::set-env name=TAG::$(echo $GITHUB_SHA | cut -c1-7)
+          echo "TAG er ${TAG}"
           docker build --tag ${IMAGE}
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}     
