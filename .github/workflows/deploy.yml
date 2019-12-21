@@ -1,4 +1,4 @@
-name: Build, push, and deploy
+name: Compile, build, tag and deploy
 
 on:
   push:
