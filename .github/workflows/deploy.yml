@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Bygg, tag og push
+      - name: Compile
         run: |
           echo "Bygger artifakt $(echo $GITHUB_SHA | cut -c1-7)"
           mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7) 
@@ -32,7 +32,6 @@ jobs:
     name: Build and push Docker container
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
     - name: Build and publish Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
