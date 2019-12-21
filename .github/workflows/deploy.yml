@@ -38,8 +38,8 @@ jobs:
     steps:
     - name: Build and publish Docker image
     - uses: actions/download-artifact@v1
-        with:
-          name: result 
+      with:
+        name: result 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
