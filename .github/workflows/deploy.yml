@@ -1,4 +1,4 @@
-name: Compile, build, tag and deploy
+name: Deployment pipeline q1
 
 on:
   push:
@@ -7,11 +7,12 @@ env:
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
   
 jobs:
-  compile:
+  kompiler:
     runs-on: ubuntu-latest
     steps:
       - name: Sjekk ut kode
         uses: actions/checkout@v1
+ 
       - name: Hent maven cache
         uses: actions/cache@v1
         with:
@@ -19,22 +20,26 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+  
       - name: Sett opp Java 11      
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Set variabler    
+  
+      - name: Sett variabler    
         run: |
           echo "::set-env name=TAG::$(echo $GITHUB_SHA | cut -c1-7)"
           echo "::set-env name=DATO::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')"
-      - name: Compile
+  
+      - name: Kompiler
         run: |
           echo "::set-env name=IMAGE::$IMAGE_BASE:$DATO-$TAG"   
           mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$DATO-$TAG 
         env:
           GITHUB_USERNAME: x-access-token
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
-      - name: Bygg og push image  
+   
+      - name: Bygg og push docker image  
         run: |
           echo "Bygger og pusher image ${IMAGE}"
           docker build --tag ${IMAGE} .
