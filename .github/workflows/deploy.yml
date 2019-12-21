@@ -31,7 +31,6 @@ jobs:
       - shell: bash    
         run: |
           echo "::set-env name=TAG::$(echo $GITHUB_SHA | cut -c1-7)"
-          echo "TAG er ${{ TAG }}"
           echo "TAG er ${TAG}"
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
