@@ -35,7 +35,7 @@ jobs:
     
   deploy:
     name: Deploy to NAIS
-    needs: build
+    needs: compile
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
