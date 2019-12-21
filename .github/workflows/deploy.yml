@@ -30,7 +30,7 @@ jobs:
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
       - shell: bash    
         run: |
-          ::set-env name=TAG::$(echo $GITHUB_SHA | cut -c1-7)
+          echo "::set-env name=TAG::$(echo $GITHUB_SHA | cut -c1-7)"
           echo "TAG er ${TAG}"
           docker build --tag ${IMAGE}
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
