@@ -27,25 +27,11 @@ jobs:
         env:
           GITHUB_USERNAME: x-access-token
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
-      - uses: actions/upload-artifact@v1
-        with:
-          name: result
-          path: .     
-  
-  build:
-    needs: compile
-    name: Build and push Docker container
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download
-        uses: actions/download-artifact@v1
-        with:
-          name: result 
       - shell: bash     
         run: |
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          docker push ${IMAGE}.     
     
   deploy:
     name: Deploy to NAIS
