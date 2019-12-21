@@ -3,6 +3,7 @@ name: Compile, build, tag and deploy
 on:
   push:
 env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   IMAGE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak:${{ github.sha }}  
 jobs:
   compile:
@@ -24,7 +25,6 @@ jobs:
           mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7) 
           echo "Bygget artifakt"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: x-access-token
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
       - uses: actions/upload-artifact@v1
@@ -40,14 +40,11 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: result 
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - shell: bash  
       run: |
         docker build --tag ${IMAGE} .
         docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
-
+    
   deploy:
     name: Deploy to NAIS
     needs: build
