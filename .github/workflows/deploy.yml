@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Build and publish Docker image
-      uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v1
         with:
           name: result 
       env:
