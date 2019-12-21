@@ -10,17 +10,20 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - name: Sjekk ut kode
+        uses: actions/checkout@v1
+      - name: Hent maven cache
+        uses: actions/cache@v1
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: actions/setup-java@v1
+      - name: Sett opp Java 11      
+        uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Set variable    
+      - name: Set variabler    
         run: |
           echo "::set-env name=TAG::$(echo $GITHUB_SHA | cut -c1-7)"
           echo "::set-env name=DATO::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')"
@@ -31,7 +34,7 @@ jobs:
         env:
           GITHUB_USERNAME: x-access-token
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
-      - name: Bygg og push   
+      - name: Bygg og push image  
         run: |
           echo "Bygger og pusher image ${IMAGE}"
           docker build --tag ${IMAGE} .
