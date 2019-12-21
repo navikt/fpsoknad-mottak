@@ -34,8 +34,10 @@ jobs:
         run: |
           echo "Bygger og pusher image ${IMAGE}"
           docker build --tag ${IMAGE} .
+          docker tag ${IMAGE_BASE}:latest
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}     
+          docker push ${IMAGE} 
+          docker push ${IMAGE_BASE}:latest    
     
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
