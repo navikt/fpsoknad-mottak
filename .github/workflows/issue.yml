@@ -2,6 +2,7 @@ on: [push]
 name: Create an issue on push
 jobs:
   stuff:
+    runs-on: ubuntu-latest
     steps:
       - uses: JasonEtco/create-an-issue@master
         env:
