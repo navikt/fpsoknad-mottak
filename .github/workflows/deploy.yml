@@ -15,8 +15,6 @@ jobs:
         uses: actions/checkout@v1
 
       - uses: JasonEtco/create-an-issue@master
-        with:
-          filename: .github/template.md
  
       - name: Hent Maven cache
         uses: actions/cache@v1
