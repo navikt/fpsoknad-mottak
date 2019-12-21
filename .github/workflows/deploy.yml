@@ -26,16 +26,15 @@ jobs:
           echo "::set-env name=DATO::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')"
       - name: Compile
         run: |
-          echo "Tag er $DATO-$TAG" 
           echo "::set-env name=IMAGE::$IMAGE_BASE:$DATO-$TAG"   
-          mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7) 
+          mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$DATO-$TAG 
           echo "Bygget artifakt"
         env:
           GITHUB_USERNAME: x-access-token
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
       - shell: bash    
         run: |
-          echo "Bygger image $(IMAGE)"
+          echo "Bygger image ${IMAGE}"
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}     
