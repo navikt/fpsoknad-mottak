@@ -4,7 +4,7 @@ on:
   push:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/${{ github.repository }
+  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/${{ github.repository }}
   
 jobs:
   kompiler:
