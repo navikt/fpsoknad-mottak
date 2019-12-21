@@ -37,10 +37,10 @@ jobs:
     name: Build and push Docker container
     runs-on: ubuntu-latest
     steps:
-      uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v1
       with:
         name: result 
-      run: |
+      - run: |
         docker build --tag ${IMAGE} .
         docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
