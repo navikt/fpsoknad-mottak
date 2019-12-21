@@ -14,8 +14,6 @@ jobs:
       - name: Sjekk ut kode
         uses: actions/checkout@v1
 
-      - uses: JasonEtco/create-an-issue@master
- 
       - name: Hent Maven cache
         uses: actions/cache@v1
        with:
