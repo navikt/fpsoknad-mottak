@@ -34,6 +34,7 @@
         <tag>HEAD</tag>
     </scm>
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -385,5 +386,12 @@
             <artifactId>aspectjweaver</artifactId>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>fpsoknad-mottak</id>
+            <name>Github navikt Maven Packages</name>
+            <url>https://maven.pkg.github.com/navikt/fpsoknad-mottak</url>
+        </repository>
+    </distributionManagement>
 </project>
 
