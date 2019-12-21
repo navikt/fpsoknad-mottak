@@ -4,7 +4,8 @@ on:
   push:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak:${{ github.sha }}  
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)
+  
 jobs:
   compile:
     runs-on: ubuntu-latest
