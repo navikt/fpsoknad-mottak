@@ -33,7 +33,8 @@ jobs:
   
       - name: Kompiler
         run: |
-          echo "::set-env name=IMAGE::$IMAGE_BASE:$DATO-$TAG"   
+          echo "::set-env name=IMAGE::$IMAGE_BASE:$DATO-$TAG" 
+          echo "::set-env name=version::$IMAGE_BASE:$DATO-$TAG"     
           mvn --quiet clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$DATO-$TAG 
         env:
           GITHUB_USERNAME: x-access-token
