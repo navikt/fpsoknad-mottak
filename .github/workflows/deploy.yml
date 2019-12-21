@@ -31,17 +31,18 @@ jobs:
         with:
           name: result
           path: .     
+  
   build:
     needs: compile
     name: Build and push Docker container
     runs-on: ubuntu-latest
     steps:
-    - name: Build and publish Docker image
-    - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v1
       with:
         name: result 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - shell: bash  
       run: |
         docker build --tag ${IMAGE} .
         docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
