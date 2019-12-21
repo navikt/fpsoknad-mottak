@@ -34,22 +34,16 @@ jobs:
           GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }} 
       - shell: bash    
         run: |
-          echo "Bygger image ${IMAGE}"
+          echo "Bygger og ousher image ${IMAGE}"
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}     
     
-  deploy:
-    name: Deploy to NAIS
-    needs: compile
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: nais/deploy/actions/deploy@v1
-      env:
-        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-        CLUSTER: dev-fss
-        RESOURCE: naiserator1.yaml
-        PRINT_PAYLOAD: true
-        VARS: dev.json     
+      - name: Deploy til dev-fss q1
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: naiserator1.yaml
+          PRINT_PAYLOAD: true
+          VARS: dev.json     
