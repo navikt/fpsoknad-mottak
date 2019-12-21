@@ -42,7 +42,7 @@ jobs:
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1 
         env:
-          VERSION: $(cat .docker_image):$(cat .docker_tag)
+          version: $(cat .docker_image):$(cat .docker_tag)
           DRY_RUN: false
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
