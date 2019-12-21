@@ -37,12 +37,12 @@ jobs:
           docker tag $(cat .docker_image):$(cat .docker_tag) $(cat .docker_image):latest
           docker push $(cat .docker_image):latest
           echo ::set-env name=IMAGE::$(cat .docker_image):$(cat .docker_tag)
-          echo ::set-env name=VERSION::$(cat .docker_image):$(cat .docker_tag)   
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GHA }}
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1 
         env:
+          VERSION: $(cat .docker_image):$(cat .docker_tag)
           DRY_RUN: false
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
