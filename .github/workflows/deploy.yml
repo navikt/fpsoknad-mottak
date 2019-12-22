@@ -29,7 +29,7 @@ jobs:
       - name: Kompiler
         run: |
           echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
-          mvn clean install --batch-mode --quitet
+          mvn clean install --batch-mode --quiet
  
       - name: Bygg og push docker image  
         run: |
