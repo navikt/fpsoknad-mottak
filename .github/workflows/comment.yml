@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest 
     container: navikt/deployment-cli:0.4.0
     steps:
-     - name: Parse
-       run: |
-        COMMENT=$(echo "${{ github.event.comment.body }}")
-        echo "Kommentar er ${COMMENT}"
+      - name: Parse
+        run: |
+         COMMENT=$(echo "${{ github.event.comment.body }}")
+         echo "Kommentar er ${COMMENT}"
       - name: Deploy
         run: |
           echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
