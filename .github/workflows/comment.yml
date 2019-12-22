@@ -1,13 +1,29 @@
 on:
   issue_comment:
     types: [created]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
+
 jobs:
   kommenter:
-     runs-on: ubuntu-latest 
-     steps:
-     - name: Test
+    runs-on: ubuntu-latest 
+    container: navikt/deployment-cli:0.4.0
+    steps:
+     - name: Parse
        run: |
         COMMENT=$(echo "${{ github.event.comment.body }}")
         echo "Kommentar er ${COMMENT}"
+      - name: Deploy
+        run: |
+          echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
+      - name: Deploy til dev-fss t4
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          DRY_RUN: false
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: naiserator1.yml
+          PRINT_PAYLOAD: true
 
  
