@@ -1,0 +1,9 @@
+on:
+  deployment:
+jobs:
+  kommenter:
+     runs-on: ubuntu-latest 
+     steps:
+     - name: Test
+       run: echo "Deployment av $GITHUB_REF"
+ 
