@@ -19,8 +19,7 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          restore-keys: ${{ runner.os }}-maven-
   
       - name: Sett opp Java 11      
         uses: actions/setup-java@v1
@@ -30,7 +29,7 @@ jobs:
       - name: Kompiler
         run: |
           echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
-          mvn clean install --batch-mode --settings .github/workflows/.m2/settings.xml -Dchangelist= -Dsha1=-$DATO-$TAG 
+          mvn clean install --batch-mode --quitet
  
       - name: Bygg og push docker image  
         run: |
