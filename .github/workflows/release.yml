@@ -1,0 +1,9 @@
+on:
+  release:
+jobs:
+  kommenter:
+     runs-on: ubuntu-latest 
+     steps:
+     - name: Test
+       run: echo "Release av $GITHUB_REF"
+ 
