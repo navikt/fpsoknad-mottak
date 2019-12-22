@@ -12,10 +12,10 @@ jobs:
     steps:
     
       - name: Sjekk ut kode
-        uses: actions/checkout@v1
+        uses actions/checkout@v1
 
       - name: Hent Maven cache
-        uses: actions/cache@v1
+        uses actions/cache@v1
        with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
