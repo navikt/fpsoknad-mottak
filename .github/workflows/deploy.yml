@@ -37,7 +37,7 @@ jobs:
           
       - uses: actions/upload-artifact@v1
         with:
-          name: naiserator1-${{TAG}}
+          name: naiserator1-${{github.sha}}
           path: naiserator1.yaml    
    
       - name: Bygg og push docker image  
