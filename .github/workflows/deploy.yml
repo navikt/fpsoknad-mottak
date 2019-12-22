@@ -40,6 +40,8 @@ jobs:
           echo "Bygger og pusher image ${IMAGE}"
           docker build --tag ${IMAGE} .
           echo "Tag er ${TAG}"
+          git tag ${TAG}
+          git push origin ${TAG}
           docker tag ${IMAGE} ${IMAGE_BASE}:latest
           echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
           docker push ${IMAGE} 
