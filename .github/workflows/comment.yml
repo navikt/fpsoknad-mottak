@@ -7,7 +7,7 @@ jobs:
      steps:
      - name: Test
        run: |
-        ID=${{ github.event.comment.id }}
-        echo "Dette er en test $ID"
+        COMMAND=${{ github.event.comment.body }}
+        echo " $COMMAND"
 
  
