@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
           tag=$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)
-          echo "::set-env name=TAG::$tag
+          echo "::set-env name=TAG::$tag"
           mvn clean install --batch-mode --quiet
  
       - name: Bygg og push docker image  
