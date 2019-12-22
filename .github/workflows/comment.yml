@@ -19,7 +19,7 @@ jobs:
       - name: Deploy
         run: |
           echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
-      - name: Deploy til dev-fss t4
+      - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
         env:
           DRY_RUN: false
@@ -27,5 +27,4 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: naiserator1.yaml
           PRINT_PAYLOAD: true
-
- 
+          VARS: dev.json
