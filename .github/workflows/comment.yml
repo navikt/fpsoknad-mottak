@@ -6,5 +6,8 @@ jobs:
      runs-on: ubuntu-latest 
      steps:
      - name: Test
-       run: echo "Dette er en test"
+       run: |
+        ID=${{ github.event.comment.id }}
+        echo "Dette er en test $ID"
+
  
