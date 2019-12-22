@@ -1,0 +1,7 @@
+on:
+  issue_comment:
+    types: [created]
+
+     - name: Test
+        run: echo "Dette er en test"
+ 
