@@ -7,7 +7,7 @@ jobs:
      steps:
      - name: Test
        run: |
-        BoDY=${{ github.event.comment.body }}
-        echo "body er $BODY"
+        COMMENT=$(echo "${{ github.event.comment.body }}")
+        echo "Kommentar er ${COMMENT}"
 
  
