@@ -7,13 +7,7 @@ env:
 jobs:
   deploy:
      runs-on: ubuntu-latest 
-     steps:
-     - uses: actions/download-artifact@v1
-       with:
-         name: .github/ISSUE_TEMPLATE.md
-         path: ISSUE_TEMPLATE.md
-         
-     - uses: JasonEtco/create-an-issue@master    
+     steps:       
      - name: Deploy
        run: |
          URL=$(echo "${{ github.event.deployment.url }}")
