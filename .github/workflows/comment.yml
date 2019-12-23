@@ -10,8 +10,11 @@ jobs:
     runs-on: ubuntu-latest 
     container: navikt/deployment-cli:0.4.0
     steps:
-      - name: Sjekk ut kode
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - run: git checkout d7872772f398f34b1ff180510ea985bc664a4c5f
+
       - name: Parse
         run: |
          COMMENT=$(echo "${{ github.event.comment.body }}")
