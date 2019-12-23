@@ -13,7 +13,6 @@ jobs:
       - name: Parse
         run: |
          COMMENT=$(echo "${{ github.event.comment.body }}")
-         BAR="$(words=($COMMENT);echo ${words[1]})"
          echo "Kommentar er ${COMMENT} ${BAR}"
      
       - uses: actions/checkout@v2
