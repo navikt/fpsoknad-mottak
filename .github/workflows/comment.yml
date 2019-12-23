@@ -20,7 +20,7 @@ jobs:
          echo ::set-env name=CMD::${cmd}
      
       - uses: actions/checkout@v2
-        if: ${CMD} == 'deploy'
+        if: ${{CMD}} == 'deploy'
       - run: git checkout d7872772f398f34b1ff180510ea985bc664a4c5f
       - name: Deploy
         run: |
