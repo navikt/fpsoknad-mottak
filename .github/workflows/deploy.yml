@@ -13,9 +13,7 @@ jobs:
     
       - name: Sjekk ut kode
         uses: actions/checkout@v1
-        
-      - uses: JasonEtco/create-an-issue@master   
- 
+         
       - name: Hent Maven cache
         uses: actions/cache@v1
         with:
@@ -33,7 +31,7 @@ jobs:
           echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
           mvn clean install --batch-mode --quiet          
      
-      - name: Bygg og push docker image  
+      - name: Bygg, tag og push Docker image  
         run: |
           echo "Bygger og pusher image ${IMAGE}"
           docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .

@@ -1,9 +1,0 @@
-on:
-  deployment_status:
-jobs:
-  deploy:
-     runs-on: ubuntu-latest 
-     steps:
-     - name: Deployment status
-       run: echo "Deployment status $GITHUB_SHA  $GITHUB_REF"
- 

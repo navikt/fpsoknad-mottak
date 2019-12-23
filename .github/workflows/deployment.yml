@@ -4,6 +4,7 @@ jobs:
   deploy:
      runs-on: ubuntu-latest 
      steps:
+     - uses: JasonEtco/create-an-issue@master    
      - name: Deploy
        run: |
          URL=$(echo "${{ github.event.deployment.url }}")
