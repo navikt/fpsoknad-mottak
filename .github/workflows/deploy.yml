@@ -31,20 +31,14 @@ jobs:
       - name: Kompiler
         run: |
           echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
-          tag=$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)
-          echo "::set-env name=TAG::$tag"
-          mvn clean install --batch-mode --quiet
-          
+          mvn clean install --batch-mode --quiet          
      
       - name: Bygg og push docker image  
         run: |
           echo "Bygger og pusher image ${IMAGE}"
-          docker build --tag ${IMAGE} .
-          echo "Tag er ${TAG}"
-          docker tag ${IMAGE} ${IMAGE_BASE}:latest
+          docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
           echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
-          docker push ${IMAGE} 
-          docker push ${IMAGE_BASE}:latest    
+          docker push ${IMAGE_BASE}   
     
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
