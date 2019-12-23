@@ -35,11 +35,7 @@ jobs:
           echo "::set-env name=TAG::$tag"
           mvn clean install --batch-mode --quiet
           
-      - uses: actions/upload-artifact@v1
-        with:
-          name: naiserator1-${{github.sha}}
-          path: naiserator1.yaml    
-   
+     
       - name: Bygg og push docker image  
         run: |
           echo "Bygger og pusher image ${IMAGE}"

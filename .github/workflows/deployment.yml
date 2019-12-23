@@ -5,5 +5,11 @@ jobs:
      runs-on: ubuntu-latest 
      steps:
      - name: Deploy
-       run: echo "Deployment av $GITHUB_SHA  $GITHUB_REF"
+       run: |
+         URL=$(echo "${{ github.event.deployment.url }}")
+         echo "ur er ${URL}"
+         ENV=$(echo "${{ github.event.deployment.environment }}")
+         echo "nv  er ${ENV}"
+         OENV=$(echo "${{ github.event.deployment.original_environment }}")
+         echo "oenv er ${OENV}"
  
