@@ -16,7 +16,6 @@ jobs:
          COMMENT=$(echo "${{ github.event.comment.body }}")
      
       - uses: actions/checkout@v2
-      - run: git checkout d7872772f398f34b1ff180510ea985bc664a4c5f
       - name: Deploy
         run: |
           echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
