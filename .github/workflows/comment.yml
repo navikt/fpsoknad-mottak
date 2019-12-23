@@ -13,7 +13,7 @@ jobs:
       - name: Parse
         run: |
          COMMENT=$(echo "${{ github.event.comment.body }}")
-         cmd =$(echo $COMMENT | awk '{ print $1 }'`)
+         cmd =$(echo $COMMENT | awk '{ print $1 }')
          echo "Kommentar er $cmd "
      
       - uses: actions/checkout@v2
