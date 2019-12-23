@@ -13,7 +13,8 @@ jobs:
       - name: Parse
         run: |
          COMMENT=$(echo "${{ github.event.comment.body }}")
-         echo "Kommentar er ${COMMENT} ${BAR}"
+         lastword=`echo $COMMENT | awk '{ print $NF }'`
+         echo "Kommentar er ${COMMENT} ${lastword}"
      
       - uses: actions/checkout@v2
         with:
