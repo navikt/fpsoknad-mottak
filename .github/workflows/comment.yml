@@ -20,14 +20,14 @@ jobs:
          echo ::set-env name=CMD::${cmd}
      
       - uses: actions/checkout@v2
-        if: $CMD == 'deploy'
+        if: ${CMD} == 'deploy'
       - run: git checkout d7872772f398f34b1ff180510ea985bc664a4c5f
       - name: Deploy
         run: |
           echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
-        if: $CMD == 'deploy'
+        if: ${CMD} == 'deploy'
         env:
           DRY_RUN: false
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
