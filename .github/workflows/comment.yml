@@ -17,7 +17,7 @@ jobs:
      
       - uses: actions/checkout@v2
       - name: Deploy
-        if: $CMD == 'deploy'
+        if: CMD == 'deploy'
         run: |
           echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
           echo "Kommentar er $CMD"
