@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Parse
         run: |
-         echo ::set-env name=CMD::$(echo "${{ github.event.comment.body }}" | awk { print $1})
+         echo ::set-env name=CMD::$(echo "${{ github.event.comment.body }}" | awk '{print $1}')
          COMMENT=$(echo "${{ github.event.comment.body }}")
      
       - uses: actions/checkout@v2
