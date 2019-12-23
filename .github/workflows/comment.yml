@@ -12,15 +12,15 @@ jobs:
     steps:
       - name: Parse
         run: |
+         echo ::set-env name=CMD::$(echo "${{ github.event.comment.body }}" | awk { print $1})
          COMMENT=$(echo "${{ github.event.comment.body }}")
-         cmd =$(echo "${{ github.event.comment.body }}"| awk {print $1})
-         echo "Kommentar er $cmd"
      
       - uses: actions/checkout@v2
       - run: git checkout d7872772f398f34b1ff180510ea985bc664a4c5f
       - name: Deploy
         run: |
           echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
+          echo "Kommentar er $CMD"
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
         env:
