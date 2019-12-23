@@ -26,7 +26,6 @@ jobs:
           echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
-        if: ${CMD} == 'deploy'
         env:
           DRY_RUN: false
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
