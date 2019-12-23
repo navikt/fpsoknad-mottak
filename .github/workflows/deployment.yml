@@ -11,7 +11,7 @@ jobs:
      - uses: actions/download-artifact@v1
        with:
          name: .github/ISSUE_TEMPLATE.md
-         path: .github/ISSUE_TEMPLATE.md
+         path: ISSUE_TEMPLATE.md
          
      - uses: JasonEtco/create-an-issue@master    
      - name: Deploy
