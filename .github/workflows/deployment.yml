@@ -8,11 +8,16 @@ jobs:
   deploy:
      runs-on: ubuntu-latest 
      steps:
+     - uses: actions/download-artifact@v1
+       with:
+         name: .github/ISSUE_TEMPLATE.md
+         path: .github/ISSUE_TEMPLATE.md
+         
      - uses: JasonEtco/create-an-issue@master    
      - name: Deploy
        run: |
          URL=$(echo "${{ github.event.deployment.url }}")
-         echo "ur er ${URL}"
+         echo "url er ${URL}"
          ENV=$(echo "${{ github.event.deployment.environment }}")
          echo "nv  er ${ENV}"
          OENV=$(echo "${{ github.event.deployment.original_environment }}")

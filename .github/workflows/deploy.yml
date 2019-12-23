@@ -13,6 +13,11 @@ jobs:
     
       - name: Sjekk ut kode
         uses: actions/checkout@v1
+        
+      - uses: actions/upload-artifact@v1
+        with:
+          name: .github/ISSUE_TEMPLATE.md
+          path: .github/ISSUE_TEMPLATE.md
          
       - name: Hent Maven cache
         uses: actions/cache@v1
