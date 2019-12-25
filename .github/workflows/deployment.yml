@@ -5,15 +5,18 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
    
 jobs:
-  deploy:
+  create-issue:
      runs-on: ubuntu-latest 
-     steps:       
-     - name: Deploy
+     steps:
+     - name: INformer om deployment i issue
+       if: github.event.deployment.environment == 'dev-fss'
        run: |
-         URL=$(echo "${{ github.event.deployment.url }}")
-         echo "url er ${URL}"
-         ENV=$(echo "${{ github.event.deployment.environment }}")
-         echo "nv  er ${ENV}"
-         OENV=$(echo "${{ github.event.deployment.original_environment }}")
-         echo "oenv er ${OENV}"
+       curl --request POST \
+        --url https://api.github.com/repos/${{ github.repository }}/issues \
+        --header 'authorization: Bearer $GITHUB_TOKEN' \
+        --header 'content-type: application/json' \
+        --data '{
+          "title": "Deployment til ${{ github.event.deployment.environment }}",
+          "body": "Dette er mer informasjon om deployment"
+          }'     
  

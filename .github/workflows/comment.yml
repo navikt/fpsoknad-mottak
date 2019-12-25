@@ -10,24 +10,8 @@ jobs:
     runs-on: ubuntu-latest 
     container: navikt/deployment-cli:0.4.0
     steps:
-      - name: Parse
-        run: |
-         echo ::set-env name=CMD::$(echo "${{ github.event.comment.body }}" | awk '{print $1}')
-         COMMENT=$(echo "${{ github.event.comment.body }}")
-     
-      - uses: actions/checkout@v2
-      - name: Deploy
-        if: CMD == 'deploy'
-        run: |
-          echo ::set-env name=IMAGE::docker.pkg.github.com/navikt/fpsoknad-mottak/fpsoknad-mottak:latest
-          echo "Kommentar er $CMD"
-      - name: Deploy til dev-fss q1
-        if: $CMD == 'deploy'
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          DRY_RUN: false
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: naiserator1.yaml
-          PRINT_PAYLOAD: true
-          VARS: dev.json
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commands: promote
