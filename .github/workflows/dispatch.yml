@@ -13,10 +13,9 @@ jobs:
 
       # Basic configuration
       - name: Slash Command Dispatch
-        uses: ./github
+        uses: peter-evans/slash-command-dispatch
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          reaction-token: ${{ secrets.GITHUB_TOKEN }}
           commands: ping-local
           permission: none
           issue-type: issue
