@@ -1,20 +1,17 @@
-name: ping
+name: ping-command
 on:
   repository_dispatch:
-    types: ping-command
+    types: [ping-command]
 jobs:
-  pong:
+  helloWorld:
     runs-on: ubuntu-latest
     steps:
-      - name: Dump the client payload context
-        env:
-          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
-        run: echo "$PAYLOAD_CONTEXT"
-      - name: pong comment
+      - name: Update comment
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
-            >pong hello ${{ github.event.client_payload.slash_command.args }}
+            >pong ${{ github.event.client_payload.slash_command.args }}
           reaction-type: hooray
