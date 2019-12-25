@@ -13,6 +13,7 @@ jobs:
 
       # Basic configuration
       - name: Slash Command Dispatch
+        uses: ./github
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           reaction-token: ${{ secrets.GITHUB_TOKEN }}
