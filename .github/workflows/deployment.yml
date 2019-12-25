@@ -11,12 +11,12 @@ jobs:
      - name: INformer om deployment i issue
        if: github.event.deployment.environment == 'dev-fss'
        run: |
-       curl --request POST \
-        --url https://api.github.com/repos/${{ github.repository }}/issues \
-        --header 'authorization: Bearer ${GITHUB_TOKEN}' \
-        --header 'content-type: application/json' \
-        --data '{
-          "title": "Deployment til ${{ github.event.deployment.environment }}",
-          "body": "Dette er mer informasjon om deployment"
-          }'     
+        curl --request POST \
+         --url https://api.github.com/repos/${{ github.repository }}/issues \
+         --header 'authorization: Bearer ${GITHUB_TOKEN}' \
+         --header 'content-type: application/json' \
+         --data '{
+            "title": "Deployment til ${{ github.event.deployment.environment }}",
+            "body": "Dette er mer informasjon om deployment"
+           }'     
  
