@@ -1,6 +1,7 @@
 name: ping
 on:
   repository_dispatch:
+    types: [ping-command,ping]
 jobs:
   pong:
     runs-on: ubuntu-latest
@@ -9,7 +10,7 @@ jobs:
         env:
           PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
         run: echo "$PAYLOAD_CONTEXT"
-      - name: Update comment
+      - name: pong comment
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

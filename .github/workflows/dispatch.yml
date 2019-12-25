@@ -1,4 +1,4 @@
-name: Slash Command Dispatch
+name: Slash command dispatcher
 on:
   issue_comment:
     types: [created, edited]
@@ -6,11 +6,8 @@ jobs:
   slashCommandDispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Slash Command Dispatch
+      - name: Slash command dispatcher
         uses: peter-evans/slash-command-dispatch@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          reaction-token: ${{ secrets.GITHUB_TOKEN }}
           commands: ping
-          permission: none
-          issue-type: issue
