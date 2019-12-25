@@ -9,7 +9,7 @@ jobs:
       - name: Slash command dispatch
         uses: peter-evans/slash-command-dispatch@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commands: ping, deploy
+          token: ${{ secrets.NOTIFICATION }}
+          commands: ping
           permission: none
           issue-type: issue          
