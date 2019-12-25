@@ -1,7 +1,7 @@
 name: ping
 on:
   repository_dispatch:
-    types: [ping-command,ping]
+    types: ping-command
 jobs:
   pong:
     runs-on: ubuntu-latest
