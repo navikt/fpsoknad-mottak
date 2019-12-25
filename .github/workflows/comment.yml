@@ -1,13 +1,17 @@
+name: Slash Command Dispatch
 on:
   issue_comment:
-    types: [created]
-
+    types: [created, edited]
 jobs:
-  kommenter:
-    runs-on: ubuntu-latest 
+  slashCommandDispatch:
+    runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
+
       - name: Slash Command Dispatch
-        uses: peter-evans/slash-command-dispatch@v1
+        uses: ./
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commands: ping
+          permission: none
+          issue-type: issue
