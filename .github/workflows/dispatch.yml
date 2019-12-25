@@ -1,4 +1,4 @@
-name: Slash Command Dispatch
+name: Slash command dispatch
 on:
   issue_comment:
     types: [created, edited]
@@ -6,12 +6,10 @@ jobs:
   dispatcher:
     runs-on: ubuntu-latest
     steps:      
-      - name: Slash Command Dispatch
+      - name: Slash command dispatch
         uses: peter-evans/slash-command-dispatch@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commands: ping
           permission: none
-          issue-type: issue
-          repository: navikt/fpsoknad-mottak
-          
+          issue-type: issue          

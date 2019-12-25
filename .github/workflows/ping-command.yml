@@ -1,9 +1,9 @@
-name: Ping Command
+name: Ping
 on:
   repository_dispatch:
     types: [ping-command]
 jobs:
-  helloWorld:
+  pong:
     runs-on: ubuntu-latest
     steps:
       - name: Update comment
