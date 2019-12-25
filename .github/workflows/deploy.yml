@@ -28,11 +28,14 @@ jobs:
     
       - name: Kompiler
         run: |
+           
           echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
-          mvn clean install --batch-mode --quiet          
+          mvn clean install --batch-mode --quiet 
+                   
      
       - name: Bygg, tag og push Docker image  
         run: |
+          echo "::set-output name=image::${IMAGE}"
           echo "Bygger og pusher image ${IMAGE}"
           docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
           echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
@@ -48,14 +51,15 @@ jobs:
           VARS: dev.json   
       - name: Informer om deployment i issue
         run: |
+         echo "Image er $IMAGE ($IMG)"
          curl --request POST \
          --url https://api.github.com/repos/${{ github.repository }}/issues \
          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
          --header 'content-type: application/json' \
          --data '{
-            "title": "Deployment OK av ${IMG} $IMG ${IMAGE}",
-            "body": "Dette er mer informasjon om deploymenten ${IMG} $IMG"
-           }' 
-         env:
-          IMG: ${{ IMAGE }}
+            "title": "Deployment OK av $IMG",
+            "body": "Dette er mer informasjon om deploymenten"
+           }'  
+        env:
+           IMG: ${{ IMAGE }}      
                     
