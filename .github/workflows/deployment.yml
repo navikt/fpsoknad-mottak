@@ -9,9 +9,9 @@ jobs:
      runs-on: ubuntu-latest 
      steps:
      - name: Dump the client payload context
-        env:
+       env:
           PAYLOAD_CONTEXT: ${{ toJson(github.event.deployment) }}
-        run: echo "$PAYLOAD_CONTEXT"
+       run: echo "$PAYLOAD_CONTEXT"
      - name: Informer om deployment i issue
        if: github.event.deployment.environment == 'dev-fss'
        run: |
