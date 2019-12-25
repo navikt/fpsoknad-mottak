@@ -56,7 +56,5 @@ jobs:
          --data '{
             "title": "Deployment OK av $IMAGE",
             "body": "Dette er mer informasjon om deploymenten"
-           }'  
-        env:
-           IMG: ${{ IMAGE }}      
+           }'       
                     
