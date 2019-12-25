@@ -1,9 +1,8 @@
 name: ping
 on:
   repository_dispatch:
-    types: [ping-command]
 jobs:
-  promote:
+  pong:
     runs-on: ubuntu-latest
     steps:
       - name: Dump the client payload context
