@@ -3,19 +3,15 @@ on:
   issue_comment:
     types: [created, edited]
 jobs:
-  slashCommandDispatch:
+  dispatcher:
     runs-on: ubuntu-latest
-    steps:
-      # Checkout is necessary here due to referencing a local action.
-      # It's also necessary when using the 'config-from-file' option.
-      # Otherwise, avoid using checkout to keep this workflow fast.
-      - uses: actions/checkout@v1
-
-      # Basic configuration
+    steps:      
       - name: Slash Command Dispatch
         uses: peter-evans/slash-command-dispatch@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commands: ping-local
+          commands: ping
           permission: none
           issue-type: issue
+          repository: navikt/fpsoknad-mottak
+          
