@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Sjekk ut kode
         uses: actions/checkout@v1
-        
-      - name "Set image name"
-        run:  echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
-              
+         
+      - run: | 
+          echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
+                  
       - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
         run: |
          echo "Lager issue for ${{env.IMAGE}}"
@@ -42,6 +42,7 @@ jobs:
     
       - name: Kompiler
         run: | 
+          echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
           mvn clean install --batch-mode --quiet 
                    
       - name: Bygg, tag og push Docker image  
