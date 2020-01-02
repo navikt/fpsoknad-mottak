@@ -10,11 +10,12 @@ jobs:
   kompiler:
     runs-on: ubuntu-latest
     steps:
+    
       - name: Sjekk ut kode
         uses: actions/checkout@v1
-         
-      - run: | 
-          echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
+     
+      - name: Set imagenavn    
+        run:  echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
                   
       - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
         run: |
@@ -24,7 +25,7 @@ jobs:
             --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --header "content-type: application/json" \
             --data '{
-              "title": "Deployment OK ${{env.IMAGE}} til ${{ github.repository }}",
+              "title": "Deployment av ${{env.IMAGE}} til ${{ github.repository }}",
               "body": "Dette er mer informasjon om deployment av ${{env.IMAGE}}"
             }'  
              
