@@ -54,6 +54,9 @@ jobs:
          --header 'content-type: application/json' \
          --data '{
             "title": "Deployment OK",
-            "body": "Dette er mer informasjon om deploymenten $IMAGE_BASE"
-           }'       
+            "body": "Dette er mer informasjon om deploymenten $IMAGE"
+           }'  
+        env:
+          IMAGE: ${{ env.IMAGE }}
+             
                     
