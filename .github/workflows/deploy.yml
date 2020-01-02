@@ -10,19 +10,21 @@ jobs:
   kompiler:
     runs-on: ubuntu-latest
     steps:
-      - name: curl
-        uses: wei/curl@master
-        with:
-          args: --url https://api.github.com/repos/${{ github.repository }}/issues 
-                --header authorization: Bearer ${{ secrets.GITHUB_TOKEN }} 
-                --header content-type: application/json 
-                --data {
-                   "title": "Deployment OK ${{env.IMAGE}} til ${{ github.repository }}",
-                   "body": "Dette er mer informasjon om deployment av ${{env.IMAGE}}"
-                }
       - name: Sjekk ut kode
         uses: actions/checkout@v1
-                 
+              
+      - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
+        run: |
+         echo "Lager issue for ${{env.IMAGE}}"
+             curl -X POST \
+             https://api.github.com/repos/${{ github.repository }}/issues \
+            -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "content-type: application/json" \
+            --data '{
+              title: Deployment OK ${{env.IMAGE}} til ${{ github.repository }},
+              body: Dette er mer informasjon om deployment av ${{env.IMAGE}}
+            }'  
+             
       - name: Hent Maven cache
         uses: actions/cache@v1
         with:
@@ -55,16 +57,4 @@ jobs:
           RESOURCE: naiserator1.yaml
           PRINT_PAYLOAD: true
           VARS: dev.json   
-      - name: Informer om deployment i issue
-        run: |
-         echo "0. Lager issue for $IMG"
-         echo "1. Lager issue for ${IMAGE}"
-         echo "2. Lager issue for ${{env.IMAGE}}"
-         echo curl --request POST \
-         --url https://api.github.com/repos/${{ github.repository }}/issues \
-         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-         --header 'content-type: application/json' \
-         --data '{
-            "title": "Deployment OK ${{env.IMAGE}} til ${{ github.repository }}",
-            "body": "Dette er mer informasjon om deployment av ${{env.IMAGE}}"
-           }'  
+     
