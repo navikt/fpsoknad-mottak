@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set imagenavn fra args
-        run:  echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.args1 }}" 
+        run:  |
+              echo "Args er {{ github.event.client_payload.slash_command.args }}"
+              echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.args }}" 
  
       - name: Deploy image
         run:  echo "Deployer {{ env.IMAGE }}" 
