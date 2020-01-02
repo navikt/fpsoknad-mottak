@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Dump the client payload context
         env:
-          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
+          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload.github.payload) }}
         run: echo "$PAYLOAD_CONTEXT"
     
       - name: Set imagenavn og cluster fra args
