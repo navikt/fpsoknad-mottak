@@ -44,7 +44,7 @@ jobs:
               
       - run: |
           echo "Lukker issue"
-            curl --request PATCH \
+            curl -X PATCH \
             --url ${{ github.event.client_payload.github.payload.comment.issue_url }} \  
             --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --header "content-type: application/json" \
