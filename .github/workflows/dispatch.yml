@@ -10,6 +10,6 @@ jobs:
         uses: peter-evans/slash-command-dispatch@v1
         with:
           token: ${{ secrets.NOTIFICATION }}
-          commands: ping
+          commands: deploy
           permission: none
           issue-type: issue          
