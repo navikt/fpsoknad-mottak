@@ -33,10 +33,10 @@ jobs:
                    
       - name: Bygg, tag og push Docker image  
         run: |
-          echo "Bygger og pusher image ${IMAGE}"
-          docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
-          echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
-          docker push ${IMAGE_BASE}   
+          echo "Bygger og pusher image $IMAGE"
+          docker build --tag $IMAGE --tag ${IMAGE_BASE}:latest .
+          echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          docker push $IMAGE_BASE   
     
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
@@ -52,10 +52,10 @@ jobs:
          echo "1. Lager issue for ${IMAGE}"
          echo "2. Lager issue for ${{env.IMAGE}}"
          curl --request POST \
-         --url https://api.github.com/repos/${{ github.repository }}/issues \
-         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+         --url https://api.github.com/repos/$GITHUB_REPOSITORY/issues \
+         --header 'authorization: Bearer $GITHUB_TOKEN' \
          --header 'content-type: application/json' \
          --data '{
-            "title": "Deployment OK ${IMAGE}",
-            "body": "Dette er mer informasjon om deployment av ${IMAGE}"
+            "title": "Deployment OK $IMAGE",
+            "body": "Dette er mer informasjon om deployment av $IMAGE"
            }'  
