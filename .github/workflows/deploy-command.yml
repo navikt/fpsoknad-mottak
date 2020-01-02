@@ -13,6 +13,9 @@ jobs:
       - name: Set imagenavn fra args
         run:  echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.args1 }}" 
  
+      - name: Deploy image
+        run:  echo "Deployer {{ env.IMAGE }}" 
+ 
       - name: Update comment
         uses: peter-evans/create-or-update-comment@v1
         with:
