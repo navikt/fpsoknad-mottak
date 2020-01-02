@@ -43,7 +43,7 @@ jobs:
           echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
           docker push ${IMAGE_BASE}   
     
-      - name: Deploy til dev-fss q1
+      - name: Deploy til cluster
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -61,6 +61,6 @@ jobs:
             --header "content-type: application/json" \
             --data '{
               "title": "Deployment av ${{env.IMAGE}} til ${{ github.repository }}",
-              "body": "Dette er mer informasjon om deployment av ${{env.IMAGE}}"
+              "body": "Kommenter med /deploy <img> <env>, f.eks /deploy 20200102143217-50418bc dev-fss"
             }'       
      
