@@ -3,6 +3,7 @@ name: Deployment pipeline q1
 on:
   push:
 env:
+  APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
   
@@ -34,14 +35,13 @@ jobs:
       - name: Bygg, tag og push Docker image  
         run: |
           echo "Bygger og pusher image $IMAGE"
-          docker build --tag $IMAGE --tag ${IMAGE_BASE}:latest .
-          echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          docker build --tag $IMAGE --tag $IMAGE_BASE:latest .
+          echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u $GITHUB_REPOSITORY --password-stdin
           docker push $IMAGE_BASE   
     
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: naiserator1.yaml
           PRINT_PAYLOAD: true
@@ -56,6 +56,6 @@ jobs:
          --header 'authorization: Bearer $GITHUB_TOKEN' \
          --header 'content-type: application/json' \
          --data '{
-            "title": "Deployment OK $IMAGE",
+            "title": "Deployment OK av $IMAGE til $GITHUB_REPOSITORY",
             "body": "Dette er mer informasjon om deployment av $IMAGE"
            }'  
