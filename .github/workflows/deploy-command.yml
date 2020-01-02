@@ -1,4 +1,4 @@
-name: Ping
+name: Deploy
 on:
   repository_dispatch:
     types: [deploy-command]
@@ -12,13 +12,12 @@ jobs:
     steps:
       - name: Set imagenavn fra args
         run:  |
-              echo "Args er {{ github.event.client_payload.slash_command.args }}"
-              echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.args }}" 
+              echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.args1 }}" 
  
       - name: Deploy image
         run:  echo "Deployer {{ env.IMAGE }}" 
  
-      - name: Update comment
+      - name: Oppdater kommentar med deployment status
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ secrets.NOTIFICATION }}
