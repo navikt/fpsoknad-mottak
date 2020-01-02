@@ -2,14 +2,17 @@ name: Ping
 on:
   repository_dispatch:
     types: [deploy-command]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
+      
 jobs:
   pong:
     runs-on: ubuntu-latest
     steps:
-      - name: Dump the client payload context
-        env:
-          PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
-        run: echo "$PAYLOAD_CONTEXT"
+      - name: Set imagenavn fra args
+        run:  echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.args1 }}" 
+ 
       - name: Update comment
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -17,5 +20,5 @@ jobs:
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
-            >deploy ${{ github.event.client_payload.slash_command.args }}
+            >deploy ${{ env.IMAGE }}
           reaction-type: hooray
