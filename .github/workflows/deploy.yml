@@ -51,7 +51,7 @@ jobs:
          echo "0. Lager issue for $IMG"
          echo "1. Lager issue for ${IMAGE}"
          echo "2. Lager issue for ${{env.IMAGE}}"
-         curl --request POST \
+         echo curl --request POST \
          --url https://api.github.com/repos/${{ github.repository }}/issues \
          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
          --header 'content-type: application/json' \
@@ -59,5 +59,3 @@ jobs:
             "title": "Deployment OK ${IMG} til ${{ github.repository }}",
             "body": "Dette er mer informasjon om deployment av ${IMG}"
            }'  
-        env:
-          IMG: $IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)  
