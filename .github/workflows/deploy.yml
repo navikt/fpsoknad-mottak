@@ -3,7 +3,6 @@ name: Deployment pipeline q1
 on:
   push:
 env:
-  APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
   
@@ -34,28 +33,31 @@ jobs:
                    
       - name: Bygg, tag og push Docker image  
         run: |
-          echo "Bygger og pusher image $IMAGE"
-          docker build --tag $IMAGE --tag $IMAGE_BASE:latest .
-          echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u $GITHUB_REPOSITORY --password-stdin
-          docker push $IMAGE_BASE   
+          echo "Bygger og pusher image ${IMAGE}"
+          docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
+          echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          docker push ${IMAGE_BASE}   
     
       - name: Deploy til dev-fss q1
         uses: nais/deploy/actions/deploy@v1
         env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: naiserator1.yaml
           PRINT_PAYLOAD: true
           VARS: dev.json   
       - name: Informer om deployment i issue
         run: |
-         echo "0. Lager issue for $IMAGE"
+         echo "0. Lager issue for $IMG"
          echo "1. Lager issue for ${IMAGE}"
          echo "2. Lager issue for ${{env.IMAGE}}"
          curl --request POST \
-         --url https://api.github.com/repos/$GITHUB_REPOSITORY/issues \
-         --header 'authorization: Bearer $GITHUB_TOKEN' \
+         --url https://api.github.com/repos/${{ github.repository }}/issues \
+         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
          --header 'content-type: application/json' \
          --data '{
-            "title": "Deployment OK av $IMAGE til $GITHUB_REPOSITORY",
-            "body": "Dette er mer informasjon om deployment av $IMAGE"
+            "title": "Deployment OK ${IMG} til ${{ github.repository }}",
+            "body": "Dette er mer informasjon om deployment av ${IMG}"
            }'  
+        env:
+          IMG: $IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)  
