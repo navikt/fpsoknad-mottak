@@ -19,13 +19,13 @@ jobs:
                   
       - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
         run: |
-         echo "Lager issue for ${{env.IMAGE}}"
+         echo "Lager issue for $IMAGE"
              curl -X POST \
             --url  https://api.github.com/repos/${{ github.repository }}/issues \
             --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --header "content-type: application/json" \
             --data '{
-              "title": "Deployment av ${{env.IMAGE}} til ${{ github.repository }}",
+              "title": "Deployment av $IMAGE til ${{ github.repository }}",
               "body": "Dette er mer informasjon om deployment av ${{env.IMAGE}}"
             }'  
              
