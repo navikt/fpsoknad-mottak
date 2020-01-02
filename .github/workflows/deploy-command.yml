@@ -16,9 +16,9 @@ jobs:
         run: echo "$PAYLOAD_CONTEXT"
     
       - name: Set imagenavn og cluster fra args
-        run:  |
-              echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.arg1 }}" 
-              echo "::set-env name=CLUSTER::${{ github.event.client_payload.slash_command.arg2 }}" 
+        run: |
+           echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.arg1 }}" 
+           echo "::set-env name=CLUSTER::${{ github.event.client_payload.slash_command.arg2 }}" 
          
       - name: Sjekk ut kode
         uses: actions/checkout@v1
@@ -41,3 +41,13 @@ jobs:
           body: |
             >deploy ${{ env.IMAGE }} til ${{ env.CLUSTER }} var OK
           reaction-type: hooray
+          
+      - name: Close issue
+        run: |
+             curl -X PATCH \
+            --url  https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.client_payload.github.payload.comment.id }}
+            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            --header "content-type: application/json" \
+            --data '{
+              "state": "closed"
+            }'     

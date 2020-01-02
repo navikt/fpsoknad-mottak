@@ -1,7 +1,7 @@
 name: Slash command dispatch
 on:
   issue_comment:
-    types: [created, edited]
+    types: [created]
 jobs:
   dispatcher:
     runs-on: ubuntu-latest
@@ -11,5 +11,4 @@ jobs:
         with:
           token: ${{ secrets.NOTIFICATION }}
           commands: deploy
-          permission: none
           issue-type: issue          

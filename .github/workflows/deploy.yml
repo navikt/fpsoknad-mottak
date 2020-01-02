@@ -36,7 +36,6 @@ jobs:
                    
       - name: Bygg, tag og push Docker image  
         run: |
-          echo "Bygger og pusher image ${IMAGE}"
           docker build --tag ${IMAGE} --tag ${IMAGE_BASE}:latest .
           echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
           docker push ${IMAGE_BASE}   
@@ -52,7 +51,6 @@ jobs:
           
       - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
         run: |
-         echo "Lager issue for $TAG"
              curl -X POST \
             --url  https://api.github.com/repos/${{ github.repository }}/issues \
             --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
