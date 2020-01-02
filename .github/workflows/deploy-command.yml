@@ -30,7 +30,7 @@ jobs:
           CLUSTER: ${{ env.CLUSTER }}
           RESOURCE: naiserator1.yaml
           PRINT_PAYLOAD: true
-          VARS: dev.json      
+          VARS: ${{ env.CLUSTER }}.json      
  
       - name: Oppdater kommentar med deployment status
         uses: peter-evans/create-or-update-comment@v1
