@@ -33,6 +33,7 @@ jobs:
     
       - name: Kompiler
         run: | 
+          echo "::set-env name=TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
           echo "::set-env name=IMAGE::$IMAGE_BASE:$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" 
           mvn clean install --batch-mode --quiet 
                    
@@ -54,13 +55,13 @@ jobs:
           
       - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
         run: |
-         echo "Lager issue for $IMAGE"
+         echo "Lager issue for $TAG"
              curl -X POST \
             --url  https://api.github.com/repos/${{ github.repository }}/issues \
             --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --header "content-type: application/json" \
             --data '{
-              "title": "Deployment av ${{env.IMAGE}} til ${{ github.repository }}",
-              "body": "Kommenter med /deploy <img> <env>, f.eks /deploy 20200102143217-50418bc dev-fss"
+              "title": "Deployment av ${{env.TAG}} til ${{ github.repository }}",
+              "body": "Kommenter med /deploy ${{env.TAG}} <env>, hvor env er dev-fss eller prod"
             }'       
      
