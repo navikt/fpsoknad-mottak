@@ -51,12 +51,13 @@ jobs:
           
       - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
         run: |
+         echo "Lager issue for $TAG"
              curl -X POST \
             --url  https://api.github.com/repos/${{ github.repository }}/issues \
             --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --header "content-type: application/json" \
             --data '{
               "title": "Deployment av ${{env.TAG}} til dev-fss var OK",
-              "body": "Kommenter med <b>/deploy ${{env.TAG}} env</b>, hvor env er et gyldig clusternavn, typisk prod"
+              "body": "Kommenter med <i>/deploy ${{env.TAG}} env</i>, hvor env er et gyldig clusternavn, typisk prod"
             }'       
      
