@@ -13,9 +13,22 @@ jobs:
       - name: Set imagenavn fra args
         run:  |
               echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.arg1 }}" 
+              echo "::set-env name=CLUSTER::{{ github.event.client_payload.slash_command.arg2 }}" 
  
       - name: Deploy image
         run:  echo "Deployer {{ env.IMAGE }}" 
+        
+      - name: Sjekk ut kode
+        uses: actions/checkout@v1
+       
+      - name: Deploy til cluster
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: ${{ env.CLUSTER }}
+          RESOURCE: naiserator1.yaml
+          PRINT_PAYLOAD: true
+          VARS: dev.json      
  
       - name: Oppdater kommentar med deployment status
         uses: peter-evans/create-or-update-comment@v1
@@ -24,5 +37,5 @@ jobs:
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
-            >deploy ${{ env.IMAGE }}
+            >deploy ${{ env.IMAGE }} til ${{ env.CLUSTER }} OK
           reaction-type: hooray
