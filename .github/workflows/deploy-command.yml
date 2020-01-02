@@ -7,7 +7,7 @@ env:
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
       
 jobs:
-  pong:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Dump the client payload context
@@ -15,15 +15,11 @@ jobs:
           PAYLOAD_CONTEXT: ${{ toJson(github.event.client_payload) }}
         run: echo "$PAYLOAD_CONTEXT"
     
-      - name: Set imagenavn fra args
+      - name: Set imagenavn og cluster fra args
         run:  |
               echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.arg1 }}" 
               echo "::set-env name=CLUSTER::${{ github.event.client_payload.slash_command.arg2 }}" 
-       
-      - name: Deploy image
-        run:  echo "Deployer {{ env.IMAGE }} til {{ env.CLUSTER }}"
-        
-        
+         
       - name: Sjekk ut kode
         uses: actions/checkout@v1
        
@@ -43,5 +39,5 @@ jobs:
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
-            >deploy ${{ env.IMAGE }} til ${{ env.CLUSTER }} OK
+            >deploy ${{ env.IMAGE }} til ${{ env.CLUSTER }} var OK
           reaction-type: hooray

@@ -21,6 +21,6 @@ jobs:
          --header 'content-type: application/json' \
          --data '{
             "title": "Deployment til ${{ github.event.deployment.environment }}",
-            "body": "Dette er mer informasjon om deploymenten (TBD)"
+            "body": "Dette er mer informasjon om deployment (TBD)"
            }'     
  
