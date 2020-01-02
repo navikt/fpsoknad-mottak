@@ -51,7 +51,7 @@ jobs:
           PRINT_PAYLOAD: true
           VARS: dev-fss.json  
           
-      - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
+      - name: Informer om deployment i en issue som kan kommenteres for å deploye til annet cluster
         run: |
          echo "Lager issue for $TAG"
              curl -X POST \
@@ -59,7 +59,7 @@ jobs:
             --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --header "content-type: application/json" \
             --data '{
-              "title": "Deployment av ${{env.TAG}} til ${{ github.repository }}",
-              "body": "Kommenter med /deploy ${{env.TAG}} env, hvor env er et gyldig clusternavn"
+              "title": "Deployment av ${{env.TAG}} til dev-fss var OK",
+              "body": "Kommenter med /deploy ${{env.TAG}} env, hvor env er et gyldig clusternavn, typisk prod"
             }'       
      
