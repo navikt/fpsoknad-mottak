@@ -22,6 +22,8 @@ jobs:
          
       - name: Sjekk ut kode
         uses: actions/checkout@v1
+        with:
+          ref: $GITHUB_SHA
        
       - name: Deploy til cluster
         uses: nais/deploy/actions/deploy@v1
