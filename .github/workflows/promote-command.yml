@@ -1,7 +1,7 @@
 name: Promote
 on:
   repository_dispatch:
-    types: [deploy-command]
+    types: [promote-command]
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
