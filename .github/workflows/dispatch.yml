@@ -11,4 +11,5 @@ jobs:
         with:
           token: ${{ secrets.NOTIFICATION }}
           commands: deploy
-          issue-type: issue          
+          issue-type: issue 
+          allow_edits: true        
