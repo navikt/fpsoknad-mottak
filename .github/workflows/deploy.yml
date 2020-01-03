@@ -59,6 +59,6 @@ jobs:
             --header "content-type: application/json" \
             --data '{
               "title": "Deployment av ${{env.TAG}} til dev-fss var OK",
-              "body": "Kommenter med <b>/promote ${{env.TAG}} env</b>, hvor <b>env<b> er et gyldig clusternavn, typisk prod"
+              "body": "Kommenter med <b>/promote ${{env.TAG}} env</b>, hvor <b>env<b> er et gyldig clusternavn. Bruk <b>/prod</b> for å deploye til prod"
             }'       
      
