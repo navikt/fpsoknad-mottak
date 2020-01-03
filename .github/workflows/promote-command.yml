@@ -25,7 +25,7 @@ jobs:
         with:
           ref: ${{env.SHA}}
        
-      - name: Deploy til cluster
+      - name: Promote til cluster
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -41,6 +41,6 @@ jobs:
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
-            >deploy ${{ env.IMAGE }} til ${{ env.CLUSTER }} var OK
+            >promote ${{ env.IMAGE }} til ${{ env.CLUSTER }} var OK
           reaction-type: rocket
                   
