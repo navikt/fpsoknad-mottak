@@ -49,7 +49,7 @@ jobs:
           PRINT_PAYLOAD: true
           VARS: dev-fss.json  
           
-      - name: Informer om deployment i en issue som kan kommenteres for å deploye til prod
+      - name: Informer om deployment i issue som kan kommenteres for å promotere til andre miljøer
         run: |
          echo "Lager  issue for $TAG"
              curl -X POST \
@@ -58,6 +58,6 @@ jobs:
             --header "content-type: application/json" \
             --data '{
               "title": "Deployment av ${{env.TAG}} til dev-fss var OK",
-              "body": "Kommenter med <i>/deploy ${{env.TAG}} env</i>, hvor <i>env<i> er et gyldig clusternavn, typisk prod"
+              "body": "Kommenter med <b>/deploy ${{env.TAG}} env</b>, hvor <b>env<b> er et gyldig clusternavn, typisk prod"
             }'       
      
