@@ -1,4 +1,4 @@
-name: Deploy
+name: Promote
 on:
   repository_dispatch:
     types: [deploy-command]
@@ -7,7 +7,7 @@ env:
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
       
 jobs:
-  deploy:
+  promote:
     runs-on: ubuntu-latest
     steps:
     
