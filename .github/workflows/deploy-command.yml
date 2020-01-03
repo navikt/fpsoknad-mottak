@@ -36,14 +36,5 @@ jobs:
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           body: |
             >deploy ${{ env.IMAGE }} til ${{ env.CLUSTER }} var OK
-          reaction-type: hooray
-              
-      - run: |
-          echo "Lukker issue"
-            curl -X PATCH \
-            --url ${{ github.event.client_payload.github.payload.comment.issue_url }} \  
-            --header "authorization: Bearer ${{ secrets.NOTIFICATION }}" \
-            --header "content-type: application/json" \
-            --data '{
-              "state": "closed"
-            }'     
+          reaction-type: rocket
+                  
