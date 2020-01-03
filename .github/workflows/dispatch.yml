@@ -9,7 +9,9 @@ jobs:
       - name: Slash command dispatch
         uses: peter-evans/slash-command-dispatch@v1
         with:
+          reaction-token: ${{ secrets.GITHUB_TOKEN }}
           token: ${{ secrets.NOTIFICATION }}
           commands: promote,prod
           issue-type: issue 
-          allow_edits: true        
+          allow_edits: true   
+          reactions: false     
