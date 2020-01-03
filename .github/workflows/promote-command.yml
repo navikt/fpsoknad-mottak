@@ -20,12 +20,12 @@ jobs:
            echo "::set-env name=IMAGE::$IMAGE_BASE:${{ github.event.client_payload.slash_command.arg1 }}" 
            echo "::set-env name=CLUSTER::${{ github.event.client_payload.slash_command.arg2 }}"         
      
-      - name: Promote til cluster
+      - name: Promoter til cluster
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ env.CLUSTER }}
-          RESOURCE: naiserator1.yaml
+          RESOURCE: naiserator.yaml
           PRINT_PAYLOAD: true
           VARS: ${{ env.CLUSTER }}.json 
           

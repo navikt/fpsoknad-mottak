@@ -28,7 +28,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod
-          RESOURCE: naiserator1.yaml
+          RESOURCE: naiserator.yaml
           PRINT_PAYLOAD: true
           VARS: prod.json 
           
