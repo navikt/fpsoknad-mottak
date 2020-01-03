@@ -24,7 +24,7 @@
         <jaxb.location>${project.build.directory}/classes/</jaxb.location>
         <xsd.location>src/main/xsd</xsd.location>
         <xjb.location>src/main/xjb</xjb.location>
-        <mq.version>9.1.3.0</mq.version>
+        <mq.version>9.1.4.0</mq.version>
         <kontrakter.version>5.1_20191210141010_6a7f399</kontrakter.version>
     </properties>
     <scm>
