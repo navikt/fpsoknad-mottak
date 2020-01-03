@@ -9,9 +9,12 @@ env:
 jobs:
   promote:
     runs-on: ubuntu-latest
-    steps:
     
-      - name: Set imagenavn og cluster fra args
+    steps:
+      - name: Sjekk ut kode
+        uses: actions/checkout@v1
+    
+      - name: Set variable
         run: |
            echo "::set-env name=DATO::$(git show --no-patch --oneline --pretty=%ad  --date=format:'%Y%m%d%H%M%S' $GITHUB_SHA)"    
            echo "::set-env name=SHA::$(echo $GITHUB_SHA | cut -c1-7)"  
@@ -22,10 +25,7 @@ jobs:
          git show --no-patch --oneline --pretty=%ad  --date=format:'%Y%m%d%H%M%S' $GITHUB_SHA
          echo "SHA er $SHA, DATO er $DATO"
          
-      - name: Sjekk ut kode
-        uses: actions/checkout@v1
-        with:
-          ref: ${{env.SHA}}
+     
        
       - name: Promote til cluster
         uses: nais/deploy/actions/deploy@v1
