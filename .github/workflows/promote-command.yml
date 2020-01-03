@@ -28,13 +28,7 @@ jobs:
       - run: |
          echo "LATEST er $LATEST"  
          
-      - name: Set default cluster om ikke satt 
-        run: | 
-        if [ "$CLUSTER" != "" ]; then
-            echo WOOHOO
-        fi
-        echo "::set-env name=CLUSTER::prod"         
-         
+     
       - name: Promote til cluster
         uses: nais/deploy/actions/deploy@v1
         env:
