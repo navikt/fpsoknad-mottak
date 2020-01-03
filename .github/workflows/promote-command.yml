@@ -29,8 +29,10 @@ jobs:
          echo "LATEST er $LATEST"  
          
       - name: Set default cluster om ikke satt 
-        if: $CLUSTER == null 
         run: | 
+        if [ "$CLUSTER" != "" ]; then
+            echo WOOHOO
+         fi
         echo "::set-env name=CLUSTER::prod"         
          
       - name: Promote til cluster
