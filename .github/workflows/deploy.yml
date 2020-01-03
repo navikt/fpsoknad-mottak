@@ -50,6 +50,7 @@ jobs:
           VARS: dev-fss.json  
           
       - name: Informer om deployment i issue som kan kommenteres for å promotere til andre miljøer
+        if: success()
         run: |
          echo "Lager  issue for $TAG"
              curl -X POST \
