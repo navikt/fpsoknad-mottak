@@ -10,6 +10,6 @@ jobs:
         uses: peter-evans/slash-command-dispatch@v1
         with:
           token: ${{ secrets.NOTIFICATION }}
-          commands: promote
+          commands: promote,prod
           issue-type: issue 
           allow_edits: true        
