@@ -2,6 +2,8 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=navikt_fpsoknad-mottak&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=navikt_fpsoknad-mottak)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=navikt_fpsoknad-mottak&metric=code_smells)](https://sonarcloud.io/dashboard?id=navikt_fpsoknad-mottak)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=navikt_fpsoknad-mottak&metric=security_rating)](https://sonarcloud.io/dashboard?id=navikt_fpsoknad-mottak)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=navikt_fpsoknad-mottak&metric=coverage)](https://sonarcloud.io/dashboard?id=navikt_fpsoknad-mottak)
+
 
 
 
