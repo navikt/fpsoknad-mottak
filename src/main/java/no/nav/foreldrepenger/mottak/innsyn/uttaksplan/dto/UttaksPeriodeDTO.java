@@ -37,6 +37,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
     private final Integer utbetalingsprosent;
     private final Boolean gjelderAnnenPart;
     private final GraderingAvslagÅrsak graderingAvslagAarsak;
+    private final String periodeResultatÅrsak;
     private final MorsAktivitet morsAktivitet;
     private final Boolean flerbarnsdager;
     private final Boolean manueltBehandlet;
@@ -66,7 +67,8 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
             @JsonProperty("flerbarnsdager") Boolean flerbarnsdager,
             @JsonProperty("uttakArbeidType") UttakArbeidType uttakArbeidType,
             @JsonProperty("arbeidsgiverOrgnr") String arbeidsgiverOrgnr,
-            @JsonProperty("arbeidsgiverAktoerId") AktørId arbeidsgiverAktoerId) {
+            @JsonProperty("arbeidsgiverAktoerId") AktørId arbeidsgiverAktoerId,
+            @JsonProperty("periodeResultatÅrsak") String periodeResultatÅrsak) {
         this.oppholdAarsak = oppholdAarsak;
         this.overfoeringAarsak = overfoeringAarsak;
         this.utsettelsePeriodeType = utsettelsePeriodeType;
@@ -89,6 +91,7 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
         this.tom = tom;
         this.arbeidsgiverOrgnr = arbeidsgiverOrgnr;
         this.arbeidsgiverAktoerId = arbeidsgiverAktoerId;
+        this.periodeResultatÅrsak = periodeResultatÅrsak;
     }
 
     @Override
