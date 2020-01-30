@@ -326,7 +326,8 @@ public class InnsynTjeneste implements Innsyn {
                         p.getMorsAktivitet(),
                         p.getFlerbarnsdager(),
                         p.getUttakArbeidType(),
-                        map(periode.getArbeidsgiverAktoerId(), periode.getArbeidsgiverOrgnr())))
+                        map(periode.getArbeidsgiverAktoerId(), periode.getArbeidsgiverOrgnr()),
+                        p.getPeriodeResultatÅrsak()))
                 .orElse(null);
     }
 

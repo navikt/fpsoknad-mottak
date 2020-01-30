@@ -36,27 +36,29 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
     private final Integer samtidigUttaksprosent;
     private final UttakArbeidType uttakArbeidType;
     private final ArbeidsgiverInfo arbeidsgiverInfo;
+    private final String periodeResultatÅrsak;
 
     public UttaksPeriode(@JsonProperty("oppholdAarsak") Oppholdsårsak oppholdAarsak,
-            @JsonProperty("overfoeringAarsak") Overføringsårsak overfoeringAarsak,
-            @JsonProperty("graderingAvslagAarsak") GraderingAvslagÅrsak graderingAvslagAarsak,
-            @JsonProperty("utsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
-            @JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
-            @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
-            @JsonProperty("samtidigUttak") Boolean samtidigUttak,
-            @JsonProperty("fom") LocalDate fom,
-            @JsonProperty("tom") LocalDate tom,
-            @JsonProperty("stønadskontotype") @JsonAlias("trekkonto") StønadskontoType stønadskontotype,
-            @JsonProperty("trekkDager") Double trekkDager,
-            @JsonProperty("arbeidstidprosent") Integer arbeidstidProsent,
-            @JsonProperty("utbetalingsprosent") Integer utbetalingsprosent,
-            @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
-            @JsonProperty("manueltBehandlet") Boolean manueltBehandlet,
-            @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
-            @JsonProperty("morsAktivitet") MorsAktivitet morsAktivitet,
-            @JsonProperty("flerbarnsdager") Boolean flerbarnsdager,
-            @JsonProperty("uttakArbeidType") UttakArbeidType uttakArbeidType,
-            @JsonProperty("arbeidsgiverInfo") ArbeidsgiverInfo arbeidsgiverInfo) {
+                         @JsonProperty("overfoeringAarsak") Overføringsårsak overfoeringAarsak,
+                         @JsonProperty("graderingAvslagAarsak") GraderingAvslagÅrsak graderingAvslagAarsak,
+                         @JsonProperty("utsettelsePeriodeType") UtsettelsePeriodeType utsettelsePeriodeType,
+                         @JsonProperty("periodeResultatType") PeriodeResultatType periodeResultatType,
+                         @JsonProperty("graderingInnvilget") Boolean graderingInnvilget,
+                         @JsonProperty("samtidigUttak") Boolean samtidigUttak,
+                         @JsonProperty("fom") LocalDate fom,
+                         @JsonProperty("tom") LocalDate tom,
+                         @JsonProperty("stønadskontotype") @JsonAlias("trekkonto") StønadskontoType stønadskontotype,
+                         @JsonProperty("trekkDager") Double trekkDager,
+                         @JsonProperty("arbeidstidprosent") Integer arbeidstidProsent,
+                         @JsonProperty("utbetalingsprosent") Integer utbetalingsprosent,
+                         @JsonProperty("gjelderAnnenPart") Boolean gjelderAnnenPart,
+                         @JsonProperty("manueltBehandlet") Boolean manueltBehandlet,
+                         @JsonProperty("samtidigUttaksprosent") Integer samtidigUttaksprosent,
+                         @JsonProperty("morsAktivitet") MorsAktivitet morsAktivitet,
+                         @JsonProperty("flerbarnsdager") Boolean flerbarnsdager,
+                         @JsonProperty("uttakArbeidType") UttakArbeidType uttakArbeidType,
+                         @JsonProperty("arbeidsgiverInfo") ArbeidsgiverInfo arbeidsgiverInfo,
+                         @JsonProperty("periodeResultatÅrsak") String periodeResultatÅrsak) {
         this.oppholdAarsak = oppholdAarsak;
         this.overfoeringAarsak = overfoeringAarsak;
         this.utsettelsePeriodeType = utsettelsePeriodeType;
@@ -76,6 +78,7 @@ public class UttaksPeriode implements Comparable<UttaksPeriode> {
         this.flerbarnsdager = flerbarnsdager;
         this.uttakArbeidType = uttakArbeidType;
         this.arbeidsgiverInfo = arbeidsgiverInfo;
+        this.periodeResultatÅrsak = periodeResultatÅrsak;
     }
 
     @Override
