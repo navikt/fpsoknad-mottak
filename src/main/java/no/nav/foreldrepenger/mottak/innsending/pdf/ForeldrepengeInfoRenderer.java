@@ -72,7 +72,6 @@ public class ForeldrepengeInfoRenderer {
     private static final String DOKUMENTASJON = "dokumentasjon";
     private static final String DAGER = "dager";
     private static final String ARBEIDSGIVER = "arbeidsgiver";
-    private static final String ALENEOMSORG = "aleneomsorg";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final float STARTY = PDFElementRenderer.calculateStartY();
     private static final int INDENT = 20;
@@ -104,12 +103,10 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
-            y -= renderer.addLineOfRegularText(INDENT, txt(ALENEOMSORG) +
-                    jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
         } else if (annenForelder instanceof UtenlandskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(annenForelder), cos, y);
-            y -= renderer.addLineOfRegularText(INDENT, txt(ALENEOMSORG) +
-                    jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
@@ -124,8 +121,7 @@ public class ForeldrepengeInfoRenderer {
 
     public float rettigheter(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt(ALENEOMSORG) +
-                jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
         y -= renderer.addLineOfRegularText(INDENT, txt("omsorgiperiodene") +
                 jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
         return y;
@@ -716,13 +712,13 @@ public class ForeldrepengeInfoRenderer {
         if (næring.getStillingsprosent() != null) {
             attributter.add(txt("stillingsprosent", prosentFra(næring.getStillingsprosent())));
         }
-        attributter.add(txt("nyopprettet", jaNei(næring.isErNyOpprettet())));
+        attributter.add(txt("nyligyrkesaktiv", jaNei(næring.isErNyIArbeidslivet())));
         attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
         addIfSet(attributter, "egennæringbeskrivelseendring", næring.getBeskrivelseEndring());
         addIfSet(attributter, "egennæringendringsdato", næring.getEndringsDato());
         addMoneyIfSet(attributter, "egennæringbruttoinntekt", næring.getNæringsinntektBrutto());
-        if (næring.isErNyIArbeidslivet()) {
-            attributter.add(txt("nyiarbeidslivet", jaNei(true)));
+        if (næring.isErNyOpprettet()) {
+            attributter.add(txt("nystartetvirksomhet", jaNei(true)));
             addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
         }
         Regnskapsfører rf = regnskapsfører(næring);

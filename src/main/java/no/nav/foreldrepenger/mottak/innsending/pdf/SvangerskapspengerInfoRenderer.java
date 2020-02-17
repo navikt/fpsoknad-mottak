@@ -236,13 +236,13 @@ public class SvangerskapspengerInfoRenderer {
         if (næring.getStillingsprosent() != null) {
             attributter.add(txt("stillingsprosent", prosentFra(næring.getStillingsprosent())));
         }
-        attributter.add(txt("nyopprettet", jaNei(næring.isErNyOpprettet())));
+        attributter.add(txt("nyligyrkesaktiv", jaNei(næring.isErNyIArbeidslivet())));
         attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
         addIfSet(attributter, "egennæringbeskrivelseendring", næring.getBeskrivelseEndring());
         addIfSet(attributter, "egennæringendringsdato", næring.getEndringsDato());
         addMoneyIfSet(attributter, "egennæringbruttoinntekt", næring.getNæringsinntektBrutto());
-        if (næring.isErNyIArbeidslivet()) {
-            attributter.add(txt("nyiarbeidslivet", jaNei(true)));
+        if (næring.isErNyOpprettet()) {
+            attributter.add(txt("nystartetvirksomhet", jaNei(true)));
             addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
         }
         Regnskapsfører rf = regnskapsfører(næring);
