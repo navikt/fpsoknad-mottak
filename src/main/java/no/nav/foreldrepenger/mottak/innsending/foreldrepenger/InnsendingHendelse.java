@@ -11,6 +11,7 @@ import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 public class InnsendingHendelse {
 
     private final String aktørId;
+    private final String fnr;
     private final String journalId;
     private final String referanseId;
     private final String dialogId;
@@ -23,8 +24,9 @@ public class InnsendingHendelse {
 
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(String aktørId, String dialogId, Kvittering kvittering, Konvolutt konvolutt) {
+    public InnsendingHendelse(String aktørId, String fnr, String dialogId, Kvittering kvittering, Konvolutt konvolutt) {
         this.aktørId = aktørId;
+        this.fnr = fnr;
         this.journalId = kvittering.getJournalId();
         this.referanseId = kvittering.getReferanseId();
         this.dialogId = dialogId;
@@ -35,6 +37,10 @@ public class InnsendingHendelse {
         this.ikkeOpplastedeVedlegg = konvolutt.getIkkeOpplastedeVedlegg();
         this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
         this.innsendt = konvolutt.getOpprettet();
+    }
+
+    public String getFnr() {
+        return fnr;
     }
 
     public LocalDateTime getInnsendt() {
@@ -83,7 +89,8 @@ public class InnsendingHendelse {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[aktørId=" + aktørId + ", journalId=" + journalId + ", referanseId="
+        return getClass().getSimpleName() + "[aktørId=" + aktørId + "fnr=" + fnr + ", journalId=" + journalId
+                + ", referanseId="
                 + referanseId + ", dialogId=" + dialogId + ", saksnummer=" + saksnummer + ", leveranseStatus="
                 + leveranseStatus + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
                 + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsendt=" + innsendt

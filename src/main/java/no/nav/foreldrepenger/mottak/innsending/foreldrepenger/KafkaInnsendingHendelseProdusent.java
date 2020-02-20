@@ -19,6 +19,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "true")
@@ -29,18 +30,22 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     private final KafkaOperations<String, String> kafkaOperations;
     private final Oppslag oppslag;
     private final JacksonWrapper mapper;
+    private final TokenUtil tokenUtil;
 
     public KafkaInnsendingHendelseProdusent(@Value("${mottak.sender.domainevent.topic}") String topic,
-            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag) {
+            KafkaTemplate<String, String> kafkaOperations, JacksonWrapper mapper, Oppslag oppslag,
+            TokenUtil tokenUtil) {
         this.topic = topic;
         this.kafkaOperations = kafkaOperations;
         this.mapper = mapper;
         this.oppslag = oppslag;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
     public void publiser(Kvittering kvittering, String dialogId, Konvolutt konvolutt) {
-        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), dialogId, kvittering, konvolutt);
+        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), tokenUtil.getSubject(), dialogId, kvittering,
+                konvolutt);
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(h))
