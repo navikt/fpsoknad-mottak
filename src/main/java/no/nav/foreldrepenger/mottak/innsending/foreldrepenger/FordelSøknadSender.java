@@ -13,6 +13,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
 public class FordelSøknadSender implements SøknadSender {
@@ -22,13 +23,15 @@ public class FordelSøknadSender implements SøknadSender {
     private final KonvoluttGenerator generator;
     private final InfoskrivPdfEkstraktor ekstraktor;
     private final InnsendingHendelseProdusent hendelser;
+    private final TokenUtil tokenUtil;
 
     public FordelSøknadSender(FordelConnection connection, KonvoluttGenerator generator,
-            InfoskrivPdfEkstraktor ekstraktor, InnsendingHendelseProdusent hendelseProdusent) {
+            InfoskrivPdfEkstraktor ekstraktor, InnsendingHendelseProdusent hendelseProdusent, TokenUtil tokenUtil) {
         this.connection = connection;
         this.generator = generator;
         this.ekstraktor = ekstraktor;
         this.hendelser = hendelseProdusent;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class FordelSøknadSender implements SøknadSender {
 
     private void publiserHendelse(Konvolutt konvolutt, String dialogId, Kvittering kvittering) {
         try {
-            hendelser.publiser(kvittering, dialogId, konvolutt);
+            hendelser.publiser(tokenUtil.getSubject(), kvittering, dialogId, konvolutt);
         } catch (Exception e) {
             LOG.warn("Kunne ikke publisere hendelse", e);
         }

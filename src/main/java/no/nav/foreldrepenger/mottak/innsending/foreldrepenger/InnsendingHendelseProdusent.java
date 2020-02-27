@@ -4,5 +4,5 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 
 public interface InnsendingHendelseProdusent {
 
-    void publiser(Kvittering kvittering, String referanseId, Konvolutt konvolutt);
+    void publiser(String fnr, Kvittering kvittering, String referanseId, Konvolutt konvolutt);
 }
