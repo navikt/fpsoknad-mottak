@@ -54,17 +54,17 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConnection;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelSøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.GosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelKvittering;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.LoggingHendelseProdusent;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.MetdataGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PendingKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ResponseHandler;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelSøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.LoggingHendelseProdusent;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
@@ -72,13 +72,13 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
-import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
-import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
+import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -160,7 +160,7 @@ public class FPFordelTest {
         return new FordelSøknadSender(
                 new FordelConnection(restOperations, cfg,
                         new ResponseHandler(restOperations, 3, 10000, poller), registry),
-                konvoluttGenerator, pdfSplitter, new LoggingHendelseProdusent());
+                konvoluttGenerator, pdfSplitter, new LoggingHendelseProdusent(), tokenHelper);
     }
 
     private static ResponseEntity<FordelKvittering> gosysReceipt() {
