@@ -785,7 +785,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private void addMoneyIfSet(List<String> attributter, String key, Long sum) {
-        if (sum != null && sum > 0L) {
+        if (sum != null) {
             attributter.add(txt(key, String.valueOf(sum)));
         }
     }
