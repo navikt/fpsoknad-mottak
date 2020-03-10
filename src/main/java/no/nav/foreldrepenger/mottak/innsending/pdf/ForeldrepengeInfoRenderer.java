@@ -716,7 +716,9 @@ public class ForeldrepengeInfoRenderer {
         attributter.add(txt("varigendring", jaNei(næring.isErVarigEndring())));
         addIfSet(attributter, "egennæringbeskrivelseendring", næring.getBeskrivelseEndring());
         addIfSet(attributter, "egennæringendringsdato", næring.getEndringsDato());
-        addMoneyIfSet(attributter, "egennæringbruttoinntekt", næring.getNæringsinntektBrutto());
+        if (næring.isErNyOpprettet() || næring.isErVarigEndring()) {
+            addMoneyIfSet(attributter, "egennæringbruttoinntekt", næring.getNæringsinntektBrutto());
+        }
         if (næring.isErNyOpprettet()) {
             attributter.add(txt("nystartetvirksomhet", jaNei(true)));
             addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
