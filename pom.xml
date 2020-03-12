@@ -7,7 +7,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.5.RELEASE</version>
-        <relativePath />
+        <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.nav.foreldrepenger</groupId>
@@ -33,7 +33,7 @@
         <xsd.location>src/main/xsd</xsd.location>
         <xjb.location>src/main/xjb</xjb.location>
         <mq.version>9.1.4.0</mq.version>
-        <kontrakter.version>5.1_20191210141010_6a7f399</kontrakter.version>
+        <kontrakter.version>5.1_20200114070256_f09deef</kontrakter.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
