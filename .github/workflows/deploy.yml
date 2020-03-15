@@ -12,7 +12,7 @@ jobs:
   kompiler:
     runs-on: ubuntu-latest
     steps:
-      - name: Lukk deployment-issues
+      - name: Lukk gamle bygg-issues
         uses: actions/github-script@0.5.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
