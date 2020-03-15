@@ -78,12 +78,7 @@ jobs:
           token: ${{ secrets.NOTIFICATION }}
           title: Deploy av ${{ env.TAG }}
           body: |
-            Kommenter med <b>/promote cluster namespace</b>, hvor <b>cluster</b> er et gyldig clusternavn.
-            <table>
-            <tr><th>Cluster</th></tr>
-            <tr><td>dev-fss</td></tr>
-            <tr><td>prod-fss</td><</tr>
-            </table>
+            Kommenter med <b>/promote cluster</b>, hvor <b>cluster</b> er <i>dev-fss</i> eller <i>prod-fss</i>
       - name: Trigg deploy til dev-fss
         if: success()
         uses: actions/github-script@0.3.0
@@ -94,5 +89,5 @@ jobs:
                             repo: context.issue.repo,
                             issue_number: ${{ steps.createdeployissue.outputs.number }} }
             github.issues.createComment({...issue,
-                                    title: 'Deploy av ${{ env.TAG }}',
+                                    title: 'Bygg av ${{ env.TAG }}',
                                     body: '/promote dev-fss'})
