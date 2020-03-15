@@ -7,7 +7,6 @@ on:
       - master
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  CLUSTER: dev-fss
   IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
   
 jobs:
