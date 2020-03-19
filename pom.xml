@@ -222,7 +222,7 @@
             <groupId>no.nav.foreldrepenger.kontrakter</groupId>
             <artifactId>fp-kontrakter-root</artifactId>
             <version>${kontrakter.version}</version>
-            <classifier>xsd</classifier>
+            <!-- <classifier>xsd</classifier> -->
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
