@@ -33,7 +33,10 @@
         <xsd.location>src/main/xsd</xsd.location>
         <xjb.location>src/main/xjb</xjb.location>
         <mq.version>9.1.4.0</mq.version>
+                <kontrakter.version>5.1-20200319151632-d72fd00</kontrakter.version>
+        <!-- 
         <kontrakter.version>5.1_20200114070256_f09deef</kontrakter.version>
+         -->
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
@@ -70,6 +73,7 @@
                                     <classifier>xsd</classifier>
                                     <outputDirectory>${xsd.location}</outputDirectory>
                                     <includes>**\/*.xsd</includes>
+                                    <excludes>grensesnittavstemming-v1/,oppdragskjema-v1/</excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
