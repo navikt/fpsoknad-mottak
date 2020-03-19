@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
@@ -41,7 +40,7 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
-    @Cacheable(cacheNames = "aktør")
+    // @Cacheable(cacheNames = "aktør")
     public AktørId getAktørId(Fødselsnummer fnr) {
         return connection.hentAktørId(fnr);
     }
@@ -64,7 +63,7 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
-    @Cacheable(cacheNames = "organisasjon")
+    // @Cacheable(cacheNames = "organisasjon")
     public String organisasjonsNavn(String orgnr) {
         return connection.organisasjonsNavn(orgnr);
     }
