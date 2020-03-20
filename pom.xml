@@ -7,7 +7,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.5.RELEASE</version>
-        <relativePath/>
+        <relativePath />
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.nav.foreldrepenger</groupId>
@@ -32,11 +32,8 @@
         <jaxb.location>${project.build.directory}/classes/</jaxb.location>
         <xsd.location>src/main/xsd</xsd.location>
         <xjb.location>src/main/xjb</xjb.location>
-        <mq.version>9.1.4.0</mq.version>
-                <kontrakter.version>5.1-20200319151632-d72fd00</kontrakter.version>
-        <!-- 
-        <kontrakter.version>5.1_20200114070256_f09deef</kontrakter.version>
-         -->
+        <mq.version>9.1.4.0</mq.version>        
+        <kontrakter.version>5.1-20200319151632-d72fd00</kontrakter.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
@@ -73,7 +70,7 @@
                                     <classifier>xsd</classifier>
                                     <outputDirectory>${xsd.location}</outputDirectory>
                                     <includes>**\/*.xsd</includes>
-                                    <excludes>grensesnittavstemming-v1/,oppdragskjema-v1/</excludes>
+                                    <excludes>grensesnitt*/,oppdrag*/</excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -222,7 +219,7 @@
             <groupId>no.nav.foreldrepenger.kontrakter</groupId>
             <artifactId>fp-kontrakter-root</artifactId>
             <version>${kontrakter.version}</version>
-            <!-- <classifier>xsd</classifier> -->
+            <classifier>xsd</classifier>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
