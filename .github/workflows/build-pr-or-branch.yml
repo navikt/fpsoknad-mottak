@@ -8,7 +8,6 @@ on:
 env:
   GITHUB_USERNAME: x-access-token
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
   
 jobs:
   kompiler:
@@ -32,4 +31,4 @@ jobs:
     
       - name: Kompiler
         run: | 
-          mvn install --batch-mode --quiet --settings .github/workflows/.m2/settings.xml
+          mvn package  --settings .github/workflows/.m2/settings.xml
