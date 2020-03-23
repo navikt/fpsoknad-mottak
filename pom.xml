@@ -65,12 +65,45 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>fp-kontrakter-root</artifactId>
+                                    <artifactId>inntektsmelding-v1</artifactId>
                                     <version>${kontrakter.version}</version>
-                                    <classifier>xsd</classifier>
-                                    <outputDirectory>${xsd.location}</outputDirectory>
+                                    <outputDirectory>${xsd.location}/inntektsmelding-v1</outputDirectory>
                                     <includes>**\/*.xsd</includes>
-                                    <excludes>grensesnitt*/,oppdrag*/</excludes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
+                                    <artifactId>behandlingsprosess-vedtak-v2</artifactId>
+                                    <version>${kontrakter.version}</version>
+                                    <outputDirectory>${xsd.location}/behandlingsprosess-vedtak-v2</outputDirectory>
+                                    <includes>**\/*.xsd</includes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
+                                    <artifactId>behandlingsprosess-vedtak-v1</artifactId>
+                                    <version>${kontrakter.version}</version>
+                                    <outputDirectory>${xsd.location}/behandlingsprosess-vedtak-v1</outputDirectory>
+                                    <includes>**\/*.xsd</includes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
+                                    <artifactId>soeknad-v3</artifactId>
+                                    <version>${kontrakter.version}</version>
+                                    <outputDirectory>${xsd.location}/soeknad-v3</outputDirectory>
+                                    <includes>**\/*.xsd</includes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
+                                    <artifactId>soeknad-v2</artifactId>
+                                    <version>${kontrakter.version}</version>
+                                    <outputDirectory>${xsd.location}/soeknad-v2</outputDirectory>
+                                    <includes>**\/*.xsd</includes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
+                                    <artifactId>soeknad-v1</artifactId>
+                                    <version>${kontrakter.version}</version>
+                                    <outputDirectory>${xsd.location}/soeknad-v1</outputDirectory>
+                                    <includes>**\/*.xsd</includes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -218,12 +251,13 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>no.nav.foreldrepenger.kontrakter</groupId>
             <artifactId>fp-kontrakter-root</artifactId>
             <version>${kontrakter.version}</version>
-            <classifier>xsd</classifier>
-        </dependency>
+            classifier>xsd</classifier>
+        </dependency> -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
