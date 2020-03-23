@@ -31,4 +31,4 @@ jobs:
     
       - name: Kompiler
         run: | 
-          mvn install --batch-mode --quiet --settings .github/workflows/.m2/settings.xml
+          mvn compile  --settings .github/workflows/.m2/settings.xml
