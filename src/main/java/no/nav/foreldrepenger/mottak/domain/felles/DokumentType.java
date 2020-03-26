@@ -34,6 +34,8 @@ public enum DokumentType {
     I000111("Dokumentasjon av begrunnelse for hvorfor man søker tilbake i tid"),
     I000112("Dokumentasjon av deltakelse i introduksjonsprogrammet"),
     I000114("Svar på varsel om tilbakebetaling"),
+    I000116("Bekreftelse på øvelse eller tjeneste i Forsvaret eller Sivilforsvaret"),
+    I000117("Bekreftelse på tiltak i regi av Arbeids- og velferdsetaten"),
     I500002("Ettersendelse til søknad om foreldrepenger ved adopsjon"),
     I500003("Ettersendelse til søknad om engangsstønad ved fødsel"),
     I500004("Ettersendelse til søknad om engangsstønad ved adopsjon"),
