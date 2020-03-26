@@ -6,5 +6,7 @@ public enum UtsettelsePeriodeType {
     FERIE,
     SYKDOM_SKADE,
     SØKER_INNLAGT,
-    BARN_INNLAGT
+    BARN_INNLAGT,
+    HV_OVELSE,
+    NAV_TILTAK
 }
