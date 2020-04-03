@@ -103,10 +103,12 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("omfar"), cos, y);
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
-            y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT,
+                    txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
         } else if (annenForelder instanceof UtenlandskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(annenForelder), cos, y);
-            y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
+            y -= renderer.addLineOfRegularText(INDENT,
+                    txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
@@ -121,7 +123,8 @@ public class ForeldrepengeInfoRenderer {
 
     public float rettigheter(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
+        y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())),
+                cos, y);
         y -= renderer.addLineOfRegularText(INDENT, txt("omsorgiperiodene") +
                 jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
         return y;
@@ -483,7 +486,14 @@ public class ForeldrepengeInfoRenderer {
             attributter
                     .add(txt(UTTAKSPERIODETYPE, kontoTypeForRolle(utsettelse.getUttaksperiodeType(), rolle)));
         }
-        attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
+
+        if (utsettelse.getÅrsak().getKey() != null) {
+            attributter.add(txt("utsettelsesårsak", txt(utsettelse.getÅrsak().getKey())));
+        } else {
+            attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
+        }
+
+        // attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
         addIfSet(attributter, utsettelse.getMorsAktivitetsType());
         addListIfSet(attributter, "virksomhetsnummer", utsettelse.getVirksomhetsnummer());
         if (!utsettelse.getÅrsak().equals(LOVBESTEMT_FERIE)) {
