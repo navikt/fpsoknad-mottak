@@ -7,6 +7,7 @@ import java.util.List;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
+import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 public class InnsendingHendelse {
 
@@ -89,7 +90,8 @@ public class InnsendingHendelse {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[aktørId=" + aktørId + "fnr=" + fnr + ", journalId=" + journalId
+        return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.mask(fnr) + ", journalId="
+                + journalId
                 + ", referanseId="
                 + referanseId + ", dialogId=" + dialogId + ", saksnummer=" + saksnummer + ", leveranseStatus="
                 + leveranseStatus + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
