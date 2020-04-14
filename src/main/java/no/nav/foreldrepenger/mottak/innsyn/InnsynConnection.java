@@ -66,10 +66,15 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     public UttaksplanDTO uttaksplan(AktørId aktørId, AktørId annenPart) {
         LOG.trace("Henter uttaksplan for {} med annen part {}", aktørId, annenPart);
-        return getForObject(
-                uri(config.getUri(), ANNENFORELDERPLAN,
-                        queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId())),
-                UttaksplanDTO.class);
+        try {
+            return getForObject(
+                    uri(config.getUri(), ANNENFORELDERPLAN,
+                            queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId())),
+                    UttaksplanDTO.class);
+        } catch (Exception e) {
+            LOG.warn("Kunne ikke hente uttaksplan for annen part {}", annenPart);
+            return null;
+        }
     }
 
     public BehandlingDTO behandling(Lenke lenke) {
