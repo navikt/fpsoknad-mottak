@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
+import no.nav.foreldrepenger.mottak.domain.FagsakType;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
@@ -71,6 +72,10 @@ public class Konvolutt {
 
     public SøknadEgenskap getEgenskap() {
         return egenskap;
+    }
+
+    public FagsakType getFagsakType() {
+        return getEgenskap().getFagsakType();
     }
 
     public SøknadType getType() {
@@ -143,4 +148,5 @@ public class Konvolutt {
                 + opplastedeVedlegg + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsending=" + innsending
                 + "]";
     }
+
 }
