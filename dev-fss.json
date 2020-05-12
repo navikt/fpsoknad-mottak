@@ -9,6 +9,7 @@
 		"varsel_channelname": "Q1_FPSOKNAD_VARSEL",
 		"fpfordel_uri": "http://fpfordel.q1",
 		"fpfordel_enabled": "true",
-		"innsyn_uri": "http://fpinfo.q1"
+		"innsyn_uri": "http://fpinfo.q1",
+        "fppdfgen_enabled": "true"
 	}
 }

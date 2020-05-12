@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -33,18 +34,19 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
+@AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
         PDFElementRenderer.class,
         DelegerendePDFGenerator.class,
         ForeldrepengerPDFGenerator.class,
-        EngangsstønadPDFGenerator.class,
+    DokumentGenerator.class,
+    //EngangsstønadPDFGenerator.class,
         SvangerskapspengerPDFGenerator.class,
         InfoskrivRenderer.class,
         InfoskrivPdfEkstraktor.class,
         SvangerskapspengerInfoRenderer.class,
         SpringTokenValidationContextHolder.class, TestConfig.class })
-
 public class PDFGeneratorTest {
 
     private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +
