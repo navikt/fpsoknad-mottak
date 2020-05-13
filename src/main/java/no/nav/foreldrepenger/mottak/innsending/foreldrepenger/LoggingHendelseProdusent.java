@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 
 @Component
@@ -14,7 +15,7 @@ public class LoggingHendelseProdusent implements InnsendingHendelseProdusent {
     private static final Logger LOG = LoggerFactory.getLogger(LoggingHendelseProdusent.class);
 
     @Override
-    public void publiser(String fnr, Kvittering kvittering, String referanseId, Konvolutt konvolutt) {
+    public void publiser(Fødselsnummer fnr, Kvittering kvittering, String referanseId, Konvolutt konvolutt) {
         LOG.info(
                 "Publiserer hendelse fra {} for søknad av type {} med opplastede vedlegg {}, ikkeopplastede vedlegg {} og referanseId {}",
                 kvittering, konvolutt.getType(),

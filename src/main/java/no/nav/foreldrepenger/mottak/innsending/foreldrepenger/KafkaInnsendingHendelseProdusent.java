@@ -16,6 +16,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
@@ -39,8 +40,8 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     }
 
     @Override
-    public void publiser(String fnr, Kvittering kvittering, String dialogId, Konvolutt konvolutt) {
-        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), fnr, dialogId, kvittering,
+    public void publiser(Fødselsnummer fnr, Kvittering kvittering, String dialogId, Konvolutt konvolutt) {
+        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), fnr.getFnr(), dialogId, kvittering,
                 konvolutt);
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder
