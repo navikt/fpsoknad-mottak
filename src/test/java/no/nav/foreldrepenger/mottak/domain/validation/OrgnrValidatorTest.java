@@ -32,6 +32,11 @@ public class OrgnrValidatorTest {
     }
 
     @Test
+    public void testStrange() {
+        assertTrue(validator.validate(new TestClass("999999999")).isEmpty());
+    }
+
+    @Test
     public void testNull() {
         assertTrue(validator.validate(new TestClass(null)).isEmpty());
     }
