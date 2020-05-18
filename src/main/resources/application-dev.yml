@@ -18,7 +18,7 @@ spring:
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
        producer:
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
-   http:
+   mvc:
      log-request-details : true
 varsel:
     username : srvappserver

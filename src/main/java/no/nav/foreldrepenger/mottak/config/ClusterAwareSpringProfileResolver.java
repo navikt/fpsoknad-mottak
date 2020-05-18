@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static java.lang.System.getenv;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEFAULT;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClusterAwareSpringProfileResolver {
 

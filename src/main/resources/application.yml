@@ -18,7 +18,9 @@ management:
    metrics:
       web:
          server:
-            auto-time-requests: true
+            request:
+               autotime:
+                 enabled: true
    endpoint:
       health:
          show-details: never
@@ -34,7 +36,6 @@ management:
 server:
    servlet:
       context-path: /api
-   use-forward-headers: true
 varsel:
    username: srvappserver
    enabled: true

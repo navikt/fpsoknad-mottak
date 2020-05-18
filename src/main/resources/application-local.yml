@@ -33,5 +33,5 @@ no.nav:
 server:
   port: 9001
 spring:
-  http:
+  mvc:
     log-request-details : true
