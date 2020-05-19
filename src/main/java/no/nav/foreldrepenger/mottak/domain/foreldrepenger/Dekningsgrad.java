@@ -9,18 +9,19 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 
 public enum Dekningsgrad {
 
-    GRAD80("80"), GRAD100("100");
+    GRAD80(80),
+    GRAD100(100);
 
-    private final String kode;
+    private final int kode;
 
-    Dekningsgrad(String kode) {
+    Dekningsgrad(int kode) {
         this.kode = kode;
     }
 
     @JsonCreator
-    public static Dekningsgrad create(String value) {
+    public static Dekningsgrad create(int value) {
         for (Dekningsgrad val : values()) {
-            if (val.name().equals(value) || val.kode.equals(value)) {
+            if (val.kode == value) {
                 return val;
             }
         }
@@ -28,13 +29,17 @@ public enum Dekningsgrad {
     }
 
     @JsonValue
-    public String kode() {
+    public int kode() {
         return kode;
     }
 
     public static Dekningsgrad fraKode(String kode) {
+        return fraKode(Integer.valueOf(kode));
+    }
+
+    public static Dekningsgrad fraKode(int kode) {
         return Arrays.stream(Dekningsgrad.values())
-                .filter(e -> e.kode.equals(kode))
+                .filter(e -> e.kode == kode)
                 .findFirst()
                 .orElseThrow(() -> new UnexpectedInputException("Ikke støttet dekningsgrad %s.", kode));
     }

@@ -156,8 +156,9 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private OmYtelse ytelseFra(Søknad søknad) {
         return new OmYtelse()
-                .withAny(JAXB.marshalToElement(foreldrepengerFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
-                        .cast(søknad.getYtelse()))));
+                .withAny(JAXB.marshalToElement(
+                        foreldrepengerFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                                .cast(søknad.getYtelse()))));
     }
 
     private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
@@ -179,8 +180,8 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .orElse(null);
     }
 
-    private static Dekningsgrader dekningsgradFra(String kode) {
-        var dekningsgrad = new Dekningsgrader().withKode(kode);
+    private static Dekningsgrader dekningsgradFra(Integer kode) {
+        var dekningsgrad = new Dekningsgrader().withKode(String.valueOf(kode));
         return dekningsgrad.withKodeverk(dekningsgrad.getKodeverk());
     }
 
@@ -320,14 +321,14 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         String id = arbeidsgiver.get(0);
         if (id != null) {
             switch (id.length()) {
-            case 11:
-                return new Person()
-                        .withIdentifikator(id);
-            case 9:
-                return new Virksomhet()
-                        .withIdentifikator(id);
-            default:
-                throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
+                case 11:
+                    return new Person()
+                            .withIdentifikator(id);
+                case 9:
+                    return new Virksomhet()
+                            .withIdentifikator(id);
+                default:
+                    throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
             }
         }
         return null;
