@@ -3,7 +3,9 @@ package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 
@@ -18,10 +20,26 @@ public enum Dekningsgrad {
         this.kode = kode;
     }
 
-    @JsonCreator
-    public static Dekningsgrad create(int value) {
+    @JsonCreator(mode = Mode.DELEGATING)
+    public static Dekningsgrad create(JsonNode node) {
+        if (node.isTextual()) {
+            return create(node.asText());
+        }
+        return create(node.asInt());
+    }
+
+    private static Dekningsgrad create(int value) {
         for (Dekningsgrad val : values()) {
             if (val.kode == value) {
+                return val;
+            }
+        }
+        throw new UnexpectedInputException("Ikke støttet dekningsgrad %s.", value);
+    }
+
+    public static Dekningsgrad create(String value) {
+        for (Dekningsgrad val : values()) {
+            if (val.name().equals(value) || String.valueOf(val.kode).equals(value)) {
                 return val;
             }
         }

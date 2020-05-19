@@ -23,13 +23,63 @@ public class UttaksplanTest {
     @Autowired
     private ObjectMapper mapper;
 
+    String test0 = "{\n" +
+            "  \"termindato\" : \"2020-05-19\",\n" +
+            "  \"fødselsdato\" : \"2020-05-19\",\n" +
+            "  \"omsorgsovertakelsesdato\" : \"2020-05-19\",\n" +
+            "  \"dekningsgrad\" : \"GRAD100\",\n" +
+            "  \"antallBarn\" : 1,\n" +
+            "  \"søkerErFarEllerMedmor\" : false,\n" +
+            "  \"morErAleneOmOmsorg\" : false,\n" +
+            "  \"morHarRett\" : false,\n" +
+            "  \"morErUfør\" : false,\n" +
+            "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
+            "  \"farMedmorHarRett\" : false,\n" +
+            "  \"annenForelderErInformert\" : false,\n" +
+            "  \"uttaksPerioder\" : [ ]\n" +
+            "}";
+
+    String test1 = "{\n" +
+            "  \"termindato\" : \"2020-05-19\",\n" +
+            "  \"fødselsdato\" : \"2020-05-19\",\n" +
+            "  \"omsorgsovertakelsesdato\" : \"2020-05-19\",\n" +
+            "  \"dekningsgrad\" : \"100\",\n" +
+            "  \"antallBarn\" : 1,\n" +
+            "  \"søkerErFarEllerMedmor\" : false,\n" +
+            "  \"morErAleneOmOmsorg\" : false,\n" +
+            "  \"morHarRett\" : false,\n" +
+            "  \"morErUfør\" : false,\n" +
+            "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
+            "  \"farMedmorHarRett\" : false,\n" +
+            "  \"annenForelderErInformert\" : false,\n" +
+            "  \"uttaksPerioder\" : [ ]\n" +
+            "}";
+    String test2 = "{\n" +
+            "  \"termindato\" : \"2020-05-19\",\n" +
+            "  \"fødselsdato\" : \"2020-05-19\",\n" +
+            "  \"omsorgsovertakelsesdato\" : \"2020-05-19\",\n" +
+            "  \"dekningsgrad\" : 100,\n" +
+            "  \"antallBarn\" : 1,\n" +
+            "  \"søkerErFarEllerMedmor\" : false,\n" +
+            "  \"morErAleneOmOmsorg\" : false,\n" +
+            "  \"morHarRett\" : false,\n" +
+            "  \"morErUfør\" : false,\n" +
+            "  \"farMedmorErAleneOmOmsorg\" : false,\n" +
+            "  \"farMedmorHarRett\" : false,\n" +
+            "  \"annenForelderErInformert\" : false,\n" +
+            "  \"uttaksPerioder\" : [ ]\n" +
+            "}";
+
     @Test
     public void testUttaksplanDTO() throws Exception {
         var dto = new UttaksplanDTO(LocalDate.now(), LocalDate.now(), LocalDate.now(), Dekningsgrad.GRAD100, 1, false,
                 false, false, false, false, false, false, Collections.emptyList());
-        var dto1 = mapper.readValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto),
-                UttaksplanDTO.class);
+        var dto0 = mapper.readValue(test0, UttaksplanDTO.class);
+        assertEquals(dto, dto0);
+        var dto1 = mapper.readValue(test1, UttaksplanDTO.class);
         assertEquals(dto, dto1);
+        var dto2 = mapper.readValue(test2, UttaksplanDTO.class);
+        assertEquals(dto, dto2);
 
     }
 }
