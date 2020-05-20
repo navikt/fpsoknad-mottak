@@ -17,7 +17,7 @@ public class PdfGeneratorConfig {
     URI uri;
     String pingPath;
     String basePath;
-    boolean enabled;
+    boolean enabled = false;
 
     public String getBasePath() {
         return Optional.ofNullable(basePath).orElse(DEFAULT_BASE_PATH);
