@@ -21,10 +21,17 @@ import java.io.FileOutputStream;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConnection;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -33,15 +40,19 @@ import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
+import org.springframework.web.client.RestOperations;
 
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { MottakConfiguration.class, SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
+@ContextConfiguration(classes = { MottakConfiguration.class,
+    SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
         PDFElementRenderer.class,
         DelegerendePDFGenerator.class,
         ForeldrepengerPDFGenerator.class,
-    DokumentGenerator.class,
-    //EngangsstønadPDFGenerator.class,
+        //EngangsstønadPDFGenerator.class,
+    //PdfGeneratorConnection.class,
+    //PdfGeneratorTjeneste.class,
+    //DokumentGenerator.class,
         SvangerskapspengerPDFGenerator.class,
         InfoskrivRenderer.class,
         InfoskrivPdfEkstraktor.class,
@@ -58,6 +69,15 @@ public class PDFGeneratorTest {
 
     @Inject
     InfoskrivPdfEkstraktor pdfExtracter;
+
+    //@Mock
+    //private RestOperations restOperations;
+
+    //@Mock
+    //PdfGeneratorTjeneste pdfGeneratorTjeneste;
+
+    //@Autowired
+    //DokumentGenerator dokumentGenerator;
 
     @Test
     public void signature() {
@@ -83,12 +103,12 @@ public class PDFGeneratorTest {
         }
     }
 
-    @Test
-    public void engangs() throws Exception {
-        try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
-            fos.write(gen.generer(engangssøknad(DEFAULT_VERSJON, fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
-        }
-    }
+//    @Test
+//    public void engangs() throws Exception {
+//        try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
+//            fos.write(gen.generer(engangssøknad(DEFAULT_VERSJON, fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
+//        }
+//    }
 
     @Test
     public void svanger() throws Exception {
