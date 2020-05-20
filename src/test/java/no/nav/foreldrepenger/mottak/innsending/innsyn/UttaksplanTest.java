@@ -72,7 +72,9 @@ public class UttaksplanTest {
 
     @Test
     public void testUttaksplanDTO() throws Exception {
-        var dto = new UttaksplanDTO(LocalDate.now(), LocalDate.now(), LocalDate.now(), Dekningsgrad.GRAD100, 1, false,
+        var dto = new UttaksplanDTO(LocalDate.of(2020, 5, 19), LocalDate.of(2020, 5, 19), LocalDate.of(2020, 5, 19),
+                Dekningsgrad.GRAD100,
+                1, false,
                 false, false, false, false, false, false, Collections.emptyList());
         var dto0 = mapper.readValue(test0, UttaksplanDTO.class);
         assertEquals(dto, dto0);
