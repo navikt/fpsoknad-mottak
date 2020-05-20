@@ -32,6 +32,10 @@ public abstract class AbstractRestConnection implements RestConnection {
         return respons;
     }
 
+    public <T> T postForObject(URI uri, Object payload, Class<T> responseType) {
+        return restOperations.postForObject(uri, payload, responseType);
+    }
+
     @Override
     public <T> T getForObject(URI uri, Class<T> responseType) {
         return getForObject(uri, responseType, false);
