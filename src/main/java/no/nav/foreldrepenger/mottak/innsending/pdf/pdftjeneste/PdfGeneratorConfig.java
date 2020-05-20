@@ -9,7 +9,7 @@ import java.util.Optional;
 @ConfigurationProperties(prefix = "fppdfgen")
 @Configuration
 public class PdfGeneratorConfig {
-    private static final URI DEFAULT_URI = URI.create("http://fppdfgen.nais.preprod.local");
+    private static final URI DEFAULT_URI = URI.create("http://fppdfgen");
     private static final String DEFAULT_BASE_PATH = "/api/v1/genpdf/";
     private static final String DEFAULT_PING_PATH = DEFAULT_BASE_PATH + "is_alive";
     static final String ENGANGSSTØNAD = DEFAULT_BASE_PATH + "engangsstonad/engangsstonad";
