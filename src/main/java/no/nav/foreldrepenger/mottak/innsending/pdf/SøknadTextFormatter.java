@@ -11,10 +11,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import no.nav.foreldrepenger.mottak.util.Pair;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -61,15 +64,22 @@ public class SøknadTextFormatter {
     }
 
     public String navn(String navn) {
-        return fromMessageSource("navn", navn);
+        return fromMessageSource("navninline", navn);
     }
 
     public String navn(Navn navn) {
         String sammensattnavn = Joiner.on(' ')
                 .skipNulls()
                 .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
-        return sammensattnavn.isEmpty() ? "" : fromMessageSource("navn", sammensattnavn);
+        return sammensattnavn.isEmpty() ? "" : fromMessageSource("navninline", sammensattnavn);
     }
+
+    public String sammensattNavn(Navn navn) {
+        return Joiner.on(' ')
+            .skipNulls()
+            .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
+    }
+
 
     public String navn(Person søker) {
         return Optional.ofNullable(søker)
@@ -123,6 +133,11 @@ public class SøknadTextFormatter {
                 + dato(opphold.getTom());
     }
 
+    private Map<String, String> formatOppholdV2(Utenlandsopphold opphold) {
+        return Map.of(countryName(opphold.getLand(), opphold.getLand().getName()),
+            dato(opphold.getFom()) + " – " + dato(opphold.getTom()));
+    }
+
     private String getMessage(String key, MessageSource messages, Object... values) {
         return getMessage(key, null, messages, values);
     }
@@ -130,6 +145,19 @@ public class SøknadTextFormatter {
     private String getMessage(String key, String defaultValue, MessageSource messages, Object... values) {
         ((ResourceBundleMessageSource) messages).setDefaultEncoding("utf-8");
         return messages.getMessage(key, values, defaultValue, locale);
+    }
+
+    public List<Pair<String, String>> utenlandsPerioder(List<Utenlandsopphold> opphold) {
+        if (CollectionUtils.isEmpty(opphold)) {
+            return Collections.singletonList(Pair.of(countryName(CountryCode.NO), null));
+        }
+        return safeStream(opphold)
+            .map(o -> Pair.of(countryName(o.getLand(), o.getLand().getName()), dato(o.getFom(), o.getTom())))
+            .collect(Collectors.toList());
+    }
+
+    private String dato(LocalDate fom, LocalDate tom) {
+        return dato(fom) + " – " + dato(tom);
     }
 
     @Override
