@@ -11,14 +11,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
-import no.nav.foreldrepenger.mottak.domain.validation.annotations.Termindato;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 
 public class FremtidigFødsel extends RelasjonTilBarn {
-    @Termindato
+    // @Termindato
     private final LocalDate terminDato;
     @PastOrToday(nullable = true)
     private final LocalDate utstedtDato;
