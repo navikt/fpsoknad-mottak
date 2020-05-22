@@ -100,7 +100,7 @@ public class ForeldrepengeInfoRenderer {
     public float annenForelder(AnnenForelder annenForelder, boolean erAnnenForlderInformert,
             Rettigheter rettigheter,
             FontAwareCos cos, float y) throws IOException {
-        y -= renderer.addLeftHeading(txt("omfar"), cos, y);
+        y -= renderer.addLeftHeading(txt("omannenforelder"), cos, y);
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
@@ -641,16 +641,16 @@ public class ForeldrepengeInfoRenderer {
         return asList(
                 textFormatter.navn(
                         new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn(), søker.getKjønn())),
-                textFormatter.fromMessageSource("fødselsnummer", søker.getFnr().getFnr()));
+                textFormatter.fromMessageSource("fødselsnummerinline", søker.getFnr().getFnr()));
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> attributter = new ArrayList<>();
         attributter.add(Optional.ofNullable(utenlandsForelder.getNavn())
-                .map(n -> txt("navn", n))
+                .map(n -> txt("navninline", n))
                 .orElse("Ukjent"));
-        attributter.add(txt("nasjonalitet",
+        attributter.add(txt("nasjonalitetinline",
                 textFormatter.countryName(utenlandsForelder.getLand(),
                         utenlandsForelder.getLand().getName())));
         addIfSet(attributter, "utenlandskid", utenlandsForelder.getId());
@@ -660,7 +660,7 @@ public class ForeldrepengeInfoRenderer {
     private List<String> norskForelder(NorskForelder norskForelder) {
         return asList(
                 Optional.ofNullable(norskForelder.getNavn())
-                        .map(n -> txt("navn", n))
+                        .map(n -> txt("navninline", n))
                         .orElse("Ukjent"),
                 txt("fnr", norskForelder.getFnr().getFnr()));
     }

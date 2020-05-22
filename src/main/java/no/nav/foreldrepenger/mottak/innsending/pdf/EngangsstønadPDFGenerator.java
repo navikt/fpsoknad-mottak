@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEFAULT;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -14,6 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -35,6 +38,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Service
+@Profile( {DEFAULT, LOCAL} )
 public class EngangsstønadPDFGenerator implements PDFGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final SøknadTextFormatter textFormatter;
@@ -69,7 +73,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
             y -= PDFElementRenderer.BLANK_LINE;
             var annenForelder = stønad.getAnnenForelder();
             if (annenForelder.hasId()) {
-                y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omfar"), cos, y);
+                y -= renderer.addLeftHeading(textFormatter.fromMessageSource("omannenforelder"), cos, y);
                 renderer.addLinesOfRegularText(omFar(stønad), cos, y);
             }
             doc.addPage(page);
@@ -125,7 +129,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
         var utenlandsForelder = (UtenlandskForelder) annenForelder;
-        List<String> lines = new ArrayList<>(Arrays.asList(textFormatter.fromMessageSource("nasjonalitet",
+        List<String> lines = new ArrayList<>(Arrays.asList(textFormatter.fromMessageSource("nasjonalitetinline",
                 textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())),
                 textFormatter.navn(utenlandsForelder.getNavn())));
         if (utenlandsForelder.getId() != null) {
@@ -137,9 +141,9 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
     private List<String> norskForelder(AnnenForelder annenForelder) {
         var norskForelder = (NorskForelder) annenForelder;
         List<String> lines = new ArrayList<>();
-        lines.add(textFormatter.fromMessageSource("nasjonalitet", "Norsk"));
+        lines.add(textFormatter.fromMessageSource("nasjonalitetinline", "Norsk"));
         lines.add(textFormatter.navn(norskForelder.getNavn()));
-        lines.add(textFormatter.fromMessageSource("fødselsnummer", norskForelder.getFnr().getFnr()));
+        lines.add(textFormatter.fromMessageSource("fødselsnummerinline", norskForelder.getFnr().getFnr()));
         return lines;
     }
 
@@ -166,7 +170,7 @@ public class EngangsstønadPDFGenerator implements PDFGenerator {
         return Arrays.asList(
                 textFormatter.navn(
                         new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn(), søker.getKjønn())),
-                textFormatter.fromMessageSource("fødselsnummer", søker.getFnr().getFnr()));
+                textFormatter.fromMessageSource("fødselsnummerinline", søker.getFnr().getFnr()));
     }
 
     private List<String> fødsel(Søknad søknad, Engangsstønad stønad) {

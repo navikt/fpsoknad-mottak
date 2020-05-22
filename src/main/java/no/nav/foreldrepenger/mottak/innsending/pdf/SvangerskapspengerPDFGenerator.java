@@ -414,7 +414,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return Arrays.asList(
                 textFormatter.navn(
                         new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn(), søker.getKjønn())),
-                textFormatter.fromMessageSource("fødselsnummer", søker.getFnr().getFnr()));
+                textFormatter.fromMessageSource("fødselsnummerinline", søker.getFnr().getFnr()));
     }
 
     private String txt(String key, Object... values) {
