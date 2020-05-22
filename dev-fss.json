@@ -1,6 +1,7 @@
 {
-	"ingress": "https://fpsoknad-mottak.nais.preprod.local",
-	"env": {
+  "ingresses":  ["https://fpsoknad-mottak.nais.preprod.local", 
+                 "https://fpsoknad-mottak.dev-fss.nais.io"],
+   "env": {
 		"varsel_hostname": "b27apvl176.preprod.local",
 		"varsel_name": "MQ1LSC02",
 		"varsel_port": "1413",
