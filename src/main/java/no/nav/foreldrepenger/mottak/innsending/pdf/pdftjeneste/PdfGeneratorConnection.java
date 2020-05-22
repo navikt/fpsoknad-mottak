@@ -1,20 +1,23 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig.ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+
+import java.net.URI;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
-import javax.inject.Inject;
-import java.net.URI;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig.*;
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 
 @Component
 public class PdfGeneratorConnection extends AbstractRestConnection implements PingEndpointAware {

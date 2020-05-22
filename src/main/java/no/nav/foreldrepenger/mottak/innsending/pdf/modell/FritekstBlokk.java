@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.modell;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

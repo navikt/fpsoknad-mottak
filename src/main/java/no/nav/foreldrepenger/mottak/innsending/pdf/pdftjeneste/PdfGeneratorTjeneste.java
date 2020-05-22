@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 import org.springframework.stereotype.Service;
+
+import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 
 @Service
 public class PdfGeneratorTjeneste {

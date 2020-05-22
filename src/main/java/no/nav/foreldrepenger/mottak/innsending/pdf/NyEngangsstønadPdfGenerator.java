@@ -1,6 +1,19 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
 import com.neovisionaries.i18n.CountryCode;
+
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
@@ -26,18 +39,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorTjeneste;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 
 @Component
 @Profile({DEV})

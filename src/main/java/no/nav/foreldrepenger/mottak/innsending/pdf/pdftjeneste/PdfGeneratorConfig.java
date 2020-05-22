@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
 import java.net.URI;
 import java.util.Optional;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 @ConfigurationProperties(prefix = "fppdfgen")
 @Configuration

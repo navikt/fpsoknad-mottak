@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.mottak.util.Pair;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -31,6 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Component
 public class SøknadTextFormatter {
