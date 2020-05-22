@@ -12,7 +12,7 @@ public class PdfGeneratorConfig {
     private static final URI DEFAULT_URI = URI.create("http://fppdfgen");
     private static final String DEFAULT_BASE_PATH = "/api/v1/genpdf/";
     private static final String DEFAULT_PING_PATH = DEFAULT_BASE_PATH + "is_alive";
-    static final String ENGANGSSTØNAD = DEFAULT_BASE_PATH + "engangsstonad/engangsstonad";
+    static final String ENGANGSSTØNAD = DEFAULT_BASE_PATH + "soknad/soknad";
 
     URI uri;
     String pingPath;
