@@ -11,13 +11,13 @@ spec:
   replicas:
       min: 2
       max: 2
-      cpuThresholdPercentage: 50  
+      cpuThresholdPercentage: 50
   liveness:
       path: /api/actuator/health/liveness
       initialDelay: 60
   readiness:
       path: /api/actuator/health/readiness
-      initialDelay: 60  
+      initialDelay: 60
   prometheus:
       enabled: true
       path: /api/actuator/prometheus
@@ -26,20 +26,19 @@ spec:
       max: 2
       cpuThresholdPercentage: 50
   ingresses:
-    - {{ingress}}
 {{#each ingresses as |url|}}
     - {{url}}
-{{/each}} 
+{{/each}}
   resources:
       limits:
         cpu: 1500m
         memory: 3072Mi
       requests:
         cpu: 250m
-        memory: 1536Mi 
+        memory: 1536Mi
   vault:
-      enabled: true      
-  env: 
+      enabled: true
+  env:
   {{#each env}}
    - name: {{@key}}
      value: "{{this}}"
