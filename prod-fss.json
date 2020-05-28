@@ -1,5 +1,5 @@
 {
-   "ingresses":  ["https://fpsoknad-mottak.nais.adeo.no", 
+   "ingresses":  ["https://fpsoknad-mottak.nais.adeo.no",
                  "https://fpsoknad-mottak.prod-fss.nais.io"],
 	"env": {
 		"varsel_hostname": "a01apvl063.adeo.no",
@@ -8,6 +8,7 @@
 		"varsel_queuename": "QA.P_VARSELPRODUKSJON.SEND_VARSEL",
 		"fpsoknad_varsel_kanal_queuemanager": "mq://a01apvl063.adeo.no:1414/MPLSC02",
 		"varsel_channelname": "P_FPSOKNAD_VARSEL",
-		"fpfordel_enabled": "true"
+		"fpfordel_enabled": "true",
+        "fppdfgen_enabled": "true"
 	}
 }

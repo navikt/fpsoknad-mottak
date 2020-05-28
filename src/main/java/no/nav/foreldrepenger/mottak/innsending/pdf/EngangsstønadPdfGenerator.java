@@ -1,19 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
 import com.neovisionaries.i18n.CountryCode;
-
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
@@ -36,20 +23,27 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.GruppeBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorTjeneste;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
-@Profile({DEV})
-public class NyEngangsstønadPdfGenerator implements PDFGenerator {
+public class EngangsstønadPdfGenerator implements PDFGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final SøknadTextFormatter textFormatter;
-    private final PdfGeneratorTjeneste pdfGeneratorTjeneste;
+    private final PdfGenerator pdfGenerator;
 
-    public NyEngangsstønadPdfGenerator(SøknadTextFormatter textFormatter, PdfGeneratorTjeneste pdfGeneratorTjeneste) {
+    public EngangsstønadPdfGenerator(SøknadTextFormatter textFormatter, PdfGenerator pdfGenerator) {
         this.textFormatter = textFormatter;
-        this.pdfGeneratorTjeneste = pdfGeneratorTjeneste;
+        this.pdfGenerator = pdfGenerator;
     }
 
     @Override
@@ -60,7 +54,7 @@ public class NyEngangsstønadPdfGenerator implements PDFGenerator {
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         DokumentBestilling engangsstønadSøknad = engangsstønadSøknadFra(søknad, søker);
-        return pdfGeneratorTjeneste.generate(engangsstønadSøknad);
+        return pdfGenerator.generate(engangsstønadSøknad);
     }
 
     private DokumentBestilling engangsstønadSøknadFra(Søknad søknad, Person søker) {

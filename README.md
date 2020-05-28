@@ -33,8 +33,8 @@ Få tak i en Java truststore med gyldige sertifikater for aktuelt miljø.
 
 Spørsmål knyttet til koden eller prosjektet kan rettes til:
 
-* nav.team.bris@nav.no
+* nav.team.foreldrepenger@nav.no
 
 ## For NAV-ansatte
 
-Interne henvendelser kan sendes via Slack i kanalen #bris.
+Interne henvendelser kan sendes via Slack i kanalen #teamforeldrepenger.

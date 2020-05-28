@@ -4,7 +4,7 @@ mottak:
          enabled : false
 
 management:
-    
+
     endpoints:
       web:
         exposure:
@@ -20,6 +20,9 @@ varsel:
     port: 1414
     name: QM1
     channelname: DEV.APP.SVRCONN
+
+fppdfgen:
+    enabled: false
 
 no.nav:
     security:
