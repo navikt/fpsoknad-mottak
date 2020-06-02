@@ -46,6 +46,7 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
@@ -69,6 +70,8 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @ExtendWith(SpringExtension.class)
 @MockitoSettings(strictness = LENIENT)
 @AutoConfigureJsonTesters
+@TestPropertySource(properties = { "spring.cloud.vault.enabled=false", "spring.cloud.vault.token=00000",
+        "kafka.username=un", "kafka.password=pw" })
 @ComponentScan(basePackages = "no.nav.foreldrepenger.mottak")
 public class TestFPFordelSerialization {
 
