@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import reactor.core.publisher.Mono;
 
 @Configuration
 public class WebClientConfiguration {
@@ -34,12 +33,8 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    public ExchangeFilterFunction logRequest() {
-        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            clientRequest
-                    .headers().forEach((name, values) -> LOG.info("{} -> {}", name, values));
-            return Mono.just(clientRequest);
-        });
+    public ExchangeFilterFunction authenticate() {
+        return ExchangeFilterFunctions.basicAuthentication(serviceUser, servicePwd);
     }
 
 }
