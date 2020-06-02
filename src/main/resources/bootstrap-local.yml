@@ -1,4 +1,14 @@
 spring:
    cloud:
       vault:
-         enabled: false
+         reactive:
+           enabled: false
+         enabled: true
+         uri: http://127.0.0.1:8200
+         authentication: TOKEN
+         token: s.D49M05VaOXS3fDHtQwquhJMp
+         kv:
+            enabled: true
+            backend: secret/kv/local
+            application-name: fpsoknad-mottak
+            default-context: fpsoknad-mottak

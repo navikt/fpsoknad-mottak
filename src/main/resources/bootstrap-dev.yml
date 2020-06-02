@@ -1,6 +1,8 @@
 spring:
    cloud:
       vault:
+         bootstrap:
+           enabled: false
          enabled: true
          uri: https://vault.adeo.no
          authentication: KUBERNETES
