@@ -48,7 +48,8 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { LOCAL })
-@TestPropertySource(properties = { "spring.cloud.vault.enabled=false", "spring.cloud.vault.token=00000",
+@TestPropertySource(properties = { "sts.uri=http://www.sts.no", "spring.cloud.vault.enabled=false",
+        "spring.cloud.vault.token=00000",
         "kafka.username=un", "kafka.password=pw" })
 public class TestFPFordelRoundtripSerialization {
 
