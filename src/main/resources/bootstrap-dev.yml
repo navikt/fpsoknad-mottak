@@ -8,7 +8,7 @@ spring:
             role: fpsoknad-mottak
             kubernetes-path: kubernetes/preprod/fss
             service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token        
-         generic:
+         kv:
             enabled: true
             backend: kv/preprod/fss
             application-name: fpsoknad-mottak/default
