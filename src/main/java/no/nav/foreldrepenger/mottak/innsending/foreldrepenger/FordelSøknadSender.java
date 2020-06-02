@@ -73,7 +73,9 @@ public class FordelSøknadSender implements SøknadSender {
         if (konvolutt.erEndring()) {
             kvittering.setFørsteDag(Endringssøknad.class.cast(konvolutt.getInnsending()).getFørsteUttaksdag());
         }
-        publiserHendelse(konvolutt, dialogId, kvittering);
+        if (connection.isEnabled()) {
+            publiserHendelse(konvolutt, dialogId, kvittering);
+        }
         return kvittering;
     }
 

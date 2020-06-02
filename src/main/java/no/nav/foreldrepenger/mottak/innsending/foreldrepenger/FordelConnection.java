@@ -99,7 +99,7 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
         return uri(config.getUri(), config.getPingPath());
     }
 
-    private boolean isEnabled() {
+    public boolean isEnabled() {
         return config.isEnabled();
     }
 

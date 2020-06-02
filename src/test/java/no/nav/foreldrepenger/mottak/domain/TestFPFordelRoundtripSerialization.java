@@ -38,8 +38,8 @@ import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConnection;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingHendelseProdusent;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
@@ -48,7 +48,8 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { LOCAL })
-@TestPropertySource(properties = "spring.cloud.vault.token=00000")
+@TestPropertySource(properties = { "spring.cloud.vault.enabled=false", "spring.cloud.vault.token=00000",
+        "kafka.username=un", "kafka.password=pw" })
 public class TestFPFordelRoundtripSerialization {
 
     @Autowired
