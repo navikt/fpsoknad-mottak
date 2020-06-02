@@ -1,7 +1,7 @@
 spring:
    cloud:
       vault:
-         bootstrap:
+         reactive:
            enabled: false
          enabled: true
          uri: https://vault.adeo.no
