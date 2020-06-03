@@ -84,7 +84,7 @@ public class WebClientConfiguration {
             StringBuilder sb = new StringBuilder("Request: \n");
             clientRequest
                     .headers()
-                    .forEach((name, values) -> values.forEach(value -> sb.append(name).append("->").append(values)));
+                    .forEach((k, v) -> LOG.info(k + "->" + v));
             LOG.info(sb.toString());
             LOG.info("URL " + clientRequest.url());
             return Mono.just(clientRequest);
