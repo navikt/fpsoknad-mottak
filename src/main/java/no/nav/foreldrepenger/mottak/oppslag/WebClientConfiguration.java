@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.slf4j.MarkerFactory.getMarker;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
@@ -15,11 +16,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
+import reactor.core.publisher.Mono;
 
 @Configuration
 public class WebClientConfiguration {
@@ -71,5 +74,20 @@ public class WebClientConfiguration {
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());
         };
+    }
+
+    @Bean
+    @Order(HIGHEST_PRECEDENCE)
+    ExchangeFilterFunction logRequest() {
+        LOG.info("Registrerer logging filter");
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            StringBuilder sb = new StringBuilder("Request: \n");
+            clientRequest
+                    .headers()
+                    .forEach(
+                            (name, values) -> values.forEach(value -> sb.append(name).append("->").append(values)));
+            LOG.info(sb.toString());
+            return Mono.just(clientRequest);
+        });
     }
 }
