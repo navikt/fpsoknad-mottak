@@ -37,11 +37,13 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public Person getSøker() {
+        test();
         return connection.hentSøker();
     }
 
     @Override
     public AktørId getAktørId() {
+        test();
         return getAktørId(tokenHelper.autentisertFNR());
     }
 
@@ -65,13 +67,16 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public List<Arbeidsforhold> getArbeidsforhold() {
+        test();
+        return connection.hentArbeidsforhold();
+    }
+
+    private void test() {
         try {
             arbeidsforhold.hentAktiveArbeidsforhold();
-
         } catch (Exception e) {
             LOG.warn("OOPS", e);
         }
-        return connection.hentArbeidsforhold();
     }
 
     @Override
