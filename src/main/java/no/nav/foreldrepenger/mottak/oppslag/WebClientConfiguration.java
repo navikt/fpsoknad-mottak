@@ -4,13 +4,13 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static org.slf4j.MarkerFactory.getMarker;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -63,7 +63,7 @@ public class WebClientConfiguration {
     ExchangeFilterFunction navIdentAddingFilterFunction(TokenUtil tokenUtil) {
         LOG.info("Registrerer NAV id filter");
         return (req, next) -> {
-            LOG.info(MarkerFactory.getMarker("CONFIDENTIAL"), "Legger til personinfo {} {}", tokenUtil.getToken(),
+            LOG.info(getMarker("CONFIDENTIAL"), "Legger til personinfo {} {}", tokenUtil.getToken(),
                     tokenUtil.autentisertBruker());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CALL_ID, callId())
