@@ -16,11 +16,9 @@ import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Configuration
-@ConditionalOnK8s
 public class WebClientConfiguration {
 
     private static final String BEARER = "Bearer ";
