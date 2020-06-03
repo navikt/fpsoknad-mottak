@@ -59,7 +59,7 @@ public class WebClientConfiguration {
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
                     .header(NAV_CALL_ID, callId())
-                    .header(AUTHORIZATION, BEARER + tokenUtil.getToken())
+                    .header(AUTHORIZATION, BEARER + sts.getSystemToken().getToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());
         };
