@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import reactor.core.publisher.Mono;
 
 @Service
 public class SystemUserTokenService {
@@ -22,17 +21,18 @@ public class SystemUserTokenService {
         currentToken = getUserToken();
     }
 
-    private Mono<SystemToken> doFetch() {
-        var token = webClient.get().accept(MediaType.APPLICATION_JSON).retrieve()
-                .bodyToMono(SystemToken.class);
-        return token;
+    private SystemToken refresh() {
+        return webClient.get()
+                .accept(APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(SystemToken.class).block();
     }
 
     public SystemToken getUserToken() {
         if (currentToken == null || currentToken.isExpired(20)) {
-            currentToken = doFetch().block();
+            currentToken = refresh();
         }
-        LOG.trace("Hentet JWT token {} for service user", currentToken.getToken());
+        LOG.trace("Hentet JWT token {} for service user", currentToken);
         return currentToken;
     }
 
