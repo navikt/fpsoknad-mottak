@@ -44,6 +44,7 @@ public class WebClientConfiguration {
 
     @Bean
     ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts) {
+        LOG.info("Registrerer system token filter");
         return (req, next) -> {
             LOG.info("Legger til system token");
             return next.exchange(ClientRequest.from(req)
@@ -53,6 +54,7 @@ public class WebClientConfiguration {
 
     @Bean
     ExchangeFilterFunction navIdentAddingFilterFunction(TokenUtil tokenUtil) {
+        LOG.info("Registrerer NAV id filter");
         return (req, next) -> {
             LOG.info("CONFIDENTIAL", "Legger til personinfo {} {}", tokenUtil.getToken(),
                     tokenUtil.autentisertBruker());
