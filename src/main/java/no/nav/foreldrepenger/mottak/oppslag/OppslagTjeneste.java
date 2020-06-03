@@ -3,6 +3,8 @@ package no.nav.foreldrepenger.mottak.oppslag;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,13 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class OppslagTjeneste implements Oppslag {
     private final OppslagConnection connection;
     private final TokenUtil tokenHelper;
+    private final ArbeidsforholdTjenste arbeidsforhold;
+    private static final Logger LOG = LoggerFactory.getLogger(OppslagTjeneste.class);
 
-    public OppslagTjeneste(OppslagConnection connection, TokenUtil tokenHelper) {
+    public OppslagTjeneste(OppslagConnection connection, TokenUtil tokenHelper, ArbeidsforholdTjenste arbeidsforhold) {
         this.connection = connection;
         this.tokenHelper = tokenHelper;
+        this.arbeidsforhold = arbeidsforhold;
     }
 
     @Override
@@ -60,6 +65,12 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public List<Arbeidsforhold> getArbeidsforhold() {
+        try {
+            arbeidsforhold.hentAktiveArbeidsforhold();
+
+        } catch (Exception e) {
+            LOG.warn("OOPS", e);
+        }
         return connection.hentArbeidsforhold();
     }
 

@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
+import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
@@ -28,7 +30,9 @@ public class WebClientConfiguration {
     @Qualifier("STS")
     public WebClient webClientSTS(@Value("${sts.uri}") String uri, @Value("${kafka.username}") String systemUser,
             @Value("${kafka.password}") String systemPassword) {
-        return WebClient.builder().baseUrl(uri)
+        return WebClient
+                .builder()
+                .baseUrl(uri)
                 .defaultHeaders(h -> h.setBasicAuth(systemUser, systemPassword))
                 .build();
     }
@@ -36,8 +40,10 @@ public class WebClientConfiguration {
     @Qualifier("REST")
     @Bean
     public WebClient webClientRest(ExchangeFilterFunction... filters) {
-        var builder = WebClient.builder();
-        LOG.info("Legger til {} filtre", filters.length);
+        var builder = WebClient
+                .builder()
+                .baseUrl("https://modapp-q1.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold");
+        LOG.info("Rgistrerer {} filtre", filters.length);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
@@ -59,6 +65,7 @@ public class WebClientConfiguration {
             LOG.info("CONFIDENTIAL", "Legger til personinfo {} {}", tokenUtil.getToken(),
                     tokenUtil.autentisertBruker());
             return next.exchange(ClientRequest.from(req)
+                    .header(NAV_CALL_ID, callId())
                     .header(AUTHORIZATION, BEARER + tokenUtil.getToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());

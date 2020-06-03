@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -36,8 +37,9 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
 
     List<Arbeidsforhold> hentArbeidsforhold() {
         LOG.trace("Henter arbeidsforhold");
-        return Collections.emptyList();
-
+        return webClient.get()
+                .accept(APPLICATION_JSON)
+                .retrieve().toEntityList(Arbeidsforhold.class).block().getBody();
     }
 
     @Override
