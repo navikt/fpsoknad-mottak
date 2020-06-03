@@ -30,6 +30,7 @@ public class WebClientConfiguration {
     }
 
     @Qualifier("REST")
+    @Bean
     public WebClient webClientRest(ExchangeFilterFunction... filters) {
         var builder = WebClient.builder();
         LOG.info("Legger til {} filtre ({})", filters.length, Arrays.toString(filters));
@@ -39,6 +40,7 @@ public class WebClientConfiguration {
 
     @Bean
     ExchangeFilterFunction systemTokenAddingFilterFunction(STSSystemUserTokenService sts) {
+        LOG.info("Lager system filter funksjon");
         return (req, nextFilter) -> {
             ClientRequest filteredRequest = ClientRequest.from(req).header("Nav-Consumer-Token",
                     "Bearer " + sts.getUserToken().getToken()).build();
