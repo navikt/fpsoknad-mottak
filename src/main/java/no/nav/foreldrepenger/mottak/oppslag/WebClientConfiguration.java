@@ -5,7 +5,7 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.slf4j.MarkerFactory.getMarker;
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
@@ -77,16 +77,16 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    @Order(HIGHEST_PRECEDENCE)
+    @Order(LOWEST_PRECEDENCE)
     ExchangeFilterFunction logRequest() {
         LOG.info("Registrerer logging filter");
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
             StringBuilder sb = new StringBuilder("Request: \n");
             clientRequest
                     .headers()
-                    .forEach(
-                            (name, values) -> values.forEach(value -> sb.append(name).append("->").append(values)));
+                    .forEach((name, values) -> values.forEach(value -> sb.append(name).append("->").append(values)));
             LOG.info(sb.toString());
+            LOG.info("URL " + clientRequest.url());
             return Mono.just(clientRequest);
         });
     }
