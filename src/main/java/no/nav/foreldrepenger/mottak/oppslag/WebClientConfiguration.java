@@ -4,7 +4,6 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
-import static org.slf4j.MarkerFactory.getMarker;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -46,29 +45,19 @@ public class WebClientConfiguration {
     public WebClient webClientRest(ExchangeFilterFunction... filters) {
         var builder = WebClient
                 .builder()
-                .baseUrl("https://modapp-q1.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold");
+                .baseUrl("https://modapp-q1.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold?historikk=true");
         LOG.info("Registrerer {} filtre", filters.length);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
 
     @Bean
-    ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts) {
+    ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
         LOG.info("Registrerer system token filter");
         return (req, next) -> {
-            LOG.info("Legger til system token");
+            LOG.info("Legger til headers");
             return next.exchange(ClientRequest.from(req)
-                    .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken()).build());
-        };
-    }
-
-    @Bean
-    ExchangeFilterFunction navIdentAddingFilterFunction(TokenUtil tokenUtil) {
-        LOG.info("Registrerer NAV id filter");
-        return (req, next) -> {
-            LOG.info(getMarker("CONFIDENTIAL"), "Legger til personinfo {} {}", tokenUtil.getToken(),
-                    tokenUtil.autentisertBruker());
-            return next.exchange(ClientRequest.from(req)
+                    .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
                     .header(NAV_CALL_ID, callId())
                     .header(AUTHORIZATION, BEARER + tokenUtil.getToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
@@ -81,11 +70,9 @@ public class WebClientConfiguration {
     ExchangeFilterFunction logRequest() {
         LOG.info("Registrerer logging filter");
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            StringBuilder sb = new StringBuilder("Request: \n");
             clientRequest
                     .headers()
                     .forEach((k, v) -> LOG.info(k + "->" + v));
-            LOG.info(sb.toString());
             LOG.info("URL " + clientRequest.url());
             return Mono.just(clientRequest);
         });
