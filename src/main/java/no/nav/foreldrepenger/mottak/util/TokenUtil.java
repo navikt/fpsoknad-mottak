@@ -31,6 +31,10 @@ public class TokenUtil {
                 .isPresent();
     }
 
+    public String getToken() {
+        return ctxHolder.getTokenValidationContext().getJwtToken(ISSUER).getTokenAsString();
+    }
+
     public boolean erAutentisert() {
         return getSubject() != null;
     }

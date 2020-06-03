@@ -10,7 +10,7 @@ import no.nav.security.token.support.core.jwt.JwtToken;
 public class LocalSystemUserTokenService implements SystemUserTokenService {
 
     @Override
-    public SystemToken getUserToken() {
+    public SystemToken getSystemToken() {
         return new SystemToken(new JwtToken("hey"), 3600L, "jalla");
     }
 

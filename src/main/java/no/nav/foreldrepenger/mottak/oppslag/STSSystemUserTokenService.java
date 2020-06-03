@@ -21,7 +21,7 @@ public class STSSystemUserTokenService implements SystemUserTokenService {
 
     public STSSystemUserTokenService(@Qualifier("STS") WebClient webClient) {
         this.webClient = webClient;
-        currentToken = getUserToken();
+        currentToken = getSystemToken();
     }
 
     private SystemToken refresh() {
@@ -32,7 +32,7 @@ public class STSSystemUserTokenService implements SystemUserTokenService {
     }
 
     @Override
-    public SystemToken getUserToken() {
+    public SystemToken getSystemToken() {
         if (currentToken == null || currentToken.isExpired(20)) {
             currentToken = refresh();
         }
