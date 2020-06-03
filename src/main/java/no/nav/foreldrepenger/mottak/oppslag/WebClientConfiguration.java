@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
@@ -58,7 +58,7 @@ public class WebClientConfiguration {
             LOG.info("Legger til headers");
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
-                    .header(NAV_CALL_ID, callId())
+                    .header(NAV_CALL_ID1, callId())
                     .header(AUTHORIZATION, BEARER + tokenUtil.getToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());
