@@ -32,6 +32,8 @@ no.nav:
             discoveryurl: http://metadata
             accepted_audience: aud-localhost
             cookie_name: localhost-idtoken
+            
+sts.uri: http://www.vg.no            
 
 server:
   port: 9001

@@ -43,7 +43,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
-import no.nav.foreldrepenger.mottak.oppslag.SystemUserTokenService;
+import no.nav.foreldrepenger.mottak.oppslag.STSSystemUserTokenService;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 
@@ -61,7 +61,7 @@ public class TestFPFordelRoundtripSerialization {
     FordelConnection connection;
 
     @MockBean
-    SystemUserTokenService userService;
+    STSSystemUserTokenService userService;
 
     @MockBean
     InnsendingHendelseProdusent publisher;

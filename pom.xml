@@ -450,6 +450,11 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger</groupId>
+            <artifactId>boot-conditionals</artifactId>
+            <version>1.0.20200515110427-5a3aa1e</version>
+        </dependency>
     </dependencies>
     <distributionManagement>
         <repository>

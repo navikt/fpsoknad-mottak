@@ -12,14 +12,17 @@ import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
+
 @Configuration
+@ConditionalOnK8s
 public class WebClientConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
     @Bean
     @Qualifier("STS")
-    public WebClient webClient(@Value("${sts.uri}") String uri, @Value("${kafka.username}") String systemUser,
+    public WebClient webClientSTS(@Value("${sts.uri}") String uri, @Value("${kafka.username}") String systemUser,
             @Value("${kafka.password}") String systemPassword) {
         return WebClient.builder().baseUrl(uri)
                 .defaultHeaders(h -> h.setBasicAuth(systemUser, systemPassword))
@@ -27,7 +30,7 @@ public class WebClientConfiguration {
     }
 
     @Qualifier("REST")
-    public WebClient webClient(ExchangeFilterFunction... filters) {
+    public WebClient webClientRest(ExchangeFilterFunction... filters) {
         var builder = WebClient.builder();
         LOG.info("Legger til {} filtre ({})", filters.length, Arrays.toString(filters));
         Arrays.stream(filters).forEach(builder::filter);
@@ -35,7 +38,7 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    ExchangeFilterFunction systemTokenAddingFilterFunction(SystemUserTokenService sts) {
+    ExchangeFilterFunction systemTokenAddingFilterFunction(STSSystemUserTokenService sts) {
         return (req, nextFilter) -> {
             ClientRequest filteredRequest = ClientRequest.from(req).header("Nav-Consumer-Token",
                     "Bearer " + sts.getUserToken().getToken()).build();
