@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import no.nav.foreldrepenger.mottak.util.StringUtil;
 import no.nav.security.token.support.core.jwt.JwtToken;
 
 public class SystemToken {
@@ -45,7 +46,9 @@ public class SystemToken {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[accessToken=" + accessToken + ", expiresIn=" + expiresIn
+        return getClass().getSimpleName() + "[accessToken=" + StringUtil.limit(accessToken.getTokenAsString(), 12)
+                + ", expiresIn="
+                + expiresIn
                 + ", tokenType=" + tokenType + "]";
     }
 

@@ -40,4 +40,9 @@ public class STSSystemUserTokenService implements SystemUserTokenService {
         return currentToken;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[webClient=" + webClient + ", currentToken=" + currentToken + "]";
+    }
+
 }
