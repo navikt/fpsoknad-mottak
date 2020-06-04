@@ -31,6 +31,10 @@ public class TokenUtil {
                 .isPresent();
     }
 
+    public String bearerToken() {
+        return "BEARER " + getToken();
+    }
+
     public String getToken() {
         return ctxHolder.getTokenValidationContext().getJwtToken(ISSUER).getTokenAsString();
     }

@@ -9,6 +9,10 @@ public final class URIUtil {
     private URIUtil() {
     }
 
+    public static URI uri(String base, String path) {
+        return uri(URI.create(base), path);
+    }
+
     public static URI uri(URI base, String path) {
         return uri(base, path, null);
     }

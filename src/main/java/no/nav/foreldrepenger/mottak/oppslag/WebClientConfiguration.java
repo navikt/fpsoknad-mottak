@@ -11,7 +11,6 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,35 +42,34 @@ public class WebClientConfiguration {
 
     @Qualifier("REST")
     @Bean
-    public WebClient webClientRest(ExchangeFilterFunction... filters) {
+    public WebClient arbeidsforholdClient(@Value("${reactive.logging.enable:false}") boolean log,
+            ArbeidsforholdConfig config,
+            ExchangeFilterFunction... filters) {
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
         exchangeStrategies
                 .messageWriters().stream()
                 .filter(LoggingCodecSupport.class::isInstance)
-                .forEach(writer -> ((LoggingCodecSupport) writer).setEnableLoggingRequestDetails(true));
+                .map(LoggingCodecSupport.class::cast)
+                .forEach(w -> w.setEnableLoggingRequestDetails(log));
 
         var builder = WebClient
                 .builder()
                 .exchangeStrategies(exchangeStrategies)
-                .baseUrl("https://modapp-q1.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold?historikk=true");
+                .baseUrl(config.getBaseUri());
         LOG.info("Registrerer {} filtre", filters.length);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
 
     @Bean
-    ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
-        LOG.info("Registrerer system token filter");
+    ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil,
+            @Value("${spring.application.name}") String consumer) {
         return (req, next) -> {
-            LOG.info(MarkerFactory.getMarker("CONFIDENTIAL"), "Legger til system token {}",
-                    sts.getSystemToken().getToken());
-            LOG.info(MarkerFactory.getMarker("CONFIDENTIAL"), "Legger til user token {}", tokenUtil.getToken());
-
             return next.exchange(ClientRequest.from(req)
-                    .header(NAV_CONSUMER_ID, "fpsoknad-mottak")
+                    .header(NAV_CONSUMER_ID, consumer)
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
                     .header(NAV_CALL_ID1, callId())
-                    .header(AUTHORIZATION, BEARER + tokenUtil.getToken())
+                    .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());
         };
