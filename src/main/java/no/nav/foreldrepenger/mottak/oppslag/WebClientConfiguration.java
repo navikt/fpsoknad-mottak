@@ -53,7 +53,7 @@ public class WebClientConfiguration {
         var builder = WebClient
                 .builder()
                 .exchangeStrategies(exchangeStrategies)
-                .baseUrl("https://modapp-q1.adeo.no/aareg-core/api/v1/arbeidstaker/arbeidsforhold?historikk=true");
+                .baseUrl("https://modapp-q1.adeo.no/aareg-services/api/v1/arbeidstaker/arbeidsforhold?historikk=true");
         LOG.info("Registrerer {} filtre", filters.length);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
