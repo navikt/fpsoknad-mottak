@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.codec.LoggingCodecSupport;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -25,7 +23,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
-import reactor.core.publisher.Mono;
 
 @Configuration
 public class WebClientConfiguration {
@@ -78,18 +75,5 @@ public class WebClientConfiguration {
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());
         };
-    }
-
-    @Bean
-    @Order(LOWEST_PRECEDENCE)
-    ExchangeFilterFunction logRequest() {
-        LOG.info("Registrerer logging filter");
-        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            clientRequest
-                    .headers()
-                    .forEach((k, v) -> LOG.info(k + "->" + v));
-            LOG.info("URL " + clientRequest.url());
-            return Mono.just(clientRequest);
-        });
     }
 }

@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
         LOG.trace("Henter arbeidsforhold");
         var forhold = webClient.get()
                 .accept(APPLICATION_JSON)
-                .retrieve().toEntityList(Arbeidsforhold.class).block().getBody();
+                .retrieve().toEntityList(Map.class).block().getBody();
         LOG.trace("Hentet arbeidsforhold {}", forhold);
         return Collections.emptyList();
     }
