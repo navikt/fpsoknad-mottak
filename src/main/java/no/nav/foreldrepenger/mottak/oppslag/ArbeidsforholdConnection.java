@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,11 +50,21 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     }
 
     List<Arbeidsforhold> hentArbeidsforhold() {
+        return hentArbeidsforhold(LocalDate.now().minusYears(5), LocalDate.now());
+    }
+
+    List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
         LOG.trace("Henter arbeidsforhold");
         var forhold = webClient.get()
+                .uri(uriBuilder -> uriBuilder.path(cfg.getArbeidsforholdPath())
+                        .queryParam("historikk", "true")
+                        .queryParam("sporingsinformasjon", "false")
+                        .queryParam("ansettelsesperiodeFom", fom.format(ISO_LOCAL_DATE))
+                        .queryParam("ansettelsesperiodeTom", tom.format(ISO_LOCAL_DATE))
+                        .build())
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .toEntityList(Map.class)
+                .toEntityList(Map.class) // TODO
                 .block()
                 .getBody();
         LOG.trace("Hentet arbeidsforhold {}", forhold);

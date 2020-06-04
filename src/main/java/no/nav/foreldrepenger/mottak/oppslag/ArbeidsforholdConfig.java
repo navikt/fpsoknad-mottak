@@ -11,11 +11,14 @@ public class ArbeidsforholdConfig {
 
     private final String baseUri;
     private final String pingPath;
+    private final String arbeidsforholdPath;
 
     @ConstructorBinding
-    public ArbeidsforholdConfig(String baseUri, @DefaultValue("/ping") String pingPath) {
+    public ArbeidsforholdConfig(String baseUri, @DefaultValue("/ping") String pingPath,
+            @DefaultValue("/v1/arbeidstaker/arbeidsforhold") String arbeidsforholdPath) {
         this.baseUri = baseUri;
         this.pingPath = pingPath;
+        this.arbeidsforholdPath = arbeidsforholdPath;
     }
 
     public String getBaseUri() {
@@ -24,6 +27,10 @@ public class ArbeidsforholdConfig {
 
     public String getPingPath() {
         return pingPath;
+    }
+
+    public String getArbeidsforholdPath() {
+        return arbeidsforholdPath;
     }
 
 }
