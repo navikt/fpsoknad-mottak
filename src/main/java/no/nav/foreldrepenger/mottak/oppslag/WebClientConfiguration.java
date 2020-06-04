@@ -18,8 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.codec.LoggingCodecSupport;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -45,8 +47,15 @@ public class WebClientConfiguration {
     @Qualifier("REST")
     @Bean
     public WebClient webClientRest(ExchangeFilterFunction... filters) {
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
+        exchangeStrategies
+                .messageWriters().stream()
+                .filter(LoggingCodecSupport.class::isInstance)
+                .forEach(writer -> ((LoggingCodecSupport) writer).setEnableLoggingRequestDetails(true));
+
         var builder = WebClient
                 .builder()
+                .exchangeStrategies(exchangeStrategies)
                 .baseUrl("https://modapp-q1.adeo.no/aareg-core/api/v1/arbeidstaker/arbeidsforhold?historikk=true");
         LOG.info("Registrerer {} filtre", filters.length);
         Arrays.stream(filters).forEach(builder::filter);
