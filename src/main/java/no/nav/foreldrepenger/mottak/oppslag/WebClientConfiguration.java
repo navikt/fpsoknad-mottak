@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +57,10 @@ public class WebClientConfiguration {
     ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
         LOG.info("Registrerer system token filter");
         return (req, next) -> {
-            LOG.info("Legger til headers");
+            LOG.info(MarkerFactory.getMarker("CONFIDENTIAL"), "Legger til system token {}",
+                    sts.getSystemToken().getToken());
+            LOG.info(MarkerFactory.getMarker("CONFIDENTIAL"), "Legger til user token {}", tokenUtil.getToken());
+
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, "fpsoknad-mottak")
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
