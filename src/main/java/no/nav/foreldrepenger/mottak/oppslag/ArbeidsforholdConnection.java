@@ -78,7 +78,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
             var a = Map.class.cast(forhold.get(0).get("arbeidsgiver"));
             LOG.trace("Hentet arbeidsgiver {}", a);
             var type = (String) a.get("type");
-            long orgnr = (long) a.get("organisasjonsnummer");
+            String orgnr = (String) a.get("organisasjonsnummer");
             // new Arbeidsforhold(arbeidsgiverId, arbeidsgiverIdType, from, to,
             // stillingsprosent, arbeidsgiverNavn)
             LOG.trace("Hentet type {} og nr {}", type, orgnr);
