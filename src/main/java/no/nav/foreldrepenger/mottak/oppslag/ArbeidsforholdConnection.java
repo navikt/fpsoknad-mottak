@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.ANSETTELSESPERIODE_FOM;
-import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.ANSETTELSESPERIODE_TOM;
 import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.HISTORIKK;
 import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.SPORINGSINFORMASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -69,8 +66,8 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                 .uri(b -> b.path(cfg.getArbeidsforholdPath())
                         .queryParam(HISTORIKK, "true")
                         .queryParam(SPORINGSINFORMASJON, "false")
-                        .queryParam(ANSETTELSESPERIODE_FOM, fom.format(ISO_LOCAL_DATE))
-                        .queryParam(ANSETTELSESPERIODE_TOM, tom.format(ISO_LOCAL_DATE))
+                        // .queryParam(ANSETTELSESPERIODE_FOM, fom.format(ISO_LOCAL_DATE))
+                        // .queryParam(ANSETTELSESPERIODE_TOM, tom.format(ISO_LOCAL_DATE))
                         .build())
                 .accept(APPLICATION_JSON)
                 .retrieve()
