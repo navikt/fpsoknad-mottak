@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -52,6 +53,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 @TestPropertySource(properties = { "sts.uri=http://www.sts.no", "spring.cloud.vault.enabled=false",
         "spring.cloud.vault.token=00000",
         "kafka.username=un", "kafka.password=pw" })
+@EnableConfigurationProperties
 public class TestFPFordelRoundtripSerialization {
 
     @Autowired

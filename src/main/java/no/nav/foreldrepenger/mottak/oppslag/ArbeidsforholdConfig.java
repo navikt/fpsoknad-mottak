@@ -3,10 +3,8 @@ package no.nav.foreldrepenger.mottak.oppslag;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.context.annotation.Configuration;
 
-@ConfigurationProperties(prefix = "arbeidsforhold", ignoreInvalidFields = true)
-@Configuration
+@ConfigurationProperties(prefix = "arbeidsforhold")
 public class ArbeidsforholdConfig {
 
     private final String baseUri;

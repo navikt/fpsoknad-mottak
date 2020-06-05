@@ -6,6 +6,7 @@ import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,6 +22,7 @@ import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration;
 
 @SpringBootApplication
 @EnableCaching
+@ConfigurationPropertiesScan
 @Import(value = TokenGeneratorConfiguration.class)
 @ComponentScan(excludeFilters = { @Filter(type = ASSIGNABLE_TYPE, value = MottakApplication.class) })
 public class MottakApplicationLocal {
