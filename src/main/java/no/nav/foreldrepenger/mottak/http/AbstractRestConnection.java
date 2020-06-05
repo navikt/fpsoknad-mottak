@@ -73,7 +73,7 @@ public abstract class AbstractRestConnection implements RestConnection {
             return respons;
         } catch (HttpClientErrorException e) {
             if (NOT_FOUND.equals(e.getStatusCode()) && !doThrow) {
-                LOG.info("Fant ingen entity, returnerer null");
+                LOG.info("Fant ingen entity på {}, returnerer null", uri);
                 return null;
             }
             throw e;
