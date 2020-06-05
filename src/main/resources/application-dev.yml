@@ -26,3 +26,4 @@ varsel:
     enabled : true
 arbeidsforhold:
      base-uri: https://modapp-q1.adeo.no/aareg-services/api  
+     log: true

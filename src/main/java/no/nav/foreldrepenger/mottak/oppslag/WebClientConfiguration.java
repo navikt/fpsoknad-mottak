@@ -42,15 +42,13 @@ public class WebClientConfiguration {
 
     @Qualifier("REST")
     @Bean
-    public WebClient arbeidsforholdClient(@Value("${reactive.logging.enable:false}") boolean log,
-            ArbeidsforholdConfig config,
-            ExchangeFilterFunction... filters) {
+    public WebClient arbeidsforholdClient(ArbeidsforholdConfig config, ExchangeFilterFunction... filters) {
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
         exchangeStrategies
                 .messageWriters().stream()
                 .filter(LoggingCodecSupport.class::isInstance)
                 .map(LoggingCodecSupport.class::cast)
-                .forEach(w -> w.setEnableLoggingRequestDetails(log));
+                .forEach(w -> w.setEnableLoggingRequestDetails(config.isLog()));
 
         var builder = WebClient
                 .builder()
