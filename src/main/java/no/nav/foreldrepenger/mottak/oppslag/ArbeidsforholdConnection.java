@@ -28,7 +28,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     private final String name;
 
     public ArbeidsforholdConnection(@Qualifier("REST") WebClient webClient,
-            @Value("${spring.application.name}") String name, ArbeidsforholdConfig cfg) {
+            @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg) {
         this.webClient = webClient;
         this.cfg = cfg;
         this.name = name;
