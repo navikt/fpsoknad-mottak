@@ -73,7 +73,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                         .build())
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .toEntityList(String.class) // TODO
+                .toEntity(String.class) // TODO
                 .block()
                 .getBody();
         LOG.trace("Hentet arbeidsforhold {}", mapper.writeValueAsString(forhold));
