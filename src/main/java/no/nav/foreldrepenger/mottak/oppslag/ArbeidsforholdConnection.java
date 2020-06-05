@@ -61,7 +61,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     }
 
     List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
-        LOG.trace("Henter arbeidsforhold");
+        LOG.trace("Henter arbeidsgivere");
         var forhold = webClient.get()
                 .uri(b -> b.path(cfg.getArbeidsforholdPath())
                         .queryParam(HISTORIKK, "true")
@@ -74,7 +74,15 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                 .toEntityList(Map.class) // TODO
                 .block()
                 .getBody();
-        LOG.trace("Hentet arbeidsforhold {}", forhold);
+        if (!forhold.isEmpty()) {
+            var a = Map.class.cast(forhold.get(0).get("arbeidsgiver"));
+            LOG.trace("Hentet arbeidsgiver {}", a);
+            var type = (String) a.get("type");
+            long orgnr = (long) a.get("organisasjonsnummer");
+            // new Arbeidsforhold(arbeidsgiverId, arbeidsgiverIdType, from, to,
+            // stillingsprosent, arbeidsgiverNavn)
+            LOG.trace("Hentet type {} og nr {}", type, orgnr);
+        }
         return Collections.emptyList(); // TODO
     }
 
