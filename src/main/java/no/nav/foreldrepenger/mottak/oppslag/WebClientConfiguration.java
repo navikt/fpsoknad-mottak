@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.slf4j.Logger;
@@ -63,9 +64,12 @@ public class WebClientConfiguration {
     ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil,
             @Value("${spring.application.name:fpsoknad-mottak}") String consumer) {
         return (req, next) -> {
+            SystemToken systemToken = sts.getSystemToken();
+            LOG.info("System token exipres at {}", LocalDateTime.now().plusSeconds(systemToken.getExpiresIn()));
+            LOG.info("User token exipres at {}", tokenUtil.getExpiryDate());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumer)
-                    .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
+                    .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
                     .header(NAV_CALL_ID1, callId())
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())

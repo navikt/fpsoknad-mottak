@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.security.token.support.core.context.TokenValidationContext;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
+import no.nav.security.token.support.core.jwt.JwtToken;
 import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 
 @Component
@@ -36,7 +37,7 @@ public class TokenUtil {
     }
 
     public String getToken() {
-        return ctxHolder.getTokenValidationContext().getJwtToken(ISSUER).getTokenAsString();
+        return getJWTToken().getTokenAsString();
     }
 
     public boolean erAutentisert() {
@@ -94,8 +95,14 @@ public class TokenUtil {
 
     }
 
+    public JwtToken getJWTToken() {
+        return ctxHolder.getTokenValidationContext().getJwtToken(ISSUER);
+
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [ctxHolder=" + ctxHolder + "]";
     }
+
 }

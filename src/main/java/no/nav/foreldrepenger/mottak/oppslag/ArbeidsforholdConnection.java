@@ -66,7 +66,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
         LOG.trace("Henter arbeidsforhold");
         var forhold = webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(cfg.getArbeidsforholdPath())
+                .uri(b -> b.path(cfg.getArbeidsforholdPath())
                         .queryParam(HISTORIKK, "true")
                         .queryParam(SPORINGSINFORMASJON, "false")
                         .queryParam(ANSETTELSESPERIODE_FOM, fom.format(ISO_LOCAL_DATE))
