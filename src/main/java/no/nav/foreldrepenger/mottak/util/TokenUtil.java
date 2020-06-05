@@ -32,7 +32,7 @@ public class TokenUtil {
     }
 
     public String bearerToken() {
-        return "BEARER " + getToken();
+        return "Bearer " + getToken();
     }
 
     public String getToken() {
