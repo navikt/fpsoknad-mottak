@@ -33,7 +33,7 @@ public class JacksonWrapper {
 
     public String writeValueAsString(Object object) {
         try {
-            return mapper.writeValueAsString(object);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new UnexpectedInputException("Kunne ikke serialisere fra %s", e, object.getClass().getName());
 

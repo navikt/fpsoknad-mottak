@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 import no.nav.foreldrepenger.mottak.util.URIUtil;
 
 @Component
@@ -30,6 +33,8 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     private final ArbeidsforholdConfig cfg;
     private final WebClient webClient;
     private final String name;
+    @Inject
+    private JacksonWrapper mapper;
 
     public ArbeidsforholdConnection(@Qualifier("REST") WebClient webClient,
             @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg) {
@@ -71,7 +76,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                 .toEntityList(String.class) // TODO
                 .block()
                 .getBody();
-        LOG.trace("Hentet arbeidsforhold {}", forhold);
+        LOG.trace("Hentet arbeidsforhold {}", mapper.writeValueAsString(forhold));
         return Collections.emptyList(); // TODO
     }
 
