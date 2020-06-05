@@ -1,6 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.ANSETTELSESPERIODE_FOM;
+import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.ANSETTELSESPERIODE_TOM;
+import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.HISTORIKK;
+import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.SPORINGSINFORMASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
@@ -22,6 +26,7 @@ import no.nav.foreldrepenger.mottak.util.URIUtil;
 
 @Component
 public class ArbeidsforholdConnection implements PingEndpointAware {
+
     public static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdConnection.class);
     private final ArbeidsforholdConfig cfg;
     private final WebClient webClient;
@@ -57,10 +62,10 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
         LOG.trace("Henter arbeidsforhold");
         var forhold = webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(cfg.getArbeidsforholdPath())
-                        .queryParam("historikk", "true")
-                        .queryParam("sporingsinformasjon", "false")
-                        .queryParam("ansettelsesperiodeFom", fom.format(ISO_LOCAL_DATE))
-                        .queryParam("ansettelsesperiodeTom", tom.format(ISO_LOCAL_DATE))
+                        .queryParam(HISTORIKK, "true")
+                        .queryParam(SPORINGSINFORMASJON, "false")
+                        .queryParam(ANSETTELSESPERIODE_FOM, fom.format(ISO_LOCAL_DATE))
+                        .queryParam(ANSETTELSESPERIODE_TOM, tom.format(ISO_LOCAL_DATE))
                         .build())
                 .accept(APPLICATION_JSON)
                 .retrieve()
