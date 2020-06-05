@@ -11,6 +11,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -73,10 +74,10 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                         .build())
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .toEntity(String.class) // TODO
+                .toEntity(Map.class) // TODO
                 .block()
                 .getBody();
-        LOG.trace("Hentet arbeidsforhold {}", mapper.writeValueAsString(forhold));
+        LOG.trace("Hentet arbeidsforhold {}", forhold);
         return Collections.emptyList(); // TODO
     }
 

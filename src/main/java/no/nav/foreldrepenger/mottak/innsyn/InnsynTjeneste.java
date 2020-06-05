@@ -228,7 +228,7 @@ public class InnsynTjeneste implements Innsyn {
                         .type(tilType(w.getType()))
                         .inntektsmeldinger(w.getInntektsmeldinger())
                         .søknad(hentSøknad(w.getSøknadsLenke()))
-                        //.vedtak(hentVedtak(w.getVedtaksLenke()))
+                        // .vedtak(hentVedtak(w.getVedtaksLenke()))
                         .build())
                 .orElse(null);
     }
@@ -335,7 +335,9 @@ public class InnsynTjeneste implements Innsyn {
         LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
         return Optional.ofNullable(orgnr)
                 .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslag.organisasjonsNavn(o)))
-                .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId).map(AktørId::getId).orElse(null), PRIVAT,
+                .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId)
+                        .map(AktørId::getId)
+                        .orElse(null), PRIVAT,
                         null));
     }
 
