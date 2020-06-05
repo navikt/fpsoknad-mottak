@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.domain;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.nesteMåned;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ID142;
@@ -13,9 +12,7 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadDevController.INNSE
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
-import static org.eclipse.jetty.http.HttpStatus.UNPROCESSABLE_ENTITY_422;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -123,12 +120,4 @@ public class TestFPFordelRoundtripSerialization {
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
-    // @Test
-    public void testSøknadFødselFramtidShouldNotValidate() {
-        Versjon versjon = V1;
-        assertEquals(UNPROCESSABLE_ENTITY_422, template.postForEntity(INNSENDING_PREPROD + "/søknad",
-                engangssøknad(versjon, false, fødsel(nesteMåned()), norskForelder(versjon),
-                        påkrevdVedlegg(ID142)),
-                String.class).getStatusCodeValue());
-    }
 }

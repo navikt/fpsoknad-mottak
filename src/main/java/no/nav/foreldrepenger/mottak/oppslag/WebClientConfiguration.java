@@ -63,7 +63,7 @@ public class WebClientConfiguration {
 
     @Bean
     ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil,
-            @Value("${spring.application.name}") String consumer) {
+            @Value("${spring.application.name:fpsoknad-mottak}") String consumer) {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumer)
