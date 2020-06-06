@@ -28,7 +28,8 @@ public class STSSystemUserTokenService implements SystemUserTokenService {
         return webClient.get()
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(SystemToken.class).block();
+                .bodyToMono(SystemToken.class)
+                .block();
     }
 
     @Override

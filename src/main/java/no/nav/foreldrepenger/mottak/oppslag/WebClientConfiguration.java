@@ -65,8 +65,8 @@ public class WebClientConfiguration {
             @Value("${spring.application.name:fpsoknad-mottak}") String consumer) {
         return (req, next) -> {
             SystemToken systemToken = sts.getSystemToken();
-            LOG.info("System token exipres at {}", LocalDateTime.now().plusSeconds(systemToken.getExpiresIn()));
-            LOG.info("User token exipres at {}", tokenUtil.getExpiryDate());
+            LOG.info("System token expires at {}", LocalDateTime.now().plusSeconds(systemToken.getExpiresIn()));
+            LOG.info("User token expires at {}", tokenUtil.getExpiryDate());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumer)
                     .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
