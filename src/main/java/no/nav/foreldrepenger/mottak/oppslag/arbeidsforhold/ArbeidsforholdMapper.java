@@ -20,7 +20,7 @@ class ArbeidsforholdMapper {
         var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
         var type = get(arbeidsgiver, "type");
         if ("Organisasjon".equals(type)) {
-            var orgnr = get(map, "organisasjonsnummer");
+            var orgnr = get(arbeidsgiver, "organisasjonsnummer");
             LOG.info("type {} orgnr {}", type, orgnr);
         }
         return null;
