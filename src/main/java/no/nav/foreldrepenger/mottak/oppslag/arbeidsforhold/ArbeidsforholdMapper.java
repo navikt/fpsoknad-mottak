@@ -50,7 +50,8 @@ class ArbeidsforholdMapper {
     private static boolean gjeldendeAvtale(Map<?, ?> avtale) {
         Map<?, ?> periode = get(avtale, "gyldighetsperiode", Map.class);
         var fom = dato(get(periode, "fom"));
-        var tom = dato(get(periode, "tom"));
+        var tom = Optional.ofNullable(dato(get(periode, "tom")))
+                .orElse(LocalDate.now());
         return dateWithinPeriod(now(), fom, tom);
     }
 
