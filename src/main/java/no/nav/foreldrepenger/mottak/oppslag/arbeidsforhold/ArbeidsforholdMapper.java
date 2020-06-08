@@ -22,8 +22,8 @@ class ArbeidsforholdMapper {
         var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
         var id = idFra(arbeidsgiver);
         var arbeidsavtaler = get(map, "arbeidsavtaler", List.class);
-        LOG.info("arbeidsavtaler {}", arbeidsavtaler);
-
+        var periode = get(get(map, "ansettelsesperiode", Map.class), "periode", Map.class);
+        LOG.info("periode {}", periode);
         // return new Arbeidsforhold(id.getFirst(), id.getSecond(), from, to,
         // stillingsprosent, arbeidsgiverNavn)
         return null;
