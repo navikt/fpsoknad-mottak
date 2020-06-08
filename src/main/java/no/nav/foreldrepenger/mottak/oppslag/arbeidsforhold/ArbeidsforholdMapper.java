@@ -39,9 +39,8 @@ class ArbeidsforholdMapper {
         return avtaler.stream()
                 .map(Map.class::cast)
                 .filter(ArbeidsforholdMapper::gjeldendeAvtale)
-                .map(a -> ArbeidsforholdMapper.get(a, "stillingsprosent"))
+                .map(a -> ArbeidsforholdMapper.get(a, "stillingsprosent", Double.class))
                 .filter(Objects::nonNull)
-                .map(Double::valueOf)
                 .map(ProsentAndel::new)
                 .findFirst()
                 .orElse(null);
