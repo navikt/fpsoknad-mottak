@@ -20,7 +20,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
@@ -29,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
 
 @Component
 public class SvangerskapspengerInfoRenderer {
@@ -157,7 +157,7 @@ public class SvangerskapspengerInfoRenderer {
         return arbeidsforhold;
     }
 
-    List<String> arbeidsforhold(no.nav.foreldrepenger.mottak.domain.Arbeidsforhold arbeidsforhold) {
+    List<String> arbeidsforhold(Arbeidsforhold arbeidsforhold) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "arbeidsgiver", arbeidsforhold.getArbeidsgiverNavn());
         addIfSet(attributter, "fom", arbeidsforhold.getFrom());

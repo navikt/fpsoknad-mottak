@@ -73,8 +73,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         var svp = (Svangerskapspenger) søknad.getYtelse();
-        List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(
-                oppslag.getArbeidsforhold(), svp.getTermindato(), svp.getFødselsdato());
+        var arbeidsforhold = aktiveArbeidsforhold(oppslag.getArbeidsforhold(), svp.getTermindato(),
+                svp.getFødselsdato());
         try (var doc = new FontAwarePDDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();
             doc.addPage(page);
@@ -200,8 +200,9 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         }
     }
 
-    private List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> aktiveArbeidsforhold(
-            List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsforhold, LocalDate termindato,
+    private List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> aktiveArbeidsforhold(
+            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> arbeidsforhold,
+            LocalDate termindato,
             LocalDate fødselsdato) {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
         return safeStream(oppslag.getArbeidsforhold())
@@ -209,7 +210,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                 .collect(Collectors.toList());
     }
 
-    private float renderTilrettelegging(List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere,
+    private float renderTilrettelegging(
+            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> arbeidsgivere,
             Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrettelegging,
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
@@ -374,12 +376,13 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
     }
 
-    private String virksomhetsnavn(List<no.nav.foreldrepenger.mottak.domain.Arbeidsforhold> arbeidsgivere,
+    private String virksomhetsnavn(
+            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> arbeidsgivere,
             String orgnr) {
         return safeStream(arbeidsgivere)
                 .filter(arb -> arb.getArbeidsgiverId().equals(orgnr))
                 .findFirst()
-                .map(no.nav.foreldrepenger.mottak.domain.Arbeidsforhold::getArbeidsgiverNavn)
+                .map(no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold::getArbeidsgiverNavn)
                 .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));
     }
 

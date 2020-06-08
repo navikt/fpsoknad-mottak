@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
@@ -27,6 +26,7 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
 
 @Component
 public class ForeldrepengerPDFGenerator implements PDFGenerator {
@@ -51,13 +51,13 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         switch (egenskap.getType()) {
-        case INITIELL_FORELDREPENGER:
-            return generate(søknad, søker);
-        case ENDRING_FORELDREPENGER:
-            return generate(Endringssøknad.class.cast(søknad), søker);
-        default:
-            throw new UnexpectedInputException(
-                    "Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
+            case INITIELL_FORELDREPENGER:
+                return generate(søknad, søker);
+            case ENDRING_FORELDREPENGER:
+                return generate(Endringssøknad.class.cast(søknad), søker);
+            default:
+                throw new UnexpectedInputException(
+                        "Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
         }
     }
 
