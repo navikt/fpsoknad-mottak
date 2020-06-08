@@ -1,11 +1,19 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
-import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import com.google.common.base.Joiner;
+import com.neovisionaries.i18n.CountryCode;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.mottak.util.Pair;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -14,22 +22,11 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import com.google.common.base.Joiner;
-import com.neovisionaries.i18n.CountryCode;
-
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.util.Pair;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
+import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 @Component
 public class SøknadTextFormatter {
@@ -106,6 +103,14 @@ public class SøknadTextFormatter {
         StringBuilder sb = new StringBuilder("fra og med " + dato(periode.getFom()));
         if (periode.getTom() != null) {
             sb.append(periode.getTom() != null ? " til og med " + dato(periode.getTom()) : " pågående");
+        }
+        return sb.toString();
+    }
+
+    public String enkelPeriode(ÅpenPeriode periode) {
+        StringBuilder sb = new StringBuilder(dato(periode.getFom()));
+        if (periode.getTom() != null) {
+            sb.append(periode.getTom() != null ? " - " + dato(periode.getTom()) : " pågående");
         }
         return sb.toString();
     }

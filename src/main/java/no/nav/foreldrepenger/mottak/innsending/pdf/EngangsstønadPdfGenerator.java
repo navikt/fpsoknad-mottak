@@ -31,8 +31,8 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.FeltBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.FritekstBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.GruppeBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
-import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
+import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
@@ -64,7 +64,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                 .dokument(txt("søknad_engang"))
                 .søker(personFra(søker))
                 .mottattDato(mottattDato())
-                .grupper(lagOverskrifter(søknad))
+                .temaer(lagOverskrifter(søknad))
                 .build();
     }
 
@@ -72,11 +72,11 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return new MottattDato(txt("mottattid"), FMT.format(LocalDateTime.now()));
     }
 
-    private List<GruppeBlokk> lagOverskrifter(Søknad søknad) {
+    private List<TemaBlokk> lagOverskrifter(Søknad søknad) {
         var stønad = Engangsstønad.class.cast(søknad.getYtelse());
         var medlemsskap = stønad.getMedlemsskap();
         var annenForelder = stønad.getAnnenForelder();
-        List<GruppeBlokk> grupper = new ArrayList<>();
+        List<TemaBlokk> grupper = new ArrayList<>();
 
         // info om barn
         grupper.add(omBarn(søknad, stønad));
@@ -92,7 +92,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return grupper;
     }
 
-    private GruppeBlokk omAnnenForelder(AnnenForelder annenForelder) {
+    private TemaBlokk omAnnenForelder(AnnenForelder annenForelder) {
         List<Blokk> farInfo = new ArrayList<>();
         if (annenForelder instanceof NorskForelder) {
             farInfo.addAll(norskForelder(annenForelder));
@@ -103,10 +103,10 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         if (annenForelder instanceof UkjentForelder) {
             farInfo.add(new FritekstBlokk(txt("annenforelderukjent")));
         }
-        return GruppeBlokk.builder()
-                .overskrift(txt("omannenforelder"))
-                .underBlokker(farInfo)
-                .build();
+        return TemaBlokk.builder()
+            .medOverskrift(txt("omannenforelder"))
+            .medUnderBlokker(farInfo)
+            .build();
     }
 
     private List<FeltBlokk> utenlandskForelder(AnnenForelder annenForelder) {
@@ -130,23 +130,23 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return info;
     }
 
-    private GruppeBlokk tilknytning(Medlemsskap medlemsskap, Engangsstønad stønad) {
+    private TemaBlokk tilknytning(Medlemsskap medlemsskap, Engangsstønad stønad) {
         var fødselssted = fødselssted(medlemsskap, stønad);
         var tidligereUtenlandsopphold = textFormatter
                 .utenlandsPerioder(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold());
         List<Blokk> tabeller = new ArrayList<>();
         if (!tidligereUtenlandsopphold.isEmpty()) {
-            tabeller.add(new TabellBlokk(txt("siste12"), tabellRader(tidligereUtenlandsopphold)));
+            tabeller.add(new GruppeBlokk(txt("siste12"), tabellRader(tidligereUtenlandsopphold)));
         }
         var fremtidige = textFormatter.utenlandsPerioder(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold());
         if (!fremtidige.isEmpty()) {
-            tabeller.add(new TabellBlokk(txt("neste12"), tabellRader(fremtidige)));
+            tabeller.add(new GruppeBlokk(txt("neste12"), tabellRader(fremtidige)));
         }
         tabeller.add(new FritekstBlokk(fødselssted));
-        return GruppeBlokk.builder()
-                .overskrift(txt("tilknytning"))
-                .underBlokker(tabeller)
-                .build();
+        return TemaBlokk.builder()
+            .medOverskrift(txt("tilknytning"))
+            .medUnderBlokker(tabeller)
+            .build();
     }
 
     private static List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
@@ -169,11 +169,11 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         }
     }
 
-    private GruppeBlokk omBarn(Søknad søknad, Engangsstønad stønad) {
-        return GruppeBlokk.builder()
-                .overskrift(txt("ombarn"))
-                .underBlokker(omFødsel(søknad, stønad))
-                .build();
+    private TemaBlokk omBarn(Søknad søknad, Engangsstønad stønad) {
+        return TemaBlokk.builder()
+            .medOverskrift(txt("ombarn"))
+            .medUnderBlokker(omFødsel(søknad, stønad))
+            .build();
     }
 
     private List<FritekstBlokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
@@ -218,8 +218,15 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private DokumentPerson personFra(Person person) {
         var navn = textFormatter.sammensattNavn(new Navn(person.getFornavn(),
-                person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
+            person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
         return DokumentPerson.builder().navn(navn).id(person.getFnr().getFnr()).build();
+    }
+
+    private FeltBlokk feltFra(String felt, String verdi) {
+        return FeltBlokk.builder()
+            .medFelt(felt)
+            .medVerdi(verdi)
+            .build();
     }
 
     @Override
