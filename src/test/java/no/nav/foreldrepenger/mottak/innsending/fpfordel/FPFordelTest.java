@@ -1,11 +1,54 @@
 package no.nav.foreldrepenger.mottak.innsending.fpfordel;
 
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
+import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
+import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
+import static org.springframework.http.HttpHeaders.LOCATION;
+import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.SEE_OTHER;
+
+import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.time.StopWatch;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestOperations;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
@@ -39,49 +82,8 @@ import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
-import org.apache.commons.lang3.time.StopWatch;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestOperations;
-
-import java.net.URI;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.PÅGÅR;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.quality.Strictness.LENIENT;
-import static org.springframework.http.HttpHeaders.LOCATION;
-import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.SEE_OTHER;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)
