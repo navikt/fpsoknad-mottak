@@ -69,8 +69,11 @@ public class OppslagTjeneste implements Oppslag {
     public List<Arbeidsforhold> getArbeidsforhold() {
         var rs = arbeidsforholdREST();
         var ws = connection.hentArbeidsforhold();
-        LOG.info("REST {}", rs);
-        LOG.info("WS {}", ws);
+        if (rs.containsAll(ws) && ws.containsAll(rs)) {
+            LOG.info("RS og WS arbeidsforhold like");
+        } else {
+            LOG.warn("Ulike arbeidsforhold : REST {}, WS {}", rs, ws);
+        }
         return ws;
     }
 
