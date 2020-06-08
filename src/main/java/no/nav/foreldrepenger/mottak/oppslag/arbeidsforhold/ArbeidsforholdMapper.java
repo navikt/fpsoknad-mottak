@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,10 +26,20 @@ class ArbeidsforholdMapper {
         var id = idFra(arbeidsgiver);
         var arbeidsavtaler = get(map, "arbeidsavtaler", List.class);
         var periode = get(get(map, "ansettelsesperiode", Map.class), "periode", Map.class);
-        LOG.info("periode {}", periode);
+        var fom = dato(get(periode, "fom"));
+        var tom = dato(get(periode, "tom"));
+        LOG.info("fom {}", fom);
+        LOG.info("tom {}", tom);
         // return new Arbeidsforhold(id.getFirst(), id.getSecond(), from, to,
         // stillingsprosent, arbeidsgiverNavn)
         return null;
+    }
+
+    private static LocalDate dato(String dato) {
+        return Optional.ofNullable(dato)
+                .map(d -> LocalDate.parse(d, ISO_LOCAL_DATE))
+                .orElse(null);
+
     }
 
     private static Pair<String, String> idFra(Map<?, ?> map) {
