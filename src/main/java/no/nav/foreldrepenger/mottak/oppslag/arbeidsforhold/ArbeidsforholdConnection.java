@@ -27,12 +27,15 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     private final ArbeidsforholdConfig cfg;
     private final WebClient webClient;
     private final String name;
+    private final ArbeidsforholdMapper mapper;
 
     public ArbeidsforholdConnection(@Qualifier("REST") WebClient webClient,
-            @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg) {
+            @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg,
+            ArbeidsforholdMapper mapper) {
         this.webClient = webClient;
         this.cfg = cfg;
         this.name = name;
+        this.mapper = mapper;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                 .block()
                 .getBody()
                 .stream()
-                .map(ArbeidsforholdMapper::map)
+                .map(mapper::map)
                 .collect(toList());
     }
 

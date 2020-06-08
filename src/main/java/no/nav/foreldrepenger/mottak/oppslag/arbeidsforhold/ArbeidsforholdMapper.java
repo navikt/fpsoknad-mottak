@@ -11,31 +11,38 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
+@Component
 class ArbeidsforholdMapper {
+
+    private final OppslagConnection oppslag;
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
 
-    private ArbeidsforholdMapper() {
-
+    public ArbeidsforholdMapper(OppslagConnection oppslag) {
+        this.oppslag = oppslag;
     }
 
-    static Arbeidsforhold map(Map<?, ?> map) {
+    Arbeidsforhold map(Map<?, ?> map) {
         var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
         var id = idFra(arbeidsgiver);
         var periode = get(get(map, "ansettelsesperiode", Map.class), "periode", Map.class);
         var fom = dato(get(periode, "fom"));
         var tom = Optional.ofNullable(dato(get(periode, "tom")));
+
         var a = new Arbeidsforhold(id.getFirst(), id.getSecond(), fom, tom,
-                stillingsprosent(get(map, "arbeidsavtaler", List.class)), null);
+                stillingsprosent(get(map, "arbeidsavtaler", List.class)), oppslag.organisasjonsNavn(id.getFirst()));
+
         LOG.info("Arbeidsforhold er {}", a);
         return a;
     }
 
-    private static ProsentAndel stillingsprosent(List<?> avtaler) {
+    static ProsentAndel stillingsprosent(List<?> avtaler) {
         return avtaler.stream()
                 .map(Map.class::cast)
                 .filter(ArbeidsforholdMapper::gjeldendeAvtale)

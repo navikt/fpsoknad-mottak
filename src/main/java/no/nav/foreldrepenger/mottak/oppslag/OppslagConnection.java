@@ -73,7 +73,7 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
                 .orElse(emptyList());
     }
 
-    String organisasjonsNavn(String orgnr) {
+    public String organisasjonsNavn(String orgnr) {
         LOG.trace("Henter navn for organisasjon {}", orgnr);
         return getForObject(uri(cfg.getBaseURI(), cfg.getOrgNavnPath(), queryParams(ORGNR, orgnr)), String.class);
     }
