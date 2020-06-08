@@ -21,6 +21,7 @@ class ArbeidsforholdMapper {
         LOG.info("Mapper {}", map);
         var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
         var id = idFra(arbeidsgiver);
+        LOG.info("Mappe til  {}", id);
         // return new Arbeidsforhold(id.getFirst(), id.getSecond(), from, to,
         // stillingsprosent, arbeidsgiverNavn)
         return null;
