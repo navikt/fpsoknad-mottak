@@ -19,7 +19,7 @@ class ArbeidsforholdMapper {
         LOG.info("Mapper {}", map);
         var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
         var type = get(arbeidsgiver, "type");
-        if ("organisasjon".equals(type)) {
+        if ("Organisasjon".equals(type)) {
             var orgnr = get(map, "organisasjonsnummer");
             LOG.info("type {} orgnr {}", type, orgnr);
         }
@@ -32,11 +32,13 @@ class ArbeidsforholdMapper {
 
     private static <T> T get(Map<?, ?> map, String key, Class<T> clazz) {
         LOG.info("Henter {} fra {}", key, map);
-        return Optional.ofNullable(map)
+        var verdi = Optional.ofNullable(map)
                 .map(m -> m.get(key))
                 .filter(Objects::nonNull)
                 .map(v -> (T) v)
                 .orElse(null);
+        LOG.info("Hentet verdi {} fra key {} i {}", verdi, key, map);
+        return verdi;
     }
 
 }
