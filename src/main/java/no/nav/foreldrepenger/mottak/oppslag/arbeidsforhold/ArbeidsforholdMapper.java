@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static java.time.LocalDate.now;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 class ArbeidsforholdMapper {
@@ -24,15 +26,31 @@ class ArbeidsforholdMapper {
     static Arbeidsforhold map(Map<?, ?> map) {
         var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
         var id = idFra(arbeidsgiver);
-        var arbeidsavtaler = get(map, "arbeidsavtaler", List.class);
         var periode = get(get(map, "ansettelsesperiode", Map.class), "periode", Map.class);
         var fom = dato(get(periode, "fom"));
+        var tom = Optional.of(dato(get(periode, "tom")));
+        var a = new Arbeidsforhold(id.getFirst(), id.getSecond(), fom, tom,
+                stillingsprosent(get(map, "arbeidsavtaler", List.class)), null);
+        return a;
+    }
+
+    private static ProsentAndel stillingsprosent(List<?> avtaler) {
+        return avtaler.stream()
+                .map(Map.class::cast)
+                .filter(ArbeidsforholdMapper::gjeldendeAvtale)
+                .map(a -> ArbeidsforholdMapper.get(a, "stillingsprosent"))
+                .filter(Objects::nonNull)
+                .map(Double::valueOf)
+                .map(ProsentAndel::new)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static boolean gjeldendeAvtale(Map<?, ?> avtale) {
+        Map<?, ?> periode = get(avtale, "gyldighetsperiode", Map.class);
+        var fom = dato(get(periode, "fom"));
         var tom = dato(get(periode, "tom"));
-        LOG.info("fom {}", fom);
-        LOG.info("tom {}", tom);
-        // return new Arbeidsforhold(id.getFirst(), id.getSecond(), from, to,
-        // stillingsprosent, arbeidsgiverNavn)
-        return null;
+        return dateWithinPeriod(now(), fom, tom);
     }
 
     private static LocalDate dato(String dato) {
@@ -40,6 +58,13 @@ class ArbeidsforholdMapper {
                 .map(d -> LocalDate.parse(d, ISO_LOCAL_DATE))
                 .orElse(null);
 
+    }
+
+    public static boolean dateWithinPeriod(LocalDate date, LocalDate start, LocalDate end) {
+        if (date.isEqual(start) || date.isEqual(end)) {
+            return true;
+        }
+        return date.isAfter(start) && date.isBefore(end);
     }
 
     private static Pair<String, String> idFra(Map<?, ?> map) {
