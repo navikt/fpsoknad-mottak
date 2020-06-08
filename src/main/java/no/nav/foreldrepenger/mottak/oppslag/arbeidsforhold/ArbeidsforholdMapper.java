@@ -17,8 +17,7 @@ class ArbeidsforholdMapper {
 
     static Arbeidsforhold map(Map<?, ?> map) {
         LOG.info("Mapper {}", map);
-        var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
-        var type = get(arbeidsgiver, "type");
+        var type = get(get(map, "arbeidsgiver", Map.class), "type");
         if ("organisasjon".equals(type)) {
             var orgnr = get(map, "organisasjonsnummer");
             LOG.info("type {} orgnr {}", type, orgnr);
