@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,10 +19,11 @@ class ArbeidsforholdMapper {
     }
 
     static Arbeidsforhold map(Map<?, ?> map) {
-        LOG.info("Mapper {}", map);
         var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
         var id = idFra(arbeidsgiver);
-        LOG.info("Mappe til  {}", id);
+        var arbeidsavtaler = get(map, "arbeidsavtaler", List.class);
+        LOG.info("arbeidsavtaler {}", arbeidsavtaler);
+
         // return new Arbeidsforhold(id.getFirst(), id.getSecond(), from, to,
         // stillingsprosent, arbeidsgiverNavn)
         return null;
