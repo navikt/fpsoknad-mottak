@@ -28,9 +28,10 @@ class ArbeidsforholdMapper {
         var id = idFra(arbeidsgiver);
         var periode = get(get(map, "ansettelsesperiode", Map.class), "periode", Map.class);
         var fom = dato(get(periode, "fom"));
-        var tom = Optional.of(dato(get(periode, "tom")));
+        var tom = Optional.ofNullable(dato(get(periode, "tom")));
         var a = new Arbeidsforhold(id.getFirst(), id.getSecond(), fom, tom,
                 stillingsprosent(get(map, "arbeidsavtaler", List.class)), null);
+        LOG.info("Arbeidsforhold er {}", a);
         return a;
     }
 
