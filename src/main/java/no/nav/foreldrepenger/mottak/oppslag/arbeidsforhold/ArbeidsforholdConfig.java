@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.oppslag;
+package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;

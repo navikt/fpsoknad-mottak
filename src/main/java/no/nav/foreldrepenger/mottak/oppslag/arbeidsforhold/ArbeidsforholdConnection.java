@@ -1,16 +1,14 @@
-package no.nav.foreldrepenger.mottak.oppslag;
+package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.HISTORIKK;
-import static no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConfig.SPORINGSINFORMASJON;
+import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig.HISTORIKK;
+import static no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig.SPORINGSINFORMASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,20 +17,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 import no.nav.foreldrepenger.mottak.util.URIUtil;
 
 @Component
 public class ArbeidsforholdConnection implements PingEndpointAware {
 
-    public static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdConnection.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdConnection.class);
     private final ArbeidsforholdConfig cfg;
     private final WebClient webClient;
     private final String name;
-    @Inject
-    private JacksonWrapper mapper;
 
     public ArbeidsforholdConnection(@Qualifier("REST") WebClient webClient,
             @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg) {
@@ -62,7 +56,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
 
     List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
         LOG.trace("Henter arbeidsgivere");
-        var forhold = webClient.get()
+        return webClient.get()
                 .uri(b -> b.path(cfg.getArbeidsforholdPath())
                         .queryParam(HISTORIKK, "true")
                         .queryParam(SPORINGSINFORMASJON, "false")
@@ -71,19 +65,12 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                         .build())
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .toEntityList(Map.class) // TODO
+                .toEntityList(Map.class)
                 .block()
-                .getBody();
-        if (!forhold.isEmpty()) {
-            var a = Map.class.cast(forhold.get(0).get("arbeidsgiver"));
-            LOG.trace("Hentet arbeidsgiver {}", a);
-            var type = (String) a.get("type");
-            String orgnr = (String) a.get("organisasjonsnummer");
-            // new Arbeidsforhold(arbeidsgiverId, arbeidsgiverIdType, from, to,
-            // stillingsprosent, arbeidsgiverNavn)
-            LOG.trace("Hentet type {} og nr {}", type, orgnr);
-        }
-        return Collections.emptyList(); // TODO
+                .getBody()
+                .stream()
+                .map(ArbeidsforholdMapper::map)
+                .collect(toList());
     }
 
     @Override

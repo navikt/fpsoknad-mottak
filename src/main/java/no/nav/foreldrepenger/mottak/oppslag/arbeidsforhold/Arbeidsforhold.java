@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.domain;
+package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import java.time.LocalDate;
 import java.util.Objects;

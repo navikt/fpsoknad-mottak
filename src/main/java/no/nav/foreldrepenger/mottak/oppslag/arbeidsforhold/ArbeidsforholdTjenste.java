@@ -1,10 +1,8 @@
-package no.nav.foreldrepenger.mottak.oppslag;
+package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
-import no.nav.foreldrepenger.mottak.domain.Arbeidsforhold;
 
 @Service
 public class ArbeidsforholdTjenste {

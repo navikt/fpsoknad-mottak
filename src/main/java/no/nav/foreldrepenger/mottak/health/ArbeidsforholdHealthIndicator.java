@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.health;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.oppslag.ArbeidsforholdConnection;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConnection;
 
 @Component
 public class ArbeidsforholdHealthIndicator extends AbstractPingableHealthIndicator {
