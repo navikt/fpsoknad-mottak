@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,13 +39,11 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public Person getSøker() {
-        test();
         return connection.hentSøker();
     }
 
     @Override
     public AktørId getAktørId() {
-        test();
         return getAktørId(tokenHelper.autentisertFNR());
     }
 
@@ -68,15 +67,19 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public List<Arbeidsforhold> getArbeidsforhold() {
-        test();
-        return connection.hentArbeidsforhold();
+        var rs = arbeidsforholdREST();
+        var ws = connection.hentArbeidsforhold();
+        LOG.info("REST {}", rs);
+        LOG.info("WS {}", ws);
+        return ws;
     }
 
-    private void test() {
+    private List<Arbeidsforhold> arbeidsforholdREST() {
         try {
-            arbeidsforhold.hentAktiveArbeidsforhold();
+            return arbeidsforhold.hentAktiveArbeidsforhold();
         } catch (Exception e) {
             LOG.warn("OOPS", e);
+            return Collections.emptyList();
         }
     }
 
