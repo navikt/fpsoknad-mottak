@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -26,7 +28,7 @@ public class SystemToken {
     }
 
     public boolean isExpired(long slack) {
-        return LocalDateTime.now().isAfter(LocalDateTime.now().plusSeconds(expiresIn).minusSeconds(slack));
+        return LocalDateTime.now().isAfter(getExpiration().minusSeconds(slack));
     }
 
     private JwtToken getAccessToken() {
@@ -37,19 +39,25 @@ public class SystemToken {
         return getAccessToken().getTokenAsString();
     }
 
-    public Date getExpiration() {
-        return getAccessToken().getJwtTokenClaims().getExpirationTime();
+    public LocalDateTime getExpiration() {
+        return localDateTime(getAccessToken().getJwtTokenClaims().getExpirationTime());
     }
 
     public String getTokenType() {
         return tokenType;
     }
 
+    private LocalDateTime localDateTime(Date date) {
+        return Instant.ofEpochMilli(date.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[accessToken=" + StringUtil.limit(accessToken.getTokenAsString(), 12)
-                + ", expiresIn="
-                + expiresIn
+                + ", expires="
+                + getExpiration()
                 + ", tokenType=" + tokenType + "]";
     }
 
