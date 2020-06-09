@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
-import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
+import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConnection;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Component
@@ -51,10 +51,10 @@ class ArbeidsforholdMapper {
 
     private static final String ANSETTELSESPERIODE = "ansettelsesperiode";
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
-    private final OppslagTjeneste oppslag;
-    private final OrganisasjonTjenste organisasjon;
+    private final OppslagConnection oppslag;
+    private final OrganisasjonConnection organisasjon;
 
-    public ArbeidsforholdMapper(OppslagTjeneste oppslag, OrganisasjonTjenste organisasjon) {
+    public ArbeidsforholdMapper(OppslagConnection oppslag, OrganisasjonConnection organisasjon) {
         this.oppslag = oppslag;
         this.organisasjon = organisasjon;
     }
