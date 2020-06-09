@@ -27,7 +27,7 @@ public class TokenUtil {
     }
 
     public boolean erUtløpt() {
-        return Optional.ofNullable(getExpiryDate())
+        return Optional.ofNullable(getExpiration())
                 .filter(d -> d.before(Date.from(now())))
                 .isPresent();
     }
@@ -44,7 +44,7 @@ public class TokenUtil {
         return getSubject() != null;
     }
 
-    public Date getExpiryDate() {
+    public Date getExpiration() {
         return Optional.ofNullable(claimSet())
                 .map(c -> c.get("exp"))
                 .map(this::getDateClaim)

@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,7 +29,7 @@ public class SystemToken {
         return LocalDateTime.now().isAfter(LocalDateTime.now().plusSeconds(expiresIn).minusSeconds(slack));
     }
 
-    public JwtToken getAccessToken() {
+    private JwtToken getAccessToken() {
         return accessToken;
     }
 
@@ -36,8 +37,8 @@ public class SystemToken {
         return getAccessToken().getTokenAsString();
     }
 
-    public Long getExpiresIn() {
-        return expiresIn;
+    public Date getExpiration() {
+        return getAccessToken().getJwtTokenClaims().getExpirationTime();
     }
 
     public String getTokenType() {

@@ -7,7 +7,6 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.slf4j.Logger;
@@ -66,8 +65,8 @@ public class WebClientConfiguration {
             @Value("${spring.application.name:fpsoknad-mottak}") String consumer) {
         return (req, next) -> {
             SystemToken systemToken = sts.getSystemToken();
-            LOG.info("System token expires at {}", LocalDateTime.now().plusSeconds(systemToken.getExpiresIn()));
-            LOG.info("User token expires at {}", tokenUtil.getExpiryDate());
+            LOG.info("System token expires at {}", systemToken.getExpiration());
+            LOG.info("User token expires at {}", tokenUtil.getExpiration());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumer)
                     .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
