@@ -4,6 +4,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -58,6 +59,7 @@ public class OrganisasjonConnection implements PingEndpointAware {
                 .getBody();
         return Optional.ofNullable(info)
                 .map(OrganisasjonMapper::map)
+                .filter(Objects::nonNull)
                 .orElse(orgnr);
 
     }

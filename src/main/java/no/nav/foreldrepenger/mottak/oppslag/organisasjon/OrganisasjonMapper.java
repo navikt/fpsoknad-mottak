@@ -1,17 +1,16 @@
 package no.nav.foreldrepenger.mottak.oppslag.organisasjon;
 
-import java.util.Map;
+import static no.nav.foreldrepenger.mottak.util.MapUtil.get;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
 
 public class OrganisasjonMapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonMapper.class);
+    private static final String REDIGERTNAVN = "redigertnavn";
+    private static final String NAVN = "navn";
 
     public static String map(Map<?, ?> map) {
-        LOG.info("Mapper fra {}", map);
-        return "hello world";
+        return get(get(map, NAVN, Map.class), REDIGERTNAVN);
     }
 
 }

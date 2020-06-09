@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static no.nav.foreldrepenger.mottak.util.MapUtil.get;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.dateWithinPeriod;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.dato;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConnection;
+import no.nav.foreldrepenger.mottak.util.MapUtil;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Component
@@ -81,7 +83,7 @@ class ArbeidsforholdMapper {
         return avtaler.stream()
                 .map(Map.class::cast)
                 .filter(ArbeidsforholdMapper::gjeldendeAvtale)
-                .map(a -> ArbeidsforholdMapper.get(a, STILLINGSPROSENT, Double.class))
+                .map(a -> MapUtil.get(a, STILLINGSPROSENT, Double.class))
                 .filter(Objects::nonNull)
                 .map(ProsentAndel::new)
                 .findFirst()
@@ -105,15 +107,4 @@ class ArbeidsforholdMapper {
         throw new IllegalArgumentException("Fant verken orgnr eller fnr i " + map);
     }
 
-    private static String get(Map<?, ?> map, String key) {
-        return get(map, key, String.class);
-    }
-
-    private static <T> T get(Map<?, ?> map, String key, Class<T> clazz) {
-        return Optional.ofNullable(map)
-                .map(m -> m.get(key))
-                .filter(Objects::nonNull)
-                .map(v -> (T) v)
-                .orElse(null);
-    }
 }
