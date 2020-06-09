@@ -29,7 +29,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     private final String name;
     private final ArbeidsforholdMapper mapper;
 
-    public ArbeidsforholdConnection(@Qualifier("REST") WebClient webClient,
+    public ArbeidsforholdConnection(@Qualifier("ARBEIDSFORHOLD") WebClient webClient,
             @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg,
             ArbeidsforholdMapper mapper) {
         this.webClient = webClient;
@@ -63,8 +63,6 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
                 .uri(b -> b.path(cfg.getArbeidsforholdPath())
                         .queryParam(HISTORIKK, "true")
                         .queryParam(SPORINGSINFORMASJON, "false")
-                        // .queryParam(ANSETTELSESPERIODE_FOM, fom.format(ISO_LOCAL_DATE))
-                        // .queryParam(ANSETTELSESPERIODE_TOM, tom.format(ISO_LOCAL_DATE))
                         .build())
                 .accept(APPLICATION_JSON)
                 .retrieve()

@@ -9,10 +9,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonTjenste;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Component
@@ -47,19 +50,31 @@ class ArbeidsforholdMapper {
     private static final String ARBEIDSGIVER = "arbeidsgiver";
 
     private static final String ANSETTELSESPERIODE = "ansettelsesperiode";
+    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
+    private final OppslagTjeneste oppslag;
+    private final OrganisasjonTjenste organisasjon;
 
-    private final OppslagConnection oppslag;
-
-    public ArbeidsforholdMapper(OppslagConnection oppslag) {
+    public ArbeidsforholdMapper(OppslagTjeneste oppslag, OrganisasjonTjenste organisasjon) {
         this.oppslag = oppslag;
+        this.organisasjon = organisasjon;
     }
 
     Arbeidsforhold map(Map<?, ?> map) {
-        var id = idFra(get(map, ARBEIDSGIVER, Map.class));
+        var id = id(get(map, ARBEIDSGIVER, Map.class));
         var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE2, Map.class);
         return new Arbeidsforhold(id.getFirst(), id.getSecond(), dato(get(periode, FOM)),
                 Optional.ofNullable(dato(get(periode, TOM))),
-                stillingsprosent(get(map, ARBEIDSAVTALER, List.class)), oppslag.organisasjonsNavn(id.getFirst()));
+                stillingsprosent(get(map, ARBEIDSAVTALER, List.class)), navn(id.getFirst()));
+    }
+
+    private String navn(String orgnr) {
+        try {
+            String navn = organisasjon.organisasjonsNavn(orgnr);
+            LOG.info("REST Fikk navn {}", navn);
+        } catch (Exception e) {
+            LOG.warn("OOPS", e);
+        }
+        return oppslag.organisasjonsNavn(orgnr);
     }
 
     private static ProsentAndel stillingsprosent(List<?> avtaler) {
@@ -79,7 +94,7 @@ class ArbeidsforholdMapper {
                 .orElse(LocalDate.now()));
     }
 
-    private static Pair<String, String> idFra(Map<?, ?> map) {
+    private static Pair<String, String> id(Map<?, ?> map) {
         var type = get(map, TYPE);
         if (ORGANISASJON.equals(type)) {
             return Pair.of(get(map, ORGANISASJONSNUMMER), ORGNR);

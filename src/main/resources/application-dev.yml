@@ -22,8 +22,11 @@ spring:
    mvc:
      log-request-details : true
 varsel:
-    username : srvappserver
-    enabled : true
+  username : srvappserver
+  enabled : true
 arbeidsforhold:
-     base-uri: https://modapp-q1.adeo.no/aareg-services/api  
-     log: true
+  base-uri: https://modapp-q1.adeo.no/aareg-services/api  
+  log: true
+organisasjon:
+  base-uri: https://modapp-q1.adeo.no/ereg/api
+  log: true    

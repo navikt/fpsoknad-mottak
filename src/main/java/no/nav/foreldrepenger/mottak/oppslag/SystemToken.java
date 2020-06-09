@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -8,7 +10,6 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.foreldrepenger.mottak.util.StringUtil;
 import no.nav.security.token.support.core.jwt.JwtToken;
 
 public class SystemToken {
@@ -53,11 +54,14 @@ public class SystemToken {
                 .toLocalDateTime();
     }
 
+    public Long getExpiresIn() {
+        return expiresIn;
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[accessToken=" + StringUtil.limit(accessToken.getTokenAsString(), 12)
-                + ", expires="
-                + getExpiration()
+        return getClass().getSimpleName() + "[accessToken=" + limit(accessToken.getTokenAsString(), 12)
+                + ", expires=" + getExpiration()
                 + ", tokenType=" + tokenType + "]";
     }
 

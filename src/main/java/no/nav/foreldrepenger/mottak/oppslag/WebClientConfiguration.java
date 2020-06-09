@@ -22,6 +22,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
+import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Configuration
@@ -32,18 +33,19 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier("STS")
-    public WebClient webClientSTS(@Value("${sts.uri}") String uri, @Value("${kafka.username}") String systemUser,
+    public WebClient webClientSTS(WebClient.Builder builder, @Value("${sts.uri}") String uri,
+            @Value("${kafka.username}") String systemUser,
             @Value("${kafka.password}") String systemPassword) {
-        return WebClient
-                .builder()
+        return builder
                 .baseUrl(uri)
                 .defaultHeaders(h -> h.setBasicAuth(systemUser, systemPassword))
                 .build();
     }
 
-    @Qualifier("REST")
+    @Qualifier("ARBEIDSFORHOLD")
     @Bean
-    public WebClient arbeidsforholdClient(ArbeidsforholdConfig config, ExchangeFilterFunction... filters) {
+    public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig config,
+            ExchangeFilterFunction... filters) {
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
         exchangeStrategies
                 .messageWriters().stream()
@@ -51,25 +53,35 @@ public class WebClientConfiguration {
                 .map(LoggingCodecSupport.class::cast)
                 .forEach(w -> w.setEnableLoggingRequestDetails(config.isLog()));
 
-        var builder = WebClient
-                .builder()
-                .exchangeStrategies(exchangeStrategies)
+        builder.exchangeStrategies(exchangeStrategies)
                 .baseUrl(config.getBaseUri());
         LOG.info("Registrerer {} filtre", filters.length);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
 
+    @Qualifier("ORGANISASJON")
+    @Bean
+    public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig config) {
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
+        exchangeStrategies
+                .messageWriters().stream()
+                .filter(LoggingCodecSupport.class::isInstance)
+                .map(LoggingCodecSupport.class::cast)
+                .forEach(w -> w.setEnableLoggingRequestDetails(config.isLog()));
+
+        return builder.exchangeStrategies(exchangeStrategies)
+                .baseUrl(config.getBaseUri())
+                .build();
+    }
+
     @Bean
     ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil,
             @Value("${spring.application.name:fpsoknad-mottak}") String consumer) {
         return (req, next) -> {
-            SystemToken systemToken = sts.getSystemToken();
-            LOG.info("System token expires at {}", systemToken.getExpiration());
-            LOG.info("User token expires at {}", tokenUtil.getExpiration());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumer)
-                    .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
+                    .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
                     .header(NAV_CALL_ID1, callId())
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
