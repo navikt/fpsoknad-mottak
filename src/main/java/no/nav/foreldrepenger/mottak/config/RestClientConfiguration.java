@@ -25,8 +25,8 @@ import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
 public class RestClientConfiguration {
     @Bean
     @Primary
-    public RestOperations restTemplate(ClientHttpRequestInterceptor... interceptors) {
-        var template = new RestTemplateBuilder()
+    public RestOperations restTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
+        var template = builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
                 .build();
