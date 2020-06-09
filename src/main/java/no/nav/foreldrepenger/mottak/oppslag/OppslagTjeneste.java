@@ -71,10 +71,11 @@ public class OppslagTjeneste implements Oppslag {
         var ws = connection.hentArbeidsforhold();
         if (rs.containsAll(ws) && ws.containsAll(rs)) {
             LOG.info("RS og WS arbeidsforhold like");
+            return rs;
         } else {
             LOG.warn("Ulike arbeidsforhold : REST {}, WS {}", rs, ws);
+            return ws;
         }
-        return ws;
     }
 
     private List<Arbeidsforhold> arbeidsforholdREST() {
