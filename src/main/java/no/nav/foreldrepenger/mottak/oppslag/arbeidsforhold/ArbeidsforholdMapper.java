@@ -70,13 +70,22 @@ class ArbeidsforholdMapper {
     }
 
     private String navn(String orgnr) {
+        String navnRest = navnRest(orgnr);
+        String navnWS = oppslag.organisasjonsNavn(orgnr);
+        if (navnRest.equals(orgnr) || !navnRest.equalsIgnoreCase(navnWS)) {
+            LOG.warn("REST oppslag feilet, bruker WS");
+            return navnWS;
+        }
+        return navnRest;
+    }
+
+    private String navnRest(String orgnr) {
         try {
-            String navn = organisasjon.organisasjonsNavn(orgnr);
-            LOG.info("REST Fikk navn {}", navn);
+            return organisasjon.organisasjonsNavn(orgnr);
         } catch (Exception e) {
             LOG.warn("OOPS", e);
+            return orgnr;
         }
-        return oppslag.organisasjonsNavn(orgnr);
     }
 
     private static ProsentAndel stillingsprosent(List<?> avtaler) {

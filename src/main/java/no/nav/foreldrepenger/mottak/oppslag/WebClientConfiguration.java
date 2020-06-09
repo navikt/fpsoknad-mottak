@@ -28,11 +28,14 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @Configuration
 public class WebClientConfiguration {
 
+    public static final String STS = "STS";
+    public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
+    public static final String ORGANISASJON = "ORGANISASJON";
     private static final String BEARER = "Bearer ";
     private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
     @Bean
-    @Qualifier("STS")
+    @Qualifier(STS)
     public WebClient webClientSTS(WebClient.Builder builder, @Value("${sts.uri}") String uri,
             @Value("${kafka.username}") String systemUser,
             @Value("${kafka.password}") String systemPassword) {
@@ -42,35 +45,22 @@ public class WebClientConfiguration {
                 .build();
     }
 
-    @Qualifier("ARBEIDSFORHOLD")
+    @Qualifier(ARBEIDSFORHOLD)
     @Bean
     public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig config,
             ExchangeFilterFunction... filters) {
-        ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
-        exchangeStrategies
-                .messageWriters().stream()
-                .filter(LoggingCodecSupport.class::isInstance)
-                .map(LoggingCodecSupport.class::cast)
-                .forEach(w -> w.setEnableLoggingRequestDetails(config.isLog()));
-
-        builder.exchangeStrategies(exchangeStrategies)
+        builder
+                .exchangeStrategies(exchangeStrategies(config.isLog()))
                 .baseUrl(config.getBaseUri());
         LOG.info("Registrerer {} filtre", filters.length);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
 
-    @Qualifier("ORGANISASJON")
+    @Qualifier(ORGANISASJON)
     @Bean
     public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig config) {
-        ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
-        exchangeStrategies
-                .messageWriters().stream()
-                .filter(LoggingCodecSupport.class::isInstance)
-                .map(LoggingCodecSupport.class::cast)
-                .forEach(w -> w.setEnableLoggingRequestDetails(config.isLog()));
-
-        return builder.exchangeStrategies(exchangeStrategies)
+        return builder.exchangeStrategies(exchangeStrategies(config.isLog()))
                 .baseUrl(config.getBaseUri())
                 .build();
     }
@@ -87,5 +77,15 @@ public class WebClientConfiguration {
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());
         };
+    }
+
+    private ExchangeStrategies exchangeStrategies(boolean log) {
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
+        exchangeStrategies
+                .messageWriters().stream()
+                .filter(LoggingCodecSupport.class::isInstance)
+                .map(LoggingCodecSupport.class::cast)
+                .forEach(w -> w.setEnableLoggingRequestDetails(log));
+        return exchangeStrategies;
     }
 }

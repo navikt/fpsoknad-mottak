@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.oppslag.WebClientConfiguration.ARBEIDSFORHOLD;
 import static no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig.HISTORIKK;
 import static no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig.SPORINGSINFORMASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -29,7 +30,7 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     private final String name;
     private final ArbeidsforholdMapper mapper;
 
-    public ArbeidsforholdConnection(@Qualifier("ARBEIDSFORHOLD") WebClient webClient,
+    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD) WebClient webClient,
             @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg,
             ArbeidsforholdMapper mapper) {
         this.webClient = webClient;

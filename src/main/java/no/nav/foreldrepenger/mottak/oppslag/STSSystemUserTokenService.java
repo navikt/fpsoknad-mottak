@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static no.nav.foreldrepenger.mottak.oppslag.WebClientConfiguration.STS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class STSSystemUserTokenService implements SystemUserTokenService {
     private final WebClient webClient;
     private SystemToken currentToken;
 
-    public STSSystemUserTokenService(@Qualifier("STS") WebClient webClient) {
+    public STSSystemUserTokenService(@Qualifier(STS) WebClient webClient) {
         this.webClient = webClient;
         currentToken = getSystemToken();
     }

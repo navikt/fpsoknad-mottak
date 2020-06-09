@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.organisasjon;
 
+import static no.nav.foreldrepenger.mottak.oppslag.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
@@ -25,7 +26,7 @@ public class OrganisasjonConnection implements PingEndpointAware {
     private final WebClient webClient;
     private final String name;
 
-    public OrganisasjonConnection(@Qualifier("ORGANISASJON") WebClient webClient,
+    public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient webClient,
             @Value("${spring.application.name:fpsoknad-mottak}") String name, OrganisasjonConfig cfg) {
         this.webClient = webClient;
         this.cfg = cfg;
