@@ -12,7 +12,7 @@ public class OrganisasjonTjenste {
     }
 
     public String organisasjonsNavn(String orgnr) {
-        return connection.orgNavn(orgnr);
+        return connection.organisasjonsNavn(orgnr);
     }
 
     @Override

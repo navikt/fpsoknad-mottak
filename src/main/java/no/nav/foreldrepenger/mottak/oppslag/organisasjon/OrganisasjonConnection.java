@@ -46,7 +46,7 @@ public class OrganisasjonConnection implements PingEndpointAware {
         return URIUtil.uri(cfg.getBaseUri(), cfg.getPingPath());
     }
 
-    String orgNavn(String orgnr) {
+    public String organisasjonsNavn(String orgnr) {
         LOG.trace("Henter orgnavn");
         var info = webClient.get()
                 .uri(b -> b.pathSegment(cfg.getorganisasjonPath(), orgnr)
