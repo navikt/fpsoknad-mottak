@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static java.time.LocalDate.now;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static no.nav.foreldrepenger.mottak.util.TimeUtil.dateWithinPeriod;
+import static no.nav.foreldrepenger.mottak.util.TimeUtil.dato;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
@@ -20,33 +18,55 @@ import no.nav.foreldrepenger.mottak.util.Pair;
 @Component
 class ArbeidsforholdMapper {
 
-    private final OppslagConnection oppslag;
+    private static final String PERIODE2 = "periode";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
+    private static final String ARBEIDSAVTALER = "arbeidsavtaler";
+
+    private static final String TYPE = "type";
+
+    private static final String FNR2 = "fnr";
+
+    private static final String OFFENTLIG_IDENT = "offentligIdent";
+
+    private static final String PERSON = "Person";
+
+    private static final String ORGNR = "orgnr";
+
+    private static final String ORGANISASJON = "Organisasjon";
+
+    private static final String STILLINGSPROSENT = "stillingsprosent";
+
+    private static final String GYLDIGHETSPERIODE = "gyldighetsperiode";
+
+    private static final String TOM = "tom";
+
+    private static final String ORGANISASJONSNUMMER = "organisasjonsnummer";
+
+    private static final String FOM = "fom";
+
+    private static final String ARBEIDSGIVER = "arbeidsgiver";
+
+    private static final String ANSETTELSESPERIODE = "ansettelsesperiode";
+
+    private final OppslagConnection oppslag;
 
     public ArbeidsforholdMapper(OppslagConnection oppslag) {
         this.oppslag = oppslag;
     }
 
     Arbeidsforhold map(Map<?, ?> map) {
-        var arbeidsgiver = get(map, "arbeidsgiver", Map.class);
-        var id = idFra(arbeidsgiver);
-        var periode = get(get(map, "ansettelsesperiode", Map.class), "periode", Map.class);
-        var fom = dato(get(periode, "fom"));
-        var tom = Optional.ofNullable(dato(get(periode, "tom")));
-
-        var a = new Arbeidsforhold(id.getFirst(), id.getSecond(), fom, tom,
-                stillingsprosent(get(map, "arbeidsavtaler", List.class)), oppslag.organisasjonsNavn(id.getFirst()));
-
-        LOG.info("Arbeidsforhold er {}", a);
-        return a;
+        var id = idFra(get(map, ARBEIDSGIVER, Map.class));
+        var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE2, Map.class);
+        return new Arbeidsforhold(id.getFirst(), id.getSecond(), dato(get(periode, FOM)),
+                Optional.ofNullable(dato(get(periode, TOM))),
+                stillingsprosent(get(map, ARBEIDSAVTALER, List.class)), oppslag.organisasjonsNavn(id.getFirst()));
     }
 
-    static ProsentAndel stillingsprosent(List<?> avtaler) {
+    private static ProsentAndel stillingsprosent(List<?> avtaler) {
         return avtaler.stream()
                 .map(Map.class::cast)
                 .filter(ArbeidsforholdMapper::gjeldendeAvtale)
-                .map(a -> ArbeidsforholdMapper.get(a, "stillingsprosent", Double.class))
+                .map(a -> ArbeidsforholdMapper.get(a, STILLINGSPROSENT, Double.class))
                 .filter(Objects::nonNull)
                 .map(ProsentAndel::new)
                 .findFirst()
@@ -54,41 +74,20 @@ class ArbeidsforholdMapper {
     }
 
     private static boolean gjeldendeAvtale(Map<?, ?> avtale) {
-        Map<?, ?> periode = get(avtale, "gyldighetsperiode", Map.class);
-        var fom = dato(get(periode, "fom"));
-        var tom = Optional.ofNullable(dato(get(periode, "tom")))
-                .orElse(LocalDate.now());
-        return dateWithinPeriod(now(), fom, tom);
-    }
-
-    private static LocalDate dato(String dato) {
-        return Optional.ofNullable(dato)
-                .map(d -> LocalDate.parse(d, ISO_LOCAL_DATE))
-                .orElse(null);
-
-    }
-
-    public static boolean dateWithinPeriod(LocalDate date, LocalDate start, LocalDate end) {
-        if (date.isEqual(start) || date.isEqual(end)) {
-            return true;
-        }
-        return date.isAfter(start) && date.isBefore(end);
+        var periode = get(avtale, GYLDIGHETSPERIODE, Map.class);
+        return dateWithinPeriod(dato(get(periode, FOM)), Optional.ofNullable(dato(get(periode, TOM)))
+                .orElse(LocalDate.now()));
     }
 
     private static Pair<String, String> idFra(Map<?, ?> map) {
-        var type = get(map, "type");
-        if ("Organisasjon".equals(type)) {
-            var orgnr = get(map, "organisasjonsnummer");
-            LOG.info("type {} orgnr {}", type, orgnr);
-            return Pair.of(orgnr, "orgnr");
+        var type = get(map, TYPE);
+        if (ORGANISASJON.equals(type)) {
+            return Pair.of(get(map, ORGANISASJONSNUMMER), ORGNR);
         }
-        if ("Person".equals(type)) {
-            var fnr = get(map, "offentligIdent");
-            LOG.info("type {} fnr {}", type, fnr);
-            return Pair.of(fnr, "fnr");
+        if (PERSON.equals(type)) {
+            return Pair.of(get(map, OFFENTLIG_IDENT), FNR2);
         }
         throw new IllegalArgumentException("Fant verken orgnr eller fnr i " + map);
-
     }
 
     private static String get(Map<?, ?> map, String key) {
@@ -96,14 +95,10 @@ class ArbeidsforholdMapper {
     }
 
     private static <T> T get(Map<?, ?> map, String key, Class<T> clazz) {
-        LOG.info("Henter {} fra {}", key, map);
-        var verdi = Optional.ofNullable(map)
+        return Optional.ofNullable(map)
                 .map(m -> m.get(key))
                 .filter(Objects::nonNull)
                 .map(v -> (T) v)
                 .orElse(null);
-        LOG.info("Hentet verdi {} fra key {} i {}", verdi, key, map);
-        return verdi;
     }
-
 }
