@@ -23,6 +23,7 @@ public class Person {
     private final Kjønn kjønn;
     private final LocalDate fødselsdato;
     private final String målform;
+    @JsonAlias("landKode")
     private final CountryCode land;
     private final Boolean ikkeNordiskEøsLand;
     private final Bankkonto bankkonto;
