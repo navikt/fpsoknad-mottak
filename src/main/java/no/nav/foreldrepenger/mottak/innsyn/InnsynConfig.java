@@ -4,10 +4,8 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 @ConfigurationProperties(prefix = "innsyn")
-@Configuration
 public class InnsynConfig {
     private static final URI DEFAULT_URI = URI.create("http://fpinfo");
     private static final String DEFAULT_BASE_PATH = "fpinfo/api/dokumentforsendelse/";

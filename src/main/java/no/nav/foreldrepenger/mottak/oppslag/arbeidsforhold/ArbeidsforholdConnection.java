@@ -2,11 +2,8 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.oppslag.WebClientConfiguration.ARBEIDSFORHOLD;
-import static no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig.HISTORIKK;
-import static no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig.SPORINGSINFORMASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -18,40 +15,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.util.URIUtil;
+import no.nav.foreldrepenger.mottak.oppslag.AbstractWebClientConnection;
 
 @Component
-public class ArbeidsforholdConnection implements PingEndpointAware {
+public class ArbeidsforholdConnection extends AbstractWebClientConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdConnection.class);
     private final ArbeidsforholdConfig cfg;
-    private final WebClient webClient;
-    private final String name;
     private final ArbeidsforholdMapper mapper;
 
     public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD) WebClient webClient,
             @Value("${spring.application.name:fpsoknad-mottak}") String name, ArbeidsforholdConfig cfg,
             ArbeidsforholdMapper mapper) {
-        this.webClient = webClient;
+        super(webClient, cfg, name);
         this.cfg = cfg;
-        this.name = name;
         this.mapper = mapper;
-    }
-
-    @Override
-    public String ping() {
-        return webClient.get()
-                .accept(APPLICATION_JSON)
-                .retrieve()
-                .toEntity(String.class)
-                .block()
-                .getBody();
-    }
-
-    @Override
-    public URI pingEndpoint() {
-        return URIUtil.uri(cfg.getBaseUri(), cfg.getPingPath());
     }
 
     List<Arbeidsforhold> hentArbeidsforhold() {
@@ -60,11 +38,8 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
 
     List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
         LOG.trace("Henter arbeidsgivere");
-        return webClient.get()
-                .uri(b -> b.path(cfg.getArbeidsforholdPath())
-                        .queryParam(HISTORIKK, "true")
-                        .queryParam(SPORINGSINFORMASJON, "false")
-                        .build())
+        return getWebClient().get()
+                .uri(cfg::getArbeidsforholdURI)
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .toEntityList(Map.class)
@@ -76,13 +51,8 @@ public class ArbeidsforholdConnection implements PingEndpointAware {
     }
 
     @Override
-    public String name() {
-        return name;
-    }
-
-    @Override
     public String toString() {
-        return getClass().getSimpleName() + "[cfg=" + cfg + ", webClient=" + webClient + ", name=" + name + "]";
+        return getClass().getSimpleName() + "[cfg=" + cfg + ", webClient=" + getWebClient() + ", name=" + name() + "]";
     }
 
 }
