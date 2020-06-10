@@ -5,6 +5,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
@@ -30,6 +31,7 @@ public class Person {
     @JsonAlias("aktorId")
     private AktørId aktørId;
 
+    @JsonCreator
     public Person(@JsonProperty("fnr") Fødselsnummer fnr,
             @JsonProperty("fornavn") String fornavn,
             @JsonProperty("mellomnavn") String mellomnavn,
