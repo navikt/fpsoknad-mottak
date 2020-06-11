@@ -29,7 +29,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,6 +41,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConnection;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 
@@ -56,8 +56,8 @@ public class TestFPFordelRoundtripSerialization {
     @Autowired
     private TestRestTemplate template;
 
-    @Autowired
-    private WebTestClient webClient;
+    @MockBean
+    private ArbeidsforholdConnection arbeidsforholdConnection;
 
     @Autowired
     FordelConnection connection;
