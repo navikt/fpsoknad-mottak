@@ -29,7 +29,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     @ConstructorBinding
     public ArbeidsforholdConfig(String baseUri, @DefaultValue("/ping") String pingPath,
             @DefaultValue("/v1/arbeidstaker/arbeidsforhold") String arbeidsforholdPath,
-            @DefaultValue("3years") Duration tidTilbake, boolean log) {
+            @DefaultValue("3y") Duration tidTilbake, boolean log) {
         super(baseUri, pingPath, log);
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.tidTilbake = tidTilbake;
