@@ -9,6 +9,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +35,8 @@ public class WebClientConfiguration {
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     String consumer;
+
+    private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
     @Bean
     @Qualifier(STS)
@@ -67,6 +71,8 @@ public class WebClientConfiguration {
     @Bean
     ExchangeFilterFunction tokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
         return (req, next) -> {
+            LOG.trace("Bruker token utgår {}", tokenUtil.getExpiration());
+            LOG.trace("System token utgår {}", sts.getSystemToken().getExpiration());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
                     .header(AUTHORIZATION, tokenUtil.bearerToken())

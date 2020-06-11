@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static java.time.Instant.now;
 import static no.nav.foreldrepenger.mottak.Constants.ISSUER;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -28,7 +28,7 @@ public class TokenUtil {
 
     public boolean erUtløpt() {
         return Optional.ofNullable(getExpiration())
-                .filter(d -> d.before(Date.from(now())))
+                .filter(d -> d.isBefore(LocalDateTime.now()))
                 .isPresent();
     }
 
@@ -44,10 +44,11 @@ public class TokenUtil {
         return getSubject() != null;
     }
 
-    public Date getExpiration() {
+    public LocalDateTime getExpiration() {
         return Optional.ofNullable(claimSet())
                 .map(c -> c.get("exp"))
                 .map(this::getDateClaim)
+                .map(TimeUtil::fraDato)
                 .orElse(null);
     }
 

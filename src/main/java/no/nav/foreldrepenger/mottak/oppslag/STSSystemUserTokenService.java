@@ -36,11 +36,7 @@ public class STSSystemUserTokenService implements SystemUserTokenService {
     @Override
     public SystemToken getSystemToken() {
         if (currentToken == null || currentToken.isExpired(20)) {
-            LOG.trace("Henter JWT system token {} for service user", currentToken);
             currentToken = refresh();
-            LOG.trace("Hentet JWT system token med expiry {} for service user", currentToken.getExpiration());
-        } else {
-            LOG.trace("Bruker cached JWT system token med expiry {} for service user", currentToken.getExpiration());
         }
         return currentToken;
     }

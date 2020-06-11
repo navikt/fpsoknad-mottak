@@ -2,7 +2,11 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -36,5 +40,11 @@ public final class TimeUtil {
             return true;
         }
         return now.isAfter(start) && now.isBefore(end);
+    }
+
+    public static LocalDateTime fraDato(Date dato) {
+        return Instant.ofEpochMilli(dato.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 }
