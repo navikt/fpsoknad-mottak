@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder(setterPrefix = "med")
+@Builder
 @JsonNaming(PropertyNamingStrategy.LowerCaseStrategy.class)
 public class DokumentBestilling {
     private String dokument;

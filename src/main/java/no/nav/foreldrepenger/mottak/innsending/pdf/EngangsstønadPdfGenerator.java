@@ -1,6 +1,16 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
 import com.neovisionaries.i18n.CountryCode;
+
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
@@ -26,14 +36,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class EngangsstønadPdfGenerator implements PDFGenerator {
@@ -59,10 +61,10 @@ public class EngangsstønadPdfGenerator implements PDFGenerator {
 
     private DokumentBestilling engangsstønadSøknadFra(Søknad søknad, Person søker) {
         return DokumentBestilling.builder()
-                .medDokument(txt("søknad_engang"))
-                .medSøker(personFra(søker))
-                .medMottattDato(mottattDato())
-                .medGrupper(lagOverskrifter(søknad))
+                .dokument(txt("søknad_engang"))
+                .søker(personFra(søker))
+                .mottattDato(mottattDato())
+                .grupper(lagOverskrifter(søknad))
                 .build();
     }
 
@@ -102,15 +104,16 @@ public class EngangsstønadPdfGenerator implements PDFGenerator {
             farInfo.add(new FritekstBlokk(txt("annenforelderukjent")));
         }
         return GruppeBlokk.builder()
-            .medOverskrift(txt("omannenforelder"))
-            .medUnderBlokker(farInfo)
-            .build();
+                .overskrift(txt("omannenforelder"))
+                .underBlokker(farInfo)
+                .build();
     }
 
     private List<FeltBlokk> utenlandskForelder(AnnenForelder annenForelder) {
         var utenlandsForelder = (UtenlandskForelder) annenForelder;
         List<FeltBlokk> info = new ArrayList<>();
-        info.add(new FeltBlokk(txt("nasjonalitet"), textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())));
+        info.add(new FeltBlokk(txt("nasjonalitet"),
+                textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())));
         info.add(new FeltBlokk(txt("navn"), utenlandsForelder.getNavn()));
         if (utenlandsForelder.getId() != null) {
             info.add(new FeltBlokk(txt("utenlandskid"), utenlandsForelder.getId()));
@@ -129,49 +132,48 @@ public class EngangsstønadPdfGenerator implements PDFGenerator {
 
     private GruppeBlokk tilknytning(Medlemsskap medlemsskap, Engangsstønad stønad) {
         var fødselssted = fødselssted(medlemsskap, stønad);
-        var tidligereUtenlandsopphold =
-            textFormatter.utenlandsPerioder(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold());
+        var tidligereUtenlandsopphold = textFormatter
+                .utenlandsPerioder(medlemsskap.getTidligereOppholdsInfo().getUtenlandsOpphold());
         List<Blokk> tabeller = new ArrayList<>();
         if (!tidligereUtenlandsopphold.isEmpty()) {
             tabeller.add(new TabellBlokk(txt("siste12"), tabellRader(tidligereUtenlandsopphold)));
         }
-        var fremtidige =
-            textFormatter.utenlandsPerioder(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold());
+        var fremtidige = textFormatter.utenlandsPerioder(medlemsskap.getFramtidigOppholdsInfo().getUtenlandsOpphold());
         if (!fremtidige.isEmpty()) {
             tabeller.add(new TabellBlokk(txt("neste12"), tabellRader(fremtidige)));
         }
         tabeller.add(new FritekstBlokk(fødselssted));
         return GruppeBlokk.builder()
-            .medOverskrift(txt("tilknytning"))
-            .medUnderBlokker(tabeller)
-            .build();
+                .overskrift(txt("tilknytning"))
+                .underBlokker(tabeller)
+                .build();
     }
 
     private List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
         return rader.stream()
-            .map(r -> new TabellRad(r.getFirst(), r.getSecond(), null))
-            .collect(Collectors.toList());
+                .map(r -> new TabellRad(r.getFirst(), r.getSecond(), null))
+                .collect(Collectors.toList());
     }
 
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
         if (erFremtidigFødsel(stønad)) {
             return textFormatter.fromMessageSource("terminføderi",
-                textFormatter.countryName(medlemsskap.landVedDato(stønad.getRelasjonTilBarn().relasjonsDato())),
-                stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
+                    textFormatter.countryName(medlemsskap.landVedDato(stønad.getRelasjonTilBarn().relasjonsDato())),
+                    stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         } else {
             Fødsel fødsel = (Fødsel) stønad.getRelasjonTilBarn();
             CountryCode land = stønad.getMedlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
             return textFormatter.fromMessageSource("fødtei",
-                textFormatter.countryName(land),
-                fødsel.getAntallBarn() > 1 ? "a" : "et");
+                    textFormatter.countryName(land),
+                    fødsel.getAntallBarn() > 1 ? "a" : "et");
         }
     }
 
     private GruppeBlokk omBarn(Søknad søknad, Engangsstønad stønad) {
         return GruppeBlokk.builder()
-            .medOverskrift(txt("ombarn"))
-            .medUnderBlokker(omFødsel(søknad, stønad))
-            .build();
+                .overskrift(txt("ombarn"))
+                .underBlokker(omFødsel(søknad, stønad))
+                .build();
     }
 
     private List<FritekstBlokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
@@ -184,7 +186,8 @@ public class EngangsstønadPdfGenerator implements PDFGenerator {
 
     private List<FritekstBlokk> født(Engangsstønad stønad) {
         var ff = (Fødsel) stønad.getRelasjonTilBarn();
-        var tekst = txt("gjelderfødselsdato", stønad.getRelasjonTilBarn().getAntallBarn(), textFormatter.datoer(ff.getFødselsdato()));
+        var tekst = txt("gjelderfødselsdato", stønad.getRelasjonTilBarn().getAntallBarn(),
+                textFormatter.datoer(ff.getFødselsdato()));
         return Collections.singletonList(new FritekstBlokk(tekst));
     }
 
@@ -194,7 +197,8 @@ public class EngangsstønadPdfGenerator implements PDFGenerator {
         var termindato = textFormatter.dato(ff.getTerminDato());
         var barnInfo = new FritekstBlokk(txt("gjeldertermindato", antallBarn, termindato));
         if (!søknad.getPåkrevdeVedlegg().isEmpty()) {
-            var vedleggInfo = new FritekstBlokk(textFormatter.fromMessageSource("terminbekreftelsedatert", textFormatter.dato(ff.getUtstedtDato())));
+            var vedleggInfo = new FritekstBlokk(textFormatter.fromMessageSource("terminbekreftelsedatert",
+                    textFormatter.dato(ff.getUtstedtDato())));
             return List.of(barnInfo, vedleggInfo);
         }
         return Collections.singletonList(barnInfo);
@@ -214,15 +218,8 @@ public class EngangsstønadPdfGenerator implements PDFGenerator {
 
     private DokumentPerson personFra(Person person) {
         var navn = textFormatter.sammensattNavn(new Navn(person.getFornavn(),
-            person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
-        return DokumentPerson.builder().medNavn(navn).medId(person.getFnr().getFnr()).build();
-    }
-
-    private FeltBlokk feltFra(String felt, String verdi) {
-        return FeltBlokk.builder()
-            .medFelt(felt)
-            .medVerdi(verdi)
-            .build();
+                person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
+        return DokumentPerson.builder().navn(navn).id(person.getFnr().getFnr()).build();
     }
 
     @Override

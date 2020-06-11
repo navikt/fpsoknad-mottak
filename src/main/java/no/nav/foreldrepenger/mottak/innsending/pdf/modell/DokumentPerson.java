@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder(setterPrefix = "med")
+@Builder
 public class DokumentPerson {
     String id;
     String typeId;
@@ -13,5 +13,5 @@ public class DokumentPerson {
     String bosattLand;
     String nasjonalitet;
 
-    public static DokumentPerson ukjentPerson = builder().medType(PersonType.UKJENT).build();
+    public static final DokumentPerson UKJENT = builder().type(PersonType.UKJENT).build();
 }

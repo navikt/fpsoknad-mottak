@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder(setterPrefix = "med")
+@Builder
 public class GruppeBlokk extends Blokk {
     private final String overskrift;
     private final String beskrivelse;
