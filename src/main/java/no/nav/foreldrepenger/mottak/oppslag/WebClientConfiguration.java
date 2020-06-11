@@ -34,6 +34,9 @@ public class WebClientConfiguration {
     private static final String BEARER = "Bearer ";
     private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
+    @Value("${spring.application.name:fpsoknad-mottak}")
+    String consumer;
+
     @Bean
     @Qualifier(STS)
     public WebClient webClientSTS(WebClient.Builder builder, @Value("${sts.uri}") String uri,
@@ -47,42 +50,50 @@ public class WebClientConfiguration {
 
     @Qualifier(ARBEIDSFORHOLD)
     @Bean
-    public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig config,
+    public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig cfg,
             ExchangeFilterFunction... filters) {
-        builder.exchangeStrategies(exchangeStrategies(config.isLog()))
-                .baseUrl(config.getBaseUri());
-        LOG.info("Registrerer arbeidsforholdClient med config {}", config);
+        builder.exchangeStrategies(loggingEnablingStrategy(cfg.isLog()))
+                .baseUrl(cfg.getBaseUri());
+        LOG.info("Registrerer arbeidsforholdklient med konfig {}", cfg);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
 
     @Qualifier(ORGANISASJON)
     @Bean
-    public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig config) {
-        LOG.info("Registrerer organisasjonClient med config {}", config);
-        return builder.exchangeStrategies(exchangeStrategies(config.isLog()))
-                .baseUrl(config.getBaseUri())
+    public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig cfg) {
+        LOG.info("Registrerer organisasjonklient med konfig {}", cfg);
+        return builder.exchangeStrategies(loggingEnablingStrategy(cfg.isLog()))
+                .baseUrl(cfg.getBaseUri())
+                .filter(loggingFilterFunction())
                 .build();
     }
 
     @Bean
-    ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil,
-            @Value("${spring.application.name:fpsoknad-mottak}") String consumer) {
+    ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
-                    .header(NAV_CONSUMER_ID, consumer)
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
-                    .header(NAV_CALL_ID1, callId())
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                     .build());
         };
     }
 
-    private ExchangeStrategies exchangeStrategies(boolean log) {
+    @Bean
+    ExchangeFilterFunction loggingFilterFunction() {
+        return (req, next) -> {
+            return next.exchange(ClientRequest.from(req)
+                    .header(NAV_CONSUMER_ID, consumer)
+                    .header(NAV_CALL_ID1, callId())
+                    .build());
+        };
+    }
+
+    private final ExchangeStrategies loggingEnablingStrategy(boolean log) {
         ExchangeStrategies strategies = ExchangeStrategies.withDefaults();
-        strategies
-                .messageWriters().stream()
+        strategies.messageWriters()
+                .stream()
                 .filter(LoggingCodecSupport.class::isInstance)
                 .map(LoggingCodecSupport.class::cast)
                 .forEach(w -> w.setEnableLoggingRequestDetails(log));
