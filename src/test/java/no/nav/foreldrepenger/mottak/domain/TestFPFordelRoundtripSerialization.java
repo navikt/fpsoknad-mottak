@@ -29,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,6 +56,9 @@ public class TestFPFordelRoundtripSerialization {
 
     @Autowired
     private TestRestTemplate template;
+
+    @Autowired
+    private WebTestClient webClient;
 
     @Autowired
     FordelConnection connection;
