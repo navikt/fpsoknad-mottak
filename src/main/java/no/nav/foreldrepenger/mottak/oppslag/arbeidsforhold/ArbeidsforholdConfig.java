@@ -3,8 +3,8 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 import java.net.URI;
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -24,12 +24,12 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private final String arbeidsforholdPath;
     private boolean historikk;
     private boolean sporingsinformasjon;
-    private final Duration tidTilbake;
+    private final Period tidTilbake;
 
     @ConstructorBinding
     public ArbeidsforholdConfig(String baseUri, @DefaultValue("/ping") String pingPath,
             @DefaultValue("/v1/arbeidstaker/arbeidsforhold") String arbeidsforholdPath,
-            @DefaultValue("3y") Duration tidTilbake, boolean log) {
+            @DefaultValue("3y") Period tidTilbake, boolean log) {
         super(baseUri, pingPath, log);
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.tidTilbake = tidTilbake;
@@ -55,7 +55,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
         this.sporingsinformasjon = sporingsinformasjon;
     }
 
-    public Duration getTidTilbake() {
+    public Period getTidTilbake() {
         return tidTilbake;
     }
 
