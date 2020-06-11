@@ -21,9 +21,9 @@ public class OrganisasjonConfig extends AbstractConfig {
         this.organisasjonPath = organisasjonPath;
     }
 
-    URI getOrganisasjonURI(UriBuilder b) {
-        return b.pathSegment(organisasjonPath)
+    URI getOrganisasjonURI(UriBuilder b, String orgnr) {
+        return b.path(organisasjonPath)
+                .pathSegment(orgnr)
                 .build();
     }
-
 }

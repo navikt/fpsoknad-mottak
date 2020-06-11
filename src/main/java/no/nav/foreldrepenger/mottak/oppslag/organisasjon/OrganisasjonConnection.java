@@ -31,7 +31,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     public String organisasjonsNavn(String orgnr) {
         LOG.trace("Henter organisasjonsnavn for {}", orgnr);
         return Optional.ofNullable(getWebClient().get()
-                .uri(cfg::getOrganisasjonURI)
+                .uri(b -> cfg.getOrganisasjonURI(b, orgnr))
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .toEntity(Map.class)
