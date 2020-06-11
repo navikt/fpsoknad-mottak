@@ -66,9 +66,6 @@ public class TestFPFordelRoundtripSerialization {
     FordelConnection connection;
 
     @MockBean
-    STSSystemUserTokenService userService;
-
-    @MockBean
     InnsendingHendelseProdusent publisher;
     @Autowired
     ObjectMapper mapper;
