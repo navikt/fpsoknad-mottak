@@ -49,10 +49,9 @@ public class WebClientConfiguration {
     @Bean
     public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig config,
             ExchangeFilterFunction... filters) {
-        builder
-                .exchangeStrategies(exchangeStrategies(config.isLog()))
+        builder.exchangeStrategies(exchangeStrategies(config.isLog()))
                 .baseUrl(config.getBaseUri());
-        LOG.info("Registrerer {} filtre", filters.length);
+        LOG.info("Registrerer arbeidsforholdClient  med config {}", config);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
@@ -60,6 +59,7 @@ public class WebClientConfiguration {
     @Qualifier(ORGANISASJON)
     @Bean
     public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig config) {
+        LOG.info("Registrerer organisasjonClient med config {}", config);
         return builder.exchangeStrategies(exchangeStrategies(config.isLog()))
                 .baseUrl(config.getBaseUri())
                 .build();
@@ -80,12 +80,12 @@ public class WebClientConfiguration {
     }
 
     private ExchangeStrategies exchangeStrategies(boolean log) {
-        ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
-        exchangeStrategies
+        ExchangeStrategies strategies = ExchangeStrategies.withDefaults();
+        strategies
                 .messageWriters().stream()
                 .filter(LoggingCodecSupport.class::isInstance)
                 .map(LoggingCodecSupport.class::cast)
                 .forEach(w -> w.setEnableLoggingRequestDetails(log));
-        return exchangeStrategies;
+        return strategies;
     }
 }

@@ -55,4 +55,11 @@ public class ArbeidsforholdConfig extends AbstractConfig {
                 .build();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[arbeidsforholdPath=" + arbeidsforholdPath + ", historikk=" + historikk
+                + ", sporingsinformasjon=" + sporingsinformasjon + ", pingEndpoint=" + pingEndpoint + ", isLog()="
+                + isLog() + "]";
+    }
+
 }

@@ -26,4 +26,10 @@ public class OrganisasjonConfig extends AbstractConfig {
                 .pathSegment(orgnr)
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[organisasjonPath=" + organisasjonPath + ", pingEndpoint="
+                + pingEndpoint() + ", log=" + isLog() + "]";
+    }
 }
