@@ -51,7 +51,7 @@ public class WebClientConfiguration {
             ExchangeFilterFunction... filters) {
         builder.exchangeStrategies(exchangeStrategies(config.isLog()))
                 .baseUrl(config.getBaseUri());
-        LOG.info("Registrerer arbeidsforholdClient  med config {}", config);
+        LOG.info("Registrerer arbeidsforholdClient med config {}", config);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
