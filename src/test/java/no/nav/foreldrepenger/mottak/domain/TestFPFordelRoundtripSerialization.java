@@ -20,7 +20,6 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,8 +42,6 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
-import no.nav.foreldrepenger.mottak.oppsla
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConnection;g.STSSystemUserTokenService;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 
