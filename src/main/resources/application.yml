@@ -77,3 +77,7 @@ spring:
          value-serializer: org.apache.kafka.common.serialization.StringSerializer
    main:
       banner-mode: 'off'
+arbeidsforhold:
+    base-uri: https://modapp.adeo.no/aareg-services/api  
+organisasjon:
+    base-uri: https://modapp.adeo.no/ereg/api    
