@@ -9,8 +9,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +30,6 @@ public class WebClientConfiguration {
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
     private static final String BEARER = "Bearer ";
-    private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     String consumer;
@@ -54,7 +51,6 @@ public class WebClientConfiguration {
             ExchangeFilterFunction... filters) {
         builder.exchangeStrategies(loggingEnablingStrategy(cfg.isLog()))
                 .baseUrl(cfg.getBaseUri());
-        LOG.info("Registrerer arbeidsforholdklient med konfig {}", cfg);
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
     }
@@ -62,7 +58,6 @@ public class WebClientConfiguration {
     @Qualifier(ORGANISASJON)
     @Bean
     public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig cfg) {
-        LOG.info("Registrerer organisasjonklient med konfig {}", cfg);
         return builder.exchangeStrategies(loggingEnablingStrategy(cfg.isLog()))
                 .baseUrl(cfg.getBaseUri())
                 .filter(loggingFilterFunction())
@@ -70,7 +65,7 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    ExchangeFilterFunction systemBearerTokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
+    ExchangeFilterFunction tokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken())
