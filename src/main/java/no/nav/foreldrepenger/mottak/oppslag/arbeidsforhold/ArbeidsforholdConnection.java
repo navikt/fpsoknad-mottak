@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static java.time.LocalDate.now;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.oppslag.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -33,13 +34,13 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     }
 
     List<Arbeidsforhold> hentArbeidsforhold() {
-        return hentArbeidsforhold(LocalDate.now().minusYears(5), LocalDate.now());
+        return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), now());
     }
 
-    List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
-        LOG.trace("Henter arbeidsgivere");
+    private List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
+        LOG.trace("Henter arbeidsforhold for {} -> {}", fom, tom);
         return getWebClient().get()
-                .uri(cfg::getArbeidsforholdURI)
+                .uri(b -> cfg.getArbeidsforholdURI(b, fom, tom))
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .toEntityList(Map.class)
