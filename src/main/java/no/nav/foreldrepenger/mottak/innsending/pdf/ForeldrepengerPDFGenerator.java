@@ -25,20 +25,20 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 
 @Component
 public class ForeldrepengerPDFGenerator implements PDFGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
     private static final float STARTY = PDFElementRenderer.calculateStartY();
-    private final Oppslag oppslag;
+    private final ArbeidsforholdTjenste arbeidsforhold;
     private final ForeldrepengeInfoRenderer fpRenderer;
     private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer,
+    public ForeldrepengerPDFGenerator(ArbeidsforholdTjenste arbeidsforhold, ForeldrepengeInfoRenderer fpRenderer,
             InfoskrivRenderer infoskrivRenderer) {
-        this.oppslag = oppslag;
+        this.arbeidsforhold = arbeidsforhold;
         this.fpRenderer = fpRenderer;
         this.infoskrivRenderer = infoskrivRenderer;
     }
@@ -248,7 +248,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
     }
 
     private List<Arbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
-        return safeStream(oppslag.getArbeidsforhold())
+        return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
                 .collect(Collectors.toList());
     }
@@ -349,7 +349,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [oppslag=" + oppslag + ", fpRenderer=" + fpRenderer
+        return getClass().getSimpleName() + " [oppslag=" + arbeidsforhold + ", fpRenderer=" + fpRenderer
                 + ", mapperEgenskaper=" + mapperEgenskaper() + "]";
     }
 

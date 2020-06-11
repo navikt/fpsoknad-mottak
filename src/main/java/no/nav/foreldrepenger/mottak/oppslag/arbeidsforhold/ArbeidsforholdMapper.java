@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConnection;
 import no.nav.foreldrepenger.mottak.util.MapUtil;
 import no.nav.foreldrepenger.mottak.util.Pair;
@@ -53,11 +52,9 @@ class ArbeidsforholdMapper {
 
     private static final String ANSETTELSESPERIODE = "ansettelsesperiode";
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
-    private final OppslagConnection oppslag;
     private final OrganisasjonConnection organisasjon;
 
-    public ArbeidsforholdMapper(OppslagConnection oppslag, OrganisasjonConnection organisasjon) {
-        this.oppslag = oppslag;
+    public ArbeidsforholdMapper(OrganisasjonConnection organisasjon) {
         this.organisasjon = organisasjon;
     }
 
@@ -70,16 +67,6 @@ class ArbeidsforholdMapper {
     }
 
     private String navn(String orgnr) {
-        String navnRest = navnRest(orgnr);
-        String navnWS = oppslag.organisasjonsNavn(orgnr);
-        if (navnRest.equals(orgnr) || !navnRest.equalsIgnoreCase(navnWS)) {
-            LOG.warn("REST oppslag feilet, bruker WS");
-            return navnWS;
-        }
-        return navnRest;
-    }
-
-    private String navnRest(String orgnr) {
         try {
             return organisasjon.organisasjonsNavn(orgnr);
         } catch (Exception e) {
@@ -115,5 +102,4 @@ class ArbeidsforholdMapper {
         }
         throw new IllegalArgumentException("Fant verken orgnr eller fnr i " + map);
     }
-
 }

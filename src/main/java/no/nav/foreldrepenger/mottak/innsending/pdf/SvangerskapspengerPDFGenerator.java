@@ -46,7 +46,7 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.ar
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 
 @Service
 public class SvangerskapspengerPDFGenerator implements PDFGenerator {
@@ -58,12 +58,12 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     private final PDFElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
-    private final Oppslag oppslag;
+    private final ArbeidsforholdTjenste oppslag;
 
     @Inject
     public SvangerskapspengerPDFGenerator(PDFElementRenderer renderer,
             SøknadTextFormatter textFormatter,
-            Oppslag oppslag, SvangerskapspengerInfoRenderer infoRenderer) {
+            ArbeidsforholdTjenste oppslag, SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
         this.oppslag = oppslag;
@@ -73,7 +73,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         var svp = (Svangerskapspenger) søknad.getYtelse();
-        var arbeidsforhold = aktiveArbeidsforhold(oppslag.getArbeidsforhold(), svp.getTermindato(),
+        var arbeidsforhold = aktiveArbeidsforhold(oppslag.hentAktiveArbeidsforhold(), svp.getTermindato(),
                 svp.getFødselsdato());
         try (var doc = new FontAwarePDDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();
@@ -205,7 +205,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
             LocalDate termindato,
             LocalDate fødselsdato) {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
-        return safeStream(oppslag.getArbeidsforhold())
+        return safeStream(oppslag.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
                 .collect(Collectors.toList());
     }

@@ -39,6 +39,7 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonTjenste;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -47,13 +48,15 @@ public class InnsynTjeneste implements Innsyn {
     private final XMLVedtakHandler vedtakHandler;
     private final Oppslag oppslag;
     private final InnsynConnection innsyn;
+    private final OrganisasjonTjenste organisasjon;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsyn, Oppslag oppslag) {
+            InnsynConnection innsyn, Oppslag oppslag, OrganisasjonTjenste organisasjon) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.søknadHandler = søknadHandler;
         this.vedtakHandler = vedtakHandler;
+        this.organisasjon = organisasjon;
     }
 
     @Override
@@ -334,7 +337,7 @@ public class InnsynTjeneste implements Innsyn {
     private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
         LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
         return Optional.ofNullable(orgnr)
-                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, oppslag.organisasjonsNavn(o)))
+                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, organisasjon.organisasjonsNavn(orgnr)))
                 .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId)
                         .map(AktørId::getId)
                         .orElse(null), PRIVAT,
