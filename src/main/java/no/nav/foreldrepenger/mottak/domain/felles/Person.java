@@ -4,8 +4,8 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
@@ -16,6 +16,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
 @JsonInclude(NON_NULL)
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Person {
     private final Fødselsnummer fnr;
     private final String fornavn;
@@ -24,11 +25,9 @@ public class Person {
     private final Kjønn kjønn;
     private final LocalDate fødselsdato;
     private final String målform;
-    @JsonAlias("landKode")
     private final CountryCode land;
     private final Boolean ikkeNordiskEøsLand;
     private final Bankkonto bankkonto;
-    @JsonAlias("aktorId")
     private AktørId aktørId;
 
     @JsonCreator
