@@ -83,6 +83,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @ExtendWith(MockitoExtension.class)
@@ -114,6 +115,8 @@ public class FPFordelTest {
 
     private MeterRegistry registry = new SimpleMeterRegistry();
     @Mock
+    private ArbeidsforholdTjenste arbeidsforhold;
+    @Mock
     private Oppslag oppslag;
     @Mock
     private SakStatusPoller poller;
@@ -134,7 +137,7 @@ public class FPFordelTest {
         cfg.setUri(URI.create(FPFORDELURIBASE));
 
         when(oppslag.getAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
-        when(oppslag.getArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
         pollReceipt202 = pollReceipt(HttpStatus.ACCEPTED);
         pollReceipt200 = pollReceipt(HttpStatus.OK);
 
@@ -152,7 +155,7 @@ public class FPFordelTest {
                 mottakConfig.kvitteringstekster());
         ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
         InfoskrivRenderer infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
-        ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, jalla, infoskrivRenderer);
+        ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(arbeidsforhold, jalla, infoskrivRenderer);
         EngangsstønadPdfGenerator es = new EngangsstønadPdfGenerator(jalla2, pdfGenerator);
         DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
         InfoskrivPdfEkstraktor pdfSplitter = new InfoskrivPdfEkstraktor();

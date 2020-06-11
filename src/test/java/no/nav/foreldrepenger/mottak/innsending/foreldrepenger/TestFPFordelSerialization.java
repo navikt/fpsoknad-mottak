@@ -65,6 +65,7 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.STSSystemUserTokenService;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,6 +84,9 @@ public class TestFPFordelSerialization {
 
     @MockBean
     private Oppslag oppslag;
+
+    @MockBean
+    private ArbeidsforholdTjenste arbeidsforhold;
     @MockBean
     private InnsendingHendelseProdusent publisher;
 
@@ -104,7 +108,7 @@ public class TestFPFordelSerialization {
     public void before() {
         when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
-        when(oppslag.getArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
     }
 
     @Test
