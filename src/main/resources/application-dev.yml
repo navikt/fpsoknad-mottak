@@ -30,6 +30,7 @@ organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
   log: true 
 sts:
-  uri: https://security-token-service.nais.preprod.local/rest/v1/sts/token?grant_type=client_credentials&scope=openid
+  log: true
+  base-uri: https://security-token-service.nais.preprod.local/rest/v1/sts/token?grant_type=client_credentials&scope=openid
   username: ${kafka.username}
   password: ${kafka.password}     

@@ -27,6 +27,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConfig;
+import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
+import no.nav.foreldrepenger.mottak.oppslag.sts.STSSystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -46,12 +48,11 @@ public class WebClientConfiguration implements EnvironmentAware {
 
     @Bean
     @Qualifier(STS)
-    public WebClient webClientSTS(WebClient.Builder builder, @Value("${sts.uri}") String uri,
-            @Value("${sts.username}") String username,
-            @Value("${sts.password}") String password) {
+    public WebClient webClientSTS(WebClient.Builder builder, STSConfig cfg) {
         return builder
-                .baseUrl(uri)
-                .defaultHeaders(h -> h.setBasicAuth(username, password))
+                .codecs(loggingCodec(cfg.isLog()))
+                .baseUrl(cfg.getBaseUri())
+                .defaultHeaders(h -> h.setBasicAuth(cfg.getUsername(), cfg.getPassword()))
                 .build();
     }
 
@@ -81,7 +82,7 @@ public class WebClientConfiguration implements EnvironmentAware {
     }
 
     @Bean
-    ExchangeFilterFunction tokenAddingFilterFunction(STSSystemUserTokenService sts, TokenUtil tokenUtil) {
+    ExchangeFilterFunction tokenAddingFilterFunction(STSSystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             LOG.trace("Bruker token utgår {}", tokenUtil.getExpiration());
             LOG.trace("System token utgår {}", sts.getSystemToken().getExpiration());

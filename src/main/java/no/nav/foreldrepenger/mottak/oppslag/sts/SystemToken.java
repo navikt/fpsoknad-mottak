@@ -1,7 +1,8 @@
-package no.nav.foreldrepenger.mottak.oppslag;
+package no.nav.foreldrepenger.mottak.oppslag.sts;
 
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,8 +29,13 @@ public class SystemToken {
         this.tokenType = tokenType;
     }
 
+    @Deprecated
     public boolean isExpired(long slack) {
         return LocalDateTime.now().isAfter(getExpiration().minusSeconds(slack));
+    }
+
+    public boolean isExpired(Duration slack) {
+        return LocalDateTime.now().isAfter(getExpiration().minus(slack));
     }
 
     private JwtToken getAccessToken() {
