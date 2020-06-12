@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
@@ -8,14 +9,17 @@ import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.codec.ClientCodecConfigurer;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -23,10 +27,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConfig;
+import no.nav.foreldrepenger.mottak.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Configuration
-public class WebClientConfiguration {
+public class WebClientConfiguration implements EnvironmentAware {
 
     public static final String STS = "STS";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
@@ -34,18 +39,19 @@ public class WebClientConfiguration {
     private static final String BEARER = "Bearer ";
 
     @Value("${spring.application.name:fpsoknad-mottak}")
-    String consumer;
+    private String consumer;
+    private Environment env;
 
     private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
     @Bean
     @Qualifier(STS)
     public WebClient webClientSTS(WebClient.Builder builder, @Value("${sts.uri}") String uri,
-            @Value("${kafka.username}") String systemUser,
-            @Value("${kafka.password}") String systemPassword) {
+            @Value("${sts.username}") String username,
+            @Value("${sts.password}") String password) {
         return builder
                 .baseUrl(uri)
-                .defaultHeaders(h -> h.setBasicAuth(systemUser, systemPassword))
+                .defaultHeaders(h -> h.setBasicAuth(username, password))
                 .build();
     }
 
@@ -71,7 +77,7 @@ public class WebClientConfiguration {
     }
 
     private Consumer<ClientCodecConfigurer> loggingCodec(boolean log) {
-        return configurer -> configurer.defaultCodecs().enableLoggingRequestDetails(log);
+        return c -> c.defaultCodecs().enableLoggingRequestDetails(isDevOrLocal(env) ? log : false);
     }
 
     @Bean
@@ -91,9 +97,20 @@ public class WebClientConfiguration {
     ExchangeFilterFunction loggingFilterFunction() {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
-                    .header(NAV_CONSUMER_ID, consumer)
+                    .header(NAV_CONSUMER_ID, consumerId())
                     .header(NAV_CALL_ID1, callId())
                     .build());
         };
+    }
+
+    private String consumerId() {
+        return Optional.ofNullable(MDCUtil.consumerId())
+                .orElse(consumer);
+    }
+
+    @Override
+    public void setEnvironment(Environment env) {
+        this.env = env;
+
     }
 }
