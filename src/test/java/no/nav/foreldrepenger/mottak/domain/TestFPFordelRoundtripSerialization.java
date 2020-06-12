@@ -49,7 +49,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 @ActiveProfiles(profiles = { LOCAL })
 @TestPropertySource(properties = { "sts.uri=http://www.sts.no", "spring.cloud.vault.enabled=false",
         "spring.cloud.vault.token=00000",
-        "kafka.username=un", "kafka.password=pw" })
+        "sts.username=un", "sts.password=pw" })
 @EnableConfigurationProperties
 public class TestFPFordelRoundtripSerialization {
 
