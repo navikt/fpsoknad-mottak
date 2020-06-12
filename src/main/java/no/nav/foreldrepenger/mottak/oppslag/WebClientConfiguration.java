@@ -8,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +16,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.LoggingCodecSupport;
+import org.springframework.http.codec.ClientCodecConfigurer;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
@@ -53,7 +53,8 @@ public class WebClientConfiguration {
     @Bean
     public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig cfg,
             ExchangeFilterFunction... filters) {
-        builder.exchangeStrategies(loggingEnablingStrategy(cfg.isLog()))
+        builder
+                .codecs(loggingCodec(cfg.isLog()))
                 .baseUrl(cfg.getBaseUri());
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
@@ -62,10 +63,15 @@ public class WebClientConfiguration {
     @Qualifier(ORGANISASJON)
     @Bean
     public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig cfg) {
-        return builder.exchangeStrategies(loggingEnablingStrategy(cfg.isLog()))
+        return builder
+                .codecs(loggingCodec(cfg.isLog()))
                 .baseUrl(cfg.getBaseUri())
                 .filter(loggingFilterFunction())
                 .build();
+    }
+
+    private Consumer<ClientCodecConfigurer> loggingCodec(boolean log) {
+        return configurer -> configurer.defaultCodecs().enableLoggingRequestDetails(log);
     }
 
     @Bean
@@ -89,15 +95,5 @@ public class WebClientConfiguration {
                     .header(NAV_CALL_ID1, callId())
                     .build());
         };
-    }
-
-    private final ExchangeStrategies loggingEnablingStrategy(boolean log) {
-        ExchangeStrategies strategies = ExchangeStrategies.withDefaults();
-        strategies.messageWriters()
-                .stream()
-                .filter(LoggingCodecSupport.class::isInstance)
-                .map(LoggingCodecSupport.class::cast)
-                .forEach(w -> w.setEnableLoggingRequestDetails(log));
-        return strategies;
     }
 }
