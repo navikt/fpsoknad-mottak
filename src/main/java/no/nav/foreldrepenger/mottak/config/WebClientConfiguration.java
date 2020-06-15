@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.oppslag;
+package no.nav.foreldrepenger.mottak.config;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isDevOrLocal;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID1;

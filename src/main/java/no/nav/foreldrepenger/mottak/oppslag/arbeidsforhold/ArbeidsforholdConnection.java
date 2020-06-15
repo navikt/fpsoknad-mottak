@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.oppslag.WebClientConfiguration.ARBEIDSFORHOLD;
+import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 
 @Component
 public class ArbeidsforholdConnection extends AbstractWebClientConnection {

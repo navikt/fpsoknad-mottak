@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
-import static no.nav.foreldrepenger.mottak.oppslag.WebClientConfiguration.STS;
+import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.STS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.time.Duration;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.mottak.oppslag.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 
 @Component
 public class STSConnection extends AbstractWebClientConnection {

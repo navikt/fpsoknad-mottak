@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.oppslag;
+package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -7,6 +7,7 @@ import java.net.URI;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 public abstract class AbstractWebClientConnection implements PingEndpointAware {
     private final WebClient webClient;
