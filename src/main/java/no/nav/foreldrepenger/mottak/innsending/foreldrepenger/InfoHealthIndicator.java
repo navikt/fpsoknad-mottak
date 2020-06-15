@@ -6,8 +6,8 @@ import no.nav.foreldrepenger.mottak.health.AbstractPingableHealthIndicator;
 import no.nav.foreldrepenger.mottak.innsyn.InnsynConnection;
 
 @Component
-public class FPInfoHealthIndicator extends AbstractPingableHealthIndicator {
-    public FPInfoHealthIndicator(InnsynConnection connection) {
+public class InfoHealthIndicator extends AbstractPingableHealthIndicator {
+    public InfoHealthIndicator(InnsynConnection connection) {
         super(connection);
     }
 }

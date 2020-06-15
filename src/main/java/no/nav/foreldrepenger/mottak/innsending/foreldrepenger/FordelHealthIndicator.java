@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.mottak.health.AbstractPingableHealthIndicator;
 
 @Component
-public class FPFordelHealthIndicator extends AbstractPingableHealthIndicator {
-    public FPFordelHealthIndicator(FordelConnection connection) {
+public class FordelHealthIndicator extends AbstractPingableHealthIndicator {
+    public FordelHealthIndicator(FordelConnection connection) {
         super(connection);
     }
 }
