@@ -17,7 +17,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Configuration
 public class TestConfig {
@@ -55,11 +55,11 @@ public class TestConfig {
             }
 
             @Override
-            public List<Arbeidsforhold> getArbeidsforhold() {
+            public List<EnkeltArbeidsforhold> getArbeidsforhold() {
                 return Arrays.asList(
-                        new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                        new EnkeltArbeidsforhold("1234", "", LocalDate.now().minusDays(200),
                                 Optional.of(LocalDate.now()), new ProsentAndel(90), "El Bedrifto"),
-                        new Arbeidsforhold("2345", "", LocalDate.now().minusDays(300),
+                        new EnkeltArbeidsforhold("2345", "", LocalDate.now().minusDays(300),
                                 Optional.of(LocalDate.now().minusDays(240)), new ProsentAndel(55.0), "Bedriftolainen"));
             }
 

@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Service
 @Profile({ DEV, LOCAL })
@@ -54,7 +54,7 @@ public class OppslagServiceStub implements Oppslag {
     }
 
     @Override
-    public List<Arbeidsforhold> getArbeidsforhold() {
+    public List<EnkeltArbeidsforhold> getArbeidsforhold() {
         return Collections.emptyList();
     }
 

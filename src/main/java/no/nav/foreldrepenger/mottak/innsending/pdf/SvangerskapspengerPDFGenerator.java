@@ -200,8 +200,8 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         }
     }
 
-    private List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> aktiveArbeidsforhold(
-            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> arbeidsforhold,
+    private List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> aktiveArbeidsforhold(
+            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> arbeidsforhold,
             LocalDate termindato,
             LocalDate fødselsdato) {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
@@ -211,7 +211,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     }
 
     private float renderTilrettelegging(
-            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> arbeidsgivere,
+            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> arbeidsgivere,
             Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrettelegging,
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
@@ -377,12 +377,12 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     }
 
     private String virksomhetsnavn(
-            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold> arbeidsgivere,
+            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> arbeidsgivere,
             String orgnr) {
         return safeStream(arbeidsgivere)
                 .filter(arb -> arb.getArbeidsgiverId().equals(orgnr))
                 .findFirst()
-                .map(no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold::getArbeidsgiverNavn)
+                .map(no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold::getArbeidsgiverNavn)
                 .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));
     }
 

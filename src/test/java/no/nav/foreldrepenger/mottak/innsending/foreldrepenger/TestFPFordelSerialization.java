@@ -63,7 +63,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSSystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -98,7 +98,7 @@ public class TestFPFordelSerialization {
 
     private static final AktørId AKTØRID = new AktørId("1111111111");
     private static final Fødselsnummer FNR = new Fødselsnummer("01010111111");
-    private static final List<Arbeidsforhold> ARB_FORHOLD = arbeidsforhold();
+    private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
     @BeforeEach
     public void before() {
@@ -201,9 +201,9 @@ public class TestFPFordelSerialization {
 
     }
 
-    private static List<Arbeidsforhold> arbeidsforhold() {
+    private static List<EnkeltArbeidsforhold> arbeidsforhold() {
         return newArrayList(
-                new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+                new EnkeltArbeidsforhold("1234", "", LocalDate.now().minusDays(200),
                         Optional.of(LocalDate.now()), new ProsentAndel(90), "El Bedrifto"));
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ArbeidsforholdTjenste {
+public class ArbeidsforholdTjenste implements Arbeidsforhold {
 
     private final ArbeidsforholdConnection connection;
 
@@ -13,7 +13,8 @@ public class ArbeidsforholdTjenste {
         this.connection = connection;
     }
 
-    public List<Arbeidsforhold> hentAktiveArbeidsforhold() {
+    @Override
+    public List<EnkeltArbeidsforhold> hentAktiveArbeidsforhold() {
         return connection.hentArbeidsforhold();
     }
 

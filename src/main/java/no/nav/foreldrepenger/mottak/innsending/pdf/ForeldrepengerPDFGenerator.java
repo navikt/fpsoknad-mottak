@@ -26,7 +26,7 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class ForeldrepengerPDFGenerator implements PDFGenerator {
@@ -118,7 +118,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
             }
 
             Opptjening opptjening = stønad.getOpptjening();
-            List<Arbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(stønad.getRelasjonTilBarn().relasjonsDato());
+            List<EnkeltArbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(stønad.getRelasjonTilBarn().relasjonsDato());
             if (opptjening != null) {
                 var scratch = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch);
@@ -247,7 +247,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
         }
     }
 
-    private List<Arbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
+    private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
         return safeStream(oppslag.getArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
                 .collect(Collectors.toList());

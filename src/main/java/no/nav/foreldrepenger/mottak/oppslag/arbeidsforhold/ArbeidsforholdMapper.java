@@ -61,10 +61,10 @@ class ArbeidsforholdMapper {
         this.organisasjon = organisasjon;
     }
 
-    Arbeidsforhold map(Map<?, ?> map) {
+    EnkeltArbeidsforhold map(Map<?, ?> map) {
         var id = id(get(map, ARBEIDSGIVER, Map.class));
         var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE2, Map.class);
-        return new Arbeidsforhold(id.getFirst(), id.getSecond(), dato(get(periode, FOM)),
+        return new EnkeltArbeidsforhold(id.getFirst(), id.getSecond(), dato(get(periode, FOM)),
                 Optional.ofNullable(dato(get(periode, TOM))),
                 stillingsprosent(get(map, ARBEIDSAVTALER, List.class)), navn(id.getFirst()));
     }

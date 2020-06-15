@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -66,7 +66,7 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
-    public List<Arbeidsforhold> getArbeidsforhold() {
+    public List<EnkeltArbeidsforhold> getArbeidsforhold() {
         var rs = arbeidsforholdREST();
         var ws = connection.hentArbeidsforhold();
         if (rs.containsAll(ws) && ws.containsAll(rs)) {
@@ -78,7 +78,7 @@ public class OppslagTjeneste implements Oppslag {
         }
     }
 
-    private List<Arbeidsforhold> arbeidsforholdREST() {
+    private List<EnkeltArbeidsforhold> arbeidsforholdREST() {
         try {
             return arbeidsforhold.hentAktiveArbeidsforhold();
         } catch (Exception e) {

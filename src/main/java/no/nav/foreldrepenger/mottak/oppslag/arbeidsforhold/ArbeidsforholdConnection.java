@@ -33,11 +33,11 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
         this.mapper = mapper;
     }
 
-    List<Arbeidsforhold> hentArbeidsforhold() {
+    List<EnkeltArbeidsforhold> hentArbeidsforhold() {
         return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), now());
     }
 
-    private List<Arbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
+    private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
         LOG.trace("Henter arbeidsforhold for {} -> {}", fom, tom);
         return getWebClient().get()
                 .uri(b -> cfg.getArbeidsforholdURI(b, fom, tom))

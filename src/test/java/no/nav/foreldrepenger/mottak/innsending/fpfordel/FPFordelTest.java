@@ -82,7 +82,7 @@ import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @ExtendWith(MockitoExtension.class)
@@ -102,8 +102,8 @@ public class FPFordelTest {
     private static final String JOURNALID = "999";
     private static final String SAKSNR = "666";
 
-    private static final List<Arbeidsforhold> ARB_FORHOLD = Arrays
-            .asList(new Arbeidsforhold("1234", "", LocalDate.now().minusDays(200),
+    private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = Arrays
+            .asList(new EnkeltArbeidsforhold("1234", "", LocalDate.now().minusDays(200),
                     Optional.of(LocalDate.now()), new ProsentAndel(90), "El Bedrifto"));
 
     @Mock

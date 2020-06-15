@@ -63,7 +63,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overførings
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class ForeldrepengeInfoRenderer {
@@ -210,13 +210,13 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public float arbeidsforholdOpptjening(List<Arbeidsforhold> arbeidsforhold, FontAwareCos cos, float y)
+    public float arbeidsforholdOpptjening(List<EnkeltArbeidsforhold> arbeidsforhold, FontAwareCos cos, float y)
             throws IOException {
         if (CollectionUtils.isEmpty(arbeidsforhold)) {
             return y;
         }
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
-        for (Arbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
+        for (EnkeltArbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
             y -= PDFElementRenderer.BLANK_LINE;
         }
@@ -227,7 +227,7 @@ public class ForeldrepengeInfoRenderer {
         return new PDPage(A4);
     }
 
-    private static List<Arbeidsforhold> sorterArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
+    private static List<EnkeltArbeidsforhold> sorterArbeidsforhold(List<EnkeltArbeidsforhold> arbeidsforhold) {
         Collections.sort(arbeidsforhold, (o1, o2) -> {
             if (o1.getFrom() != null && o2.getFrom() != null) {
                 return o1.getFrom().compareTo(o2.getFrom());
@@ -665,7 +665,7 @@ public class ForeldrepengeInfoRenderer {
                 txt("fnr", norskForelder.getFnr().getFnr()));
     }
 
-    private List<String> arbeidsforhold(Arbeidsforhold arbeidsforhold) {
+    private List<String> arbeidsforhold(EnkeltArbeidsforhold arbeidsforhold) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, ARBEIDSGIVER, arbeidsforhold.getArbeidsgiverNavn());
         addIfSet(attributter, "fom", arbeidsforhold.getFrom());

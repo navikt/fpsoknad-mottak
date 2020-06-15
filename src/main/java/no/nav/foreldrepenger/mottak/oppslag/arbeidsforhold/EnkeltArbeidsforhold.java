@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 
-public class Arbeidsforhold {
+public class EnkeltArbeidsforhold {
     private String arbeidsgiverId;
     private String arbeidsgiverIdType;
     private LocalDate from;
@@ -18,7 +18,7 @@ public class Arbeidsforhold {
     private String arbeidsgiverNavn;
 
     @JsonCreator
-    public Arbeidsforhold(@JsonProperty("arbeidsgiverId") String arbeidsgiverId,
+    public EnkeltArbeidsforhold(@JsonProperty("arbeidsgiverId") String arbeidsgiverId,
             @JsonProperty("arbeidsgiverIdType") String arbeidsgiverIdType,
             @JsonProperty("fom") LocalDate from,
             @JsonProperty("tom") Optional<LocalDate> to,
@@ -64,7 +64,7 @@ public class Arbeidsforhold {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Arbeidsforhold that = (Arbeidsforhold) o;
+        EnkeltArbeidsforhold that = (EnkeltArbeidsforhold) o;
         return Objects.equals(arbeidsgiverId, that.arbeidsgiverId) &&
                 Objects.equals(arbeidsgiverIdType, that.arbeidsgiverIdType) &&
                 Objects.equals(from, that.from) &&

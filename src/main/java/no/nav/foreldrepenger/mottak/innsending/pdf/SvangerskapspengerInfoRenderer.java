@@ -28,7 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class SvangerskapspengerInfoRenderer {
@@ -134,20 +134,20 @@ public class SvangerskapspengerInfoRenderer {
         return y;
     }
 
-    float arbeidsforholdOpptjening(List<Arbeidsforhold> arbeidsforhold, FontAwareCos cos, float y)
+    float arbeidsforholdOpptjening(List<EnkeltArbeidsforhold> arbeidsforhold, FontAwareCos cos, float y)
             throws IOException {
         if (CollectionUtils.isEmpty(arbeidsforhold)) {
             return y;
         }
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
-        for (Arbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
+        for (EnkeltArbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
             y -= PDFElementRenderer.BLANK_LINE;
         }
         return y;
     }
 
-    private static List<Arbeidsforhold> sorterArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
+    private static List<EnkeltArbeidsforhold> sorterArbeidsforhold(List<EnkeltArbeidsforhold> arbeidsforhold) {
         Collections.sort(arbeidsforhold, (o1, o2) -> {
             if (o1.getFrom() != null && o2.getFrom() != null) {
                 return o1.getFrom().compareTo(o2.getFrom());
@@ -157,7 +157,7 @@ public class SvangerskapspengerInfoRenderer {
         return arbeidsforhold;
     }
 
-    List<String> arbeidsforhold(Arbeidsforhold arbeidsforhold) {
+    List<String> arbeidsforhold(EnkeltArbeidsforhold arbeidsforhold) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, "arbeidsgiver", arbeidsforhold.getArbeidsgiverNavn());
         addIfSet(attributter, "fom", arbeidsforhold.getFrom());

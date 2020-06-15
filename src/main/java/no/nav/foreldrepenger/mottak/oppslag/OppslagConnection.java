@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection implements PingEndpointAware {
@@ -65,10 +65,10 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
                 true);
     }
 
-    List<Arbeidsforhold> hentArbeidsforhold() {
+    List<EnkeltArbeidsforhold> hentArbeidsforhold() {
         LOG.trace("Henter arbeidsforhold");
         return Optional.ofNullable(getForObject(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()),
-                Arbeidsforhold[].class))
+                EnkeltArbeidsforhold[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }

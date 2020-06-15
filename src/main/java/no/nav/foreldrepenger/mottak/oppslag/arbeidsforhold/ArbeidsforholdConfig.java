@@ -14,6 +14,8 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "arbeidsforhold")
 public class ArbeidsforholdConfig extends AbstractConfig {
 
+    private static final String TREÅR = "3y";
+    private static final String V1_ARBEIDSTAKER_ARBEIDSFORHOLD = "/v1/arbeidstaker/arbeidsforhold";
     static final String FOM = "ansettelsesperiodeTom";
     static final String TOM = "ansettelsesperiodeFom";
     static final String SPORINGSINFORMASJON = "sporingsinformasjon";
@@ -26,8 +28,8 @@ public class ArbeidsforholdConfig extends AbstractConfig {
 
     @ConstructorBinding
     public ArbeidsforholdConfig(String baseUri, @DefaultValue("/ping") String pingPath,
-            @DefaultValue("/v1/arbeidstaker/arbeidsforhold") String arbeidsforholdPath,
-            @DefaultValue("3y") Period tidTilbake, boolean log) {
+            @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
+            @DefaultValue(TREÅR) Period tidTilbake, boolean log) {
         super(baseUri, pingPath, log);
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.tidTilbake = tidTilbake;

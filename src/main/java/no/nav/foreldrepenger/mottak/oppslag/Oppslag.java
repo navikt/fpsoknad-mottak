@@ -8,7 +8,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.RetryAware;
 import no.nav.foreldrepenger.mottak.innsending.Pingable;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 public interface Oppslag extends Pingable, RetryAware {
     Person getSøker();
@@ -19,7 +19,7 @@ public interface Oppslag extends Pingable, RetryAware {
 
     Fødselsnummer getFnr(AktørId aktørId);
 
-    List<Arbeidsforhold> getArbeidsforhold();
+    List<EnkeltArbeidsforhold> getArbeidsforhold();
 
     String getAktørIdAsString();
 

@@ -31,7 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttak
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class InfoskrivRenderer {
@@ -47,7 +47,7 @@ public class InfoskrivRenderer {
         this.textFormatter = textFormatter;
     }
 
-    FontAwareCos renderInfoskriv(List<Arbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
+    FontAwareCos renderInfoskriv(List<EnkeltArbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
             FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
         if (søknad.getFørsteInntektsmeldingDag() == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
@@ -127,7 +127,7 @@ public class InfoskrivRenderer {
     }
 
     private float renderGradertePerioder(List<GradertUttaksPeriode> gradertePerioder,
-            List<Arbeidsforhold> arbeidsforhold, FontAwareCos cos,
+            List<EnkeltArbeidsforhold> arbeidsforhold, FontAwareCos cos,
             float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.kombinertarbeid"), cos, y);
         y -= addTinyBlankLine();
@@ -145,16 +145,16 @@ public class InfoskrivRenderer {
         return y;
     }
 
-    private List<String> arbeidsgivere(List<Arbeidsforhold> arbeidsforhold, List<String> virksomhetsnummer) {
+    private List<String> arbeidsgivere(List<EnkeltArbeidsforhold> arbeidsforhold, List<String> virksomhetsnummer) {
         return safeStream(arbeidsforhold)
                 .filter(a -> virksomhetsnummer.contains(a.getArbeidsgiverId()))
-                .map(Arbeidsforhold::getArbeidsgiverNavn)
+                .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
                 .map(s -> txt("arbeidsgiver", s))
                 .collect(Collectors.toList());
     }
 
     private float renderFerieArbeidsperioder(List<UtsettelsesPeriode> ferieArbeidsperioder,
-            List<Arbeidsforhold> arbeidsforhold,
+            List<EnkeltArbeidsforhold> arbeidsforhold,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLineOfRegularText(txt("svp.utsettelse"), cos, y);
         y -= addTinyBlankLine();
