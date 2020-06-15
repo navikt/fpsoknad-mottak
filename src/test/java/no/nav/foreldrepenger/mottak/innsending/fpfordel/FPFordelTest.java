@@ -71,10 +71,10 @@ import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMap
 import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPdfGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
-import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPdfGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivRenderer;
-import no.nav.foreldrepenger.mottak.innsending.pdf.PDFElementRenderer;
+import no.nav.foreldrepenger.mottak.innsending.pdf.PdfElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
@@ -147,12 +147,12 @@ public class FPFordelTest {
 
     private FordelSøknadSender sender() {
         MottakConfiguration mottakConfig = new MottakConfiguration();
-        PDFElementRenderer jalla1 = new PDFElementRenderer();
+        PdfElementRenderer jalla1 = new PdfElementRenderer();
         SøknadTextFormatter jalla2 = new SøknadTextFormatter(mottakConfig.landkoder(),
                 mottakConfig.kvitteringstekster());
         ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
         InfoskrivRenderer infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
-        ForeldrepengerPDFGenerator fp = new ForeldrepengerPDFGenerator(oppslag, jalla, infoskrivRenderer);
+        ForeldrepengerPdfGenerator fp = new ForeldrepengerPdfGenerator(oppslag, jalla, infoskrivRenderer);
         EngangsstønadPdfGenerator es = new EngangsstønadPdfGenerator(jalla2, pdfGenerator);
         DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
         InfoskrivPdfEkstraktor pdfSplitter = new InfoskrivPdfEkstraktor();

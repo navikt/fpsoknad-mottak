@@ -46,26 +46,26 @@ import org.springframework.web.client.RestOperations;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class,
     SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
-        PDFElementRenderer.class,
+        PdfElementRenderer.class,
         DelegerendePDFGenerator.class,
-        ForeldrepengerPDFGenerator.class,
+        ForeldrepengerPdfGenerator.class,
         //EngangsstønadPDFGenerator.class,
     //PdfGeneratorConnection.class,
     //PdfGeneratorTjeneste.class,
     //DokumentGenerator.class,
-        SvangerskapspengerPDFGenerator.class,
+        SvangerskapspengerPdfGenerator.class,
         InfoskrivRenderer.class,
         InfoskrivPdfEkstraktor.class,
         SvangerskapspengerInfoRenderer.class,
         SpringTokenValidationContextHolder.class, TestConfig.class })
-public class PDFGeneratorTest {
+public class MappablePdfGeneratorTest {
 
     private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +
             "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
             "mulighet til å søke om utsettelse.";
     @Inject
     @Qualifier(DELEGERENDE)
-    PDFGenerator gen;
+    MappablePdfGenerator gen;
 
     @Inject
     InfoskrivPdfEkstraktor pdfExtracter;

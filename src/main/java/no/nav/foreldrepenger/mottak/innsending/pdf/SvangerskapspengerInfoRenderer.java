@@ -34,10 +34,10 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 public class SvangerskapspengerInfoRenderer {
     private static final Logger LOG = LoggerFactory.getLogger(SvangerskapspengerInfoRenderer.class);
     private static final int INDENT = 20;
-    private final PDFElementRenderer renderer;
+    private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
 
-    public SvangerskapspengerInfoRenderer(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
+    public SvangerskapspengerInfoRenderer(PdfElementRenderer renderer, SøknadTextFormatter textFormatter) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
     }
@@ -68,11 +68,11 @@ public class SvangerskapspengerInfoRenderer {
                     .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
                     .collect(toList());
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
-            y -= PDFElementRenderer.BLANK_LINE;
+            y -= PdfElementRenderer.BLANK_LINE;
         } else {
             y -= renderer.addLineOfRegularText(txt("oppdrag") + ": Nei", cos, y);
         }
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -129,7 +129,7 @@ public class SvangerskapspengerInfoRenderer {
         y -= renderer.addLeftHeading(txt("egennæring"), cos, y);
         for (List<String> næring : egneNæringer(egneNæringer)) {
             y -= renderer.addLinesOfRegularText(næring, cos, y);
-            y -= PDFElementRenderer.BLANK_LINE;
+            y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
     }
@@ -142,7 +142,7 @@ public class SvangerskapspengerInfoRenderer {
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
         for (EnkeltArbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
-            y -= PDFElementRenderer.BLANK_LINE;
+            y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
     }
@@ -179,7 +179,7 @@ public class SvangerskapspengerInfoRenderer {
             y -= renderer.addLinesOfRegularText(utenlandskeArbeidsforhold(forhold), cos, y);
             y -= renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
         }
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 

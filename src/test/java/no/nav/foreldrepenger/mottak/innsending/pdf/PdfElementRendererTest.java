@@ -12,13 +12,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class PDFElementRendererTest {
+public class PdfElementRendererTest {
 
-    private static PDFElementRenderer renderer;
+    private static PdfElementRenderer renderer;
 
     @BeforeAll
     public static void beforeAll() {
-        renderer = new PDFElementRenderer();
+        renderer = new PdfElementRenderer();
     }
 
     @Test

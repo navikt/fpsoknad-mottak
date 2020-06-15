@@ -15,7 +15,7 @@ public class FontAwareCos {
     private final PDPageContentStream cos;
     private static final int HEADINGFONTSIZE = 12;
 
-    public FontAwareCos(FontAwarePDDocument doc, PDPage page) throws IOException {
+    public FontAwareCos(FontAwarePdfDocument doc, PDPage page) throws IOException {
         this.cos = new PDPageContentStream(doc, page);
         this.fontRegular = doc.getRegularFont();
         this.fontHeading = doc.getBoldFont();

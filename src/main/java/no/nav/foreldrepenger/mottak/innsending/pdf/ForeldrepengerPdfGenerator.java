@@ -29,14 +29,14 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
-public class ForeldrepengerPDFGenerator implements PDFGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPDFGenerator.class);
-    private static final float STARTY = PDFElementRenderer.calculateStartY();
+public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
+    private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPdfGenerator.class);
+    private static final float STARTY = PdfElementRenderer.calculateStartY();
     private final Oppslag oppslag;
     private final ForeldrepengeInfoRenderer fpRenderer;
     private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPDFGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer,
+    public ForeldrepengerPdfGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer,
             InfoskrivRenderer infoskrivRenderer) {
         this.oppslag = oppslag;
         this.fpRenderer = fpRenderer;
@@ -65,7 +65,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
         var stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (var doc = new FontAwarePDDocument();
+        try (var doc = new FontAwarePdfDocument();
                 var baos = new ByteArrayOutputStream()) {
             PDPage page = newPage();
             doc.addPage(page);
@@ -257,7 +257,7 @@ public class ForeldrepengerPDFGenerator implements PDFGenerator {
         var stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
-        try (var doc = new FontAwarePDDocument();
+        try (var doc = new FontAwarePdfDocument();
                 var baos = new ByteArrayOutputStream()) {
             var page = newPage();
             doc.addPage(page);

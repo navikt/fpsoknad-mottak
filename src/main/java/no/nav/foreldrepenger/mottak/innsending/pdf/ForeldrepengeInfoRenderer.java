@@ -73,17 +73,17 @@ public class ForeldrepengeInfoRenderer {
     private static final String DAGER = "dager";
     private static final String ARBEIDSGIVER = "arbeidsgiver";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    private static final float STARTY = PDFElementRenderer.calculateStartY();
+    private static final float STARTY = PdfElementRenderer.calculateStartY();
     private static final int INDENT = 20;
-    private final PDFElementRenderer renderer;
+    private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
 
-    public ForeldrepengeInfoRenderer(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
+    public ForeldrepengeInfoRenderer(PdfElementRenderer renderer, SøknadTextFormatter textFormatter) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
     }
 
-    public float header(Person søker, FontAwarePDDocument doc, FontAwareCos cos, boolean endring, float y)
+    public float header(Person søker, FontAwarePdfDocument doc, FontAwareCos cos, boolean endring, float y)
             throws IOException {
         y -= renderer.addLogo(doc, cos, y);
         y -= renderer.addCenteredHeading(
@@ -117,7 +117,7 @@ public class ForeldrepengeInfoRenderer {
                     y);
             y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
         }
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -147,7 +147,7 @@ public class ForeldrepengeInfoRenderer {
         for (AnnenOpptjening annen : annenOpptjening) {
             y -= renderer.addLinesOfRegularText(INDENT, annen(annen), cos, y);
             y = renderVedlegg(vedlegg, annen.getVedlegg(), "vedleggannenopptjening", cos, y);
-            y -= PDFElementRenderer.BLANK_LINE;
+            y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
     }
@@ -167,7 +167,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("egennæring"), cos, y);
         for (List<String> næring : egneNæringer(egneNæringer)) {
             y -= renderer.addLinesOfRegularText(INDENT, næring, cos, y);
-            y -= PDFElementRenderer.BLANK_LINE;
+            y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
     }
@@ -183,7 +183,7 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskeArbeidsforhold(forhold), cos, y);
             y = renderVedlegg(vedlegg, forhold.getVedlegg(), "vedleggutenlandskarbeid", cos, y);
         }
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -218,7 +218,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("arbeidsforhold"), cos, y);
         for (EnkeltArbeidsforhold forhold : sorterArbeidsforhold(arbeidsforhold)) {
             y -= renderer.addLinesOfRegularText(INDENT, arbeidsforhold(forhold), cos, y);
-            y -= PDFElementRenderer.BLANK_LINE;
+            y -= PdfElementRenderer.BLANK_LINE;
         }
         return y;
     }
@@ -267,11 +267,11 @@ public class ForeldrepengeInfoRenderer {
                     .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
                     .collect(toList());
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
-            y -= PDFElementRenderer.BLANK_LINE;
+            y -= PdfElementRenderer.BLANK_LINE;
         } else {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag") + ": Nei", cos, y);
         }
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -322,7 +322,7 @@ public class ForeldrepengeInfoRenderer {
                     cos,
                     y);
         }
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -338,7 +338,7 @@ public class ForeldrepengeInfoRenderer {
         return y;
     }
 
-    public FontAwareCos fordeling(FontAwarePDDocument doc, Person søker, BrukerRolle rolle, Fordeling fordeling,
+    public FontAwareCos fordeling(FontAwarePdfDocument doc, Person søker, BrukerRolle rolle, Fordeling fordeling,
             Dekningsgrad dekningsgrad,
             List<Vedlegg> vedlegg,
             int antallBarn,
@@ -431,11 +431,11 @@ public class ForeldrepengeInfoRenderer {
             throws IOException {
         y -= renderer.addLeftHeading(txt("tilleggsopplysninger"), cos, y);
         y -= renderer.addLineOfRegularText(INDENT, tilleggsopplysninger, cos, y);
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
-    private FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
+    private FontAwareCos nySide(FontAwarePdfDocument doc, FontAwareCos cos, PDPage scratch,
             FontAwareCos scratchcos, Person søker, boolean erEndring) throws IOException {
         cos.close();
         header(søker, doc, scratchcos, erEndring, STARTY);
@@ -449,7 +449,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addBulletPoint(txt("overføring"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(overføring, rolle), cos, y);
         y = renderVedlegg(vedlegg, overføring.getVedlegg(), DOKUMENTASJON, cos, y);
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -468,7 +468,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addBulletPoint(txt("utsettelse"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(utsettelse, rolle), cos, y);
         y = renderVedlegg(vedlegg, utsettelse.getVedlegg(), DOKUMENTASJON, cos, y);
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -502,7 +502,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addBulletPoint(txt("opphold"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(opphold), cos, y);
         y = renderVedlegg(vedlegg, opphold.getVedlegg(), DOKUMENTASJON, cos, y);
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -525,7 +525,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addBulletPoint(txt("uttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(uttak, antallBarn, rolle), cos, y);
         y = renderVedlegg(vedlegg, uttak.getVedlegg(), DOKUMENTASJON, cos, y);
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -536,7 +536,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addBulletPoint(txt("gradertuttak"), cos, y);
         y -= renderer.addLinesOfRegularText(INDENT, uttaksData(gradert, antallBarn, rolle), cos, y);
         y = renderVedlegg(vedlegg, gradert.getVedlegg(), DOKUMENTASJON, cos, y);
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -620,10 +620,10 @@ public class ForeldrepengeInfoRenderer {
     public float relasjonTilBarn(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg, FontAwareCos cos,
             float y)
             throws IOException {
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         y = omBarn(relasjon, cos, y);
         y = renderVedlegg(vedlegg, relasjon.getVedlegg(), "vedleggrelasjondok", cos, y);
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -872,7 +872,7 @@ public class ForeldrepengeInfoRenderer {
         return getClass().getSimpleName() + " [renderer=" + renderer + ", textFormatter=" + textFormatter + "]";
     }
 
-    public void addOutlineItem(FontAwarePDDocument doc, PDPage page, PdfOutlineItem title) {
+    public void addOutlineItem(FontAwarePdfDocument doc, PDPage page, PdfOutlineItem title) {
         renderer.addOutlineItem(doc, page, title);
     }
 }

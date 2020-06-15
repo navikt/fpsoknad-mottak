@@ -36,19 +36,19 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 @Component
 public class InfoskrivRenderer {
     public static final Logger LOG = LoggerFactory.getLogger(InfoskrivRenderer.class);
-    private final PDFElementRenderer renderer;
+    private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
 
     private static final String NAV_URL = "nav.no/inntektsmelding";
-    private static final float STARTY = PDFElementRenderer.calculateStartY();
+    private static final float STARTY = PdfElementRenderer.calculateStartY();
 
-    public InfoskrivRenderer(PDFElementRenderer renderer, SøknadTextFormatter textFormatter) {
+    public InfoskrivRenderer(PdfElementRenderer renderer, SøknadTextFormatter textFormatter) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
     }
 
     FontAwareCos renderInfoskriv(List<EnkeltArbeidsforhold> arbeidsforhold, Person søker, Søknad søknad,
-            FontAwareCos cosOriginal, FontAwarePDDocument doc) throws IOException {
+            FontAwareCos cosOriginal, FontAwarePdfDocument doc) throws IOException {
         if (søknad.getFørsteInntektsmeldingDag() == null) {
             LOG.warn("Ingen førsteInntektsmeldingDag i søknad, dropper infoskriv til bruker.");
             return cosOriginal;
@@ -173,7 +173,7 @@ public class InfoskrivRenderer {
         return y;
     }
 
-    private float header(FontAwarePDDocument doc, FontAwareCos cos, float y) throws IOException {
+    private float header(FontAwarePdfDocument doc, FontAwareCos cos, float y) throws IOException {
         return y -= renderer.addLogo(doc, cos, y);
     }
 
@@ -250,7 +250,7 @@ public class InfoskrivRenderer {
         return perioder;
     }
 
-    private FontAwareCos førstesideInfoskriv(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
+    private FontAwareCos førstesideInfoskriv(FontAwarePdfDocument doc, FontAwareCos cos, PDPage scratch,
             FontAwareCos scratchcos) throws IOException {
         cos.close();
         doc.addPage(scratch);
@@ -258,7 +258,7 @@ public class InfoskrivRenderer {
         return cos;
     }
 
-    private FontAwareCos førstesideInfoskriv(FontAwarePDDocument doc, FontAwareCos cos) throws IOException {
+    private FontAwareCos førstesideInfoskriv(FontAwarePdfDocument doc, FontAwareCos cos) throws IOException {
         cos.close();
         PDPage newPage = newPage();
         doc.addPage(newPage);

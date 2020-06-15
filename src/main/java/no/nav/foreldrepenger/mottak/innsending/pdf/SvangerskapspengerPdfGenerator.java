@@ -49,19 +49,19 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @Service
-public class SvangerskapspengerPDFGenerator implements PDFGenerator {
+public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private static final String SVP_VEDLEGG_TILRETTELEGGING = "svp.vedlegg.tilrettelegging";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private static final float STARTY = PDFElementRenderer.calculateStartY();
+    private static final float STARTY = PdfElementRenderer.calculateStartY();
     private static final int INDENT = 20;
-    private final PDFElementRenderer renderer;
+    private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
     private final Oppslag oppslag;
 
     @Inject
-    public SvangerskapspengerPDFGenerator(PDFElementRenderer renderer,
+    public SvangerskapspengerPdfGenerator(PdfElementRenderer renderer,
             SøknadTextFormatter textFormatter,
             Oppslag oppslag, SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
@@ -75,7 +75,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         var svp = (Svangerskapspenger) søknad.getYtelse();
         var arbeidsforhold = aktiveArbeidsforhold(oppslag.getArbeidsforhold(), svp.getTermindato(),
                 svp.getFødselsdato());
-        try (var doc = new FontAwarePDDocument(); var baos = new ByteArrayOutputStream()) {
+        try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();
             doc.addPage(page);
             var cos = new FontAwareCos(doc, page);
@@ -275,7 +275,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
                     cos,
                     y);
         }
-        y -= PDFElementRenderer.BLANK_LINE;
+        y -= PdfElementRenderer.BLANK_LINE;
         return y;
     }
 
@@ -401,7 +401,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return startY - y;
     }
 
-    private float header(Person søker, FontAwarePDDocument doc, FontAwareCos cos, float y)
+    private float header(Person søker, FontAwarePdfDocument doc, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addLogo(doc, cos, y);
@@ -425,7 +425,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
     }
 
     private static float blankLine() {
-        return PDFElementRenderer.BLANK_LINE;
+        return PdfElementRenderer.BLANK_LINE;
     }
 
     private static PDPage newPage() {
@@ -436,7 +436,7 @@ public class SvangerskapspengerPDFGenerator implements PDFGenerator {
         return STARTY - behov - headerSize;
     }
 
-    private static FontAwareCos nySide(FontAwarePDDocument doc, FontAwareCos cos, PDPage scratch,
+    private static FontAwareCos nySide(FontAwarePdfDocument doc, FontAwareCos cos, PDPage scratch,
             FontAwareCos scratchcos)
             throws IOException {
         cos.close();

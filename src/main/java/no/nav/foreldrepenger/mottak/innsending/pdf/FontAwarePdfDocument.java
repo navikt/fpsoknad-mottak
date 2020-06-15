@@ -21,10 +21,10 @@ import org.springframework.core.io.Resource;
 
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 
-public class FontAwarePDDocument extends PDDocument {
+public class FontAwarePdfDocument extends PDDocument {
     private static final String S_RGB_IEC61966_2_1 = "sRGB IEC61966-2.1";
 
-    private static final Logger LOG = LoggerFactory.getLogger(FontAwarePDDocument.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FontAwarePdfDocument.class);
 
     private static final Resource REGULAR = new ClassPathResource("/pdf/NotoSans-Regular.ttf");
     private static final Resource BOLD = new ClassPathResource("/pdf/NotoSans-Bold.ttf");
@@ -37,7 +37,7 @@ public class FontAwarePDDocument extends PDDocument {
 
     private PDOutlineItem pagesOutline;
 
-    FontAwarePDDocument() {
+    FontAwarePdfDocument() {
         regularFont = load(REGULAR);
         boldFont = load(BOLD);
         setPdfMetadata(this);

@@ -35,7 +35,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.pdf.PDFGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
@@ -48,11 +48,11 @@ public class KonvoluttGenerator {
     static final String METADATA = "metadata";
     private final MetdataGenerator metadataGenerator;
     private final DomainMapper domainMapper;
-    private final PDFGenerator pdfGenerator;
+    private final MappablePdfGenerator pdfGenerator;
 
     public KonvoluttGenerator(MetdataGenerator metadataGenerator,
             @Qualifier(DELEGERENDE) DomainMapper domainMapper,
-            @Qualifier(DELEGERENDE) PDFGenerator pdfGenerator) {
+            @Qualifier(DELEGERENDE) MappablePdfGenerator pdfGenerator) {
         this.metadataGenerator = metadataGenerator;
         this.domainMapper = domainMapper;
         this.pdfGenerator = pdfGenerator;

@@ -38,7 +38,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Component
-public class EngangsstønadPdfGenerator implements PDFGenerator {
+public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final SøknadTextFormatter textFormatter;
     private final PdfGenerator pdfGenerator;

@@ -29,9 +29,9 @@ import org.springframework.util.StreamUtils;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 
 @Component
-public class PDFElementRenderer {
+public class PdfElementRenderer {
     static final float BLANK_LINE = 20f;
-    public static final Logger LOG = LoggerFactory.getLogger(PDFElementRenderer.class);
+    public static final Logger LOG = LoggerFactory.getLogger(PdfElementRenderer.class);
     private static final byte[] NAV_LOGO = logo();
     private static final float MARGIN = 40f;
     private static final PDRectangle MEDIABOX = new PDPage(A4).getMediaBox();
@@ -237,7 +237,7 @@ public class PDFElementRenderer {
         }
     }
 
-    public void addOutlineItem(FontAwarePDDocument doc, PDPage page, PdfOutlineItem title) {
+    public void addOutlineItem(FontAwarePdfDocument doc, PDPage page, PdfOutlineItem title) {
         PDPageDestination dest = new PDPageFitWidthDestination();
         dest.setPage(page);
         PDOutlineItem bookmark = new PDOutlineItem();
