@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
@@ -38,7 +39,6 @@ public class WebClientConfiguration implements EnvironmentAware {
     public static final String STS = "STS";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
-    private static final String BEARER = "Bearer ";
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
@@ -112,6 +112,5 @@ public class WebClientConfiguration implements EnvironmentAware {
     @Override
     public void setEnvironment(Environment env) {
         this.env = env;
-
     }
 }

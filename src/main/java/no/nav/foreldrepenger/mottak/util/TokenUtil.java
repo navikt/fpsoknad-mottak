@@ -20,6 +20,9 @@ import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 
 @Component
 public class TokenUtil {
+
+    public static final String BEARER = "Bearer ";
+
     private final TokenValidationContextHolder ctxHolder;
 
     public TokenUtil(TokenValidationContextHolder ctxHolder) {
@@ -33,7 +36,7 @@ public class TokenUtil {
     }
 
     public String bearerToken() {
-        return "Bearer " + getToken();
+        return BEARER + getToken();
     }
 
     public String getToken() {
