@@ -1,8 +1,8 @@
-package no.nav.foreldrepenger.mottak.health;
+package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConnection;
+import no.nav.foreldrepenger.mottak.health.AbstractPingableHealthIndicator;
 
 @Component
 public class FPFordelHealthIndicator extends AbstractPingableHealthIndicator {

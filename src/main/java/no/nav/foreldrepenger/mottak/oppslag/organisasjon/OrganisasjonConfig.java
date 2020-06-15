@@ -12,11 +12,13 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "organisasjon")
 public class OrganisasjonConfig extends AbstractConfig {
 
+    private static final String PING = "/ping";
+    private static final String V1_ORGANISASJON = "/v1/organisasjon/";
     private final String organisasjonPath;
 
     @ConstructorBinding
-    public OrganisasjonConfig(String baseUri, @DefaultValue("/ping") String pingPath,
-            @DefaultValue("/v1/organisasjon/") String organisasjonPath, boolean log) {
+    public OrganisasjonConfig(String baseUri, @DefaultValue(PING) String pingPath,
+            @DefaultValue(V1_ORGANISASJON) String organisasjonPath, boolean log) {
         super(baseUri, pingPath, log);
         this.organisasjonPath = organisasjonPath;
     }

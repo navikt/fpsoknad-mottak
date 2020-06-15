@@ -1,8 +1,8 @@
-package no.nav.foreldrepenger.mottak.health;
+package no.nav.foreldrepenger.mottak.oppslag;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
+import no.nav.foreldrepenger.mottak.health.AbstractPingableHealthIndicator;
 
 @Component
 public class OppslagHealthIndicator extends AbstractPingableHealthIndicator {

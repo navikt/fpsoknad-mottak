@@ -5,7 +5,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 
-abstract class AbstractPingableHealthIndicator implements HealthIndicator {
+public abstract class AbstractPingableHealthIndicator implements HealthIndicator {
     private final PingEndpointAware pingable;
 
     public AbstractPingableHealthIndicator(PingEndpointAware pingable) {
