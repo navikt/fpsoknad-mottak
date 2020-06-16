@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
@@ -10,7 +8,6 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.svp;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
@@ -21,17 +18,10 @@ import java.io.FileOutputStream;
 
 import javax.inject.Inject;
 
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConnection;
-import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorTjeneste;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -40,19 +30,18 @@ import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
-import org.springframework.web.client.RestOperations;
 
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { MottakConfiguration.class,
-    SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
+        SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
         PdfElementRenderer.class,
-        DelegerendePDFGenerator.class,
+        DelegerendePdfGenerator.class,
         ForeldrepengerPdfGenerator.class,
-        //EngangsstønadPDFGenerator.class,
-    //PdfGeneratorConnection.class,
-    //PdfGeneratorTjeneste.class,
-    //DokumentGenerator.class,
+        // EngangsstønadPDFGenerator.class,
+        // PdfGeneratorConnection.class,
+        // PdfGeneratorTjeneste.class,
+        // DokumentGenerator.class,
         SvangerskapspengerPdfGenerator.class,
         InfoskrivRenderer.class,
         InfoskrivPdfEkstraktor.class,
@@ -70,14 +59,14 @@ public class MappablePdfGeneratorTest {
     @Inject
     InfoskrivPdfEkstraktor pdfExtracter;
 
-    //@Mock
-    //private RestOperations restOperations;
+    // @Mock
+    // private RestOperations restOperations;
 
-    //@Mock
-    //PdfGeneratorTjeneste pdfGeneratorTjeneste;
+    // @Mock
+    // PdfGeneratorTjeneste pdfGeneratorTjeneste;
 
-    //@Autowired
-    //DokumentGenerator dokumentGenerator;
+    // @Autowired
+    // DokumentGenerator dokumentGenerator;
 
     @Test
     public void signature() {

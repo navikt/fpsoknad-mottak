@@ -16,4 +16,9 @@ public class LocalSystemUserTokenService implements SystemTokenTjeneste {
         return new SystemToken(new JwtToken("hey"), 3600L, "jalla");
     }
 
+    @Override
+    public String ping() {
+        return "OK";
+    }
+
 }
