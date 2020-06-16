@@ -19,9 +19,9 @@ public abstract class AbstractPingableHealthIndicator implements HealthIndicator
     @Override
     public Health health() {
         try {
-            LOG.trace("Pinger {}", pingable);
+            LOG.trace("Pinger {} på {}", pingable.name(), pingable.pingEndpoint());
             var response = pingable.ping();
-            LOG.trace("Ping fikk {}", response);
+            LOG.trace("Ping fikk respons {}", response);
             return up();
         } catch (Exception e) {
             return down(e);
