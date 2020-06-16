@@ -18,7 +18,7 @@ public class OppslagConfig {
     private static final String ARBEID = "arbeidsforhold";
     private static final String ORGNAVN = ARBEID + "/navn";
     private static final URI DEFAULT_BASE_URI = URI.create("http://fpsoknad-oppslag/api");
-    private static final String DEFAULT_PING_PATH = "actuator/info";
+    private static final String DEFAULT_PING_PATH = "actuator/health/liveness";
     private String pingPath;
     private String aktørPath;
     private String aktørFnrPath;
