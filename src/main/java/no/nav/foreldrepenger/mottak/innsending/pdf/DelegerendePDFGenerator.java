@@ -19,17 +19,17 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
 @Qualifier(DELEGERENDE)
-public class JallaPDFGenerator implements MappablePdfGenerator {
+public class DelegerendePDFGenerator implements MappablePdfGenerator {
 
     private final List<MappablePdfGenerator> generatorer;
     private final MapperEgenskaper mapperEgenskaper;
 
-    public JallaPDFGenerator(MappablePdfGenerator... generatorer) {
+    public DelegerendePDFGenerator(MappablePdfGenerator... generatorer) {
         this(asList(generatorer));
     }
 
     @Inject
-    public JallaPDFGenerator(List<MappablePdfGenerator> generatorer) {
+    public DelegerendePDFGenerator(List<MappablePdfGenerator> generatorer) {
         this.generatorer = generatorer;
         this.mapperEgenskaper = egenskaperFor(generatorer);
     }
