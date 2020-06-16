@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class InnsynConfig {
     private static final URI DEFAULT_URI = URI.create("http://fpinfo");
     private static final String DEFAULT_BASE_PATH = "fpinfo/api/dokumentforsendelse/";
-    private static final String DEFAULT_PING_PATH = "fpinfo/internal/isReady";
+    private static final String DEFAULT_PING_PATH = "fpinfo/internal/health/isAlive";
     static final String AKTOR_ID = "aktorId";
     static final String SAKSNUMMER = "saksnummer";
     static final String ANNENPART = "aktorIdAnnenPart";
