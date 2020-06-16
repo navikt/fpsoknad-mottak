@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "sts")
 public class STSConfig extends AbstractConfig {
 
+    private static final String GRANT_TYPE = "grant_type";
     private static final String DEFAULT_PATH = "/rest/v1/sts/token";
     private static final String DEFAULT_SLACK = "20s";
     private static final String PING_PATH = "/.well-known/openid-configuration";
@@ -53,7 +54,7 @@ public class STSConfig extends AbstractConfig {
 
     URI getStsURI(UriBuilder b) {
         return b.path(stsPath)
-                .queryParam(CLIENT_CREDENTIALS.getValue(), "client_credentials")
+                .queryParam(GRANT_TYPE, CLIENT_CREDENTIALS.getValue())
                 .queryParam(SCOPE, "openid")
                 .build();
     }
