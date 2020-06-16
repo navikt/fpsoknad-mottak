@@ -68,7 +68,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ResponseHandler;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePdfGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPdfGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengeInfoRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.ForeldrepengerPdfGenerator;
@@ -154,7 +154,7 @@ public class FPFordelTest {
         InfoskrivRenderer infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
         ForeldrepengerPdfGenerator fp = new ForeldrepengerPdfGenerator(oppslag, jalla, infoskrivRenderer);
         EngangsstønadPdfGenerator es = new EngangsstønadPdfGenerator(jalla2, pdfGenerator);
-        DelegerendePdfGenerator pdfGenerator = new DelegerendePdfGenerator(fp, es);
+        DelegerendePDFenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
         InfoskrivPdfEkstraktor pdfSplitter = new InfoskrivPdfEkstraktor();
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
