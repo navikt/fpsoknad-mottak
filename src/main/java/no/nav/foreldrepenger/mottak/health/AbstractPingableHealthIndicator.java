@@ -21,7 +21,7 @@ public abstract class AbstractPingableHealthIndicator implements HealthIndicator
         try {
             LOG.trace("Pinger {} på {}", pingable.name(), pingable.pingEndpoint());
             var response = pingable.ping();
-            LOG.trace("Ping fikk respons {}", response);
+            LOG.trace("Ping {} fikk respons {}", pingable.name(), response);
             return up();
         } catch (Exception e) {
             return down(e);

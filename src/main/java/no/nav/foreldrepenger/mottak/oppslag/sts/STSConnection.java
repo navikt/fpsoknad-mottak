@@ -43,4 +43,9 @@ public class STSConnection extends AbstractWebClientConnection {
     public Duration getSlack() {
         return cfg.getSlack();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[cfg=" + cfg + "]";
+    }
 }
