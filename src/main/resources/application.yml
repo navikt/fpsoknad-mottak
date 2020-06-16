@@ -84,4 +84,4 @@ organisasjon:
 sts:
   base-uri:  https://security-token-service.nais.adeo.no
   username: ${kafka.username}
-  password: ${kafka.password}       
+  password: ${kafka.password} 

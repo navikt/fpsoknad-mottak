@@ -1,5 +1,9 @@
 spring:
    cloud:
+      discovery:
+        client:
+          health-indicator:
+            enabled: false     
       vault:
          enabled: true
          uri: https://vault.adeo.no
