@@ -14,12 +14,10 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 public abstract class AbstractWebClientConnection implements PingEndpointAware {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractWebClientConnection.class);
     private final WebClient webClient;
-    private final String name;
     private final AbstractConfig cfg;
 
-    public AbstractWebClientConnection(WebClient webClient, AbstractConfig cfg, String name) {
+    public AbstractWebClientConnection(WebClient webClient, AbstractConfig cfg) {
         this.webClient = webClient;
-        this.name = name;
         this.cfg = cfg;
     }
 
@@ -29,7 +27,7 @@ public abstract class AbstractWebClientConnection implements PingEndpointAware {
 
     @Override
     public String name() {
-        return name;
+        return pingEndpoint().getHost();
     }
 
     @Override

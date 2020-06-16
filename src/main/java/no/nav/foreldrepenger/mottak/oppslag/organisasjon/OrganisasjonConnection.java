@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,8 +22,8 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private final OrganisasjonConfig cfg;
 
     public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient webClient,
-            @Value("${spring.application.name:fpsoknad-mottak}") String name, OrganisasjonConfig cfg) {
-        super(webClient, cfg, name);
+            OrganisasjonConfig cfg) {
+        super(webClient, cfg);
         this.cfg = cfg;
     }
 

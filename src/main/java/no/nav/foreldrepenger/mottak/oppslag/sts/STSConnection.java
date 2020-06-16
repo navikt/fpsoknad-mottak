@@ -8,7 +8,6 @@ import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -20,9 +19,8 @@ public class STSConnection extends AbstractWebClientConnection {
     private static final Logger LOG = LoggerFactory.getLogger(STSConnection.class);
     private final STSConfig cfg;
 
-    public STSConnection(@Qualifier(STS) WebClient webClient,
-            @Value("${spring.application.name:fpsoknad-mottak}") String name, STSConfig cfg) {
-        super(webClient, cfg, name);
+    public STSConnection(@Qualifier(STS) WebClient webClient, STSConfig cfg) {
+        super(webClient, cfg);
         this.cfg = cfg;
     }
 
@@ -37,7 +35,6 @@ public class STSConnection extends AbstractWebClientConnection {
                 .block();
         LOG.trace("Refresh av system token OK ({})", token.getExpiration());
         return token;
-
     }
 
     public Duration getSlack() {
