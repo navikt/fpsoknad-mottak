@@ -29,6 +29,8 @@ management:
          exposure:
             include: info, health, metrics, prometheus, env
    health:
+      ping:
+        enabled: false
       diskspace:
          enabled: false
       jms:
