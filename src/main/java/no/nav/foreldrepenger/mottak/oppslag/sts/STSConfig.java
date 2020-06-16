@@ -18,7 +18,7 @@ public class STSConfig extends AbstractConfig {
     private static final String GRANT_TYPE = "grant_type";
     private static final String DEFAULT_PATH = "/rest/v1/sts/token";
     private static final String DEFAULT_SLACK = "20s";
-    private static final String PING_PATH = "/.well-known/openid-configuration";
+    private static final String PING_PATH = ".well-known/openid-configuration";
     private static final String SCOPE = "scope";
     private final String username;
     private final String password;
