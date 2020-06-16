@@ -24,7 +24,7 @@ public class DelegerendePDFGenerator implements MappablePdfGenerator {
     private final List<MappablePdfGenerator> generatorer;
     private final MapperEgenskaper mapperEgenskaper;
 
-    public DelegerendePdfGenerator(MappablePdfGenerator... generatorer) {
+    public DelegerendePDFGenerator(MappablePdfGenerator... generatorer) {
         this(asList(generatorer));
     }
 
