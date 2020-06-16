@@ -36,7 +36,7 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 @ContextConfiguration(classes = { MottakConfiguration.class,
         SøknadTextFormatter.class, ForeldrepengeInfoRenderer.class,
         PdfElementRenderer.class,
-        DelegerendePDFGenerator.class,
+        JallaPDFGenerator.class,
         ForeldrepengerPdfGenerator.class,
         // EngangsstønadPDFGenerator.class,
         // PdfGeneratorConnection.class,
