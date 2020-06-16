@@ -62,6 +62,7 @@ public class WebClientConfiguration implements EnvironmentAware {
             ExchangeFilterFunction... filters) {
         builder
                 .codecs(loggingCodec(cfg.isLog()))
+                .filter(loggingFilterFunction())
                 .baseUrl(cfg.getBaseUri());
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
@@ -96,10 +97,9 @@ public class WebClientConfiguration implements EnvironmentAware {
         };
     }
 
-    @Bean
     ExchangeFilterFunction loggingFilterFunction() {
         return (req, next) -> {
-            LOG.trace("Legger på call og consumer id");
+            LOG.trace("Legger på call og consumer id for {}", req.url());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumerId())
                     .header(NAV_CALL_ID1, callId())

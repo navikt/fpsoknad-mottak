@@ -103,7 +103,7 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public String name() {
-        return "FPFORDEL";
+        return "fpfordel";
     }
 
     private static String name(SøknadType type) {
