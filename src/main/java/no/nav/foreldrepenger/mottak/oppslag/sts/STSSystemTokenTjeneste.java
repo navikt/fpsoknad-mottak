@@ -13,7 +13,6 @@ public class STSSystemTokenTjeneste implements SystemTokenTjeneste {
 
     public STSSystemTokenTjeneste(STSConnection connection) {
         this.connection = connection;
-        systemToken = getSystemToken();
     }
 
     @Override
