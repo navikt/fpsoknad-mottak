@@ -97,6 +97,7 @@ public class WebClientConfiguration implements EnvironmentAware {
     @Bean
     ExchangeFilterFunction loggingFilterFunction() {
         return (req, next) -> {
+            LOG.trace("Legger på call og consumer id");
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumerId())
                     .header(NAV_CALL_ID1, callId())
