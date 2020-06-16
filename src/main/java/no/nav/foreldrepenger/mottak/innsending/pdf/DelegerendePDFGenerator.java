@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 @Component
 @Qualifier(DELEGERENDE)
-public class DelegerendePdfGenerator implements MappablePdfGenerator {
+public class DelegerendePDFGenerator implements MappablePdfGenerator {
 
     private final List<MappablePdfGenerator> generatorer;
     private final MapperEgenskaper mapperEgenskaper;
@@ -29,7 +29,7 @@ public class DelegerendePdfGenerator implements MappablePdfGenerator {
     }
 
     @Inject
-    public DelegerendePdfGenerator(List<MappablePdfGenerator> generatorer) {
+    public DelegerendePDFGenerator(List<MappablePdfGenerator> generatorer) {
         this.generatorer = generatorer;
         this.mapperEgenskaper = egenskaperFor(generatorer);
     }
