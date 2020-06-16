@@ -28,13 +28,16 @@ public class STSConnection extends AbstractWebClientConnection {
 
     SystemToken refresh() {
         LOG.trace("Refresh av system token");
-        return getWebClient()
+        SystemToken token = getWebClient()
                 .get()
                 .uri(cfg::getStsURI)
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(SystemToken.class)
                 .block();
+        LOG.trace("Refresh av system token OK ({})", token.getExpiration());
+        return token;
+
     }
 
     public Duration getSlack() {
