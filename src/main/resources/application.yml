@@ -82,6 +82,6 @@ arbeidsforhold:
 organisasjon:
     base-uri: https://modapp.adeo.no/ereg/api    
 sts:
-  base-uri:  https://security-token-service.nais.adeo.no/rest/v1/sts/token?grant_type=client_credentials&scope=openid
+  base-uri:  https://security-token-service.nais.adeo.no
   username: ${kafka.username}
   password: ${kafka.password}       

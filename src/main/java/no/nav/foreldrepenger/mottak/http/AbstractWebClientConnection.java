@@ -31,7 +31,9 @@ public abstract class AbstractWebClientConnection implements PingEndpointAware {
 
     @Override
     public String ping() {
-        return getWebClient().get()
+        return getWebClient()
+                .get()
+                .uri(pingEndpoint())
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .toEntity(String.class)

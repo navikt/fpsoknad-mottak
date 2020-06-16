@@ -25,6 +25,11 @@ public class STSSystemTokenTjeneste implements SystemTokenTjeneste {
     }
 
     @Override
+    public String ping() {
+        return connection.ping();
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[connection=" + connection + ", systemToken=" + systemToken + "]";
     }
