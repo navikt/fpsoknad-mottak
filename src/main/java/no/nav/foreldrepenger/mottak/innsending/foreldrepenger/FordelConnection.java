@@ -89,9 +89,7 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public String ping() {
-        URI pingEndpoint = pingEndpoint();
-        LOG.info("Pinger {}", pingEndpoint);
-        return ping(pingEndpoint);
+        return ping(pingEndpoint());
     }
 
     @Override

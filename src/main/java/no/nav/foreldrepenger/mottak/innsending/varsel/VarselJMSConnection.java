@@ -33,7 +33,6 @@ public class VarselJMSConnection implements VarselConnection {
 
     @Override
     public String ping() {
-        LOG.info("Pinger {} ({})", name(), varselConfig.getURI());
         try {
             template.getConnectionFactory().createConnection().close();
             return name() + " er i live på " + pingEndpoint();
