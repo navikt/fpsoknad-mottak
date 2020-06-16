@@ -5,6 +5,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.time.Duration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 @Component
 public class STSConnection extends AbstractWebClientConnection {
 
+    private static final Logger LOG = LoggerFactory.getLogger(STSConnection.class);
     private final STSConfig cfg;
 
     public STSConnection(@Qualifier(STS) WebClient webClient,
@@ -24,6 +27,7 @@ public class STSConnection extends AbstractWebClientConnection {
     }
 
     SystemToken refresh() {
+        LOG.trace("Refresh av system token");
         return getWebClient()
                 .get()
                 .uri(cfg::getStsURI)
