@@ -42,7 +42,13 @@ public class STSConnection extends AbstractWebClientConnection {
     }
 
     @Override
+    public String name() {
+        return "STS";
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[cfg=" + cfg + "]";
     }
+
 }

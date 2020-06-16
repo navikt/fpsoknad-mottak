@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "organisasjon")
 public class OrganisasjonConfig extends AbstractConfig {
 
-    private static final String PING = "/ping";
+    private static final String PING = "ping";
     private static final String V1_ORGANISASJON = "/v1/organisasjon/";
     private final String organisasjonPath;
 

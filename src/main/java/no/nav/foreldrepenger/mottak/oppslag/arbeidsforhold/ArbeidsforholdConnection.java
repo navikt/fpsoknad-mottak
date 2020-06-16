@@ -51,6 +51,11 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     }
 
     @Override
+    public String name() {
+        return "Arbeidsforhold";
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[cfg=" + cfg + ", webClient=" + getWebClient() + ", name=" + name() + "]";
     }

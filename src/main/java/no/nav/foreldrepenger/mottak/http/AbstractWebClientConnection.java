@@ -26,11 +26,6 @@ public abstract class AbstractWebClientConnection implements PingEndpointAware {
     }
 
     @Override
-    public String name() {
-        return pingEndpoint().getHost();
-    }
-
-    @Override
     public String ping() {
         return webClient
                 .get()

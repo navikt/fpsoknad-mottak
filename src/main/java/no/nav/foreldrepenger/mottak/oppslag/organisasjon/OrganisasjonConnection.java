@@ -42,4 +42,9 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
 
     }
 
+    @Override
+    public String name() {
+        return "Organisasjon";
+    }
+
 }
