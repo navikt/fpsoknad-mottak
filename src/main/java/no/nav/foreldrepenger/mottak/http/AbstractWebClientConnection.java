@@ -34,8 +34,7 @@ public abstract class AbstractWebClientConnection implements PingEndpointAware {
 
     @Override
     public String ping() {
-        LOG.trace("Pinger {}", pingEndpoint());
-        var respons = webClient
+        return webClient
                 .get()
                 .uri(pingEndpoint())
                 .accept(APPLICATION_JSON)
@@ -43,8 +42,6 @@ public abstract class AbstractWebClientConnection implements PingEndpointAware {
                 .toEntity(String.class)
                 .block()
                 .getBody();
-        LOG.trace("Pinget {}, fikk {}", pingEndpoint(), respons);
-        return respons;
     }
 
     @Override

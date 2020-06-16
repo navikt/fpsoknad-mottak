@@ -1,11 +1,15 @@
 package no.nav.foreldrepenger.mottak.health;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 
 public abstract class AbstractPingableHealthIndicator implements HealthIndicator {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPingableHealthIndicator.class);
+
     private final PingEndpointAware pingable;
 
     public AbstractPingableHealthIndicator(PingEndpointAware pingable) {
@@ -15,7 +19,9 @@ public abstract class AbstractPingableHealthIndicator implements HealthIndicator
     @Override
     public Health health() {
         try {
-            pingable.ping();
+            LOG.trace("Pinger {}", pingable);
+            var response = pingable.ping();
+            LOG.trace("Ping fikk {}", response);
             return up();
         } catch (Exception e) {
             return down(e);
