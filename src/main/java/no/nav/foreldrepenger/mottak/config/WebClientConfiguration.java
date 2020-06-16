@@ -82,7 +82,7 @@ public class WebClientConfiguration implements EnvironmentAware {
     }
 
     @Bean
-    ExchangeFilterFunction tokenAddingFilterFunction(STSSystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    ExchangeFilterFunction tokensAddingFilterFunction(STSSystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             LOG.trace("Bruker token utgår {}", tokenUtil.getExpiration());
             LOG.trace("System token utgår {}", sts.getSystemToken().getExpiration());

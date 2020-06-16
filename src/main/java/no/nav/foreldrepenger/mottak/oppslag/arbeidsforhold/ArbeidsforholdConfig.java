@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
@@ -63,7 +65,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
         return b.path(getArbeidsforholdPath())
                 .queryParam(HISTORIKK, isHistorikk())
                 .queryParam(SPORINGSINFORMASJON, isSporingsinformasjon())
-                // .queryParam(FOM, fom.format(ISO_LOCAL_DATE))
+                .queryParam(FOM, fom.format(ISO_LOCAL_DATE))
                 // .queryParam(TOM, tom.format(ISO_LOCAL_DATE))
                 .build();
     }
