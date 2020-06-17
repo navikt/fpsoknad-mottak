@@ -35,6 +35,7 @@ public abstract class AbstractPingableHealthIndicator implements HealthIndicator
     }
 
     private Health down(Exception e) {
+        LOG.warn("Kunne ikke pinge {} på {}", pingable.name(), pingable.pingEndpoint(), e);
         return Health.down()
                 .withDetail(pingable.name(), pingable.pingEndpoint())
                 .withException(e)
