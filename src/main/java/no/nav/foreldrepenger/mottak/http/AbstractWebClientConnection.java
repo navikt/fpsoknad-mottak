@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 import java.net.URI;
 
@@ -30,7 +31,7 @@ public abstract class AbstractWebClientConnection implements PingEndpointAware {
         return webClient
                 .get()
                 .uri(pingEndpoint())
-                .accept(APPLICATION_JSON)
+                .accept(APPLICATION_JSON, TEXT_PLAIN)
                 .retrieve()
                 .toEntity(String.class)
                 .block()
