@@ -18,7 +18,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
 
     private static final String DEFAULT_PING = "ping";
     private static final String TREÅR = "3y";
-    private static final String V1_ARBEIDSTAKER_ARBEIDSFORHOLD = "/v1/arbeidstaker/arbeidsforhold";
+    private static final String V1_ARBEIDSTAKER_ARBEIDSFORHOLD = "v1/arbeidstaker/arbeidsforhold";
     static final String FOM = "ansettelsesperiodeTom";
     static final String TOM = "ansettelsesperiodeFom";
     static final String SPORINGSINFORMASJON = "sporingsinformasjon";

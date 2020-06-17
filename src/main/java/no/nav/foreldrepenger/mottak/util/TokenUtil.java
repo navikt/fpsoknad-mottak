@@ -36,7 +36,10 @@ public class TokenUtil {
     }
 
     public String bearerToken() {
-        return BEARER + getToken();
+        if (erAutentisert()) {
+            return BEARER + getToken();
+        }
+        return null;
     }
 
     public String getToken() {
