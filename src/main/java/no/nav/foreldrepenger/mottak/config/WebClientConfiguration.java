@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
@@ -47,6 +48,8 @@ public class WebClientConfiguration implements EnvironmentAware {
     @Qualifier(STS)
     public WebClient webClientSTS(WebClient.Builder builder, STSConfig cfg) {
         return builder
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(c -> c.defaultCodecs().enableLoggingRequestDetails(true)).build())
                 .baseUrl(cfg.getBaseUri())
                 .filter(logRequestFilterFunction(cfg.isLog()))
                 .filter(correlatingFilterFunction())
@@ -59,6 +62,8 @@ public class WebClientConfiguration implements EnvironmentAware {
     public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig cfg,
             ExchangeFilterFunction... filters) {
         builder
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(c -> c.defaultCodecs().enableLoggingRequestDetails(true)).build())
                 .baseUrl(cfg.getBaseUri());
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
@@ -69,6 +74,9 @@ public class WebClientConfiguration implements EnvironmentAware {
     public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig cfg) {
         return builder
                 .baseUrl(cfg.getBaseUri())
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(c -> c.defaultCodecs().enableLoggingRequestDetails(true)).build())
+
                 .filter(logRequestFilterFunction(cfg.isLog()))
                 .filter(correlatingFilterFunction())
                 .build();

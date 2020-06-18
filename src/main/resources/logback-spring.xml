@@ -28,8 +28,8 @@
     </springProfile>
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
     <springProfile name="dev,local">
+        <logger name="org.springframework.web.reactive.function.client.ExchangeFunctions" level="trace"/> 
         <logger name="no.nav.foreldrepenger" level="trace" />
-        <logger name="org.springframework.web" level="trace" />
     </springProfile>
 </configuration>
 
