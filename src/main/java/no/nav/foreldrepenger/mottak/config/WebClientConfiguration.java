@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.config;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isDevOrLocal;
+import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID1;
+import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
@@ -103,7 +105,7 @@ public class WebClientConfiguration implements EnvironmentAware {
             LOG.trace("Legger på call og consumer id for {}", req.url());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumerId())
-                    .header(NAV_CALL_ID1, callId())
+                    .header(NAV_CALL_ID1, MDCUtil.callId())
                     .build());
         };
     }
