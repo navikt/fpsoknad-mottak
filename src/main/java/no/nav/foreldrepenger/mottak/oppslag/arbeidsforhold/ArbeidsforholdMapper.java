@@ -76,7 +76,7 @@ class ArbeidsforholdMapper {
             LOG.warn("RS og WS orgnavn ulike, RS: {}, WS: {}", navnWS, navnRest);
             return navnWS;
         }
-        LOG.trace("RS og WS orgnavn like");
+        LOG.trace("RS og WS orgnavn like ({})", navnRest);
         return navnRest;
     }
 
