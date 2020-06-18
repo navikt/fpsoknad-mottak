@@ -26,16 +26,17 @@ public class ArbeidsforholdConfig extends AbstractConfig {
 
     private final String arbeidsforholdPath;
     private boolean historikk;
-    private boolean sporingsinformasjon;
+    private final boolean sporingsinformasjon;
     private final Period tidTilbake;
 
     @ConstructorBinding
     public ArbeidsforholdConfig(String baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
             @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
-            @DefaultValue(TREÅR) Period tidTilbake, boolean log) {
+            @DefaultValue(TREÅR) Period tidTilbake, boolean sporingsinformasjon, boolean log) {
         super(baseUri, pingPath, log);
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.tidTilbake = tidTilbake;
+        this.sporingsinformasjon = sporingsinformasjon;
     }
 
     public String getArbeidsforholdPath() {
@@ -52,10 +53,6 @@ public class ArbeidsforholdConfig extends AbstractConfig {
 
     public boolean isSporingsinformasjon() {
         return sporingsinformasjon;
-    }
-
-    public void setSporingsinformasjon(boolean sporingsinformasjon) {
-        this.sporingsinformasjon = sporingsinformasjon;
     }
 
     public Period getTidTilbake() {
