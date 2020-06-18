@@ -1,11 +1,8 @@
 package no.nav.foreldrepenger.mottak.config;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isDevOrLocal;
-import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID1;
-import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
-import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -62,7 +59,6 @@ public class WebClientConfiguration implements EnvironmentAware {
             ExchangeFilterFunction... filters) {
         builder
                 .codecs(loggingCodec(cfg.isLog()))
-                .filter(loggingFilterFunction())
                 .baseUrl(cfg.getBaseUri());
         Arrays.stream(filters).forEach(builder::filter);
         return builder.build();
@@ -101,6 +97,7 @@ public class WebClientConfiguration implements EnvironmentAware {
         };
     }
 
+    @Bean
     ExchangeFilterFunction loggingFilterFunction() {
         return (req, next) -> {
             LOG.trace("Legger på call og consumer id for {}", req.url());
