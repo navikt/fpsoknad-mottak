@@ -67,7 +67,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
                 .queryParam(HISTORIKK, isHistorikk())
                 .queryParam(SPORINGSINFORMASJON, isSporingsinformasjon())
                 .queryParam(FOM, fom.format(ISO_LOCAL_DATE))
-                .queryParam(TOM, tom.format(ISO_LOCAL_DATE))
+                // .queryParam(TOM, tom.format(ISO_LOCAL_DATE))
                 .build();
     }
 
