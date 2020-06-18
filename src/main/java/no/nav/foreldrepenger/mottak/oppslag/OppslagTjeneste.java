@@ -14,8 +14,8 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
@@ -70,10 +70,10 @@ public class OppslagTjeneste implements Oppslag {
         var rs = arbeidsforholdREST();
         var ws = connection.hentArbeidsforhold();
         if (rs.containsAll(ws) && ws.containsAll(rs)) {
-            LOG.info("RS og WS arbeidsforhold like");
+            LOG.info("RS og WS arbeidsforhold like ({} arbeidsforhold)", ws.size());
             return rs;
         } else {
-            LOG.warn("Ulike arbeidsforhold : REST {}, WS {}", rs, ws);
+            LOG.warn("RS og WS arbeidsforhold ulike : REST {}, WS {}", rs, ws);
             return ws;
         }
     }

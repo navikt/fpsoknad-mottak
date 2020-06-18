@@ -73,9 +73,10 @@ class ArbeidsforholdMapper {
         String navnRest = navnRest(orgnr);
         String navnWS = oppslag.organisasjonsNavn(orgnr);
         if (navnRest.equals(orgnr) || !navnRest.equalsIgnoreCase(navnWS)) {
-            LOG.warn("REST oppslag feilet, bruker WS");
+            LOG.warn("RS og WS orgnavn ulike, RS: {}, WS: {}", navnWS, navnRest);
             return navnWS;
         }
+        LOG.trace("RS og WS orgnavn like");
         return navnRest;
     }
 
