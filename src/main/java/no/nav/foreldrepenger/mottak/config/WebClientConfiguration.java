@@ -25,7 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
-import no.nav.foreldrepenger.mottak.oppslag.sts.STSSystemTokenTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -71,7 +71,7 @@ public class WebClientConfiguration implements EnvironmentAware {
     }
 
     @Bean
-    ExchangeFilterFunction authenticatingFilterFunction(STSSystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             LOG.trace("System token utgår {}", sts.getSystemToken().getExpiration());
             var builder = ClientRequest.from(req)
