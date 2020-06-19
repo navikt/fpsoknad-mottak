@@ -13,29 +13,13 @@ jobs:
   kompiler:
     runs-on: ubuntu-latest
     steps:
-      - name: Lukk gamle bygg-issues
-        uses: actions/github-script@0.8.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: ['bygg']
-            }).then(response => {
-              response.data.forEach(issue => {
-                github.issues.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  state: 'closed'
-                });
-              });
-            });
+      
             
       - name: Sjekk ut kode
         uses: actions/checkout@v2
+        
+      - name: Lint Code Base
+        uses: github/super-linter@v2.0.0    
      
       - name: Hent tag    
         run: echo "::set-env name=TAG::$(git log -1 --pretty='%ad' --date=format:'%Y%m%d%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)"  
@@ -63,6 +47,28 @@ jobs:
           echo  ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
           docker push ${IMAGE_BASE}   
 
+      - name: Lukk gamle bygg-issues
+        if: success()
+        uses: actions/github-script@0.8.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['bygg']
+            }).then(response => {
+              response.data.forEach(issue => {
+                github.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+              });
+            });
+            
       - name: Opprett deployment issue
         if: success()
         uses: maxkomarychev/oction-create-issue@v0.7.1
@@ -73,6 +79,7 @@ jobs:
           title: Deploy av ${{ env.TAG }}
           body: |
             Kommenter med <b>/promote cluster</b>, hvor <b>cluster</b> er <i>dev-fss</i> eller <i>prod-fss</i>
+            
       - name: Trigg deploy til dev-fss
         if: success()
         uses: actions/github-script@0.8.0
