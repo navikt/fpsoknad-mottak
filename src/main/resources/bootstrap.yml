@@ -5,6 +5,8 @@ spring:
           health-indicator:
             enabled: false     
       vault:
+         reactive:
+            enabled: false
          enabled: true
          uri: https://vault.adeo.no
          authentication: KUBERNETES
