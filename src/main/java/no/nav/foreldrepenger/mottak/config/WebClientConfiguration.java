@@ -14,10 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +28,7 @@ import no.nav.foreldrepenger.mottak.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Configuration
-public class WebClientConfiguration implements EnvironmentAware {
+public class WebClientConfiguration {
 
     public static final String STS = "STS";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
@@ -38,7 +36,6 @@ public class WebClientConfiguration implements EnvironmentAware {
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
-    private Environment env;
 
     private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
 
@@ -105,8 +102,4 @@ public class WebClientConfiguration implements EnvironmentAware {
                 .orElse(consumer);
     }
 
-    @Override
-    public void setEnvironment(Environment env) {
-        this.env = env;
-    }
 }
