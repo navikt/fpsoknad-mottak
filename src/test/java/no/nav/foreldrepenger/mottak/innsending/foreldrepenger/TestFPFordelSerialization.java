@@ -64,7 +64,7 @@ import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
-import no.nav.foreldrepenger.mottak.oppslag.sts.STSSystemTokenTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @ExtendWith(MockitoExtension.class)
@@ -79,7 +79,7 @@ public class TestFPFordelSerialization {
     private static final Inspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
     @MockBean
-    STSSystemTokenTjeneste userService;
+    SystemTokenTjeneste userService;
 
     @MockBean
     private Oppslag oppslag;
