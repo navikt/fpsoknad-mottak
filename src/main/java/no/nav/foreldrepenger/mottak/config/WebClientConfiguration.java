@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConfig;
@@ -41,7 +42,7 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(STS)
-    public WebClient webClientSTS(WebClient.Builder builder, STSConfig cfg) {
+    public WebClient webClientSTS(Builder builder, STSConfig cfg) {
         return builder
                 .baseUrl(cfg.getBaseUri())
                 .filter(correlatingFilterFunction())
@@ -51,7 +52,7 @@ public class WebClientConfiguration {
 
     @Qualifier(ARBEIDSFORHOLD)
     @Bean
-    public WebClient arbeidsforholdClient(WebClient.Builder builder, ArbeidsforholdConfig cfg,
+    public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg,
             ExchangeFilterFunction... filters) {
         return builder
                 .filters((f) -> asList(filters))
@@ -60,7 +61,7 @@ public class WebClientConfiguration {
 
     @Qualifier(ORGANISASJON)
     @Bean
-    public WebClient organisasjonClient(WebClient.Builder builder, OrganisasjonConfig cfg) {
+    public WebClient organisasjonClient(Builder builder, OrganisasjonConfig cfg) {
         return builder
                 .baseUrl(cfg.getBaseUri())
                 .filter(correlatingFilterFunction())
