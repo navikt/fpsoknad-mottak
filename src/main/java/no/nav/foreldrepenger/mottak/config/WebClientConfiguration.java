@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.Constants.NAV_CONSUMER_TOKEN;
