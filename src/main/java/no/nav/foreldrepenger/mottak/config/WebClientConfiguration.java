@@ -56,9 +56,9 @@ public class WebClientConfiguration {
     public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg,
             ExchangeFilterFunction... filters) {
         LOG.info("Registrerer {} filtre ({})", filters.length, Arrays.toString(filters));
-        return builder
-                .filters((f) -> asList(filters))
-                .baseUrl(cfg.getBaseUri()).build();
+        var b = builder.baseUrl(cfg.getBaseUri());
+        Arrays.stream(filters).forEach(f -> b.filter(f));
+        return b.build();
     }
 
     @Qualifier(ORGANISASJON)
