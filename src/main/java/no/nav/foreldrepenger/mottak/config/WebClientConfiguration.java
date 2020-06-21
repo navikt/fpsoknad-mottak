@@ -72,7 +72,7 @@ public class WebClientConfiguration {
     @Bean
     public ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
-            LOG.trace("Legger på verdier i {} {} {}  for {}", NAV_CONSUMER_TOKEN, AUTHORIZATION, NAV_PERSON_IDENT,
+            LOG.trace("Legger på headerverdier i {} {} {}  for {}", NAV_CONSUMER_TOKEN, AUTHORIZATION, NAV_PERSON_IDENT,
                     req.url());
             LOG.trace("System token utgår {}", sts.getSystemToken().getExpiration());
             var builder = ClientRequest.from(req)
