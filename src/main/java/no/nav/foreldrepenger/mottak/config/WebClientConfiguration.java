@@ -8,6 +8,7 @@ import static no.nav.foreldrepenger.mottak.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -54,6 +55,7 @@ public class WebClientConfiguration {
     @Bean
     public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg,
             ExchangeFilterFunction... filters) {
+        LOG.info("Registrerer {} filtre ({})", filters.length, Arrays.toString(filters));
         return builder
                 .filters((f) -> asList(filters))
                 .baseUrl(cfg.getBaseUri()).build();
@@ -69,7 +71,7 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    public ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             LOG.trace("System token utgår {}", sts.getSystemToken().getExpiration());
             var builder = ClientRequest.from(req)
@@ -88,7 +90,7 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    ExchangeFilterFunction correlatingFilterFunction() {
+    public ExchangeFilterFunction correlatingFilterFunction() {
         return (req, next) -> {
             LOG.trace("Legger på call og consumer id for {}", req.url());
             return next.exchange(ClientRequest.from(req)
