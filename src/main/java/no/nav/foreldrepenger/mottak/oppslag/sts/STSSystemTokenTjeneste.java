@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
@@ -18,7 +16,6 @@ public class STSSystemTokenTjeneste implements SystemTokenTjeneste {
 
     @Override
     public SystemToken getSystemToken() {
-        Optional.ofNullable(systemToken)
         if (systemToken == null || systemToken.isExpired(connection.getSlack())) {
             systemToken = connection.refresh();
         }
