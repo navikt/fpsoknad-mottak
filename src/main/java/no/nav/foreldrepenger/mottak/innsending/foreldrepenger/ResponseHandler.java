@@ -10,7 +10,6 @@ import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;
-import java.time.Duration;
 import java.util.Optional;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -30,16 +29,13 @@ public class ResponseHandler extends AbstractRestConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(ResponseHandler.class);
     private final int fpfordelMax;
-    private final Duration maxDuration;
     private final SakStatusPoller poller;
 
     public ResponseHandler(RestOperations restOperations,
             @Value("${fpfordel.max:10}") int maxAntallForsøk,
-            @Value("${fpfordel.maxMillis:10s}") Duration maxDuration,
             SakStatusPoller poller) {
         super(restOperations);
         this.fpfordelMax = maxAntallForsøk;
-        this.maxDuration = maxDuration;
         this.poller = poller;
     }
 
@@ -61,13 +57,9 @@ public class ResponseHandler extends AbstractRestConnection {
                             .cast(leveranseRespons.getBody());
                     URI pollURI = locationFra(leveranseRespons);
                     for (int i = 1; i <= fpfordelMax; i++) {
-                        LOG.info("Poller {} for {}. gang av {}, medgått tid er {}ms av maks {}ms", pollURI, i,
+                        LOG.info("Poller {} for {}. gang av {}, medgått tid er {}ms", pollURI, i,
                                 fpfordelMax,
-                                timer.getTime(), maxDuration.toMillis());
-                        if (timer.getTime() > maxDuration.toMillis()) {
-                            LOG.info("Vi burde antagelig gi oss nå, brukt {}ms mer enn øvre grense",
-                                    timer.getTime() + maxDuration.toMillis());
-                        }
+                                timer.getTime());
                         var fpInfoRespons = pollFPFordel(pollURI, pending.getPollInterval().toMillis());
                         fpFordelKvittering = FordelKvittering.class.cast(fpInfoRespons.getBody());
                         LOG.info("Behandler poll respons {} etter {}ms", fpInfoRespons.getBody(), timer.getTime());

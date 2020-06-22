@@ -159,7 +159,7 @@ public class FPFordelTest {
                 domainMapper, pdfGenerator);
         return new FordelSøknadSender(
                 new FordelConnection(restOperations, cfg,
-                        new ResponseHandler(restOperations, 3, Duration.ofSeconds(10), poller)),
+                        new ResponseHandler(restOperations, 3, poller)),
                 konvoluttGenerator, pdfSplitter, new LoggingHendelseProdusent(), tokenHelper);
     }
 
