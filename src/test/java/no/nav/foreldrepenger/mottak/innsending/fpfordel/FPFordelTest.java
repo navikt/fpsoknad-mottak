@@ -45,8 +45,6 @@ import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
@@ -112,7 +110,6 @@ public class FPFordelTest {
     @Autowired
     private PdfGenerator pdfGenerator;
 
-    private MeterRegistry registry = new SimpleMeterRegistry();
     @Mock
     private Oppslag oppslag;
     @Mock
@@ -158,13 +155,11 @@ public class FPFordelTest {
         InfoskrivPdfEkstraktor pdfSplitter = new InfoskrivPdfEkstraktor();
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
-        KonvoluttGenerator konvoluttGenerator = new KonvoluttGenerator(
-                new MetdataGenerator(new ObjectMapper()),
-                domainMapper,
-                pdfGenerator);
+        KonvoluttGenerator konvoluttGenerator = new KonvoluttGenerator(new MetdataGenerator(new ObjectMapper()),
+                domainMapper, pdfGenerator);
         return new FordelSøknadSender(
                 new FordelConnection(restOperations, cfg,
-                        new ResponseHandler(restOperations, 3, 10000, poller), registry),
+                        new ResponseHandler(restOperations, 3, Duration.ofSeconds(10), poller)),
                 konvoluttGenerator, pdfSplitter, new LoggingHendelseProdusent(), tokenHelper);
     }
 
