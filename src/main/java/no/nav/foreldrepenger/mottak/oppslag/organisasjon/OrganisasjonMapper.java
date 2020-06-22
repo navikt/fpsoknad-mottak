@@ -26,13 +26,12 @@ public class OrganisasjonMapper {
             String navn3 = get(get(map, NAVN, Map.class), NAVNELINJE3);
             String navn4 = get(get(map, NAVN, Map.class), NAVNELINJE4);
             String navn5 = get(get(map, NAVN, Map.class), NAVNELINJE5);
-            LOG.info("Fikk navn {} {} {} {} {}", navn1, navn2, navn3, navn4, navn5);
+            String normalisertNavn = get(get(map, NAVN, Map.class), REDIGERTNAVN);
+            LOG.info("Fikk navn {} {} {} {} {} ({})", navn1, navn2, navn3, navn4, navn5, normalisertNavn);
+            return normalisertNavn;
         } catch (Exception e) {
             LOG.warn("OOPS ", e);
+            return "UKJENT";
         }
-
-        return get(get(map, NAVN, Map.class), REDIGERTNAVN);
-
     }
-
 }
