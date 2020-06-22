@@ -21,12 +21,13 @@ public class OrganisasjonMapper {
 
     public static String map(Map<?, ?> map) {
         try {
-            String navn1 = get(get(map, NAVN, Map.class), NAVNELINJE1);
-            String navn2 = get(get(map, NAVN, Map.class), NAVNELINJE2);
-            String navn3 = get(get(map, NAVN, Map.class), NAVNELINJE3);
-            String navn4 = get(get(map, NAVN, Map.class), NAVNELINJE4);
-            String navn5 = get(get(map, NAVN, Map.class), NAVNELINJE5);
-            String normalisertNavn = get(get(map, NAVN, Map.class), REDIGERTNAVN);
+            var navn = get(map, NAVN, Map.class);
+            String navn1 = get(navn, NAVNELINJE1);
+            String navn2 = get(navn, NAVNELINJE2);
+            String navn3 = get(navn, NAVNELINJE3);
+            String navn4 = get(navn, NAVNELINJE4);
+            String navn5 = get(navn, NAVNELINJE5);
+            String normalisertNavn = get(navn, REDIGERTNAVN);
             LOG.info("Fikk navn 1={} 2={} 3={} 4={} 5={} ({})", navn1, navn2, navn3, navn4, navn5, normalisertNavn);
             return navn1;
         } catch (Exception e) {
