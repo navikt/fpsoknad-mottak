@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
         BadGateway.class }, exclude = {
                 HttpClientErrorException.NotFound.class,
                 WebClientResponseException.NotFound.class,
+                WebClientResponseException.Forbidden.class,
                 InternalServerError.class,
                 Forbidden.class }, maxAttemptsExpression = "#{${rest.retry.attempts:3}}", backoff = @Backoff(delayExpression = "#{${rest.retry.delay:1000}}"))
 
