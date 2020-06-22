@@ -2,16 +2,15 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.ikkeSendt;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
@@ -22,39 +21,41 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
 
     private static final Logger LOG = LoggerFactory.getLogger(FordelConnection.class);
 
-    private final FordelConfig config;
-    private final ResponseHandler responseHandler;
+    private final FordelConfig cfg;
+    private final ResponseHandler handler;
 
     public FordelConnection(RestOperations restOperations, FordelConfig config,
             ResponseHandler responseHandler) {
         super(restOperations);
-        this.config = config;
-        this.responseHandler = responseHandler;
+        this.cfg = config;
+        this.handler = responseHandler;
     }
 
-    public Kvittering send(Konvolutt konvolutt, BrukerRolle rolle) {
+    public Kvittering send(Konvolutt konvolutt) {
         if (isEnabled()) {
-            return doSend(konvolutt, rolle);
+            return doSend(konvolutt);
         }
         LOG.info("Sending av {} er deaktivert, ingenting å sende", konvolutt.getType());
         return ikkeSendt(konvolutt.PDFHovedDokument());
     }
 
-    private Kvittering doSend(Konvolutt konvolutt, BrukerRolle rolle) {
+    private Kvittering doSend(Konvolutt konvolutt) {
         try {
-            LOG.info("Sender {} til {}", name(konvolutt.getType()), name().toLowerCase());
-            var kvittering = responseHandler
-                    .handle(postForEntity(uri(config.getUri(), config.getBasePath()), konvolutt.getPayload(),
-                            FordelKvittering.class));
+            LOG.info("Sender {} til {}", name(konvolutt.getType()), name());
+            var kvittering = handler.handle(post(konvolutt));
             kvittering.setPdf(konvolutt.PDFHovedDokument());
-            LOG.info("Sendte {} til {}, fikk kvittering {}", name(konvolutt.getType()), name().toLowerCase(),
-                    kvittering);
-            konvolutt.getType().count();
+            LOG.info("Sendte {} til {}, fikk kvittering {}", name(konvolutt.getType()), name(), kvittering);
             return kvittering;
         } catch (Exception e) {
             FP_SENDFEIL.increment();
             throw e;
         }
+    }
+
+    private ResponseEntity<FordelKvittering> post(Konvolutt konvolutt) {
+        var respons = postForEntity(fordelEndpoint(), konvolutt.getPayload(), FordelKvittering.class);
+        konvolutt.getType().count();
+        return respons;
     }
 
     @Override
@@ -64,11 +65,11 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public URI pingEndpoint() {
-        return uri(config.getUri(), config.getPingPath());
+        return cfg.pingEndpoint();
     }
 
     public boolean isEnabled() {
-        return config.isEnabled();
+        return cfg.isEnabled();
     }
 
     @Override
@@ -80,8 +81,12 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
         return type.name().toLowerCase();
     }
 
+    private URI fordelEndpoint() {
+        return cfg.fordelEndpoint();
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [config=" + config + ", responseHandler=" + responseHandler + "]";
+        return getClass().getSimpleName() + " [config=" + cfg + ", responseHandler=" + handler + "]";
     }
 }

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
@@ -36,12 +35,12 @@ public class FordelSøknadSender implements SøknadSender {
 
     @Override
     public Kvittering søk(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        return send(konvolutt(søknad, søker, egenskap), søknad.getSøknadsRolle());
+        return send(konvolutt(søknad, søker, egenskap));
     }
 
     @Override
     public Kvittering endreSøknad(Endringssøknad endring, Person søker, SøknadEgenskap egenskap) {
-        return send(konvolutt(endring, søker, egenskap), endring.getSøknadsRolle());
+        return send(konvolutt(endring, søker, egenskap));
     }
 
     @Override
@@ -54,16 +53,12 @@ public class FordelSøknadSender implements SøknadSender {
         return connection.ping();
     }
 
+    private Kvittering send(Konvolutt konvolutt) {
+        return send(konvolutt, null);
+    }
+
     private Kvittering send(Konvolutt konvolutt, String dialogId) {
-        return send(konvolutt, null, dialogId);
-    }
-
-    private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle) {
-        return send(konvolutt, rolle, null);
-    }
-
-    private Kvittering send(Konvolutt konvolutt, BrukerRolle rolle, String dialogId) {
-        var kvittering = connection.send(konvolutt, rolle);
+        var kvittering = connection.send(konvolutt);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
             kvittering.setFørsteDag(søknad.getFørsteUttaksdag());

@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+
 import java.net.URI;
 import java.util.Optional;
 
@@ -51,6 +53,14 @@ public class FordelConfig {
 
     public void setPingPath(String pingPath) {
         this.pingPath = pingPath;
+    }
+
+    public URI fordelEndpoint() {
+        return uri(getUri(), getBasePath());
+    }
+
+    public URI pingEndpoint() {
+        return uri(getUri(), getPingPath());
     }
 
     @Override
