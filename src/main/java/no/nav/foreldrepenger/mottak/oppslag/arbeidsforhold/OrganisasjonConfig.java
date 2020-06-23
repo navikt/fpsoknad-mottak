@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.oppslag.organisasjon;
+package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 

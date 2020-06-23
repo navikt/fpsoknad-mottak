@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
-import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConnection;
 import no.nav.foreldrepenger.mottak.util.MapUtil;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
@@ -53,11 +51,9 @@ class ArbeidsforholdMapper {
 
     private static final String ANSETTELSESPERIODE = "ansettelsesperiode";
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
-    private final OppslagConnection oppslag;
     private final OrganisasjonConnection organisasjon;
 
-    public ArbeidsforholdMapper(OppslagConnection oppslag, OrganisasjonConnection organisasjon) {
-        this.oppslag = oppslag;
+    public ArbeidsforholdMapper(OrganisasjonConnection organisasjon) {
         this.organisasjon = organisasjon;
     }
 
@@ -70,17 +66,6 @@ class ArbeidsforholdMapper {
     }
 
     private String navn(String orgnr) {
-        String navnRest = navnRest(orgnr);
-        String navnWS = oppslag.organisasjonsNavn(orgnr);
-        if (!navnRest.equalsIgnoreCase(navnWS)) {
-            LOG.warn("{} RS og WS orgnavn ulike, (rs={},ws={})", orgnr, navnRest, navnWS);
-            return navnWS;
-        }
-        LOG.info("{} RS og WS orgnavn like, (rs={},ws={})", orgnr, navnRest, navnWS);
-        return navnRest;
-    }
-
-    private String navnRest(String orgnr) {
         try {
             return organisasjon.organisasjonsNavn(orgnr);
         } catch (Exception e) {

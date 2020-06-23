@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.oppslag.organisasjon;
+package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

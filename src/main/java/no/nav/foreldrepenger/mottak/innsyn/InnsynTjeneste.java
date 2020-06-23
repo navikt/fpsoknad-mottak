@@ -39,7 +39,7 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.organisasjon.OrganisasjonConnection;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
