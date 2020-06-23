@@ -4,8 +4,6 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,7 +18,6 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Service
 @Profile({ DEV, LOCAL })
@@ -53,11 +50,6 @@ public class OppslagServiceStub implements Oppslag {
                 .orElse(null);
     }
 
-    @Override
-    public List<EnkeltArbeidsforhold> getArbeidsforhold() {
-        return Collections.emptyList();
-    }
-
     private static Person person() {
         return new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", Kjønn.K,
                 LocalDate.now().minusYears(25), "NN",
@@ -68,11 +60,6 @@ public class OppslagServiceStub implements Oppslag {
     @Override
     public String ping() {
         return "42";
-    }
-
-    @Override
-    public String organisasjonsNavn(String orgnr) {
-        return "NAV";
     }
 
     @Override

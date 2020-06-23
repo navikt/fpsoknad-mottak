@@ -26,6 +26,7 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
@@ -33,12 +34,16 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPdfGenerator.class);
     private static final float STARTY = PdfElementRenderer.calculateStartY();
     private final Oppslag oppslag;
+    private final ArbeidsforholdTjenste arbeidsforhold;
+
     private final ForeldrepengeInfoRenderer fpRenderer;
     private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPdfGenerator(Oppslag oppslag, ForeldrepengeInfoRenderer fpRenderer,
+    public ForeldrepengerPdfGenerator(Oppslag oppslag, ArbeidsforholdTjenste arbeidsforhold,
+            ForeldrepengeInfoRenderer fpRenderer,
             InfoskrivRenderer infoskrivRenderer) {
         this.oppslag = oppslag;
+        this.arbeidsforhold = arbeidsforhold;
         this.fpRenderer = fpRenderer;
         this.infoskrivRenderer = infoskrivRenderer;
     }
@@ -118,7 +123,8 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             Opptjening opptjening = stønad.getOpptjening();
-            List<EnkeltArbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(stønad.getRelasjonTilBarn().relasjonsDato());
+            List<EnkeltArbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(
+                    stønad.getRelasjonTilBarn().relasjonsDato());
             if (opptjening != null) {
                 var scratch = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch);
@@ -248,7 +254,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
-        return safeStream(oppslag.getArbeidsforhold())
+        return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
                 .collect(Collectors.toList());
     }

@@ -1,21 +1,16 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
@@ -23,13 +18,11 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class OppslagTjeneste implements Oppslag {
     private final OppslagConnection connection;
     private final TokenUtil tokenHelper;
-    private final ArbeidsforholdTjenste arbeidsforhold;
     private static final Logger LOG = LoggerFactory.getLogger(OppslagTjeneste.class);
 
-    public OppslagTjeneste(OppslagConnection connection, TokenUtil tokenHelper, ArbeidsforholdTjenste arbeidsforhold) {
+    public OppslagTjeneste(OppslagConnection connection, TokenUtil tokenHelper) {
         this.connection = connection;
         this.tokenHelper = tokenHelper;
-        this.arbeidsforhold = arbeidsforhold;
     }
 
     @Override
@@ -63,34 +56,6 @@ public class OppslagTjeneste implements Oppslag {
     @Override
     public Fødselsnummer getFnr(AktørId aktørId) {
         return connection.hentFnr(aktørId);
-    }
-
-    @Override
-    public List<EnkeltArbeidsforhold> getArbeidsforhold() {
-        var rs = arbeidsforholdREST();
-        var ws = connection.hentArbeidsforhold();
-        if (rs.containsAll(ws) && ws.containsAll(rs)) {
-            LOG.info("RS og WS arbeidsforhold like ({} arbeidsforhold)", ws.size());
-            return rs;
-        } else {
-            LOG.warn("RS og WS arbeidsforhold ulike : REST {}, WS {}", rs, ws);
-            return ws;
-        }
-    }
-
-    private List<EnkeltArbeidsforhold> arbeidsforholdREST() {
-        try {
-            return arbeidsforhold.hentAktiveArbeidsforhold();
-        } catch (Exception e) {
-            LOG.warn("OOPS", e);
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
-    @Cacheable(cacheNames = "organisasjon")
-    public String organisasjonsNavn(String orgnr) {
-        return connection.organisasjonsNavn(orgnr);
     }
 
     @Override

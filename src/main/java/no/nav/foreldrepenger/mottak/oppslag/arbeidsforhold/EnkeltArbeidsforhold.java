@@ -17,6 +17,10 @@ public class EnkeltArbeidsforhold {
     private ProsentAndel stillingsprosent;
     private String arbeidsgiverNavn;
 
+    public void setArbeidsgiverNavn(String arbeidsgiverNavn) {
+        this.arbeidsgiverNavn = arbeidsgiverNavn;
+    }
+
     @JsonCreator
     public EnkeltArbeidsforhold(@JsonProperty("arbeidsgiverId") String arbeidsgiverId,
             @JsonProperty("arbeidsgiverIdType") String arbeidsgiverIdType,
