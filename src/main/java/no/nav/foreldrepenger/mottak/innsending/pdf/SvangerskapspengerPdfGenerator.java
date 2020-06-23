@@ -47,6 +47,7 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 
 @Service
 public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
@@ -59,22 +60,23 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
     private final Oppslag oppslag;
+    private final ArbeidsforholdTjenste arbeidsforhold;
 
     @Inject
     public SvangerskapspengerPdfGenerator(PdfElementRenderer renderer,
             SøknadTextFormatter textFormatter,
-            Oppslag oppslag, SvangerskapspengerInfoRenderer infoRenderer) {
+            Oppslag oppslag, ArbeidsforholdTjenste arbeidsforhold, SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
         this.oppslag = oppslag;
+        this.arbeidsforhold = arbeidsforhold;
         this.infoRenderer = infoRenderer;
     }
 
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
         var svp = (Svangerskapspenger) søknad.getYtelse();
-        var arbeidsforhold = aktiveArbeidsforhold(oppslag.getArbeidsforhold(), svp.getTermindato(),
-                svp.getFødselsdato());
+        var arbeidsforhold = aktiveArbeidsforhold(svp.getTermindato(), svp.getFødselsdato());
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();
             doc.addPage(page);
@@ -201,11 +203,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> aktiveArbeidsforhold(
-            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> arbeidsforhold,
             LocalDate termindato,
             LocalDate fødselsdato) {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
-        return safeStream(oppslag.getArbeidsforhold())
+        return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
                 .collect(Collectors.toList());
     }

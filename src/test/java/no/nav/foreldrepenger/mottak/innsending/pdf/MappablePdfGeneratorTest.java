@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -29,6 +30,7 @@ import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
@@ -38,10 +40,6 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
         PdfElementRenderer.class,
         DelegerendePDFGenerator.class,
         ForeldrepengerPdfGenerator.class,
-        // EngangsstønadPDFGenerator.class,
-        // PdfGeneratorConnection.class,
-        // PdfGeneratorTjeneste.class,
-        // DokumentGenerator.class,
         SvangerskapspengerPdfGenerator.class,
         InfoskrivRenderer.class,
         InfoskrivPdfEkstraktor.class,
@@ -59,14 +57,8 @@ public class MappablePdfGeneratorTest {
     @Inject
     InfoskrivPdfEkstraktor pdfExtracter;
 
-    // @Mock
-    // private RestOperations restOperations;
-
-    // @Mock
-    // PdfGeneratorTjeneste pdfGeneratorTjeneste;
-
-    // @Autowired
-    // DokumentGenerator dokumentGenerator;
+    @MockBean
+    ArbeidsforholdTjenste arbeidsforhold;
 
     @Test
     public void signature() {

@@ -14,12 +14,14 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -41,6 +43,8 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.sts.SystemToken;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.token.support.test.JwtTokenGenerator;
@@ -61,9 +65,13 @@ public class TestFPFordelRoundtripSerialization {
 
     @MockBean
     SystemTokenTjeneste userService;
-
+    @Mock
+    SystemToken token;
     @MockBean
     InnsendingHendelseProdusent publisher;
+
+    @MockBean
+    ArbeidsforholdTjenste arbeidsforhold;
     @Autowired
     ObjectMapper mapper;
 
@@ -83,6 +91,7 @@ public class TestFPFordelRoundtripSerialization {
 
     @BeforeEach
     public void setAuthoriztion() {
+        when(userService.getSystemToken()).thenReturn(token);
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
                 execution) -> {
             request.getHeaders().add(AUTHORIZATION, "Bearer " +
