@@ -22,33 +22,19 @@ import no.nav.foreldrepenger.mottak.util.Pair;
 class ArbeidsforholdMapper {
 
     private static final String PERIODE2 = "periode";
-
     private static final String ARBEIDSAVTALER = "arbeidsavtaler";
-
     private static final String TYPE = "type";
-
     private static final String FNR2 = "fnr";
-
     private static final String OFFENTLIG_IDENT = "offentligIdent";
-
     private static final String PERSON = "Person";
-
     private static final String ORGNR = "orgnr";
-
     private static final String ORGANISASJON = "Organisasjon";
-
     private static final String STILLINGSPROSENT = "stillingsprosent";
-
     private static final String GYLDIGHETSPERIODE = "gyldighetsperiode";
-
     private static final String TOM = "tom";
-
     private static final String ORGANISASJONSNUMMER = "organisasjonsnummer";
-
     private static final String FOM = "fom";
-
     private static final String ARBEIDSGIVER = "arbeidsgiver";
-
     private static final String ANSETTELSESPERIODE = "ansettelsesperiode";
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
     private final OrganisasjonConnection organisasjon;

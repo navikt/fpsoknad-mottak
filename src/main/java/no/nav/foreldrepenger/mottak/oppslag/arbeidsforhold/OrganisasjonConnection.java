@@ -29,7 +29,8 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
 
     public String organisasjonsNavn(String orgnr) {
         LOG.trace("Henter organisasjonsnavn for {}", orgnr);
-        return Optional.ofNullable(getWebClient().get()
+        return Optional.ofNullable(getWebClient()
+                .get()
                 .uri(b -> cfg.getOrganisasjonURI(b, orgnr))
                 .accept(APPLICATION_JSON)
                 .retrieve()
@@ -39,12 +40,17 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                 .map(m -> OrganisasjonMapper.map(m, orgnr))
                 .filter(Objects::nonNull)
                 .orElse(orgnr);
-
     }
 
     @Override
     public String name() {
         return "Organisasjon";
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[cfg=" + cfg + ", name()=" + name() + ", getWebClient()=" + getWebClient()
+                + "]";
     }
 
 }
