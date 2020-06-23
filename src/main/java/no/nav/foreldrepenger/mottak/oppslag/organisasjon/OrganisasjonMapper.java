@@ -19,7 +19,7 @@ public class OrganisasjonMapper {
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonMapper.class);
     private static final String NAVN = "navn";
 
-    public static String map(Map<?, ?> map) {
+    public static String map(Map<?, ?> map, String orgnr) {
         try {
             var navn = get(map, NAVN, Map.class);
             String navn1 = get(navn, NAVNELINJE1);
@@ -28,7 +28,8 @@ public class OrganisasjonMapper {
             String navn4 = get(navn, NAVNELINJE4);
             String navn5 = get(navn, NAVNELINJE5);
             String normalisertNavn = get(navn, REDIGERTNAVN);
-            LOG.info("Fikk navn 1={} 2={} 3={} 4={} 5={} ({})", navn1, navn2, navn3, navn4, navn5, normalisertNavn);
+            LOG.info("{} Fikk navn 1={} 2={} 3={} 4={} 5={} ({})", orgnr, navn1, navn2, navn3, navn4, navn5,
+                    normalisertNavn);
             return navn3 != null ? navn1 + ", " + navn3 : navn1;
             // return navn1;
         } catch (Exception e) {
