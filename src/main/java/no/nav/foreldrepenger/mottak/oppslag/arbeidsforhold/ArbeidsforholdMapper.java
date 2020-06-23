@@ -73,10 +73,10 @@ class ArbeidsforholdMapper {
         String navnRest = navnRest(orgnr);
         String navnWS = oppslag.organisasjonsNavn(orgnr);
         if (!navnRest.equalsIgnoreCase(navnWS)) {
-            LOG.warn("RS og WS orgnavn ulike, (rs={},ws={})", navnRest, navnWS);
+            LOG.warn("{} RS og WS orgnavn ulike, (rs={},ws={})", orgnr, navnRest, navnWS);
             return navnWS;
         }
-        LOG.trace("RS og WS orgnavn like, (rs={},ws={})", navnRest, navnWS);
+        LOG.info("{} RS og WS orgnavn like, (rs={},ws={})", orgnr, navnRest, navnWS);
         return navnRest;
     }
 
