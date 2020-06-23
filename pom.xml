@@ -25,7 +25,7 @@
         <oidc-spring-support.version>0.2.18</oidc-spring-support.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-        <springfox.version>2.9.2</springfox.version>
+        <springfox.version>2.10.0</springfox.version>
         <xsd.location>${project.build.directory}/classes</xsd.location>
         <jaxb.location>${project.build.directory}/classes/</jaxb.location>
         <xsd.location>src/main/xsd</xsd.location>
@@ -453,6 +453,11 @@
             <groupId>no.nav.foreldrepenger</groupId>
             <artifactId>boot-conditionals</artifactId>
             <version>1.0.20200621134113-c68a13f</version>
+        </dependency>
+         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
         </dependency>
     </dependencies>
     <distributionManagement>
