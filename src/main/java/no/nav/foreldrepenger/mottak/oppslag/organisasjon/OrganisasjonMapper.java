@@ -7,6 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
+
 public class OrganisasjonMapper {
 
     private static final String REDIGERTNAVN = "redigertnavn";
@@ -30,8 +32,7 @@ public class OrganisasjonMapper {
             String normalisertNavn = get(navn, REDIGERTNAVN);
             LOG.info("{} Fikk navn 1={} 2={} 3={} 4={} 5={} ({})", orgnr, navn1, navn2, navn3, navn4, navn5,
                     normalisertNavn);
-            return navn3 != null ? navn1 + ", " + navn3 : navn1;
-            // return navn1;
+            return Joiner.on(", ").skipNulls().join(navn1, navn2, navn3, navn4, navn5);
         } catch (Exception e) {
             LOG.warn("OOPS", e);
             return "UKJENT";
