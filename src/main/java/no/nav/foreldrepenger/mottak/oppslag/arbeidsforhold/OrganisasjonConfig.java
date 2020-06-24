@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "organisasjon")
 public class OrganisasjonConfig extends AbstractConfig {
 
-    private static final String V1_ORGANISASJON = "/v1/organisasjon/";
+    private static final String V1_ORGANISASJON = "/v1/organisasjon/{orgnr}";
     private static final String NAV = "998004993";
     private final String organisasjonPath;
 
@@ -27,8 +27,7 @@ public class OrganisasjonConfig extends AbstractConfig {
 
     URI getOrganisasjonURI(UriBuilder b, String orgnr) {
         return b.path(organisasjonPath)
-                .pathSegment(orgnr)
-                .build();
+                .build(orgnr);
     }
 
     @Override
