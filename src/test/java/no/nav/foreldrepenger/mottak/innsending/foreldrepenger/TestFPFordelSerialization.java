@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType.foreldrepenger;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.alleSøknadVersjoner;
@@ -205,9 +204,12 @@ public class TestFPFordelSerialization {
     }
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
-        return newArrayList(
-                new EnkeltArbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                        Optional.of(LocalDate.now()), new ProsentAndel(90), "El Bedrifto"));
+        return List.of(EnkeltArbeidsforhold.builder()
+                .arbeidsgiverId("1234")
+                .from(LocalDate.now().minusDays(200))
+                .to(Optional.of(LocalDate.now()))
+                .stillingsprosent(new ProsentAndel(90))
+                .arbeidsgiverNavn("El Bedrifto").build());
     }
 
     private static void assertMediaType(HttpEntity<?> entity, String type) {

@@ -25,7 +25,6 @@ import static org.springframework.http.HttpStatus.SEE_OTHER;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,9 +100,12 @@ public class FPFordelTest {
     private static final String JOURNALID = "999";
     private static final String SAKSNR = "666";
 
-    private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = Arrays
-            .asList(new EnkeltArbeidsforhold("1234", "", LocalDate.now().minusDays(200),
-                    Optional.of(LocalDate.now()), new ProsentAndel(90), "El Bedrifto"));
+    private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = List.of(EnkeltArbeidsforhold.builder()
+            .arbeidsgiverId("1234")
+            .from(LocalDate.now().minusDays(200))
+            .to(Optional.of(LocalDate.now()))
+            .stillingsprosent(new ProsentAndel(90)).arbeidsgiverNavn("El Bedrifto")
+            .build());
 
     @Mock
     private RestOperations restOperations;
