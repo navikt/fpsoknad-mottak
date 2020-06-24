@@ -30,7 +30,7 @@ import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.config.TestConfig;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
@@ -58,7 +58,7 @@ public class MappablePdfGeneratorTest {
     InfoskrivPdfEkstraktor pdfExtracter;
 
     @MockBean
-    ArbeidsforholdTjenste arbeidsforhold;
+    ArbeidsforholdTjeneste arbeidsforhold;
 
     @Test
     public void signature() {

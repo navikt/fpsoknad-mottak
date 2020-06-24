@@ -46,7 +46,7 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.ar
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Service
@@ -59,12 +59,12 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
-    private final ArbeidsforholdTjenste arbeidsforhold;
+    private final ArbeidsforholdTjeneste arbeidsforhold;
 
     @Inject
     public SvangerskapspengerPdfGenerator(PdfElementRenderer renderer,
             SøknadTextFormatter textFormatter,
-            ArbeidsforholdTjenste arbeidsforhold, SvangerskapspengerInfoRenderer infoRenderer) {
+            ArbeidsforholdTjeneste arbeidsforhold, SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
         this.arbeidsforhold = arbeidsforhold;

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.util.MapUtil;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Component
@@ -39,16 +38,21 @@ class ArbeidsforholdMapper {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdMapper.class);
     private final OrganisasjonConnection organisasjon;
 
-    public ArbeidsforholdMapper(OrganisasjonConnection organisasjon) {
+    ArbeidsforholdMapper(OrganisasjonConnection organisasjon) {
         this.organisasjon = organisasjon;
     }
 
     EnkeltArbeidsforhold map(Map<?, ?> map) {
         var id = id(get(map, ARBEIDSGIVER, Map.class));
         var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE2, Map.class);
-        return new EnkeltArbeidsforhold(id.getFirst(), id.getSecond(), dato(get(periode, FOM)),
-                Optional.ofNullable(dato(get(periode, TOM))),
-                stillingsprosent(get(map, ARBEIDSAVTALER, List.class)), navn(id.getFirst()));
+        return EnkeltArbeidsforhold.builder()
+                .arbeidsgiverId(id.getFirst())
+                .arbeidsgiverIdType(id.getSecond())
+                .from(dato(get(periode, FOM)))
+                .to(Optional.ofNullable(dato(get(periode, TOM))))
+                .stillingsprosent(stillingsprosent(get(map, ARBEIDSAVTALER, List.class)))
+                .arbeidsgiverNavn(navn(id.getFirst()))
+                .build();
     }
 
     private String navn(String orgnr) {
@@ -63,15 +67,15 @@ class ArbeidsforholdMapper {
     private static ProsentAndel stillingsprosent(List<?> avtaler) {
         return avtaler.stream()
                 .map(Map.class::cast)
-                .filter(ArbeidsforholdMapper::gjeldendeAvtale)
-                .map(a -> MapUtil.get(a, STILLINGSPROSENT, Double.class))
+                .filter(ArbeidsforholdMapper::erGjeldende)
+                .map(a -> get(a, STILLINGSPROSENT, Double.class))
                 .filter(Objects::nonNull)
                 .map(ProsentAndel::new)
                 .findFirst()
                 .orElse(null);
     }
 
-    private static boolean gjeldendeAvtale(Map<?, ?> avtale) {
+    private static boolean erGjeldende(Map<?, ?> avtale) {
         var periode = get(avtale, GYLDIGHETSPERIODE, Map.class);
         return dateWithinPeriod(dato(get(periode, FOM)), Optional.ofNullable(dato(get(periode, TOM)))
                 .orElse(LocalDate.now()));
@@ -86,6 +90,11 @@ class ArbeidsforholdMapper {
             return Pair.of(get(map, OFFENTLIG_IDENT), FNR2);
         }
         throw new IllegalArgumentException("Fant verken orgnr eller fnr i " + map);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[organisasjon=" + organisasjon + "]";
     }
 
 }

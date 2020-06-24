@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 
-public class OrganisasjonMapper {
+class OrganisasjonMapper {
 
     private static final String NAVN = "navn";
     private static final String NAVNELINJE1 = "navnelinje1";
@@ -20,7 +20,7 @@ public class OrganisasjonMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonMapper.class);
 
-    public static String map(Map<?, ?> map) {
+    static String map(Map<?, ?> map) {
         try {
             var navn = get(map, NAVN, Map.class);
             return Joiner.on(", ")

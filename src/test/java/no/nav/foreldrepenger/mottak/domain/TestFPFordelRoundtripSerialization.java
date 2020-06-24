@@ -43,7 +43,7 @@ import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemToken;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -71,7 +71,7 @@ public class TestFPFordelRoundtripSerialization {
     InnsendingHendelseProdusent publisher;
 
     @MockBean
-    ArbeidsforholdTjenste arbeidsforhold;
+    ArbeidsforholdTjeneste arbeidsforhold;
     @Autowired
     ObjectMapper mapper;
 

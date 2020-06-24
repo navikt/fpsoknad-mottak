@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ArbeidsforholdTjenste implements Arbeidsforhold {
+public class ArbeidsforholdTjeneste implements Arbeidsforhold {
 
     private final ArbeidsforholdConnection connection;
 
-    public ArbeidsforholdTjenste(ArbeidsforholdConnection connection) {
+    public ArbeidsforholdTjeneste(ArbeidsforholdConnection connection) {
         this.connection = connection;
     }
 

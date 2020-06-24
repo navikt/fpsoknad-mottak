@@ -26,7 +26,7 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
@@ -34,12 +34,12 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(ForeldrepengerPdfGenerator.class);
     private static final float STARTY = PdfElementRenderer.calculateStartY();
     private final Oppslag oppslag;
-    private final ArbeidsforholdTjenste arbeidsforhold;
+    private final ArbeidsforholdTjeneste arbeidsforhold;
 
     private final ForeldrepengeInfoRenderer fpRenderer;
     private final InfoskrivRenderer infoskrivRenderer;
 
-    public ForeldrepengerPdfGenerator(Oppslag oppslag, ArbeidsforholdTjenste arbeidsforhold,
+    public ForeldrepengerPdfGenerator(Oppslag oppslag, ArbeidsforholdTjeneste arbeidsforhold,
             ForeldrepengeInfoRenderer fpRenderer,
             InfoskrivRenderer infoskrivRenderer) {
         this.oppslag = oppslag;

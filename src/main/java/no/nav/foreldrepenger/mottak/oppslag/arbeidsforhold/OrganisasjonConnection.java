@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -27,9 +28,10 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
         this.cfg = cfg;
     }
 
+    @Cacheable(cacheNames = "organisasjon")
     public String organisasjonsNavn(String orgnr) {
         LOG.trace("Henter organisasjonsnavn for {}", orgnr);
-        return Optional.ofNullable(getWebClient()
+        var navn = Optional.ofNullable(getWebClient()
                 .get()
                 .uri(b -> cfg.getOrganisasjonURI(b, orgnr))
                 .accept(APPLICATION_JSON)
@@ -40,6 +42,8 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                 .map(OrganisasjonMapper::map)
                 .filter(Objects::nonNull)
                 .orElse(orgnr);
+        LOG.trace("Hentet organisasjonsnavn {} for {}", navn, orgnr);
+        return navn;
     }
 
     @Override

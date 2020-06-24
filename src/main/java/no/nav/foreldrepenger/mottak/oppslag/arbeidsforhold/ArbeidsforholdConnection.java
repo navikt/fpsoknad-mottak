@@ -38,7 +38,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
 
     private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
         LOG.info("Henter arbeidsforhold for {} -> {}", fom, tom);
-        return getWebClient().get()
+        var arbeidsforhold = getWebClient().get()
                 .uri(b -> cfg.getArbeidsforholdURI(b, fom, tom))
                 .accept(APPLICATION_JSON)
                 .retrieve()
@@ -48,6 +48,8 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .stream()
                 .map(mapper::map)
                 .collect(toList());
+        LOG.info("Hentet arbeidsforhold {} for {} -> {}", arbeidsforhold, fom, tom);
+        return arbeidsforhold;
     }
 
     @Override

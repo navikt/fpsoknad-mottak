@@ -80,7 +80,7 @@ import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -114,7 +114,7 @@ public class FPFordelTest {
     @Mock
     private Oppslag oppslag;
     @Mock
-    private ArbeidsforholdTjenste arbeidsforhold;
+    private ArbeidsforholdTjeneste arbeidsforhold;
     @Mock
     private SakStatusPoller poller;
     @Mock

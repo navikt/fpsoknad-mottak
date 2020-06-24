@@ -62,7 +62,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.Versjon;
@@ -85,7 +85,7 @@ public class TestFPFordelSerialization {
     private Oppslag oppslag;
 
     @MockBean
-    private ArbeidsforholdTjenste arbeidsforhold;
+    private ArbeidsforholdTjeneste arbeidsforhold;
     @MockBean
     private InnsendingHendelseProdusent publisher;
 
