@@ -1,14 +1,9 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.oppslag.OppslagConfig.ORGNR;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +16,6 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection implements PingEndpointAware {
@@ -63,19 +57,6 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return getForObject(
                 uri(cfg.getBaseURI(), cfg.getFnrPath(), queryParams("aktorId", aktørId.getId())), Fødselsnummer.class,
                 true);
-    }
-
-    List<EnkeltArbeidsforhold> hentArbeidsforhold() {
-        LOG.trace("Henter arbeidsforhold");
-        return Optional.ofNullable(getForObject(uri(cfg.getBaseURI(), cfg.getArbeidsforholdPath()),
-                EnkeltArbeidsforhold[].class))
-                .map(Arrays::asList)
-                .orElse(emptyList());
-    }
-
-    public String organisasjonsNavn(String orgnr) {
-        LOG.trace("Henter navn for organisasjon {}", orgnr);
-        return getForObject(uri(cfg.getBaseURI(), cfg.getOrgNavnPath(), queryParams(ORGNR, orgnr)), String.class);
     }
 
     @Override
