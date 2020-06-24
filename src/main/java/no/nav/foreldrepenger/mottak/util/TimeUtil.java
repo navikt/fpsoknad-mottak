@@ -22,7 +22,12 @@ public final class TimeUtil {
         return Optional.ofNullable(dato)
                 .map(d -> LocalDate.parse(d, ISO_LOCAL_DATE))
                 .orElse(null);
+    }
 
+    public static LocalDateTime localDateTime(Date date) {
+        return Instant.ofEpochMilli(date.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     public static void waitFor(long delayMillis) {

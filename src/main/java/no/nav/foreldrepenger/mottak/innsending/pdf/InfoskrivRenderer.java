@@ -192,11 +192,11 @@ public class InfoskrivRenderer {
         return textFormatter.fromMessageSource(key, values);
     }
 
-    private float addTinyBlankLine() {
+    private static float addTinyBlankLine() {
         return 10;
     }
 
-    private float addBlankLine() {
+    private static float addBlankLine() {
         return 20;
     }
 
@@ -209,11 +209,11 @@ public class InfoskrivRenderer {
 
     // gir NPE når det ikke finnes inntektsmeldingsdato.
     // fikser når vi vet hvorfor denne er null - mulig bruker ikke skal ha infoskriv
-    private String fristTekstFra(LocalDate dato) {
+    private static String fristTekstFra(LocalDate dato) {
         return erSperreFristPassert(dato) ? "" : " etter " + formattertDato(dato);
     }
 
-    private boolean erSperreFristPassert(LocalDate fristDato) {
+    private static boolean erSperreFristPassert(LocalDate fristDato) {
         return fristDato.isBefore(LocalDate.now().plusDays(1));
     }
 
@@ -250,7 +250,7 @@ public class InfoskrivRenderer {
         return perioder;
     }
 
-    private FontAwareCos førstesideInfoskriv(FontAwarePdfDocument doc, FontAwareCos cos, PDPage scratch,
+    private static FontAwareCos førstesideInfoskriv(FontAwarePdfDocument doc, FontAwareCos cos, PDPage scratch,
             FontAwareCos scratchcos) throws IOException {
         cos.close();
         doc.addPage(scratch);

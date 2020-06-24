@@ -5,15 +5,12 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 public abstract class AbstractWebClientConnection implements PingEndpointAware {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractWebClientConnection.class);
     private final WebClient webClient;
     private final AbstractConfig cfg;
 

@@ -32,7 +32,6 @@ import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
@@ -57,30 +56,30 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testSøknadNorge() throws Exception {
-        Søknad engangssøknad = engangssøknad(Versjon.V1, false, fødsel(), norskForelder(Versjon.V1),
+        Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(),
                 påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
         test(engangssøknad, false);
     }
 
     @Test
     public void testEngangsstønadNorge() throws Exception {
-        Engangsstønad engangstønad = engangstønad(Versjon.V1, false, termin(), norskForelder(Versjon.V1));
+        Engangsstønad engangstønad = engangstønad(false, termin(), norskForelder());
         test(engangstønad, false);
     }
 
     @Test
     public void testEngangsstønadUtland() {
-        test(TestUtils.engangstønad(Versjon.V1, true, termin(), utenlandskForelder()), false);
+        test(TestUtils.engangstønad(true, termin(), utenlandskForelder()), false);
     }
 
     @Test
     public void testEngangsstønadUkjentFar() {
-        test(engangstønad(Versjon.V1, true, termin(), ukjentForelder()), false);
+        test(engangstønad(true, termin(), ukjentForelder()), false);
     }
 
     @Test
     public void testNorskAnnenForelder() {
-        test(norskForelder(Versjon.V1), false);
+        test(norskForelder(), false);
     }
 
     @Test
@@ -95,12 +94,12 @@ public class TestEngangsstønadSerialization {
 
     @Test
     public void testMedlemsskap() {
-        test(TestUtils.medlemsskap(Versjon.V1), false);
+        test(TestUtils.medlemsskap(false));
     }
 
     @Test
     public void testMedlemsskapUtland() {
-        test(TestUtils.medlemsskap(Versjon.V1, false));
+        test(TestUtils.medlemsskap(false));
     }
 
     @Test
@@ -141,11 +140,6 @@ public class TestEngangsstønadSerialization {
     @Test
     public void testSøker() {
         test(TestUtils.søker());
-    }
-
-    @Test
-    public void testSøkerUtenMellomNavn() {
-        test(TestUtils.søker(TestUtils.navnUtenMellomnavn()));
     }
 
     @Test

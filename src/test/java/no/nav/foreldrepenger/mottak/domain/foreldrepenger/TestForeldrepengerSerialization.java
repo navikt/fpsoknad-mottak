@@ -50,9 +50,9 @@ import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
+import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.GosysKvittering;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PendingKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UtsettelsePeriodeType;
@@ -147,9 +147,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testRettigheter() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(rettigheter(v));
-        }
+        test(rettigheter());
     }
 
     @Test
@@ -179,16 +177,12 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUtenlandskForelder() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(utenlandskForelder(v));
-        }
+        test(utenlandskForelder());
     }
 
     @Test
     public void testNorskForelder() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(norskForelder(v));
-        }
+        test(norskForelder());
     }
 
     @Test
@@ -200,9 +194,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUttaksPeride() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(uttaksPeriode(v), false);
-        }
+        test(uttaksPeriode(), false);
     }
 
     @Test
@@ -214,31 +206,22 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testOverføringsperiode() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(overføringsPeriode(v), false);
-        }
+        test(overføringsPeriode(), false);
     }
 
     @Test
     public void testOppholdsPeriode() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(oppholdsPeriode(v));
-        }
+        test(oppholdsPeriode());
     }
 
     @Test
     public void testUtsettelsesPeriode() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(utsettelsesPeriode(v));
-        }
-
+        test(utsettelsesPeriode());
     }
 
     @Test
     public void testÅpenPeriode() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(åpenPeriode(v));
-        }
+        test(åpenPeriode());
     }
 
     @Test
@@ -248,17 +231,12 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testOmsorgsovertagelsse() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(omsorgsovertakelse(v));
-        }
-
+        test(omsorgsovertakelse());
     }
 
     @Test
     public void testTermin() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(termin(v));
-        }
+        test(termin());
     }
 
     @Test
@@ -270,9 +248,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testUtenlandskArbeidsforhold() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(utenlandskArbeidsforhold(v), false);
-        }
+        test(utenlandskArbeidsforhold(), false);
     }
 
     @Test
@@ -280,16 +256,12 @@ public class TestForeldrepengerSerialization {
         ClassPathResource res = new ClassPathResource("json/utenlandskOrg.json");
         UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
         assertEquals(CountryCode.UG, org.getRegistrertILand());
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(utenlandskEgenNæring(v), false);
-        }
+        test(utenlandskEgenNæring(), false);
     }
 
     @Test
     public void testEgenNæringNorskorganisasjon() {
-        for (Versjon v : alleSøknadVersjoner()) {
-            test(norskEgenNæring(v));
-        }
+        test(norskEgenNæring());
     }
 
     private void test(Object object, boolean print) {

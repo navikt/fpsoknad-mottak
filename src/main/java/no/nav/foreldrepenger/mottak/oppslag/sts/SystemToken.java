@@ -1,12 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
+import static no.nav.foreldrepenger.mottak.util.TimeUtil.localDateTime;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -52,12 +50,6 @@ public class SystemToken {
 
     public String getTokenType() {
         return tokenType;
-    }
-
-    private LocalDateTime localDateTime(Date date) {
-        return Instant.ofEpochMilli(date.getTime())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
     }
 
     public Long getExpiresIn() {

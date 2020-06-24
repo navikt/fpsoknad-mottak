@@ -122,8 +122,8 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     public void testESSøknadSendFPFordel() {
-        Søknad engangssøknad = engangssøknad(Versjon.DEFAULT_VERSJON, false, fødsel(),
-                norskForelder(Versjon.DEFAULT_VERSJON),
+        Søknad engangssøknad = engangssøknad(false, fødsel(),
+                norskForelder(),
                 påkrevdVedlegg(ID142));
         Kvittering kvittering = template.postForObject(INNSENDING + "/send", engangssøknad, Kvittering.class);
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());

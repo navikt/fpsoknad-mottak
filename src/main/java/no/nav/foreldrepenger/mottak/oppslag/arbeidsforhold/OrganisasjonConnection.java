@@ -37,7 +37,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                 .toEntity(Map.class)
                 .block()
                 .getBody())
-                .map(m -> OrganisasjonMapper.map(m, orgnr))
+                .map(OrganisasjonMapper::map)
                 .filter(Objects::nonNull)
                 .orElse(orgnr);
     }

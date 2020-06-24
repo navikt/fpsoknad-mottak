@@ -46,8 +46,8 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.ar
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Service
 public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
@@ -59,16 +59,14 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
-    private final Oppslag oppslag;
     private final ArbeidsforholdTjenste arbeidsforhold;
 
     @Inject
     public SvangerskapspengerPdfGenerator(PdfElementRenderer renderer,
             SøknadTextFormatter textFormatter,
-            Oppslag oppslag, ArbeidsforholdTjenste arbeidsforhold, SvangerskapspengerInfoRenderer infoRenderer) {
+            ArbeidsforholdTjenste arbeidsforhold, SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
-        this.oppslag = oppslag;
         this.arbeidsforhold = arbeidsforhold;
         this.infoRenderer = infoRenderer;
     }
@@ -202,17 +200,14 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         }
     }
 
-    private List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> aktiveArbeidsforhold(
-            LocalDate termindato,
-            LocalDate fødselsdato) {
+    private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate termindato, LocalDate fødselsdato) {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
         return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
                 .collect(Collectors.toList());
     }
 
-    private float renderTilrettelegging(
-            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> arbeidsgivere,
+    private float renderTilrettelegging(List<EnkeltArbeidsforhold> arbeidsgivere,
             Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrettelegging,
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
@@ -295,11 +290,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 txt("svp.behovfra", DATEFMT.format(tilrettelegging.getBehovForTilretteleggingFom())), cos, y);
         for (Tilrettelegging periode : perioder) {
             if (periode instanceof HelTilrettelegging) {
-                y -= renderHelTilrettelegging(HelTilrettelegging.class.cast(periode), vedlegg, cos, y);
+                y -= renderHelTilrettelegging(HelTilrettelegging.class.cast(periode), cos, y);
             } else if (periode instanceof DelvisTilrettelegging) {
-                y -= renderDelvisTilrettelegging(DelvisTilrettelegging.class.cast(periode), vedlegg, cos, y);
+                y -= renderDelvisTilrettelegging(DelvisTilrettelegging.class.cast(periode), cos, y);
             } else if (periode instanceof IngenTilrettelegging) {
-                y -= renderIngenTilrettelegging(IngenTilrettelegging.class.cast(periode), vedlegg, cos, y);
+                y -= renderIngenTilrettelegging(IngenTilrettelegging.class.cast(periode), cos, y);
             }
         }
         List<String> vedleggRefs = perioder.stream()
@@ -311,8 +306,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return startY - y;
     }
 
-    private float renderIngenTilrettelegging(IngenTilrettelegging periode, List<Vedlegg> vedlegg, FontAwareCos cos,
-            float y)
+    private float renderIngenTilrettelegging(IngenTilrettelegging periode, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT,
@@ -320,8 +314,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return startY - y;
     }
 
-    private float renderDelvisTilrettelegging(DelvisTilrettelegging periode,
-            List<Vedlegg> vedlegg, FontAwareCos cos, float y)
+    private float renderDelvisTilrettelegging(DelvisTilrettelegging periode, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT,
@@ -337,8 +330,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 .orElse(0d);
     }
 
-    private float renderHelTilrettelegging(HelTilrettelegging periode,
-            List<Vedlegg> vedlegg, FontAwareCos cos, float y)
+    private float renderHelTilrettelegging(HelTilrettelegging periode, FontAwareCos cos, float y)
             throws IOException {
         float startY = y;
         y -= renderer.addBulletPoint(INDENT, txt("svp.tilretteleggingfra",

@@ -19,7 +19,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELD
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -119,7 +118,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testESFpFordel() {
-        Søknad engangstønad = engangssøknad(DEFAULT_VERSJON, false, termin(), norskForelder(DEFAULT_VERSJON), V3);
+        Søknad engangstønad = engangssøknad(false, termin(), norskForelder(), V3);
         assertNotNull(domainMapper.tilXML(engangstønad, AKTØRID, new SøknadEgenskap(INITIELL_ENGANGSSTØNAD)));
     }
 

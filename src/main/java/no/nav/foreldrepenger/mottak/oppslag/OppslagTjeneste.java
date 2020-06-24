@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.mottak.oppslag;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +16,6 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class OppslagTjeneste implements Oppslag {
     private final OppslagConnection connection;
     private final TokenUtil tokenHelper;
-    private static final Logger LOG = LoggerFactory.getLogger(OppslagTjeneste.class);
 
     public OppslagTjeneste(OppslagConnection connection, TokenUtil tokenHelper) {
         this.connection = connection;

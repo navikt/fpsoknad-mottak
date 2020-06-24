@@ -20,7 +20,7 @@ public class OrganisasjonMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonMapper.class);
 
-    public static String map(Map<?, ?> map, String orgnr) {
+    public static String map(Map<?, ?> map) {
         try {
             var navn = get(map, NAVN, Map.class);
             return Joiner.on(", ")

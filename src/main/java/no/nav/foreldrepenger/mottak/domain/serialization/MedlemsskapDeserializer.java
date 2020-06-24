@@ -56,11 +56,11 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
     private static List<Utenlandsopphold> utenlandsOpphold(Iterator<JsonNode> iterator, JsonParser parser) {
         return StreamSupport
                 .stream(((Iterable<JsonNode>) () -> iterator).spliterator(), false)
-                .map(s -> utenlandopphold(s, iterator, parser.getCodec()))
+                .map(s -> utenlandopphold(iterator, parser.getCodec()))
                 .collect(toList());
     }
 
-    private static Utenlandsopphold utenlandopphold(JsonNode node, Iterator<JsonNode> utland, ObjectCodec codec) {
+    private static Utenlandsopphold utenlandopphold(Iterator<JsonNode> utland, ObjectCodec codec) {
         try {
             JsonParser parser = ObjectNode.class.cast(utland.next()).traverse();
             parser.setCodec(codec);

@@ -52,7 +52,7 @@ public final class InntektsmeldingXMLMapper {
     private static final InntektsmeldingJAXBUtil JAXB = new InntektsmeldingJAXBUtil();
     private static final Logger LOG = LoggerFactory.getLogger(InntektsmeldingXMLMapper.class);
 
-    public Inntektsmelding tilInntektsmelding(String xml) {
+    public static Inntektsmelding tilInntektsmelding(String xml) {
         if (xml == null) {
             LOG.debug("Ingen inntektsmelding ble funnet");
             return null;

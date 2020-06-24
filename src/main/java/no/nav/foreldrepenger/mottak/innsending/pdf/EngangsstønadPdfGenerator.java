@@ -149,7 +149,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                 .build();
     }
 
-    private List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
+    private static List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
         return rader.stream()
                 .map(r -> new TabellRad(r.getFirst(), r.getSecond(), null))
                 .collect(Collectors.toList());

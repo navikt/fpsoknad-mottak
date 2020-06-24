@@ -41,7 +41,7 @@ public class TestMetadata {
 
     @Test
     public void test2ES() {
-        Søknad søknad = TestUtils.engangssøknad(DEFAULT_VERSJON, ForeldrepengerTestUtils.V3);
+        Søknad søknad = TestUtils.engangssøknad(ForeldrepengerTestUtils.V3);
         FordelMetadata metadata = new FordelMetadata(søknad, INITIELL_ENGANGSSTØNAD, AKTOR_ID, REF);
         assertEquals(1, søknad.getVedlegg().size());
         assertEquals(3, metadata.getFiler().size());

@@ -11,7 +11,6 @@ import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.
 import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.formattertNavn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.Varsel;
 
 class VarselXMLGeneratorTest {
     @Test
-    void testVarselXMLRoundtrip() throws IOException {
+    void testVarselXMLRoundtrip() {
         V1VarselJAXBUtil jaxb = new V1VarselJAXBUtil(true);
         VarselXMLGenerator varselXmlGenerator = new VarselXMLGenerator(jaxb);
         no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel = varsel();

@@ -129,6 +129,7 @@ public class InnsynTjeneste implements Innsyn {
         return behandlinger;
     }
 
+    @SuppressWarnings("unused")
     private InnsynsSøknad hentSøknad(Lenke lenke) {
         InnsynsSøknad søknad = Optional.ofNullable(innsyn.søknad(lenke))
                 .map(this::tilSøknad)
@@ -142,6 +143,7 @@ public class InnsynTjeneste implements Innsyn {
         return søknad;
     }
 
+    @SuppressWarnings("unused")
     private Vedtak hentVedtak(Lenke lenke) {
         Vedtak vedtak = Optional.ofNullable(innsyn.vedtak(lenke))
                 .map(this::tilVedtak)

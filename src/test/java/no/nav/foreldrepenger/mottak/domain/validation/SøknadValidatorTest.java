@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class SøknadValidatorTest {
 
@@ -28,7 +27,7 @@ public class SøknadValidatorTest {
 
     @Test
     public void testSøknadMedFødselIDag() throws Exception {
-        Set<ConstraintViolation<Søknad>> violations = validator.validate(engangssøknad(Versjon.V1, fødsel(nå())));
+        Set<ConstraintViolation<Søknad>> violations = validator.validate(engangssøknad(fødsel(nå())));
         assertThat(violations).isEmpty();
     }
 
