@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "oppslag", ignoreInvalidFields = true)
 @Configuration
 public class OppslagConfig {
-    static final String ORGNR = "orgnr";
     private static final String AKTØR = "oppslag/aktor";
     private static final String AKTØRFNR = "oppslag/aktorfnr";
     private static final String FNR = "oppslag/fnr";
