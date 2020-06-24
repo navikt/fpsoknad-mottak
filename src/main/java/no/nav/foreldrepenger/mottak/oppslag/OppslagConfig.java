@@ -15,8 +15,6 @@ public class OppslagConfig {
     private static final String FNR = "oppslag/fnr";
     private static final String PERSON = "person";
     private static final String PERSONNAVN = "person/navn";
-    private static final String ARBEID = "arbeidsforhold";
-    private static final String ORGNAVN = ARBEID + "/navn";
     private static final URI DEFAULT_BASE_URI = URI.create("http://fpsoknad-oppslag/api");
     private static final String DEFAULT_PING_PATH = "actuator/health/liveness";
     private String pingPath;
@@ -25,13 +23,8 @@ public class OppslagConfig {
     private String fnrPath;
     private String personPath;
     private String personNavnPath;
-    private String arbeidsforholdPath;
     private boolean enabled;
     private URI baseURI;
-
-    public String getOrgNavnPath() {
-        return ORGNAVN;
-    }
 
     public String getPersonNavnPath() {
         return Optional.ofNullable(personNavnPath).orElse(PERSONNAVN);
@@ -39,14 +32,6 @@ public class OppslagConfig {
 
     public void setPersonFnrPath(String personNavnPath) {
         this.personNavnPath = personNavnPath;
-    }
-
-    public String getArbeidsforholdPath() {
-        return Optional.ofNullable(arbeidsforholdPath).orElse(ARBEID);
-    }
-
-    public void setArbeidsforholdPath(String arbeidsforholdPath) {
-        this.arbeidsforholdPath = arbeidsforholdPath;
     }
 
     public String getPersonPath() {
