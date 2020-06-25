@@ -14,6 +14,8 @@ import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 
 @RestController
@@ -25,15 +27,22 @@ public class InnsynController {
 
     private final Oppslag oppslag;
     private final Innsyn innsyn;
+    private final ArbeidsforholdTjeneste arbeidsforhold;
 
-    public InnsynController(Innsyn innsyn, Oppslag oppslag) {
+    public InnsynController(Innsyn innsyn, Oppslag oppslag, ArbeidsforholdTjeneste arbeidsforhold) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
+        this.arbeidsforhold = arbeidsforhold;
     }
 
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
         return innsyn.saker(oppslag.hentAktørId());
+    }
+
+    @GetMapping(value = "/arbeidsforhold")
+    public List<EnkeltArbeidsforhold> arbeidsforhold() {
+        return arbeidsforhold.hentAktiveArbeidsforhold();
     }
 
     @GetMapping(value = "/uttaksplan")
