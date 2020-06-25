@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.innsyn.FagsakStatus;
 import no.nav.foreldrepenger.mottak.innsyn.Lenke;
 
@@ -21,9 +22,9 @@ public class SakDTO {
     private final String saksnummer;
     private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
-    private final String aktørId;
-    private final String aktørIdAnnenPart;
-    private final List<String> aktørIdBarna;
+    private final AktørId aktørId;
+    private final AktørId aktørIdAnnenPart;
+    private final List<AktørId> aktørIdBarna;
     private final List<Lenke> lenker;
     private final LocalDateTime opprettetTidspunkt;
     private final LocalDateTime endretTidspunkt;
@@ -32,9 +33,9 @@ public class SakDTO {
     public SakDTO(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("fagsakStatus") FagsakStatus fagsakStatus,
             @JsonProperty("behandlingTema") String behandlingTema,
-            @JsonProperty("aktørId") String aktørId,
-            @JsonProperty("aktørIdAnnenPart") String aktørIdAnnenPart,
-            @JsonProperty("aktørIdBarna") List<String> aktørIdBarna,
+            @JsonProperty("aktørId") AktørId aktørId,
+            @JsonProperty("aktørIdAnnenPart") AktørId aktørIdAnnenPart,
+            @JsonProperty("aktørIdBarna") List<AktørId> aktørIdBarna,
             @JsonProperty("lenker") List<Lenke> lenker,
             @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
             @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt) {
@@ -68,15 +69,15 @@ public class SakDTO {
         return fagsakStatus;
     }
 
-    public String getAktørId() {
+    public AktørId getAktørId() {
         return aktørId;
     }
 
-    public String getAktørIdAnnenPart() {
+    public AktørId getAktørIdAnnenPart() {
         return aktørIdAnnenPart;
     }
 
-    public List<String> getAktørIdBarna() {
+    public List<AktørId> getAktørIdBarna() {
         return aktørIdBarna;
     }
 

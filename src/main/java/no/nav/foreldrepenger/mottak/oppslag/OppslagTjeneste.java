@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import java.util.Optional;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -28,35 +26,27 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
-    public Person getSøker() {
+    public Person hentSøker() {
         return connection.hentSøker();
     }
 
     @Override
-    public AktørId getAktørId() {
-        return getAktørId(tokenHelper.autentisertFNR());
+    public AktørId hentAktørId() {
+        return hentAktørId(tokenHelper.autentisertFNR());
     }
 
     @Override
-    // @Cacheable(cacheNames = "aktør")
-    public AktørId getAktørId(Fødselsnummer fnr) {
+    public AktørId hentAktørId(Fødselsnummer fnr) {
         return connection.hentAktørId(fnr);
     }
 
     @Override
-    public String getAktørIdAsString() {
-        return Optional.ofNullable(getAktørId())
-                .map(AktørId::getId)
-                .orElse(null);
-    }
-
-    @Override
-    public Fødselsnummer getFnr(AktørId aktørId) {
+    public Fødselsnummer hentFnr(AktørId aktørId) {
         return connection.hentFnr(aktørId);
     }
 
     @Override
-    public Navn hentNavn(String fnr) {
+    public Navn hentNavn(Fødselsnummer fnr) {
         return connection.hentNavn(fnr);
     }
 
@@ -64,5 +54,4 @@ public class OppslagTjeneste implements Oppslag {
     public String toString() {
         return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
     }
-
 }

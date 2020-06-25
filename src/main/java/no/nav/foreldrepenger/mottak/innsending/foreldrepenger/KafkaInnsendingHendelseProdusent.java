@@ -41,7 +41,7 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
 
     @Override
     public void publiser(Fødselsnummer fnr, Kvittering kvittering, String dialogId, Konvolutt konvolutt) {
-        var h = new InnsendingHendelse(oppslag.getAktørIdAsString(), fnr.getFnr(), dialogId, kvittering,
+        var h = new InnsendingHendelse(oppslag.hentAktørId(), fnr, dialogId, kvittering,
                 konvolutt);
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder

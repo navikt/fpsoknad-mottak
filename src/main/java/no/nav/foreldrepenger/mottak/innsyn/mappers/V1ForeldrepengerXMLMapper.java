@@ -603,7 +603,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (annenForelder instanceof AnnenForelderMedNorskIdent) {
             AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
             return new NorskForelder(
-                    oppslag.getFnr(new AktørId(norskForelder.getAktoerId())),
+                    oppslag.hentFnr(new AktørId(norskForelder.getAktoerId())),
                     null);
         }
         if (annenForelder instanceof AnnenForelderUtenNorskIdent) {

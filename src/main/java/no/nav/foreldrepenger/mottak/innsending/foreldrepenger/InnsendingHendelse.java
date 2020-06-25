@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
@@ -11,8 +13,8 @@ import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 public class InnsendingHendelse {
 
-    private final String aktørId;
-    private final String fnr;
+    private final AktørId aktørId;
+    private final Fødselsnummer fnr;
     private final String journalId;
     private final String referanseId;
     private final String dialogId;
@@ -25,7 +27,8 @@ public class InnsendingHendelse {
 
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(String aktørId, String fnr, String dialogId, Kvittering kvittering, Konvolutt konvolutt) {
+    public InnsendingHendelse(AktørId aktørId, Fødselsnummer fnr, String dialogId, Kvittering kvittering,
+            Konvolutt konvolutt) {
         this.aktørId = aktørId;
         this.fnr = fnr;
         this.journalId = kvittering.getJournalId();
@@ -40,7 +43,7 @@ public class InnsendingHendelse {
         this.innsendt = konvolutt.getOpprettet();
     }
 
-    public String getFnr() {
+    public Fødselsnummer getFnr() {
         return fnr;
     }
 
@@ -56,7 +59,7 @@ public class InnsendingHendelse {
         return førsteBehandlingsdato;
     }
 
-    public String getAktørId() {
+    public AktørId getAktørId() {
         return aktørId;
     }
 
@@ -90,7 +93,8 @@ public class InnsendingHendelse {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.mask(fnr) + ", journalId="
+        return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.mask(fnr.getFnr())
+                + ", journalId="
                 + journalId
                 + ", referanseId="
                 + referanseId + ", dialogId=" + dialogId + ", saksnummer=" + saksnummer + ", leveranseStatus="

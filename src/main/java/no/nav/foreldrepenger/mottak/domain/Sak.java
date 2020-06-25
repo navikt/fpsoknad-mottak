@@ -19,9 +19,9 @@ public class Sak {
     private final String saksnummer;
     private final FagsakStatus fagsakStatus;
     private final String behandlingTema;
-    private final String aktørId;
+    private final AktørId aktørId;
     private final AnnenPart annenPart;
-    private final List<String> aktørIdBarn;
+    private final List<AktørId> aktørIdBarn;
     private final List<Behandling> behandlinger;
     private final LocalDateTime opprettet;
     private final LocalDateTime endret;
@@ -30,9 +30,9 @@ public class Sak {
     public Sak(@JsonProperty("saksnummer") String saksnummer,
             @JsonProperty("status") FagsakStatus fagsakStatus,
             @JsonProperty("behandlingTema") String behandlingTema,
-            @JsonProperty("aktørId") String aktørId,
+            @JsonProperty("aktørId") AktørId aktørId,
             @JsonProperty("annenPart") AnnenPart annenPart,
-            @JsonProperty("aktørIdBarn") List<String> aktørIdBarn,
+            @JsonProperty("aktørIdBarn") List<AktørId> aktørIdBarn,
             @JsonProperty("behandlinger") List<Behandling> behandlinger,
             @JsonProperty("opprettet") LocalDateTime opprettet,
             @JsonProperty("endret") LocalDateTime endret) {

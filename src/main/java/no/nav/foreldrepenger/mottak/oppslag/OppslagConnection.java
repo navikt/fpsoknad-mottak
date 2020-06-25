@@ -49,8 +49,9 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
                 uri(cfg.getBaseURI(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktørId.class, true);
     }
 
-    public Navn hentNavn(String fnr) {
-        return getForObject(uri(cfg.getBaseURI(), cfg.getPersonNavnPath(), queryParams("fnr", fnr)), Navn.class);
+    public Navn hentNavn(Fødselsnummer fnr) {
+        return getForObject(uri(cfg.getBaseURI(), cfg.getPersonNavnPath(), queryParams("fnr", fnr.getFnr())),
+                Navn.class);
     }
 
     public Fødselsnummer hentFnr(AktørId aktørId) {

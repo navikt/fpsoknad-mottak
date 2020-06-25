@@ -104,8 +104,8 @@ public class TestFPFordelSerialization {
 
     @BeforeEach
     public void before() {
-        when(oppslag.getAktørId(eq(FNR))).thenReturn(AKTØRID);
-        when(oppslag.getFnr(eq(AKTØRID))).thenReturn(FNR);
+        when(oppslag.hentAktørId(eq(FNR))).thenReturn(AKTØRID);
+        when(oppslag.hentFnr(eq(AKTØRID))).thenReturn(FNR);
         when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
     }
 

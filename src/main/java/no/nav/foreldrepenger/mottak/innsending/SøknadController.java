@@ -59,19 +59,19 @@ public class SøknadController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = inspektør.inspiser(søknad);
-        return sjekkStatus(søknadSender.søk(søknad, oppslag.getSøker(), søknadEgenskap),
+        return sjekkStatus(søknadSender.søk(søknad, oppslag.hentSøker(), søknadEgenskap),
                 FØRSTEGANGSSØKNAD, varsleHvisVellykket(søknadEgenskap));
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.getSøker(),
+        return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.hentSøker(),
                 inspektør.inspiser(ettersending)), "Ettersending", false);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.getSøker(), ENDRING_FORELDREPENGER),
+        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.hentSøker(), ENDRING_FORELDREPENGER),
                 ENDRINGSSØKNAD);
     }
 
@@ -84,7 +84,7 @@ public class SøknadController {
 
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
-        return innsyn.saker(oppslag.getAktørId());
+        return innsyn.saker(oppslag.hentAktørId());
     }
 
     private static boolean varsleHvisVellykket(SøknadEgenskap søknadEgenskap) {
@@ -107,7 +107,7 @@ public class SøknadController {
     }
 
     private Varsel varselFra(Kvittering kvittering) {
-        return new Varsel(kvittering.getMottattDato(), oppslag.getSøker());
+        return new Varsel(kvittering.getMottattDato(), oppslag.hentSøker());
     }
 
     @Override
