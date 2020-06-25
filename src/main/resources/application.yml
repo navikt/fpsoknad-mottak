@@ -42,6 +42,8 @@ varsel:
    username: srvappserver
    enabled: true
 spring:
+   codec:
+      max-in-memory-size: 32MB
    cache:
       cache-names: aktør, organisasjon
       caffeine:
