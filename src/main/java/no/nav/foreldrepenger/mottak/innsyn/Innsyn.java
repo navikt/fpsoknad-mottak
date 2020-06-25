@@ -12,8 +12,6 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 public interface Innsyn extends Pingable, RetryAware {
     List<Sak> saker(AktørId aktørId);
 
-    List<Sak> hentSaker(String aktørId);
-
     Uttaksplan uttaksplan(String saksnummer);
 
     Vedtak vedtak(AktørId aktørId, String saksnummer);

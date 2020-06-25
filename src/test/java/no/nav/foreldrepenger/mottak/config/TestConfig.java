@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import java.util.Optional;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,30 +21,23 @@ public class TestConfig {
         return new Oppslag() {
 
             @Override
-            public AktørId getAktørId(Fødselsnummer fnr) {
+            public AktørId hentAktørId(Fødselsnummer fnr) {
                 return new AktørId("1111111111");
             }
 
             @Override
-            public Person getSøker() {
+            public Person hentSøker() {
                 return TestUtils.person();
             }
 
             @Override
-            public AktørId getAktørId() {
+            public AktørId hentAktørId() {
                 return new AktørId("1111111111");
             }
 
             @Override
-            public Fødselsnummer getFnr(AktørId aktørId) {
+            public Fødselsnummer hentFnr(AktørId aktørId) {
                 return new Fødselsnummer("01010111111");
-            }
-
-            @Override
-            public String getAktørIdAsString() {
-                return Optional.ofNullable(getAktørId())
-                        .map(AktørId::getId)
-                        .orElse(null);
             }
 
             @Override
@@ -55,8 +46,8 @@ public class TestConfig {
             }
 
             @Override
-            public Navn hentNavn(String fnr) {
-                return new Navn("Ole", "Olsen", fnr, Kjønn.M);
+            public Navn hentNavn(Fødselsnummer fnr) {
+                return new Navn("Ole", "Mellomnavn", "Olsen", Kjønn.M);
             }
         };
     }

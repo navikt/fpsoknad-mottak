@@ -4,7 +4,6 @@ import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
@@ -24,30 +23,23 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "true")
 public class OppslagServiceStub implements Oppslag {
     @Override
-    public Person getSøker() {
+    public Person hentSøker() {
         return person();
     }
 
     @Override
-    public AktørId getAktørId() {
+    public AktørId hentAktørId() {
         return new AktørId("11111111111");
     }
 
     @Override
-    public AktørId getAktørId(Fødselsnummer fnr) {
+    public AktørId hentAktørId(Fødselsnummer fnr) {
         return new AktørId("11111111111");
     }
 
     @Override
-    public Fødselsnummer getFnr(AktørId aktørId) {
+    public Fødselsnummer hentFnr(AktørId aktørId) {
         return new Fødselsnummer("01010111111");
-    }
-
-    @Override
-    public String getAktørIdAsString() {
-        return Optional.ofNullable(getAktørId())
-                .map(AktørId::getId)
-                .orElse(null);
     }
 
     private static Person person() {
@@ -63,7 +55,7 @@ public class OppslagServiceStub implements Oppslag {
     }
 
     @Override
-    public Navn hentNavn(String fnr) {
+    public Navn hentNavn(Fødselsnummer fnr) {
         return new Navn("Ole", "Mellom", "Olsen", Kjønn.M);
     }
 }

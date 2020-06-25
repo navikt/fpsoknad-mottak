@@ -38,7 +38,7 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
 
 @Service
@@ -46,12 +46,12 @@ public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
     private final XMLSøknadHandler søknadHandler;
     private final XMLVedtakHandler vedtakHandler;
-    private final Oppslag oppslag;
+    private final OppslagConnection oppslag;
     private final OrganisasjonConnection organisasjon;
     private final InnsynConnection innsyn;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsyn, Oppslag oppslag, OrganisasjonConnection organisasjon) {
+            InnsynConnection innsyn, OppslagConnection oppslag, OrganisasjonConnection organisasjon) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.organisasjon = organisasjon;
@@ -85,34 +85,30 @@ public class InnsynTjeneste implements Innsyn {
     @Override
     public Uttaksplan uttaksplan(String saksnummer) {
         return Optional.ofNullable(innsyn.uttaksplan(saksnummer))
-                .map(this::map)
+                .map(this::tilUttaksplan)
                 .orElse(null);
     }
 
     @Override
     public Uttaksplan uttaksplan(AktørId aktørId, AktørId annenPart) {
         return Optional.ofNullable(innsyn.uttaksplan(aktørId, annenPart))
-                .map(this::map)
+                .map(this::tilUttaksplan)
                 .orElse(null);
     }
 
     @Override
     public List<Sak> saker(AktørId aktørId) {
-        return hentSaker(aktørId.getId());
-    }
-
-    @Override
-    public List<Sak> hentSaker(String aktørId) {
-        LOG.info("Henter sak(er) for {}", aktørId);
-        List<Sak> saker = safeStream(innsyn.saker(aktørId))
+        String aktørId1 = aktørId.getId();
+        LOG.info("Henter sak(er) for {}", aktørId1);
+        List<Sak> saker1 = safeStream(innsyn.saker(aktørId1))
                 .filter(distinctByKey(SakDTO::getSaksnummer))
                 .map(this::tilSak)
                 .collect(toList());
-        LOG.info("Hentet {} sak{}", saker.size(), endelse(saker));
-        if (!saker.isEmpty()) {
-            LOG.info(CONFIDENTIAL, "{}", saker);
+        LOG.info("Hentet {} sak{}", saker1.size(), endelse(saker1));
+        if (!saker1.isEmpty()) {
+            LOG.info(CONFIDENTIAL, "{}", saker1);
         }
-        return saker;
+        return saker1;
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> lenker, String saksnr) {
@@ -177,24 +173,17 @@ public class InnsynTjeneste implements Innsyn {
         return sak;
     }
 
-    private AnnenPart annenPart(String aktørId) {
+    private AnnenPart annenPart(AktørId aktørId) {
         if (aktørId != null) {
             LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
             Fødselsnummer fnr = fnr(aktørId);
             LOG.trace(CONFIDENTIAL, "Fikk {}", fnr);
-            return new AnnenPart(fnr, new AktørId(aktørId), navnFor(fnr));
+            return new AnnenPart(fnr, aktørId, navnFor(fnr));
         }
         return null;
     }
 
     private Navn navnFor(Fødselsnummer fnr) {
-        return Optional.ofNullable(fnr)
-                .map(Fødselsnummer::getFnr)
-                .map(this::navnFor)
-                .orElse(null);
-    }
-
-    private Navn navnFor(String fnr) {
         try {
             LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
             Navn navn = oppslag.hentNavn(fnr);
@@ -206,11 +195,10 @@ public class InnsynTjeneste implements Innsyn {
         }
     }
 
-    private Fødselsnummer fnr(String aktørId) {
+    private Fødselsnummer fnr(AktørId aktørId) {
         try {
             return Optional.ofNullable(aktørId)
-                    .map(AktørId::new)
-                    .map(oppslag::getFnr)
+                    .map(oppslag::hentFnr)
                     .orElse(null);
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp FNR for annen part for aktørid {}", aktørId);
@@ -295,7 +283,7 @@ public class InnsynTjeneste implements Innsyn {
                 .orElse(null);
     }
 
-    private Uttaksplan map(UttaksplanDTO dto) {
+    private Uttaksplan tilUttaksplan(UttaksplanDTO dto) {
         SøknadsGrunnlag grunnlag = new SøknadsGrunnlag(dto.getTermindato(), dto.getFødselsdato(),
                 dto.getOmsorgsovertakelsesdato(),
                 dto.getDekningsgrad(), dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(),

@@ -33,7 +33,7 @@ public class InnsynController {
 
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
-        return innsyn.saker(oppslag.getAktørId());
+        return innsyn.saker(oppslag.hentAktørId());
     }
 
     @GetMapping(value = "/uttaksplan")
@@ -43,12 +43,12 @@ public class InnsynController {
 
     @GetMapping(value = "/uttaksplanannen")
     public Uttaksplan uttaksplan(@RequestParam(name = "annenPart") Fødselsnummer annenPart) {
-        return innsyn.uttaksplan(oppslag.getAktørId(), oppslag.getAktørId(annenPart));
+        return innsyn.uttaksplan(oppslag.hentAktørId(), oppslag.hentAktørId(annenPart));
     }
 
     @GetMapping(value = "/vedtak")
     public Vedtak vedtak(@RequestParam(name = "saksnummer") String saksnummer) {
-        return innsyn.vedtak(oppslag.getAktørId(), saksnummer);
+        return innsyn.vedtak(oppslag.hentAktørId(), saksnummer);
     }
 
     @Override
