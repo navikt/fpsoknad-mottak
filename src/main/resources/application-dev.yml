@@ -18,6 +18,8 @@ management :
      health:
         show-details : always   
 spring:
+   codec:
+     log-request-details: true
    kafka:  
        consumer: 
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
