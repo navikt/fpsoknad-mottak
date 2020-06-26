@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.util.StringUtils.capitalize;
 
 import java.util.Map;
 import java.util.Objects;
@@ -22,9 +23,8 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonConnection.class);
     private final OrganisasjonConfig cfg;
 
-    public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient webClient,
-            OrganisasjonConfig cfg) {
-        super(webClient, cfg);
+    public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient client, OrganisasjonConfig cfg) {
+        super(client, cfg);
         this.cfg = cfg;
     }
 
@@ -39,7 +39,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                 .toEntity(Map.class)
                 .block()
                 .getBody())
-                .map(OrganisasjonMapper::map)
+                .map(OrganisasjonMapper::tilOrganisasjonsnavn)
                 .filter(Objects::nonNull)
                 .orElse(orgnr);
         LOG.trace("Hentet organisasjonsnavn {} for {}", navn, orgnr);
@@ -48,13 +48,12 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
 
     @Override
     public String name() {
-        return "Organisasjon";
+        return capitalize(ORGANISASJON.toLowerCase());
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[cfg=" + cfg + ", name()=" + name() + ", getWebClient()=" + getWebClient()
-                + "]";
+        return getClass().getSimpleName() + "[cfg=" + cfg + ", name=" + name() + ", client=" + getWebClient() + "]";
     }
 
 }

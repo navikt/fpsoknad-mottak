@@ -4,6 +4,7 @@ import static java.time.LocalDate.now;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.util.StringUtils.capitalize;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,10 +25,9 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     private final ArbeidsforholdConfig cfg;
     private final ArbeidsforholdMapper mapper;
 
-    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD) WebClient webClient,
-            ArbeidsforholdConfig cfg,
+    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD) WebClient client, ArbeidsforholdConfig cfg,
             ArbeidsforholdMapper mapper) {
-        super(webClient, cfg);
+        super(client, cfg);
         this.cfg = cfg;
         this.mapper = mapper;
     }
@@ -46,7 +46,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .block()
                 .getBody()
                 .stream()
-                .map(mapper::map)
+                .map(mapper::tilArbeidsforhold)
                 .collect(toList());
         LOG.info("Hentet {} arbeidsforhold for {} -> {}", arbeidsforhold.size(), fom, tom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
@@ -55,7 +55,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
 
     @Override
     public String name() {
-        return "Arbeidsforhold";
+        return capitalize(ARBEIDSFORHOLD.toLowerCase());
     }
 
     @Override

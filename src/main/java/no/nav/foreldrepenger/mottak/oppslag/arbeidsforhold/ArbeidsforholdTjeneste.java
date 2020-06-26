@@ -19,6 +19,11 @@ public class ArbeidsforholdTjeneste implements Arbeidsforhold {
     }
 
     @Override
+    public String ping() {
+        return connection.ping();
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[connection=" + connection + "]";
     }

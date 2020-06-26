@@ -20,9 +20,9 @@ class OrganisasjonMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonMapper.class);
 
-    static String map(Map<?, ?> map) {
+    static String tilOrganisasjonsnavn(Map<?, ?> respons) {
         try {
-            var navn = get(map, NAVN, Map.class);
+            var navn = get(respons, NAVN, Map.class);
             return Joiner.on(", ")
                     .skipNulls()
                     .join(get(navn, NAVNELINJE1),
@@ -31,7 +31,7 @@ class OrganisasjonMapper {
                             get(navn, NAVNELINJE4),
                             get(navn, NAVNELINJE5));
         } catch (Exception e) {
-            LOG.warn("OOPS", e);
+            LOG.warn("KUnne ikke hente organisasjonsnavn fra respons {}", respons, e);
             return null;
         }
     }

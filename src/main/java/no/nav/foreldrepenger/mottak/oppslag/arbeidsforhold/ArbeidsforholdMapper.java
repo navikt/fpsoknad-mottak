@@ -42,7 +42,7 @@ class ArbeidsforholdMapper {
         this.organisasjon = organisasjon;
     }
 
-    EnkeltArbeidsforhold map(Map<?, ?> map) {
+    EnkeltArbeidsforhold tilArbeidsforhold(Map<?, ?> map) {
         var id = id(get(map, ARBEIDSGIVER, Map.class));
         var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE2, Map.class);
         return EnkeltArbeidsforhold.builder()
