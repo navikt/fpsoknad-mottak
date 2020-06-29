@@ -30,20 +30,25 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
 
     @Cacheable(cacheNames = "organisasjon")
     public String organisasjonsNavn(String orgnr) {
-        LOG.trace("Henter organisasjonsnavn for {}", orgnr);
-        var navn = Optional.ofNullable(getWebClient()
-                .get()
-                .uri(b -> cfg.getOrganisasjonURI(b, orgnr))
-                .accept(APPLICATION_JSON)
-                .retrieve()
-                .toEntity(Map.class)
-                .block()
-                .getBody())
-                .map(OrganisasjonMapper::tilOrganisasjonsnavn)
-                .filter(Objects::nonNull)
-                .orElse(orgnr);
-        LOG.trace("Hentet organisasjonsnavn {} for {}", navn, orgnr);
-        return navn;
+        LOG.info("Henter organisasjonsnavn for {}", orgnr);
+        try {
+            var navn = Optional.ofNullable(getWebClient()
+                    .get()
+                    .uri(b -> cfg.getOrganisasjonURI(b, orgnr))
+                    .accept(APPLICATION_JSON)
+                    .retrieve()
+                    .toEntity(Map.class)
+                    .block()
+                    .getBody())
+                    .map(OrganisasjonMapper::tilOrganisasjonsnavn)
+                    .filter(Objects::nonNull)
+                    .orElse(orgnr);
+            LOG.info("Hentet organisasjonsnavn {} for {}", navn, orgnr);
+            return navn;
+        } catch (Exception e) {
+            LOG.warn("Fant ikke organisasjonsnavn for {}", orgnr);
+            return "Ikke eksisterende organisasjon - " + orgnr;
+        }
     }
 
     @Override
