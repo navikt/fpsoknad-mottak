@@ -41,8 +41,8 @@ sts:
   base-uri: https://security-token-service.nais.preprod.local    
   log: true   
 fpfordel:
-  base-uri: http://fpfordel.q1.svc.nais.local
+  base-uri: http://fpfordel.q1
 innsyn:
-   base-uri: http://fpinfo.q1.svc.nais.local
+   base-uri: http://fpinfo.q1
      
   
