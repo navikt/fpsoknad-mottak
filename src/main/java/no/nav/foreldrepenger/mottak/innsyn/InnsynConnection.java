@@ -1,15 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.AKTOR_ID;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.ANNENFORELDERPLAN;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.ANNENPART;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.BRUKER;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAK;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.SAKSNUMMER;
-import static no.nav.foreldrepenger.mottak.innsyn.InnsynConfig.UTTAKSPLAN;
-import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -48,43 +39,46 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public URI pingEndpoint() {
-        return uri(config.getBaseUri(), config.getPingPath());
+        return config.pingURI();
     }
 
-    public List<SakDTO> saker(String aktørId) {
+    @Override
+    public String name() {
+        return config.name();
+    }
+
+    List<SakDTO> saker(String aktørId) {
         LOG.trace("Henter saker for {}", aktørId);
         return Optional.ofNullable(
-                getForObject(uri(config.getBaseUri(), SAK, queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
+                getForObject(config.sakURI(aktørId), SakDTO[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
 
-    public UttaksplanDTO uttaksplan(String saksnummer) {
+    UttaksplanDTO uttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan for sak {}", saksnummer);
-        return getForObject(uri(config.getBaseUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)),
-                UttaksplanDTO.class);
+        return getForObject(config.uttaksplanURI(saksnummer), UttaksplanDTO.class);
     }
 
-    public UttaksplanDTO uttaksplan(AktørId aktørId, AktørId annenPart) {
+    UttaksplanDTO uttaksplan(AktørId aktørId, AktørId annenPart) {
         LOG.trace("Henter uttaksplan for {} med annen part {}", aktørId, annenPart);
         try {
-            return getForObject(uri(config.getBaseUri(), ANNENFORELDERPLAN,
-                    queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId())), UttaksplanDTO.class);
+            return getForObject(config.uttaksplanURI(aktørId, annenPart), UttaksplanDTO.class);
         } catch (Exception e) {
-            LOG.warn("Kunne ikke hente uttaksplan for annen part {}", annenPart);
+            LOG.warn("Kunne ikke hente uttaksplan for annen part {}", annenPart, e);
             return null;
         }
     }
 
-    public BehandlingDTO behandling(Lenke lenke) {
+    BehandlingDTO behandling(Lenke lenke) {
         return hent(lenke, BehandlingDTO.class);
     }
 
-    public VedtakDTO vedtak(Lenke lenke) {
+    VedtakDTO vedtak(Lenke lenke) {
         return hent(lenke, VedtakDTO.class);
     }
 
-    public SøknadDTO søknad(Lenke lenke) {
+    SøknadDTO søknad(Lenke lenke) {
         return hent(lenke, SøknadDTO.class);
     }
 
@@ -92,13 +86,8 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         return Optional.ofNullable(lenke)
                 .map(Lenke::getHref)
                 .filter(Objects::nonNull)
-                .map(l -> getForObject(URI.create(config.getBaseUri() + l), clazz))
+                .map(l -> getForObject(config.createLink(l), clazz))
                 .orElse(null);
-    }
-
-    @Override
-    public String name() {
-        return config.getBaseUri().getHost();
     }
 
     @Override

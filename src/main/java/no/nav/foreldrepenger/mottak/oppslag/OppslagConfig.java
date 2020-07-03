@@ -1,92 +1,105 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
+import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
+
 import java.net.URI;
-import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
-@ConfigurationProperties(prefix = "oppslag", ignoreInvalidFields = true)
-@Configuration
+import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+
+@ConfigurationProperties(prefix = "oppslag")
 public class OppslagConfig {
     private static final String AKTØR = "oppslag/aktor";
     private static final String AKTØRFNR = "oppslag/aktorfnr";
     private static final String FNR = "oppslag/fnr";
     private static final String PERSON = "person";
     private static final String PERSONNAVN = "person/navn";
-    private static final URI DEFAULT_BASE_URI = URI.create("http://fpsoknad-oppslag/api");
+    private static final String DEFAULT_BASE_URI = "http://fpsoknad-oppslag/api";
     private static final String DEFAULT_PING_PATH = "actuator/health/liveness";
-    private String pingPath;
-    private String aktørPath;
-    private String aktørFnrPath;
-    private String fnrPath;
-    private String personPath;
-    private String personNavnPath;
-    private boolean enabled;
-    private URI baseUri;
+    private final String pingPath;
+    private final String aktorPath;
+    private final String aktorFnrPath;
+    private final String fnrPath;
+    private final String personPath;
+    private final String personNavnPath;
+    private final boolean enabled;
+    private final URI baseUri;
 
-    public String getPersonNavnPath() {
-        return Optional.ofNullable(personNavnPath).orElse(PERSONNAVN);
-    }
-
-    public void setPersonFnrPath(String personNavnPath) {
-        this.personNavnPath = personNavnPath;
-    }
-
-    public String getPersonPath() {
-        return Optional.ofNullable(personPath).orElse(PERSON);
-    }
-
-    public void setPersonPath(String personPath) {
-        this.personPath = personPath;
-    }
-
-    public String getFnrPath() {
-        return Optional.ofNullable(fnrPath).orElse(FNR);
-    }
-
-    public void setFnrPath(String fnrPath) {
+    @ConstructorBinding
+    public OppslagConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath, @DefaultValue(AKTØR) String aktorPath,
+            @DefaultValue(AKTØRFNR) String aktorFnrPath,
+            @DefaultValue(FNR) String fnrPath, @DefaultValue(PERSON) String personPath,
+            @DefaultValue(PERSONNAVN) String personNavnPath, @DefaultValue("true") boolean enabled,
+            @DefaultValue(DEFAULT_BASE_URI) URI baseUri) {
+        this.pingPath = pingPath;
+        this.aktorPath = aktorPath;
+        this.aktorFnrPath = aktorFnrPath;
         this.fnrPath = fnrPath;
-    }
-
-    public String getAktørPath() {
-        return Optional.ofNullable(aktørPath).orElse(AKTØR);
-    }
-
-    public void setAktørPath(String aktørPath) {
-        this.aktørPath = aktørPath;
-    }
-
-    public String getAktørFnrPath() {
-        return Optional.ofNullable(aktørFnrPath).orElse(AKTØRFNR);
-    }
-
-    public void setAktørFnrPath(String aktørFnrPath) {
-        this.aktørFnrPath = aktørFnrPath;
-    }
-
-    public URI getBaseUri() {
-        return Optional.ofNullable(baseUri).orElse(DEFAULT_BASE_URI);
-    }
-
-    public void setBaseUri(URI baseUri) {
+        this.personPath = personPath;
+        this.personNavnPath = personNavnPath;
+        this.enabled = enabled;
         this.baseUri = baseUri;
     }
 
-    public boolean isEnabled() {
+    String getPersonNavnPath() {
+        return personNavnPath;
+    }
+
+    String getPersonPath() {
+        return personPath;
+    }
+
+    String getFnrPath() {
+        return fnrPath;
+    }
+
+    String getAktorPath() {
+        return aktorPath;
+    }
+
+    String getAktorFnrPath() {
+        return aktorFnrPath;
+    }
+
+    URI getBaseUri() {
+        return baseUri;
+    }
+
+    boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    String getPingPath() {
+        return pingPath;
     }
 
-    public String getPingPath() {
-        return Optional.ofNullable(pingPath).orElse(DEFAULT_PING_PATH);
+    URI pingUri() {
+        return uri(getBaseUri(), getPingPath());
     }
 
-    public void setPingPath(String pingPath) {
-        this.pingPath = pingPath;
+    URI aktørUri() {
+        return uri(getBaseUri(), getAktorPath());
+    }
+
+    URI personUri() {
+        return uri(getBaseUri(), getPersonPath());
+    }
+
+    URI aktørFnrUri(Fødselsnummer fnr) {
+        return uri(getBaseUri(), getAktorFnrPath(), queryParams("fnr", fnr.getFnr()));
+    }
+
+    URI navnUri(Fødselsnummer fnr) {
+        return uri(getBaseUri(), getPersonNavnPath(), queryParams("fnr", fnr.getFnr()));
+    }
+
+    URI fnrUri(AktørId aktørId) {
+        return uri(getBaseUri(), getFnrPath(), queryParams("aktorId", aktørId.getId()));
     }
 
     @Override
@@ -94,4 +107,5 @@ public class OppslagConfig {
         return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", url=" + baseUri
                 + "]";
     }
+
 }

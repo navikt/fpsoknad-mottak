@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
-import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
-
 import java.net.URI;
 
 import org.slf4j.Logger;
@@ -34,30 +31,26 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
 
     @Override
     public URI pingEndpoint() {
-        return uri(cfg.getBaseUri(), cfg.getPingPath());
+        return cfg.pingUri();
     }
 
-    public Person hentSøker() {
+    Person hentSøker() {
         LOG.trace("Henter søker");
-        Person søker = getForObject(uri(cfg.getBaseUri(), cfg.getPersonPath()), Person.class);
-        søker.setAktørId(getForObject(uri(cfg.getBaseUri(), cfg.getAktørPath()), AktørId.class));
+        Person søker = getForObject(cfg.personUri(), Person.class);
+        søker.setAktørId(getForObject(cfg.aktørUri(), AktørId.class));
         return søker;
     }
 
-    public AktørId hentAktørId(Fødselsnummer fnr) {
-        return getForObject(
-                uri(cfg.getBaseUri(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktørId.class, true);
+    AktørId hentAktørId(Fødselsnummer fnr) {
+        return getForObject(cfg.aktørFnrUri(fnr), AktørId.class, true);
     }
 
     public Navn hentNavn(Fødselsnummer fnr) {
-        return getForObject(uri(cfg.getBaseUri(), cfg.getPersonNavnPath(), queryParams("fnr", fnr.getFnr())),
-                Navn.class);
+        return getForObject(cfg.navnUri(fnr), Navn.class);
     }
 
     public Fødselsnummer hentFnr(AktørId aktørId) {
-        return getForObject(
-                uri(cfg.getBaseUri(), cfg.getFnrPath(), queryParams("aktorId", aktørId.getId())), Fødselsnummer.class,
-                true);
+        return getForObject(cfg.fnrUri(aktørId), Fødselsnummer.class, true);
     }
 
     @Override
