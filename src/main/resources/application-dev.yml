@@ -4,10 +4,6 @@ no.nav:
        issuer:
          selvbetjening:
             discovery-url: https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1
-mottak:
-   sender:
-      domainevent:
-         enabled : true
 
 management :
    endpoints:
@@ -44,5 +40,12 @@ fpfordel:
   base-uri: http://fpfordel.q1
 innsyn:
    base-uri: http://fpinfo.q1
+oppslag:
+  base-uri: http://fpsoknad-oppslag/api
+mottak:
+   sender:
+      domainevent:
+         enabled : true
+       
      
   
