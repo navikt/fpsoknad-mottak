@@ -4,13 +4,13 @@ mottak:
          enabled: true
          topic: fpsoknad-mottak
 oppslag:
-  base-uri: http://fpsoknad-oppslag.default.svc.nais.local/api
+  base-uri: http://fpsoknad-oppslag.default/api
   
 fpfordel:
-  base-uri: http://fpfordel.default.svc.nais.local
+  base-uri: http://fpfordel.default
       
 innsyn:
-   base-uri: http://fpinfo.default.svc.nais.local
+   base-uri: http://fpinfo.default
    
 no.nav:
    security.jwt.issuer.selvbetjening:
