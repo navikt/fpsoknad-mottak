@@ -1,5 +1,5 @@
 {
-  "namespace" "teamforeldrepenger",
+  "namespace": "teamforeldrepenger",
   "ingresses":  ["https://fpsoknad-mottak.nais.preprod.local", 
                  "https://fpsoknad-mottak.dev-fss.nais.io"],
    "env": {
