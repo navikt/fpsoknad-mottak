@@ -21,8 +21,16 @@ public class OrganisasjonConfig extends AbstractConfig {
     @ConstructorBinding
     public OrganisasjonConfig(String baseUri,
             @DefaultValue(V1_ORGANISASJON) String organisasjonPath) {
-        super(baseUri, newInstance().path(organisasjonPath).pathSegment(NAV).build().toUriString());
+        super(baseUri, pingPath(organisasjonPath));
         this.organisasjonPath = organisasjonPath;
+    }
+
+    private static String pingPath(String organisasjonPath) {
+        return newInstance()
+                .path(organisasjonPath)
+                .pathSegment(NAV)
+                .build()
+                .toUriString();
     }
 
     URI getOrganisasjonURI(UriBuilder b, String orgnr) {

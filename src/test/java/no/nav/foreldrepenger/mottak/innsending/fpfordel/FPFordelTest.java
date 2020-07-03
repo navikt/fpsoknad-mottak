@@ -88,7 +88,7 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class FPFordelTest {
 
     private static final AktørId AKTØRID = new AktørId("1111111111");
-    private static final String FPFORDELURIBASE = "http://some.host.for.fpfordel";
+    private static final URI FPFORDELURIBASE = URI.create("http://some.host.for.fpfordel");
     private static final String FPFORDELPOLLURISTRING = FPFORDELURIBASE + "/poll/id";
     private static final String FPINFOURISTRING = "http://some.host.for.fpinfo/status";
 
@@ -131,9 +131,7 @@ public class FPFordelTest {
 
     @BeforeEach
     public void before() {
-        cfg = new FordelConfig();
-        cfg.setEnabled(true);
-        cfg.setBaseUri(URI.create(FPFORDELURIBASE));
+        cfg = new FordelConfig(FPFORDELURIBASE, null, null, true);
 
         when(oppslag.hentAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
         when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);

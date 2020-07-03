@@ -34,6 +34,19 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return cfg.pingUri();
     }
 
+    @Override
+    public String name() {
+        return cfg.name();
+    }
+
+    public Navn hentNavn(Fødselsnummer fnr) {
+        return getForObject(cfg.navnUri(fnr), Navn.class);
+    }
+
+    public Fødselsnummer hentFnr(AktørId aktørId) {
+        return getForObject(cfg.fnrUri(aktørId), Fødselsnummer.class, true);
+    }
+
     Person hentSøker() {
         LOG.trace("Henter søker");
         Person søker = getForObject(cfg.personUri(), Person.class);
@@ -45,21 +58,8 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return getForObject(cfg.aktørFnrUri(fnr), AktørId.class, true);
     }
 
-    public Navn hentNavn(Fødselsnummer fnr) {
-        return getForObject(cfg.navnUri(fnr), Navn.class);
-    }
-
-    public Fødselsnummer hentFnr(AktørId aktørId) {
-        return getForObject(cfg.fnrUri(aktørId), Fødselsnummer.class, true);
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [cfg=" + cfg + "]";
-    }
-
-    @Override
-    public String name() {
-        return "fpsoknad-oppslag";
     }
 }

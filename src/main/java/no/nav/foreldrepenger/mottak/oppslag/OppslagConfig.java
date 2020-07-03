@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import static no.nav.foreldrepenger.mottak.Constants.FNR;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
@@ -14,11 +15,11 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
 @ConfigurationProperties(prefix = "oppslag")
 public class OppslagConfig {
-    private static final String AKTØR = "oppslag/aktor";
-    private static final String AKTØRFNR = "oppslag/aktorfnr";
-    private static final String FNR = "oppslag/fnr";
-    private static final String PERSON = "person";
-    private static final String PERSONNAVN = "person/navn";
+    private static final String DEFAULT_AKTØR_PATH = "oppslag/aktor";
+    private static final String DEFAULT_AKTØRFNR_PATH = "oppslag/aktorfnr";
+    private static final String DEFAULT_FNR_PATH = "oppslag/fnr";
+    private static final String DEFAULT_PERSON_PATH = "person";
+    private static final String DEFAULT_PERSONNAVN_PATH = "person/navn";
     private static final String DEFAULT_BASE_URI = "http://fpsoknad-oppslag/api";
     private static final String DEFAULT_PING_PATH = "actuator/health/liveness";
     private final String pingPath;
@@ -31,10 +32,13 @@ public class OppslagConfig {
     private final URI baseUri;
 
     @ConstructorBinding
-    public OppslagConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath, @DefaultValue(AKTØR) String aktorPath,
-            @DefaultValue(AKTØRFNR) String aktorFnrPath,
-            @DefaultValue(FNR) String fnrPath, @DefaultValue(PERSON) String personPath,
-            @DefaultValue(PERSONNAVN) String personNavnPath, @DefaultValue("true") boolean enabled,
+    public OppslagConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
+            @DefaultValue(DEFAULT_AKTØR_PATH) String aktorPath,
+            @DefaultValue(DEFAULT_AKTØRFNR_PATH) String aktorFnrPath,
+            @DefaultValue(DEFAULT_FNR_PATH) String fnrPath,
+            @DefaultValue(DEFAULT_PERSON_PATH) String personPath,
+            @DefaultValue(DEFAULT_PERSONNAVN_PATH) String personNavnPath,
+            @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_BASE_URI) URI baseUri) {
         this.pingPath = pingPath;
         this.aktorPath = aktorPath;
@@ -91,15 +95,19 @@ public class OppslagConfig {
     }
 
     URI aktørFnrUri(Fødselsnummer fnr) {
-        return uri(getBaseUri(), getAktorFnrPath(), queryParams("fnr", fnr.getFnr()));
+        return uri(getBaseUri(), getAktorFnrPath(), queryParams(FNR, fnr.getFnr()));
     }
 
     URI navnUri(Fødselsnummer fnr) {
-        return uri(getBaseUri(), getPersonNavnPath(), queryParams("fnr", fnr.getFnr()));
+        return uri(getBaseUri(), getPersonNavnPath(), queryParams(FNR, fnr.getFnr()));
     }
 
     URI fnrUri(AktørId aktørId) {
         return uri(getBaseUri(), getFnrPath(), queryParams("aktorId", aktørId.getId()));
+    }
+
+    String name() {
+        return getBaseUri().getHost();
     }
 
     @Override

@@ -3,63 +3,56 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
-import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @ConfigurationProperties(prefix = "fpfordel")
-@Configuration
 public class FordelConfig {
 
-    public static final String PING_PATH = "fpfordel/internal/health/isAlive";
-    public static final String BASE_PATH = "fpfordel/api/dokumentforsendelse";
+    private static final String DEFAULT_PING_PATH = "fpfordel/internal/health/isAlive";
+    private static final String DEFAULT_BASE_PATH = "fpfordel/api/dokumentforsendelse";
 
-    public static final URI DEFAULT_URI = URI.create("http://fpfordel");
+    private static final String DEFAULT_URI = "http://fpfordel";
 
-    String pingPath;
-    String basePath;
+    private final String pingPath;
+    private final String basePath;
+    private final boolean enabled;
+    private final URI baseUri;
 
-    boolean enabled;
-    URI baseUri;
-
-    public String getBasePath() {
-        return Optional.ofNullable(basePath).orElse(BASE_PATH);
-    }
-
-    public void setBasePath(String basePath) {
+    @ConstructorBinding
+    public FordelConfig(@DefaultValue(DEFAULT_URI) URI baseUri,
+            @DefaultValue(DEFAULT_PING_PATH) String pingPath,
+            @DefaultValue(DEFAULT_BASE_PATH) String basePath,
+            @DefaultValue("true") boolean enabled) {
+        this.pingPath = pingPath;
         this.basePath = basePath;
-    }
-
-    public URI getBaseUri() {
-        return Optional.ofNullable(baseUri).orElse(DEFAULT_URI);
-    }
-
-    public void setBaseUri(URI baseUri) {
+        this.enabled = enabled;
         this.baseUri = baseUri;
     }
 
-    public boolean isEnabled() {
+    String getBasePath() {
+        return basePath;
+    }
+
+    URI getBaseUri() {
+        return baseUri;
+    }
+
+    boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public String getPingPath() {
-        return Optional.ofNullable(pingPath).orElse(PING_PATH);
+        return pingPath;
     }
 
-    public void setPingPath(String pingPath) {
-        this.pingPath = pingPath;
-    }
-
-    public URI fordelEndpoint() {
+    URI fordelEndpoint() {
         return uri(getBaseUri(), getBasePath());
     }
 
-    public URI pingEndpoint() {
+    URI pingEndpoint() {
         return uri(getBaseUri(), getPingPath());
     }
 
