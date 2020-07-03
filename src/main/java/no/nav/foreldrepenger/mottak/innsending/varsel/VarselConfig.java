@@ -6,33 +6,35 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @ConfigurationProperties(prefix = "varsel")
-@Configuration
 public class VarselConfig {
 
-    @NotNull
-    String hostname;
-    @Positive
-    int port;
-    @NotNull
-    String name;
-    @NotNull
-    String queueName;
-    @NotNull
-    String channelname;
-    boolean enabled = false;
-    @NotNull
-    String username;
+    private final String hostname;
+    private final int port;
+    private final String name;
+
+    private final String queueName;
+    private final String channelname;
+    private final boolean enabled;
+    private final String username;
+
+    @ConstructorBinding
+    public VarselConfig(@NotNull String hostname, @Positive int port, @NotNull String name, @NotNull String queueName,
+            @NotNull String channelname, boolean enabled, @NotNull String username) {
+        this.hostname = hostname;
+        this.port = port;
+        this.name = name;
+        this.queueName = queueName;
+        this.channelname = channelname;
+        this.enabled = enabled;
+        this.username = username;
+    }
 
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public String getChannelname() {
@@ -43,44 +45,20 @@ public class VarselConfig {
         return port;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getQueueName() {
         return queueName;
     }
 
-    public void setQueueName(String queueName) {
-        this.queueName = queueName;
-    }
-
     public String getHostname() {
         return hostname;
     }
 
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
-    }
-
-    public void setChannelname(String channelname) {
-        this.channelname = channelname;
-    }
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public URI getURI() {

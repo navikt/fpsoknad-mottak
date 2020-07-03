@@ -32,7 +32,7 @@ public class PdfGeneratorConnection extends AbstractRestConnection implements Pi
         this.config = config;
     }
 
-    public byte[] genererPdf(DokumentBestilling dto) {
+    byte[] genererPdf(DokumentBestilling dto) {
         logJSON(dto);
         return postIfEnabled(uri(config.getUri(), ENGANGSSTØNAD), dto);
     }
@@ -42,7 +42,7 @@ public class PdfGeneratorConnection extends AbstractRestConnection implements Pi
             return postForObject(uri, body, byte[].class);
         }
         LOG.info("PdfGenerator er ikke aktivert");
-        return null;
+        return new byte[0];
     }
 
     private void logJSON(DokumentBestilling dto) {
@@ -60,12 +60,12 @@ public class PdfGeneratorConnection extends AbstractRestConnection implements Pi
 
     @Override
     public URI pingEndpoint() {
-        return uri(config.getUri(), config.getPingPath());
+        return config.pingUri();
     }
 
     @Override
     public String name() {
-        return config.getUri().getHost();
+        return config.name();
     }
 
     @Override

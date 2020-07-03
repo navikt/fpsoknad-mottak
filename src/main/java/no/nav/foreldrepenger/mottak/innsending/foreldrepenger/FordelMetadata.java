@@ -30,7 +30,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
@@ -91,8 +90,8 @@ public class FordelMetadata {
     }
 
     private static List<Del> søknadsDeler(Søknad søknad, SøknadType søknadType) {
-        final AtomicInteger id = new AtomicInteger(1);
-        List<Del> dokumenter = newArrayList(søknadsDel(id, søknad, søknadType), søknadsDel(id, søknad, søknadType));
+        var id = new AtomicInteger(1);
+        var dokumenter = newArrayList(søknadsDel(id, søknad, søknadType), søknadsDel(id, søknad, søknadType));
         dokumenter.addAll(safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
@@ -101,8 +100,8 @@ public class FordelMetadata {
     }
 
     private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad, SøknadType søknadType) {
-        final AtomicInteger id = new AtomicInteger(1);
-        List<Del> dokumenter = newArrayList(endringsøknadsDel(id, søknadType),
+        var id = new AtomicInteger(1);
+        var dokumenter = newArrayList(endringsøknadsDel(id, søknadType),
                 endringsøknadsDel(id, søknadType));
         dokumenter.addAll(safeStream(endringssøknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
@@ -112,7 +111,7 @@ public class FordelMetadata {
     }
 
     private static List<Del> ettersendingsDeler(Ettersending ettersending) {
-        AtomicInteger id = new AtomicInteger(1);
+        var id = new AtomicInteger(1);
         return safeStream(ettersending.getVedlegg())
                 .map(s -> vedleggsDel(s, id))
                 .collect(toList());
@@ -135,19 +134,19 @@ public class FordelMetadata {
 
     private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType søknadType) {
         switch (søknadType.fagsakType()) {
-        case FORELDREPENGER:
-            return dokumentTypeFraRelasjonForForeldrepenger(søknad);
-        case ENGANGSSTØNAD:
-            return dokumentTypeFraRelasjonForEngangsstønad(søknad);
-        case SVANGERSKAPSPENGER:
-            return I000001;
-        default:
-            throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
+            case FORELDREPENGER:
+                return dokumentTypeFraRelasjonForForeldrepenger(søknad);
+            case ENGANGSSTØNAD:
+                return dokumentTypeFraRelasjonForEngangsstønad(søknad);
+            case SVANGERSKAPSPENGER:
+                return I000001;
+            default:
+                throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
         }
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
-        RelasjonTilBarn relasjon = ((Engangsstønad) søknad.getYtelse()).getRelasjonTilBarn();
+        var relasjon = ((Engangsstønad) søknad.getYtelse()).getRelasjonTilBarn();
         if (relasjon instanceof Fødsel
                 || relasjon instanceof FremtidigFødsel) {
             return I000003;
@@ -160,7 +159,7 @@ public class FordelMetadata {
     }
 
     private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
-        RelasjonTilBarn relasjon = ((Foreldrepenger) søknad.getYtelse()).getRelasjonTilBarn();
+        var relasjon = ((Foreldrepenger) søknad.getYtelse()).getRelasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;
         }

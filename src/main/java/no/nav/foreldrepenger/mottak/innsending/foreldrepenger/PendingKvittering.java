@@ -42,19 +42,11 @@ public class PendingKvittering extends FordelKvittering {
             return false;
         }
         PendingKvittering other = (PendingKvittering) obj;
-        if (pollInterval == null) {
-            if (other.pollInterval != null) {
-                return false;
-            }
-        } else if (!pollInterval.equals(other.pollInterval)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(pollInterval, other.pollInterval);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [pollInterval=" + pollInterval + "]";
     }
-
 }

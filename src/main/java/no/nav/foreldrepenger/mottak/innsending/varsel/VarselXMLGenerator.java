@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
@@ -31,7 +29,6 @@ public class VarselXMLGenerator {
     static final String URL_VALUE = "https://foreldrepenger.nav.no";
     private final V1VarselJAXBUtil jaxb;
 
-    @Inject
     public VarselXMLGenerator() {
         this(true);
     }

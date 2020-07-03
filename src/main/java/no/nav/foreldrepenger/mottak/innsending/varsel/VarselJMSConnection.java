@@ -24,11 +24,11 @@ public class VarselJMSConnection implements VarselConnection {
     private static final Logger LOG = LoggerFactory.getLogger(VarselJMSConnection.class);
 
     private final JmsTemplate template;
-    private final VarselConfig varselConfig;
+    private final VarselConfig cfg;
 
-    public VarselJMSConnection(JmsTemplate template, VarselConfig varselConfig) {
+    public VarselJMSConnection(JmsTemplate template, VarselConfig cfg) {
         this.template = template;
-        this.varselConfig = varselConfig;
+        this.cfg = cfg;
     }
 
     @Override
@@ -37,18 +37,18 @@ public class VarselJMSConnection implements VarselConnection {
             template.getConnectionFactory().createConnection().close();
             return name() + " er i live på " + pingEndpoint();
         } catch (JMSException e) {
-            LOG.warn("Kunne ikke pinge {}-kø ({})", name(), varselConfig.getURI(), e);
+            LOG.warn("Kunne ikke pinge {}-kø ({})", name(), cfg.getURI(), e);
             throw new IllegalArgumentException("Kunne ikke pinge " + name() + "-kø", e);
         }
     }
 
     @Override
     public URI pingEndpoint() {
-        return varselConfig.getURI();
+        return cfg.getURI();
     }
 
     private boolean isEnabled() {
-        return getConfig().isEnabled();
+        return cfg.isEnabled();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class VarselJMSConnection implements VarselConnection {
     @Override
     public void varsle(String xml) {
         if (isEnabled()) {
-            LOG.info("Legger melding for varsel på {}-kø ({})", name(), varselConfig.getURI());
+            LOG.info("Legger melding for varsel på {}-kø ({})", name(), cfg.getURI());
             try {
                 template.send(session -> {
                     TextMessage msg = session.createTextMessage(xml);
@@ -68,7 +68,7 @@ public class VarselJMSConnection implements VarselConnection {
                 });
                 VARSEL_SUCCESS.increment();
             } catch (JmsException swallow) {
-                LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), varselConfig.getURI(), swallow);
+                LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), cfg.getURI(), swallow);
                 VARSEL_FAILED.increment();
             }
         } else {
@@ -77,13 +77,9 @@ public class VarselJMSConnection implements VarselConnection {
 
     }
 
-    VarselConfig getConfig() {
-        return varselConfig;
-    }
-
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [template=" + template + ", varselConfig=" + varselConfig.getURI() + "]";
+        return getClass().getSimpleName() + " [template=" + template + ", varselConfig=" + cfg.getURI() + "]";
     }
 
 }

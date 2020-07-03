@@ -59,7 +59,7 @@ public class KonvoluttGenerator {
     }
 
     public Konvolutt generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        AtomicInteger id = new AtomicInteger(1);
+        var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
         builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.getAktørId()), APPLICATION_JSON);
         builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
@@ -75,7 +75,7 @@ public class KonvoluttGenerator {
     }
 
     public Konvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
-        AtomicInteger id = new AtomicInteger(1);
+        var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
         builder.part(METADATA, metadataFor(endringsøknad, egenskap.getType(), søker.getAktørId()),
                 APPLICATION_JSON);
@@ -92,7 +92,7 @@ public class KonvoluttGenerator {
     }
 
     public Konvolutt generer(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
-        AtomicInteger id = new AtomicInteger(1);
+        var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
         builder.part(METADATA, metadataFor(ettersending, søker.getAktørId()), APPLICATION_JSON);
         safeStream(ettersending.getVedlegg())
@@ -121,7 +121,7 @@ public class KonvoluttGenerator {
     }
 
     private static HttpHeaders headers() {
-        HttpHeaders headers = new HttpHeaders();
+        var headers = new HttpHeaders();
         headers.setContentType(MULTIPART_MIXED);
         return headers;
     }

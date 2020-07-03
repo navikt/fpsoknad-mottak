@@ -73,7 +73,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<GruppeBlokk> lagOverskrifter(Søknad søknad) {
-        var stønad = (Engangsstønad) søknad.getYtelse();
+        var stønad = Engangsstønad.class.cast(søknad.getYtelse());
         var medlemsskap = stønad.getMedlemsskap();
         var annenForelder = stønad.getAnnenForelder();
         List<GruppeBlokk> grupper = new ArrayList<>();

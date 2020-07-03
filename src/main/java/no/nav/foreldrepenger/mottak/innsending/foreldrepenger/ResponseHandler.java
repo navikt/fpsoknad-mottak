@@ -31,8 +31,7 @@ public class ResponseHandler extends AbstractRestConnection {
     private final int fpfordelMax;
     private final SakStatusPoller poller;
 
-    public ResponseHandler(RestOperations restOperations,
-            @Value("${fpfordel.max:10}") int maxAntallForsøk,
+    public ResponseHandler(RestOperations restOperations, @Value("${fpfordel.max:10}") int maxAntallForsøk,
             SakStatusPoller poller) {
         super(restOperations);
         this.fpfordelMax = maxAntallForsøk;
@@ -53,8 +52,7 @@ public class ResponseHandler extends AbstractRestConnection {
             case ACCEPTED:
                 if (fpFordelKvittering instanceof PendingKvittering) {
                     LOG.info("Søknaden er mottatt, men ennå ikke forsøkt behandlet i FPSak");
-                    PendingKvittering pending = PendingKvittering.class
-                            .cast(leveranseRespons.getBody());
+                    var pending = PendingKvittering.class.cast(leveranseRespons.getBody());
                     URI pollURI = locationFra(leveranseRespons);
                     for (int i = 1; i <= fpfordelMax; i++) {
                         LOG.info("Poller {} for {}. gang av {}, medgått tid er {}ms", pollURI, i,
@@ -82,7 +80,7 @@ public class ResponseHandler extends AbstractRestConnection {
                                 return new Kvittering(FP_FORDEL_MESSED_UP);
                             case SEE_OTHER:
                                 FORDELT_KVITTERING.increment();
-                                FPSakFordeltKvittering fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
+                                var fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
                                 return poller.poll(locationFra(fpInfoRespons), timer, pending.getPollInterval(),
                                         fordelt);
                             default:
@@ -129,6 +127,7 @@ public class ResponseHandler extends AbstractRestConnection {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [maxAntallForsøk=" + fpfordelMax + "]";
+        return getClass().getSimpleName() + " [fpfordelMax=" + fpfordelMax + ", poller=" + poller + "]";
     }
+
 }
