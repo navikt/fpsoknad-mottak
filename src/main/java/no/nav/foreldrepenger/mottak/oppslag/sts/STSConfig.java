@@ -26,10 +26,11 @@ public class STSConfig extends AbstractConfig {
     private final String stsPath;
 
     @ConstructorBinding
-    public STSConfig(String baseUri, @DefaultValue(DEFAULT_SLACK) Duration slack, String username, String password,
-            @DefaultValue(PING_PATH) String pingPath, @DefaultValue(DEFAULT_PATH) String stsPath,
-            boolean log) {
-        super(baseUri, pingPath, log);
+    public STSConfig(String baseUri,
+            @DefaultValue(DEFAULT_SLACK) Duration slack, String username, String password,
+            @DefaultValue(PING_PATH) String pingPath,
+            @DefaultValue(DEFAULT_PATH) String stsPath) {
+        super(baseUri, pingPath);
         this.stsPath = stsPath;
         this.slack = slack;
         this.username = username;

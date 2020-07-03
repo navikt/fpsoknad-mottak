@@ -32,8 +32,8 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     @ConstructorBinding
     public ArbeidsforholdConfig(String baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
             @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
-            @DefaultValue(TREÅR) Period tidTilbake, boolean sporingsinformasjon, boolean log) {
-        super(baseUri, pingPath, log);
+            @DefaultValue(TREÅR) Period tidTilbake, boolean sporingsinformasjon) {
+        super(baseUri, pingPath);
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.tidTilbake = tidTilbake;
         this.sporingsinformasjon = sporingsinformasjon;
@@ -72,7 +72,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     public String toString() {
         return getClass().getSimpleName() + "[arbeidsforholdPath=" + arbeidsforholdPath + ", historikk=" + historikk
                 + ", sporingsinformasjon=" + sporingsinformasjon + ", pingEndpoint=" + pingEndpoint() + "tidTilbake="
-                + tidTilbake + ", log=" + isLog() + "]";
+                + tidTilbake + "]";
     }
 
 }

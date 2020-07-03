@@ -20,8 +20,8 @@ public class OrganisasjonConfig extends AbstractConfig {
 
     @ConstructorBinding
     public OrganisasjonConfig(String baseUri,
-            @DefaultValue(V1_ORGANISASJON) String organisasjonPath, boolean log) {
-        super(baseUri, newInstance().path(organisasjonPath).pathSegment(NAV).build().toUriString(), log);
+            @DefaultValue(V1_ORGANISASJON) String organisasjonPath) {
+        super(baseUri, newInstance().path(organisasjonPath).pathSegment(NAV).build().toUriString());
         this.organisasjonPath = organisasjonPath;
     }
 
@@ -33,7 +33,7 @@ public class OrganisasjonConfig extends AbstractConfig {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[organisasjonPath=" + organisasjonPath + ", pingEndpoint="
-                + pingEndpoint() + ", log=" + isLog() + "]";
+                + pingEndpoint() + "]";
     }
 
 }
