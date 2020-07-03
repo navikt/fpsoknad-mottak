@@ -133,7 +133,7 @@ public class FPFordelTest {
     public void before() {
         cfg = new FordelConfig();
         cfg.setEnabled(true);
-        cfg.setUri(URI.create(FPFORDELURIBASE));
+        cfg.setBaseUri(URI.create(FPFORDELURIBASE));
 
         when(oppslag.hentAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
         when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);

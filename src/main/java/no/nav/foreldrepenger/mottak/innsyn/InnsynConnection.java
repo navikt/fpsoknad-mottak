@@ -48,26 +48,27 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public URI pingEndpoint() {
-        return uri(config.getUri(), config.getPingPath());
+        return uri(config.getBaseUri(), config.getPingPath());
     }
 
     public List<SakDTO> saker(String aktørId) {
         LOG.trace("Henter saker for {}", aktørId);
         return Optional.ofNullable(
-                getForObject(uri(config.getUri(), SAK, queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
+                getForObject(uri(config.getBaseUri(), SAK, queryParams(AKTOR_ID, aktørId)), SakDTO[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
     }
 
     public UttaksplanDTO uttaksplan(String saksnummer) {
         LOG.trace("Henter uttaksplan for sak {}", saksnummer);
-        return getForObject(uri(config.getUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)), UttaksplanDTO.class);
+        return getForObject(uri(config.getBaseUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer)),
+                UttaksplanDTO.class);
     }
 
     public UttaksplanDTO uttaksplan(AktørId aktørId, AktørId annenPart) {
         LOG.trace("Henter uttaksplan for {} med annen part {}", aktørId, annenPart);
         try {
-            return getForObject(uri(config.getUri(), ANNENFORELDERPLAN,
+            return getForObject(uri(config.getBaseUri(), ANNENFORELDERPLAN,
                     queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId())), UttaksplanDTO.class);
         } catch (Exception e) {
             LOG.warn("Kunne ikke hente uttaksplan for annen part {}", annenPart);
@@ -91,13 +92,13 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
         return Optional.ofNullable(lenke)
                 .map(Lenke::getHref)
                 .filter(Objects::nonNull)
-                .map(l -> getForObject(URI.create(config.getUri() + l), clazz))
+                .map(l -> getForObject(URI.create(config.getBaseUri() + l), clazz))
                 .orElse(null);
     }
 
     @Override
     public String name() {
-        return config.getUri().getHost();
+        return config.getBaseUri().getHost();
     }
 
     @Override
