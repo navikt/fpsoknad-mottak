@@ -34,29 +34,29 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
 
     @Override
     public URI pingEndpoint() {
-        return uri(cfg.getBaseURI(), cfg.getPingPath());
+        return uri(cfg.getBaseUri(), cfg.getPingPath());
     }
 
     public Person hentSøker() {
         LOG.trace("Henter søker");
-        Person søker = getForObject(uri(cfg.getBaseURI(), cfg.getPersonPath()), Person.class);
-        søker.setAktørId(getForObject(uri(cfg.getBaseURI(), cfg.getAktørPath()), AktørId.class));
+        Person søker = getForObject(uri(cfg.getBaseUri(), cfg.getPersonPath()), Person.class);
+        søker.setAktørId(getForObject(uri(cfg.getBaseUri(), cfg.getAktørPath()), AktørId.class));
         return søker;
     }
 
     public AktørId hentAktørId(Fødselsnummer fnr) {
         return getForObject(
-                uri(cfg.getBaseURI(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktørId.class, true);
+                uri(cfg.getBaseUri(), cfg.getAktørFnrPath(), queryParams("fnr", fnr.getFnr())), AktørId.class, true);
     }
 
     public Navn hentNavn(Fødselsnummer fnr) {
-        return getForObject(uri(cfg.getBaseURI(), cfg.getPersonNavnPath(), queryParams("fnr", fnr.getFnr())),
+        return getForObject(uri(cfg.getBaseUri(), cfg.getPersonNavnPath(), queryParams("fnr", fnr.getFnr())),
                 Navn.class);
     }
 
     public Fødselsnummer hentFnr(AktørId aktørId) {
         return getForObject(
-                uri(cfg.getBaseURI(), cfg.getFnrPath(), queryParams("aktorId", aktørId.getId())), Fødselsnummer.class,
+                uri(cfg.getBaseUri(), cfg.getFnrPath(), queryParams("aktorId", aktørId.getId())), Fødselsnummer.class,
                 true);
     }
 

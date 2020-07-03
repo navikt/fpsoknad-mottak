@@ -21,7 +21,7 @@ public class FordelConfig {
     String basePath;
 
     boolean enabled;
-    URI uri;
+    URI baseUri;
 
     public String getBasePath() {
         return Optional.ofNullable(basePath).orElse(BASE_PATH);
@@ -31,12 +31,12 @@ public class FordelConfig {
         this.basePath = basePath;
     }
 
-    public URI getUri() {
-        return Optional.ofNullable(uri).orElse(DEFAULT_URI);
+    public URI getBaseUri() {
+        return Optional.ofNullable(baseUri).orElse(DEFAULT_URI);
     }
 
-    public void setUri(URI uri) {
-        this.uri = uri;
+    public void setBaseUri(URI baseUri) {
+        this.baseUri = baseUri;
     }
 
     public boolean isEnabled() {
@@ -56,16 +56,16 @@ public class FordelConfig {
     }
 
     public URI fordelEndpoint() {
-        return uri(getUri(), getBasePath());
+        return uri(getBaseUri(), getBasePath());
     }
 
     public URI pingEndpoint() {
-        return uri(getUri(), getPingPath());
+        return uri(getBaseUri(), getPingPath());
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [enabled=" + enabled + ", uri=" + uri + "]";
+        return getClass().getSimpleName() + " [enabled=" + enabled + ", baseUri=" + getBaseUri() + "]";
     }
 
 }

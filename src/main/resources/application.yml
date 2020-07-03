@@ -3,6 +3,15 @@ mottak:
       domainevent:
          enabled: true
          topic: fpsoknad-mottak
+oppslag:
+  base-uri: http://fpsoknad-oppslag.default/api
+  
+fpfordel:
+  base-uri: http://fpfordel.default
+      
+innsyn:
+   base-uri: http://fpinfo.default   
+   
 no.nav:
    security.jwt.issuer.selvbetjening:
       discoveryurl: https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten

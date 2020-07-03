@@ -23,7 +23,7 @@ public class OppslagConfig {
     private String personPath;
     private String personNavnPath;
     private boolean enabled;
-    private URI baseURI;
+    private URI baseUri;
 
     public String getPersonNavnPath() {
         return Optional.ofNullable(personNavnPath).orElse(PERSONNAVN);
@@ -65,12 +65,12 @@ public class OppslagConfig {
         this.aktørFnrPath = aktørFnrPath;
     }
 
-    public URI getBaseURI() {
-        return Optional.ofNullable(baseURI).orElse(DEFAULT_BASE_URI);
+    public URI getBaseUri() {
+        return Optional.ofNullable(baseUri).orElse(DEFAULT_BASE_URI);
     }
 
-    public void setBaseURI(URI baseURI) {
-        this.baseURI = baseURI;
+    public void setBaseUri(URI baseUri) {
+        this.baseUri = baseUri;
     }
 
     public boolean isEnabled() {
@@ -91,7 +91,7 @@ public class OppslagConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", url=" + baseURI
+        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", url=" + baseUri
                 + "]";
     }
 }

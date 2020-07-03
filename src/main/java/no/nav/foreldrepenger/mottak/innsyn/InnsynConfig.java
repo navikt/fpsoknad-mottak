@@ -24,7 +24,7 @@ public class InnsynConfig {
     static final String BEHANDLING = DEFAULT_BASE_PATH + "behandling";
     String pingPath;
     boolean enabled;
-    URI uri;
+    URI baseUri;
     String basePath;
 
     public String getBasePath() {
@@ -35,12 +35,12 @@ public class InnsynConfig {
         this.basePath = basePath;
     }
 
-    public URI getUri() {
-        return Optional.ofNullable(uri).orElse(DEFAULT_URI);
+    public URI getBaseUri() {
+        return Optional.ofNullable(baseUri).orElse(DEFAULT_URI);
     }
 
-    public void setUri(URI uri) {
-        this.uri = uri;
+    public void setBaseUri(URI baseUri) {
+        this.baseUri = baseUri;
     }
 
     public boolean isEnabled() {
@@ -61,7 +61,7 @@ public class InnsynConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", uri=" + uri
+        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", uri=" + baseUri
                 + ", basePath=" + basePath
                 + "]";
     }
