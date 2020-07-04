@@ -15,16 +15,16 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ActiveProfiles(LOCAL)
-@EnableConfigurationProperties
+@EnableConfigurationProperties(VarselConfig.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         VarselSender.class,
-        VarselConfig.class,
         VoidVarselConnection.class,
         VarselConfiguration.class,
         VarselXMLGenerator.class
 })
 @TestPropertySource(properties = {
+        "varsel.enabled=false",
         "varsel.queueName=DEV.QUEUE.1",
         "varsel.port=1414",
         "varsel.channelname=DEV.APP.SVRCONN",

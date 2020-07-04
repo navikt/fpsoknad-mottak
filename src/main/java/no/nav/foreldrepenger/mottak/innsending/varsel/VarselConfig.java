@@ -2,9 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.varsel;
 
 import java.net.URI;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,8 +19,8 @@ public class VarselConfig {
     private final String username;
 
     @ConstructorBinding
-    public VarselConfig(@NotNull String hostname, @Positive int port, @NotNull String name, @NotNull String queueName,
-            @NotNull String channelname, boolean enabled, @NotNull String username) {
+    public VarselConfig(String hostname, int port, String name, String queueName,
+            String channelname, boolean enabled, String username) {
         this.hostname = hostname;
         this.port = port;
         this.name = name;
