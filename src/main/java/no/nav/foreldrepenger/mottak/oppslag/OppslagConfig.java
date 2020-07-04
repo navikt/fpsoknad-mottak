@@ -50,64 +50,36 @@ public class OppslagConfig {
         this.baseUri = baseUri;
     }
 
-    String getPersonNavnPath() {
-        return personNavnPath;
-    }
-
-    String getPersonPath() {
-        return personPath;
-    }
-
-    String getFnrPath() {
-        return fnrPath;
-    }
-
-    String getAktorPath() {
-        return aktorPath;
-    }
-
-    String getAktorFnrPath() {
-        return aktorFnrPath;
-    }
-
-    URI getBaseUri() {
-        return baseUri;
-    }
-
     boolean isEnabled() {
         return enabled;
     }
 
-    String getPingPath() {
-        return pingPath;
-    }
-
     URI pingUri() {
-        return uri(getBaseUri(), getPingPath());
+        return uri(baseUri, pingPath);
     }
 
     URI aktørUri() {
-        return uri(getBaseUri(), getAktorPath());
+        return uri(baseUri, aktorPath);
     }
 
     URI personUri() {
-        return uri(getBaseUri(), getPersonPath());
+        return uri(baseUri, personPath);
     }
 
     URI aktørFnrUri(Fødselsnummer fnr) {
-        return uri(getBaseUri(), getAktorFnrPath(), queryParams(FNR, fnr.getFnr()));
+        return uri(baseUri, aktorFnrPath, queryParams(FNR, fnr.getFnr()));
     }
 
     URI navnUri(Fødselsnummer fnr) {
-        return uri(getBaseUri(), getPersonNavnPath(), queryParams(FNR, fnr.getFnr()));
+        return uri(baseUri, personNavnPath, queryParams(FNR, fnr.getFnr()));
     }
 
     URI fnrUri(AktørId aktørId) {
-        return uri(getBaseUri(), getFnrPath(), queryParams("aktorId", aktørId.getId()));
+        return uri(baseUri, fnrPath, queryParams("aktorId", aktørId.getId()));
     }
 
     String name() {
-        return getBaseUri().getHost();
+        return baseUri.getHost();
     }
 
     @Override

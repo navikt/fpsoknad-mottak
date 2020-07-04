@@ -4,8 +4,8 @@ import java.util.List;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
+import no.nav.foreldrepenger.mottak.http.Pingable;
 import no.nav.foreldrepenger.mottak.http.RetryAware;
-import no.nav.foreldrepenger.mottak.innsending.Pingable;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 

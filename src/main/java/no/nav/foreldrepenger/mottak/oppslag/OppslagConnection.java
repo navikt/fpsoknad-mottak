@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 
 @Component
 public class OppslagConnection extends AbstractRestConnection implements PingEndpointAware {

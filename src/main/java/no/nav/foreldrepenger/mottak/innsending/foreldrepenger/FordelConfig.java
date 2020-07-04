@@ -36,33 +36,21 @@ public class FordelConfig {
         this.baseUri = baseUri;
     }
 
-    String getBasePath() {
-        return basePath;
-    }
-
-    URI getBaseUri() {
-        return baseUri;
-    }
-
     boolean isEnabled() {
         return enabled;
     }
 
-    public String getPingPath() {
-        return pingPath;
-    }
-
     URI fordelEndpoint() {
-        return uri(getBaseUri(), getBasePath());
+        return uri(baseUri, basePath);
     }
 
     URI pingEndpoint() {
-        return uri(getBaseUri(), getPingPath());
+        return uri(baseUri, pingPath);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [enabled=" + enabled + ", baseUri=" + getBaseUri() + "]";
+        return getClass().getSimpleName() + " [enabled=" + enabled + ", baseUri=" + baseUri + "]";
     }
 
 }

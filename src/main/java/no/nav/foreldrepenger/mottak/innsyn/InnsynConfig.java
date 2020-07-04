@@ -39,45 +39,33 @@ public class InnsynConfig {
         this.basePath = basePath;
     }
 
-    String getBasePath() {
-        return basePath;
-    }
-
-    URI getBaseUri() {
-        return baseUri;
-    }
-
     boolean isEnabled() {
         return enabled;
     }
 
-    String getPingPath() {
-        return pingPath;
-    }
-
     URI uttaksplanURI(String saksnummer) {
-        return uri(getBaseUri(), UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer));
+        return uri(baseUri, UTTAKSPLAN, queryParams(SAKSNUMMER, saksnummer));
     }
 
     URI sakURI(String aktørId) {
-        return uri(getBaseUri(), SAK, queryParams(AKTOR_ID, aktørId));
+        return uri(baseUri, SAK, queryParams(AKTOR_ID, aktørId));
     }
 
     URI pingURI() {
-        return uri(getBaseUri(), getPingPath());
+        return uri(baseUri, pingPath);
     }
 
     URI uttaksplanURI(AktørId aktørId, AktørId annenPart) {
-        return uri(getBaseUri(), ANNENFORELDERPLAN,
+        return uri(baseUri, ANNENFORELDERPLAN,
                 queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId()));
     }
 
     URI createLink(String l) {
-        return URI.create(getBaseUri() + l);
+        return URI.create(baseUri + l);
     }
 
     String name() {
-        return getBaseUri().getHost();
+        return baseUri.getHost();
     }
 
     @Override

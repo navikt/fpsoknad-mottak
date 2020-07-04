@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending;
+package no.nav.foreldrepenger.mottak.http;
 
 import java.net.URI;
 

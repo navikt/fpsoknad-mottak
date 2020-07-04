@@ -15,7 +15,7 @@ management:
           show-details : always
 
 varsel:
-    queuename: DEV.QUEUE.1
+    queue-name: DEV.QUEUE.1
     hostname: localhost
     port: 1414
     name: QM1
@@ -33,7 +33,8 @@ no.nav:
             accepted_audience: aud-localhost
             cookie_name: localhost-idtoken
             
-sts.uri: http://www.vg.no            
+sts:
+  base-uri: http://www.vg.no            
 
 server:
   port: 9001

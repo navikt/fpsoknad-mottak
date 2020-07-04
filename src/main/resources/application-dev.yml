@@ -29,13 +29,10 @@ varsel:
 arbeidsforhold:
   base-uri: https://modapp-q1.adeo.no/aareg-services/api
   sporingsinformasjon: true  
-  log: true
 organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
-  log: true 
 sts:
   base-uri: https://security-token-service.nais.preprod.local    
-  log: true   
 fpfordel:
   base-uri: http://fpfordel.q1
 innsyn:

@@ -13,7 +13,7 @@ import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @Component

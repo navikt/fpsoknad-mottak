@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 
 @Component

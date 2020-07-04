@@ -5,6 +5,7 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.http.Pingable;
 import no.nav.foreldrepenger.mottak.http.RetryAware;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 

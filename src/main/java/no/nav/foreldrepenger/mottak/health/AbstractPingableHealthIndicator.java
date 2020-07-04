@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 
-import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 
 public abstract class AbstractPingableHealthIndicator implements HealthIndicator {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPingableHealthIndicator.class);

@@ -15,7 +15,7 @@ import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.innsending.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
