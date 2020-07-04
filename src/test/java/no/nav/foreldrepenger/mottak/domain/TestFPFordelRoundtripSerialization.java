@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConnection;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingHendelseProdusent;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
@@ -51,7 +50,8 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { LOCAL })
-@TestPropertySource(properties = { "sts.uri=http://www.sts.no", "spring.cloud.vault.enabled=false",
+@TestPropertySource(properties = { "fpfordel.enabled=false", "sts.uri=http://www.sts.no",
+        "spring.cloud.vault.enabled=false",
         "spring.cloud.vault.token=00000",
         "sts.username=un", "sts.password=pw" })
 @EnableConfigurationProperties
@@ -59,9 +59,6 @@ public class TestFPFordelRoundtripSerialization {
 
     @Autowired
     private TestRestTemplate template;
-
-    @Autowired
-    FordelConnection connection;
 
     @MockBean
     SystemTokenTjeneste userService;
@@ -125,7 +122,8 @@ public class TestFPFordelRoundtripSerialization {
         Søknad engangssøknad = engangssøknad(false, fødsel(),
                 norskForelder(),
                 påkrevdVedlegg(ID142));
-        Kvittering kvittering = template.postForObject(INNSENDING + "/send", engangssøknad, Kvittering.class);
+        var kvittering = template.postForObject(INNSENDING + "/send",
+                engangssøknad, Kvittering.class);
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
