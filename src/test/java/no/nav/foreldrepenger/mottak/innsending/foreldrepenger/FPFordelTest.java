@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsending.fpfordel;
+package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.GOSYS;
@@ -51,17 +51,6 @@ import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConfig;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelConnection;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FordelSøknadSender;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.GosysKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.LoggingHendelseProdusent;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.MetdataGenerator;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PendingKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.ResponseHandler;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
@@ -88,7 +77,7 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class FPFordelTest {
 
     private static final AktørId AKTØRID = new AktørId("1111111111");
-    private static final URI FPFORDELURIBASE = URI.create("http://some.host.for.fpfordel");
+    private static final String FPFORDELURIBASE = "http://some.host.for.fpfordel";
     private static final String FPFORDELPOLLURISTRING = FPFORDELURIBASE + "/poll/id";
     private static final String FPINFOURISTRING = "http://some.host.for.fpinfo/status";
 
@@ -131,8 +120,7 @@ public class FPFordelTest {
 
     @BeforeEach
     public void before() {
-        cfg = new FordelConfig(FPFORDELURIBASE, null, null, true);
-
+        cfg = new FordelConfig(URI.create(FPFORDELURIBASE));
         when(oppslag.hentAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
         when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
         pollReceipt202 = pollReceipt(HttpStatus.ACCEPTED);

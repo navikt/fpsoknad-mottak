@@ -21,6 +21,10 @@ public class FordelConfig {
     private final boolean enabled;
     private final URI baseUri;
 
+    FordelConfig(URI uri) {
+        this(uri, DEFAULT_PING_PATH, DEFAULT_BASE_PATH, true);
+    }
+
     @ConstructorBinding
     public FordelConfig(@DefaultValue(DEFAULT_URI) URI baseUri,
             @DefaultValue(DEFAULT_PING_PATH) String pingPath,
