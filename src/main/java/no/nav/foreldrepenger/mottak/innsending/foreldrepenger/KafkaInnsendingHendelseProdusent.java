@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
@@ -41,7 +41,7 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
 
     @Override
     public void publiser(Fødselsnummer fnr, Kvittering kvittering, String dialogId, Konvolutt konvolutt) {
-        var h = new InnsendingHendelse(oppslag.hentAktørId(), fnr, dialogId, kvittering,
+        var h = new InnsendingHendelse(oppslag.aktørId(), fnr, dialogId, kvittering,
                 konvolutt);
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder

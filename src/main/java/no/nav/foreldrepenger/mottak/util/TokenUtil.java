@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.Constants.ISSUER;
+import static no.nav.foreldrepenger.mottak.util.Constants.ISSUER;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -69,7 +69,7 @@ public class TokenUtil {
                 .orElseThrow(unauthenticated("Fant ikke subject"));
     }
 
-    public Fødselsnummer autentisertFNR() {
+    public Fødselsnummer fnr() {
         return new Fødselsnummer(autentisertBruker());
     }
 

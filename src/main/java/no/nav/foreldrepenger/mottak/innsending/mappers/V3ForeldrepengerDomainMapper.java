@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.landFra;
@@ -10,6 +9,7 @@ import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperComm
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.språkFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.vedleggFra;
+import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
@@ -457,7 +457,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private AnnenForelderMedNorskIdent norskForelder(NorskForelder norskForelder) {
         return new no.nav.vedtak.felles.xml.soeknad.felles.v3.AnnenForelderMedNorskIdent()
-                .withAktoerId(oppslag.hentAktørId(norskForelder.getFnr()).getId());
+                .withAktoerId(oppslag.aktørId(norskForelder.getFnr()).getId());
     }
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjonTilBarn) {

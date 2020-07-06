@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import static no.nav.foreldrepenger.mottak.Constants.FNR;
+import static no.nav.foreldrepenger.mottak.util.Constants.FNR;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.queryParams;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 

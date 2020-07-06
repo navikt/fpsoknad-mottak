@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
-public abstract class AbstractRestConnection implements RestConnection {
+public abstract class AbstractRestConnection {
     private final RestOperations restOperations;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
@@ -36,12 +36,10 @@ public abstract class AbstractRestConnection implements RestConnection {
         return restOperations.postForObject(uri, payload, responseType);
     }
 
-    @Override
     public <T> T getForObject(URI uri, Class<T> responseType) {
         return getForObject(uri, responseType, false);
     }
 
-    @Override
     public <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
         try {
             T respons = restOperations.getForObject(uri, responseType);
@@ -58,12 +56,10 @@ public abstract class AbstractRestConnection implements RestConnection {
         }
     }
 
-    @Override
     public <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType) {
         return getForEntity(uri, responseType, true);
     }
 
-    @Override
     public <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType, boolean doThrow) {
         try {
             ResponseEntity<T> respons = restOperations.getForEntity(uri, responseType);

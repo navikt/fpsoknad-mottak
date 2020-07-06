@@ -50,8 +50,8 @@ public class MapperRoundtripTest {
 
     @BeforeEach
     public void before() {
-        when(oppslag.hentFnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
-        when(oppslag.hentAktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
+        when(oppslag.fnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
+        when(oppslag.aktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
         domainMapper = new DelegerendeDomainMapper(
                 new V3ForeldrepengerDomainMapper(oppslag));
         xmlMapper = new DelegerendeXMLSøknadMapper(

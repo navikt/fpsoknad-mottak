@@ -39,22 +39,22 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return cfg.name();
     }
 
-    public Navn hentNavn(Fødselsnummer fnr) {
+    public Navn navn(Fødselsnummer fnr) {
         return getForObject(cfg.navnUri(fnr), Navn.class);
     }
 
-    public Fødselsnummer hentFnr(AktørId aktørId) {
+    public Fødselsnummer fnr(AktørId aktørId) {
         return getForObject(cfg.fnrUri(aktørId), Fødselsnummer.class, true);
     }
 
-    Person hentSøker() {
+    Person søker() {
         LOG.trace("Henter søker");
         Person søker = getForObject(cfg.personUri(), Person.class);
         søker.setAktørId(getForObject(cfg.aktørUri(), AktørId.class));
         return søker;
     }
 
-    AktørId hentAktørId(Fødselsnummer fnr) {
+    AktørId aktørId(Fødselsnummer fnr) {
         return getForObject(cfg.aktørFnrUri(fnr), AktørId.class, true);
     }
 

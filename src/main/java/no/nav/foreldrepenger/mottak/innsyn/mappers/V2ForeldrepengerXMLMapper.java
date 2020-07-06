@@ -3,9 +3,9 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
@@ -601,7 +601,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (annenForelder instanceof AnnenForelderMedNorskIdent) {
             AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
             return new NorskForelder(
-                    oppslag.hentFnr(new AktørId(norskForelder.getAktoerId())),
+                    oppslag.fnr(new AktørId(norskForelder.getAktoerId())),
                     null);
         }
         if (annenForelder instanceof AnnenForelderUtenNorskIdent) {

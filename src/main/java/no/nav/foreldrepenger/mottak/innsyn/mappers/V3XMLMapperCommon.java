@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
+import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;

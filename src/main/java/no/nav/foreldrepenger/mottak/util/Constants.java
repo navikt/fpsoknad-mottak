@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak;
+package no.nav.foreldrepenger.mottak.util;
 
 public final class Constants {
     public static final String UKJENT_KODEVERKSVERDI = "-";

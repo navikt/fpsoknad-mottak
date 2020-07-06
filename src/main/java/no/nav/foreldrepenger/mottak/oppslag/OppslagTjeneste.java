@@ -12,46 +12,46 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @Service
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagTjeneste implements Oppslag {
-    private final OppslagConnection connection;
+    private final OppslagConnection conn;
     private final TokenUtil tokenHelper;
 
-    public OppslagTjeneste(OppslagConnection connection, TokenUtil tokenHelper) {
-        this.connection = connection;
+    public OppslagTjeneste(OppslagConnection conn, TokenUtil tokenHelper) {
+        this.conn = conn;
         this.tokenHelper = tokenHelper;
     }
 
     @Override
     public String ping() {
-        return connection.ping();
+        return conn.ping();
     }
 
     @Override
-    public Person hentSøker() {
-        return connection.hentSøker();
+    public Person søker() {
+        return conn.søker();
     }
 
     @Override
-    public AktørId hentAktørId() {
-        return hentAktørId(tokenHelper.autentisertFNR());
+    public AktørId aktørId() {
+        return aktørId(tokenHelper.fnr());
     }
 
     @Override
-    public AktørId hentAktørId(Fødselsnummer fnr) {
-        return connection.hentAktørId(fnr);
+    public AktørId aktørId(Fødselsnummer fnr) {
+        return conn.aktørId(fnr);
     }
 
     @Override
-    public Fødselsnummer hentFnr(AktørId aktørId) {
-        return connection.hentFnr(aktørId);
+    public Fødselsnummer fnr(AktørId aktørId) {
+        return conn.fnr(aktørId);
     }
 
     @Override
-    public Navn hentNavn(Fødselsnummer fnr) {
-        return connection.hentNavn(fnr);
+    public Navn navn(Fødselsnummer fnr) {
+        return conn.navn(fnr);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", tokenHelper=" + tokenHelper + "]";
+        return getClass().getSimpleName() + " [conn=" + conn + ", tokenHelper=" + tokenHelper + "]";
     }
 }

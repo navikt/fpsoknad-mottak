@@ -56,8 +56,8 @@ public class SøknadInspektørTest {
 
     @BeforeEach
     public void beforeEach() {
-        when(oppslag.hentAktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
-        when(oppslag.hentFnr(any(AktørId.class))).thenReturn(FNR);
+        when(oppslag.aktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
+        when(oppslag.fnr(any(AktørId.class))).thenReturn(FNR);
         inspektør = new XMLStreamSøknadInspektør();
         mapper = new DelegerendeXMLSøknadMapper(
                 new UkjentXMLSøknadMapper(),

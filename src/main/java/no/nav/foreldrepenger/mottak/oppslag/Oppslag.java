@@ -8,13 +8,13 @@ import no.nav.foreldrepenger.mottak.http.Pingable;
 import no.nav.foreldrepenger.mottak.http.RetryAware;
 
 public interface Oppslag extends Pingable, RetryAware {
-    Person hentSøker();
+    Person søker();
 
-    AktørId hentAktørId();
+    AktørId aktørId();
 
-    AktørId hentAktørId(Fødselsnummer fnr);
+    AktørId aktørId(Fødselsnummer fnr);
 
-    Fødselsnummer hentFnr(AktørId aktørId);
+    Fødselsnummer fnr(AktørId aktørId);
 
-    Navn hentNavn(Fødselsnummer fnr);
+    Navn navn(Fødselsnummer fnr);
 }

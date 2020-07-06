@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static java.util.Arrays.asList;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
@@ -32,7 +31,7 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør {
     private static final String ENDRINGSSOEKNAD = "endringssoeknad";
     private static final String FORELDREPENGER = "foreldrepenger";
     private static final String SVANGERSKAPSPENGER = "svangerskapspenger";
-    private static final List<String> KJENTE_TAGS = asList(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSOEKNAD,
+    private static final List<String> KJENTE_TAGS = List.of(FORELDREPENGER, ENDRINGSSOEKNAD, ENGANGSSOEKNAD,
             SVANGERSKAPSPENGER);
     private static final String OMYTELSE = "omYtelse";
     private static final Logger LOG = LoggerFactory.getLogger(XMLStreamSøknadInspektør.class);

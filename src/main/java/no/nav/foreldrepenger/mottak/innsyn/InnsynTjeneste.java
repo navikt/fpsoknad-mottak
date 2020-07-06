@@ -186,7 +186,7 @@ public class InnsynTjeneste implements Innsyn {
     private Navn navnFor(Fødselsnummer fnr) {
         try {
             LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
-            Navn navn = oppslag.hentNavn(fnr);
+            Navn navn = oppslag.navn(fnr);
             LOG.trace(CONFIDENTIAL, "Fikk navn {}", navn);
             return navn;
         } catch (Exception e) {
@@ -198,7 +198,7 @@ public class InnsynTjeneste implements Innsyn {
     private Fødselsnummer fnr(AktørId aktørId) {
         try {
             return Optional.ofNullable(aktørId)
-                    .map(oppslag::hentFnr)
+                    .map(oppslag::fnr)
                     .orElse(null);
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp FNR for annen part for aktørid {}", aktørId);

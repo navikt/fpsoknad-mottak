@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;

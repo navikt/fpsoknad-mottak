@@ -37,7 +37,7 @@ public class InnsynController {
 
     @GetMapping(value = "/saker")
     public List<Sak> saker() {
-        return innsyn.saker(oppslag.hentAktørId());
+        return innsyn.saker(oppslag.aktørId());
     }
 
     @GetMapping(value = "/arbeidsforhold")
@@ -52,12 +52,12 @@ public class InnsynController {
 
     @GetMapping(value = "/uttaksplanannen")
     public Uttaksplan uttaksplan(@RequestParam(name = "annenPart") Fødselsnummer annenPart) {
-        return innsyn.uttaksplan(oppslag.hentAktørId(), oppslag.hentAktørId(annenPart));
+        return innsyn.uttaksplan(oppslag.aktørId(), oppslag.aktørId(annenPart));
     }
 
     @GetMapping(value = "/vedtak")
     public Vedtak vedtak(@RequestParam(name = "saksnummer") String saksnummer) {
-        return innsyn.vedtak(oppslag.hentAktørId(), saksnummer);
+        return innsyn.vedtak(oppslag.aktørId(), saksnummer);
     }
 
     @Override

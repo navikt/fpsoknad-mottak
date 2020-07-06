@@ -21,22 +21,22 @@ public class TestConfig {
         return new Oppslag() {
 
             @Override
-            public AktørId hentAktørId(Fødselsnummer fnr) {
+            public AktørId aktørId(Fødselsnummer fnr) {
                 return new AktørId("1111111111");
             }
 
             @Override
-            public Person hentSøker() {
+            public Person søker() {
                 return TestUtils.person();
             }
 
             @Override
-            public AktørId hentAktørId() {
+            public AktørId aktørId() {
                 return new AktørId("1111111111");
             }
 
             @Override
-            public Fødselsnummer hentFnr(AktørId aktørId) {
+            public Fødselsnummer fnr(AktørId aktørId) {
                 return new Fødselsnummer("01010111111");
             }
 
@@ -46,7 +46,7 @@ public class TestConfig {
             }
 
             @Override
-            public Navn hentNavn(Fødselsnummer fnr) {
+            public Navn navn(Fødselsnummer fnr) {
                 return new Navn("Ole", "Mellomnavn", "Olsen", Kjønn.M);
             }
         };
