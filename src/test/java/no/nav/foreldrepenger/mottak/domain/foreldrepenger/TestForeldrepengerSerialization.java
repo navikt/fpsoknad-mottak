@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.adopsjon;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.alleSøknadVersjoner;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.annenOpptjening;
@@ -24,12 +23,14 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.utsettelsesPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.uttaksPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.åpenPeriode;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.time.Duration;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -117,21 +118,21 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testEndringssøknad() {
-        for (Versjon v : alleSøknadVersjoner()) {
+        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
             test(endringssøknad(v), false);
         }
     }
 
     @Test
     public void testForeldrepenger() {
-        for (Versjon v : alleSøknadVersjoner()) {
+        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
             test(foreldrepenger(v, false), false);
         }
     }
 
     @Test
     public void testSøknad() {
-        for (Versjon v : alleSøknadVersjoner()) {
+        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
             test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), false);
         }
 
@@ -139,7 +140,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testOpptjening() {
-        for (Versjon v : alleSøknadVersjoner()) {
+        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
             test(opptjening(v));
         }
 
@@ -187,7 +188,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testFordeling() {
-        for (Versjon v : alleSøknadVersjoner()) {
+        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
             test(fordeling(v), false);
         }
     }
@@ -199,7 +200,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testGradertPeriode() {
-        for (Versjon v : alleSøknadVersjoner()) {
+        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
             test(gradertPeriode(v), false);
         }
     }
@@ -241,7 +242,7 @@ public class TestForeldrepengerSerialization {
 
     @Test
     public void testAnnenOpptjening() {
-        for (Versjon v : alleSøknadVersjoner()) {
+        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
             test(annenOpptjening(v));
         }
     }

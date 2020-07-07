@@ -1,14 +1,15 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.alleSøknadVersjoner;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,14 +63,14 @@ public class MapperRoundtripTest {
 
     @Test
     public void testFørstegangssøknadRoundtrip() {
-        alleSøknadVersjoner()
+        Lists.newArrayList(DEFAULT_VERSJON)
                 .stream()
                 .forEach(this::roundTripInitiell);
     }
 
     // @Test
     public void testEndringRoundtrip() {
-        alleSøknadVersjoner()
+        Lists.newArrayList(DEFAULT_VERSJON)
                 .stream()
                 .forEach(this::roundTripEndring);
     }

@@ -88,7 +88,7 @@ public class V3XMLMapperCommon {
 
     static <T> T ytelse(OmYtelse omYtelse, Class<T> clazz) {
         Object element = ((JAXBElement<?>) Iterables.getOnlyElement(omYtelse.getAny())).getValue();
-        return (T) element;
+        return clazz.cast(element);
     }
 
     static Søker tilSøker(Bruker søker) {

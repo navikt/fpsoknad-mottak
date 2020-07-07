@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType.foreldrepenger;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.alleSøknadVersjoner;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
@@ -18,6 +17,7 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELD
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -34,6 +34,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -111,7 +112,7 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testEndringssøknadRoundtrip() {
-        alleSøknadVersjoner()
+        Lists.newArrayList(DEFAULT_VERSJON)
                 .forEach(this::testEndringssøknadRoundtrip);
     }
 
@@ -123,19 +124,19 @@ public class TestFPFordelSerialization {
 
     @Test
     public void testSøknadRoundtrip() {
-        alleSøknadVersjoner().stream()
+        Lists.newArrayList(DEFAULT_VERSJON).stream()
                 .forEach(this::testSøknadRoundtrip);
     }
 
     @Test
     public void testKonvolutt() {
-        alleSøknadVersjoner()
+        Lists.newArrayList(DEFAULT_VERSJON)
                 .forEach(this::testKonvolutt);
     }
 
     @Test
     public void testKonvoluttEndring() {
-        alleSøknadVersjoner()
+        Lists.newArrayList(DEFAULT_VERSJON)
                 .forEach(this::testKonvoluttEndring);
     }
 

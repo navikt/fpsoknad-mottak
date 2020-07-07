@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.springframework.util.StreamUtils.copyToString;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.util.Lists;
 import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,7 +39,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class TestUtils {
     public static boolean hasPdfSignature(byte[] bytes) {
@@ -49,10 +46,6 @@ public class TestUtils {
                 bytes[1] == 0x50 &&
                 bytes[2] == 0x44 &&
                 bytes[3] == 0x46;
-    }
-
-    public static List<Versjon> alleSøknadVersjoner() {
-        return Lists.newArrayList(DEFAULT_VERSJON);
     }
 
     public static Søknad engangssøknad(boolean utland) {

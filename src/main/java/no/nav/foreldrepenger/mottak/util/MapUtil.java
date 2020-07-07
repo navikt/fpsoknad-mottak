@@ -17,7 +17,7 @@ public final class MapUtil {
         return Optional.ofNullable(map)
                 .map(m -> m.get(key))
                 .filter(Objects::nonNull)
-                .map(v -> (T) v)
+                .map(clazz::cast)
                 .orElse(null);
     }
 }
