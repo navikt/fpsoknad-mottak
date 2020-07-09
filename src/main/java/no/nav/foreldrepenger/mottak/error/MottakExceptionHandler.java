@@ -25,6 +25,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
+import no.nav.foreldrepenger.mottak.util.StringUtil;
 import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
 
@@ -98,7 +99,8 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private String subject() {
         return Optional.ofNullable(tokenUtil.getSubject())
-                .orElse("Uautentisert");
+            .map(StringUtil::mask)
+            .orElse("Uautentisert");
     }
 
     private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {
