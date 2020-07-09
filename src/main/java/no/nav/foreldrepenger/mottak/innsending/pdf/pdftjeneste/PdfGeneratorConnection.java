@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import static no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig.ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorConfig.SØKNAD;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 
 import java.net.URI;
@@ -34,7 +34,7 @@ public class PdfGeneratorConnection extends AbstractRestConnection implements Pi
 
     byte[] genererPdf(DokumentBestilling dto) {
         logJSON(dto);
-        return postIfEnabled(uri(config.getUri(), ENGANGSSTØNAD), dto);
+        return postIfEnabled(uri(config.getUri(), SØKNAD), dto);
     }
 
     private byte[] postIfEnabled(URI uri, DokumentBestilling body) {

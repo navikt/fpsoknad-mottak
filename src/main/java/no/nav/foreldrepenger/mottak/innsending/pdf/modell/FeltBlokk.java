@@ -12,4 +12,8 @@ import lombok.EqualsAndHashCode;
 public class FeltBlokk extends Blokk {
     private String felt;
     private String verdi;
+
+    public static FeltBlokk felt(String felt, String verdi) {
+        return new FeltBlokk(felt, verdi);
+    }
 }

@@ -13,7 +13,7 @@ public class PdfGeneratorConfig {
     private static final String DEFAULT_URI = "http://fppdfgen";
     private static final String DEFAULT_BASE_PATH = "/api/v1/genpdf/";
     private static final String DEFAULT_PING_PATH = DEFAULT_BASE_PATH + "is_alive";
-    static final String ENGANGSSTØNAD = DEFAULT_BASE_PATH + "soknad/soknad";
+    static final String SØKNAD = DEFAULT_BASE_PATH + "soknad-v2/soknad";
 
     private final URI uri;
     private final String pingPath;
