@@ -1,6 +1,6 @@
 {
   "namespace": "teamforeldrepenger",
-  "ingresses":  ["https://fpsoknad-mottak.nais.preprod.local", 
+  "ingresses":  ["https://fpsoknad-mottak.nais.preprod.local",
                  "https://fpsoknad-mottak.dev-fss.nais.io"],
    "env": {
 		"varsel_hostname": "b27apvl176.preprod.local",
@@ -12,6 +12,7 @@
 		"fpfordel_uri": "http://fpfordel.q1",
 		"fpfordel_enabled": "true",
 		"innsyn_uri": "http://fpinfo.q1",
-        "fppdfgen_enabled": "true"
+        "fppdfgen_enabled": "true",
+        "fppdfgen_uri": "http://fppdfgen.default"
 	}
 }
