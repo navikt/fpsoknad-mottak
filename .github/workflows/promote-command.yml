@@ -23,7 +23,12 @@ jobs:
       - name: Sjekk ut kode
         uses: actions/checkout@v1
         with:
-          ref: ${{ env.TAG }}
+          ref: ${{ env.TAG }
+      
+      - name: naislint nais.yaml
+        uses: nais/naislinter@v1.0.3
+        env:
+         RESOURCE: naiserator.yaml
     
       - name: Promoter til cluster
         uses: nais/deploy/actions/deploy@v1
