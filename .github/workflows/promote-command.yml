@@ -23,7 +23,7 @@ jobs:
       - name: Sjekk ut kode
         uses: actions/checkout@v1
         with:
-          ref: ${{ env.TAG }
+          ref: ${{ env.TAG }}
       
       - name: naislint
         uses: nais/naislinter@v1.0.3
