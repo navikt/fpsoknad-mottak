@@ -25,10 +25,12 @@ jobs:
         with:
           ref: ${{ env.TAG }
       
-      - name: naislint nais.yaml
+      - name: naislint
         uses: nais/naislinter@v1.0.3
         env:
          RESOURCE: naiserator.yaml
+         PRINT_PAYLOAD: true
+         VARS: ${{ env.CLUSTER }}-${{ env.NAMESPACE }}.json
     
       - name: Promoter til cluster
         uses: nais/deploy/actions/deploy@v1
