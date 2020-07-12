@@ -23,10 +23,10 @@ public class PdfGeneratorConfig {
     public PdfGeneratorConfig(@DefaultValue(DEFAULT_URI) URI baseUri,
             @DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue(DEFAULT_BASE_PATH) String basePath,
-            @DefaultValue(DEFAULT_SØKNAD_PATH) String søknadPath,
+            @DefaultValue(DEFAULT_SØKNAD_PATH) String soknadPath,
             @DefaultValue("true") boolean enabled) {
         this.enabled = enabled;
-        this.pdfUri = uri(baseUri, basePath + søknadPath);
+        this.pdfUri = uri(baseUri, basePath + soknadPath);
         this.pingUri = uri(baseUri, basePath + pingPath);
     }
 
