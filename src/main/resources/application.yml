@@ -1,8 +1,24 @@
+arbeidsforhold:
+    base-uri: https://modapp.adeo.no/aareg-services/api 
+    sporingsinformasjon: true 
+    
+organisasjon:
+    base-uri: https://modapp.adeo.no/ereg/api  
+      
+sts:
+  base-uri:  https://security-token-service.nais.adeo.no
+  username: ${kafka.username}
+  password: ${kafka.password} 
+  
+varsel:
+   username: srvappserver
+   
 mottak:
    sender:
       domainevent:
          enabled: true
          topic: fpsoknad-mottak
+         
 oppslag:
   base-uri: http://fpsoknad-oppslag.default/api
   
@@ -10,7 +26,11 @@ fpfordel:
   base-uri: http://fpfordel.default
       
 innsyn:
-   base-uri: http://fpinfo.default
+  base-uri: http://fpinfo.default
+
+fppdfgen:
+  base-uri: http://fppdfgen.default
+    
    
 no.nav:
    security.jwt.issuer.selvbetjening:
@@ -88,14 +108,3 @@ spring:
          value-serializer: org.apache.kafka.common.serialization.StringSerializer
    main:
       banner-mode: off
-arbeidsforhold:
-    base-uri: https://modapp.adeo.no/aareg-services/api 
-    sporingsinformasjon: true 
-organisasjon:
-    base-uri: https://modapp.adeo.no/ereg/api    
-sts:
-  base-uri:  https://security-token-service.nais.adeo.no
-  username: ${kafka.username}
-  password: ${kafka.password} 
-varsel:
-   username: srvappserver  

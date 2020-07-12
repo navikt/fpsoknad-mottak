@@ -9,8 +9,6 @@
 		"varsel_queuename": "QA.P_VARSELPRODUKSJON.SEND_VARSEL",
 		"fpsoknad_varsel_kanal_queuemanager": "mq://a01apvl063.adeo.no:1414/MPLSC02",
 		"varsel_channelname": "P_FPSOKNAD_VARSEL",
-		"fpfordel_enabled": "true",
-        "fppdfgen_enabled": "true",
-        "fppdfgen_uri": "http://fppdfgen.default"
+		"fpfordel_enabled": "true"
 	}
 }
