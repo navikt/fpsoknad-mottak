@@ -38,7 +38,7 @@ fpfordel:
 innsyn:
    base-uri: http://fpinfo.q1
 oppslag:
-  base-uri: http://fpsoknad-oppslag/api
+  base-uri: http://fpsoknad-oppslag.default/api
 mottak:
    sender:
       domainevent:
