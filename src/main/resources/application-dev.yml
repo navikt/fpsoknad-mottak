@@ -23,12 +23,9 @@ spring:
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
    mvc:
      log-request-details : true
-varsel:
-  username : srvappserver
-  enabled : true
+
 arbeidsforhold:
   base-uri: https://modapp-q1.adeo.no/aareg-services/api
-  sporingsinformasjon: true  
 organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
 sts:
@@ -37,12 +34,6 @@ fpfordel:
   base-uri: http://fpfordel.q1
 innsyn:
    base-uri: http://fpinfo.q1
-oppslag:
-  base-uri: http://fpsoknad-oppslag.default/api
-mottak:
-   sender:
-      domainevent:
-         enabled : true
        
      
   
