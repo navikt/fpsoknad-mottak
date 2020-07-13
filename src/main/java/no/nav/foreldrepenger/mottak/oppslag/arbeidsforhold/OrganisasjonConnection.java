@@ -47,7 +47,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
             return navn;
         } catch (Exception e) {
             LOG.warn("Fant ikke organisasjonsnavn for {}", orgnr);
-            return "Ikke eksisterende organisasjon - " + orgnr;
+            return orgnr;
         }
     }
 
