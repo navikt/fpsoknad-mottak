@@ -20,7 +20,7 @@ mottak:
          topic: fpsoknad-mottak
          
 oppslag:
-  base-uri: http://fpsoknad-oppslag.default/api
+  base-uri: http://fpsoknad-oppslag/api
   
 fpfordel:
   base-uri: http://fpfordel.default
