@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static no.nav.foreldrepenger.mottak.util.StringUtil.taint;
+
 import java.net.URI;
 
 import org.springframework.http.HttpHeaders;
@@ -34,12 +36,6 @@ public final class URIUtil {
         HttpHeaders queryParams = new HttpHeaders();
         queryParams.add(key, taint(value));
         return queryParams;
-    }
-
-    private static String taint(String value) {
-        if (!value.matches("[a-zA-Z0-9]++"))
-            throw new IllegalArgumentException(value);
-        return value;
     }
 
     public static HttpHeaders queryParams(String key, String value, String key1, String value1) {

@@ -14,6 +14,12 @@ public final class StringUtil {
     private StringUtil() {
     }
 
+    public static String taint(String value) {
+        if (!value.matches("[a-zA-Z0-9]++"))
+            throw new IllegalArgumentException(value);
+        return value;
+    }
+
     public static String endelse(List<?> liste) {
         if (CollectionUtils.isEmpty(liste)) {
             return "er";
