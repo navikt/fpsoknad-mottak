@@ -71,7 +71,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 @ExtendWith(SpringExtension.class)
 @MockitoSettings(strictness = LENIENT)
 @AutoConfigureJsonTesters
-@TestPropertySource(properties = { "sts.uri=http://www.sts.no", "spring.cloud.vault.enabled=false",
+@TestPropertySource(properties = { "varsel.uri=mq:80/test", "sts.uri=http://www.sts.no", "spring.cloud.vault.enabled=false",
         "sts.username=un", "sts.password=pw" })
 @ComponentScan(basePackages = "no.nav.foreldrepenger.mottak")
 public class TestFPFordelSerialization {

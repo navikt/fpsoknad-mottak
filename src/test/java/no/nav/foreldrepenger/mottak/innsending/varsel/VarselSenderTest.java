@@ -25,11 +25,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 })
 @TestPropertySource(properties = {
         "varsel.enabled=false",
-        "varsel.queueName=DEV.QUEUE.1",
-        "varsel.port=1414",
+        "varsel.uri=mq://jalla:6666",
         "varsel.channelname=DEV.APP.SVRCONN",
-        "varsel.hostname=localhost",
-        "varsel.name=QM1" }) // Avhenger av at man har satt opp mq container lokalt
+        "varsel.hostname=localhost" }) // Avhenger av at man har satt opp mq container lokalt
 class VarselSenderTest {
 
     @Autowired

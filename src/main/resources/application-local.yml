@@ -15,11 +15,11 @@ management:
           show-details : always
 
 varsel:
-    queue-name: DEV.QUEUE.1
-    hostname: localhost
-    port: 1414
-    name: QM1
-    channelname: DEV.APP.SVRCONN
+   username: username
+   enabled: false
+   uri: mq://b27apvl176.preprod.local:1413/MQ1LSC02
+   channelname: Q1_FPSOKNAD_VARSEL
+   queue-name: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
 
 fppdfgen:
     enabled: false
