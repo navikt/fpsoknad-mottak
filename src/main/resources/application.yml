@@ -11,27 +11,19 @@ sts:
   password: ${kafka.password} 
   
 varsel:
+   uri: mq://a01apvl063.adeo.no:1414/MPLSC02
+   channelname: P_FPSOKNAD_VARSEL
+   queue-name: QA.P_VARSELPRODUKSJON.SEND_VARSEL
    username: srvappserver
    
 mottak:
    sender:
       domainevent:
-         enabled: true
          topic: fpsoknad-mottak
-         
-oppslag:
-  base-uri: http://fpsoknad-oppslag/api
-  
-fpfordel:
-  base-uri: http://fpfordel.default
-      
-innsyn:
-  base-uri: http://fpinfo.default
 
 fppdfgen:
   base-uri: http://fppdfgen.default
-    
-   
+      
 no.nav:
    security.jwt.issuer.selvbetjening:
       discoveryurl: https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten

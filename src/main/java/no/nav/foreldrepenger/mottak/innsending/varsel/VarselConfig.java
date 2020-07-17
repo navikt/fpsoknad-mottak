@@ -19,11 +19,11 @@ public class VarselConfig {
     private final String username;
 
     @ConstructorBinding
-    public VarselConfig(String hostname, int port, String name, String queueName,
+    public VarselConfig(URI uri, String queueName,
             String channelname, boolean enabled, String username) {
-        this.hostname = hostname;
-        this.port = port;
-        this.name = name;
+        this.hostname = uri.getHost();
+        this.port = uri.getPort();
+        this.name = uri.getPath();
         this.queueName = queueName;
         this.channelname = channelname;
         this.enabled = enabled;

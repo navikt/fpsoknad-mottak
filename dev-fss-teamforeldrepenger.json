@@ -1,18 +1,4 @@
 {
   "namespace": "teamforeldrepenger",
-  "ingresses":  ["https://fpsoknad-mottak.nais.preprod.local",
-                 "https://fpsoknad-mottak.dev-fss.nais.io"],
-   "env": {
-		"varsel_hostname": "b27apvl176.preprod.local",
-		"varsel_name": "MQ1LSC02",
-		"varsel_port": "1413",
-		"varsel_queuename": "QA.Q1_VARSELPRODUKSJON.SEND_VARSEL",
-		"fpsoknad_varsel_kanal_queuemanager": "mq://b27apvl176.preprod.local:1413/MQ1LSC02",
-		"varsel_channelname": "Q1_FPSOKNAD_VARSEL",
-		"fpfordel_uri": "http://fpfordel.q1",
-		"fpfordel_enabled": "true",
-		"innsyn_uri": "http://fpinfo.q1",
-        "fppdfgen_enabled": "true",
-        "fppdfgen_uri": "http://fppdfgen.default"
-	}
+  "ingresses":  ["https://fpsoknad-mottak.dev.adeo.no"]
 }
