@@ -4,26 +4,22 @@ import java.net.URI;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @ConfigurationProperties(prefix = "varsel")
 public class VarselConfig {
 
-    private final String hostname;
-    private final int port;
-    private final String name;
 
     private final String queueName;
     private final String channelname;
     private final boolean enabled;
     private final String username;
+    private final URI uri;
+
 
     @ConstructorBinding
     public VarselConfig(URI uri, String queueName,
             String channelname, boolean enabled, String username) {
-        this.hostname = uri.getHost();
-        this.port = uri.getPort();
-        this.name = uri.getPath();
+        this.uri = uri;
         this.queueName = queueName;
         this.channelname = channelname;
         this.enabled = enabled;
@@ -39,11 +35,11 @@ public class VarselConfig {
     }
 
     public int getPort() {
-        return port;
+        return uri.getPort();
     }
 
     public String getName() {
-        return name;
+        return uri.getPath();
     }
 
     public String getQueueName() {
@@ -51,7 +47,7 @@ public class VarselConfig {
     }
 
     public String getHostname() {
-        return hostname;
+        return uri.getHost();
     }
 
     public String getUsername() {
@@ -59,18 +55,11 @@ public class VarselConfig {
     }
 
     public URI getURI() {
-        return UriComponentsBuilder
-                .newInstance().scheme("jms")
-                .userInfo(getUsername())
-                .host(getHostname())
-                .port(getPort())
-                .pathSegment(getChannelname(), getQueueName())
-                .queryParam("enabled", isEnabled())
-                .build().toUri();
+        return uri;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [uri=" + getURI() + "]";
+        return getClass().getSimpleName() + " [uri=" + uri + "]";
     }
 }

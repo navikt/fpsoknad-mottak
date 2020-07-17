@@ -13,10 +13,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.*;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
 
 public class TestFordeling {
 
