@@ -19,6 +19,7 @@ varsel:
 mottak:
    sender:
       domainevent:
+         enabled: true
          topic: fpsoknad-mottak
 
 fppdfgen:
