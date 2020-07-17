@@ -343,12 +343,7 @@
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
+            <artifactId>springfox-boot-starter</artifactId>
             <version>${springfox.version}</version>
         </dependency>
         <dependency>
@@ -459,7 +454,7 @@
             <artifactId>boot-conditionals</artifactId>
             <version>1.0.20200621134113-c68a13f</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>29.0-jre</version>
