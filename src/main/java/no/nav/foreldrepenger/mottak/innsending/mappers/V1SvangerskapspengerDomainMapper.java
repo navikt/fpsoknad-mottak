@@ -21,7 +21,6 @@ import javax.xml.bind.JAXBElement;
 
 import org.springframework.stereotype.Component;
 
-
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;

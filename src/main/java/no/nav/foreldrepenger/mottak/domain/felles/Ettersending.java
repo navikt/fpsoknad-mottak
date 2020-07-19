@@ -35,12 +35,4 @@ public class Ettersending {
         this.saksnr = saksnr;
         this.vedlegg = vedlegg;
     }
-
-    public String getDialogId() {
-        return dialogId;
-    }
-
-    public void setDialogId(String dialogId) {
-        this.dialogId = dialogId;
-    }
 }

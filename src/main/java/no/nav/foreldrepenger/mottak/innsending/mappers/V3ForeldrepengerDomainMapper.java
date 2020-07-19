@@ -12,6 +12,7 @@ import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperComm
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,6 @@ import java.util.Optional;
 import javax.xml.bind.JAXBElement;
 
 import org.springframework.stereotype.Component;
-import static org.springframework.util.CollectionUtils.*;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;

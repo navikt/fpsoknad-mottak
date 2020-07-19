@@ -28,11 +28,11 @@ public class ProsentAndelDeserializer extends StdDeserializer<ProsentAndel> {
     @Override
     public ProsentAndel deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
         JsonNode rootNode = p.getCodec().readTree(p);
-        if (rootNode instanceof DoubleNode) {
-            return new ProsentAndel(doubleValue(DoubleNode.class.cast(rootNode)));
+        if (rootNode instanceof DoubleNode d) {
+            return new ProsentAndel(doubleValue(d));
         }
-        if (rootNode instanceof ObjectNode) {
-            return new ProsentAndel(fromNumber(ObjectNode.class.cast(rootNode)));
+        if (rootNode instanceof ObjectNode o) {
+            return new ProsentAndel(fromNumber(o));
         }
         throw new UnexpectedInputException("Ukjent node type %s", rootNode.getClass().getSimpleName());
     }

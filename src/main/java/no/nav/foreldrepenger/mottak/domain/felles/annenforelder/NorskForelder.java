@@ -22,7 +22,7 @@ public final class NorskForelder extends AnnenForelder {
     private final Fødselsnummer fnr;
     private final String navn;
 
-    public NorskForelder(@JsonProperty("fnr") Fødselsnummer fnr) {
+    public NorskForelder(Fødselsnummer fnr) {
         this(fnr, null);
     }
 

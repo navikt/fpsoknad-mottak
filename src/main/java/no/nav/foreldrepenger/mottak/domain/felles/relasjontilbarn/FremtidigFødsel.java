@@ -17,7 +17,6 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 @ToString(callSuper = true)
 
 public class FremtidigFødsel extends RelasjonTilBarn {
-    // @Termindato
     private final LocalDate terminDato;
     @PastOrToday(nullable = true)
     private final LocalDate utstedtDato;

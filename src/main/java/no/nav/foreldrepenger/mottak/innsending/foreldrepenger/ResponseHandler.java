@@ -49,10 +49,9 @@ public class ResponseHandler extends AbstractRestConnection {
         LOG.info("Behandler respons {}", leveranseRespons.getBody());
         var fpFordelKvittering = FordelKvittering.class.cast(leveranseRespons.getBody());
         switch (leveranseRespons.getStatusCode()) {
-            case ACCEPTED:
-                if (fpFordelKvittering instanceof PendingKvittering) {
+            case ACCEPTED -> {
+                if (fpFordelKvittering instanceof PendingKvittering pending) {
                     LOG.info("Søknaden er mottatt, men ennå ikke forsøkt behandlet i FPSak");
-                    var pending = PendingKvittering.class.cast(leveranseRespons.getBody());
                     URI pollURI = locationFra(leveranseRespons);
                     for (int i = 1; i <= fpfordelMax; i++) {
                         LOG.info("Poller {} for {}. gang av {}, medgått tid er {}ms", pollURI, i,
@@ -62,32 +61,34 @@ public class ResponseHandler extends AbstractRestConnection {
                         fpFordelKvittering = FordelKvittering.class.cast(fpInfoRespons.getBody());
                         LOG.info("Behandler poll respons {} etter {}ms", fpInfoRespons.getBody(), timer.getTime());
                         switch (fpInfoRespons.getStatusCode()) {
-                            case OK:
+                            case OK -> {
                                 if (fpFordelKvittering instanceof PendingKvittering) {
                                     LOG.info("Fikk pending kvittering  på {}. forsøk", i);
-                                    pending = PendingKvittering.class.cast(fpFordelKvittering);
                                     continue;
                                 }
-                                if (fpFordelKvittering instanceof GosysKvittering) {
+                                if (fpFordelKvittering instanceof GosysKvittering g) {
                                     LOG.info("Fikk Gosys kvittering  på {}. forsøk, returnerer etter {}ms", i,
                                             stop(timer));
                                     MANUELL_KVITTERING.increment();
-                                    return gosysKvittering(GosysKvittering.class.cast(fpFordelKvittering));
+                                    return gosysKvittering(g);
                                 }
                                 LOG.warn("Uventet kvittering {} for statuskode {}, gir opp (etter {}ms)",
                                         fpFordelKvittering,
                                         fpInfoRespons.getStatusCode(), stop(timer));
                                 return new Kvittering(FP_FORDEL_MESSED_UP);
-                            case SEE_OTHER:
+                            }
+                            case SEE_OTHER -> {
                                 FORDELT_KVITTERING.increment();
                                 var fordelt = FPSakFordeltKvittering.class.cast(fpFordelKvittering);
                                 return poller.poll(locationFra(fpInfoRespons), timer, pending.getPollInterval(),
                                         fordelt);
-                            default:
+                            }
+                            default -> {
                                 FEILET_KVITTERINGER.increment();
                                 LOG.warn("Uventet responskode {} etter leveranse av søknad, gir opp (etter {}ms)",
                                         fpInfoRespons.getStatusCode(), timer.getTime());
                                 return new Kvittering(FP_FORDEL_MESSED_UP);
+                            }
                         }
                     }
                     LOG.info("Pollet FPFordel {} ganger, uten å få svar, gir opp (etter {}ms)", fpfordelMax,
@@ -95,14 +96,17 @@ public class ResponseHandler extends AbstractRestConnection {
                     GITTOPP_KVITTERING.increment();
                     return new Kvittering(FP_FORDEL_MESSED_UP);
                 }
-                //$FALL-THROUGH$
-            default:
+            }
+            default -> {
                 FEILET_KVITTERINGER.increment();
                 LOG.warn("Uventet responskode {} ved leveranse av søknad, gir opp (etter {}ms)",
                         leveranseRespons.getStatusCode(),
                         stop(timer));
                 return new Kvittering(FP_FORDEL_MESSED_UP);
+            }
         }
+        return new Kvittering(FP_FORDEL_MESSED_UP);
+
     }
 
     private static long stop(StopWatch timer) {

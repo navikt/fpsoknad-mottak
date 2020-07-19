@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.config;
 
 import static java.lang.System.getenv;
+import static no.nav.foreldrepenger.boot.conditionals.Cluster.NAIS_CLUSTER_NAME;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEFAULT;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 public class ClusterAwareSpringProfileResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClusterAwareSpringProfileResolver.class);
-    private static final String NAIS_CLUSTER_NAME = "NAIS_CLUSTER_NAME";
 
     public static String[] profiles() {
         return Optional.ofNullable(clusterFra(getenv(NAIS_CLUSTER_NAME)))

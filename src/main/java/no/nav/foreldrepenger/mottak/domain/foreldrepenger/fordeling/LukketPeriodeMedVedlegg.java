@@ -59,9 +59,8 @@ public abstract class LukketPeriodeMedVedlegg implements Comparable<LukketPeriod
     }
 
     private static long arbeidsdager(final LocalDate start, final LocalDate end) {
-        final DayOfWeek startW = start.getDayOfWeek();
         final long days = ChronoUnit.DAYS.between(start, end);
-        return days - 2 * ((days + startW.getValue()) / 7);
+        return days - 2 * ((days + start.getDayOfWeek().getValue()) / 7);
     }
 
     @Override
