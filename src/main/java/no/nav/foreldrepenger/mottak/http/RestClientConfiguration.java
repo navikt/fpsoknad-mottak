@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.config;
+package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.Collections.singletonList;
 import static org.springframework.retry.RetryContext.NAME;
@@ -18,8 +18,6 @@ import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
-
-import no.nav.foreldrepenger.mottak.http.NonRedirectingRequestFactory;
 
 @Configuration
 public class RestClientConfiguration {

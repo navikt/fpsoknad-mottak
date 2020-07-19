@@ -35,11 +35,11 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.security.token.support.core.api.Unprotected;
 
-@RequestMapping(path = SøknadController.INNSENDING, produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = MottakController.INNSENDING, produces = APPLICATION_JSON_VALUE)
 @ProtectedWithClaims(issuer = "selvbetjening", claimMap = { "acr=Level4" })
 @RestController
-public class SøknadController {
-    private static final Logger LOG = LoggerFactory.getLogger(SøknadController.class);
+public class MottakController {
+    private static final Logger LOG = LoggerFactory.getLogger(MottakController.class);
     public static final String INNSENDING = "/mottak";
     private final Innsyn innsyn;
     private final Oppslag oppslag;
@@ -47,7 +47,7 @@ public class SøknadController {
     private final Inspektør inspektør;
     private final VarselSender varselSender;
 
-    public SøknadController(SøknadSender søknadSender, VarselSender varselSender, Oppslag oppslag, Innsyn innsyn,
+    public MottakController(SøknadSender søknadSender, VarselSender varselSender, Oppslag oppslag, Innsyn innsyn,
             @Qualifier(SØKNAD) Inspektør inspektør) {
         this.søknadSender = søknadSender;
         this.oppslag = oppslag;

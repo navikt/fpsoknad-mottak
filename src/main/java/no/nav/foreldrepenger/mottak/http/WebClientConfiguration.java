@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.config;
+package no.nav.foreldrepenger.mottak.http;
 
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;

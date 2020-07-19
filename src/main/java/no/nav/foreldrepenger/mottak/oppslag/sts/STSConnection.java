@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
-import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.STS;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.STS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.time.Duration;

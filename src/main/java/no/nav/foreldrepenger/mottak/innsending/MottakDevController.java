@@ -26,9 +26,9 @@ import no.nav.security.token.support.core.api.Unprotected;
 
 @Unprotected
 @RestController
-@RequestMapping(path = SøknadDevController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
+@RequestMapping(path = MottakDevController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
 @Profile({ DEV, LOCAL })
-public class SøknadDevController {
+public class MottakDevController {
 
     private static final AktørId SØKER = new AktørId("42");
 
@@ -37,7 +37,7 @@ public class SøknadDevController {
     private final DomainMapper mapper;
     private final Inspektør inspektør;
 
-    public SøknadDevController(@Qualifier(DELEGERENDE) DomainMapper mapper,
+    public MottakDevController(@Qualifier(DELEGERENDE) DomainMapper mapper,
             @Qualifier(SØKNAD) Inspektør inspektør) {
         this.mapper = mapper;
         this.inspektør = inspektør;

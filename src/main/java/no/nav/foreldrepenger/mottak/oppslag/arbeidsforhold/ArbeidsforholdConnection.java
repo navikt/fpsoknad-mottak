@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.ARBEIDSFORHOLD;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 

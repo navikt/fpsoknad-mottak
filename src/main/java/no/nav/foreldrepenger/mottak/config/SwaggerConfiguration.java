@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toSet;
+import static springfox.documentation.spi.DocumentationType.OAS_30;
 
 import java.util.Set;
 
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
@@ -19,16 +17,12 @@ import springfox.documentation.spring.web.plugins.Docket;
 public class SwaggerConfiguration {
     @Bean
     public Docket productApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .protocols(protocols("http", "https"))
+        return new Docket(OAS_30)
+                .protocols(Set.of("http", "https"))
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build();
     }
 
-    private static Set<String> protocols(String... schemes) {
-        return stream(schemes)
-                .collect(toSet());
-    }
 }

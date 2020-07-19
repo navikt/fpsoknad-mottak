@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static no.nav.foreldrepenger.mottak.config.WebClientConfiguration.ORGANISASJON;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
