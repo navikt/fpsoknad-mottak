@@ -213,15 +213,12 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger tilYtelse(OmYtelse omYtelse) {
         Object ytelse = ytelse(omYtelse);
-        if (ytelse instanceof Endringssoeknad) {
-            Endringssoeknad endringsSøknad = Endringssoeknad.class.cast(ytelse);
-            endringsSøknad.getSaksnummer();
+        if (ytelse instanceof Endringssoeknad endringsSøknad) {
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
                     .fordeling(tilFordeling(endringsSøknad.getFordeling()))
                     .build();
         }
-        if (ytelse instanceof Foreldrepenger) {
-            Foreldrepenger foreldrepengeSøknad = Foreldrepenger.class.cast(ytelse);
+        if (ytelse instanceof Foreldrepenger foreldrepengeSøknad) {
             return no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.builder()
                     .annenForelder(tilAnnenForelder(foreldrepengeSøknad.getAnnenForelder()))
                     .dekningsgrad(tilDekningsgrad(foreldrepengeSøknad.getDekningsgrad()))
@@ -251,23 +248,19 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (relasjonTilBarnet == null) {
             return null;
         }
-        if (relasjonTilBarnet instanceof Foedsel) {
-            Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof Foedsel fødsel) {
             return new Fødsel(
                     fødsel.getAntallBarn(),
                     fødsel.getFoedselsdato());
         }
-        if (relasjonTilBarnet instanceof Termin) {
-            Termin termin = Termin.class.cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof Termin termin) {
             return new FremtidigFødsel(
                     termin.getAntallBarn(),
                     termin.getTermindato(),
                     termin.getUtstedtdato(),
                     emptyList());
         }
-        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon) {
-            no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon.class
-                    .cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon adopsjon) {
             return new Adopsjon(
                     adopsjon.getAntallBarn(),
                     adopsjon.getOmsorgsovertakelsesdato(),
@@ -358,8 +351,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (egenNæring == null) {
             return null;
         }
-        if (egenNæring instanceof NorskOrganisasjon) {
-            NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
+        if (egenNæring instanceof NorskOrganisasjon norskOrg) {
             return no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.builder()
                     .beskrivelseEndring(norskOrg.getBeskrivelseAvEndring())
                     .endringsDato(norskOrg.getEndringsDato())
@@ -375,8 +367,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     .virksomhetsTyper(tilVirksomhetsTyper(norskOrg.getVirksomhetstype()))
                     .build();
         }
-        if (egenNæring instanceof UtenlandskOrganisasjon) {
-            UtenlandskOrganisasjon utenlandskOrg = UtenlandskOrganisasjon.class.cast(egenNæring);
+        if (egenNæring instanceof UtenlandskOrganisasjon utenlandskOrg) {
             return no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.builder()
                     .registrertILand(tilLand(utenlandskOrg.getRegistrertILand()))
                     .orgName(utenlandskOrg.getNavn())
@@ -491,61 +482,56 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (periode == null) {
             return null;
         }
-        if (periode instanceof Overfoeringsperiode) {
-            Overfoeringsperiode overføringsPeriode = Overfoeringsperiode.class.cast(periode);
+        if (periode instanceof Overfoeringsperiode p) {
             return new OverføringsPeriode(
-                    overføringsPeriode.getFom(),
-                    overføringsPeriode.getTom(),
-                    tilÅrsak(overføringsPeriode.getAarsak()),
-                    tilStønadKontoType(overføringsPeriode.getOverfoeringAv()),
+                    p.getFom(),
+                    p.getTom(),
+                    tilÅrsak(p.getAarsak()),
+                    tilStønadKontoType(p.getOverfoeringAv()),
                     emptyList());
         }
-        if (periode instanceof Oppholdsperiode) {
-            Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
+        if (periode instanceof Oppholdsperiode p) {
             return new OppholdsPeriode(
-                    oppholdsPeriode.getFom(),
-                    oppholdsPeriode.getTom(),
-                    tilÅrsak(oppholdsPeriode.getAarsak()),
+                    p.getFom(),
+                    p.getTom(),
+                    tilÅrsak(p.getAarsak()),
                     emptyList());
         }
-        if (periode instanceof Utsettelsesperiode) {
-            Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
+        if (periode instanceof Utsettelsesperiode p) {
             return new UtsettelsesPeriode(
-                    utsettelse.getFom(),
-                    utsettelse.getTom(),
-                    utsettelse.isErArbeidstaker(),
+                    p.getFom(),
+                    p.getTom(),
+                    p.isErArbeidstaker(),
                     null, // TODO SJEKK OM VIRKSOMHETSNUMMER SKAL VÆRE MED
-                    tilÅrsak(utsettelse.getAarsak()),
-                    tilStønadKontoType(utsettelse.getUtsettelseAv()),
+                    tilÅrsak(p.getAarsak()),
+                    tilStønadKontoType(p.getUtsettelseAv()),
                     null,
                     emptyList());
         }
-        if (periode instanceof Gradering) {
-            Gradering gradering = Gradering.class.cast(periode);
+        if (periode instanceof Gradering p) {
             return new GradertUttaksPeriode(
-                    gradering.getFom(),
-                    gradering.getTom(),
-                    tilStønadKontoType(gradering.getType()),
-                    gradering.isOenskerSamtidigUttak(),
-                    tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()),
-                    gradering.isOenskerFlerbarnsdager(),
-                    new ProsentAndel(gradering.getSamtidigUttakProsent()),
-                    new ProsentAndel(gradering.getArbeidtidProsent()),
-                    gradering.isErArbeidstaker(),
-                    gradering.isArbeidsforholdSomSkalGraderes(),
-                    Collections.singletonList(gradering.getVirksomhetsnummer().toString()), null, null,
+                    p.getFom(),
+                    p.getTom(),
+                    tilStønadKontoType(p.getType()),
+                    p.isOenskerSamtidigUttak(),
+                    tilMorsAktivitet(p.getMorsAktivitetIPerioden()),
+                    p.isOenskerFlerbarnsdager(),
+                    new ProsentAndel(p.getSamtidigUttakProsent()),
+                    new ProsentAndel(p.getArbeidtidProsent()),
+                    p.isErArbeidstaker(),
+                    p.isArbeidsforholdSomSkalGraderes(),
+                    Collections.singletonList(p.getVirksomhetsnummer().toString()), null, null,
                     emptyList());
         }
-        if (periode instanceof Uttaksperiode) {
-            Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
+        if (periode instanceof Uttaksperiode p) {
             return new UttaksPeriode(
-                    uttaksperiode.getFom(),
-                    uttaksperiode.getTom(),
-                    tilStønadKontoType(uttaksperiode.getType()),
-                    uttaksperiode.isOenskerSamtidigUttak(),
-                    tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
-                    uttaksperiode.isOenskerFlerbarnsdager(),
-                    new ProsentAndel(uttaksperiode.getSamtidigUttakProsent()),
+                    p.getFom(),
+                    p.getTom(),
+                    tilStønadKontoType(p.getType()),
+                    p.isOenskerSamtidigUttak(),
+                    tilMorsAktivitet(p.getMorsAktivitetIPerioden()),
+                    p.isOenskerFlerbarnsdager(),
+                    new ProsentAndel(p.getSamtidigUttakProsent()),
                     emptyList());
         }
         throw new IllegalArgumentException();
@@ -600,14 +586,12 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (annenForelder instanceof UkjentForelder) {
             return new no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder();
         }
-        if (annenForelder instanceof AnnenForelderMedNorskIdent) {
-            AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
+        if (annenForelder instanceof AnnenForelderMedNorskIdent norskForelder) {
             return new NorskForelder(
                     oppslag.fnr(new AktørId(norskForelder.getAktoerId())),
                     null);
         }
-        if (annenForelder instanceof AnnenForelderUtenNorskIdent) {
-            AnnenForelderUtenNorskIdent utenlandsForelder = AnnenForelderUtenNorskIdent.class.cast(annenForelder);
+        if (annenForelder instanceof AnnenForelderUtenNorskIdent utenlandsForelder) {
             return new UtenlandskForelder(
                     utenlandsForelder.getUtenlandskPersonidentifikator(),
                     tilLand(utenlandsForelder.getLand()),

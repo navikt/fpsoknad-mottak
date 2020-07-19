@@ -225,8 +225,7 @@ public class V3XMLMapperCommon {
         if (egenNæring == null) {
             return null;
         }
-        if (egenNæring instanceof NorskOrganisasjon) {
-            NorskOrganisasjon norskOrg = NorskOrganisasjon.class.cast(egenNæring);
+        if (egenNæring instanceof NorskOrganisasjon norskOrg) {
             return no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.builder()
                     .beskrivelseEndring(norskOrg.getBeskrivelseAvEndring())
                     .endringsDato(norskOrg.getEndringsDato())
@@ -242,8 +241,7 @@ public class V3XMLMapperCommon {
                     .virksomhetsTyper(tilVirksomhetsTyper(norskOrg.getVirksomhetstype()))
                     .build();
         }
-        if (egenNæring instanceof UtenlandskOrganisasjon) {
-            UtenlandskOrganisasjon utenlandskOrg = UtenlandskOrganisasjon.class.cast(egenNæring);
+        if (egenNæring instanceof UtenlandskOrganisasjon utenlandskOrg) {
             return no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.builder()
                     .registrertILand(tilLand(utenlandskOrg.getRegistrertILand()))
                     .orgName(utenlandskOrg.getNavn())

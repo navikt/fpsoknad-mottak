@@ -183,24 +183,20 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (relasjonTilBarnet == null) {
             return null;
         }
-        if (relasjonTilBarnet instanceof Foedsel) {
-            Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof Foedsel fødsel) {
             return new Fødsel(
                     fødsel.getAntallBarn(),
                     fødsel.getFoedselsdato(),
                     fødsel.getTermindato());
         }
-        if (relasjonTilBarnet instanceof Termin) {
-            Termin termin = Termin.class.cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof Termin termin) {
             return new FremtidigFødsel(
                     termin.getAntallBarn(),
                     termin.getTermindato(),
                     termin.getUtstedtdato(),
                     emptyList());
         }
-        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon) {
-            no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon adopsjon = no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon.class
-                    .cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon adopsjon) {
             return new Adopsjon(
                     adopsjon.getAntallBarn(),
                     adopsjon.getOmsorgsovertakelsesdato(),
@@ -242,63 +238,58 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (periode == null) {
             return null;
         }
-        if (periode instanceof Overfoeringsperiode) {
-            Overfoeringsperiode overføringsPeriode = Overfoeringsperiode.class.cast(periode);
+        if (periode instanceof Overfoeringsperiode p) {
             return new OverføringsPeriode(
-                    overføringsPeriode.getFom(),
-                    overføringsPeriode.getTom(),
-                    tilÅrsak(overføringsPeriode.getAarsak()),
-                    tilStønadKontoType(overføringsPeriode.getOverfoeringAv()),
+                    p.getFom(),
+                    p.getTom(),
+                    tilÅrsak(p.getAarsak()),
+                    tilStønadKontoType(p.getOverfoeringAv()),
                     emptyList());
         }
-        if (periode instanceof Oppholdsperiode) {
-            Oppholdsperiode oppholdsPeriode = Oppholdsperiode.class.cast(periode);
+        if (periode instanceof Oppholdsperiode p) {
             return new OppholdsPeriode(
-                    oppholdsPeriode.getFom(),
-                    oppholdsPeriode.getTom(),
-                    tilÅrsak(oppholdsPeriode.getAarsak()),
+                    p.getFom(),
+                    p.getTom(),
+                    tilÅrsak(p.getAarsak()),
                     emptyList());
         }
-        if (periode instanceof Utsettelsesperiode) {
-            Utsettelsesperiode utsettelse = Utsettelsesperiode.class.cast(periode);
+        if (periode instanceof Utsettelsesperiode p) {
             return new UtsettelsesPeriode(
-                    utsettelse.getFom(),
-                    utsettelse.getTom(),
-                    utsettelse.isErArbeidstaker(),
+                    p.getFom(),
+                    p.getTom(),
+                    p.isErArbeidstaker(),
                     null,
-                    tilÅrsak(utsettelse.getAarsak()),
-                    tilStønadKontoType(utsettelse.getUtsettelseAv()),
-                    tilMorsAktivitet(utsettelse.getMorsAktivitetIPerioden()),
+                    tilÅrsak(p.getAarsak()),
+                    tilStønadKontoType(p.getUtsettelseAv()),
+                    tilMorsAktivitet(p.getMorsAktivitetIPerioden()),
                     emptyList());
         }
-        if (periode instanceof Gradering) {
-            Gradering gradering = Gradering.class.cast(periode);
+        if (periode instanceof Gradering p) {
             return new GradertUttaksPeriode(
-                    gradering.getFom(),
-                    gradering.getTom(),
-                    tilStønadKontoType(gradering.getType()),
-                    gradering.isOenskerSamtidigUttak(),
-                    tilMorsAktivitet(gradering.getMorsAktivitetIPerioden()),
-                    gradering.isOenskerFlerbarnsdager(),
-                    new ProsentAndel(gradering.getSamtidigUttakProsent()),
-                    new ProsentAndel(gradering.getArbeidtidProsent()),
-                    gradering.isErArbeidstaker(),
-                    gradering.isArbeidsforholdSomSkalGraderes(),
-                    tilArbeidsgiver(gradering.getArbeidsgiver()),
-                    tilBoolean(gradering.isErFrilanser()),
-                    tilBoolean(gradering.isErSelvstNæringsdrivende()),
+                    p.getFom(),
+                    p.getTom(),
+                    tilStønadKontoType(p.getType()),
+                    p.isOenskerSamtidigUttak(),
+                    tilMorsAktivitet(p.getMorsAktivitetIPerioden()),
+                    p.isOenskerFlerbarnsdager(),
+                    new ProsentAndel(p.getSamtidigUttakProsent()),
+                    new ProsentAndel(p.getArbeidtidProsent()),
+                    p.isErArbeidstaker(),
+                    p.isArbeidsforholdSomSkalGraderes(),
+                    tilArbeidsgiver(p.getArbeidsgiver()),
+                    tilBoolean(p.isErFrilanser()),
+                    tilBoolean(p.isErSelvstNæringsdrivende()),
                     emptyList());
         }
-        if (periode instanceof Uttaksperiode) {
-            Uttaksperiode uttaksperiode = Uttaksperiode.class.cast(periode);
+        if (periode instanceof Uttaksperiode p) {
             return new UttaksPeriode(
-                    uttaksperiode.getFom(),
-                    uttaksperiode.getTom(),
-                    tilStønadKontoType(uttaksperiode.getType()),
-                    uttaksperiode.isOenskerSamtidigUttak(),
-                    tilMorsAktivitet(uttaksperiode.getMorsAktivitetIPerioden()),
-                    uttaksperiode.isOenskerFlerbarnsdager(),
-                    new ProsentAndel(uttaksperiode.getSamtidigUttakProsent()),
+                    p.getFom(),
+                    p.getTom(),
+                    tilStønadKontoType(p.getType()),
+                    p.isOenskerSamtidigUttak(),
+                    tilMorsAktivitet(p.getMorsAktivitetIPerioden()),
+                    p.isOenskerFlerbarnsdager(),
+                    new ProsentAndel(p.getSamtidigUttakProsent()),
                     emptyList());
         }
         throw new UnexpectedInputException("Ukjent periode %s", periode.getClass().getSimpleName());
@@ -360,14 +351,12 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
         if (annenForelder instanceof UkjentForelder) {
             return new no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder();
         }
-        if (annenForelder instanceof AnnenForelderMedNorskIdent) {
-            AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
+        if (annenForelder instanceof AnnenForelderMedNorskIdent norskForelder) {
             return new NorskForelder(
                     oppslag.fnr(new AktørId(norskForelder.getAktoerId())),
                     null);
         }
-        if (annenForelder instanceof AnnenForelderUtenNorskIdent) {
-            AnnenForelderUtenNorskIdent utenlandsForelder = AnnenForelderUtenNorskIdent.class.cast(annenForelder);
+        if (annenForelder instanceof AnnenForelderUtenNorskIdent utenlandsForelder) {
             return new UtenlandskForelder(
                     utenlandsForelder.getUtenlandskPersonidentifikator(),
                     tilLand(utenlandsForelder.getLand()),

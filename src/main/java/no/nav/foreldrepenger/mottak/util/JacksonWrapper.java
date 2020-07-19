@@ -18,17 +18,12 @@ public class JacksonWrapper {
         this.mapper = mapper;
     }
 
-    public <T> T convertTo(String json, Class<T> clazz) {
+    public <T> T readValue(String json, Class<T> clazz) {
         try {
             return mapper.readValue(json, clazz);
         } catch (IOException e) {
             throw new UnexpectedInputException("Kunne ikke rekonstuere melding fra %s til %s", e, json, clazz);
         }
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [mapper=" + mapper + "]";
     }
 
     public String writeValueAsString(Object object) {
@@ -38,5 +33,10 @@ public class JacksonWrapper {
             throw new UnexpectedInputException("Kunne ikke serialisere fra %s", e, object.getClass().getName());
 
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [mapper=" + mapper + "]";
     }
 }

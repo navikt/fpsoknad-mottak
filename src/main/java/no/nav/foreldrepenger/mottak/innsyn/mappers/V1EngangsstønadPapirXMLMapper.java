@@ -117,22 +117,19 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
         if (relasjonTilBarnet == null) {
             return null;
         }
-        if (relasjonTilBarnet instanceof Foedsel) {
-            Foedsel fødsel = Foedsel.class.cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof Foedsel fødsel) {
             return new Fødsel(
                     fødsel.getAntallBarn(),
                     fødsel.getFoedselsdato());
         }
-        if (relasjonTilBarnet instanceof Termin) {
-            Termin termin = Termin.class.cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof Termin termin) {
             return new FremtidigFødsel(
                     termin.getAntallBarn(),
                     termin.getTermindato(),
                     termin.getUtstedtdato(),
                     emptyList());
         }
-        if (relasjonTilBarnet instanceof Adopsjon) {
-            Adopsjon adopsjon = Adopsjon.class.cast(relasjonTilBarnet);
+        if (relasjonTilBarnet instanceof Adopsjon adopsjon) {
             return new no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon(
                     adopsjon.getAntallBarn(),
                     adopsjon.getOmsorgsovertakelsesdato(),
@@ -185,14 +182,12 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
         if (annenForelder instanceof UkjentForelder) {
             return new no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder();
         }
-        if (annenForelder instanceof AnnenForelderMedNorskIdent) {
-            AnnenForelderMedNorskIdent norskForelder = AnnenForelderMedNorskIdent.class.cast(annenForelder);
+        if (annenForelder instanceof AnnenForelderMedNorskIdent norskForelder) {
             return new NorskForelder(
                     oppslag.fnr(new AktørId(norskForelder.getAktoerId())),
                     null);
         }
-        if (annenForelder instanceof AnnenForelderUtenNorskIdent) {
-            AnnenForelderUtenNorskIdent utenlandsForelder = AnnenForelderUtenNorskIdent.class.cast(annenForelder);
+        if (annenForelder instanceof AnnenForelderUtenNorskIdent utenlandsForelder) {
             return new UtenlandskForelder(
                     utenlandsForelder.getUtenlandskPersonidentifikator(),
                     tilLand(utenlandsForelder.getLand()),

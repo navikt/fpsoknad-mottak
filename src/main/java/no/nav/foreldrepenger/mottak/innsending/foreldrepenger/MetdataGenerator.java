@@ -5,21 +5,19 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
+
 @Component
 public class MetdataGenerator {
 
-    private final ObjectMapper mapper;
+    private final JacksonWrapper mapper;
 
-    public MetdataGenerator(ObjectMapper mapper) {
+    public MetdataGenerator(JacksonWrapper mapper) {
         this.mapper = mapper;
     }
 
     public String generer(FordelMetadata metadata) {
-        try {
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(metadata);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(e);
-        }
+            return mapper.writeValueAsString(metadata);
     }
 
     @Override

@@ -170,25 +170,17 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
 
     private static Arbeidsforhold tilArbeidsForhold(
             no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold) {
-        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser) {
-            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser frilanser = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser.class
-                    .cast(arbeidsforhold);
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Frilanser frilanser) {
             return new Frilanser(frilanser.getOpplysningerOmRisikofaktorer(),
                     frilanser.getOpplysningerOmTilretteleggingstiltak());
         }
-        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.PrivatArbeidsgiver) {
-            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.PrivatArbeidsgiver privatArbeidsgiver = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.PrivatArbeidsgiver.class
-                    .cast(arbeidsforhold);
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.PrivatArbeidsgiver privatArbeidsgiver) {
             return new PrivatArbeidsgiver(new Fødselsnummer(privatArbeidsgiver.getIdentifikator()));
         }
-        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsgiver) {
-            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsgiver arbeidsgiver = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsgiver.class
-                    .cast(arbeidsforhold);
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsgiver arbeidsgiver) {
             return new Virksomhet(arbeidsgiver.getIdentifikator());
         }
-        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.SelvstendigNæringsdrivende) {
-            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.SelvstendigNæringsdrivende selvstendig = no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.SelvstendigNæringsdrivende.class
-                    .cast(arbeidsforhold);
+        if (arbeidsforhold instanceof no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.SelvstendigNæringsdrivende selvstendig) {
             return new SelvstendigNæringsdrivende(selvstendig.getOpplysningerOmRisikofaktorer(),
                     selvstendig.getOpplysningerOmTilretteleggingstiltak());
         }

@@ -1,15 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEFAULT;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 
 @Service
-@Profile({DEV, DEFAULT})
+@ConditionalOnK8s
 public class PdfGeneratorTjeneste implements PdfGenerator {
     private final PdfGeneratorConnection connection;
 

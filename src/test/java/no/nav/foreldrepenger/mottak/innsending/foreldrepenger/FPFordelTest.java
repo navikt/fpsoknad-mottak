@@ -36,10 +36,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,6 +65,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.PdfElementRenderer;
 import no.nav.foreldrepenger.mottak.innsending.pdf.SøknadTextFormatter;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
+import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.mottak.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
@@ -70,10 +73,13 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)
+@AutoConfigureJsonTesters
+@ExtendWith(SpringExtension.class)
 public class FPFordelTest {
 
     private static final AktørId AKTØRID = new AktørId("1111111111");
@@ -99,8 +105,11 @@ public class FPFordelTest {
     @Mock
     private RestOperations restOperations;
 
+    private PdfGenerator pdfGenerator = new PdfGeneratorStub();
+
     @Autowired
-    private PdfGenerator pdfGenerator;
+    private ObjectMapper mapper;
+
 
     @Mock
     private Oppslag oppslag;
@@ -147,7 +156,7 @@ public class FPFordelTest {
         InfoskrivPdfEkstraktor pdfSplitter = new InfoskrivPdfEkstraktor();
 
         DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
-        KonvoluttGenerator konvoluttGenerator = new KonvoluttGenerator(new MetdataGenerator(new ObjectMapper()),
+        KonvoluttGenerator konvoluttGenerator = new KonvoluttGenerator(new MetdataGenerator(new JacksonWrapper(mapper)),
                 domainMapper, pdfGenerator);
         return new FordelSøknadSender(
                 new FordelConnection(restOperations, cfg,

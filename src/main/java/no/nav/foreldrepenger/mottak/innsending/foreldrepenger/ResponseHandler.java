@@ -95,6 +95,7 @@ public class ResponseHandler extends AbstractRestConnection {
                     GITTOPP_KVITTERING.increment();
                     return new Kvittering(FP_FORDEL_MESSED_UP);
                 }
+                //$FALL-THROUGH$
             default:
                 FEILET_KVITTERINGER.increment();
                 LOG.warn("Uventet responskode {} ved leveranse av søknad, gir opp (etter {}ms)",
