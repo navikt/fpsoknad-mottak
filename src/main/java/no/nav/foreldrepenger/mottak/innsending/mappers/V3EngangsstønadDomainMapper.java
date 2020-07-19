@@ -94,11 +94,11 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
     }
 
     private static SoekersRelasjonTilBarnet relasjonFra(RelasjonTilBarn relasjon, List<Vedlegg> vedlegg) {
-        if (relasjon instanceof FremtidigFødsel) {
-            return create(FremtidigFødsel.class.cast(relasjon), vedlegg);
+        if (relasjon instanceof FremtidigFødsel f) {
+            return create(f, vedlegg);
         }
-        if (relasjon instanceof Fødsel) {
-            return create(Fødsel.class.cast(relasjon), vedlegg);
+        if (relasjon instanceof Fødsel f) {
+            return create(f, vedlegg);
         }
         throw new UnexpectedInputException("Relasjon %s er ikke støttet", relasjon.getClass().getSimpleName());
     }
@@ -134,11 +134,11 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
         if (annenForelder instanceof UkjentForelder) {
             return ukjentForelder();
         }
-        if (annenForelder instanceof NorskForelder) {
-            return norskForelderFra(NorskForelder.class.cast(annenForelder));
+        if (annenForelder instanceof NorskForelder n) {
+            return norskForelderFra(n);
         }
-        if (annenForelder instanceof UtenlandskForelder) {
-            return utenlandskForelderFra(UtenlandskForelder.class.cast(annenForelder));
+        if (annenForelder instanceof UtenlandskForelder u) {
+            return utenlandskForelderFra(u);
         }
         throw new UnexpectedInputException("Ukjent annen forelder %s", annenForelder.getClass().getSimpleName());
     }

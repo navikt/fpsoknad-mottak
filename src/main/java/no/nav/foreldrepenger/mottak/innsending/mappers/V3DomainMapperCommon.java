@@ -117,12 +117,13 @@ final class V3DomainMapperCommon {
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
-        return opphold == null ? null
-                : new OppholdUtlandet()
+        return Optional.ofNullable(opphold)
+                .map(o -> new OppholdUtlandet()
                         .withPeriode(new Periode()
-                                .withFom(opphold.getFom())
-                                .withTom(opphold.getTom()))
-                        .withLand(landFra(opphold.getLand()));
+                                .withFom(o.getFom())
+                                .withTom(o.getTom()))
+                        .withLand(landFra(o.getLand())))
+                .orElse(null);
     }
 
     private static List<Virksomhetstyper> virksomhetsTyperFra(List<Virksomhetstype> typer) {
@@ -157,13 +158,11 @@ final class V3DomainMapperCommon {
     }
 
     private static EgenNaering create(EgenNæring egenNæring) {
-        if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon) {
-            return create(no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.class
-                    .cast(egenNæring));
+        if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon o) {
+            return create(o);
         }
-        if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon) {
-            return create(no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.class
-                    .cast(egenNæring));
+        if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon u) {
+            return create(u);
         }
         throw new UnexpectedInputException("Vil aldri skje");
     }
@@ -303,14 +302,11 @@ final class V3DomainMapperCommon {
 
     private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
 
-        switch (innsendingsType) {
-        case SEND_SENERE:
-            return innsendingsTypeMedKodeverk(SEND_SENERE);
-        case LASTET_OPP:
-            return innsendingsTypeMedKodeverk(LASTET_OPP);
-        default:
-            throw new UnexpectedInputException("Innsendingstype " + innsendingsType + "  ikke støttet");
-        }
+        return switch (innsendingsType) {
+            case SEND_SENERE -> innsendingsTypeMedKodeverk(SEND_SENERE);
+            case LASTET_OPP -> innsendingsTypeMedKodeverk(LASTET_OPP);
+            default -> throw new UnexpectedInputException("Innsendingstype " + innsendingsType + "  ikke støttet");
+        };
     }
 
     private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans frilans) {

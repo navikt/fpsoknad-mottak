@@ -19,7 +19,7 @@ import java.util.Optional;
 import javax.xml.bind.JAXBElement;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
+import static org.springframework.util.CollectionUtils.*;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -221,20 +221,20 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
             LukketPeriodeMedVedlegg periode) {
-        if (periode instanceof OverføringsPeriode) {
-            return create(OverføringsPeriode.class.cast(periode));
+        if (periode instanceof OverføringsPeriode p) {
+            return create(p);
         }
-        if (periode instanceof OppholdsPeriode) {
-            return create(OppholdsPeriode.class.cast(periode));
+        if (periode instanceof OppholdsPeriode p) {
+            return create(p);
         }
-        if (periode instanceof UtsettelsesPeriode) {
-            return create(UtsettelsesPeriode.class.cast(periode));
+        if (periode instanceof UtsettelsesPeriode p) {
+            return create(p);
         }
-        if (periode instanceof GradertUttaksPeriode) {
-            return create(GradertUttaksPeriode.class.cast(periode));
+        if (periode instanceof GradertUttaksPeriode p) {
+            return create(p);
         }
-        if (periode instanceof UttaksPeriode) {
-            return create(UttaksPeriode.class.cast(periode));
+        if (periode instanceof UttaksPeriode p) {
+            return create(p);
         }
         throw new UnexpectedInputException("Ukjent periode " + periode.getClass().getSimpleName());
     }
@@ -281,7 +281,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
                 .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
                 .withArbeidtidProsent(prosentFra(gradertPeriode.getArbeidstidProsent()))
-                .withArbeidsgiver(arbeidsGiverFra(gradertPeriode.getVirksomhetsnummer()))
+                .withArbeidsgiver(arbeidsgiverFra(gradertPeriode.getVirksomhetsnummer()))
                 .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                 .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
         if (gradertPeriode.getFrilans() != null) {
@@ -314,24 +314,21 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .orElse(0d);
     }
 
-    private static Arbeidsgiver arbeidsGiverFra(List<String> arbeidsgiver) {
-        if (CollectionUtils.isEmpty(arbeidsgiver)) {
+    private static Arbeidsgiver arbeidsgiverFra(List<String> arbeidsgiver) {
+        if (isEmpty(arbeidsgiver)) {
             return null;
         }
-        String id = arbeidsgiver.get(0);
-        if (id != null) {
-            switch (id.length()) {
-                case 11:
-                    return new Person()
-                            .withIdentifikator(id);
-                case 9:
-                    return new Virksomhet()
-                            .withIdentifikator(id);
-                default:
-                    throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
-            }
-        }
-        return null;
+        return Optional.ofNullable(arbeidsgiver.get(0))
+                .map(V3ForeldrepengerDomainMapper::arbeidsgiverFra)
+                .orElse(null);
+    }
+
+    private static Arbeidsgiver arbeidsgiverFra(String id) {
+        return switch (id.length()) {
+            case 11 -> new Person().withIdentifikator(id);
+            case 9 -> new Virksomhet().withIdentifikator(id);
+            default -> throw new UnexpectedInputException("Ugyldig lengde " + id.length() + " for arbeidsgiver");
+        };
     }
 
     private static Uttaksperiodetyper uttaksperiodeTypeFra(StønadskontoType type) {
@@ -440,11 +437,11 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         if (erAnnenForelderUkjent(annenForelder)) {
             return new UkjentForelder();
         }
-        if (annenForelder instanceof UtenlandskForelder) {
-            return utenlandskForelder(UtenlandskForelder.class.cast(annenForelder));
+        if (annenForelder instanceof UtenlandskForelder u) {
+            return utenlandskForelder(u);
         }
-        if (annenForelder instanceof NorskForelder) {
-            return norskForelder(NorskForelder.class.cast(annenForelder));
+        if (annenForelder instanceof NorskForelder n) {
+            return norskForelder(n);
         }
         return null;
     }
@@ -467,17 +464,17 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static SoekersRelasjonTilBarnet create(RelasjonTilBarn relasjonTilBarn) {
-        if (relasjonTilBarn instanceof Fødsel) {
-            return create(Fødsel.class.cast(relasjonTilBarn));
+        if (relasjonTilBarn instanceof Fødsel f) {
+            return create(f);
         }
-        if (relasjonTilBarn instanceof FremtidigFødsel) {
-            return create(FremtidigFødsel.class.cast(relasjonTilBarn));
+        if (relasjonTilBarn instanceof FremtidigFødsel f) {
+            return create(f);
         }
-        if (relasjonTilBarn instanceof Adopsjon) {
-            return create(Adopsjon.class.cast(relasjonTilBarn));
+        if (relasjonTilBarn instanceof Adopsjon a) {
+            return create(a);
         }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
-            return create(Omsorgsovertakelse.class.cast(relasjonTilBarn));
+        if (relasjonTilBarn instanceof Omsorgsovertakelse o) {
+            return create(o);
         }
         throw new UnexpectedInputException(
                 "Relasjon " + relasjonTilBarn.getClass().getSimpleName() + " er ikke støttet");
