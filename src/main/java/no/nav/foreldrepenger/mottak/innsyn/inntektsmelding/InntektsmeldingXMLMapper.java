@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.xml.bind.JAXBElement;
@@ -220,10 +221,11 @@ public final class InntektsmeldingXMLMapper {
     }
 
     private static LukketPeriode tilLukketPeriode(JAXBElement<Periode> periode) {
-        if (periode == null) {
-            return null;
-        }
-        return tilLukketPeriode(periode.getValue());
+        return Optional.ofNullable(periode)
+                .map(p -> p.getValue())
+                .filter(Objects::nonNull)
+                .map(InntektsmeldingXMLMapper::tilLukketPeriode)
+                .orElse(null);
     }
 
     private static LukketPeriode tilLukketPeriode(Periode periode) {
@@ -235,21 +237,18 @@ public final class InntektsmeldingXMLMapper {
     }
 
     private static LocalDate tilDato(JAXBElement<LocalDate> dato) {
-        if (dato == null) {
-            return null;
-        }
-        return Optional.ofNullable(dato.getValue()).orElse(null);
+        return Optional.ofNullable(dato)
+                .map(d -> d.getValue())
+                .orElse(null);
     }
 
     private static LocalDateTime tilDatoOgDag(JAXBElement<LocalDateTime> dato) {
-        if (dato == null) {
-            return null;
-        }
-        return Optional.ofNullable(dato.getValue()).orElse(null);
+        return Optional.ofNullable(dato)
+                .map(d -> d.getValue())
+                .orElse(null);
     }
 
-    private static List<UtsettelsesPeriode> tilUtsettelsesPerioder(
-            JAXBElement<UtsettelseAvForeldrepengerListe> perioder) {
+    private static List<UtsettelsesPeriode> tilUtsettelsesPerioder(JAXBElement<UtsettelseAvForeldrepengerListe> perioder) {
         if (perioder == null) {
             return emptyList();
         }
@@ -265,7 +264,7 @@ public final class InntektsmeldingXMLMapper {
 
     private static UtsettelsesÅrsak tilUtsettelsesÅrsak(JAXBElement<String> årsak) {
         return Optional.ofNullable(årsak)
-                .map(JAXBElement::getValue)
+                .map(å -> å.getValue())
                 .map(UtsettelsesÅrsak::valueOf)
                 .orElse(null);
     }
@@ -277,7 +276,7 @@ public final class InntektsmeldingXMLMapper {
 
     private static String tilId(JAXBElement<String> id) {
         return Optional.ofNullable(id)
-                .map(JAXBElement::getValue)
+                .map(i -> i.getValue())
                 .orElse(null);
     }
 
@@ -290,7 +289,7 @@ public final class InntektsmeldingXMLMapper {
 
     private static BeregnetInntektEndringsÅrsak tilÅrsak(JAXBElement<String> årsak) {
         return Optional.ofNullable(årsak)
-                .map(JAXBElement::getValue)
+                .map(å -> å.getValue())
                 .map(BeregnetInntektEndringsÅrsak::valueOf)
                 .orElse(null);
     }

@@ -76,7 +76,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        var svp = (Svangerskapspenger) søknad.getYtelse();
+        var svp = Svangerskapspenger.class.cast(søknad.getYtelse());
         var arbeidsforhold = aktiveArbeidsforhold(svp.getTermindato(), svp.getFødselsdato());
         try (var doc = new FontAwarePdfDocument(); var baos = new ByteArrayOutputStream()) {
             var page = newPage();

@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static no.nav.foreldrepenger.mottak.util.Constants.FNR;
 import static no.nav.foreldrepenger.mottak.util.MapUtil.get;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.dateWithinPeriod;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.dato;
@@ -20,10 +21,9 @@ import no.nav.foreldrepenger.mottak.util.Pair;
 @Component
 class ArbeidsforholdMapper {
 
-    private static final String PERIODE2 = "periode";
+    private static final String PERIODE = "periode";
     private static final String ARBEIDSAVTALER = "arbeidsavtaler";
     private static final String TYPE = "type";
-    private static final String FNR2 = "fnr";
     private static final String OFFENTLIG_IDENT = "offentligIdent";
     private static final String PERSON = "Person";
     private static final String ORGNR = "orgnr";
@@ -44,7 +44,7 @@ class ArbeidsforholdMapper {
 
     EnkeltArbeidsforhold tilArbeidsforhold(Map<?, ?> map) {
         var id = id(get(map, ARBEIDSGIVER, Map.class));
-        var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE2, Map.class);
+        var periode = get(get(map, ANSETTELSESPERIODE, Map.class), PERIODE, Map.class);
         return EnkeltArbeidsforhold.builder()
                 .arbeidsgiverId(id.getFirst())
                 .arbeidsgiverIdType(id.getSecond())
@@ -56,12 +56,7 @@ class ArbeidsforholdMapper {
     }
 
     private String navn(String orgnr) {
-        try {
-            return organisasjon.organisasjonsNavn(orgnr);
-        } catch (Exception e) {
-            LOG.warn("OOPS", e);
-            return orgnr;
-        }
+        return organisasjon.navn(orgnr);
     }
 
     private static ProsentAndel stillingsprosent(List<?> avtaler) {
@@ -82,14 +77,11 @@ class ArbeidsforholdMapper {
     }
 
     private static Pair<String, String> id(Map<?, ?> map) {
-        var type = get(map, TYPE);
-        if (ORGANISASJON.equals(type)) {
-            return Pair.of(get(map, ORGANISASJONSNUMMER), ORGNR);
-        }
-        if (PERSON.equals(type)) {
-            return Pair.of(get(map, OFFENTLIG_IDENT), FNR2);
-        }
-        throw new IllegalArgumentException("Fant verken orgnr eller fnr i " + map);
+        return switch (get(map, TYPE)) {
+            case ORGANISASJON -> Pair.of(get(map, ORGANISASJONSNUMMER), ORGNR);
+            case PERSON -> Pair.of(get(map, OFFENTLIG_IDENT), FNR);
+            default -> throw new IllegalArgumentException("Fant verken orgnr eller fnr i " + map);
+        };
     }
 
     @Override

@@ -327,7 +327,7 @@ public class InnsynTjeneste implements Innsyn {
     private ArbeidsgiverInfo map(AktørId aktørId, String orgnr) {
         LOG.trace("Lager arbeidsgiverInfo for  {} {}", aktørId, orgnr);
         return Optional.ofNullable(orgnr)
-                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, organisasjon.organisasjonsNavn(o)))
+                .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, organisasjon.navn(o)))
                 .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId)
                         .map(AktørId::getId)
                         .orElse(null), PRIVAT,

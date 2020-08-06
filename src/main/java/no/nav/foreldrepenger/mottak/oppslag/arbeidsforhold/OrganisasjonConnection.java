@@ -29,7 +29,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     }
 
     @Cacheable(cacheNames = "organisasjon")
-    public String organisasjonsNavn(String orgnr) {
+    public String navn(String orgnr) {
         LOG.info("Henter organisasjonsnavn for {}", orgnr);
         try {
             var navn = Optional.ofNullable(getWebClient()
