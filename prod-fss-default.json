@@ -1,0 +1,4 @@
+{
+   "namespace" : "default",
+   "ingresses":  ["https://fpsoknad-mottak.adeo.no"]
+}
