@@ -51,6 +51,10 @@ management:
          exposure:
             include: info, health, metrics, prometheus, env
    health:
+      livenessstate:
+        enabled: true
+      readinessstate:
+        enabled: true
       ping:
         enabled: false
       diskspace:
