@@ -58,9 +58,9 @@ management:
       ping:
         enabled: false
       diskspace:
-         enabled: false
+        enabled: false
       jms:
-         enabled: false
+        enabled: false
 server:
    servlet:
       context-path: /api
