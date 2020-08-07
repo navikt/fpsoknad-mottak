@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "organisasjon")
 public class OrganisasjonConfig extends AbstractConfig {
 
-    static final String HISTORIKK = "historikk";
+    private static final String HISTORIKK = "historikk";
     private static final String V1_ORGANISASJON = "/v1/organisasjon/{orgnr}";
     private static final String NAV = "998004993";
     private final String organisasjonPath;
