@@ -21,7 +21,9 @@ mottak:
       domainevent:
          enabled: true
          topic: fpsoknad-mottak
-
+fpfordel:
+  base-uri: http://fpfordel.default
+    
 no.nav:
    security.jwt.issuer.selvbetjening:
       discoveryurl: https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten
