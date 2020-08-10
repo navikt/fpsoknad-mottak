@@ -21,6 +21,9 @@ mottak:
       domainevent:
          enabled: true
          topic: fpsoknad-mottak
+fpfordel:
+  base-uri: http://fpfordel.default
+
 innsyn:
   base-uri: http://fpinfo.default
         
