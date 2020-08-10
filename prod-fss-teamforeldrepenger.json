@@ -1,4 +1,4 @@
 {
    "namespace" : "teamforeldrepenger",
-   "ingresses":  ["https://fpsoknad-mottak.adeo.no"]
+   "ingresses":  ["https://fpsoknad-mottak.adeo.no","fpsoknad-mottak.prod-fss.nais.io"]
 }
