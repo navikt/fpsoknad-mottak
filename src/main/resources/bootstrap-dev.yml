@@ -13,5 +13,5 @@ spring:
          kv:
             enabled: true
             backend: kv/preprod/fss
-            application-name: fpsoknad-mottak/default
-            default-context: fpsoknad-mottak/default 
+            application-name: fpsoknad-mottak/teamforeldrepenger
+            default-context: fpsoknad-mottak/teamforeldrepenger
