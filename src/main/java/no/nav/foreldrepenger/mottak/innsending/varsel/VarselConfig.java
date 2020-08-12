@@ -38,6 +38,9 @@ public class VarselConfig {
     }
 
     public String getName() {
+        if (uri.getPath().startsWith("/")) {
+            return uri.getPath().substring(1);
+        }
         return uri.getPath();
     }
 
