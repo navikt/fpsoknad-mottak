@@ -4,10 +4,10 @@ import java.net.URI;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @ConfigurationProperties(prefix = "varsel")
 public class VarselConfig {
-
 
     private final String queueName;
     private final String channelname;
@@ -15,10 +15,9 @@ public class VarselConfig {
     private final String username;
     private final URI uri;
 
-
     @ConstructorBinding
     public VarselConfig(URI uri, String queueName,
-            String channelname, boolean enabled, String username) {
+            String channelname, @DefaultValue("true") boolean enabled, String username) {
         this.uri = uri;
         this.queueName = queueName;
         this.channelname = channelname;
