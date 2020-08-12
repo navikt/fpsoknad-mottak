@@ -21,9 +21,6 @@ mottak:
       domainevent:
          enabled: true
          topic: fpsoknad-mottak
-
-innsyn:
-  base-uri: http://fpinfo.default
         
 no.nav:
    security.jwt.issuer.selvbetjening:
