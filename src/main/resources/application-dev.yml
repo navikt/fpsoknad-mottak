@@ -35,8 +35,6 @@ varsel:
   channelname: Q1_FPSOKNAD_VARSEL
   queue-name: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
        
-fpfordel:
-  base-uri: http://fpfordel
 innsyn:
   base-uri: http://fpinfo       
        
