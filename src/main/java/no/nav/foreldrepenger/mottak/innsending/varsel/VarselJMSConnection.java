@@ -65,11 +65,12 @@ public class VarselJMSConnection implements VarselConnection {
                 template.send(session -> {
                     TextMessage msg = session.createTextMessage(xml);
                     msg.setStringProperty(CALL_ID, callId());
+                    LOG.info("Varsel lagt på kø OK");
                     return msg;
                 });
                 VARSEL_SUCCESS.increment();
-            } catch (JmsException swallow) {
-                LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), cfg.getURI(), swallow);
+            } catch (JmsException e) {
+                LOG.error("Feil ved sending av varsel til {}-kø ({})", name(), cfg.getURI(), e);
                 VARSEL_FAILED.increment();
             }
         } else {
