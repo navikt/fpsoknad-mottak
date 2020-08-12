@@ -12,13 +12,14 @@ import javax.jms.TextMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnProd;
+
 @Component
-@ConditionalOnProperty(name = "varsel.enabled", havingValue = "true")
+@ConditionalOnProd
 public class VarselJMSConnection implements VarselConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(VarselJMSConnection.class);
