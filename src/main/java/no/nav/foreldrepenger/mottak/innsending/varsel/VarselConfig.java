@@ -1,10 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
 import java.net.URI;
+import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+
+import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 
 @ConfigurationProperties(prefix = "varsel")
 public class VarselConfig {
@@ -38,10 +41,10 @@ public class VarselConfig {
     }
 
     public String getName() {
-        if (uri.getPath().startsWith("/")) {
-            return uri.getPath().substring(1);
-        }
-        return uri.getPath();
+        return Optional.ofNullable(uri.getPath())
+                .filter(p -> p.startsWith("/"))
+                .map(p -> p.substring(1))
+                .orElseThrow(() -> new UnexpectedInputException("Navn %s ikke på korrekt format", uri.getPath()));
     }
 
     public String getQueueName() {

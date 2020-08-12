@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak;
 
+import static no.nav.foreldrepenger.boot.conditionals.Cluster.profiler;
 import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
@@ -14,7 +15,6 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import no.nav.foreldrepenger.mottak.config.ClusterAwareSpringProfileResolver;
 import no.nav.security.token.support.core.context.TokenValidationContext;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
@@ -29,7 +29,7 @@ public class MottakApplicationLocal {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(MottakApplicationLocal.class)
-                .profiles(ClusterAwareSpringProfileResolver.profiles())
+                .profiles(profiler())
                 .main(MottakApplicationLocal.class)
                 .run(args);
     }

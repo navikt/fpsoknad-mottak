@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -10,24 +8,18 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.http.UnprotectedRestController;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.security.token.support.core.api.Unprotected;
 
-@Unprotected
-@RestController
-@RequestMapping(path = MottakDevController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
-@Profile({ DEV, LOCAL })
+@UnprotectedRestController(value = MottakDevController.INNSENDING_PREPROD, produces = APPLICATION_XML_VALUE)
 public class MottakDevController {
 
     private static final AktørId SØKER = new AktørId("42");
