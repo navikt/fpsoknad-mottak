@@ -20,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {
         VarselSender.class,
         VoidVarselConnection.class,
-        VarselConfiguration.class,
+        VarselJMSConfiguration.class,
         VarselXMLGenerator.class
 })
 @TestPropertySource(properties = {
