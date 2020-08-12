@@ -34,9 +34,7 @@ varsel:
   uri: mq://b27apvl176.preprod.local:1413/MQ1LSC02
   channelname: Q1_FPSOKNAD_VARSEL
   queue-name: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
-       
-innsyn:
-  base-uri: http://fpinfo       
+             
        
      
   

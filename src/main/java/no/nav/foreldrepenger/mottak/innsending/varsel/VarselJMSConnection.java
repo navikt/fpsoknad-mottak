@@ -16,10 +16,10 @@ import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnProd;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 
 @Component
-@ConditionalOnProd
+@ConditionalOnK8s
 public class VarselJMSConnection implements VarselConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(VarselJMSConnection.class);

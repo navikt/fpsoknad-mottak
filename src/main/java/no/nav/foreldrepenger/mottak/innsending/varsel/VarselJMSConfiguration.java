@@ -16,10 +16,10 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnProd;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 
 @Configuration
-@ConditionalOnProd
+@ConditionalOnK8s
 public class VarselJMSConfiguration {
 
     private static final int UTF_8_WITH_PUA = 1208;
