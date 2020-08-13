@@ -6,6 +6,7 @@ metadata:
   labels:
     app: fpsoknad-mottak
     team: teamforeldrepenger
+    namespace: teamforeldrepenger
   name: fpsoknad-mottak
   namespace: teamforeldrepenger
 spec:
