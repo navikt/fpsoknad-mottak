@@ -16,6 +16,11 @@ spec:
       action: Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs -l fpsoknad-mottak` for logger
       description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
       severity: danger
+    - alert: Ingen tilgjengelig podder
+      expr: kube_deployment_status_replicas_available{deployment="fpsoknad-mottak"} == 0
+      for: 2m
+      description: "App {{ $labels.deployment }} er nede i namespace {{ $labels.namespace }}. Ingen tilgjengelige podder."
+      action: Se `kubectl get  pod -l app={{ $labels.deployment }}` for status på podder, og `kubectl logs -l app={{ $labels.deployment }}` for logger.
   receivers:
     slack:
       channel: '#bris_alerts'
