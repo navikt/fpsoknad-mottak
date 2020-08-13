@@ -25,5 +25,5 @@ spec:
   receivers:
     slack:
       channel: '#bris_alerts'
-      prependText: 'Oops'
+      prependText: '<!here>'
     enabled: true
