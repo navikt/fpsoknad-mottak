@@ -11,7 +11,7 @@ metadata:
 spec:
   alerts:
     - alert: Antall restarts
-      expr: sum(increase(kube_pod_container_status_restarts_total{container=~"fpsoknad-mottaki"}[30m])) by (container) > 2
+      expr: sum(increase(kube_pod_container_status_restarts_total{container=~"fpsoknad-mottak"}[30m])) by (container) > 2
       for: 5m
       action: Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs -l fpsoknad-mottak` for logger
       description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
