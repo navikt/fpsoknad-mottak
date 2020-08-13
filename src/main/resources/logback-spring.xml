@@ -26,10 +26,6 @@
             <OnMatch>DENY</OnMatch>
         </turboFilter>
     </springProfile>
-    <logger name="org.springframework.web.reactive.function.client.WebClient" level="trace" />
-    <logger name="org.springframework.web.reactive.function.client.ExchangeFunctions" level="trace"/> 
-    <logger name="no.nav.foreldrepenger.mottak.config.WebClientConfiguration" level="trace" />
-    <logger name="org.springframework.web.reactive" level="trace"/> 
     <logger name="org.apache.pdfbox.pdmodel.font" level="error" />
     <springProfile name="dev,local">
         <logger name="no.nav.foreldrepenger" level="trace" />

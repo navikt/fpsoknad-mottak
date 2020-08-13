@@ -1,0 +1,23 @@
+apiVersion: nais.io/v1
+kind: Alert
+metadata:
+  annotations:
+    zone: fss
+  labels:
+    app: fpsoknad-mottak
+    team: teamforeldrepenger
+  name: fpsoknad-mottak
+  namespace: teamforeldrepenger
+spec:
+  alerts:
+    - alert: Antall restarts
+      expr: sum(increase(kube_pod_container_status_restarts_total{container=~"fpsoknad-mottaki"}[30m])) by (container) > 2
+      for: 5m
+      action: Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs -l fpsoknad-mottak` for logger
+      description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
+      severity: danger
+  receivers:
+    slack:
+      channel: #bris_alerts
+      prependText: Oops
+    enabled: true
