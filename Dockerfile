@@ -1,10 +1,10 @@
 FROM navikt/java:14 
 COPY target/*.jar app.jar
 ENV JAVA_OPTS --enable-preview
-WORKSPACE .
+WORKDIR .
 RUN java -Djarmode=layertools -jar app.jar extract
 FROM navikt/java:14 
-WORKSPACE .
+WORKDIR .
 COPY  dependencies/ ./
 COPY  snapshot-dependencies/ ./
 COPY  spring-boot-loader/ ./
