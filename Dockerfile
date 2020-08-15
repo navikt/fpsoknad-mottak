@@ -1,4 +1,4 @@
-FROM navikt/java:14 
+FROM navikt/java:14 as builder
 COPY target/*.jar app.jar
 ENV JAVA_OPTS --enable-preview
 RUN java -Djarmode=layertools -jar app.jar extract
