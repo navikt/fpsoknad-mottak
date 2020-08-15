@@ -6,9 +6,9 @@ RUN java -Djarmode=layertools -jar app.jar extract
  
 FROM navikt/java:14 
 
-COPY  target/dependencies/ ./
-COPY  target/snapshot-dependencies/ ./
-COPY  target/spring-boot-loader/ ./
-COPY  target/application/ ./
+COPY  dependencies/ ./
+COPY  snapshot-dependencies/ ./
+COPY  spring-boot-loader/ ./
+COPY  application/ ./
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
