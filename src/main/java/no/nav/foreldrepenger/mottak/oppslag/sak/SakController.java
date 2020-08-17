@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 @ProtectedRestController
 public class SakController {
 
-    public static final String SAK = "/sak";
+    public static final String SAK = "/sak1";
     private final SakClient sakClient;
     private final Oppslag oppslag;
 

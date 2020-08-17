@@ -41,11 +41,9 @@ public class SakConfiguration {
                 .filter(i -> !(i instanceof BearerTokenClientHttpRequestInterceptor))
                 .collect(toCollection(ArrayList::new));
 
-        ClientHttpRequestInterceptor[] interceptorsAsArray = interceptorListWithoutAuth.stream()
-                .toArray(ClientHttpRequestInterceptor[]::new);
-
         return new RestTemplateBuilder()
-                .interceptors(interceptorsAsArray)
+                .interceptors(interceptorListWithoutAuth.stream()
+                        .toArray(ClientHttpRequestInterceptor[]::new))
                 .build();
     }
 
