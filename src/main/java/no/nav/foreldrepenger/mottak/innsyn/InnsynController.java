@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import static no.nav.foreldrepenger.mottak.util.Constants.FORELDREPENGER;
+
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,20 +15,30 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.oppslag.sak.SakClient;
 
 @ProtectedRestController(InnsynController.INNSYN)
 public class InnsynController {
+
+    public static final String SAK = "/sak1";
 
     public static final String INNSYN = "/innsyn";
 
     private final Oppslag oppslag;
     private final Innsyn innsyn;
     private final ArbeidsforholdTjeneste arbeidsforhold;
+    private SakClient sakClient;
 
-    public InnsynController(Innsyn innsyn, Oppslag oppslag, ArbeidsforholdTjeneste arbeidsforhold) {
+    public InnsynController(Innsyn innsyn, Oppslag oppslag, ArbeidsforholdTjeneste arbeidsforhold, SakClient sakClient) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.arbeidsforhold = arbeidsforhold;
+        this.sakClient = sakClient;
+    }
+
+    @GetMapping(value = SAK)
+    public List<no.nav.foreldrepenger.mottak.oppslag.sak.Sak> saker(@RequestParam(name = "tema", defaultValue = FORELDREPENGER) String tema) {
+        return sakClient.sakerFor(oppslag.aktørId(), tema);
     }
 
     @GetMapping(value = "/saker")
