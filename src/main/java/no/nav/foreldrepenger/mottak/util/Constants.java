@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
 public final class Constants {
+    public static final String INFOTRYGD = "IT01";
+    public static final String FORELDREPENGER = "FOR";
     public static final String CLAIMS = "acr=Level4";
     public static final String UKJENT_KODEVERKSVERDI = "-";
     public static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";

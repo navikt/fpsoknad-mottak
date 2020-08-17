@@ -29,5 +29,25 @@
     "name": "no.nav.security.jwt.issuer.selvbetjening.cookie_name",
     "type": "java.lang.String",
     "description": "A description for 'no.nav.security.jwt.issuer.selvbetjening.cookie_name'"
+  },
+  {
+    "name": "sak.saker.url",
+    "type": "java.lang.String",
+    "description": "A description for 'sak.saker.url'"
+  },
+  {
+    "name": "sak.securitytokenservice.password",
+    "type": "java.lang.String",
+    "description": "A description for 'sak.securitytokenservice.password'"
+  },
+  {
+    "name": "sak.securitytokenservice.url",
+    "type": "java.lang.String",
+    "description": "A description for 'sak.securitytokenservice.url'"
+  },
+  {
+    "name": "securitytokenservice.url",
+    "type": "java.lang.String",
+    "description": "A description for 'securitytokenservice.url'"
   }
 ]}

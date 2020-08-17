@@ -44,4 +44,8 @@ public final class URIUtil {
         queryParams.add(key1, taint(value1));
         return queryParams;
     }
+
+    public static URI uri(URI base, HttpHeaders queryParams) {
+        return uri(base, null, queryParams);
+    }
 }

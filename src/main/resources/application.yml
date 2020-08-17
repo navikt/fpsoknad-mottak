@@ -9,7 +9,21 @@ sts:
   base-uri:  https://security-token-service.nais.adeo.no
   username: ${kafka.username}
   password: ${kafka.password} 
-  
+
+
+sak:
+  securitytokenservice:
+    username: ${securitytokenservice.username}
+    password : ${securitytokenservice.password}
+    url: ${securitytokenservice.url} 
+  saker:  
+     url: https://sak.nais.adeo.no/api/v1/saker
+     
+securitytokenservice:
+    username: ${kafka.username}
+    password : ${kafka.password}
+    url: https://sts.adeo.no/SecurityTokenServiceProvider/       
+          
 varsel:
    uri: mq://a01apvl063.adeo.no:1414/MPLSC02
    channelname: P_FPSOKNAD_VARSEL

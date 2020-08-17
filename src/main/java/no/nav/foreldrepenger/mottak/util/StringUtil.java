@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +46,13 @@ public final class StringUtil {
 
     public static String mask(String value) {
         return (value != null) && (value.length() == 11) ? Strings.padEnd(value.substring(0, 6), 11, '*') : value;
+    }
+
+    public static String encode(String string) {
+        try {
+            return Base64.getEncoder().encodeToString(string.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

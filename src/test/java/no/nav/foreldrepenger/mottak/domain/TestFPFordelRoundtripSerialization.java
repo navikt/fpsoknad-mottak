@@ -53,7 +53,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 @TestPropertySource(properties = { "fpfordel.enabled=false", "sts.uri=http://www.sts.no",
         "spring.cloud.vault.enabled=false",
         "spring.cloud.vault.token=00000",
-        "sts.username=un", "sts.password=pw" })
+        "sts.username=un", "sts.password=pw", "securitytokenservice.username=un", "securitytokenservice.password=pw" })
 @EnableConfigurationProperties
 public class TestFPFordelRoundtripSerialization {
 
