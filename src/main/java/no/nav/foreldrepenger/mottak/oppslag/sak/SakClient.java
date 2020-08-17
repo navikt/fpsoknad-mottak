@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.sak;
+package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import java.util.List;
 

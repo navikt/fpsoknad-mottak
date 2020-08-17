@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.sak;
+package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.client.HttpServerErrorException;

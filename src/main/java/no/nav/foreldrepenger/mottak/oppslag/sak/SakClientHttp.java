@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.sak;
+package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import static java.time.LocalDate.now;
 import static java.util.Collections.emptyList;

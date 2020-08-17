@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.sak;
+package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +37,11 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.mottak.oppslag.sak.RemoteSak;
+import no.nav.foreldrepenger.mottak.oppslag.sak.SakClient;
+import no.nav.foreldrepenger.mottak.oppslag.sak.SakConfiguration;
+import no.nav.foreldrepenger.mottak.oppslag.sak.StsClient;
+import no.nav.foreldrepenger.mottak.oppslag.sak.StsClientHttp;
 import no.nav.foreldrepenger.mottak.util.Constants;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.test.JwtTokenGenerator;

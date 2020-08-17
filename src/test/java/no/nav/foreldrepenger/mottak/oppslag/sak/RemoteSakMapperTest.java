@@ -1,10 +1,14 @@
-package no.nav.foreldrepenger.mottak.sak;
+package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
+
+import no.nav.foreldrepenger.mottak.oppslag.sak.RemoteSak;
+import no.nav.foreldrepenger.mottak.oppslag.sak.RemoteSakMapper;
+import no.nav.foreldrepenger.mottak.oppslag.sak.Sak;
 
 public class RemoteSakMapperTest {
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.sak;
+package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import static java.util.stream.Collectors.joining;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
