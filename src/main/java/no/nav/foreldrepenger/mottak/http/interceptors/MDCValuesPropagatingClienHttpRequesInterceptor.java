@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.mottak.http.interceptors;
 
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
+import static no.nav.foreldrepenger.mottak.util.Constants.X_CORRELATION_ID;
+import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 import java.io.IOException;
@@ -23,7 +25,12 @@ public class MDCValuesPropagatingClienHttpRequesInterceptor implements ClientHtt
             throws IOException {
 
         propagerFraMDC(request, NAV_CALL_ID, NAV_CONSUMER_ID);
+        propager(request, X_CORRELATION_ID, callId());
         return execution.execute(request, body);
+    }
+
+    private static void propager(HttpRequest request, String key, String value) {
+        request.getHeaders().set(key, value);
     }
 
     private static void propagerFraMDC(HttpRequest request, String... keys) {

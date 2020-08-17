@@ -16,6 +16,7 @@ public final class Constants {
     public static final String NAV_TOKEN_EXPIRY_ID = "Nav-Token-Expiry";
     public static final String NAV_PERSON_IDENT = "Nav-Personident";
     public static final String FNR = "fnr";
+    public static final String X_CORRELATION_ID = "X-Correlation-ID";
 
     private Constants() {
     }
