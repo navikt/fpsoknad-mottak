@@ -75,7 +75,7 @@ public class SakClientHttp implements SakClient {
         URI url = uri(sakBaseUrl, queryParams(aktor, tema));
         LOG.info(CONFIDENTIAL, "headers " + request.getHeaders());
         LOG.info(CONFIDENTIAL, "auth header " + request.getHeaders().get(AUTHORIZATION));
-        LOG.info(CONFIDENTIAL, "Interceptors " + restOperations.getInterceptors());
+        LOG.info(CONFIDENTIAL, "Interceptors før kall" + restOperations.getInterceptors());
 
         return restOperations.exchange(
                 url,

@@ -50,7 +50,7 @@ public class SakConfiguration {
                 .interceptors(interceptorListWithoutAuth.stream()
                         .toArray(ClientHttpRequestInterceptor[]::new))
                 .build();
-        LOG.info("Interceptors " + ops.getInterceptors());
+        LOG.info("Interceptors konfig" + ops.getInterceptors());
         return ops;
 
     }
