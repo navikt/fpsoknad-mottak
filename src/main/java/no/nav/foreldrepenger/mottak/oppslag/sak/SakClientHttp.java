@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +37,7 @@ public class SakClientHttp implements SakClient {
     private final StsClient stsClient;
     private final TokenUtil tokenUtil;
 
-    public SakClientHttp(URI sakBaseUrl, RestOperations restOperations, StsClient stsClient,
+    public SakClientHttp(URI sakBaseUrl, @Qualifier("sak") RestOperations restOperations, StsClient stsClient,
             TokenUtil tokenUtil) {
         this.restOperations = restOperations;
         this.sakBaseUrl = sakBaseUrl;
@@ -91,6 +92,7 @@ public class SakClientHttp implements SakClient {
 
     private static HttpHeaders headers(String samlToken) {
         HttpHeaders headers = new HttpHeaders();
+
         headers.set(AUTHORIZATION, "Saml " + encode(samlToken));
         LOG.info(CONFIDENTIAL, "Setter token " + encode(samlToken));
         headers.setContentType(APPLICATION_JSON);
