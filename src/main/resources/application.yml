@@ -60,7 +60,7 @@ management:
    endpoints:
       web:
          exposure:
-            include: info, health, metrics, prometheus, env
+            include: info, health, metrics, prometheus, env, beans
    health:
       ping:
         enabled: false
