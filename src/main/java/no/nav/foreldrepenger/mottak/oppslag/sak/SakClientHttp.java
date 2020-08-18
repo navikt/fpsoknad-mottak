@@ -89,6 +89,7 @@ public class SakClientHttp implements SakClient {
     private static HttpHeaders headers(String samlToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, "Saml " + encode(samlToken));
+        LOG.info(no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL, "Setter token " + encode(samlToken));
         headers.setContentType(APPLICATION_JSON);
         headers.setAccept(singletonList(APPLICATION_JSON));
         return headers;
