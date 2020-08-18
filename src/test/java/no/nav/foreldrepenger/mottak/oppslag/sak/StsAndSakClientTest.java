@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -63,6 +64,7 @@ public class StsAndSakClientTest {
     private static final URI SAKURL = URI.create("http://sak?aktoerId=" + ID + "&applikasjon=IT01&tema=FOR");
     private static final URI STSURL = URI.create("http://sts");
 
+    @Qualifier("sak123")
     @MockBean
     private RestTemplate restOperations;
     @MockBean
