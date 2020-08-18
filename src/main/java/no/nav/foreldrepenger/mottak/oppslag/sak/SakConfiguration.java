@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
@@ -39,7 +40,7 @@ public class SakConfiguration {
 
     @Bean
     @Qualifier("sak")
-    public RestOperations restOperationsSak(ClientHttpRequestInterceptor... interceptors) {
+    public RestTemplate restOperationsSak(ClientHttpRequestInterceptor... interceptors) {
         List<ClientHttpRequestInterceptor> interceptorListWithoutAuth = Arrays.stream(interceptors)
                 // We'll add our own auth header with SAML elsewhere
                 .filter(i -> !(i instanceof BearerTokenClientHttpRequestInterceptor))
