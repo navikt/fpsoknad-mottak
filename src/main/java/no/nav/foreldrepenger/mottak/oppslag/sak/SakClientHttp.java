@@ -23,7 +23,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -32,12 +32,12 @@ public class SakClientHttp implements SakClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SakClientHttp.class);
 
-    private final RestOperations restOperations;
+    private final RestTemplate restOperations;
     private final URI sakBaseUrl;
     private final StsClient stsClient;
     private final TokenUtil tokenUtil;
 
-    public SakClientHttp(URI sakBaseUrl, @Qualifier("sak") RestOperations restOperations, StsClient stsClient,
+    public SakClientHttp(URI sakBaseUrl, @Qualifier("sak") RestTemplate restOperations, StsClient stsClient,
             TokenUtil tokenUtil) {
         this.restOperations = restOperations;
         this.sakBaseUrl = sakBaseUrl;
@@ -74,6 +74,7 @@ public class SakClientHttp implements SakClient {
         URI url = uri(sakBaseUrl, queryParams(aktor, tema));
         LOG.info(CONFIDENTIAL, "headers " + request.getHeaders());
         LOG.info(CONFIDENTIAL, "auth header " + request.getHeaders().get(AUTHORIZATION));
+        LOG.info(CONFIDENTIAL, "Interceptors " + restOperations.getInterceptors());
         return restOperations.exchange(
                 url,
                 HttpMethod.GET,
