@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.sak;
 
+import static no.nav.foreldrepenger.mottak.oppslag.sak.SakConfiguration.SAK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,7 +36,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.util.Constants;
@@ -64,9 +65,9 @@ public class StsAndSakClientTest {
     private static final URI SAKURL = URI.create("http://sak?aktoerId=" + ID + "&applikasjon=IT01&tema=FOR");
     private static final URI STSURL = URI.create("http://sts");
 
-    @Qualifier("sak123")
+    @Qualifier(SAK)
     @MockBean
-    private RestTemplate restOperations;
+    private RestOperations restOperations;
     @MockBean
     private TokenUtil tokenHandler;
     @Autowired
