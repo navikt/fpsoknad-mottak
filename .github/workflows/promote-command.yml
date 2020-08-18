@@ -37,7 +37,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ env.CLUSTER }}
-          RESOURCE: naiserator.yaml,alerts.yaml
+          RESOURCE: naiserator.yaml
           PRINT_PAYLOAD: true
           VARS: ${{ env.CLUSTER }}-${{ env.NAMESPACE }}.json 
           
