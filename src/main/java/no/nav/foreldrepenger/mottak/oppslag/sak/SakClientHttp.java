@@ -12,7 +12,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,13 +48,9 @@ public class SakClientHttp implements SakClient {
     @Override
     public List<Sak> sakerFor(AktørId aktor, String tema) {
         LOG.info("Henter saker for {}", aktor);
-        try {
-            var response = sakerFor(aktor.getId(), tema, request());
-            return sisteSakFra(Optional.ofNullable(response.getBody()).orElse(emptyList()));
-        } catch (Exception e) {
-            LOG.warn("Gikk ikke så bra", e);
-            return Collections.emptyList();
-        }
+        var response = sakerFor(aktor.getId(), tema, request());
+        return sisteSakFra(Optional.ofNullable(response.getBody()).orElse(emptyList()));
+
     }
 
     private HttpEntity<String> request() {

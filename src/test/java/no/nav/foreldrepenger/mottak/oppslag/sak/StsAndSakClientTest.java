@@ -34,14 +34,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.oppslag.sak.RemoteSak;
-import no.nav.foreldrepenger.mottak.oppslag.sak.SakClient;
-import no.nav.foreldrepenger.mottak.oppslag.sak.SakConfiguration;
-import no.nav.foreldrepenger.mottak.oppslag.sak.StsClient;
-import no.nav.foreldrepenger.mottak.oppslag.sak.StsClientHttp;
 import no.nav.foreldrepenger.mottak.util.Constants;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.test.JwtTokenGenerator;
@@ -69,7 +64,7 @@ public class StsAndSakClientTest {
     private static final URI STSURL = URI.create("http://sts");
 
     @MockBean
-    private RestOperations restOperations;
+    private RestTemplate restOperations;
     @MockBean
     private TokenUtil tokenHandler;
     @Autowired
