@@ -5,6 +5,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static no.nav.foreldrepenger.mottak.util.Constants.INFOTRYGD;
+import static no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.encode;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -70,6 +71,8 @@ public class SakClientHttp implements SakClient {
 
     private ResponseEntity<List<RemoteSak>> sakerFor(String aktor, String tema, HttpEntity<String> request) {
         URI url = uri(sakBaseUrl, queryParams(aktor, tema));
+        LOG.info(CONFIDENTIAL, "headers " + request.getHeaders());
+        LOG.info(CONFIDENTIAL, "auth header " + request.getHeaders().get(AUTHORIZATION));
         return restOperations.exchange(
                 url,
                 HttpMethod.GET,
@@ -89,9 +92,10 @@ public class SakClientHttp implements SakClient {
     private static HttpHeaders headers(String samlToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, "Saml " + encode(samlToken));
-        LOG.info(no.nav.foreldrepenger.mottak.util.EnvUtil.CONFIDENTIAL, "Setter token " + encode(samlToken));
+        LOG.info(CONFIDENTIAL, "Setter token " + encode(samlToken));
         headers.setContentType(APPLICATION_JSON);
         headers.setAccept(singletonList(APPLICATION_JSON));
+        LOG.info(CONFIDENTIAL, "Headers er: " + headers);
         return headers;
     }
 
