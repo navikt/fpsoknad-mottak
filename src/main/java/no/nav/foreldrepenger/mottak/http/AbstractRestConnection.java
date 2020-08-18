@@ -62,7 +62,7 @@ public abstract class AbstractRestConnection {
 
     public <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType, boolean doThrow) {
         try {
-            ResponseEntity<T> respons = restOperations.getForEntity(uri, responseType);
+            var respons = restOperations.getForEntity(uri, responseType);
             if (respons.hasBody()) {
                 LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
             }

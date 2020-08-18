@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEFAULT;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -52,7 +50,6 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenest
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Service
-@Profile(DEFAULT)
 public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private static final String SVP_VEDLEGG_TILRETTELEGGING = "svp.vedlegg.tilrettelegging";
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");

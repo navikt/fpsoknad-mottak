@@ -6,10 +6,6 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.oppslag.sak.RemoteSak;
-import no.nav.foreldrepenger.mottak.oppslag.sak.RemoteSakMapper;
-import no.nav.foreldrepenger.mottak.oppslag.sak.Sak;
-
 public class RemoteSakMapperTest {
 
     @Test

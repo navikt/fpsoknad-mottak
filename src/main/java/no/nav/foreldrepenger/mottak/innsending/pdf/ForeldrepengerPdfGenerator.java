@@ -55,18 +55,15 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
 
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        switch (egenskap.getType()) {
-            case INITIELL_FORELDREPENGER:
-                return generate(søknad, søker);
-            case ENDRING_FORELDREPENGER:
-                return generate(Endringssøknad.class.cast(søknad), søker);
-            default:
-                throw new UnexpectedInputException(
-                        "Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
-        }
+        return switch (egenskap.getType()) {
+            case INITIELL_FORELDREPENGER -> generer(søknad, søker);
+            case ENDRING_FORELDREPENGER -> generer(Endringssøknad.class.cast(søknad), søker);
+            default -> throw new UnexpectedInputException("Ukjent type " + egenskap.getType() + " for søknad, kan ikke lage PDF");
+        };
+
     }
 
-    private byte[] generate(Søknad søknad, Person søker) {
+    private byte[] generer(Søknad søknad, Person søker) {
         var stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
@@ -259,7 +256,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 .collect(Collectors.toList());
     }
 
-    private byte[] generate(Endringssøknad søknad, Person søker) {
+    private byte[] generer(Endringssøknad søknad, Person søker) {
         var stønad = Foreldrepenger.class.cast(søknad.getYtelse());
         float yTop = STARTY;
 
