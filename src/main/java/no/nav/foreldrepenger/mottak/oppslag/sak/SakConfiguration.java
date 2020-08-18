@@ -61,7 +61,7 @@ public class SakConfiguration {
     }
 
     @Bean
-    public SakClient sakClient(RestOperations restOperations, StsClient stsClient, TokenUtil tokenUtil) {
+    public SakClient sakClient(RestTemplate restOperations, StsClient stsClient, TokenUtil tokenUtil) {
         return new SakClientHttp(sakBaseUrl, restOperations, stsClient, tokenUtil);
     }
 }
