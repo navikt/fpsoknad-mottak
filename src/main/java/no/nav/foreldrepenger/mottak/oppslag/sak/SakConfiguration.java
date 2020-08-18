@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -33,6 +35,8 @@ public class SakConfiguration {
     @Value("${sak.securitytokenservice.password}")
     private String servicePwd;
 
+    private static final Logger LOG = LoggerFactory.getLogger(SakConfiguration.class);
+
     @Bean
     @Qualifier("sak")
     public RestOperations restOperationsSak(ClientHttpRequestInterceptor... interceptors) {
@@ -41,10 +45,13 @@ public class SakConfiguration {
                 .filter(i -> !(i instanceof BearerTokenClientHttpRequestInterceptor))
                 .collect(toCollection(ArrayList::new));
 
-        return new RestTemplateBuilder()
+        var ops = new RestTemplateBuilder()
                 .interceptors(interceptorListWithoutAuth.stream()
                         .toArray(ClientHttpRequestInterceptor[]::new))
                 .build();
+        LOG.info("Interceptors " + ops.getInterceptors());
+        return ops;
+
     }
 
     @Bean
