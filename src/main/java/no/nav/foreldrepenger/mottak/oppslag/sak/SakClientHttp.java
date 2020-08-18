@@ -12,6 +12,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +49,13 @@ public class SakClientHttp implements SakClient {
     @Override
     public List<Sak> sakerFor(AktørId aktor, String tema) {
         LOG.info("Henter saker for {}", aktor);
-        var response = sakerFor(aktor.getId(), tema, request());
-        return sisteSakFra(Optional.ofNullable(response.getBody()).orElse(emptyList()));
+        try {
+            var response = sakerFor(aktor.getId(), tema, request());
+            return sisteSakFra(Optional.ofNullable(response.getBody()).orElse(emptyList()));
+        } catch (Exception e) {
+            LOG.warn("Gikk ikke så bra", e);
+            return Collections.emptyList();
+        }
     }
 
     private HttpEntity<String> request() {
@@ -75,12 +81,14 @@ public class SakClientHttp implements SakClient {
         LOG.info(CONFIDENTIAL, "headers " + request.getHeaders());
         LOG.info(CONFIDENTIAL, "auth header " + request.getHeaders().get(AUTHORIZATION));
         LOG.info(CONFIDENTIAL, "Interceptors " + restOperations.getInterceptors());
+
         return restOperations.exchange(
                 url,
                 HttpMethod.GET,
                 request,
                 new ParameterizedTypeReference<List<RemoteSak>>() {
                 });
+
     }
 
     private static HttpHeaders queryParams(String aktor, String tema) {
