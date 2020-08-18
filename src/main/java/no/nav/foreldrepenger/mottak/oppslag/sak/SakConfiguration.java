@@ -39,7 +39,7 @@ public class SakConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(SakConfiguration.class);
 
     @Bean
-    @Qualifier("sak")
+    @Qualifier("sak123")
     public RestTemplate restOperationsSak(ClientHttpRequestInterceptor... interceptors) {
         List<ClientHttpRequestInterceptor> interceptorListWithoutAuth = Arrays.stream(interceptors)
                 // We'll add our own auth header with SAML elsewhere
@@ -61,7 +61,7 @@ public class SakConfiguration {
     }
 
     @Bean
-    public SakClient sakClient(RestTemplate restOperations, StsClient stsClient, TokenUtil tokenUtil) {
+    public SakClient sakClient(@Qualifier("sak123") RestTemplate restOperations, StsClient stsClient, TokenUtil tokenUtil) {
         return new SakClientHttp(sakBaseUrl, restOperations, stsClient, tokenUtil);
     }
 }

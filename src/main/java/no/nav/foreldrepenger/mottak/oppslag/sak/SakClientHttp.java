@@ -37,12 +37,14 @@ public class SakClientHttp implements SakClient {
     private final StsClient stsClient;
     private final TokenUtil tokenUtil;
 
-    public SakClientHttp(URI sakBaseUrl, @Qualifier("sak") RestTemplate restOperations, StsClient stsClient,
+    public SakClientHttp(URI sakBaseUrl, @Qualifier("sak123") RestTemplate restOperations, StsClient stsClient,
             TokenUtil tokenUtil) {
         this.restOperations = restOperations;
         this.sakBaseUrl = sakBaseUrl;
         this.stsClient = stsClient;
         this.tokenUtil = tokenUtil;
+        LOG.info(CONFIDENTIAL, "Interceptors construction" + restOperations.getInterceptors());
+
     }
 
     @Override
@@ -75,7 +77,6 @@ public class SakClientHttp implements SakClient {
         URI url = uri(sakBaseUrl, queryParams(aktor, tema));
         LOG.info(CONFIDENTIAL, "headers " + request.getHeaders());
         LOG.info(CONFIDENTIAL, "auth header " + request.getHeaders().get(AUTHORIZATION));
-        LOG.info(CONFIDENTIAL, "Interceptors før kall" + restOperations.getInterceptors());
 
         return restOperations.exchange(
                 url,
