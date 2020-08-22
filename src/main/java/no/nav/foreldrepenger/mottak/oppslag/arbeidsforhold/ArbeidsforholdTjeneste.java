@@ -8,14 +8,20 @@ import org.springframework.stereotype.Service;
 public class ArbeidsforholdTjeneste implements Arbeidsforhold {
 
     private final ArbeidsforholdConnection connection;
+    private final OrganisasjonConnection orgConnection;
 
-    public ArbeidsforholdTjeneste(ArbeidsforholdConnection connection) {
+    public ArbeidsforholdTjeneste(ArbeidsforholdConnection connection, OrganisasjonConnection orgConnection) {
         this.connection = connection;
+        this.orgConnection = orgConnection;
     }
 
     @Override
     public List<EnkeltArbeidsforhold> hentAktiveArbeidsforhold() {
         return connection.hentArbeidsforhold();
+    }
+
+    public String orgnavn(String orgnr) {
+        return orgConnection.navn(orgnr);
     }
 
     @Override
@@ -27,4 +33,5 @@ public class ArbeidsforholdTjeneste implements Arbeidsforhold {
     public String toString() {
         return getClass().getSimpleName() + "[connection=" + connection + "]";
     }
+
 }

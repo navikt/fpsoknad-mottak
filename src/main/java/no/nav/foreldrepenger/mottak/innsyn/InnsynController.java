@@ -51,6 +51,11 @@ public class InnsynController {
         return arbeidsforhold.hentAktiveArbeidsforhold();
     }
 
+    @GetMapping(value = "/orgnavn")
+    public String orgnavn(@RequestParam(name = "orgnr") String orgnr) {
+        return arbeidsforhold.orgnavn(orgnr);
+    }
+
     @GetMapping(value = "/uttaksplan")
     public Uttaksplan uttaksplan(@RequestParam(name = "saksnummer") String saksnummer) {
         return innsyn.uttaksplan(saksnummer);
