@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
-public abstract class AbstractRestConnection {
+public abstract class AbstractRestConnection implements RetryAware {
     private final RestOperations restOperations;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 

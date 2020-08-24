@@ -80,7 +80,6 @@ public class StsAndSakClientTest {
         when(tokenHandler.getToken()).thenReturn(SIGNED_JWT);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testSakAndSTSRetryRecovery() {
         whenSak()
@@ -94,7 +93,6 @@ public class StsAndSakClientTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testSTSogSakOK() {
         whenSak().thenReturn(remoteSaker());
         whenSTS().thenReturn(ENVELOPE);
@@ -103,14 +101,13 @@ public class StsAndSakClientTest {
         verifySTS(1);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testSakRetryUntilFail() {
         whenSTS().thenReturn(ENVELOPE);
         whenSak().thenThrow(internalServerError());
         assertThrows(HttpServerErrorException.class, () -> sakclient.sakerFor(AKTOR, Constants.FORELDREPENGER));
-        verifySak(2);
-        verifySTS(2);
+        verifySak(3);
+        verifySTS(3);
     }
 
     @Test

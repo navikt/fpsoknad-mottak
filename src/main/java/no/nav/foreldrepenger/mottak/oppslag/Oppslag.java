@@ -5,9 +5,8 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.Pingable;
-import no.nav.foreldrepenger.mottak.http.RetryAware;
 
-public interface Oppslag extends Pingable, RetryAware {
+public interface Oppslag extends Pingable {
     Person søker();
 
     AktørId aktørId();
