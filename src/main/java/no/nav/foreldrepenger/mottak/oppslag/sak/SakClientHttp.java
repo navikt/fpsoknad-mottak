@@ -53,14 +53,15 @@ public class SakClientHttp implements SakClient {
     }
 
     private HttpEntity<String> request() {
-        return new HttpEntity<>(headers(stsClient.oidcToSamlToken(tokenUtil.getToken())));
+        return new HttpEntity<>(headers(stsClient.oidcToSamlToken(tokenUtil.getToken(), tokenUtil.fnr())));
     }
 
     private static List<Sak> sisteSakFra(List<RemoteSak> saker) {
-        LOG.info("Fant {} sak(er)", saker.size());
         if (!saker.isEmpty()) {
+            LOG.info("Fant {} sak(er)", saker.size());
             LOG.trace("{}", saker);
         }
+
         Sak sisteSak = saker.stream()
                 .map(RemoteSakMapper::map)
                 .filter(s -> s.getOpprettet() != null)

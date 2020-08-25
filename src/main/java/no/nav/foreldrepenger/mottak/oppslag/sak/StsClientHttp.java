@@ -15,6 +15,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestOperations;
 
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+
 public class StsClientHttp implements StsClient {
 
     private static final String TEMPLATE_STSENVELOPE_TXT = "/template/stsenvelope.txt";
@@ -36,11 +38,11 @@ public class StsClientHttp implements StsClient {
     }
 
     @Override
-    public String oidcToSamlToken(String oidcToken) {
+    public String oidcToSamlToken(String oidcToken, Fødselsnummer fnr) {
         LOG.info("Utfører OIDC til SAML veksling fra {}", stsUrl);
         String respons = restOperations.postForObject(stsUrl, new HttpEntity<>(body(oidcToken), headers()),
                 String.class);
-        LOG.info("OIDC til SAML token veksling OK");
+        LOG.info("OIDC til SAML token veksling OK for {}", fnr);
         return samlAssertionFra(respons);
     }
 
