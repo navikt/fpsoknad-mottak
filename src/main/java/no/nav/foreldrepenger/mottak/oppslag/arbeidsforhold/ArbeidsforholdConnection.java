@@ -48,7 +48,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .stream()
                 .map(mapper::tilArbeidsforhold)
                 .collect(toList());
-        LOG.info("Hentet {} arbeidsforhold for {} -> {}", arbeidsforhold.size(), fom, tom);
+        LOG.info("Hentet {} arbeidsforhold for {} -> {}", arbeidsforhold.stream().map(a -> a.getArbeidsgiverId()).collect(toList()), fom, tom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
         return arbeidsforhold;
     }
