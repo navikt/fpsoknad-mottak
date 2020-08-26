@@ -39,10 +39,10 @@ public class StsClientHttp implements StsClient {
 
     @Override
     public String oidcToSamlToken(String oidcToken, Fødselsnummer fnr) {
-        LOG.info("Utfører OIDC til SAML veksling fra {}", stsUrl);
+        LOG.info("Utfører OIDC til SAML token innveksling for {}", fnr);
         String respons = restOperations.postForObject(stsUrl, new HttpEntity<>(body(oidcToken), headers()),
                 String.class);
-        LOG.info("OIDC til SAML token veksling OK for {}", fnr);
+        LOG.info("OIDC til SAML token innveksling OK for {}", fnr);
         return samlAssertionFra(respons);
     }
 
