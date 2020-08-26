@@ -56,7 +56,7 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
 
             @Override
             public void onSuccess(SendResult<String, String> result) {
-                LOG.info("Sendte hendelse {} med offset {}", melding, result.getRecordMetadata().offset());
+                LOG.info("Sendte hendelse med offset {} OK", result.getRecordMetadata().offset());
             }
 
             @Override
