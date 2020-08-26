@@ -39,6 +39,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.util.Constants;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.test.JwtTokenGenerator;
@@ -113,7 +114,7 @@ public class StsAndSakClientTest {
     @Test
     public void testSTSRetryUntilFail() {
         whenSTS().thenThrow(internalServerError());
-        assertThrows(HttpServerErrorException.class, () -> stsclient.oidcToSamlToken("test"));
+        assertThrows(HttpServerErrorException.class, () -> stsclient.oidcToSamlToken("test", Fødselsnummer.valueOf("11111111111")));
         verifySTS(2);
     }
 
