@@ -18,7 +18,6 @@
             <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
-
     <properties>
         <token-validation-version>1.3.0</token-validation-version>
         <pdfbox.version>2.0.21</pdfbox.version>
