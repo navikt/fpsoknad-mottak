@@ -70,9 +70,12 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private String personNavn(Fødselsnummer fnr) {
         LOG.info("Henter personnavn for {}", fnr);
         try {
-            return Optional.ofNullable(oppslag.navn(fnr))
+            var n = oppslag.navn(fnr);
+            var navn = Optional.ofNullable(n)
                     .map(Navn::navn)
                     .orElse(PRIVAT_ARBEIDSGIVER);
+            LOG.info("Hentet personnavn {} for {}", n.getFornavn(), fnr);
+            return navn;
         } catch (Exception e) {
             LOG.warn("Fant ikke personnavn for {}", fnr);
             return PRIVAT_ARBEIDSGIVER;
