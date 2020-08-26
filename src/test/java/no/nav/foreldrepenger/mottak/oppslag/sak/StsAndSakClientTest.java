@@ -54,6 +54,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
         "sak.securitytokenservice.username=myuser" })
 public class StsAndSakClientTest {
 
+    private static final Fødselsnummer FNR = Fødselsnummer.valueOf("11111111111");
     private static final String ID = "222222222";
     private static final AktørId AKTOR = new AktørId(ID);
     private static final String SIGNED_JWT = JwtTokenGenerator.createSignedJWT("22222222222").serialize();
@@ -79,6 +80,7 @@ public class StsAndSakClientTest {
     @BeforeEach
     public void beforeEach() {
         when(tokenHandler.getToken()).thenReturn(SIGNED_JWT);
+        when(tokenHandler.fnr()).thenReturn(FNR);
     }
 
     @Test
@@ -114,7 +116,7 @@ public class StsAndSakClientTest {
     @Test
     public void testSTSRetryUntilFail() {
         whenSTS().thenThrow(internalServerError());
-        assertThrows(HttpServerErrorException.class, () -> stsclient.oidcToSamlToken("test", Fødselsnummer.valueOf("11111111111")));
+        assertThrows(HttpServerErrorException.class, () -> stsclient.oidcToSamlToken("test", FNR));
         verifySTS(2);
     }
 
@@ -136,7 +138,6 @@ public class StsAndSakClientTest {
                 StsClientHttp.samlAssertionFra(ENVELOPE));
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private OngoingStubbing whenSak() {
         return when(restOperations.exchange(eq(SAKURL), eq(GET), any(HttpEntity.class),
                 any(ParameterizedTypeReference.class)));
