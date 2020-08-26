@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 @Component
 public class OrganisasjonConnection extends AbstractWebClientConnection {
 
+    private static final String PRIVAT_ARBEIDSGIVER = "Privat arbeidsgiver";
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonConnection.class);
     private final OrganisasjonConfig cfg;
     private OppslagConnection oppslag;
@@ -36,11 +37,15 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     @Cacheable(cacheNames = "organisasjon")
     public String navn(String orgnr) {
         if (orgnr != null && orgnr.length() == 11) {
-            LOG.info("{} er et fødselsnummer", orgnr);
-            return Optional.ofNullable(oppslag.navn(Fødselsnummer.valueOf(orgnr)))
-                    .map(Navn::navn)
-                    .orElse("Privat arbeidsgiver");
+            return personNavn(Fødselsnummer.valueOf(orgnr));
         }
+        if (orgnr != null && orgnr.length() == 9) {
+            return orgNavn(orgnr);
+        }
+        return "";
+    }
+
+    private String orgNavn(String orgnr) {
         LOG.info("Henter organisasjonsnavn for {}", orgnr);
         try {
             var navn = Optional.ofNullable(getWebClient()
@@ -59,6 +64,18 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
         } catch (Exception e) {
             LOG.warn("Fant ikke organisasjonsnavn for {}", orgnr);
             return orgnr;
+        }
+    }
+
+    private String personNavn(Fødselsnummer fnr) {
+        LOG.info("Henter personnavn for {}", fnr);
+        try {
+            return Optional.ofNullable(oppslag.navn(fnr))
+                    .map(Navn::navn)
+                    .orElse(PRIVAT_ARBEIDSGIVER);
+        } catch (Exception e) {
+            LOG.warn("Fant ikke personnavn for {}", fnr);
+            return PRIVAT_ARBEIDSGIVER;
         }
     }
 
