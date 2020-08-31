@@ -98,22 +98,22 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public List<Sak> saker(AktørId aktørId) {
-        String aktørId1 = aktørId.getId();
-        LOG.info("Henter sak(er) for {}", aktørId1);
-        List<Sak> saker1 = safeStream(innsyn.saker(aktørId1))
+        String id = aktørId.getId();
+        LOG.info("Henter sak(er) for {}", id);
+        var saker = safeStream(innsyn.saker(id))
                 .filter(distinctByKey(SakDTO::getSaksnummer))
                 .map(this::tilSak)
                 .collect(toList());
-        LOG.info("Hentet {} sak{}", saker1.size(), endelse(saker1));
-        if (!saker1.isEmpty()) {
-            LOG.info(CONFIDENTIAL, "{}", saker1);
+        LOG.info("Hentet {} sak{}", saker.size(), endelse(saker));
+        if (!saker.isEmpty()) {
+            LOG.info(CONFIDENTIAL, "{}", saker);
         }
-        return saker1;
+        return saker;
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> lenker, String saksnr) {
         LOG.info("Henter {} behandling{} for sak {} fra {}", lenker.size(), endelse(lenker), saksnr, lenker);
-        List<Behandling> behandlinger = safeStream(lenker)
+        var behandlinger = safeStream(lenker)
                 .filter(distinctByKey(Lenke::getHref))
                 .map(innsyn::behandling)
                 .map(this::tilBehandling)
@@ -127,7 +127,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @SuppressWarnings("unused")
     private InnsynsSøknad hentSøknad(Lenke lenke) {
-        InnsynsSøknad søknad = Optional.ofNullable(innsyn.søknad(lenke))
+        var søknad = Optional.ofNullable(innsyn.søknad(lenke))
                 .map(this::tilSøknad)
                 .orElse(null);
         if (søknad == null) {
@@ -141,7 +141,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @SuppressWarnings("unused")
     private Vedtak hentVedtak(Lenke lenke) {
-        Vedtak vedtak = Optional.ofNullable(innsyn.vedtak(lenke))
+        var vedtak = Optional.ofNullable(innsyn.vedtak(lenke))
                 .map(this::tilVedtak)
                 .orElse(null);
         if (vedtak == null) {
@@ -155,7 +155,7 @@ public class InnsynTjeneste implements Innsyn {
 
     private Sak tilSak(SakDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
-        Sak sak = Optional.ofNullable(wrapper)
+        var sak = Optional.ofNullable(wrapper)
                 .map(w -> new Sak(
                         w.getSaksnummer(),
                         w.getFagsakStatus(),
@@ -284,7 +284,7 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private Uttaksplan tilUttaksplan(UttaksplanDTO dto) {
-        SøknadsGrunnlag grunnlag = new SøknadsGrunnlag(dto.getTermindato(), dto.getFødselsdato(),
+        var grunnlag = new SøknadsGrunnlag(dto.getTermindato(), dto.getFødselsdato(),
                 dto.getOmsorgsovertakelsesdato(),
                 dto.getDekningsgrad(), dto.getAntallBarn(), dto.getSøkerErFarEllerMedmor(), dto.getMorErAleneOmOmsorg(),
                 dto.getMorHarRett(), dto.getMorErUfør(), dto.getFarMedmorErAleneOmOmsorg(), dto.getFarMedmorHarRett(),

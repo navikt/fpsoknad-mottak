@@ -51,7 +51,7 @@ public final class XMLStreamSøknadInspektør extends AbstractInspektør {
             return UKJENT;
         }
         try {
-            XMLStreamReader reader = reader(xml);
+            var reader = reader(xml);
             while (reader.hasNext()) {
                 reader.next();
                 if (reader.getEventType() == START_ELEMENT) {

@@ -140,7 +140,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
             Soeknad søknad = jaxb.unmarshalToElement(xml, Soeknad.class).getValue();
             switch (egenskap.getType()) {
                 case ENDRING_FORELDREPENGER:
-                    Endringssøknad endringssøknad = new Endringssøknad(
+                    var endringssøknad = new Endringssøknad(
                             søknad.getMottattDato(),
                             tilSøker(søknad.getSoeker()),
                             tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
@@ -148,7 +148,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
                     return endringssøknad;
                 case INITIELL_FORELDREPENGER:
-                    Søknad førstegangssøknad = new Søknad(
+                    var førstegangssøknad = new Søknad(
                             søknad.getMottattDato(),
                             tilSøker(søknad.getSoeker()),
                             tilYtelse(søknad.getOmYtelse()),
@@ -168,10 +168,10 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg> påkrevd,
             List<no.nav.vedtak.felles.xml.soeknad.felles.v1.Vedlegg> valgfritt) {
-        Stream<Vedlegg> vf = safeStream(valgfritt)
+        var vf = safeStream(valgfritt)
                 .map(this::metadataFra)
                 .map(s -> new ValgfrittVedlegg(s, null));
-        Stream<Vedlegg> pk = safeStream(påkrevd)
+        var pk = safeStream(påkrevd)
                 .map(this::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
         return Stream.concat(vf, pk).collect(toList());
@@ -194,8 +194,8 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static String saksnummer(OmYtelse omYtelse) {
         Object ytelse = ytelse(omYtelse);
-        if (ytelse instanceof Endringssoeknad) {
-            return Endringssoeknad.class.cast(ytelse).getSaksnummer();
+        if (ytelse instanceof Endringssoeknad es) {
+            return es.getSaksnummer();
         }
         throw new IllegalStateException(ytelse.getClass().getSimpleName() + " er ikke en endringssøknad");
     }

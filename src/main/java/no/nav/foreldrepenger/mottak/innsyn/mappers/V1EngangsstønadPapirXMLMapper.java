@@ -105,7 +105,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
     private Engangsstønad tilYtelse(OmYtelse omYtelse, LocalDate søknadsDato) {
         no.nav.vedtak.felles.xml.soeknad.engangsstoenad.v1.Engangsstønad søknad = ytelse(omYtelse);
         if (søknad != null) {
-            Engangsstønad stønad = new Engangsstønad(tilMedlemsskap(søknad.getMedlemskap(), søknadsDato),
+            var stønad = new Engangsstønad(tilMedlemsskap(søknad.getMedlemskap(), søknadsDato),
                     tilRelasjonTilBarn(søknad.getSoekersRelasjonTilBarnet()));
             stønad.setAnnenForelder(tilAnnenForelder(søknad.getAnnenForelder()));
             return stønad;

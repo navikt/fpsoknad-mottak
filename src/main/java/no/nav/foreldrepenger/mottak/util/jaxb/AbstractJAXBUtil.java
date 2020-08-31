@@ -62,7 +62,7 @@ public abstract class AbstractJAXBUtil {
 
     public Element marshalToElement(Object model) {
         try {
-            DOMResult res = new DOMResult();
+            var res = new DOMResult();
             marshaller().marshal(model, res);
             return ((Document) res.getNode()).getDocumentElement();
         } catch (JAXBException e) {
@@ -72,7 +72,7 @@ public abstract class AbstractJAXBUtil {
 
     public String marshal(Object model) {
         try {
-            StringWriter sw = new StringWriter();
+            var sw = new StringWriter();
             marshaller().marshal(model, sw);
             return sw.toString();
         } catch (JAXBException e) {
@@ -113,7 +113,7 @@ public abstract class AbstractJAXBUtil {
 
     public Unmarshaller unmarshaller() {
         try {
-            Unmarshaller unmarshaller = context.createUnmarshaller();
+            var unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler(new DefaultValidationEventHandler());
             if (schema != null && validateUnarshalling) {
                 unmarshaller.setSchema(schema);
@@ -127,7 +127,7 @@ public abstract class AbstractJAXBUtil {
 
     private Marshaller marshaller() {
         try {
-            Marshaller marshaller = context.createMarshaller();
+            var marshaller = context.createMarshaller();
             marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
             marshaller.setEventHandler(new DefaultValidationEventHandler());
             if (schema != null && validateMarshalling) {

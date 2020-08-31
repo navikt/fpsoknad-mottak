@@ -132,28 +132,32 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         }
         try {
             Soeknad søknad = JAXB.unmarshalToElement(xml, Soeknad.class).getValue();
-            switch (egenskap.getType()) {
-            case ENDRING_FORELDREPENGER:
-                Endringssøknad endringssøknad = new Endringssøknad(
-                        søknad.getMottattDato(),
-                        tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
-                endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return endringssøknad;
-            case INITIELL_FORELDREPENGER:
-                Søknad førstegangssøknad = new Søknad(
-                        søknad.getMottattDato(),
-                        tilSøker(søknad.getSoeker()),
-                        tilYtelse(søknad.getOmYtelse()),
-                        tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
-                førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
-                førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
-                return førstegangssøknad;
-            default:
-                LOG.warn("Ukjent søknad");
-                return null;
-            }
+            return switch (egenskap.getType()) {
+                case ENDRING_FORELDREPENGER -> {
+                    var endringssøknad = new Endringssøknad(
+                            søknad.getMottattDato(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse()).getFordeling(), saksnummer(søknad.getOmYtelse()));
+                    endringssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    endringssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    yield endringssøknad;
+                }
+                case INITIELL_FORELDREPENGER -> {
+                    var førstegangssøknad = new Søknad(
+                            søknad.getMottattDato(),
+                            tilSøker(søknad.getSoeker()),
+                            tilYtelse(søknad.getOmYtelse()),
+                            tilVedlegg(søknad.getPaakrevdeVedlegg(), søknad.getAndreVedlegg()));
+                    førstegangssøknad.setTilleggsopplysninger(søknad.getTilleggsopplysninger());
+                    førstegangssøknad.setBegrunnelseForSenSøknad(søknad.getBegrunnelseForSenSoeknad());
+                    yield førstegangssøknad;
+                }
+                default -> {
+                    LOG.warn("Ukjent søknad");
+                    yield null;
+
+                }
+            };
         } catch (Exception e) {
             LOG.debug("Feil ved unmarshalling av søknad, ikke kritisk foreløpig, vi bruker ikke dette til noe", e);
             return null;
@@ -162,10 +166,10 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
 
     private static List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg> påkrevd,
             List<no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg> valgfritt) {
-        Stream<Vedlegg> vf = safeStream(valgfritt)
+        var vf = safeStream(valgfritt)
                 .map(V2ForeldrepengerXMLMapper::metadataFra)
                 .map(s -> new ValgfrittVedlegg(s, null));
-        Stream<Vedlegg> pk = safeStream(påkrevd)
+        var pk = safeStream(påkrevd)
                 .map(V2ForeldrepengerXMLMapper::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
         return Stream.concat(vf, pk).collect(toList());

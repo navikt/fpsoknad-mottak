@@ -102,16 +102,16 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
 
     private static List<Tilrettelegging> create(
             no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Tilrettelegging tilrettelegging) {
-        List<Tilrettelegging> tilretteleggingsliste = new ArrayList<>();
+        var tilretteleggingsliste = new ArrayList<Tilrettelegging>();
         tilretteleggingsliste.addAll(hel(tilrettelegging
                 .getHelTilrettelegging(), tilrettelegging.getArbeidsforhold(),
-            tilrettelegging.getBehovForTilretteleggingFom()));
+                tilrettelegging.getBehovForTilretteleggingFom()));
         tilretteleggingsliste.addAll(delvis(tilrettelegging
                 .getDelvisTilrettelegging(), tilrettelegging.getArbeidsforhold(),
-            tilrettelegging.getBehovForTilretteleggingFom()));
+                tilrettelegging.getBehovForTilretteleggingFom()));
         tilretteleggingsliste.addAll(ingen(tilrettelegging
                 .getIngenTilrettelegging(), tilrettelegging.getArbeidsforhold(),
-            tilrettelegging.getBehovForTilretteleggingFom()));
+                tilrettelegging.getBehovForTilretteleggingFom()));
         return tilretteleggingsliste;
     }
 
@@ -125,27 +125,27 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
     }
 
     private static List<HelTilrettelegging> hel(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.HelTilrettelegging> hele,
-                                                no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
-                                                LocalDate behovFra) {
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+            LocalDate behovFra) {
         return safeStream(hele)
-            .map(h -> hel(h, arbeidsforhold, behovFra))
-            .collect(toList());
+                .map(h -> hel(h, arbeidsforhold, behovFra))
+                .collect(toList());
     }
 
     private static List<DelvisTilrettelegging> delvis(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.DelvisTilrettelegging> delvise,
-                                                no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
-                                                LocalDate behovFra) {
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+            LocalDate behovFra) {
         return safeStream(delvise)
-            .map(d -> delvis(d, arbeidsforhold, behovFra))
-            .collect(toList());
+                .map(d -> delvis(d, arbeidsforhold, behovFra))
+                .collect(toList());
     }
 
     private static List<IngenTilrettelegging> ingen(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.IngenTilrettelegging> ingen,
-                                                no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
-                                                LocalDate behovFra) {
+            no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.Arbeidsforhold arbeidsforhold,
+            LocalDate behovFra) {
         return safeStream(ingen)
-            .map(i -> ingen(i, arbeidsforhold, behovFra))
-            .collect(toList());
+                .map(i -> ingen(i, arbeidsforhold, behovFra))
+                .collect(toList());
     }
 
     private static DelvisTilrettelegging delvis(
