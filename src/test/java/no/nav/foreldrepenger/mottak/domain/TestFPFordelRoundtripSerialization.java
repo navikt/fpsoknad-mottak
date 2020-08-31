@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
@@ -10,7 +11,6 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.innsending.MottakController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.MottakDevController.INNSENDING_PREPROD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 import static org.junit.jupiter.api.Assertions.assertEquals;

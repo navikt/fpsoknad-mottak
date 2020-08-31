@@ -33,13 +33,13 @@ public final class URIUtil {
     }
 
     public static HttpHeaders queryParams(String key, String value) {
-        HttpHeaders queryParams = new HttpHeaders();
+        var queryParams = new HttpHeaders();
         queryParams.add(key, taint(value));
         return queryParams;
     }
 
     public static HttpHeaders queryParams(String key, String value, String key1, String value1) {
-        HttpHeaders queryParams = new HttpHeaders();
+        var queryParams = new HttpHeaders();
         queryParams.add(key, taint(value));
         queryParams.add(key1, taint(value1));
         return queryParams;

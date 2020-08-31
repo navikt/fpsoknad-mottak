@@ -36,10 +36,7 @@ public class TokenUtil {
     }
 
     public String bearerToken() {
-        if (erAutentisert()) {
-            return BEARER + getToken();
-        }
-        return null;
+        return erAutentisert() ? BEARER + getToken() : null;
     }
 
     public String getToken() {
@@ -92,11 +89,11 @@ public class TokenUtil {
         if (value == null) {
             return null;
         }
-        if (value instanceof Date) {
-            return (Date) value;
+        if (value instanceof Date d) {
+            return d;
         }
-        if (value instanceof Number) {
-            return DateUtils.fromSecondsSinceEpoch(((Number) value).longValue());
+        if (value instanceof Number n) {
+            return DateUtils.fromSecondsSinceEpoch(n.longValue());
         }
         return null;
 

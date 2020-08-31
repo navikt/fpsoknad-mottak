@@ -2,12 +2,12 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.DEV;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.pdf.modell.FeltBlokk.felt;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
@@ -75,8 +75,8 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     @Inject
     public NySvangerskapspengerPdfGenerator(SøknadTextFormatter textFormatter,
-                                            Oppslag oppslag,
-                                            no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold arbeidsforhold, PdfGenerator pdfGenerator) {
+            Oppslag oppslag,
+            no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold arbeidsforhold, PdfGenerator pdfGenerator) {
         this.textFormatter = textFormatter;
         this.oppslag = oppslag;
         this.arbeidsforhold = arbeidsforhold;
@@ -96,11 +96,11 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private DokumentBestilling svpSøknadFra(Søknad søknad, Person søker) {
         return DokumentBestilling.builder()
-            .dokument(txt("svp.søknad"))
-            .søker(personFra(søker))
-            .mottattDato(mottattDato())
-            .temaer(lagInnhold(søknad))
-            .build();
+                .dokument(txt("svp.søknad"))
+                .søker(personFra(søker))
+                .mottattDato(mottattDato())
+                .temaer(lagInnhold(søknad))
+                .build();
     }
 
     private List<TemaBlokk> lagInnhold(Søknad søknad) {
@@ -108,7 +108,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         var stønad = (Svangerskapspenger) søknad.getYtelse();
         List<EnkeltArbeidsforhold> aktiveArbeidsforhold = hentAktiveArbeidsforhold(stønad.getTermindato(), stønad.getFødselsdato());
         var medlemsskap = stønad.getMedlemsskap();
-        //var annenForelder = stønad.getAnnenForelder();
+        // var annenForelder = stønad.getAnnenForelder();
         List<TemaBlokk> temaer = new ArrayList<>();
 
         temaer.add(omBarn(søknad, stønad));
@@ -128,14 +128,14 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             return Optional.empty();
         }
         return Optional.of(egneNæringer(egneNæringer))
-            .map(l -> new TemaBlokk(txt("egennæring"), l));
+                .map(l -> new TemaBlokk(txt("egennæring"), l));
 
     }
 
     private List<Blokk> egneNæringer(List<EgenNæring> egenNæring) {
         return egenNæring.stream()
-            .map(this::egenNæringMapper)
-            .collect(Collectors.toList());
+                .map(this::egenNæringMapper)
+                .collect(Collectors.toList());
     }
 
     private GruppeBlokk egenNæringMapper(EgenNæring næring) {
@@ -145,10 +145,9 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             rader.add(new FritekstBlokk(txt("egennæringpågår", textFormatter.dato(næring.getPeriode().getFom()))));
         } else {
             rader.add(new FritekstBlokk(
-                txt("egennæringavsluttet",
-                    textFormatter.dato(næring.getPeriode().getFom()),
-                    textFormatter.dato(næring.getPeriode().getTom())))
-            );
+                    txt("egennæringavsluttet",
+                            textFormatter.dato(næring.getPeriode().getFom()),
+                            textFormatter.dato(næring.getPeriode().getTom()))));
         }
         if (næring instanceof NorskOrganisasjon) {
             NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
@@ -162,9 +161,9 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             rader.add(rad(txt("registrertiland"), textFormatter.countryName(org.getRegistrertILand())));
         }
         rader.add(rad(txt("egennæringtyper", næring.getVedlegg().size() > 1 ? "r" : ""),
-            safeStream(næring.getVirksomhetsTyper())
-                .map(vt -> textFormatter.capitalize(vt.name()))
-                .collect(joining(", "))));
+                safeStream(næring.getVirksomhetsTyper())
+                        .map(vt -> textFormatter.capitalize(vt.name()))
+                        .collect(joining(", "))));
 
         if (næring.getStillingsprosent() != null) {
             rader.add(rad(txt("stillingsprosent"), prosentFra(næring.getStillingsprosent())));
@@ -172,24 +171,24 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         rader.add(rad(txt("nyligyrkesaktiv"), jaNei(næring.isErNyIArbeidslivet())));
         rader.add(rad(txt("varigendring"), jaNei(næring.isErVarigEndring())));
         Optional.ofNullable(næring.getBeskrivelseEndring())
-            .map(b -> new FritekstBlokk(txt("egennæringbeskrivelseendring", b)))
-            .ifPresent(rader::add);
+                .map(b -> new FritekstBlokk(txt("egennæringbeskrivelseendring", b)))
+                .ifPresent(rader::add);
         Optional.ofNullable(næring.getEndringsDato())
-            .map(textFormatter::dato)
-            .map(d -> rad(txt("egennæringendringsdato"), d))
-            .ifPresent(rader::add);
+                .map(textFormatter::dato)
+                .map(d -> rad(txt("egennæringendringsdato"), d))
+                .ifPresent(rader::add);
         Optional.of(næring.getNæringsinntektBrutto())
-            .filter(b -> b > 0L)
-            .map(String::valueOf)
-            .map(bi -> rad(txt("egennæringbruttoinntekt"), bi))
-            .ifPresent(rader::add);
+                .filter(b -> b > 0L)
+                .map(String::valueOf)
+                .map(bi -> rad(txt("egennæringbruttoinntekt"), bi))
+                .ifPresent(rader::add);
 
         if (næring.isErNyOpprettet()) {
             rader.add(rad(txt("nystartetvirksomhet"), jaNei(true)));
             Optional.ofNullable(næring.getOppstartsDato())
-                .map(textFormatter::dato)
-                .map(d -> rad(txt("egennæringoppstartsdato"), d))
-                .ifPresent(rader::add);
+                    .map(textFormatter::dato)
+                    .map(d -> rad(txt("egennæringoppstartsdato"), d))
+                    .ifPresent(rader::add);
         }
 
         return gruppe.medTabellRader(rader).build();
@@ -204,22 +203,22 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             rader.add(new FritekstBlokk(txt("frilanspågår", textFormatter.dato(frilans.getPeriode().getFom()))));
         } else {
             rader.add(new FritekstBlokk(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().getFom()),
-                textFormatter.dato(frilans.getPeriode().getTom()))));
+                    textFormatter.dato(frilans.getPeriode().getTom()))));
         }
         rader.add(felt(txt("fosterhjem"), jaNei(frilans.isHarInntektFraFosterhjem())));
         rader.add(felt(txt("nyoppstartet"), jaNei(frilans.isNyOppstartet())));
         if (!frilans.getFrilansOppdrag().isEmpty()) {
             frilans.getFrilansOppdrag().stream()
-                .map(o -> rad(o.getOppdragsgiver(), textFormatter.enkelPeriode(o.getPeriode())))
-                .forEach(rader::add);
+                    .map(o -> rad(o.getOppdragsgiver(), textFormatter.enkelPeriode(o.getPeriode())))
+                    .forEach(rader::add);
         } else {
             rader.add(felt(txt("oppdrag"), "Nei"));
         }
 
         return Optional.of(TemaBlokk.builder()
-            .medOverskrift(txt("frilans"))
-            .medUnderBlokker(rader)
-            .build());
+                .medOverskrift(txt("frilans"))
+                .medUnderBlokker(rader)
+                .build());
     }
 
     private String jaNei(boolean value) {
@@ -233,19 +232,19 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         List<TabellRad> rader = new ArrayList<>();
         for (var arbeidsforhold : sorterArbeidsforhold(aktiveArbeidsforhold)) {
             var builder = TabellRad.builder()
-                .medVenstreTekst(arbeidsforhold.getArbeidsgiverNavn())
-                .medHøyreTekst(arbeidsforhold.getFrom() + " - " + arbeidsforhold.getTo());
+                    .medVenstreTekst(arbeidsforhold.getArbeidsgiverNavn())
+                    .medHøyreTekst(arbeidsforhold.getFrom() + " - " + arbeidsforhold.getTo());
             if (arbeidsforhold.getStillingsprosent() != null) {
                 builder
-                    .medUnderBlokker(List.of(rad(txt("stillingsprosent"),
-                        prosentFra(arbeidsforhold.getStillingsprosent()))));
+                        .medUnderBlokker(List.of(rad(txt("stillingsprosent"),
+                                prosentFra(arbeidsforhold.getStillingsprosent()))));
             }
             rader.add(builder.build());
         }
         return Optional.of(TemaBlokk.builder()
-            .medOverskrift(txt("arbeidsforhold"))
-            .medUnderBlokker(rader)
-            .build());
+                .medOverskrift(txt("arbeidsforhold"))
+                .medUnderBlokker(rader)
+                .build());
     }
 
     private static List<EnkeltArbeidsforhold> sorterArbeidsforhold(List<EnkeltArbeidsforhold> arbeidsforhold) {
@@ -259,21 +258,21 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private TemaBlokk tilretteleggingsbehov(Svangerskapspenger stønad,
-                                            List<Vedlegg> vedlegg) {
+            List<Vedlegg> vedlegg) {
         List<GruppeBlokk> tabeller = new ArrayList<>();
 
         perArbeidsforholdFra(stønad.getTilrettelegging())
-            .forEach((arbeidsgiver, tiltak) -> tabeller.add(håndter(arbeidsgiver, tiltak, vedlegg)));
+                .forEach((arbeidsgiver, tiltak) -> tabeller.add(håndter(arbeidsgiver, tiltak, vedlegg)));
 
         return TemaBlokk.builder()
-            .medOverskrift(txt("tilrettelegging"))
-            .medUnderBlokker(tabeller)
-            .build();
+                .medOverskrift(txt("tilrettelegging"))
+                .medUnderBlokker(tabeller)
+                .build();
     }
 
     private GruppeBlokk håndter(Arbeidsforhold arbeidsgiver,
-                                List<Tilrettelegging> tiltak,
-                                List<Vedlegg> vedlegg) {
+            List<Tilrettelegging> tiltak,
+            List<Vedlegg> vedlegg) {
         var builder = GruppeBlokk.builder();
         List<Blokk> rader = new ArrayList<>();
         rader.add(behovFra(tiltak.stream().findAny().orElseThrow()));
@@ -294,10 +293,10 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         }
 
         tiltak.stream()
-            .map(Tilrettelegging::getVedlegg)
-            .findAny()
-            .map(ref -> lagVedlegg(vedlegg, ref, SVP_VEDLEGG_TILRETTELEGGING))
-            .ifPresent(rader::add);
+                .map(Tilrettelegging::getVedlegg)
+                .findAny()
+                .map(ref -> lagVedlegg(vedlegg, ref, SVP_VEDLEGG_TILRETTELEGGING))
+                .ifPresent(rader::add);
 
         return builder.medTabellRader(rader).build();
     }
@@ -306,8 +305,8 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         List<String> vedleggPunkter = new ArrayList<>();
         for (String ref : vedleggRefs) {
             var detaljer = vedlegg.stream()
-                .filter(s -> ref.equals(s.getId()))
-                .findFirst();
+                    .filter(s -> ref.equals(s.getId()))
+                    .findFirst();
             if (detaljer.isPresent()) {
                 String beskrivelse = vedleggsBeskrivelse(svpVedleggTilrettelegging, detaljer.get());
                 vedleggPunkter.add(txt("vedlegg2", beskrivelse, detaljer.get().getInnsendingsType().name()));
@@ -329,77 +328,74 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private List<FritekstBlokk> tiltakOgRisiko(Frilanser frilans) {
         return List.of(
-            new FritekstBlokk(txt("svp.risikofaktorer", frilans.getRisikoFaktorer())),
-            new FritekstBlokk(txt("svp.tiltak", frilans.getTilretteleggingstiltak()))
-        );
+                new FritekstBlokk(txt("svp.risikofaktorer", frilans.getRisikoFaktorer())),
+                new FritekstBlokk(txt("svp.tiltak", frilans.getTilretteleggingstiltak())));
     }
-
 
     private List<TabellRad> map(Tilrettelegging tilrettelegging) {
         if (tilrettelegging instanceof HelTilrettelegging) {
-            return List.of(rad( txt("svp.tilretteleggingfra"),
-                DATEFMT.format(((HelTilrettelegging) tilrettelegging).getTilrettelagtArbeidFom())));
+            return List.of(rad(txt("svp.tilretteleggingfra"),
+                    DATEFMT.format(((HelTilrettelegging) tilrettelegging).getTilrettelagtArbeidFom())));
         } else if (tilrettelegging instanceof DelvisTilrettelegging) {
             var periode = (DelvisTilrettelegging) tilrettelegging;
             var tilrettelagtArbeidFom = DATEFMT.format(periode.getTilrettelagtArbeidFom());
             var stillingsprosent = prosentFra(periode.getStillingsprosent());
             return List.of(
-                rad(txt("svp.delvistilrettelegging"), tilrettelagtArbeidFom),
-                rad(txt("svp.stillingsprosent"), stillingsprosent)
-            );
+                    rad(txt("svp.delvistilrettelegging"), tilrettelagtArbeidFom),
+                    rad(txt("svp.stillingsprosent"), stillingsprosent));
         } else {
             var ingenTilrettelegging = (IngenTilrettelegging) tilrettelegging;
             var ikkeArbeidDato = DATEFMT.format(ingenTilrettelegging.getSlutteArbeidFom());
             var rad = TabellRad.builder()
-            .medVenstreTekst(txt("svp.sluttearbeid"))
-            .medHøyreTekst(ikkeArbeidDato)
-            .build();
+                    .medVenstreTekst(txt("svp.sluttearbeid"))
+                    .medHøyreTekst(ikkeArbeidDato)
+                    .build();
             return List.of(rad);
         }
     }
 
     private static String prosentFra(ProsentAndel prosent) {
         return Optional.ofNullable(prosent)
-            .map(ProsentAndel::getProsent)
-            .map(String::valueOf)
-            .orElse("0");
+                .map(ProsentAndel::getProsent)
+                .map(String::valueOf)
+                .orElse("0");
     }
 
     private TabellRad behovFra(Tilrettelegging tilfeldigPeriode) {
         return rad(txt("svp.behovfra", ""),
-            DATEFMT.format(tilfeldigPeriode.getBehovForTilretteleggingFom()));
+                DATEFMT.format(tilfeldigPeriode.getBehovForTilretteleggingFom()));
     }
 
     private TabellRad rad(String txt, String format) {
         return TabellRad.builder()
-            .medVenstreTekst(txt)
-            .medHøyreTekst(format)
-            .build();
+                .medVenstreTekst(txt)
+                .medHøyreTekst(format)
+                .build();
     }
 
     private String virksomhetsnavn(String orgnr) {
         return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
-            .filter(af -> af.getArbeidsgiverId().equals(orgnr))
-            .findFirst()
-            .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
-            .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));
+                .filter(af -> af.getArbeidsgiverId().equals(orgnr))
+                .findFirst()
+                .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
+                .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));
     }
 
     private static Map<Arbeidsforhold, List<Tilrettelegging>> perArbeidsforholdFra(List<Tilrettelegging> tilretteleggingsPerioder) {
         Map<Arbeidsforhold, List<Tilrettelegging>> tilretteleggingByArbeidsforhold = new HashMap<>();
         tilretteleggingsPerioder.forEach(tp -> tilretteleggingByArbeidsforhold
-            .computeIfAbsent(tp.getArbeidsforhold(), key -> new ArrayList<>())
-            .add(tp));
+                .computeIfAbsent(tp.getArbeidsforhold(), key -> new ArrayList<>())
+                .add(tp));
         return tilretteleggingByArbeidsforhold;
     }
 
     private List<EnkeltArbeidsforhold> hentAktiveArbeidsforhold(
-        LocalDate termindato,
-        LocalDate fødselsdato) {
+            LocalDate termindato,
+            LocalDate fødselsdato) {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
         return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
-            .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
-            .collect(toList());
+                .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
+                .collect(toList());
     }
 
     private TemaBlokk omBarn(Søknad søknad, Svangerskapspenger stønad) {
@@ -410,9 +406,9 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             terminFødsel = new FritekstBlokk(txt("svp.termindato", DATEFMT.format(stønad.getTermindato())));
         }
         return TemaBlokk.builder()
-            .medOverskrift(txt("ombarn"))
-            .medUnderBlokker(List.of(terminFødsel))
-            .build();
+                .medOverskrift(txt("ombarn"))
+                .medUnderBlokker(List.of(terminFødsel))
+                .build();
     }
 
     private String txt(String gjelder, Object... values) {
@@ -425,7 +421,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private DokumentPerson personFra(Person person) {
         var navn = textFormatter.sammensattNavn(new Navn(person.getFornavn(),
-            person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
+                person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
         return DokumentPerson.builder().navn(navn).id(person.getFnr().getFnr()).build();
     }
 

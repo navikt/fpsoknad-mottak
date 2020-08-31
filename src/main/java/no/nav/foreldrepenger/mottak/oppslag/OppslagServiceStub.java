@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.DEV;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.DEV;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 
 import java.time.LocalDate;
 

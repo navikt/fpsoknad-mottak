@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
@@ -13,7 +14,6 @@ import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.ENDRING_FORELD
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,28 +49,28 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
-@ActiveProfiles(profiles = {LOCAL})
+@ActiveProfiles(profiles = { LOCAL })
 @ExtendWith(SpringExtension.class)
 //@TestPropertySource(properties = {"fppdfgen.enabled=true", "fppdfgen.uri=http://localhost:8180"})
 @ContextConfiguration(classes = {
-    MottakConfiguration.class,
-    SøknadTextFormatter.class,
-    ForeldrepengeInfoRenderer.class,
-    PdfElementRenderer.class,
-    ForeldrepengerPdfGenerator.class,
-    EngangsstønadPdfGenerator.class,
-    RestTemplate.class,
-    OppslagServiceStub.class,
-    //PdfGeneratorConfig.class,
-    //PdfGeneratorConnection.class,
-    //PdfGeneratorTjeneste.class,
-    PdfGeneratorStub.class,
-    NySvangerskapspengerPdfGenerator.class,
-    DelegerendePDFGenerator.class,
-    InfoskrivRenderer.class,
-    InfoskrivPdfEkstraktor.class,
-    SvangerskapspengerInfoRenderer.class,
-    SpringTokenValidationContextHolder.class, TestConfig.class })
+        MottakConfiguration.class,
+        SøknadTextFormatter.class,
+        ForeldrepengeInfoRenderer.class,
+        PdfElementRenderer.class,
+        ForeldrepengerPdfGenerator.class,
+        EngangsstønadPdfGenerator.class,
+        RestTemplate.class,
+        OppslagServiceStub.class,
+        // PdfGeneratorConfig.class,
+        // PdfGeneratorConnection.class,
+        // PdfGeneratorTjeneste.class,
+        PdfGeneratorStub.class,
+        NySvangerskapspengerPdfGenerator.class,
+        DelegerendePDFGenerator.class,
+        InfoskrivRenderer.class,
+        InfoskrivPdfEkstraktor.class,
+        SvangerskapspengerInfoRenderer.class,
+        SpringTokenValidationContextHolder.class, TestConfig.class })
 public class MappablePdfGeneratorTest {
 
     private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +
@@ -96,7 +96,7 @@ public class MappablePdfGeneratorTest {
     @Test
     public void signature() {
         assertTrue(hasPdfSignature(
-            gen.generer(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
+                gen.generer(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test
@@ -147,10 +147,10 @@ public class MappablePdfGeneratorTest {
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
         return List.of(EnkeltArbeidsforhold.builder()
-            .arbeidsgiverId("888888888")
-            .from(LocalDate.now().minusDays(200))
-            .to(Optional.of(LocalDate.now().plusDays(10)))
-            .stillingsprosent(new ProsentAndel(90))
-            .arbeidsgiverNavn("Den Første Bedriften").build());
+                .arbeidsgiverId("888888888")
+                .from(LocalDate.now().minusDays(200))
+                .to(Optional.of(LocalDate.now().plusDays(10)))
+                .stillingsprosent(new ProsentAndel(90))
+                .arbeidsgiverNavn("Den Første Bedriften").build());
     }
 }

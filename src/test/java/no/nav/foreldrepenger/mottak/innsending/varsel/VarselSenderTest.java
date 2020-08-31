@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
 
 import java.time.LocalDateTime;
 

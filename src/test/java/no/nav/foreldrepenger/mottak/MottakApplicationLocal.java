@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak;
 
 import static no.nav.foreldrepenger.boot.conditionals.Cluster.profiler;
-import static no.nav.foreldrepenger.mottak.util.EnvUtil.LOCAL;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;

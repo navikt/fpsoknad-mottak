@@ -7,6 +7,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.FagsakType.SVANGERSKAPSPENGER;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,24 +17,12 @@ import org.slf4j.LoggerFactory;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 public enum Versjon {
-    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1",
-            "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1",
-            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1",
-            "urn:no:nav:vedtak:felles:xml:vedtak:v1",
-            "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1",
-            "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v1",
-            "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
-    V2(
-            "urn:no:nav:vedtak:felles:xml:soeknad:v2",
-            "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v2",
-            "urn:no:nav:vedtak:felles:xml:vedtak:v2",
-            "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2",
-            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"),
-    V3(
-            "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v3",
-            "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v3",
-            "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"),
-    V20180924, UKJENT;
+    V1("urn:no:nav:vedtak:felles:xml:soeknad:v1", "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1", "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1", "urn:no:nav:vedtak:felles:xml:vedtak:v1", "urn:no:nav:vedtak:felles:xml:soeknad:svangerskapspenger:v1", "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v1", "http://nav.no/foreldrepenger/soeknadsskjema/engangsstoenad/v1"),
+    V2("urn:no:nav:vedtak:felles:xml:soeknad:v2", "urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v2", "urn:no:nav:vedtak:felles:xml:vedtak:v2", "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v2", "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v2"),
+    V3("urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v3", "urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v3", "urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v3"),
+    V20180924,
+    UKJENT;
+
     private static final Logger LOG = LoggerFactory.getLogger(Versjon.class);
     public static final String VERSION_PROPERTY = "contract.version";
     private final List<String> namespaces;
@@ -43,6 +32,14 @@ public enum Versjon {
 
     private Versjon() {
         this(emptyList());
+    }
+
+    private Versjon(String... namespaces) {
+        this(asList(namespaces));
+    }
+
+    private Versjon(List<String> namespaces) {
+        this.namespaces = namespaces;
     }
 
     public static Versjon defaultVersjon(SøknadType type) {
@@ -59,21 +56,11 @@ public enum Versjon {
                 .isPresent();
     }
 
-    private Versjon(String... namespaces) {
-        this(asList(namespaces));
-    }
-
-    private Versjon(List<String> namespaces) {
-        this.namespaces = namespaces;
-    }
-
     public static Versjon namespaceFra(String ns) {
-        for (Versjon v : values()) {
-            if (v.namespaces.contains(ns)) {
-                return v;
-            }
-        }
-        return ukjent(ns);
+        return Arrays.stream(values())
+                .filter(v -> v.namespaces.contains(ns))
+                .findFirst()
+                .orElse(ukjent(ns));
     }
 
     private static Versjon ukjent(String namespace) {
