@@ -17,8 +17,9 @@ public class ImageVersionContributor implements InfoContributor {
 
     @Override
     public void contribute(Builder builder) {
-        Map<String, String> versions = new HashMap<>();
-        versions.put("image version", env.getProperty("nais.app.image"));
-        builder.withDetail("versions", versions);
+        Map<String, String> extras = new HashMap<>();
+        extras.put("cluster", env.getProperty("nais.cluster.name"));
+        extras.put("image version", env.getProperty("nais.app.image"));
+        builder.withDetail("Extras", extras);
     }
 }
