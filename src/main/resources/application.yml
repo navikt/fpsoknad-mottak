@@ -42,11 +42,7 @@ no.nav:
       cookie_name: selvbetjening-idtoken
 http:
    proxy: http://webproxy-nais.nav.no:8088
-info:
-   app:
-      version: '@project.version@'
-      build:
-         time: '@timestamp@'
+
 management:
    metrics:
       web:
