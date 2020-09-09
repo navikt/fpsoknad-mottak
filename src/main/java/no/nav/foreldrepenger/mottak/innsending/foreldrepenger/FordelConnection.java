@@ -49,6 +49,7 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
         } catch (Exception e) {
             LOG.info("Feil ved sending av {}", konvolutt.getMetadata());
             LOG.info("Hoveddokument {}", konvolutt.XMLHovedDokument());
+            LOG.info("Hoveddokument PDF {}", konvolutt.PDFHovedDokument());
             FP_SENDFEIL.increment();
             throw e;
         }
