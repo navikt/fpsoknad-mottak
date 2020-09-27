@@ -2,9 +2,10 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 
 public enum DokumentType {
 
-    I000001("Søknad om svangerskapspenger for selvstendig"),
+    I000001("Søknad om svangerskapspenger"),
     I000002("Søknad om foreldrepenger ved adopsjon"),
     I000003("Søknad om engangsstønad ved fødsel"),
+    I000004("Søknad om engangsstønad ved adopsjon"),
     I000005("Søknad om foreldrepenger ved fødsel"),
     I000006("Utsettelse eller gradert uttak av foreldrepenger (fleksibelt uttak)"),
     I000007("Inntektsopplysninger om selvstendig næringsdrivende og/eller frilansere som skal ha foreldrepenger eller svangerskapspenger"),
