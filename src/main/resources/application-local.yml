@@ -25,6 +25,8 @@ kafka:
   username: username
   password: password
 
+pdl:
+ base-uri: http://localhost:9001/api/graphql
 fppdfgen:
     enabled: false
 
