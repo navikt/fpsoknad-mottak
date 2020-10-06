@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,9 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
@@ -34,6 +38,9 @@ public class WebClientConfiguration {
     public static final String STS = "STS";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
+
+    @Autowired
+    ObjectMapper mapper;
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
@@ -67,6 +74,14 @@ public class WebClientConfiguration {
                 .baseUrl(cfg.getBaseUri())
                 .filter(correlatingFilterFunction())
                 .build();
+    }
+
+    @Bean
+    public GraphQLWebClient PDLWebClient() {
+        WebClient webClient = WebClient.builder()
+                .baseUrl("http://localhost:" + 9001 + "/api/graphql")
+                .build();
+        return GraphQLWebClient.newInstance(webClient, mapper);
     }
 
     @Bean
