@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak;
 
 import static no.nav.foreldrepenger.boot.conditionals.Cluster.profiler;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
 import no.nav.security.token.support.core.context.TokenValidationContext;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
@@ -33,7 +35,7 @@ public class MottakApplicationLocal {
     }
 
     @Bean
-    // @Profile(LOCAL)
+    @Profile(LOCAL)
     @ConditionalOnMissingBean(SpringTokenValidationContextHolder.class)
     TokenValidationContextHolder dummyContextHolderForDev() {
         return new TokenValidationContextHolder() {
