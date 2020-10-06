@@ -1,11 +1,11 @@
-{ 
-  bookById(id: "book-1") {
-  id
-  name
-  pageCount
-  author {
-     firstName
-     lastName
+query($id: ID!){
+  bookById(id: $id) {
+    id
+    name
+    pageCount
+    author {
+      firstName
+      lastName
+   }
   }
- }
-} 
+ }  

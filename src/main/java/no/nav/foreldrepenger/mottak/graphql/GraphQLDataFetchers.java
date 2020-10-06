@@ -38,19 +38,18 @@ public class GraphQLDataFetchers {
                     "lastName", "Rice"));
 
     public DataFetcher<?> getBookByIdDataFetcher() {
-        return dataFetchingEnvironment -> {
-            String bookId = dataFetchingEnvironment.getArgument("id");
+        return env -> {
             return books
                     .stream()
-                    .filter(book -> book.get("id").equals(bookId))
+                    .filter(book -> book.get("id").equals(env.getArgument("id")))
                     .findFirst()
                     .orElse(null);
         };
     }
 
     public DataFetcher<?> getAuthorDataFetcher() {
-        return dataFetchingEnvironment -> {
-            Map<String, String> book = dataFetchingEnvironment.getSource();
+        return env -> {
+            Map<String, String> book = env.getSource();
             String authorId = book.get("authorId");
             return authors
                     .stream()
