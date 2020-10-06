@@ -22,8 +22,8 @@ public class PDLConnection {
     }
 
     public Person hentPerson() {
-        return client.post("query-client.graphql", Map.of("id", tokenUtil.getSubject()), Person.class).block();
-
+        LOG.info("Henter person");
+        return client.post("query-person.graphql", Map.of("id", tokenUtil.getSubject()), Person.class).block();
     }
 
     @Override
