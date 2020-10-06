@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +33,9 @@ public final class Mappables {
         T mapper = safeStream(mappables)
                 .filter(m -> m.kanMappe(egenskap))
                 .findFirst()
-                .orElseThrow(unsupported(mappables, egenskap));
+                .orElseThrow(() -> new UnsupportedEgenskapException(mappables, egenskap));
         LOG.info("Bruker mapper {} for {}", mapper.getClass().getSimpleName(), egenskap);
         return mapper;
     }
 
-    private static <T extends Mappable> Supplier<? extends UnsupportedEgenskapException> unsupported(List<T> mappables,
-            SøknadEgenskap egenskap) {
-        return () -> new UnsupportedEgenskapException(mappables, egenskap);
-    }
 }

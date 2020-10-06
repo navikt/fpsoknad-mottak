@@ -13,7 +13,9 @@ public class LocalSystemUserTokenService implements SystemTokenTjeneste {
 
     @Override
     public SystemToken getSystemToken() {
-        return new SystemToken(new JwtToken("hey"), 3600L, "jalla");
+        return new SystemToken(new JwtToken(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"),
+                3600L, "jalla");
     }
 
     @Override

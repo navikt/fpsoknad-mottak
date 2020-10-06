@@ -21,6 +21,12 @@ varsel:
    channelname: Q1_FPSOKNAD_VARSEL
    queue-name: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
 
+kafka:
+  username: username
+  password: password
+
+pdl:
+ base-uri: http://localhost:9001/api/graphql
 fppdfgen:
     enabled: false
 
