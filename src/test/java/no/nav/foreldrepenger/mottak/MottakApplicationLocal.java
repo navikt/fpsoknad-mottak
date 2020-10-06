@@ -3,9 +3,8 @@ package no.nav.foreldrepenger.mottak;
 import static no.nav.foreldrepenger.boot.conditionals.Cluster.profiler;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
-import java.util.Map;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.annotation.EnableCaching;
@@ -14,9 +13,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Import;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnLocal;
 import no.nav.security.token.support.core.context.TokenValidationContext;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 import no.nav.security.token.support.test.spring.TokenGeneratorConfiguration;
 
 @SpringBootApplication
@@ -34,19 +33,20 @@ public class MottakApplicationLocal {
     }
 
     @Bean
-    @ConditionalOnLocal
+    // @Profile(LOCAL)
+    @ConditionalOnMissingBean(SpringTokenValidationContextHolder.class)
     TokenValidationContextHolder dummyContextHolderForDev() {
         return new TokenValidationContextHolder() {
 
             @Override
             public TokenValidationContext getTokenValidationContext() {
-                return new TokenValidationContext(Map.of());
+                return null;
             }
 
             @Override
             public void setTokenValidationContext(TokenValidationContext tokenValidationContext) {
             }
+
         };
     }
-
 }
