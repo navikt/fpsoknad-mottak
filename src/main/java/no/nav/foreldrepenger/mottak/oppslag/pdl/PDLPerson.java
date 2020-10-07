@@ -71,6 +71,11 @@ public class PDLPerson {
             return kjønn;
         }
 
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + " [kjønn=" + kjønn + "]";
+        }
+
         static enum Kjønn {
             MANN,
             KVINNE,
