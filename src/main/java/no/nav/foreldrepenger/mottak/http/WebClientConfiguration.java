@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_PERSON_IDENT;
 import static no.nav.foreldrepenger.mottak.util.Constants.TEMA;
-import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
@@ -29,7 +28,6 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
-import no.nav.foreldrepenger.mottak.oppslag.sts.SystemToken;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -81,7 +79,7 @@ public class WebClientConfiguration {
         return builder
                 .baseUrl(cfg.getBaseUri())
                 .filter(correlatingFilterFunction())
-                .filter(pdlExchangeFilterFunction(sts.getSystemToken(), tokenUtil))
+                .filter(pdlExchangeFilterFunction(sts, tokenUtil))
                 .build();
     }
 
@@ -94,7 +92,7 @@ public class WebClientConfiguration {
     public ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             var builder = ClientRequest.from(req)
-                    .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken());
+                    .header(NAV_CONSUMER_TOKEN, sts.bearerToken());
             if (tokenUtil.erAutentisert()) {
                 return next.exchange(
                         builder.header(AUTHORIZATION, tokenUtil.bearerToken())
@@ -107,12 +105,12 @@ public class WebClientConfiguration {
         };
     }
 
-    private static ExchangeFilterFunction pdlExchangeFilterFunction(SystemToken systemToken, TokenUtil tokenUtil) {
+    private static ExchangeFilterFunction pdlExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header("TEMA", TEMA)
-                    .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
+                    .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
                     .build());
         };
     }
