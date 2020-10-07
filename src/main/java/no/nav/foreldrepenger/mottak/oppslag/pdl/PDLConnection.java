@@ -23,7 +23,7 @@ public class PDLConnection {
 
     public Person hentPerson() {
         LOG.info("Henter person");
-        return client.post("query-person.graphql", Map.of("id", tokenUtil.getSubject()), Person.class).block();
+        return client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), Person.class).block();
     }
 
     @Override
