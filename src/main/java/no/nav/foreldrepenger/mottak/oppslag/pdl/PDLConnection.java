@@ -21,9 +21,9 @@ public class PDLConnection {
         this.tokenUtil = tokenUtil;
     }
 
-    public Person hentPerson() {
+    public PDLPerson hentPerson() {
         LOG.info("PDL Henter person");
-        var p = client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), Person.class).block();
+        var p = client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), PDLPerson.class).block();
         LOG.info("PDL person", p);
         return p;
 

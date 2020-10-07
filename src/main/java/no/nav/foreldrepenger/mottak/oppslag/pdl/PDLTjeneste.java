@@ -11,7 +11,7 @@ public class PDLTjeneste {
         this.connection = connection;
     }
 
-    public Person person() {
+    public PDLPerson person() {
         return connection.hentPerson();
     }
 

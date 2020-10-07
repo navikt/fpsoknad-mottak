@@ -16,7 +16,7 @@ public class PDLController {
     }
 
     @GetMapping(value = "/person")
-    public Person person() {
+    public PDLPerson person() {
         return pdl.person();
     }
 
