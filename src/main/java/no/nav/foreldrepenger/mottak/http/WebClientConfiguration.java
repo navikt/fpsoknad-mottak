@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static no.nav.foreldrepenger.mottak.util.Constants.FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_PERSON_IDENT;
-import static no.nav.foreldrepenger.mottak.util.Constants.TEMA;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -57,11 +56,12 @@ public class WebClientConfiguration {
 
     @Qualifier(ARBEIDSFORHOLD)
     @Bean
-    public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg,
-            ExchangeFilterFunction... filters) {
-        var b = builder.baseUrl(cfg.getBaseUri());
-        Arrays.stream(filters).forEach(f -> b.filter(f));
-        return b.build();
+    public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+        return builder
+                .baseUrl(cfg.getBaseUri())
+                .filter(correlatingFilterFunction())
+                .filter(authenticatingFilterFunction(sts, tokenUtil))
+                .build();
     }
 
     @Qualifier(ORGANISASJON)
@@ -88,8 +88,7 @@ public class WebClientConfiguration {
         return GraphQLWebClient.newInstance(client, mapper);
     }
 
-    @Bean
-    public ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    private static ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             var builder = ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken());
@@ -109,14 +108,13 @@ public class WebClientConfiguration {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
-                    .header("TEMA", TEMA)
+                    .header("TEMA", FORELDREPENGER)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
                     .build());
         };
     }
 
-    @Bean
-    public ExchangeFilterFunction correlatingFilterFunction() {
+    private ExchangeFilterFunction correlatingFilterFunction() {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumerId())
