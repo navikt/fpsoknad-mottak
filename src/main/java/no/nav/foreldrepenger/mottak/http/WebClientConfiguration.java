@@ -25,7 +25,6 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
@@ -62,7 +61,6 @@ public class WebClientConfiguration {
     @Bean
     public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg,
             ExchangeFilterFunction... filters) {
-        LOG.info("Registrerer {} filtre ({})", filters.length, Arrays.toString(filters));
         var b = builder.baseUrl(cfg.getBaseUri());
         Arrays.stream(filters).forEach(f -> b.filter(f));
         return b.build();
@@ -95,41 +93,33 @@ public class WebClientConfiguration {
     @Bean
     public ExchangeFilterFunction authenticatingFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
-            LOG.trace("Legger på headerverdier i {} {} {}  for {}", NAV_CONSUMER_TOKEN, AUTHORIZATION, NAV_PERSON_IDENT,
-                    req.url());
-            LOG.trace("System token utgår {}", sts.getSystemToken().getExpiration());
             var builder = ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, BEARER + sts.getSystemToken().getToken());
             if (tokenUtil.erAutentisert()) {
-                LOG.trace("Bruker token utgår {}", tokenUtil.getExpiration());
                 return next.exchange(
                         builder.header(AUTHORIZATION, tokenUtil.bearerToken())
                                 .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                                 .build());
 
             }
-            LOG.trace("Uautentisert bruker");
+            LOG.trace("Uautentisert bruker, kan ikke sette auth headers");
             return next.exchange(builder.build());
         };
     }
 
     private static ExchangeFilterFunction pdlExchangeFilterFunction(SystemToken systemToken, TokenUtil tokenUtil) {
         return (req, next) -> {
-            var clientReq = ClientRequest.from(req)
+            return next.exchange(ClientRequest.from(req)
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header("TEMA", TEMA)
                     .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
-                    .build();
-
-            LOG.trace(EnvUtil.CONFIDENTIAL, "PDL Headers {}", clientReq.headers());
-            return next.exchange(clientReq);
+                    .build());
         };
     }
 
     @Bean
     public ExchangeFilterFunction correlatingFilterFunction() {
         return (req, next) -> {
-            LOG.trace("Legger på call og consumer id for {}", req.url());
             return next.exchange(ClientRequest.from(req)
                     .header(NAV_CONSUMER_ID, consumerId())
                     .header(NAV_CALL_ID1, MDCUtil.callId())
