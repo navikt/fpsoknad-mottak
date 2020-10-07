@@ -6,11 +6,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PDLPerson {
-    public final List<PDLNavn> navn;
+    private final List<PDLNavn> navn;
+    private final PDLKjønn kjønn;
 
     @JsonCreator
-    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn) {
+    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") PDLKjønn kjønn) {
         this.navn = navn;
+        this.kjønn = kjønn;
+    }
+
+    public PDLKjønn getKjønn() {
+        return kjønn;
     }
 
     public List<PDLNavn> getNavn() {
@@ -19,7 +25,7 @@ public class PDLPerson {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [navn=" + navn + "]";
+        return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + "]";
     }
 
     static class PDLNavn {
@@ -50,6 +56,25 @@ public class PDLPerson {
         @Override
         public String toString() {
             return getClass().getSimpleName() + " [fornavn=" + fornavn + ", mellomnavn=" + mellomnavn + ", etternavn=" + etternavn + "]";
+        }
+    }
+
+    static class PDLKjønn {
+        private final Kjønn kjønn;
+
+        @JsonCreator
+        public PDLKjønn(@JsonProperty("kjoenn") Kjønn kjønn) {
+            this.kjønn = kjønn;
+        }
+
+        public Kjønn getKjønn() {
+            return kjønn;
+        }
+
+        static enum Kjønn {
+            MANN,
+            KVINNE,
+            UKJENT
         }
     }
 
