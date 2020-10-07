@@ -26,7 +26,7 @@ public class PDLPerson {
         return getClass().getSimpleName() + " [navn=" + navn + "]";
     }
 
-    class PDLNavn {
+    static class PDLNavn {
         private final String fornavn;
         private final String mellomnavn;
         private final String etternavn;
