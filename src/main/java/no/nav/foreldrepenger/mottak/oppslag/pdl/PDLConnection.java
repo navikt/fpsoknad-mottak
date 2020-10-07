@@ -22,8 +22,11 @@ public class PDLConnection {
     }
 
     public Person hentPerson() {
-        LOG.info("Henter person");
-        return client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), Person.class).block();
+        LOG.info("PDL Henter person");
+        String p = client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), String.class).block();
+        LOG.info("PDL person som string {}", p);
+        return new Person("Ola", "Olaisen", "Nordmann");
+
     }
 
     @Override
