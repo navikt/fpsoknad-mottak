@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties
 public class Person {
     private final String fornavn;
     private final String mellomnavn;
