@@ -7,15 +7,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PDLPerson {
     private final List<PDLNavn> navn;
-    private final PDLKjønn kjønn;
+    private final List<PDLKjønn> kjønn;
 
     @JsonCreator
-    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") PDLKjønn kjønn) {
+    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn) {
         this.navn = navn;
         this.kjønn = kjønn;
     }
 
-    public PDLKjønn getKjønn() {
+    public List<PDLKjønn> getKjønn() {
         return kjønn;
     }
 
