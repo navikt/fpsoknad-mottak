@@ -115,8 +115,6 @@ public class WebClientConfiguration {
 
     private static ExchangeFilterFunction pdlExchangeFilterFunction(SystemToken systemToken, TokenUtil tokenUtil) {
         return (req, next) -> {
-            LOG.trace("Legger på headerverdier i {} {} {}  for {}", NAV_CONSUMER_TOKEN, AUTHORIZATION, "TEMA",
-                    req.url());
             var clientReq = ClientRequest.from(req)
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header("TEMA", TEMA)
