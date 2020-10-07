@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
@@ -116,12 +117,14 @@ public class WebClientConfiguration {
         return (req, next) -> {
             LOG.trace("Legger på headerverdier i {} {} {}  for {}", NAV_CONSUMER_TOKEN, AUTHORIZATION, "TEMA",
                     req.url());
-            var builder = ClientRequest.from(req)
-                    .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken());
-            return next.exchange(
-                    builder.header(AUTHORIZATION, tokenUtil.bearerToken())
-                            .header("TEMA", TEMA)
-                            .build());
+            var clientReq = ClientRequest.from(req)
+                    .header(AUTHORIZATION, tokenUtil.bearerToken())
+                    .header("TEMA", TEMA)
+                    .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
+                    .build();
+
+            LOG.trace(EnvUtil.CONFIDENTIAL, "Headers {}", clientReq.headers());
+            return next.exchange(clientReq);
         };
     }
 
