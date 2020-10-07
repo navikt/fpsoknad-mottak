@@ -121,7 +121,7 @@ public class WebClientConfiguration {
                     .header(NAV_CONSUMER_TOKEN, BEARER + systemToken.getToken())
                     .build();
 
-            LOG.trace(EnvUtil.CONFIDENTIAL, "Headers {}", clientReq.headers());
+            LOG.trace(EnvUtil.CONFIDENTIAL, "PDL Headers {}", clientReq.headers());
             return next.exchange(clientReq);
         };
     }
