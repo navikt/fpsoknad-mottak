@@ -2,14 +2,11 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class PDLPerson {
     public final List<PDLNavn> navn;
 
-    @JsonCreator
-    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn) {
+    // @JsonCreator
+    public PDLPerson(/* @JsonProperty("navn") */List<PDLNavn> navn) {
         this.navn = navn;
     }
 
@@ -27,9 +24,9 @@ public class PDLPerson {
         private final String mellomnavn;
         private final String etternavn;
 
-        @JsonCreator
-        public PDLNavn(@JsonProperty("fornavn") String fornavn, @JsonProperty("mellomnavn") String mellomnavn,
-                @JsonProperty("etternavn") String etternavn) {
+        // @JsonCreator
+        public PDLNavn(/* @JsonProperty("fornavn") */ String fornavn, /* @JsonProperty("mellomnavn") */String mellomnavn,
+                /* @JsonProperty("etternavn") */ String etternavn) {
             this.fornavn = fornavn;
             this.mellomnavn = mellomnavn;
             this.etternavn = etternavn;
