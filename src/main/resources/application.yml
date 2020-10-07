@@ -11,6 +11,9 @@ sts:
   password: ${kafka.password} 
 
 
+pdl:
+  base-uri:  http://pdl-api.default/graphql
+  
 sak:
   securitytokenservice:
     username: ${securitytokenservice.username}
