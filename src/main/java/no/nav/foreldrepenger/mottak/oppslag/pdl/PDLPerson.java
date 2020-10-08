@@ -75,7 +75,7 @@ public class PDLPerson {
             this.land = CountryCode.valueOf(land);
         }
 
-        public String getLand() {
+        public CountryCode getLand() {
             return land;
         }
 
