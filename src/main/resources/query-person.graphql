@@ -1,15 +1,18 @@
 query($ident: ID!){
   hentPerson(ident: $ident) {
-	navn(historikk: false) {
+	navn {
 	  fornavn
 	  mellomnavn
 	  etternavn
     },
-    kjoenn(historikk: false) {
+    kjoenn {
         kjoenn
     },
-     statsborgerskap(historikk: false) {
+     statsborgerskap {
         land
+    },
+    foedsel {
+        foedselsdato
     }
   }
 }
