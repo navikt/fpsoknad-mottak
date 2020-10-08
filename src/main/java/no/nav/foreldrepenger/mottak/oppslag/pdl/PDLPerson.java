@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.neovisionaries.i18n.CountryCode;
 
 public class PDLPerson {
     private final List<PDLNavn> navn;
@@ -67,11 +68,11 @@ public class PDLPerson {
     }
 
     static class PDLStatsborgerskap {
-        private final String land;
+        private final CountryCode land;
 
         @JsonCreator
         public PDLStatsborgerskap(@JsonProperty("land") String land) {
-            this.land = land;
+            this.land = CountryCode.valueOf(land);
         }
 
         public String getLand() {
