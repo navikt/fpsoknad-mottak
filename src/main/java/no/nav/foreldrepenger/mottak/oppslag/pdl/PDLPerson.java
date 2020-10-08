@@ -72,7 +72,7 @@ public class PDLPerson {
 
         @JsonCreator
         public PDLStatsborgerskap(@JsonProperty("land") String land) {
-            this.land = CountryCode.valueOf(land);
+            this.land = CountryCode.getByAlpha3Code(land);
         }
 
         public CountryCode getLand() {
