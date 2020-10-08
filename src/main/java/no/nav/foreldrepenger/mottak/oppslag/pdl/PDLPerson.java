@@ -8,11 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PDLPerson {
     private final List<PDLNavn> navn;
     private final List<PDLKjønn> kjønn;
+    private final List<PDLStatsborgerskap> statsborgerskap;
 
     @JsonCreator
-    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn) {
+    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
+            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap) {
         this.navn = navn;
         this.kjønn = kjønn;
+        this.statsborgerskap = statsborgerskap;
+    }
+
+    public List<PDLStatsborgerskap> getStatsborgerskap() {
+        return statsborgerskap;
     }
 
     public List<PDLKjønn> getKjønn() {
@@ -25,7 +32,7 @@ public class PDLPerson {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + "]";
+        return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + ", statsborgerskap=" + statsborgerskap + "]";
     }
 
     static class PDLNavn {
@@ -59,6 +66,25 @@ public class PDLPerson {
         }
     }
 
+    static class PDLStatsborgerskap {
+        private final String land;
+
+        @JsonCreator
+        public PDLStatsborgerskap(@JsonProperty("land") String land) {
+            this.land = land;
+        }
+
+        public String getLand() {
+            return land;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + " [land=" + land + "]";
+        }
+
+    }
+
     static class PDLKjønn {
         private final Kjønn kjønn;
 
@@ -82,5 +108,4 @@ public class PDLPerson {
             UKJENT
         }
     }
-
 }

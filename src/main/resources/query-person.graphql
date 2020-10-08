@@ -7,6 +7,9 @@ query($ident: ID!){
     },
     kjoenn(historikk: false) {
         kjoenn
+    },
+     statsborgerskap(historikk: false) {
+        land
     }
   }
 }
