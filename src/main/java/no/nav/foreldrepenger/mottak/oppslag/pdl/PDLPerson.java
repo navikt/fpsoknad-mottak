@@ -1,40 +1,42 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Feature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
+@JsonFormat(with = Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
 public class PDLPerson {
-    private final List<PDLNavn> navn;
-    private final List<PDLKjønn> kjønn;
-    private final List<PDLStatsborgerskap> statsborgerskap;
-    private final List<PDLFødselsdato> fødselsdato;
+    private final PDLNavn navn;
+    private final PDLKjønn kjønn;
+    private final PDLStatsborgerskap statsborgerskap;
+    private final PDLFødselsdato fødselsdato;
 
     @JsonCreator
-    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
-            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") List<PDLFødselsdato> fødselsdato) {
+    public PDLPerson(@JsonProperty("navn") PDLNavn navn, @JsonProperty("kjoenn") PDLKjønn kjønn,
+            @JsonProperty("statsborgerskap") PDLStatsborgerskap statsborgerskap, @JsonProperty("foedsel") PDLFødselsdato fødselsdato) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
         this.fødselsdato = fødselsdato;
     }
 
-    public List<PDLFødselsdato> getFødselsdato() {
+    public PDLFødselsdato getFødselsdato() {
         return fødselsdato;
     }
 
-    public List<PDLStatsborgerskap> getStatsborgerskap() {
+    public PDLStatsborgerskap getStatsborgerskap() {
         return statsborgerskap;
     }
 
-    public List<PDLKjønn> getKjønn() {
+    public PDLKjønn getKjønn() {
         return kjønn;
     }
 
-    public List<PDLNavn> getNavn() {
+    public PDLNavn getNavn() {
         return navn;
     }
 
