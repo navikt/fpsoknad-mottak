@@ -15,9 +15,11 @@ query($ident: ID!){
         foedselsdato 
     },
     familierelasjoner {
-      relatertpersonsident
-      relatertpersonsrolle
-      minrolleforperson
-    }   
+      familierelasjon {
+        relatertpersonsident
+        relatertpersonsrolle
+        minrolleforperson
+      } 
+    }    
   }
 }
