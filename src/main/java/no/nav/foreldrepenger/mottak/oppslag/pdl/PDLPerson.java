@@ -11,18 +11,18 @@ public class PDLPerson {
     private final List<PDLNavn> navn;
     private final List<PDLKjønn> kjønn;
     private final List<PDLStatsborgerskap> statsborgerskap;
-    private final List<LocalDate> fødselsdato;
+    private final List<PDLFødselsdato> fødselsdato;
 
     @JsonCreator
     public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
-            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") List<LocalDate> fødselsdato) {
+            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") List<PDLFødselsdato> fødselsdato) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
         this.fødselsdato = fødselsdato;
     }
 
-    public List<LocalDate> getFødselsdato() {
+    public List<PDLFødselsdato> getFødselsdato() {
         return fødselsdato;
     }
 
@@ -92,6 +92,24 @@ public class PDLPerson {
             return getClass().getSimpleName() + " [land=" + land + "]";
         }
 
+    }
+
+    static class PDLFødselsdato {
+        private final LocalDate fødselsdato;
+
+        @JsonCreator
+        public PDLFødselsdato(@JsonProperty("foedselsdato") LocalDate fødselsdato) {
+            this.fødselsdato = fødselsdato;
+        }
+
+        public LocalDate getFødselsdato() {
+            return fødselsdato;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + " [fødselsdato=" + fødselsdato + "]";
+        }
     }
 
     static class PDLKjønn {
