@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
+
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonFormat.Feature;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
-@JsonFormat(with = Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
 public class PDLPerson {
     private final PDLNavn navn;
     private final PDLKjønn kjønn;
@@ -46,6 +46,7 @@ public class PDLPerson {
                 + fødselsdato + "]";
     }
 
+    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLNavn {
         private final String fornavn;
         private final String mellomnavn;
@@ -77,6 +78,7 @@ public class PDLPerson {
         }
     }
 
+    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLStatsborgerskap {
         private final CountryCode land;
 
@@ -96,6 +98,7 @@ public class PDLPerson {
 
     }
 
+    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLFødselsdato {
         private final LocalDate fødselsdato;
 
@@ -114,6 +117,7 @@ public class PDLPerson {
         }
     }
 
+    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLKjønn {
         private final Kjønn kjønn;
 
