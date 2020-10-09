@@ -11,18 +11,18 @@ public class PDLPerson {
     private final List<PDLNavn> navn;
     private final List<PDLKjønn> kjønn;
     private final List<PDLStatsborgerskap> statsborgerskap;
-    private final LocalDate fødselsdato;
+    private final List<LocalDate> fødselsdato;
 
     @JsonCreator
     public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
-            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") LocalDate fødselsdato) {
+            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") List<LocalDate> fødselsdato) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
         this.fødselsdato = fødselsdato;
     }
 
-    public LocalDate getFødselsdato() {
+    public List<LocalDate> getFødselsdato() {
         return fødselsdato;
     }
 
