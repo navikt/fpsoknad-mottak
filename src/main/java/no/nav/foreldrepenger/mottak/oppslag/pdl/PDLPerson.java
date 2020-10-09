@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -10,13 +11,19 @@ public class PDLPerson {
     private final List<PDLNavn> navn;
     private final List<PDLKjønn> kjønn;
     private final List<PDLStatsborgerskap> statsborgerskap;
+    private final LocalDate fødselsdato;
 
     @JsonCreator
     public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
-            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap) {
+            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") LocalDate fødselsdato) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
+        this.fødselsdato = fødselsdato;
+    }
+
+    public LocalDate getFødselsdato() {
+        return fødselsdato;
     }
 
     public List<PDLStatsborgerskap> getStatsborgerskap() {
@@ -33,7 +40,8 @@ public class PDLPerson {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + ", statsborgerskap=" + statsborgerskap + "]";
+        return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + ", statsborgerskap=" + statsborgerskap + ", fødselsdato="
+                + fødselsdato + "]";
     }
 
     static class PDLNavn {
