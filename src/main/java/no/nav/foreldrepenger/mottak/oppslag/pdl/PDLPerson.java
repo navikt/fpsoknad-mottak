@@ -13,18 +13,25 @@ public class PDLPerson {
     private final List<PDLStatsborgerskap> statsborgerskap;
     private final List<PDLFødselsdato> fødselsdato;
     private final List<PDLFamilierelasjon> familierelasjoner;
+    private final List<PDLSivilstand> sivilstand;
 
     @JsonCreator
     public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn,
             @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
             @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap,
             @JsonProperty("foedsel") List<PDLFødselsdato> fødselsdato,
-            @JsonProperty("familierelasjoner") List<PDLFamilierelasjon> familierelasjoner) {
+            @JsonProperty("familierelasjoner") List<PDLFamilierelasjon> familierelasjoner,
+            @JsonProperty("sivilstand") List<PDLSivilstand> sivilstand) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
         this.fødselsdato = fødselsdato;
         this.familierelasjoner = familierelasjoner;
+        this.sivilstand = sivilstand;
+    }
+
+    public List<PDLSivilstand> getSivilstand() {
+        return sivilstand;
     }
 
     public List<PDLFamilierelasjon> getFamilierelasjoner() {
@@ -50,7 +57,7 @@ public class PDLPerson {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + ", statsborgerskap=" + statsborgerskap + ", fødselsdato="
-                + fødselsdato + ", familierelasjoner=" + familierelasjoner + "]";
+                + fødselsdato + ", sivilstand=" + sivilstand + ", familierelasjoner=" + familierelasjoner + "]";
     }
 
     static class PDLNavn {
@@ -118,6 +125,44 @@ public class PDLPerson {
         @Override
         public String toString() {
             return getClass().getSimpleName() + " [fødselsdato=" + fødselsdato + "]";
+        }
+    }
+
+    static class PDLSivilstand {
+
+        private final PDLSivilstandType type;
+        private final String relatertVedSivilstand;
+
+        @JsonCreator
+        public PDLSivilstand(@JsonProperty("type") PDLSivilstandType type, @JsonProperty("relatertVedSivilstand") String relatertVedSivilstand) {
+            this.type = type;
+            this.relatertVedSivilstand = relatertVedSivilstand;
+        }
+
+        public PDLSivilstandType getType() {
+            return type;
+        }
+
+        public String getRelatertVedSivilstand() {
+            return relatertVedSivilstand;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + " [type=" + type + ", relatertVedSivilstand=" + relatertVedSivilstand + "]";
+        }
+
+        static enum PDLSivilstandType {
+            UOPPGITT,
+            UGIFT,
+            GIFT,
+            ENKE_ELLER_ENKEMANN,
+            SKILT,
+            SEPARERT,
+            REGISTRERT_PARTNER,
+            SEPARERT_PARTNER,
+            SKILT_PARTNER,
+            GJENLEVENDE_PARTNER
         }
     }
 
