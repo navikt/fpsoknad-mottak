@@ -1,42 +1,40 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
-
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
 public class PDLPerson {
-    private final PDLNavn navn;
-    private final PDLKjønn kjønn;
-    private final PDLStatsborgerskap statsborgerskap;
-    private final PDLFødselsdato fødselsdato;
+    private final List<PDLNavn> navn;
+    private final List<PDLKjønn> kjønn;
+    private final List<PDLStatsborgerskap> statsborgerskap;
+    private final List<PDLFødselsdato> fødselsdato;
 
     @JsonCreator
-    public PDLPerson(@JsonProperty("navn") PDLNavn navn, @JsonProperty("kjoenn") PDLKjønn kjønn,
-            @JsonProperty("statsborgerskap") PDLStatsborgerskap statsborgerskap, @JsonProperty("foedsel") PDLFødselsdato fødselsdato) {
+    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
+            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") List<PDLFødselsdato> fødselsdato) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
         this.fødselsdato = fødselsdato;
     }
 
-    public PDLFødselsdato getFødselsdato() {
+    public List<PDLFødselsdato> getFødselsdato() {
         return fødselsdato;
     }
 
-    public PDLStatsborgerskap getStatsborgerskap() {
+    public List<PDLStatsborgerskap> getStatsborgerskap() {
         return statsborgerskap;
     }
 
-    public PDLKjønn getKjønn() {
+    public List<PDLKjønn> getKjønn() {
         return kjønn;
     }
 
-    public PDLNavn getNavn() {
+    public List<PDLNavn> getNavn() {
         return navn;
     }
 
@@ -46,7 +44,6 @@ public class PDLPerson {
                 + fødselsdato + "]";
     }
 
-    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLNavn {
         private final String fornavn;
         private final String mellomnavn;
@@ -78,7 +75,6 @@ public class PDLPerson {
         }
     }
 
-    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLStatsborgerskap {
         private final CountryCode land;
 
@@ -98,7 +94,6 @@ public class PDLPerson {
 
     }
 
-    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLFødselsdato {
         private final LocalDate fødselsdato;
 
@@ -117,7 +112,6 @@ public class PDLPerson {
         }
     }
 
-    @JsonFormat(with = WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     static class PDLKjønn {
         private final Kjønn kjønn;
 
