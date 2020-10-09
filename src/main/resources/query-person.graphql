@@ -13,6 +13,10 @@ query($ident: ID!){
     },
     foedsel {
         foedselsdato 
-    }
+    },
+    familierelasjon {
+      relatertPersonsIdent
+      relatertPersonsRolle
+      minRolleForPerson
   }
 }

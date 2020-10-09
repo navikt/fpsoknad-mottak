@@ -12,14 +12,23 @@ public class PDLPerson {
     private final List<PDLKjønn> kjønn;
     private final List<PDLStatsborgerskap> statsborgerskap;
     private final List<PDLFødselsdato> fødselsdato;
+    private final List<PDLFamilierelasjon> familierelasjoner;
 
     @JsonCreator
-    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn, @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
-            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap, @JsonProperty("foedsel") List<PDLFødselsdato> fødselsdato) {
+    public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn,
+            @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
+            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap,
+            @JsonProperty("foedsel") List<PDLFødselsdato> fødselsdato,
+            @JsonProperty("familierelasjoner") List<PDLFamilierelasjon> familierelasjoner) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
         this.fødselsdato = fødselsdato;
+        this.familierelasjoner = familierelasjoner;
+    }
+
+    public List<PDLFamilierelasjon> getFamilierelasjoner() {
+        return familierelasjoner;
     }
 
     public List<PDLFødselsdato> getFødselsdato() {
@@ -41,7 +50,7 @@ public class PDLPerson {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + ", statsborgerskap=" + statsborgerskap + ", fødselsdato="
-                + fødselsdato + "]";
+                + fødselsdato + ", familierelasjoner=" + familierelasjoner + "]";
     }
 
     static class PDLNavn {
@@ -110,6 +119,47 @@ public class PDLPerson {
         public String toString() {
             return getClass().getSimpleName() + " [fødselsdato=" + fødselsdato + "]";
         }
+    }
+
+    static class PDLFamilierelasjon {
+
+        private final String id;
+        private final PDLRelasjonsRolle relatertPersonrolle;
+        private final PDLRelasjonsRolle minRolle;
+
+        @JsonCreator
+        public PDLFamilierelasjon(@JsonProperty("relatertPersonsIdent") String id,
+                @JsonProperty("relatertPersonsRolle") PDLRelasjonsRolle relatertPersonrolle,
+                @JsonProperty("minRolleForPerson") PDLRelasjonsRolle minRolle) {
+            this.id = id;
+            this.relatertPersonrolle = relatertPersonrolle;
+            this.minRolle = minRolle;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public PDLRelasjonsRolle getRelatertPersonrolle() {
+            return relatertPersonrolle;
+        }
+
+        public PDLRelasjonsRolle getMinRolle() {
+            return minRolle;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + " [id=" + id + ", relatertPersonrolle=" + relatertPersonrolle + ", minRolle=" + minRolle + "]";
+        }
+
+        static enum PDLRelasjonsRolle {
+            BARN,
+            MOR,
+            FAR,
+            MEDMOR
+        }
+
     }
 
     static class PDLKjønn {
