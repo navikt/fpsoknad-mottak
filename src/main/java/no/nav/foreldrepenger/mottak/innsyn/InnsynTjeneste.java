@@ -196,7 +196,7 @@ public class InnsynTjeneste implements Innsyn {
             if (navn != pdlNavn) {
                 LOG.warn("PDL navn {} og TPS navn {} er ikke like", pdlNavn, navn);
             } else {
-                LOG.warn("PDL navn og TPS navn er like");
+                LOG.info("PDL navn og TPS navn er like");
             }
             return navn;
         } catch (Exception e) {
