@@ -33,4 +33,12 @@ public final class StreamUtil {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
+
+    public static <T> T onlyElem(List<T> list) {
+        return list.stream()
+                .map(Optional::ofNullable)
+                .findFirst()
+                .orElseGet(Optional::empty)
+                .orElse(null);
+    }
 }

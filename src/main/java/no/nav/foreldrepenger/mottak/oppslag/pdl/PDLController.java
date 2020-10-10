@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 
 @ProtectedRestController(PDLController.PDL)
 public class PDLController {
@@ -16,7 +17,7 @@ public class PDLController {
     }
 
     @GetMapping(value = "/person")
-    public PDLPerson person() {
+    public PersonDTO person() {
         return pdl.person();
     }
 

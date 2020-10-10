@@ -40,6 +40,7 @@ import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
@@ -49,14 +50,16 @@ public class InnsynTjeneste implements Innsyn {
     private final OppslagConnection oppslag;
     private final OrganisasjonConnection organisasjon;
     private final InnsynConnection innsyn;
+    private final PDLConnection pdl;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsyn, OppslagConnection oppslag, OrganisasjonConnection organisasjon) {
+            InnsynConnection innsyn, OppslagConnection oppslag, OrganisasjonConnection organisasjon, PDLConnection pdl) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.organisasjon = organisasjon;
         this.søknadHandler = søknadHandler;
         this.vedtakHandler = vedtakHandler;
+        this.pdl = pdl;
     }
 
     @Override
@@ -187,10 +190,26 @@ public class InnsynTjeneste implements Innsyn {
         try {
             LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
             Navn navn = oppslag.navn(fnr);
-            LOG.trace(CONFIDENTIAL, "Fikk navn {}", navn);
+            LOG.trace("Fikk TPS navn {}", navn);
+            var pdlNavn = pdlNavn(fnr);
+            LOG.trace("Fikk PDL navn {}", pdlNavn);
+            if (navn != pdlNavn) {
+                LOG.warn("PDL navn {} og TPS navn {} er ikke like", pdlNavn, navn);
+            } else {
+                LOG.warn("PDL navn og TPS navn er like");
+            }
             return navn;
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp navn for annen part for {}", fnr);
+            return null;
+        }
+    }
+
+    private Navn pdlNavn(Fødselsnummer fnr) {
+        try {
+            return pdl.navn(fnr.getFnr());
+        } catch (Exception e) {
+            LOG.warn("PDL Kunne ikke slå opp navn for {}", fnr);
             return null;
         }
     }
@@ -220,8 +239,6 @@ public class InnsynTjeneste implements Innsyn {
                         .tema(tilTema(w.getTema()))
                         .type(tilType(w.getType()))
                         .inntektsmeldinger(w.getInntektsmeldinger())
-                        // .søknad(hentSøknad(w.getSøknadsLenke()))
-                        // .vedtak(hentVedtak(w.getVedtaksLenke()))
                         .build())
                 .orElse(null);
     }

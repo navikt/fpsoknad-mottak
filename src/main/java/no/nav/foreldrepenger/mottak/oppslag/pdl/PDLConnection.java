@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -26,24 +29,32 @@ public class PDLConnection extends AbstractRestConnection {
         this.cfg = cfg;
     }
 
-    public PDLPerson hentPerson() {
+    public PersonDTO hentPerson() {
         LOG.info("PDL Henter person");
         var p = client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), PDLPerson.class).block();
         LOG.info("PDL person {}", p);
         var kontonr = kontonr();
-        LOG.info("PDL kontonummer {}", kontonr);
-
-        return p;
+        var m = PDLMapper.map(tokenUtil.getSubject(), kontonr, p);
+        LOG.info("PDL person mappet til {}", m);
+        return m;
     }
 
-    private String kontonr() {
-        LOG.info("PDL Henter kontonummer fra  {}", cfg.getKontonummerURI());
-        return getForObject(cfg.getKontonummerURI(), String.class);
+    private Bankkonto kontonr() {
+        LOG.info("TPS Henter kontonummer fra  {}", cfg.getKontonummerURI());
+        var kontonr = getForObject(cfg.getKontonummerURI(), Bankkonto.class);
+        LOG.info("TPS kontonummer {}", kontonr);
+        return kontonr;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + ", client=" + client + "]";
+    }
+
+    public Navn navn(String id) {
+        var n = client.post("query-navn.graphql", Map.of("ident", id), Navn.class).block();
+        LOG.info("PDL navn for {} er {}", id, n);
+        return n;
     }
 
 }
