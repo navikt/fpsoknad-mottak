@@ -31,6 +31,7 @@ class PDLMapper {
                 .navn(navnFra(p.getNavn(), p.getKjønn()))
                 .bankkonto(bankkonto)
                 .målform(målform)
+                .barn(List.of()) // TODO
                 .build();
     }
 
