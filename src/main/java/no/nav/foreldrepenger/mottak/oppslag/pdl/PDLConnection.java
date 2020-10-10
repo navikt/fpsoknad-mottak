@@ -33,8 +33,7 @@ public class PDLConnection extends AbstractRestConnection {
         LOG.info("PDL Henter person");
         var p = client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), PDLPerson.class).block();
         LOG.info("PDL person {}", p);
-        var kontonr = kontonr();
-        var m = PDLMapper.map(tokenUtil.getSubject(), kontonr, p);
+        var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), p);
         LOG.info("PDL person mappet til {}", m);
         return m;
     }
@@ -44,6 +43,13 @@ public class PDLConnection extends AbstractRestConnection {
         var kontonr = getForObject(cfg.getKontonummerURI(), Bankkonto.class);
         LOG.info("TPS kontonummer {}", kontonr);
         return kontonr;
+    }
+
+    private String målform() {
+        LOG.info("TPS Henter målform fra  {}", cfg.getMålformURI());
+        var målform = getForObject(cfg.getMålformURI(), String.class);
+        LOG.info("TPS målform {}", målform);
+        return målform;
     }
 
     @Override

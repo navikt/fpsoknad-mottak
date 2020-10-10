@@ -23,13 +23,14 @@ class PDLMapper {
 
     }
 
-    static PersonDTO map(String id, Bankkonto bankkonto, PDLPerson p) {
+    static PersonDTO map(String id, String målform, Bankkonto bankkonto, PDLPerson p) {
         return PersonDTO.builder()
                 .id(id)
                 .landKode(landkodeFra(p.getStatsborgerskap()))
                 .fødselsdato(fødselsdatoFra(p.getFødselsdato()))
                 .navn(navnFra(p.getNavn(), p.getKjønn()))
                 .bankkonto(bankkonto)
+                .målform(målform)
                 .build();
     }
 
