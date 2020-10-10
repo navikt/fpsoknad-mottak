@@ -46,8 +46,8 @@ public class PDLConnection extends AbstractRestConnection {
     }
 
     private String målform() {
-        LOG.info("TPS Henter målform fra  {}", cfg.getMålformURI());
-        var målform = getForObject(cfg.getMålformURI(), String.class);
+        LOG.info("TPS Henter målform fra  {}", cfg.getMaalformURI());
+        var målform = getForObject(cfg.getMaalformURI(), String.class);
         LOG.info("TPS målform {}", målform);
         return målform;
     }
