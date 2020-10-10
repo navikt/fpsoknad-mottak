@@ -13,27 +13,27 @@ public class PDLConfig extends AbstractConfig {
     private static final String DEFAULT_BASE_URI = "http://fpsoknad-oppslag/api";
     private static final String DEFAULT_PING_PATH = "actuator/health/liveness";
     private static final String DEFAULT_KONTONR_URI = "http://fpsoknad-oppslag/api/person/kontonr";
-    private static final String DEFAULT_MÅLFORM_URI = "http://fpsoknad-oppslag/api/person/maalform";
+    private static final String DEFAULT_MAALFORM_URI = "http://fpsoknad-oppslag/api/person/maalform";
 
     private final URI kontonummerURI;
-    private final URI målformURI;
+    private final URI maalformURI;
 
     @ConstructorBinding
     public PDLConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_BASE_URI) String baseUri, @DefaultValue(DEFAULT_KONTONR_URI) URI kontonummerURI,
-            @DefaultValue(DEFAULT_MÅLFORM_URI) URI målformURI) {
+            @DefaultValue(DEFAULT_MAALFORM_URI) URI maalformUri) {
         super(baseUri, pingPath, enabled);
         this.kontonummerURI = kontonummerURI;
-        this.målformURI = målformURI;
+        this.maalformURI = maalformUri;
     }
 
     public URI getKontonummerURI() {
         return kontonummerURI;
     }
 
-    public URI getMålformURI() {
-        return målformURI;
+    public URI getMaalformURI() {
+        return maalformURI;
     }
 
     @Override
