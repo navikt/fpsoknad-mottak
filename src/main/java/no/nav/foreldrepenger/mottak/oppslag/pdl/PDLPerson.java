@@ -4,12 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Navn;
 
 @Data
 public class PDLPerson {
@@ -36,17 +36,17 @@ public class PDLPerson {
     }
 
     @Data
-    static class Barn {
+    static class PDLBarn {
         private final Fødselsnummer fnr;
         private final Fødselsnummer fnrSøker;
         private final LocalDate fødselsdato;
-        private final Navn navn;
-        private final AnnenForelder annenForelder;
+        private final PDLNavn navn;
+        private final PDLAnnenForelder annenForelder;
     }
 
     @Data
-    static class AnnenForelder {
-        private final Navn navn;
+    static class PDLAnnenForelder {
+        private final PDLNavn navn;
         private final Fødselsnummer fnr;
         private final LocalDate fødselsdato;
     }
@@ -77,6 +77,7 @@ public class PDLPerson {
     }
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     static class PDLFødselsdato {
         private final LocalDate fødselsdato;
 

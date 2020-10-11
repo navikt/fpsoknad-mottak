@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
 
@@ -44,26 +45,45 @@ class PDLMapper {
     }
 
     private static List<BarnDTO> barnFra(List<PDLFamilierelasjon> familierelasjoner) {
-        var r = onlyElem(familierelasjoner);
-        LOG.info("Mapper {}", familierelasjoner);
+        if (CollectionUtils.isEmpty(familierelasjoner)) {
+            LOG.info("Ingen familierelasjoner");
+            return List.of();
+        }
+        LOG.info("Mapper {} relasjoner ({})", familierelasjoner.size(), familierelasjoner);
         return List.of(); // TODO
     }
 
     private static CountryCode landkodeFra(List<PDLStatsborgerskap> statsborgerskap) {
-        return onlyElem(statsborgerskap).getLand();
+        return landkodeFra(onlyElem(statsborgerskap));
+    }
+
+    private static CountryCode landkodeFra(PDLStatsborgerskap statsborgerskap) {
+        return statsborgerskap.getLand();
     }
 
     private static LocalDate fødselsdatoFra(List<PDLFødselsdato> datoer) {
-        return onlyElem(datoer).getFødselsdato();
+        return fødselsdatoFra(onlyElem(datoer));
+    }
+
+    private static LocalDate fødselsdatoFra(PDLFødselsdato dato) {
+        return dato.getFødselsdato();
     }
 
     private static Navn navnFra(List<PDLNavn> navn, List<PDLKjønn> kjønn) {
-        var n = onlyElem(navn);
-        return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), kjønnFra(kjønn));
+        return navnFra(onlyElem(navn), onlyElem(kjønn));
+    }
+
+    private static Navn navnFra(PDLNavn n, PDLKjønn k) {
+        return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), kjønnFra(k));
+
     }
 
     private static Kjønn kjønnFra(List<PDLKjønn> kjønn) {
-        return switch (onlyElem(kjønn).getKjønn()) {
+        return kjønnFra(onlyElem(kjønn));
+    }
+
+    private static Kjønn kjønnFra(PDLKjønn kjønn) {
+        return switch (kjønn.getKjønn()) {
             case KVINNE -> K;
             case MANN -> M;
             default -> null;
