@@ -17,7 +17,6 @@ query($ident: ID!){
         foedeland
         foedested
         foedekommune
-        metadata
     },
     familierelasjoner {
         relatertPersonsIdent
