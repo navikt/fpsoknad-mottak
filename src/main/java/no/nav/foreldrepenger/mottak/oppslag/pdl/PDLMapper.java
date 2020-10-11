@@ -7,18 +7,26 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFødselsdato;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLKjønn;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLNavn;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLStatsborgerskap;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 
 class PDLMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PDLMapper.class);
+
     private PDLMapper() {
 
     }
@@ -31,8 +39,14 @@ class PDLMapper {
                 .navn(navnFra(p.getNavn(), p.getKjønn()))
                 .bankkonto(bankkonto)
                 .målform(målform)
-                .barn(List.of()) // TODO
+                .barn(barnFra(p.getFamilierelasjoner()))
                 .build();
+    }
+
+    private static List<BarnDTO> barnFra(List<PDLFamilierelasjon> familierelasjoner) {
+        var r = onlyElem(familierelasjoner);
+        LOG.info("Mapper {}", familierelasjoner);
+        return List.of(); // TODO
     }
 
     private static CountryCode landkodeFra(List<PDLStatsborgerskap> statsborgerskap) {
