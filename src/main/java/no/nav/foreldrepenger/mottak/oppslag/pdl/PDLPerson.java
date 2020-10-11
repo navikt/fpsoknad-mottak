@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
+import lombok.Data;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.domain.Navn;
+
+@Data
 public class PDLPerson {
     private final List<PDLNavn> navn;
     private final List<PDLKjønn> kjønn;
@@ -30,36 +35,23 @@ public class PDLPerson {
         this.sivilstand = sivilstand;
     }
 
-    public List<PDLSivilstand> getSivilstand() {
-        return sivilstand;
+    @Data
+    static class Barn {
+        private final Fødselsnummer fnr;
+        private final Fødselsnummer fnrSøker;
+        private final LocalDate fødselsdato;
+        private final Navn navn;
+        private final AnnenForelder annenForelder;
     }
 
-    public List<PDLFamilierelasjon> getFamilierelasjoner() {
-        return familierelasjoner;
+    @Data
+    static class AnnenForelder {
+        private final Navn navn;
+        private final Fødselsnummer fnr;
+        private final LocalDate fødselsdato;
     }
 
-    public List<PDLFødselsdato> getFødselsdato() {
-        return fødselsdato;
-    }
-
-    public List<PDLStatsborgerskap> getStatsborgerskap() {
-        return statsborgerskap;
-    }
-
-    public List<PDLKjønn> getKjønn() {
-        return kjønn;
-    }
-
-    public List<PDLNavn> getNavn() {
-        return navn;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [navn=" + navn + ", kjønn=" + kjønn + ", statsborgerskap=" + statsborgerskap + ", fødselsdato="
-                + fødselsdato + ", sivilstand=" + sivilstand + ", familierelasjoner=" + familierelasjoner + "]";
-    }
-
+    @Data
     static class PDLNavn {
         private final String fornavn;
         private final String mellomnavn;
@@ -72,25 +64,9 @@ public class PDLPerson {
             this.mellomnavn = mellomnavn;
             this.etternavn = etternavn;
         }
-
-        public String getFornavn() {
-            return fornavn;
-        }
-
-        public String getMellomnavn() {
-            return mellomnavn;
-        }
-
-        public String getEtternavn() {
-            return etternavn;
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + " [fornavn=" + fornavn + ", mellomnavn=" + mellomnavn + ", etternavn=" + etternavn + "]";
-        }
     }
 
+    @Data
     static class PDLStatsborgerskap {
         private final CountryCode land;
 
@@ -98,18 +74,9 @@ public class PDLPerson {
         public PDLStatsborgerskap(@JsonProperty("land") String land) {
             this.land = CountryCode.getByAlpha3Code(land);
         }
-
-        public CountryCode getLand() {
-            return land;
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + " [land=" + land + "]";
-        }
-
     }
 
+    @Data
     static class PDLFødselsdato {
         private final LocalDate fødselsdato;
 
@@ -117,19 +84,10 @@ public class PDLPerson {
         public PDLFødselsdato(@JsonProperty("foedselsdato") LocalDate fødselsdato) {
             this.fødselsdato = fødselsdato;
         }
-
-        public LocalDate getFødselsdato() {
-            return fødselsdato;
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + " [fødselsdato=" + fødselsdato + "]";
-        }
     }
 
+    @Data
     static class PDLSivilstand {
-
         private final PDLSivilstandType type;
         private final String relatertVedSivilstand;
 
@@ -137,19 +95,6 @@ public class PDLPerson {
         public PDLSivilstand(@JsonProperty("type") PDLSivilstandType type, @JsonProperty("relatertVedSivilstand") String relatertVedSivilstand) {
             this.type = type;
             this.relatertVedSivilstand = relatertVedSivilstand;
-        }
-
-        public PDLSivilstandType getType() {
-            return type;
-        }
-
-        public String getRelatertVedSivilstand() {
-            return relatertVedSivilstand;
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + " [type=" + type + ", relatertVedSivilstand=" + relatertVedSivilstand + "]";
         }
 
         static enum PDLSivilstandType {
@@ -166,6 +111,7 @@ public class PDLPerson {
         }
     }
 
+    @Data
     static class PDLFamilierelasjon {
 
         private final String id;
@@ -181,47 +127,21 @@ public class PDLPerson {
             this.minRolle = minRolle;
         }
 
-        public String getId() {
-            return id;
-        }
-
-        public PDLRelasjonsRolle getRelatertPersonrolle() {
-            return relatertPersonrolle;
-        }
-
-        public PDLRelasjonsRolle getMinRolle() {
-            return minRolle;
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + " [id=" + id + ", relatertPersonrolle=" + relatertPersonrolle + ", minRolle=" + minRolle + "]";
-        }
-
         static enum PDLRelasjonsRolle {
             BARN,
             MOR,
             FAR,
             MEDMOR
         }
-
     }
 
+    @Data
     static class PDLKjønn {
         private final Kjønn kjønn;
 
         @JsonCreator
         public PDLKjønn(@JsonProperty("kjoenn") Kjønn kjønn) {
             this.kjønn = kjønn;
-        }
-
-        public Kjønn getKjønn() {
-            return kjønn;
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + " [kjønn=" + kjønn + "]";
         }
 
         static enum Kjønn {
