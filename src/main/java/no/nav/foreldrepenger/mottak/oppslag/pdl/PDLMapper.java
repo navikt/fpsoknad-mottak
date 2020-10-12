@@ -56,7 +56,7 @@ class PDLMapper {
     private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         LOG.info("Mapper barn {} {}", barn.getId(), barn);
         var annenPart = safeStream(barn.getFamilierelasjoner())
-                .filter(r -> r.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
+                .filter(r -> r.getMinRolle().equals(PDLRelasjonsRolle.BARN))
                 .filter(r -> r.getId() != fnrSøker)
                 .findFirst()
                 .orElse(null);
