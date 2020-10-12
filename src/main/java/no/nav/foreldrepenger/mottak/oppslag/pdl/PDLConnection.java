@@ -1,7 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static java.util.stream.Collectors.toSet;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
+
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +15,6 @@ import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -33,17 +35,22 @@ public class PDLConnection extends AbstractRestConnection {
 
     public PersonDTO hentPerson() {
         LOG.info("PDL Henter person");
-        var p = client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), PDLPerson.class).block();
+        var p = client.post("query-person.graphql", idFra(tokenUtil.getSubject()), PDLPerson.class).block();
         LOG.info("PDL person {}", p);
         var barn = p.getFamilierelasjoner()
                 .stream()
-                .filter(b -> b.getRelatertPersonrolle()
-                        .equals(PDLRelasjonsRolle.BARN))
-                .collect(Collectors.toSet());
+                .filter(b -> b.getRelatertPersonrolle().equals(BARN))
+                .filter(Objects::nonNull)
+                .map(b -> client.post("query-barn.graphql", idFra(b.getId()), PDLBarn.class).block())
+                .collect(toSet());
         LOG.info("PDL person har barn {}", barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), p);
         LOG.info("PDL person mappet til {}", m);
         return m;
+    }
+
+    private static Map<String, Object> idFra(String id) {
+        return Map.of("ident", id);
     }
 
     private Bankkonto kontonr() {
