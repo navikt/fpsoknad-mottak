@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.stream.Collectors.toSet;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 
 import java.util.Map;
 import java.util.Objects;
@@ -15,6 +14,7 @@ import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -34,19 +34,24 @@ public class PDLConnection extends AbstractRestConnection {
     }
 
     public PersonDTO hentPerson() {
-        LOG.info("PDL Henter person");
-        var p = client.post("query-person.graphql", idFra(tokenUtil.getSubject()), PDLPerson.class).block();
-        LOG.info("PDL person {}", p);
+        var p = oppslag("query-person.graphql", tokenUtil.getSubject(), PDLPerson.class);
         var barn = p.getFamilierelasjoner()
                 .stream()
-                .filter(b -> b.getRelatertPersonrolle().equals(BARN))
+                .filter(b -> b.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
                 .filter(Objects::nonNull)
-                .map(b -> client.post("query-barn.graphql", idFra(b.getId()), PDLBarn.class).block())
+                .map(b -> oppslag("query-barn.graphql", b.getId(), PDLBarn.class))
                 .collect(toSet());
         LOG.info("PDL person har barn {}", barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), p);
         LOG.info("PDL person mappet til {}", m);
         return m;
+    }
+
+    private <T> T oppslag(String query, String id, Class<T> clazz) {
+        LOG.info("PDL oppslag {} med id {}", clazz, id);
+        var r = client.post(query, idFra(id), clazz).block();
+        LOG.info("PDL oppslag av {} er {}", clazz, r);
+        return r;
     }
 
     private static Map<String, Object> idFra(String id) {
