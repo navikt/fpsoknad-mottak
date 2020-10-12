@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -33,6 +35,12 @@ public class PDLConnection extends AbstractRestConnection {
         LOG.info("PDL Henter person");
         var p = client.post("query-person.graphql", Map.of("ident", tokenUtil.getSubject()), PDLPerson.class).block();
         LOG.info("PDL person {}", p);
+        var barn = p.getFamilierelasjoner()
+                .stream()
+                .filter(b -> b.getRelatertPersonrolle()
+                        .equals(PDLRelasjonsRolle.BARN))
+                .collect(Collectors.toSet());
+        LOG.info("PDL person har barn {}", barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), p);
         LOG.info("PDL person mappet til {}", m);
         return m;

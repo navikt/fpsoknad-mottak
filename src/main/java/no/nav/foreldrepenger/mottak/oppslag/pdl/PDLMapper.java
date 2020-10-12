@@ -79,10 +79,6 @@ class PDLMapper {
 
     }
 
-    private static Kjønn kjønnFra(List<PDLKjønn> kjønn) {
-        return kjønnFra(onlyElem(kjønn));
-    }
-
     private static Kjønn kjønnFra(PDLKjønn kjønn) {
         return switch (kjønn.getKjønn()) {
             case KVINNE -> K;

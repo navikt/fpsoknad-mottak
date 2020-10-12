@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
 @Data
 public class PDLPerson {
@@ -34,22 +33,6 @@ public class PDLPerson {
         this.fødselsdato = fødselsdato;
         this.familierelasjoner = familierelasjoner;
         this.sivilstand = sivilstand;
-    }
-
-    @Data
-    static class PDLBarn {
-        private final Fødselsnummer fnr;
-        private final Fødselsnummer fnrSøker;
-        private final LocalDate fødselsdato;
-        private final PDLNavn navn;
-        private final PDLAnnenForelder annenForelder;
-    }
-
-    @Data
-    static class PDLAnnenForelder {
-        private final PDLNavn navn;
-        private final Fødselsnummer fnr;
-        private final LocalDate fødselsdato;
     }
 
     @Data

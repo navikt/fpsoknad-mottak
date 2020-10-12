@@ -1,0 +1,12 @@
+query($ident: ID!){
+  hentPerson(ident: $ident) {
+    foedsel {
+        foedselsdato 
+    },
+    familierelasjoner {
+        relatertPersonsIdent
+        relatertPersonsRolle
+        minRolleForPerson
+    }
+  }  
+}
