@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ class PDLMapper {
         return List.of(); // TODO
     }
 
-    private static CountryCode landkodeFra(List<PDLStatsborgerskap> statsborgerskap) {
+    private static CountryCode landkodeFra(Set<PDLStatsborgerskap> statsborgerskap) {
         return landkodeFra(onlyElem(statsborgerskap));
     }
 
@@ -61,7 +62,7 @@ class PDLMapper {
         return statsborgerskap.getLand();
     }
 
-    private static LocalDate fødselsdatoFra(List<PDLFødselsdato> datoer) {
+    private static LocalDate fødselsdatoFra(Set<PDLFødselsdato> datoer) {
         return fødselsdatoFra(onlyElem(datoer));
     }
 

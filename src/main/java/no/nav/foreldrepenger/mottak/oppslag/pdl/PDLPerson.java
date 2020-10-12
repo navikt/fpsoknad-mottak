@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,16 +16,16 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 public class PDLPerson {
     private final List<PDLNavn> navn;
     private final List<PDLKjønn> kjønn;
-    private final List<PDLStatsborgerskap> statsborgerskap;
-    private final List<PDLFødselsdato> fødselsdato;
+    private final Set<PDLStatsborgerskap> statsborgerskap;
+    private final Set<PDLFødselsdato> fødselsdato;
     private final List<PDLFamilierelasjon> familierelasjoner;
     private final List<PDLSivilstand> sivilstand;
 
     @JsonCreator
     public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn,
             @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
-            @JsonProperty("statsborgerskap") List<PDLStatsborgerskap> statsborgerskap,
-            @JsonProperty("foedsel") List<PDLFødselsdato> fødselsdato,
+            @JsonProperty("statsborgerskap") Set<PDLStatsborgerskap> statsborgerskap,
+            @JsonProperty("foedsel") Set<PDLFødselsdato> fødselsdato,
             @JsonProperty("familierelasjoner") List<PDLFamilierelasjon> familierelasjoner,
             @JsonProperty("sivilstand") List<PDLSivilstand> sivilstand) {
         this.navn = navn;

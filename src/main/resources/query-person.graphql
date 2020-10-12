@@ -13,10 +13,6 @@ query($ident: ID!){
     },
     foedsel {
         foedselsdato 
-        foedselsaar
-        foedeland
-        foedested
-        foedekommune
     },
     familierelasjoner {
         relatertPersonsIdent

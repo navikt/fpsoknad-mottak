@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +13,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public final class StreamUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(StreamUtil.class);
+
     private StreamUtil() {
     }
 
@@ -34,7 +42,23 @@ public final class StreamUtil {
         return t -> seen.add(keyExtractor.apply(t));
     }
 
+    public static <T> T onlyElem(Set<T> set) {
+        verifiser(set);
+        return set.stream()
+                .map(Optional::ofNullable)
+                .findFirst()
+                .orElseGet(Optional::empty)
+                .orElse(null);
+    }
+
+    private static <T> void verifiser(Collection<T> collection) {
+        if (!isEmpty(collection) && collection.size() != 1) {
+            LOG.warn("Mer en ett element i {}", collection);
+        }
+    }
+
     public static <T> T onlyElem(List<T> list) {
+        verifiser(list);
         return list.stream()
                 .map(Optional::ofNullable)
                 .findFirst()
