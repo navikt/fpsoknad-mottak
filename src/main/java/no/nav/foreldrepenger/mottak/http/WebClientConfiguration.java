@@ -35,7 +35,9 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class WebClientConfiguration {
 
     public static final String STS = "STS";
-    public static final String PDL = "PDL";
+    public static final String PDL_USER = "PDL";
+    public static final String PDL_SYSTEM = "PDL-RELASJON";
+
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
 
@@ -73,18 +75,35 @@ public class WebClientConfiguration {
                 .build();
     }
 
-    @Qualifier(PDL)
+    @Qualifier(PDL_USER)
     @Bean
     public WebClient pdlClient(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri())
                 .filter(correlatingFilterFunction())
-                .filter(pdlExchangeFilterFunction(sts, tokenUtil))
+                .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
+                .build();
+    }
+
+    @Qualifier(PDL_SYSTEM)
+    @Bean
+    public WebClient pdlClientRelasjon(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
+        return builder
+                .baseUrl(cfg.getBaseUri())
+                .filter(correlatingFilterFunction())
+                .filter(pdlSystemUserExchangeFilterFunction(sts))
                 .build();
     }
 
     @Bean
-    public GraphQLWebClient PDLWebClient(@Qualifier(PDL) WebClient client, ObjectMapper mapper) {
+    @Qualifier(PDL_USER)
+    public GraphQLWebClient PDLWebClient(@Qualifier(PDL_USER) WebClient client, ObjectMapper mapper) {
+        return GraphQLWebClient.newInstance(client, mapper);
+    }
+
+    @Bean
+    @Qualifier(PDL_SYSTEM)
+    public GraphQLWebClient PDLSystemWebClient(@Qualifier(PDL_SYSTEM) WebClient client, ObjectMapper mapper) {
         return GraphQLWebClient.newInstance(client, mapper);
     }
 
@@ -104,10 +123,20 @@ public class WebClientConfiguration {
         };
     }
 
-    private static ExchangeFilterFunction pdlExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    private static ExchangeFilterFunction pdlUserExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
+                    .header("TEMA", FORELDREPENGER)
+                    .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
+                    .build());
+        };
+    }
+
+    private static ExchangeFilterFunction pdlSystemUserExchangeFilterFunction(SystemTokenTjeneste sts) {
+        return (req, next) -> {
+            return next.exchange(ClientRequest.from(req)
+                    .header(AUTHORIZATION, sts.bearerToken())
                     .header("TEMA", FORELDREPENGER)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
                     .build());

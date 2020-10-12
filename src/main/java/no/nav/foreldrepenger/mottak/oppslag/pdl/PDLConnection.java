@@ -1,12 +1,15 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.stream.Collectors.toSet;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 
 import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
@@ -22,24 +25,29 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class PDLConnection extends AbstractRestConnection {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
-    private final GraphQLWebClient client;
+    private final GraphQLWebClient userClient;
+    private final GraphQLWebClient systemClient;
+
     private final TokenUtil tokenUtil;
     private PDLConfig cfg;
 
-    public PDLConnection(GraphQLWebClient client, RestOperations restOperations, PDLConfig cfg, TokenUtil tokenUtil) {
+    public PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
+            RestOperations restOperations, PDLConfig cfg,
+            TokenUtil tokenUtil) {
         super(restOperations);
-        this.client = client;
+        this.userClient = userClient;
+        this.systemClient = systemClient;
         this.tokenUtil = tokenUtil;
         this.cfg = cfg;
     }
 
     public PersonDTO hentPerson() {
-        var p = oppslag("query-person.graphql", tokenUtil.getSubject(), PDLPerson.class);
+        var p = oppslag(userClient, "query-person.graphql", tokenUtil.getSubject(), PDLPerson.class);
         var barn = p.getFamilierelasjoner()
                 .stream()
                 .filter(b -> b.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
                 .filter(Objects::nonNull)
-                .map(b -> oppslag("query-barn.graphql", b.getId(), PDLBarn.class))
+                .map(b -> oppslag(systemClient, "query-barn.graphql", b.getId(), PDLBarn.class))
                 .collect(toSet());
         LOG.info("PDL person har barn {}", barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), p);
@@ -47,7 +55,7 @@ public class PDLConnection extends AbstractRestConnection {
         return m;
     }
 
-    private <T> T oppslag(String query, String id, Class<T> clazz) {
+    private static <T> T oppslag(GraphQLWebClient client, String query, String id, Class<T> clazz) {
         LOG.info("PDL oppslag {} med id {}", clazz, id);
         var r = client.post(query, idFra(id), clazz).block();
         LOG.info("PDL oppslag av {} er {}", clazz, r);
@@ -72,13 +80,8 @@ public class PDLConnection extends AbstractRestConnection {
         return målform;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + ", client=" + client + "]";
-    }
-
     public Navn navn(String id) {
-        var n = client.post("query-navn.graphql", Map.of("ident", id), Navn.class).block();
+        var n = userClient.post("query-navn.graphql", Map.of("ident", id), Navn.class).block();
         LOG.info("PDL navn for {} er {}", id, n);
         return n;
     }
