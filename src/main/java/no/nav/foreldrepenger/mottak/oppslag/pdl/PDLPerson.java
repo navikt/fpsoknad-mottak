@@ -18,7 +18,7 @@ public class PDLPerson {
     private final List<PDLKjønn> kjønn;
     private final Set<PDLStatsborgerskap> statsborgerskap;
     private final Set<PDLFødselsdato> fødselsdato;
-    private final List<PDLFamilierelasjon> familierelasjoner;
+    private final Set<PDLFamilierelasjon> familierelasjoner;
     private final List<PDLSivilstand> sivilstand;
 
     @JsonCreator
@@ -26,7 +26,7 @@ public class PDLPerson {
             @JsonProperty("kjoenn") List<PDLKjønn> kjønn,
             @JsonProperty("statsborgerskap") Set<PDLStatsborgerskap> statsborgerskap,
             @JsonProperty("foedsel") Set<PDLFødselsdato> fødselsdato,
-            @JsonProperty("familierelasjoner") List<PDLFamilierelasjon> familierelasjoner,
+            @JsonProperty("familierelasjoner") Set<PDLFamilierelasjon> familierelasjoner,
             @JsonProperty("sivilstand") List<PDLSivilstand> sivilstand) {
         this.navn = navn;
         this.kjønn = kjønn;
