@@ -45,14 +45,14 @@ public class PDLConnection extends AbstractRestConnection {
 
     public PersonDTO hentPerson() {
         var p = oppslag(userClient, PERSON_QUERY, tokenUtil.getSubject(), PDLPerson.class);
-        LOG.info("PDL-person {} har relasjoner {}", tokenUtil.getSubject(), p.getFamilierelasjoner());
+        LOG.info("PDL-person {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
         var barn = p.getFamilierelasjoner()
                 .stream()
                 .filter(b -> b.getRelatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslag(systemClient, BARN_QUERY, b.getId(), PDLBarn.class))
                 .collect(toSet());
-        LOG.info("PDL-person {} har barn {}", tokenUtil.getSubject(), barn);
+        LOG.info("PDL-person {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), p);
         LOG.info("PDL person mappet til {}", m);
         return m;
