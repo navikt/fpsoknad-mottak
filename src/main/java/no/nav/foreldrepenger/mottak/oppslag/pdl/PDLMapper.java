@@ -19,6 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFødselsdato;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLKjønn;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLNavn;
@@ -34,7 +35,7 @@ class PDLMapper {
 
     }
 
-    static PersonDTO map(String id, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLPerson p) {
+    static PersonDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLPerson p) {
         return PersonDTO.builder()
                 .id(id)
                 .landKode(landkodeFra(p.getStatsborgerskap()))
@@ -42,18 +43,25 @@ class PDLMapper {
                 .navn(navnFra(p.getNavn(), p.getKjønn()))
                 .bankkonto(bankkonto)
                 .målform(målform)
-                .barn(barnFra(barn))
+                .barn(barnFra(fnrSøker, barn))
                 .build();
     }
 
-    private static Set<BarnDTO> barnFra(Set<PDLBarn> barn) {
+    private static Set<BarnDTO> barnFra(String fnrSøker, Set<PDLBarn> barn) {
         return safeStream(barn)
-                .map(PDLMapper::barnFra)
+                .map(b -> barnFra(fnrSøker, b))
                 .collect(toSet());
     }
 
-    private static BarnDTO barnFra(PDLBarn barn) {
+    private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         LOG.info("Mapper barn {} {}", barn.getId(), barn);
+        var annenPart = safeStream(barn.getFamilierelasjoner())
+                .filter(r -> r.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
+                .filter(r -> r.getId() != fnrSøker)
+                .findFirst()
+                .orElse(null);
+        LOG.info("Annen part er {}", annenPart);
+
         return BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
                 .build();
