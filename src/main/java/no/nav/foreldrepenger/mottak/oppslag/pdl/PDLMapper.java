@@ -45,13 +45,13 @@ class PDLMapper {
                 .build();
     }
 
-    private static List<BarnDTO> barnFra(List<PDLFamilierelasjon> familierelasjoner) {
+    private static Set<BarnDTO> barnFra(Set<PDLFamilierelasjon> familierelasjoner) {
         if (CollectionUtils.isEmpty(familierelasjoner)) {
             LOG.info("Ingen familierelasjoner");
-            return List.of();
+            return Set.of();
         }
         LOG.info("Mapper {} relasjoner ({})", familierelasjoner.size(), familierelasjoner);
-        return List.of(); // TODO
+        return Set.of(); // TODO
     }
 
     private static CountryCode landkodeFra(Set<PDLStatsborgerskap> statsborgerskap) {

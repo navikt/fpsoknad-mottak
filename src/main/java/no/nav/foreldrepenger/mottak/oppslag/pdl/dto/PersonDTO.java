@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl.dto;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.neovisionaries.i18n.CountryCode;
@@ -24,5 +24,5 @@ public class PersonDTO {
     private final Bankkonto bankkonto;
     @JsonUnwrapped
     private final Navn navn;
-    private final List<BarnDTO> barn;
+    private final Set<BarnDTO> barn;
 }
