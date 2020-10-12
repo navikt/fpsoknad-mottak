@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,14 +12,13 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFødselsdato;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLKjønn;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLNavn;
@@ -33,7 +34,7 @@ class PDLMapper {
 
     }
 
-    static PersonDTO map(String id, String målform, Bankkonto bankkonto, PDLPerson p) {
+    static PersonDTO map(String id, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLPerson p) {
         return PersonDTO.builder()
                 .id(id)
                 .landKode(landkodeFra(p.getStatsborgerskap()))
@@ -41,17 +42,21 @@ class PDLMapper {
                 .navn(navnFra(p.getNavn(), p.getKjønn()))
                 .bankkonto(bankkonto)
                 .målform(målform)
-                .barn(barnFra(p.getFamilierelasjoner()))
+                .barn(barnFra(barn))
                 .build();
     }
 
-    private static Set<BarnDTO> barnFra(Set<PDLFamilierelasjon> familierelasjoner) {
-        if (CollectionUtils.isEmpty(familierelasjoner)) {
-            LOG.info("Ingen familierelasjoner");
-            return Set.of();
-        }
-        LOG.info("Mapper {} relasjoner ({})", familierelasjoner.size(), familierelasjoner);
-        return Set.of(); // TODO
+    private static Set<BarnDTO> barnFra(Set<PDLBarn> barn) {
+        return safeStream(barn)
+                .map(PDLMapper::barnFra)
+                .collect(toSet());
+    }
+
+    private static BarnDTO barnFra(PDLBarn barn) {
+        LOG.info("Mapper barn {} {}", barn.getId(), barn);
+        return BarnDTO.builder()
+                .fnr(Fødselsnummer.valueOf(barn.getId()))
+                .build();
     }
 
     private static CountryCode landkodeFra(Set<PDLStatsborgerskap> statsborgerskap) {

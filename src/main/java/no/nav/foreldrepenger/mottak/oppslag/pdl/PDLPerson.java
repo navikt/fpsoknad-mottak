@@ -19,6 +19,7 @@ public class PDLPerson {
     private final Set<PDLFødselsdato> fødselsdato;
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private final List<PDLSivilstand> sivilstand;
+    private String id;
 
     @JsonCreator
     public PDLPerson(@JsonProperty("navn") List<PDLNavn> navn,
@@ -33,6 +34,7 @@ public class PDLPerson {
         this.fødselsdato = fødselsdato;
         this.familierelasjoner = familierelasjoner;
         this.sivilstand = sivilstand;
+
     }
 
     @Data
@@ -134,5 +136,10 @@ public class PDLPerson {
             KVINNE,
             UKJENT
         }
+    }
+
+    public PDLPerson withId(String id) {
+        this.id = id;
+        return this;
     }
 }

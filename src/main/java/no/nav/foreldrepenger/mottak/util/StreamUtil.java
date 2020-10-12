@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,7 +24,13 @@ public final class StreamUtil {
 
     public static <T> Stream<T> safeStream(List<T> list) {
         return Optional.ofNullable(list)
-                .orElseGet(Collections::emptyList)
+                .orElseGet(List::of)
+                .stream();
+    }
+
+    public static <T> Stream<T> safeStream(Set<T> set) {
+        return Optional.ofNullable(set)
+                .orElseGet(Set::of)
                 .stream();
     }
 

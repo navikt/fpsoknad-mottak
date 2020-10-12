@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelas
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,25 +45,36 @@ public class PDLConnection extends AbstractRestConnection {
     }
 
     public PersonDTO hentPerson() {
-        var p = oppslag(userClient, PERSON_QUERY, tokenUtil.getSubject(), PDLPerson.class);
+        var p = oppslagPerson(tokenUtil.getSubject());
         LOG.info("PDL-person {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
-        var barn = p.getFamilierelasjoner()
-                .stream()
-                .filter(b -> b.getRelatertPersonrolle().equals(BARN))
-                .filter(Objects::nonNull)
-                .map(b -> oppslag(systemClient, BARN_QUERY, b.getId(), PDLBarn.class))
-                .collect(toSet());
+        var barn = barn(p);
         LOG.info("PDL-person {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
-        var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), p);
+        var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn, p);
         LOG.info("PDL person mappet til {}", m);
         return m;
     }
 
-    private static <T> T oppslag(GraphQLWebClient client, String query, String id, Class<T> clazz) {
-        LOG.info("PDL oppslag {} med id {}", clazz, id);
-        var r = client.post(query, idFra(id), clazz).block();
-        LOG.info("PDL oppslag av {} er {}", clazz.getSimpleName(), r);
-        return r;
+    private Set<PDLBarn> barn(PDLPerson p) {
+        return p.getFamilierelasjoner()
+                .stream()
+                .filter(b -> b.getRelatertPersonrolle().equals(BARN))
+                .filter(Objects::nonNull)
+                .map(b -> oppslagBarn(b.getId()))
+                .collect(toSet());
+    }
+
+    private PDLBarn oppslagBarn(String id) {
+        LOG.info("PDL barn oppslag med id {}", id);
+        var r = systemClient.post(BARN_QUERY, idFra(id), PDLBarn.class).block();
+        LOG.info("PDL oppslag av barn er {}", r);
+        return r.withId(id);
+    }
+
+    private PDLPerson oppslagPerson(String id) {
+        LOG.info("PDL person oppslag med id {}", id);
+        var p = userClient.post(PERSON_QUERY, idFra(id), PDLPerson.class).block();
+        LOG.info("PDL oppslag av person er {}", p);
+        return p.withId(id);
     }
 
     private static Map<String, Object> idFra(String id) {

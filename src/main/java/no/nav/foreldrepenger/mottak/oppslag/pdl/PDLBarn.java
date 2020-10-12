@@ -14,11 +14,21 @@ class PDLBarn {
     private final Set<PDLFødselsdato> fødselsdato;
 
     private final Set<PDLFamilierelasjon> familierelasjoner;
+    private String id;
 
     @JsonCreator
     public PDLBarn(@JsonProperty("foedsel") Set<PDLFødselsdato> fødselsdato,
             @JsonProperty("familierelasjoner") Set<PDLFamilierelasjon> familierelasjoner) {
         this.fødselsdato = fødselsdato;
         this.familierelasjoner = familierelasjoner;
+    }
+
+    public PDLBarn withId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getId() {
+        return id;
     }
 }
