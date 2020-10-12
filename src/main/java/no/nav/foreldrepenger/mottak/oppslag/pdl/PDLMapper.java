@@ -37,7 +37,7 @@ class PDLMapper {
 
     static PersonDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLPerson p) {
         return PersonDTO.builder()
-                .id(id)
+                .id(fnrSøker)
                 .landKode(landkodeFra(p.getStatsborgerskap()))
                 .fødselsdato(fødselsdatoFra(p.getFødselsdato()))
                 .navn(navnFra(p.getNavn(), p.getKjønn()))
