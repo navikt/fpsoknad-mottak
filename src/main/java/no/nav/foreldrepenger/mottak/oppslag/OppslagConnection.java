@@ -31,7 +31,7 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
 
     @Override
     public URI pingEndpoint() {
-        return cfg.pingUri();
+        return cfg.pingEndpoint();
     }
 
     @Override

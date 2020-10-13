@@ -11,7 +11,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "pdl")
 public class PDLConfig extends AbstractConfig {
     private static final String DEFAULT_BASE_URI = "http://pdl-api.default/graphql";
-    private static final String DEFAULT_PING_PATH = "actuator/health/liveness";
+    private static final String DEFAULT_PING_PATH = "/";
     private static final String DEFAULT_KONTONR_URI = "http://fpsoknad-oppslag/api/person/kontonr";
     private static final String DEFAULT_MAALFORM_URI = "http://fpsoknad-oppslag/api/person/maalform";
 
@@ -21,7 +21,7 @@ public class PDLConfig extends AbstractConfig {
     @ConstructorBinding
     public PDLConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
-            @DefaultValue(DEFAULT_BASE_URI) String baseUri, @DefaultValue(DEFAULT_KONTONR_URI) URI kontonummerURI,
+            @DefaultValue(DEFAULT_BASE_URI) URI baseUri, @DefaultValue(DEFAULT_KONTONR_URI) URI kontonummerURI,
             @DefaultValue(DEFAULT_MAALFORM_URI) URI maalformUri) {
         super(baseUri, pingPath, enabled);
         this.kontonummerURI = kontonummerURI;

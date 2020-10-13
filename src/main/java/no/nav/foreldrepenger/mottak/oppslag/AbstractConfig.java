@@ -5,16 +5,16 @@ import java.net.URI;
 import no.nav.foreldrepenger.mottak.util.URIUtil;
 
 public class AbstractConfig {
-    private final String baseUri;
+    private final URI baseUri;
     private final String pingPath;
     private final boolean enabled;
 
-    public AbstractConfig(String baseUri, String pingPath) {
+    public AbstractConfig(URI baseUri, String pingPath) {
         this(baseUri, pingPath, true);
 
     }
 
-    public AbstractConfig(String baseUri, String pingPath, boolean enabled) {
+    public AbstractConfig(URI baseUri, String pingPath, boolean enabled) {
         this.baseUri = baseUri;
         this.pingPath = pingPath;
         this.enabled = enabled;
@@ -32,7 +32,11 @@ public class AbstractConfig {
         return enabled;
     }
 
-    public String getBaseUri() {
+    public URI getBaseUri() {
         return baseUri;
+    }
+
+    public String name() {
+        return baseUri.getHost();
     }
 }

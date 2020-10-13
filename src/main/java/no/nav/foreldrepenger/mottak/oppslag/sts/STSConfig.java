@@ -26,7 +26,7 @@ public class STSConfig extends AbstractConfig {
     private final String stsPath;
 
     @ConstructorBinding
-    public STSConfig(String baseUri,
+    public STSConfig(URI baseUri,
             @DefaultValue(DEFAULT_SLACK) Duration slack, String username, String password,
             @DefaultValue(PING_PATH) String pingPath,
             @DefaultValue(DEFAULT_PATH) String stsPath) {

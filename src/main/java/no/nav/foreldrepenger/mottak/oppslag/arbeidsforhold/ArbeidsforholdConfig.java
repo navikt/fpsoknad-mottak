@@ -30,7 +30,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private final Period tidTilbake;
 
     @ConstructorBinding
-    public ArbeidsforholdConfig(String baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
+    public ArbeidsforholdConfig(URI baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
             @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
             @DefaultValue(TREÅR) Period tidTilbake, boolean sporingsinformasjon) {
         super(baseUri, pingPath);

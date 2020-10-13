@@ -32,6 +32,10 @@ public abstract class AbstractRestConnection implements RetryAware {
         return respons;
     }
 
+    public void options(URI uri) {
+        restOperations.optionsForAllow(uri);
+    }
+
     public <T> T postForObject(URI uri, Object payload, Class<T> responseType) {
         return restOperations.postForObject(uri, payload, responseType);
     }

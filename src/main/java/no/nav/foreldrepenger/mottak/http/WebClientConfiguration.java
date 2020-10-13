@@ -50,7 +50,7 @@ public class WebClientConfiguration {
     @Qualifier(STS)
     public WebClient webClientSTS(Builder builder, STSConfig cfg) {
         return builder
-                .baseUrl(cfg.getBaseUri())
+                .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .defaultHeaders(h -> h.setBasicAuth(cfg.getUsername(), cfg.getPassword()))
                 .build();
@@ -60,7 +60,7 @@ public class WebClientConfiguration {
     @Bean
     public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
-                .baseUrl(cfg.getBaseUri())
+                .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(authenticatingFilterFunction(sts, tokenUtil))
                 .build();
@@ -70,7 +70,7 @@ public class WebClientConfiguration {
     @Bean
     public WebClient organisasjonClient(Builder builder, OrganisasjonConfig cfg) {
         return builder
-                .baseUrl(cfg.getBaseUri())
+                .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .build();
     }
@@ -79,7 +79,7 @@ public class WebClientConfiguration {
     @Bean
     public WebClient pdlClient(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
-                .baseUrl(cfg.getBaseUri())
+                .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
                 .build();
@@ -89,7 +89,7 @@ public class WebClientConfiguration {
     @Bean
     public WebClient pdlClientRelasjon(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
         return builder
-                .baseUrl(cfg.getBaseUri())
+                .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(pdlSystemUserExchangeFilterFunction(sts))
                 .build();

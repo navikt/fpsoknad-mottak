@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 
 @ConfigurationProperties(prefix = "oppslag")
-public class OppslagConfig {
+public class OppslagConfig extends AbstractConfig {
     private static final String DEFAULT_AKTØR_PATH = "oppslag/aktor";
     private static final String DEFAULT_AKTØRFNR_PATH = "oppslag/aktorfnr";
     private static final String DEFAULT_FNR_PATH = "oppslag/fnr";
@@ -22,14 +22,11 @@ public class OppslagConfig {
     private static final String DEFAULT_PERSONNAVN_PATH = "person/navn";
     private static final String DEFAULT_BASE_URI = "http://fpsoknad-oppslag/api";
     private static final String DEFAULT_PING_PATH = "actuator/health/liveness";
-    private final String pingPath;
     private final String aktorPath;
     private final String aktorFnrPath;
     private final String fnrPath;
     private final String personPath;
     private final String personNavnPath;
-    private final boolean enabled;
-    private final URI baseUri;
 
     @ConstructorBinding
     public OppslagConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
@@ -40,52 +37,37 @@ public class OppslagConfig {
             @DefaultValue(DEFAULT_PERSONNAVN_PATH) String personNavnPath,
             @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_BASE_URI) URI baseUri) {
-        this.pingPath = pingPath;
+        super(baseUri, pingPath, enabled);
         this.aktorPath = aktorPath;
         this.aktorFnrPath = aktorFnrPath;
         this.fnrPath = fnrPath;
         this.personPath = personPath;
         this.personNavnPath = personNavnPath;
-        this.enabled = enabled;
-        this.baseUri = baseUri;
-    }
-
-    boolean isEnabled() {
-        return enabled;
-    }
-
-    URI pingUri() {
-        return uri(baseUri, pingPath);
     }
 
     URI aktørUri() {
-        return uri(baseUri, aktorPath);
+        return uri(getBaseUri(), aktorPath);
     }
 
     URI personUri() {
-        return uri(baseUri, personPath);
+        return uri(getBaseUri(), personPath);
     }
 
     URI aktørFnrUri(Fødselsnummer fnr) {
-        return uri(baseUri, aktorFnrPath, queryParams(FNR, fnr.getFnr()));
+        return uri(getBaseUri(), aktorFnrPath, queryParams(FNR, fnr.getFnr()));
     }
 
     URI navnUri(Fødselsnummer fnr) {
-        return uri(baseUri, personNavnPath, queryParams(FNR, fnr.getFnr()));
+        return uri(getBaseUri(), personNavnPath, queryParams(FNR, fnr.getFnr()));
     }
 
     URI fnrUri(AktørId aktørId) {
-        return uri(baseUri, fnrPath, queryParams("aktorId", aktørId.getId()));
-    }
-
-    String name() {
-        return baseUri.getHost();
+        return uri(getBaseUri(), fnrPath, queryParams("aktorId", aktørId.getId()));
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + pingPath + ", enabled=" + enabled + ", url=" + baseUri
-                + "]";
+        return getClass().getSimpleName() + ", url=" + getBaseUri() + "]";
     }
 
 }

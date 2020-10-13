@@ -20,7 +20,7 @@ public class OrganisasjonConfig extends AbstractConfig {
     private final String organisasjonPath;
 
     @ConstructorBinding
-    public OrganisasjonConfig(String baseUri,
+    public OrganisasjonConfig(URI baseUri,
             @DefaultValue(V1_ORGANISASJON) String organisasjonPath) {
         super(baseUri, pingPath(organisasjonPath));
         this.organisasjonPath = organisasjonPath;

@@ -5,6 +5,7 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTE
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -16,13 +17,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
-public class PDLConnection extends AbstractRestConnection {
+public class PDLConnection extends AbstractRestConnection implements PingEndpointAware {
 
     private static final String NAVN_QUERY = "query-navn.graphql";
     private static final String BARN_QUERY = "query-barn.graphql";
@@ -37,8 +40,7 @@ public class PDLConnection extends AbstractRestConnection {
     private PDLConfig cfg;
 
     public PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
-            RestOperations restOperations, PDLConfig cfg,
-            TokenUtil tokenUtil) {
+            RestOperations restOperations, PDLConfig cfg, TokenUtil tokenUtil) {
         super(restOperations);
         this.userClient = userClient;
         this.systemClient = systemClient;
@@ -52,7 +54,7 @@ public class PDLConnection extends AbstractRestConnection {
         var barn = barn(p);
         LOG.info("PDL-søker {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn, p);
-        LOG.info("PDL søker mappet til {}", m);
+        LOG.info("PDL-søker mappet til {}", m);
         return m;
     }
 
@@ -89,6 +91,12 @@ public class PDLConnection extends AbstractRestConnection {
         return a.withId(id);
     }
 
+    public Navn oppslagNavn(String id) {
+        var n = userClient.post("query-navn.graphql", Map.of("ident", id), PDLNavn.class).block();
+        LOG.info("PDL navn for {} er {}", id, n);
+        return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), null);
+    }
+
     private static Map<String, Object> idFra(String id) {
         return Map.of("ident", id);
     }
@@ -105,5 +113,21 @@ public class PDLConnection extends AbstractRestConnection {
     public String toString() {
         return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", tokenUtil=" + tokenUtil + ", cfg="
                 + cfg + "]";
+    }
+
+    @Override
+    public String ping() {
+        options(pingEndpoint());
+        return "OK";
+    }
+
+    @Override
+    public URI pingEndpoint() {
+        return cfg.pingEndpoint();
+    }
+
+    @Override
+    public String name() {
+        return cfg.name();
     }
 }
