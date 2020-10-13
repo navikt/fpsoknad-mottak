@@ -51,16 +51,17 @@ class PDLMapper {
 
     private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         LOG.info("Mapper barn {} {}", barn.getId(), barn);
-
         return BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
                 .fødselsdato(fødselsdatoFra(onlyElem(barn.getFødselsdato())))
-                // .annenForelder(annenForelderFra(annenForelder))
+                .annenForelder(annenForelderFra(barn.getAnnenForelder()))
                 .build();
     }
 
-    private static AnnenForelderDTO annenForelderFra(PDLFamilierelasjon annen) {
+    private static AnnenForelderDTO annenForelderFra(PDLAnnenForelder annen) {
+        LOG.info("Mapper annen foreldrer {}", annen);
+        var navn = Optional.ofNullable(annen).map(a -> onlyElem(a.getNavn())).orElse(null);
         return Optional.ofNullable(annen)
                 .map(a -> AnnenForelderDTO.builder()
                         .fnr(annen.getId())
