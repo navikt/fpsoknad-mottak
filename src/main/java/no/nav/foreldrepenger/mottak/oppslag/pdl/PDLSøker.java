@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-class PDLPerson {
+class PDLSøker {
     private final Set<PDLNavn> navn;
     private final Set<PDLKjønn> kjønn;
     private final Set<PDLStatsborgerskap> statsborgerskap;
@@ -19,7 +19,7 @@ class PDLPerson {
     private String id;
 
     @JsonCreator
-    PDLPerson(@JsonProperty("navn") Set<PDLNavn> navn,
+    PDLSøker(@JsonProperty("navn") Set<PDLNavn> navn,
             @JsonProperty("kjoenn") Set<PDLKjønn> kjønn,
             @JsonProperty("statsborgerskap") Set<PDLStatsborgerskap> statsborgerskap,
             @JsonProperty("foedsel") Set<PDLFødsel> fødselsdato,
@@ -34,7 +34,7 @@ class PDLPerson {
 
     }
 
-    PDLPerson withId(String id) {
+    PDLSøker withId(String id) {
         this.id = id;
         return this;
     }

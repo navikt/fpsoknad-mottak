@@ -9,10 +9,6 @@ sts:
   base-uri:  https://security-token-service.nais.adeo.no
   username: ${kafka.username}
   password: ${kafka.password} 
-
-
-pdl:
-  base-uri:  http://pdl-api.default/graphql
   
 sak:
   securitytokenservice:

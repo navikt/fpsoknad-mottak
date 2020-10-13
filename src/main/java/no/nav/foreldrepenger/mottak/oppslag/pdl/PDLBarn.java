@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsR
 @Data
 class PDLBarn {
     private final Set<PDLFødsel> fødselsdato;
-
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private String id;
     private PDLAnnenForelder annenForelder;

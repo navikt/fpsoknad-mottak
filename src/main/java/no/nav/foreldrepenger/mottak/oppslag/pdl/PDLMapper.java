@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.AnnenForelderDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 class PDLMapper {
 
@@ -31,8 +31,8 @@ class PDLMapper {
 
     }
 
-    static PersonDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLPerson p) {
-        return PersonDTO.builder()
+    static SøkerDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker p) {
+        return SøkerDTO.builder()
                 .id(fnrSøker)
                 .landKode(landkodeFra(p.getStatsborgerskap()))
                 .fødselsdato(fødselsdatoFra(p.getFødselsdato()))
@@ -51,16 +51,18 @@ class PDLMapper {
 
     private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         LOG.info("Mapper barn {} {}", barn.getId(), barn);
-        return BarnDTO.builder()
+        var b = BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
                 .fødselsdato(fødselsdatoFra(barn.getFødselsdato()))
                 .annenForelder(annenForelderFra(barn.getAnnenForelder()))
                 .build();
+        LOG.info("Mappet barn til {}", barn);
+        return b;
     }
 
     private static AnnenForelderDTO annenForelderFra(PDLAnnenForelder annen) {
-        LOG.info("Mapper annen foreldrer {}", annen);
+        LOG.info("Mapper annen forelder {}", annen);
         var an = Optional.ofNullable(annen)
                 .map(a -> AnnenForelderDTO.builder()
                         .fnr(annen.getId())
@@ -88,7 +90,7 @@ class PDLMapper {
         return dato.getFødselsdato();
     }
 
-    private static Navn navnFra(Set<PDLNavn> navn, Set<PDLKjønn> kjønn) {
+    static Navn navnFra(Set<PDLNavn> navn, Set<PDLKjønn> kjønn) {
         return navnFra(onlyElem(navn), onlyElem(kjønn));
     }
 

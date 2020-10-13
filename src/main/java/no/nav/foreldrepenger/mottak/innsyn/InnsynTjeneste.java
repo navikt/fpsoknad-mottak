@@ -207,7 +207,7 @@ public class InnsynTjeneste implements Innsyn {
 
     private Navn pdlNavn(Fødselsnummer fnr) {
         try {
-            return pdl.navn(fnr.getFnr());
+            return pdl.oppslagNavn(fnr.getFnr());
         } catch (Exception e) {
             LOG.warn("PDL Kunne ikke slå opp navn for {}", fnr);
             return null;

@@ -14,7 +14,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 
 @Data
 @Builder
-public class PersonDTO {
+public class SøkerDTO {
 
     private final String id;
     private final CountryCode landKode;

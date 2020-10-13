@@ -2,9 +2,8 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.http.RetryAware;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 @Service
 public class PDLTjeneste implements RetryAware {
@@ -15,11 +14,11 @@ public class PDLTjeneste implements RetryAware {
         this.connection = connection;
     }
 
-    public PersonDTO person() {
-        return connection.hentPerson();
+    public SøkerDTO person() {
+        return connection.hentSøker();
     }
 
-    public Navn navn(String id) {
-        return connection.navn(id);
-    }
+    /*
+     * public Navn navn(String id) { return connection.oppslagNavn(id); }
+     */
 }

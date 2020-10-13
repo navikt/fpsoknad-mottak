@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 
 import java.util.Map;
 import java.util.Objects;
@@ -15,16 +16,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 public class PDLConnection extends AbstractRestConnection {
 
+    private static final String NAVN_QUERY = "query-navn.graphql";
     private static final String BARN_QUERY = "query-barn.graphql";
     private static final String SØKER_QUERY = "query-person.graphql";
     private static final String ANNEN_FORELDER_QUERY = "query-annen-forelder.graphql";
@@ -46,20 +46,20 @@ public class PDLConnection extends AbstractRestConnection {
         this.cfg = cfg;
     }
 
-    public PersonDTO hentPerson() {
+    public SøkerDTO hentSøker() {
         var p = oppslagSøker(tokenUtil.getSubject());
-        LOG.info("PDL-person {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
+        LOG.info("PDL-søker {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
         var barn = barn(p);
-        LOG.info("PDL-person {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
+        LOG.info("PDL-søker {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn, p);
-        LOG.info("PDL person mappet til {}", m);
+        LOG.info("PDL søker mappet til {}", m);
         return m;
     }
 
-    private Set<PDLBarn> barn(PDLPerson p) {
+    private Set<PDLBarn> barn(PDLSøker p) {
         return p.getFamilierelasjoner()
                 .stream()
-                .filter(b -> b.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
+                .filter(b -> b.getRelatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(p.getId(), b.getId()))
                 .collect(toSet());
@@ -75,18 +75,18 @@ public class PDLConnection extends AbstractRestConnection {
         return r.withId(id).withAnnenForelder(annenPart);
     }
 
-    private PDLPerson oppslagSøker(String id) {
+    private PDLSøker oppslagSøker(String id) {
         LOG.info("PDL person oppslag med id {}", id);
-        var p = userClient.post(SØKER_QUERY, idFra(id), PDLPerson.class).block();
+        var p = userClient.post(SØKER_QUERY, idFra(id), PDLSøker.class).block();
         LOG.info("PDL oppslag av person er {}", p);
         return p.withId(id);
     }
 
     private PDLAnnenForelder oppslagAnnenForelder(String id) {
         LOG.info("PDL annen forelder oppslag med id {}", id);
-        var r = systemClient.post(ANNEN_FORELDER_QUERY, idFra(id), PDLAnnenForelder.class).block();
-        LOG.info("PDL oppslag av annen forelder er {}", r);
-        return r.withId(id);
+        var a = systemClient.post(ANNEN_FORELDER_QUERY, idFra(id), PDLAnnenForelder.class).block();
+        LOG.info("PDL oppslag av annen forelder er {}", a);
+        return a.withId(id);
     }
 
     private static Map<String, Object> idFra(String id) {
@@ -101,10 +101,9 @@ public class PDLConnection extends AbstractRestConnection {
         return getForObject(cfg.getMaalformURI(), String.class);
     }
 
-    public Navn navn(String id) {
-        var n = userClient.post("query-navn.graphql", Map.of("ident", id), Navn.class).block();
-        LOG.info("PDL navn for {} er {}", id, n);
-        return n;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", tokenUtil=" + tokenUtil + ", cfg="
+                + cfg + "]";
     }
-
 }
