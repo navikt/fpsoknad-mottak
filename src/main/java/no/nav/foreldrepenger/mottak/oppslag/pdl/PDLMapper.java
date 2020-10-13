@@ -7,7 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,11 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFødselsdato;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLKjønn;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLNavn;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLStatsborgerskap;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.AnnenForelderDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 
@@ -55,16 +51,21 @@ class PDLMapper {
 
     private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         LOG.info("Mapper barn {} {}", barn.getId(), barn);
-        var annenPart = safeStream(barn.getFamilierelasjoner())
-                .filter(r -> r.getMinRolle().equals(PDLRelasjonsRolle.BARN))
-                .filter(r -> r.getId() != fnrSøker)
-                .findFirst()
-                .orElse(null);
-        LOG.info("Annen part er {}", annenPart);
 
         return BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
+                .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
+                .fødselsdato(fødselsdatoFra(onlyElem(barn.getFødselsdato())))
+                // .annenForelder(annenForelderFra(annenForelder))
                 .build();
+    }
+
+    private static AnnenForelderDTO annenForelderFra(PDLFamilierelasjon annen) {
+        return Optional.ofNullable(annen)
+                .map(a -> AnnenForelderDTO.builder()
+                        .fnr(annen.getId())
+                        .build()) // TODO
+                .orElse(null);
     }
 
     private static CountryCode landkodeFra(Set<PDLStatsborgerskap> statsborgerskap) {
@@ -75,15 +76,15 @@ class PDLMapper {
         return statsborgerskap.getLand();
     }
 
-    private static LocalDate fødselsdatoFra(Set<PDLFødselsdato> datoer) {
+    private static LocalDate fødselsdatoFra(Set<PDLFødsel> datoer) {
         return fødselsdatoFra(onlyElem(datoer));
     }
 
-    private static LocalDate fødselsdatoFra(PDLFødselsdato dato) {
+    private static LocalDate fødselsdatoFra(PDLFødsel dato) {
         return dato.getFødselsdato();
     }
 
-    private static Navn navnFra(List<PDLNavn> navn, List<PDLKjønn> kjønn) {
+    private static Navn navnFra(Set<PDLNavn> navn, Set<PDLKjønn> kjønn) {
         return navnFra(onlyElem(navn), onlyElem(kjønn));
     }
 

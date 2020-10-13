@@ -6,29 +6,54 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFødselsdato;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle;
 
 @Data
 class PDLBarn {
-    private final Set<PDLFødselsdato> fødselsdato;
+    private final Set<PDLFødsel> fødselsdato;
 
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private String id;
+    private PDLAnnenForelder annenForelder;
 
     @JsonCreator
-    public PDLBarn(@JsonProperty("foedsel") Set<PDLFødselsdato> fødselsdato,
+    PDLBarn(@JsonProperty("foedsel") Set<PDLFødsel> fødselsdato,
             @JsonProperty("familierelasjoner") Set<PDLFamilierelasjon> familierelasjoner) {
         this.fødselsdato = fødselsdato;
         this.familierelasjoner = familierelasjoner;
     }
 
-    public PDLBarn withId(String id) {
+    String medmor() {
+        return idForRolle(PDLRelasjonsRolle.MEDMOR);
+    }
+
+    String far() {
+        return idForRolle(PDLRelasjonsRolle.FAR);
+    }
+
+    String mor() {
+        return idForRolle(PDLRelasjonsRolle.MOR);
+    }
+
+    private String idForRolle(PDLRelasjonsRolle rolle) {
+        return familierelasjoner.stream()
+                .filter(r -> r.getRelatertPersonrolle().equals(rolle))
+                .findFirst()
+                .map(p -> p.getId())
+                .orElse(null);
+    }
+
+    PDLBarn withId(String id) {
         this.id = id;
         return this;
     }
 
-    public String getId() {
+    PDLBarn withAnnenForelder(PDLAnnenForelder annenForelder) {
+        this.annenForelder = annenForelder;
+        return this;
+    }
+
+    String getId() {
         return id;
     }
 }

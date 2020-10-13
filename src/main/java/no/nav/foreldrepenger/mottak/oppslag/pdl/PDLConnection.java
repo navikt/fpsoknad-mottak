@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLPerson.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.Map;
 import java.util.Objects;
@@ -19,6 +19,7 @@ import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.PersonDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -26,7 +27,9 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class PDLConnection extends AbstractRestConnection {
 
     private static final String BARN_QUERY = "query-barn.graphql";
-    private static final String PERSON_QUERY = "query-person.graphql";
+    private static final String SØKER_QUERY = "query-person.graphql";
+    private static final String ANNEN_FORELDER_QUERY = "annen-forelder.graphql";
+
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
     private final GraphQLWebClient userClient;
     private final GraphQLWebClient systemClient;
@@ -45,7 +48,7 @@ public class PDLConnection extends AbstractRestConnection {
     }
 
     public PersonDTO hentPerson() {
-        var p = oppslagPerson(tokenUtil.getSubject());
+        var p = oppslagSøker(tokenUtil.getSubject());
         LOG.info("PDL-person {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
         var barn = barn(p);
         LOG.info("PDL-person {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
@@ -57,7 +60,7 @@ public class PDLConnection extends AbstractRestConnection {
     private Set<PDLBarn> barn(PDLPerson p) {
         return p.getFamilierelasjoner()
                 .stream()
-                .filter(b -> b.getRelatertPersonrolle().equals(BARN))
+                .filter(b -> b.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(b.getId()))
                 .collect(toSet());
@@ -67,14 +70,33 @@ public class PDLConnection extends AbstractRestConnection {
         LOG.info("PDL barn oppslag med id {}", id);
         var r = systemClient.post(BARN_QUERY, idFra(id), PDLBarn.class).block();
         LOG.info("PDL oppslag av barn er {}", r);
+        String mor = r.mor();
+        String far = r.far();
+        LOG.info("Mor er {}, far er {}", mor, far);
         return r.withId(id);
     }
 
-    private PDLPerson oppslagPerson(String id) {
+    private PDLPerson oppslagSøker(String id) {
         LOG.info("PDL person oppslag med id {}", id);
-        var p = userClient.post(PERSON_QUERY, idFra(id), PDLPerson.class).block();
+        var p = userClient.post(SØKER_QUERY, idFra(id), PDLPerson.class).block();
         LOG.info("PDL oppslag av person er {}", p);
         return p.withId(id);
+    }
+
+    private PDLAnnenForelder oppslagAnnenForelder(String id) {
+        LOG.info("PDL annen forelder oppslag med id {}", id);
+        var r = systemClient.post(ANNEN_FORELDER_QUERY, idFra(id), PDLAnnenForelder.class).block();
+        LOG.info("PDL oppslag av annen forelder er {}", r);
+        return r.withId(id);
+    }
+
+    private static String annenForelder(PDLBarn barn, String fnrSøker) {
+        return safeStream(barn.getFamilierelasjoner())
+                .filter(r -> r.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
+                .filter(r -> r.getId() != fnrSøker)
+                .findFirst()
+                .map(PDLFamilierelasjon::getId)
+                .orElse(null);
     }
 
     private static Map<String, Object> idFra(String id) {
@@ -82,17 +104,11 @@ public class PDLConnection extends AbstractRestConnection {
     }
 
     private Bankkonto kontonr() {
-        LOG.info("TPS Henter kontonummer fra  {}", cfg.getKontonummerURI());
-        var kontonr = getForObject(cfg.getKontonummerURI(), Bankkonto.class);
-        LOG.info("TPS kontonummer {}", kontonr);
-        return kontonr;
+        return getForObject(cfg.getKontonummerURI(), Bankkonto.class);
     }
 
     private String målform() {
-        LOG.info("TPS Henter målform fra  {}", cfg.getMaalformURI());
-        var målform = getForObject(cfg.getMaalformURI(), String.class);
-        LOG.info("TPS målform {}", målform);
-        return målform;
+        return getForObject(cfg.getMaalformURI(), String.class);
     }
 
     public Navn navn(String id) {
