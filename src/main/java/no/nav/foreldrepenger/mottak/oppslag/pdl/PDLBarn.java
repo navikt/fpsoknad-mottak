@@ -23,21 +23,10 @@ class PDLBarn {
         this.familierelasjoner = familierelasjoner;
     }
 
-    String medmor() {
-        return idForRolle(PDLRelasjonsRolle.MEDMOR);
-    }
-
-    String far() {
-        return idForRolle(PDLRelasjonsRolle.FAR);
-    }
-
-    String mor() {
-        return idForRolle(PDLRelasjonsRolle.MOR);
-    }
-
-    private String idForRolle(PDLRelasjonsRolle rolle) {
+    String annenPart(String fnrSøker) {
         return familierelasjoner.stream()
-                .filter(r -> r.getRelatertPersonrolle().equals(rolle))
+                .filter(r -> r.getMinRolle().equals(PDLRelasjonsRolle.BARN))
+                .filter(r -> !r.getId().equals(fnrSøker))
                 .findFirst()
                 .map(p -> p.getId())
                 .orElse(null);

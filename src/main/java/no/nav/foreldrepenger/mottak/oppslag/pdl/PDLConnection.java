@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.Map;
 import java.util.Objects;
@@ -62,18 +61,18 @@ public class PDLConnection extends AbstractRestConnection {
                 .stream()
                 .filter(b -> b.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
                 .filter(Objects::nonNull)
-                .map(b -> oppslagBarn(b.getId()))
+                .map(b -> oppslagBarn(p.getId(), b.getId()))
                 .collect(toSet());
     }
 
-    private PDLBarn oppslagBarn(String id) {
-        LOG.info("PDL barn oppslag med id {}", id);
+    private PDLBarn oppslagBarn(String fnrSøker, String id) {
+        LOG.info("PDL barn oppslag med id {} for søker {}", id, fnrSøker);
         var r = systemClient.post(BARN_QUERY, idFra(id), PDLBarn.class).block();
         LOG.info("PDL oppslag av barn er {}", r);
-        String mor = r.mor();
-        String far = r.far();
-        LOG.info("Mor er {}, far er {}", mor, far);
-        return r.withId(id);
+        String annenPartId = r.annenPart(fnrSøker);
+        LOG.info("Annen part er {}", annenPartId);
+        var annenPart = oppslagAnnenForelder(annenPartId);
+        return r.withId(id).withAnnenForelder(annenPart);
     }
 
     private PDLPerson oppslagSøker(String id) {
@@ -88,15 +87,6 @@ public class PDLConnection extends AbstractRestConnection {
         var r = systemClient.post(ANNEN_FORELDER_QUERY, idFra(id), PDLAnnenForelder.class).block();
         LOG.info("PDL oppslag av annen forelder er {}", r);
         return r.withId(id);
-    }
-
-    private static String annenForelder(PDLBarn barn, String fnrSøker) {
-        return safeStream(barn.getFamilierelasjoner())
-                .filter(r -> r.getRelatertPersonrolle().equals(PDLRelasjonsRolle.BARN))
-                .filter(r -> r.getId() != fnrSøker)
-                .findFirst()
-                .map(PDLFamilierelasjon::getId)
-                .orElse(null);
     }
 
     private static Map<String, Object> idFra(String id) {
