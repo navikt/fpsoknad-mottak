@@ -54,19 +54,22 @@ class PDLMapper {
         return BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
-                .fødselsdato(fødselsdatoFra(onlyElem(barn.getFødselsdato())))
+                .fødselsdato(fødselsdatoFra(barn.getFødselsdato()))
                 .annenForelder(annenForelderFra(barn.getAnnenForelder()))
                 .build();
     }
 
     private static AnnenForelderDTO annenForelderFra(PDLAnnenForelder annen) {
         LOG.info("Mapper annen foreldrer {}", annen);
-        var navn = Optional.ofNullable(annen).map(a -> onlyElem(a.getNavn())).orElse(null);
-        return Optional.ofNullable(annen)
+        var an = Optional.ofNullable(annen)
                 .map(a -> AnnenForelderDTO.builder()
                         .fnr(annen.getId())
-                        .build()) // TODO
+                        .fødselsdato(fødselsdatoFra(annen.getFødselsdato()))
+                        .navn(navnFra(annen.getNavn(), annen.getKjønn()))
+                        .build())
                 .orElse(null);
+        LOG.info("Mappet annen foreldrer til {}", an);
+        return an;
     }
 
     private static CountryCode landkodeFra(Set<PDLStatsborgerskap> statsborgerskap) {
