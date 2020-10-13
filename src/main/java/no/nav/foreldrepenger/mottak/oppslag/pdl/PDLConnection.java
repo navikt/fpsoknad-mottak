@@ -27,7 +27,7 @@ public class PDLConnection extends AbstractRestConnection {
 
     private static final String BARN_QUERY = "query-barn.graphql";
     private static final String SØKER_QUERY = "query-person.graphql";
-    private static final String ANNEN_FORELDER_QUERY = "annen-forelder.graphql";
+    private static final String ANNEN_FORELDER_QUERY = "query-annen-forelder.graphql";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
     private final GraphQLWebClient userClient;
