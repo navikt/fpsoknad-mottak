@@ -23,6 +23,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     static final String TOM = "ansettelsesperiodeTom";
     static final String SPORINGSINFORMASJON = "sporingsinformasjon";
     static final String HISTORIKK = "historikk";
+    private static final String DEFAULT_BASE_URI = "http://must.be.set";
 
     private final String arbeidsforholdPath;
     private boolean historikk;
@@ -30,10 +31,10 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private final Period tidTilbake;
 
     @ConstructorBinding
-    public ArbeidsforholdConfig(URI baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
-            @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath,
+    public ArbeidsforholdConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
+            @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath, @DefaultValue("true") boolean enabled,
             @DefaultValue(TREÅR) Period tidTilbake, boolean sporingsinformasjon) {
-        super(baseUri, pingPath);
+        super(baseUri, pingPath, enabled);
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.tidTilbake = tidTilbake;
         this.sporingsinformasjon = sporingsinformasjon;

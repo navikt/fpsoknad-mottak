@@ -24,10 +24,10 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
     private final FordelConfig cfg;
     private final ResponseHandler handler;
 
-    public FordelConnection(RestOperations restOperations, FordelConfig config,
+    public FordelConnection(RestOperations restOperations, FordelConfig cfg,
             ResponseHandler responseHandler) {
-        super(restOperations);
-        this.cfg = config;
+        super(restOperations, cfg);
+        this.cfg = cfg;
         this.handler = responseHandler;
     }
 

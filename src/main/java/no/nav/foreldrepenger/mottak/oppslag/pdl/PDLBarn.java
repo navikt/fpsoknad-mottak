@@ -13,7 +13,7 @@ class PDLBarn {
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private String id;
-    private PDLAnnenForelder annenForelder;
+    private PDLAnnenPart annenPart;
 
     @JsonCreator
     PDLBarn(@JsonProperty("foedsel") Set<PDLFødsel> fødselsdato,
@@ -36,8 +36,8 @@ class PDLBarn {
         return this;
     }
 
-    PDLBarn withAnnenForelder(PDLAnnenForelder annenForelder) {
-        this.annenForelder = annenForelder;
+    PDLBarn withAnnenPart(PDLAnnenPart annenPart) {
+        this.annenPart = annenPart;
         return this;
     }
 

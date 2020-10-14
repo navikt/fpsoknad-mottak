@@ -8,18 +8,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+
 @ConfigurationProperties(prefix = "fpfordel")
-public class FordelConfig {
+public class FordelConfig extends AbstractConfig {
 
     private static final String DEFAULT_PING_PATH = "fpfordel/internal/health/isAlive";
     private static final String DEFAULT_BASE_PATH = "fpfordel/api/dokumentforsendelse";
 
     private static final String DEFAULT_URI = "http://fpfordel";
 
-    private final String pingPath;
     private final String basePath;
-    private final boolean enabled;
-    private final URI baseUri;
 
     FordelConfig(URI uri) {
         this(uri, DEFAULT_PING_PATH, DEFAULT_BASE_PATH, true);
@@ -30,27 +29,17 @@ public class FordelConfig {
             @DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue(DEFAULT_BASE_PATH) String basePath,
             @DefaultValue("true") boolean enabled) {
-        this.pingPath = pingPath;
+        super(baseUri, pingPath, enabled);
         this.basePath = basePath;
-        this.enabled = enabled;
-        this.baseUri = baseUri;
-    }
-
-    boolean isEnabled() {
-        return enabled;
     }
 
     URI fordelEndpoint() {
-        return uri(baseUri, basePath);
-    }
-
-    URI pingEndpoint() {
-        return uri(baseUri, pingPath);
+        return uri(getBaseUri(), basePath);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [enabled=" + enabled + ", baseUri=" + baseUri + "]";
+        return getClass().getSimpleName() + " [enabled=" + isEnabled() + ", baseUri=" + getBaseUri() + "]";
     }
 
 }

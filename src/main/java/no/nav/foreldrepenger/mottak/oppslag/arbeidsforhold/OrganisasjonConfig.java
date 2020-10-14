@@ -18,11 +18,13 @@ public class OrganisasjonConfig extends AbstractConfig {
     private static final String V1_ORGANISASJON = "/v1/organisasjon/{orgnr}";
     private static final String NAV = "998004993";
     private final String organisasjonPath;
+    private static final String DEFAULT_BASE_URI = "http://must.be.set";
 
     @ConstructorBinding
-    public OrganisasjonConfig(URI baseUri,
-            @DefaultValue(V1_ORGANISASJON) String organisasjonPath) {
-        super(baseUri, pingPath(organisasjonPath));
+    public OrganisasjonConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
+            @DefaultValue(V1_ORGANISASJON) String organisasjonPath,
+            @DefaultValue("true") boolean enabled) {
+        super(baseUri, pingPath(organisasjonPath), enabled);
         this.organisasjonPath = organisasjonPath;
     }
 

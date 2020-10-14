@@ -9,11 +9,6 @@ public class AbstractConfig {
     private final String pingPath;
     private final boolean enabled;
 
-    public AbstractConfig(URI baseUri, String pingPath) {
-        this(baseUri, pingPath, true);
-
-    }
-
     public AbstractConfig(URI baseUri, String pingPath, boolean enabled) {
         this.baseUri = baseUri;
         this.pingPath = pingPath;

@@ -14,5 +14,5 @@ public class BarnDTO {
     private final Fødselsnummer fnrSøker;
     private final LocalDate fødselsdato;
     private final Navn navn;
-    private final AnnenForelderDTO annenForelder;
+    private final AnnenPartDTO annenPart;
 }

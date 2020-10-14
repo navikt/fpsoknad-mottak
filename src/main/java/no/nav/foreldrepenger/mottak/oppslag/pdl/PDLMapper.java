@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.AnnenForelderDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.AnnenPartDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
@@ -55,22 +55,22 @@ class PDLMapper {
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
                 .fødselsdato(fødselsdatoFra(barn.getFødselsdato()))
-                .annenForelder(annenForelderFra(barn.getAnnenForelder()))
+                .annenPart(annenPartFra(barn.getAnnenPart()))
                 .build();
         LOG.info("Mappet barn til {}", barn);
         return b;
     }
 
-    private static AnnenForelderDTO annenForelderFra(PDLAnnenForelder annen) {
-        LOG.info("Mapper annen forelder {}", annen);
+    private static AnnenPartDTO annenPartFra(PDLAnnenPart annen) {
+        LOG.info("Mapper annen part {}", annen);
         var an = Optional.ofNullable(annen)
-                .map(a -> AnnenForelderDTO.builder()
+                .map(a -> AnnenPartDTO.builder()
                         .fnr(annen.getId())
                         .fødselsdato(fødselsdatoFra(annen.getFødselsdato()))
                         .navn(navnFra(annen.getNavn(), annen.getKjønn()))
                         .build())
                 .orElse(null);
-        LOG.info("Mappet annen foreldrer til {}", an);
+        LOG.info("Mappet annen part til {}", an);
         return an;
     }
 

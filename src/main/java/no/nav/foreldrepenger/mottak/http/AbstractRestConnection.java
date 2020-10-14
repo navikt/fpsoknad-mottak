@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.net.URI;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +13,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestOperations;
 
+import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
+
 public abstract class AbstractRestConnection implements RetryAware {
     private final RestOperations restOperations;
+    private final AbstractConfig config;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
     public AbstractRestConnection(RestOperations restOperations) {
+        this(restOperations, null);
+    }
+
+    public AbstractRestConnection(RestOperations restOperations, AbstractConfig config) {
         this.restOperations = restOperations;
+        this.config = config;
     }
 
     protected String ping(URI uri) {
@@ -78,6 +87,12 @@ public abstract class AbstractRestConnection implements RetryAware {
             }
             throw e;
         }
+    }
+
+    protected String name() {
+        return Optional.ofNullable(config)
+                .map(AbstractConfig::name)
+                .orElse(null);
     }
 
     @Override

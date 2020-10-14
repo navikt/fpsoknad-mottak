@@ -11,7 +11,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 
 @Builder
 @Data
-public class AnnenForelderDTO {
+public class AnnenPartDTO {
     private final String fnr;
     @JsonIgnore
     private final Navn navn;

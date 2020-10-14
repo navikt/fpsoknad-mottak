@@ -39,7 +39,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     @Override
     public URI pingEndpoint() {
-        return config.pingURI();
+        return config.pingEndpoint();
     }
 
     @Override

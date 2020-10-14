@@ -27,10 +27,11 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @Component
 public class PDLConnection extends AbstractRestConnection implements PingEndpointAware {
 
+    private static final String IDENT = "ident";
     private static final String NAVN_QUERY = "query-navn.graphql";
     private static final String BARN_QUERY = "query-barn.graphql";
     private static final String SØKER_QUERY = "query-person.graphql";
-    private static final String ANNEN_FORELDER_QUERY = "query-annen-forelder.graphql";
+    private static final String ANNEN_PART_QUERY = "query-annen-forelder.graphql";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
     private final GraphQLWebClient userClient;
@@ -41,7 +42,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
             RestOperations restOperations, PDLConfig cfg, TokenUtil tokenUtil) {
-        super(restOperations);
+        super(restOperations, cfg);
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.tokenUtil = tokenUtil;
@@ -50,11 +51,11 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public SøkerDTO hentSøker() {
         var p = oppslagSøker(tokenUtil.getSubject());
-        LOG.info("PDL-søker {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
+        LOG.info("PDL søker {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
         var barn = barn(p);
-        LOG.info("PDL-søker {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
+        LOG.info("PDL søker {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn, p);
-        LOG.info("PDL-søker mappet til {}", m);
+        LOG.info("PDL søker mappet til {}", m);
         return m;
     }
 
@@ -72,9 +73,9 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         var r = systemClient.post(BARN_QUERY, idFra(id), PDLBarn.class).block();
         LOG.info("PDL oppslag av barn er {}", r);
         String annenPartId = r.annenPart(fnrSøker);
-        LOG.info("Annen part er {}", annenPartId);
-        var annenPart = oppslagAnnenForelder(annenPartId);
-        return r.withId(id).withAnnenForelder(annenPart);
+        LOG.info("PDL oppslag annen part er {}", annenPartId);
+        var annenPart = oppslagAnnenPart(annenPartId);
+        return r.withId(id).withAnnenPart(annenPart);
     }
 
     private PDLSøker oppslagSøker(String id) {
@@ -84,21 +85,21 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return p.withId(id);
     }
 
-    private PDLAnnenForelder oppslagAnnenForelder(String id) {
-        LOG.info("PDL annen forelder oppslag med id {}", id);
-        var a = systemClient.post(ANNEN_FORELDER_QUERY, idFra(id), PDLAnnenForelder.class).block();
-        LOG.info("PDL oppslag av annen forelder er {}", a);
+    private PDLAnnenPart oppslagAnnenPart(String id) {
+        LOG.info("PDL annen part oppslag med id {}", id);
+        var a = systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class).block();
+        LOG.info("PDL annen part oppsla er {}", a);
         return a.withId(id);
     }
 
     public Navn oppslagNavn(String id) {
-        var n = userClient.post("query-navn.graphql", Map.of("ident", id), PDLNavn.class).block();
+        var n = userClient.post(NAVN_QUERY, idFra(id), PDLNavn.class).block();
         LOG.info("PDL navn for {} er {}", id, n);
         return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), null);
     }
 
     private static Map<String, Object> idFra(String id) {
-        return Map.of("ident", id);
+        return Map.of(IDENT, id);
     }
 
     private Bankkonto kontonr() {
@@ -107,12 +108,6 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private String målform() {
         return getForObject(cfg.getMaalformURI(), String.class);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", tokenUtil=" + tokenUtil + ", cfg="
-                + cfg + "]";
     }
 
     @Override
@@ -129,5 +124,11 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     @Override
     public String name() {
         return cfg.name();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", tokenUtil=" + tokenUtil + ", cfg="
+                + cfg + "]";
     }
 }
