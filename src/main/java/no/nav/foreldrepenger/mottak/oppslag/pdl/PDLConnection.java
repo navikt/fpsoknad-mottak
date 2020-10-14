@@ -81,18 +81,19 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private PDLSøker oppslagSøker(String id) {
         LOG.info("PDL person oppslag med id {}", id);
         var p = userClient.post(SØKER_QUERY, idFra(id), PDLSøker.class).block();
-        LOG.info("PDL oppslag av person er {}", p);
+        LOG.info("PDL oppslag av person med id {} er {}", id, p);
         return p.withId(id);
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
         LOG.info("PDL annen part oppslag med id {}", id);
         var a = systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class).block();
-        LOG.info("PDL annen part oppsla er {}", a);
+        LOG.info("PDL annen part oppslag med id {} er {}", id, a);
         return a.withId(id);
     }
 
     public Navn oppslagNavn(String id) {
+        LOG.info("PDL navn oppslag med id {}", id);
         var n = userClient.post(NAVN_QUERY, idFra(id), PDLNavn.class).block();
         LOG.info("PDL navn for {} er {}", id, n);
         return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), null);
