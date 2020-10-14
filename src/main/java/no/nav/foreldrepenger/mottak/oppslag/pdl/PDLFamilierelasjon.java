@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-@Data class PDLFamilierelasjon {
+@Data
+class PDLFamilierelasjon {
 
     private final String id;
     private final PDLFamilierelasjon.PDLRelasjonsRolle relatertPersonrolle;

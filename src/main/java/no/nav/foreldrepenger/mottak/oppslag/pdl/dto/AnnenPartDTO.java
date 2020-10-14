@@ -3,8 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl.dto;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Builder;
 import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -13,7 +11,6 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 @Data
 public class AnnenPartDTO {
     private final String fnr;
-    @JsonIgnore
     private final Navn navn;
     private final LocalDate fødselsdato;
 

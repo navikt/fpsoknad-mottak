@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-@Data class PDLNavn {
+@Data
+class PDLNavn {
     private final String fornavn;
     private final String mellomnavn;
     private final String etternavn;

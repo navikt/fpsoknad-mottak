@@ -49,7 +49,7 @@ class PDLMapper {
                 .collect(toSet());
     }
 
-    private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
+    static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         LOG.info("Mapper barn {} {}", barn.getId(), barn);
         var b = BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
@@ -61,7 +61,7 @@ class PDLMapper {
         return b;
     }
 
-    private static AnnenPartDTO annenPartFra(PDLAnnenPart annen) {
+    static AnnenPartDTO annenPartFra(PDLAnnenPart annen) {
         LOG.info("Mapper annen part {}", annen);
         var an = Optional.ofNullable(annen)
                 .map(a -> AnnenPartDTO.builder()
@@ -94,7 +94,7 @@ class PDLMapper {
         return navnFra(onlyElem(navn), onlyElem(kjønn));
     }
 
-    private static Navn navnFra(PDLNavn n, PDLKjønn k) {
+    static Navn navnFra(PDLNavn n, PDLKjønn k) {
         return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), kjønnFra(k));
 
     }
