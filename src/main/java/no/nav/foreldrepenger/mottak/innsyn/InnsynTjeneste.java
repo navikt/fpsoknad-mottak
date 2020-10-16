@@ -181,7 +181,7 @@ public class InnsynTjeneste implements Innsyn {
             LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
             Fødselsnummer fnr = fnr(aktørId);
             LOG.trace(CONFIDENTIAL, "Fikk {}", fnr);
-            return new AnnenPart(fnr, null, aktørId, navnFor(fnr));
+            return new AnnenPart(fnr, aktørId, navnFor(fnr), null);
         }
         return null;
     }

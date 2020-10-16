@@ -160,7 +160,7 @@ public class PDLSerializationTest {
     }
 
     private static AnnenPart annenPart() {
-        return new AnnenPart(FNR_ANNEN, AKTØR_ANNEN, mannsNavn());
+        return new AnnenPart(FNR_ANNEN, AKTØR_ANNEN, mannsNavn(), ANNENFØDT);
     }
 
     private static PDLBarn pdlBarn() {
