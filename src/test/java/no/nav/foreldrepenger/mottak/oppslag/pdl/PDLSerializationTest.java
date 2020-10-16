@@ -164,7 +164,7 @@ public class PDLSerializationTest {
     }
 
     private static PDLBarn pdlBarn() {
-        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), Set.of(barnPDLNavn()), Set.of(pdlMann())).withAnnenPart(pdlAnnenPart());
+        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann()).withAnnenPart(pdlAnnenPart());
     }
 
     private static Set<PDLFødsel> fødsel(LocalDate født) {
@@ -182,6 +182,7 @@ public class PDLSerializationTest {
                 .fnr(FNR_BARN)
                 .fnrSøker(FNR_SØKER)
                 .fødselsdato(BARNFØDT)
+                .navn(barnsNavn())
                 .annenPart(annenPart())
                 .build();
     }
@@ -190,8 +191,8 @@ public class PDLSerializationTest {
         return Set.of(new PDLStatsborgerskap(CountryCode.NO.getAlpha3()));
     }
 
-    private static PDLKjønn pdlMann() {
-        return new PDLKjønn(MANN);
+    private static Set<PDLKjønn> pdlMann() {
+        return Set.of(new PDLKjønn(MANN));
     }
 
     private static Set<PDLKjønn> pdlKvinne() {
@@ -218,8 +219,8 @@ public class PDLSerializationTest {
         return new PDLNavn("Ole", "Olemann", "Olsen");
     }
 
-    private static PDLNavn barnPDLNavn() {
-        return new PDLNavn("Barn", "Barnslig", "Barnesen");
+    private static Set<PDLNavn> barnPDLNavn() {
+        return Set.of(new PDLNavn("Barn", "Barnslig", "Barnesen"));
     }
 
     private static Bankkonto bankkonto() {

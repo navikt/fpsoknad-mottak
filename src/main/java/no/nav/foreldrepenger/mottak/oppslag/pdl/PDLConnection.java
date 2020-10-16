@@ -74,8 +74,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         LOG.info("PDL oppslag av barn er {}", r);
         String annenPartId = r.annenPart(fnrSøker);
         LOG.info("PDL oppslag annen part er {}", annenPartId);
-        var annenPart = oppslagAnnenPart(annenPartId);
-        r.withId(id).withAnnenPart(annenPart);
+        r.withId(id).withAnnenPart(oppslagAnnenPart(annenPartId));
         LOG.info("PDL barn oppslag er", r);
         return r;
 
