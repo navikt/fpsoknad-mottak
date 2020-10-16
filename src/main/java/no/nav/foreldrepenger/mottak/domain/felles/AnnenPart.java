@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,13 +16,15 @@ public class AnnenPart {
     private final Fødselsnummer fnr;
     private final AktørId aktørId;
     private final Navn navn;
+    private final LocalDate fødselsdato;
 
     @JsonCreator
-    public AnnenPart(@JsonProperty("fnr") Fødselsnummer fnr, @JsonProperty("aktørId") AktørId aktørId,
+    public AnnenPart(@JsonProperty("fnr") Fødselsnummer fnr, @JsonProperty("fødselsdato") LocalDate fødselsdato,
+            @JsonProperty("aktørId") AktørId aktørId,
             @JsonProperty("navn") Navn navn) {
-        super();
         this.fnr = fnr;
         this.aktørId = aktørId;
         this.navn = navn;
+        this.fødselsdato = fødselsdato;
     }
 }

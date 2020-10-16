@@ -70,7 +70,8 @@ class PDLMapper {
 
     static AnnenPart annenPartFra(PDLAnnenPart annen) {
         LOG.info("Mapper annen part {}", annen);
-        var an = new AnnenPart(Fødselsnummer.valueOf(annen.getId()), null, navnFra(annen.getNavn(), annen.getKjønn()));
+        var an = new AnnenPart(Fødselsnummer.valueOf(annen.getId()), fødselsdatoFra(annen.getFødselsdato()),
+                null, navnFra(annen.getNavn(), annen.getKjønn())); // TODO
         LOG.info("Mappet annen part til {}", an);
         return an;
     }
