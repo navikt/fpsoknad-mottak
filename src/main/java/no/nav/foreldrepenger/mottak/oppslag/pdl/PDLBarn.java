@@ -13,13 +13,19 @@ class PDLBarn {
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private String id;
+    private final Set<PDLNavn> navn;
+    private final Set<PDLKjønn> kjønn;
+
     private PDLAnnenPart annenPart;
 
     @JsonCreator
     PDLBarn(@JsonProperty("foedsel") Set<PDLFødsel> fødselsdato,
-            @JsonProperty("familierelasjoner") Set<PDLFamilierelasjon> familierelasjoner) {
+            @JsonProperty("familierelasjoner") Set<PDLFamilierelasjon> familierelasjoner, @JsonProperty("navn") Set<PDLNavn> navn,
+            @JsonProperty("kjoenn") Set<PDLKjønn> kjønn) {
         this.fødselsdato = fødselsdato;
         this.familierelasjoner = familierelasjoner;
+        this.navn = navn;
+        this.kjønn = kjønn;
     }
 
     String annenPart(String fnrSøker) {

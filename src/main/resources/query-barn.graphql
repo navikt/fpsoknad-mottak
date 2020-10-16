@@ -3,6 +3,14 @@ query($ident: ID!){
     foedsel {
         foedselsdato 
     },
+    navn {
+	  fornavn
+	  mellomnavn
+	  etternavn
+    },
+    kjoenn {
+        kjoenn
+    },
     familierelasjoner {
         relatertPersonsIdent
         relatertPersonsRolle

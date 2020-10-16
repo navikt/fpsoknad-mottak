@@ -61,6 +61,7 @@ class PDLMapper {
         var b = BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
+                .navn(navnFra(barn.getNavn(), barn.getKjønn()))
                 .fødselsdato(fødselsdatoFra(barn.getFødselsdato()))
                 .annenPart(annenPartFra(barn.getAnnenPart()))
                 .build();
