@@ -164,7 +164,7 @@ public class PDLSerializationTest {
     }
 
     private static PDLBarn pdlBarn() {
-        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner()).withAnnenPart(pdlAnnenPart());
+        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), Set.of(barnPDLNavn()), Set.of(pdlMann())).withAnnenPart(pdlAnnenPart());
     }
 
     private static Set<PDLFødsel> fødsel(LocalDate født) {
@@ -202,6 +202,10 @@ public class PDLSerializationTest {
         return new Navn("Ole", "Olemann", "Olsen", M);
     }
 
+    private static Navn barnsNavn() {
+        return new Navn("Barn", "Barnslig", "Barnesen", M);
+    }
+
     private static Navn kvinneNavn() {
         return new Navn("Mor", "Mellommor", "Morsen", K);
     }
@@ -212,6 +216,10 @@ public class PDLSerializationTest {
 
     private static PDLNavn mannsPDLNavn() {
         return new PDLNavn("Ole", "Olemann", "Olsen");
+    }
+
+    private static PDLNavn barnPDLNavn() {
+        return new PDLNavn("Barn", "Barnslig", "Barnesen");
     }
 
     private static Bankkonto bankkonto() {
