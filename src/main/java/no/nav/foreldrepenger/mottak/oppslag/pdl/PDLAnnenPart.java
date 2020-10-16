@@ -22,7 +22,7 @@ class PDLAnnenPart {
         this.kjønn = kjønn;
     }
 
-    PDLAnnenPart withId(String id) {
+    public PDLAnnenPart withId(String id) {
         this.id = id;
         return this;
     }

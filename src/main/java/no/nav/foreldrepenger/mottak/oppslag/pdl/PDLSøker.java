@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -15,7 +14,7 @@ class PDLSøker {
     private final Set<PDLStatsborgerskap> statsborgerskap;
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLFamilierelasjon> familierelasjoner;
-    private final List<PDLSivilstand> sivilstand;
+    private final Set<PDLSivilstand> sivilstand;
     private String id;
 
     @JsonCreator
@@ -24,7 +23,7 @@ class PDLSøker {
             @JsonProperty("statsborgerskap") Set<PDLStatsborgerskap> statsborgerskap,
             @JsonProperty("foedsel") Set<PDLFødsel> fødselsdato,
             @JsonProperty("familierelasjoner") Set<PDLFamilierelasjon> familierelasjoner,
-            @JsonProperty("sivilstand") List<PDLSivilstand> sivilstand) {
+            @JsonProperty("sivilstand") Set<PDLSivilstand> sivilstand) {
         this.navn = navn;
         this.kjønn = kjønn;
         this.statsborgerskap = statsborgerskap;
