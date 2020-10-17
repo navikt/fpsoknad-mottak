@@ -31,7 +31,7 @@ class PDLMapper {
     }
 
     static SøkerDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker p) {
-        LOG.info("Mapper søker {} {} {} {} {}", fnrSøker, målform, bankkonto, barn, p);
+        LOG.info("Mapper søker fnr={} målform={} bankkonto={} barn={} person?{}", fnrSøker, målform, bankkonto, barn, p);
         var s = SøkerDTO.builder()
                 .id(fnrSøker)
                 .landKode(landkodeFra(p.getStatsborgerskap()))
