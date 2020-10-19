@@ -1,9 +1,12 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -28,7 +31,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
-import no.nav.foreldrepenger.mottak.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -78,17 +80,24 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .filter(b -> b.getRelatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(p.getId(), b.getId()))
-                .filter(PDLConnection::erBerettiget)
-                .filter(PDLConnection::erIkkeBeskyttet)
+                .filter(PDLConnection::erNyligFØdt)
+                .filter(not(PDLConnection::erBeskyttet))
+                .filter(not(PDLConnection::erDød))
                 .collect(toSet());
     }
 
-    private static boolean erIkkeBeskyttet(PDLBarn b) {
-        return StreamUtil.onlyElem(b.getBeskyttelse()).getGradering().equals(PDLAdresseGradering.UGRADERT);
+    private static boolean erDød(PDLBarn b) {
+        return safeStream(b.getDødsfall())
+                .map(PDLDødsfall::getDødsdato)
+                .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(4)));
     }
 
-    private static boolean erBerettiget(PDLBarn b) {
-        return StreamUtil.onlyElem(b.getFødselsdato()).getFødselsdato().isAfter(LocalDate.now().minusMonths(24));
+    private static boolean erBeskyttet(PDLBarn b) {
+        return !onlyElem(b.getBeskyttelse()).getGradering().equals(PDLAdresseGradering.UGRADERT);
+    }
+
+    private static boolean erNyligFØdt(PDLBarn b) {
+        return onlyElem(b.getFødselsdato()).getFødselsdato().isAfter(LocalDate.now().minusMonths(24));
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
