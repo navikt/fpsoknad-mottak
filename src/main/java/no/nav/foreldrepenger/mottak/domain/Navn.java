@@ -9,7 +9,7 @@ import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 
 @Data
-@JsonPropertyOrder({ "fornavn", "mellomnavn", "etternavn" })
+@JsonPropertyOrder({ "fornavn", "mellomnavn", "etternavn", "kjønn" })
 public class Navn {
 
     private final String fornavn;

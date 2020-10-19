@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
@@ -56,6 +59,11 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         LOG.info("PDL søker {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn, p);
         LOG.info("PDL søker mappet til {}", m);
+        try {
+            LOG.info("JSON " + new ObjectMapper().writeValueAsString(m));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         return m;
     }
 
