@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,7 +41,8 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
     private final GraphQLWebClient userClient;
     private final GraphQLWebClient systemClient;
-
+    @Inject
+    private ObjectMapper mapper;
     private final TokenUtil tokenUtil;
     private PDLConfig cfg;
 
@@ -60,7 +63,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn, p);
         LOG.info("PDL søker mappet til {}", m);
         try {
-            LOG.info("JSON " + new ObjectMapper().writeValueAsString(m));
+            LOG.info("JSON " + mapper.writeValueAsString(m));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
