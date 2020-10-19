@@ -4,6 +4,7 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseGradering.UGRADERT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -74,30 +75,29 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return m;
     }
 
-    private Set<PDLBarn> barn(PDLSøker p) {
-        return p.getFamilierelasjoner()
-                .stream()
+    private Set<PDLBarn> barn(PDLSøker s) {
+        return safeStream(s.getFamilierelasjoner())
                 .filter(b -> b.getRelatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
-                .map(b -> oppslagBarn(p.getId(), b.getId()))
-                .filter(PDLConnection::erNyligFØdt)
+                .map(b -> oppslagBarn(s.getId(), b.getId()))
+                .filter(this::erNyligFødt)
                 .filter(not(PDLConnection::erBeskyttet))
-                .filter(not(PDLConnection::erDød))
+                .filter(not(this::erNyligDød))
                 .collect(toSet());
     }
 
-    private static boolean erDød(PDLBarn b) {
+    private boolean erNyligDød(PDLBarn b) {
         return safeStream(b.getDødsfall())
                 .map(PDLDødsfall::getDødsdato)
-                .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(4)));
+                .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(cfg.getDødSjekk())));
     }
 
     private static boolean erBeskyttet(PDLBarn b) {
-        return !onlyElem(b.getBeskyttelse()).getGradering().equals(PDLAdresseGradering.UGRADERT);
+        return !onlyElem(b.getBeskyttelse()).getGradering().equals(UGRADERT);
     }
 
-    private static boolean erNyligFØdt(PDLBarn b) {
-        return onlyElem(b.getFødselsdato()).getFødselsdato().isAfter(LocalDate.now().minusMonths(24));
+    private boolean erNyligFødt(PDLBarn b) {
+        return onlyElem(b.getFødselsdato()).getFødselsdato().isAfter(LocalDate.now().minusMonths(cfg.getBarnFødtInnen()));
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {

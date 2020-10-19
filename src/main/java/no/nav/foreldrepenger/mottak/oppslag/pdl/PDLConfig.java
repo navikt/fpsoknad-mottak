@@ -17,15 +17,29 @@ public class PDLConfig extends AbstractConfig {
 
     private final URI kontonummerURI;
     private final URI maalformURI;
+    private final int barnFødtInnen;
+    private final int dødSjekk;
 
     @ConstructorBinding
     public PDLConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_BASE_URI) URI baseUri, @DefaultValue(DEFAULT_KONTONR_URI) URI kontonummerURI,
-            @DefaultValue(DEFAULT_MAALFORM_URI) URI maalformUri) {
+            @DefaultValue(DEFAULT_MAALFORM_URI) URI maalformUri,
+            @DefaultValue("24") int barnFødtInnen,
+            @DefaultValue("4") int dødSjekk) {
         super(baseUri, pingPath, enabled);
         this.kontonummerURI = kontonummerURI;
         this.maalformURI = maalformUri;
+        this.barnFødtInnen = barnFødtInnen;
+        this.dødSjekk = dødSjekk;
+    }
+
+    public int getBarnFødtInnen() {
+        return barnFødtInnen;
+    }
+
+    public int getDødSjekk() {
+        return dødSjekk;
     }
 
     public URI getKontonummerURI() {
