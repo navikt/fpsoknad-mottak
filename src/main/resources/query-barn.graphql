@@ -11,6 +11,9 @@ query($ident: ID!){
     kjoenn {
         kjoenn
     },
+    adressebeskyttelse {
+        gradering
+    },
     familierelasjoner {
         relatertPersonsIdent
         relatertPersonsRolle
