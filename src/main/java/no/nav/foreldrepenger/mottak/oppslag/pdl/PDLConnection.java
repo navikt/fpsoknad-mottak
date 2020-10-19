@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -27,6 +28,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
+import no.nav.foreldrepenger.mottak.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -76,7 +78,12 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .filter(b -> b.getRelatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(p.getId(), b.getId()))
+                .filter(PDLConnection::erBerettiget)
                 .collect(toSet());
+    }
+
+    private static boolean erBerettiget(PDLBarn b) {
+        return StreamUtil.onlyElem(b.getFødselsdato()).getFødselsdato().isAfter(LocalDate.now().minusMonths(24));
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {

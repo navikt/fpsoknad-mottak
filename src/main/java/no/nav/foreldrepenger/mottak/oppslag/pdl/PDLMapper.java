@@ -57,10 +57,7 @@ class PDLMapper {
     }
 
     static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
-        if (!erBerettiget(barn)) {
-            LOG.info("barn {} ikke berettiget", barn.getId());
-            return null;
-        }
+
         LOG.info("Mapper berettiget barn {} {}", barn.getId(), barn);
         var b = BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(barn.getId()))
@@ -71,10 +68,6 @@ class PDLMapper {
                 .build();
         LOG.info("Mappet barn til {}", b);
         return b;
-    }
-
-    private static boolean erBerettiget(PDLBarn b) {
-        return fødselsdatoFra(b.getFødselsdato()).isAfter(LocalDate.now().minusMonths(24));
     }
 
     static AnnenPart annenPartFra(PDLAnnenPart annen) {
