@@ -164,7 +164,7 @@ public class PDLSerializationTest {
     }
 
     private static PDLBarn pdlBarn() {
-        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann(), null).withAnnenPart(pdlAnnenPart());
+        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann(), null, null).withAnnenPart(pdlAnnenPart());
     }
 
     private static Set<PDLFødsel> fødsel(LocalDate født) {

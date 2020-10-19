@@ -79,7 +79,12 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(p.getId(), b.getId()))
                 .filter(PDLConnection::erBerettiget)
+                .filter(PDLConnection::erIkkeBeskyttet)
                 .collect(toSet());
+    }
+
+    private static boolean erIkkeBeskyttet(PDLBarn b) {
+        return StreamUtil.onlyElem(b.getBeskyttelse()).getGradering().equals(PDLAdresseGradering.UGRADERT);
     }
 
     private static boolean erBerettiget(PDLBarn b) {
@@ -152,4 +157,5 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", tokenUtil=" + tokenUtil + ", cfg="
                 + cfg + "]";
     }
+
 }
