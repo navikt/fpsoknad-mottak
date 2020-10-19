@@ -65,7 +65,7 @@ class PDLMapper {
                 .fødselsdato(fødselsdatoFra(barn.getFødselsdato()))
                 .annenPart(annenPartFra(barn.getAnnenPart()))
                 .build();
-        LOG.info("Mappet barn til {}", barn);
+        LOG.info("Mappet barn til {}", b);
         return b;
     }
 

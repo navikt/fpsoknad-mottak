@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl.dto;
 import java.time.LocalDate;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Builder;
@@ -22,7 +21,6 @@ public class SøkerDTO {
     private final LocalDate fødselsdato;
     private final String målform;
     private final Bankkonto bankkonto;
-    @JsonUnwrapped
     private final Navn navn;
     private final Set<BarnDTO> barn;
 }
