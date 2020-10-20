@@ -7,19 +7,29 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestOperations;
 
+import graphql.kickstart.spring.webclient.boot.GraphQLError;
+import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
@@ -63,6 +73,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .filter(b -> b.getRelatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(s.getId(), b.getId()))
+                .filter(Objects::nonNull)
                 .filter(this::erNyligFødt)
                 .filter(not(PDLBarn::erBeskyttet))
                 .filter(not(this::erNyligDød))
@@ -81,8 +92,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
         LOG.info("PDL barn oppslag med id {} for søker {}", id, fnrSøker);
-        var r = systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block();
-        r.withId(id);
+        var r = oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block().withId(id));
         LOG.info("PDL oppslag av barn er {}", r);
         String annenPartId = r.annenPart(fnrSøker);
         if (annenPartId != null) {
@@ -91,7 +101,6 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         } else {
             LOG.info("Ingen annen part for søker={} barn={}", fnrSøker, id);
         }
-
         LOG.info("PDL barn oppslag er", r);
         return r;
 
@@ -109,6 +118,37 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         var a = systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block();
         LOG.info("PDL annen part oppslag med id {} er {}", id, a);
         return a.withId(id);
+    }
+
+    private <T> T oppslag(Supplier<T> oppslag) {
+        try {
+            return oppslag.get();
+        } catch (GraphQLErrorsException e) {
+            throw httpExceptionFra(e);
+        }
+    }
+
+    private HttpStatusCodeException httpExceptionFra(GraphQLErrorsException e) {
+        return new HttpStatusCodeException(e.getErrors().stream()
+                .findFirst()
+                .map(GraphQLError::getExtensions)
+                .map(m -> m.get("code"))
+                .filter(Objects::nonNull)
+                .map(String.class::cast)
+                .map(this::statusFra)
+                .orElse(BAD_REQUEST), e.getMessage()) {
+        };
+    }
+
+    private HttpStatus statusFra(String kode) {
+        return switch (kode) {
+            case "unauthenticated" -> UNAUTHORIZED;
+            case "unauthorized" -> FORBIDDEN;
+            case "bad_request" -> BAD_REQUEST;
+            case "not_found" -> NOT_FOUND;
+            case "server_error" -> INTERNAL_SERVER_ERROR;
+            default -> BAD_REQUEST;
+        };
     }
 
     public Navn oppslagNavn(String id) {
