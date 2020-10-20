@@ -146,8 +146,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
             case "unauthorized" -> FORBIDDEN;
             case "bad_request" -> BAD_REQUEST;
             case "not_found" -> NOT_FOUND;
-            case "server_error" -> INTERNAL_SERVER_ERROR;
-            default -> BAD_REQUEST;
+            default -> INTERNAL_SERVER_ERROR;
         };
     }
 
