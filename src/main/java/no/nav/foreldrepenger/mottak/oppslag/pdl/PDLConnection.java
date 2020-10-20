@@ -120,7 +120,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return new HttpStatusCodeException(e.getErrors().stream()
                 .findFirst()
                 .map(GraphQLError::getExtensions)
-                .map(m -> m.get("code"))
+                .map(m -> m.get("kode"))
                 .filter(Objects::nonNull)
                 .map(String.class::cast)
                 .map(this::statusFra)
@@ -129,6 +129,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private HttpStatus statusFra(String kode) {
+        LOG.info("Oversetter kode  {}", kode);
         return switch (kode) {
             case "unauthenticated" -> UNAUTHORIZED;
             case "unauthorized" -> FORBIDDEN;
