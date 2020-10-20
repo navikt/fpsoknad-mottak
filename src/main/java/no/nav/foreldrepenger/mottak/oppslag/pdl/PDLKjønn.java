@@ -10,7 +10,7 @@ class PDLKjønn {
     private final PDLKjønn.Kjønn kjønn;
 
     @JsonCreator
-    public PDLKjønn(@JsonProperty("kjoenn") PDLKjønn.Kjønn kjønn) {
+    PDLKjønn(@JsonProperty("kjoenn") PDLKjønn.Kjønn kjønn) {
         this.kjønn = kjønn;
     }
 

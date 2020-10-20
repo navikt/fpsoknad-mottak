@@ -13,7 +13,7 @@ class PDLFamilierelasjon {
     private final PDLFamilierelasjon.PDLRelasjonsRolle minRolle;
 
     @JsonCreator
-    public PDLFamilierelasjon(@JsonProperty("relatertPersonsIdent") String id,
+    PDLFamilierelasjon(@JsonProperty("relatertPersonsIdent") String id,
             @JsonProperty("relatertPersonsRolle") PDLFamilierelasjon.PDLRelasjonsRolle relatertPersonrolle,
             @JsonProperty("minRolleForPerson") PDLFamilierelasjon.PDLRelasjonsRolle minRolle) {
         this.id = id;

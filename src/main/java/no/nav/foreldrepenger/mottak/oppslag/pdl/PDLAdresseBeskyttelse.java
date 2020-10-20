@@ -3,15 +3,15 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PDLAdresseBeskyttelse {
+class PDLAdresseBeskyttelse {
     private final PDLAdresseGradering gradering;
 
     @JsonCreator
-    public PDLAdresseBeskyttelse(@JsonProperty("gradering") PDLAdresseGradering gradering) {
+    PDLAdresseBeskyttelse(@JsonProperty("gradering") PDLAdresseGradering gradering) {
         this.gradering = gradering;
     }
 
-    public PDLAdresseGradering getGradering() {
+    PDLAdresseGradering getGradering() {
         return gradering;
     }
 

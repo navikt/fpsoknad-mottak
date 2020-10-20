@@ -8,11 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class PDLDødsfall {
+class PDLDødsfall {
     private final LocalDate dødsdato;
 
     @JsonCreator
-    public PDLDødsfall(@JsonProperty("doedsdato") LocalDate dødsdato) {
+    PDLDødsfall(@JsonProperty("doedsdato") LocalDate dødsdato) {
         this.dødsdato = dødsdato;
     }
 }

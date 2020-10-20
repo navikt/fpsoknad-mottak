@@ -10,7 +10,7 @@ class PDLStatsborgerskap {
     private final String land;
 
     @JsonCreator
-    public PDLStatsborgerskap(@JsonProperty("land") String land) {
+    PDLStatsborgerskap(@JsonProperty("land") String land) {
         this.land = land;
     }
 }

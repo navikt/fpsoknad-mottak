@@ -17,7 +17,7 @@ class PDLAnnenPart {
     private String id;
 
     @JsonCreator
-    public PDLAnnenPart(@JsonProperty("navn") Set<PDLNavn> navn, @JsonProperty("foedsel") Set<PDLFødsel> fødselsdato,
+    PDLAnnenPart(@JsonProperty("navn") Set<PDLNavn> navn, @JsonProperty("foedsel") Set<PDLFødsel> fødselsdato,
             @JsonProperty("kjoenn") Set<PDLKjønn> kjønn, @JsonProperty("doedsfall") Set<PDLDødsfall> dødsfall) {
         this.navn = navn;
         this.fødselsdato = fødselsdato;
@@ -25,7 +25,7 @@ class PDLAnnenPart {
         this.dødsfall = dødsfall;
     }
 
-    public PDLAnnenPart withId(String id) {
+    PDLAnnenPart withId(String id) {
         this.id = id;
         return this;
     }

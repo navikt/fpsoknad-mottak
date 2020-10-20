@@ -12,7 +12,7 @@ class PDLFødsel {
     private final LocalDate fødselsdato;
 
     @JsonCreator
-    public PDLFødsel(@JsonProperty("foedselsdato") LocalDate fødselsdato) {
+    PDLFødsel(@JsonProperty("foedselsdato") LocalDate fødselsdato) {
         this.fødselsdato = fødselsdato;
     }
 }

@@ -49,7 +49,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private final TokenUtil tokenUtil;
     private PDLConfig cfg;
 
-    public PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
+    PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
             RestOperations restOperations, PDLConfig cfg, TokenUtil tokenUtil) {
         super(restOperations, cfg);
         this.userClient = userClient;
@@ -58,7 +58,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         this.cfg = cfg;
     }
 
-    public SøkerDTO hentSøker() {
+    SøkerDTO hentSøker() {
         var p = oppslagSøker(tokenUtil.getSubject());
         LOG.info("PDL søker {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
         var barn = barn(p);

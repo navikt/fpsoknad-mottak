@@ -18,7 +18,8 @@ public class PDLTjeneste implements RetryAware {
         return connection.hentSøker();
     }
 
-    /*
-     * public Navn navn(String id) { return connection.oppslagNavn(id); }
-     */
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [connection=" + connection + "]";
+    }
 }

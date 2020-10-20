@@ -12,7 +12,7 @@ class PDLNavn {
     private final String etternavn;
 
     @JsonCreator
-    public PDLNavn(@JsonProperty("fornavn") String fornavn, @JsonProperty("mellomnavn") String mellomnavn,
+    PDLNavn(@JsonProperty("fornavn") String fornavn, @JsonProperty("mellomnavn") String mellomnavn,
             @JsonProperty("etternavn") String etternavn) {
         this.fornavn = fornavn;
         this.mellomnavn = mellomnavn;

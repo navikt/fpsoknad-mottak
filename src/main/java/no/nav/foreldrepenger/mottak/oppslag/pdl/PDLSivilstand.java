@@ -11,7 +11,7 @@ class PDLSivilstand {
     private final String relatertVedSivilstand;
 
     @JsonCreator
-    public PDLSivilstand(@JsonProperty("type") PDLSivilstand.PDLSivilstandType type,
+    PDLSivilstand(@JsonProperty("type") PDLSivilstand.PDLSivilstandType type,
             @JsonProperty("relatertVedSivilstand") String relatertVedSivilstand) {
         this.type = type;
         this.relatertVedSivilstand = relatertVedSivilstand;
