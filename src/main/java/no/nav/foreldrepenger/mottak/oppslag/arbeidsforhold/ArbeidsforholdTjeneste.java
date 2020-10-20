@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import no.nav.foreldrepenger.mottak.http.RetryAware;
+
 @Service
-public class ArbeidsforholdTjeneste implements Arbeidsforhold {
+public class ArbeidsforholdTjeneste implements RetryAware, Arbeidsforhold {
 
     private final ArbeidsforholdConnection connection;
     private final OrganisasjonConnection orgConnection;

@@ -14,7 +14,7 @@ public class PDLTjeneste implements RetryAware {
         this.connection = connection;
     }
 
-    public SøkerDTO person() {
+    public SøkerDTO søker() {
         return connection.hentSøker();
     }
 
