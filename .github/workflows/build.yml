@@ -41,9 +41,9 @@ jobs:
 
       - name: Bygg, tag og push Docker image
         run: |
-            docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
-            echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
-            docker push $IMAGE_BASE
+          docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
+          echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          docker push ${IMAGE_BASE}
 
       - name: Lukk gamle bygg-issues
         uses: actions/github-script@v3
