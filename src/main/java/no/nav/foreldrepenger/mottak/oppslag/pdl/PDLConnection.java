@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -14,7 +13,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -74,27 +72,17 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(s.getId(), b.getId()))
                 .filter(Objects::nonNull)
-                .filter(this::erNyligFødt)
+                .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
                 .filter(not(PDLBarn::erBeskyttet))
-                .filter(not(this::erNyligDød))
+                .filter(not(b -> b.erNyligDød(cfg.getDødSjekk())))
                 .collect(toSet());
-    }
-
-    private boolean erNyligDød(PDLBarn b) {
-        return safeStream(b.getDødsfall())
-                .map(PDLDødsfall::getDødsdato)
-                .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(cfg.getDødSjekk())));
-    }
-
-    private boolean erNyligFødt(PDLBarn b) {
-        return onlyElem(b.getFødselsdato()).getFødselsdato().isAfter(LocalDate.now().minusMonths(cfg.getBarnFødtInnen()));
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
         LOG.info("PDL barn oppslag med id {} for søker {}", id, fnrSøker);
         var barn = oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block().withId(id));
         LOG.info("PDL oppslag av barn er {}", barn);
-        String annenPartId = r.annenPart(fnrSøker);
+        String annenPartId = barn.annenPart(fnrSøker);
         if (annenPartId != null) {
             LOG.info("PDL oppslag barn annen part er {}", annenPartId);
             barn.withAnnenPart(oppslagAnnenPart(annenPartId));
