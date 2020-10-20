@@ -81,7 +81,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
         LOG.info("PDL barn oppslag med id {} for søker {}", id, fnrSøker);
-        var barn = oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block().withId(id));
+        var barn = oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block());
         LOG.info("PDL oppslag av barn er {}", barn);
         String annenPartId = barn.annenPart(fnrSøker);
         if (annenPartId != null) {
@@ -90,8 +90,8 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         } else {
             LOG.info("Ingen annen part for søker={} barn={}", fnrSøker, id);
         }
-        LOG.info("PDL barn oppslag er", barn);
-        return barn;
+        LOG.info("PDL barn oppslag med id {} er", id, barn);
+        return barn.withId(id);
 
     }
 
@@ -124,11 +124,11 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .map(m -> m.get("code"))
                 .filter(Objects::nonNull)
                 .map(String.class::cast)
-                .map(k -> PDLConnection.statusFra(k, e.getMessage()))
-                .orElse(create(BAD_REQUEST, e.getMessage(), null, null, null));
+                .map(k -> PDLConnection.exceptionFra(k, e.getMessage()))
+                .orElse(new HttpServerErrorException(INTERNAL_SERVER_ERROR, e.getMessage(), null, null, null));
     }
 
-    private static HttpStatusCodeException statusFra(String kode, String message) {
+    private static HttpStatusCodeException exceptionFra(String kode, String message) {
         LOG.info("Oversetter kode  {}", kode);
         return switch (kode) {
             case "unauthenticated" -> create(UNAUTHORIZED, message, null, null, null);
