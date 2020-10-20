@@ -120,7 +120,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return new HttpStatusCodeException(e.getErrors().stream()
                 .findFirst()
                 .map(GraphQLError::getExtensions)
-                .map(m -> m.get("kode"))
+                .map(m -> m.get("code"))
                 .filter(Objects::nonNull)
                 .map(String.class::cast)
                 .map(this::statusFra)
