@@ -124,12 +124,11 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .map(m -> m.get("code"))
                 .filter(Objects::nonNull)
                 .map(String.class::cast)
-                .map(k -> PDLConnection.exceptionFra(k, e.getMessage()))
+                .map(k -> exceptionFra(k, e.getMessage()))
                 .orElse(new HttpServerErrorException(INTERNAL_SERVER_ERROR, e.getMessage(), null, null, null));
     }
 
     private static HttpStatusCodeException exceptionFra(String kode, String message) {
-        LOG.info("Oversetter kode  {}", kode);
         return switch (kode) {
             case "unauthenticated" -> create(UNAUTHORIZED, message, null, null, null);
             case "unauthorized" -> create(FORBIDDEN, message, null, null, null);
