@@ -119,7 +119,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private static HttpStatusCodeException httpExceptionFra(GraphQLErrorsException e) {
-        return e.getErrors().stream()
+        return safeStream(e.getErrors())
                 .findFirst()
                 .map(GraphQLError::getExtensions)
                 .map(m -> m.get("code"))
