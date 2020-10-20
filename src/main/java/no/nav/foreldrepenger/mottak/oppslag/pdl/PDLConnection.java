@@ -97,16 +97,16 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private PDLSøker oppslagSøker(String id) {
         LOG.info("PDL person oppslag med id {}", id);
-        var p = oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block());
-        LOG.info("PDL oppslag av person med id {} er {}", id, p);
-        return p.withId(id);
+        var søker = oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block());
+        LOG.info("PDL oppslag av person med id {} er {}", id, søker);
+        return søker.withId(id);
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
         LOG.info("PDL annen part oppslag med id {}", id);
-        var a = oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block());
-        LOG.info("PDL annen part oppslag med id {} er {}", id, a);
-        return a.withId(id);
+        var annenPart = oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block());
+        LOG.info("PDL annen part oppslag med id {} er {}", id, annenPart);
+        return annenPart.withId(id);
     }
 
     private static <T> T oppslag(Supplier<T> oppslag) {
