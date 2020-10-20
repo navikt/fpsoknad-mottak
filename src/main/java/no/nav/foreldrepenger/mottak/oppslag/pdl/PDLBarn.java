@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseGradering.UGRADERT;
+import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
+
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -55,5 +58,9 @@ class PDLBarn {
 
     String getId() {
         return id;
+    }
+
+    boolean erBeskyttet() {
+        return !onlyElem(getBeskyttelse()).getGradering().equals(UGRADERT);
     }
 }

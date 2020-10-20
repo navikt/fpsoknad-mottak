@@ -8,6 +8,9 @@ query($ident: ID!){
     kjoenn {
         kjoenn
     },
+    doedsfall {
+       doedsdato
+    },
     foedsel {
         foedselsdato 
     }

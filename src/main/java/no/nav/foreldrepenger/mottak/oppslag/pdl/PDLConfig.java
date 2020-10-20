@@ -15,6 +15,11 @@ public class PDLConfig extends AbstractConfig {
     private static final String DEFAULT_KONTONR_URI = "http://fpsoknad-oppslag/api/person/kontonr";
     private static final String DEFAULT_MAALFORM_URI = "http://fpsoknad-oppslag/api/person/maalform";
 
+    private static final String NAVN_QUERY = "query-navn.graphql";
+    private static final String BARN_QUERY = "query-barn.graphql";
+    private static final String SØKER_QUERY = "query-person.graphql";
+    private static final String ANNEN_PART_QUERY = "query-annen-forelder.graphql";
+
     private final URI kontonummerURI;
     private final URI maalformURI;
     private final int barnFødtInnen;
@@ -32,6 +37,22 @@ public class PDLConfig extends AbstractConfig {
         this.maalformURI = maalformUri;
         this.barnFødtInnen = barnFødtInnen;
         this.dødSjekk = dødSjekk;
+    }
+
+    String navnQuery() {
+        return NAVN_QUERY;
+    }
+
+    String barnQuery() {
+        return BARN_QUERY;
+    }
+
+    String søkerQuery() {
+        return SØKER_QUERY;
+    }
+
+    String annenQuery() {
+        return ANNEN_PART_QUERY;
     }
 
     public int getBarnFødtInnen() {

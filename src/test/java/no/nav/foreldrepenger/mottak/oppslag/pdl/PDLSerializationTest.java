@@ -156,7 +156,7 @@ public class PDLSerializationTest {
     }
 
     private static PDLAnnenPart pdlAnnenPart() {
-        return new PDLAnnenPart(Set.of(mannsPDLNavn()), fødsel(ANNENFØDT), Set.of(mann())).withId(ID_ANNEN);
+        return new PDLAnnenPart(Set.of(mannsPDLNavn()), fødsel(ANNENFØDT), Set.of(mann()), null).withId(ID_ANNEN);
     }
 
     private static AnnenPart annenPart() {
