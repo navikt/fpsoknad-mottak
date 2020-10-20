@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -128,14 +129,18 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .orElse(new HttpServerErrorException(INTERNAL_SERVER_ERROR, e.getMessage(), null, null, null));
     }
 
-    private static HttpStatusCodeException exceptionFra(String kode, String message) {
+    private static HttpStatusCodeException exceptionFra(String kode, String msg) {
         return switch (kode) {
-            case "unauthenticated" -> create(UNAUTHORIZED, message, null, null, null);
-            case "unauthorized" -> create(FORBIDDEN, message, null, null, null);
-            case "bad_request" -> create(BAD_REQUEST, message, null, null, null);
-            case "not_found" -> create(NOT_FOUND, message, null, null, null);
-            default -> new HttpServerErrorException(INTERNAL_SERVER_ERROR, message);
+            case "unauthenticated" -> e(UNAUTHORIZED, msg);
+            case "unauthorized" -> e(FORBIDDEN, msg);
+            case "bad_request" -> e(BAD_REQUEST, msg);
+            case "not_found" -> e(NOT_FOUND, msg);
+            default -> new HttpServerErrorException(INTERNAL_SERVER_ERROR, msg);
         };
+    }
+
+    private static HttpStatusCodeException e(HttpStatus status, String msg) {
+        return create(status, msg, null, null, null);
     }
 
     public Navn oppslagNavn(String id) {
