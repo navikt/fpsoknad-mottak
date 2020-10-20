@@ -16,7 +16,7 @@ public class PDLController {
         this.pdl = pdl;
     }
 
-    @GetMapping(value = "/person")
+    @GetMapping("/person")
     public SøkerDTO person() {
         return pdl.person();
     }

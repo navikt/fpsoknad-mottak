@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.web.client.HttpClientErrorException.create;
 
 import java.net.URI;
 import java.util.Map;
@@ -21,8 +22,8 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestOperations;
 
@@ -108,7 +109,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return a.withId(id);
     }
 
-    private <T> T oppslag(Supplier<T> oppslag) {
+    private static <T> T oppslag(Supplier<T> oppslag) {
         try {
             return oppslag.get();
         } catch (GraphQLErrorsException e) {
@@ -116,26 +117,25 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         }
     }
 
-    private HttpStatusCodeException httpExceptionFra(GraphQLErrorsException e) {
-        return new HttpStatusCodeException(e.getErrors().stream()
+    private static HttpStatusCodeException httpExceptionFra(GraphQLErrorsException e) {
+        return e.getErrors().stream()
                 .findFirst()
                 .map(GraphQLError::getExtensions)
                 .map(m -> m.get("code"))
                 .filter(Objects::nonNull)
                 .map(String.class::cast)
-                .map(this::statusFra)
-                .orElse(BAD_REQUEST), e.getMessage()) {
-        };
+                .map(k -> PDLConnection.statusFra(k, e.getMessage()))
+                .orElse(create(BAD_REQUEST, e.getMessage(), null, null, null));
     }
 
-    private HttpStatus statusFra(String kode) {
+    private static HttpStatusCodeException statusFra(String kode, String message) {
         LOG.info("Oversetter kode  {}", kode);
         return switch (kode) {
-            case "unauthenticated" -> UNAUTHORIZED;
-            case "unauthorized" -> FORBIDDEN;
-            case "bad_request" -> BAD_REQUEST;
-            case "not_found" -> NOT_FOUND;
-            default -> INTERNAL_SERVER_ERROR;
+            case "unauthenticated" -> create(UNAUTHORIZED, message, null, null, null);
+            case "unauthorized" -> create(FORBIDDEN, message, null, null, null);
+            case "bad_request" -> create(BAD_REQUEST, message, null, null, null);
+            case "not_found" -> create(NOT_FOUND, message, null, null, null);
+            default -> new HttpServerErrorException(INTERNAL_SERVER_ERROR, message);
         };
     }
 
