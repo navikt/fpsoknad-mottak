@@ -64,7 +64,7 @@ class PDLBarn {
 
     boolean erNyligDød(int måneder) {
         return safeStream(getDødsfall())
-                .map(PDLDødsfall::dødsdato)
+                .map(PDLDødsfall::getDødsdato)
                 .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(måneder)));
     }
 
