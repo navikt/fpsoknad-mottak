@@ -92,30 +92,30 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
         LOG.info("PDL barn oppslag med id {} for søker {}", id, fnrSøker);
-        var r = oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block().withId(id));
-        LOG.info("PDL oppslag av barn er {}", r);
+        var barn = oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block().withId(id));
+        LOG.info("PDL oppslag av barn er {}", barn);
         String annenPartId = r.annenPart(fnrSøker);
         if (annenPartId != null) {
             LOG.info("PDL oppslag barn annen part er {}", annenPartId);
-            r.withAnnenPart(oppslagAnnenPart(annenPartId));
+            barn.withAnnenPart(oppslagAnnenPart(annenPartId));
         } else {
             LOG.info("Ingen annen part for søker={} barn={}", fnrSøker, id);
         }
-        LOG.info("PDL barn oppslag er", r);
-        return r;
+        LOG.info("PDL barn oppslag er", barn);
+        return barn;
 
     }
 
     private PDLSøker oppslagSøker(String id) {
         LOG.info("PDL person oppslag med id {}", id);
-        var p = userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block();
+        var p = oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block());
         LOG.info("PDL oppslag av person med id {} er {}", id, p);
         return p.withId(id);
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
         LOG.info("PDL annen part oppslag med id {}", id);
-        var a = systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block();
+        var a = oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block());
         LOG.info("PDL annen part oppslag med id {} er {}", id, a);
         return a.withId(id);
     }
