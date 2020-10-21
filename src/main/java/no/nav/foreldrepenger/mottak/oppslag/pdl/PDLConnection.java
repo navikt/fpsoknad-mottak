@@ -6,29 +6,20 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTE
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.web.client.HttpClientErrorException.create;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestOperations;
 
-import graphql.kickstart.spring.webclient.boot.GraphQLError;
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -48,31 +39,29 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private final GraphQLWebClient systemClient;
     private final TokenUtil tokenUtil;
     private PDLConfig cfg;
+    private final PDLErrorResponseHandler errorHandler;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
-            RestOperations restOperations, PDLConfig cfg, TokenUtil tokenUtil) {
+            RestOperations restOperations, PDLConfig cfg, TokenUtil tokenUtil, PDLErrorResponseHandler errorHandler) {
         super(restOperations, cfg);
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.tokenUtil = tokenUtil;
         this.cfg = cfg;
+        this.errorHandler = errorHandler;
     }
 
     SøkerDTO hentSøker() {
-        var p = oppslagSøker(tokenUtil.getSubject());
-        LOG.info("PDL søker {} har {} relasjon(er) {}", tokenUtil.getSubject(), p.getFamilierelasjoner().size(), p.getFamilierelasjoner());
-        var barn = barn(p);
-        LOG.info("PDL søker {} har {} barn {}", tokenUtil.getSubject(), barn.size(), barn);
-        var m = PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn, p);
-        LOG.info("PDL søker mappet til {}", m);
-        return m;
+        return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
+                .map(s -> PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn(s), s))
+                .orElse(null);
     }
 
-    private Set<PDLBarn> barn(PDLSøker s) {
-        return safeStream(s.getFamilierelasjoner())
+    private Set<PDLBarn> barn(PDLSøker søker) {
+        return safeStream(søker.getFamilierelasjoner())
                 .filter(b -> b.getRelatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
-                .map(b -> oppslagBarn(s.getId(), b.getId()))
+                .map(b -> oppslagBarn(søker.getId(), b.getId()))
                 .filter(Objects::nonNull)
                 .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
                 .filter(not(PDLBarn::erBeskyttet))
@@ -80,67 +69,41 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .collect(toSet());
     }
 
-    private PDLBarn oppslagBarn(String fnrSøker, String id) {
-        LOG.info("PDL barn oppslag med id {} for søker {}", id, fnrSøker);
-        var barn = oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block());
-        LOG.info("PDL oppslag av barn er {}", barn);
-        String annenPartId = barn.annenPart(fnrSøker);
-        if (annenPartId != null) {
-            LOG.info("PDL oppslag barn annen part er {}", annenPartId);
-            barn.withAnnenPart(oppslagAnnenPart(annenPartId));
-        } else {
-            LOG.info("Ingen annen part for søker={} barn={}", fnrSøker, id);
-        }
-        LOG.info("PDL barn oppslag med id {} er", id, barn);
-        return barn.withId(id);
+    private PDLSøker oppslagSøker(String id) {
+        return Optional.ofNullable(oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block()))
+                .map(s -> s.withId(id))
+                .orElse(null);
 
     }
 
-    private PDLSøker oppslagSøker(String id) {
-        LOG.info("PDL person oppslag med id {}", id);
-        var søker = oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block());
-        LOG.info("PDL oppslag av person med id {} er {}", id, søker);
-        return søker.withId(id);
+    private PDLBarn oppslagBarn(String fnrSøker, String id) {
+        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block()))
+                .map(b -> medAnnenPart(b, fnrSøker))
+                .map(b -> b.withId(id))
+                .orElse(null);
+    }
+
+    private PDLBarn medAnnenPart(PDLBarn barn, String fnrSøker) {
+        return Optional.ofNullable(barn.annenPart(fnrSøker))
+                .map(id -> barn.withAnnenPart(oppslagAnnenPart(id)))
+                .orElse(barn);
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
-        LOG.info("PDL annen part oppslag med id {}", id);
-        var annenPart = oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block());
-        LOG.info("PDL annen part oppslag med id {} er {}", id, annenPart);
-        return annenPart.withId(id);
+        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block()))
+                .map(a -> a.withId(id))
+                .orElse(null);
     }
 
-    private static <T> T oppslag(Supplier<T> oppslag) {
+    private <T> T oppslag(Supplier<T> oppslag) {
         try {
-            return oppslag.get();
+            LOG.info("PDL oppslag {}", oppslag);
+            var res = oppslag.get();
+            LOG.info("PDL oppslag respons {}", res);
+            return res;
         } catch (GraphQLErrorsException e) {
-            throw httpExceptionFra(e);
+            return errorHandler.handle(e);
         }
-    }
-
-    private static HttpStatusCodeException httpExceptionFra(GraphQLErrorsException e) {
-        return safeStream(e.getErrors())
-                .findFirst()
-                .map(GraphQLError::getExtensions)
-                .map(m -> m.get("code"))
-                .filter(Objects::nonNull)
-                .map(String.class::cast)
-                .map(k -> exceptionFra(k, e.getMessage()))
-                .orElse(new HttpServerErrorException(INTERNAL_SERVER_ERROR, e.getMessage(), null, null, null));
-    }
-
-    private static HttpStatusCodeException exceptionFra(String kode, String msg) {
-        return switch (kode) {
-            case "unauthenticated" -> e(UNAUTHORIZED, msg);
-            case "unauthorized" -> e(FORBIDDEN, msg);
-            case "bad_request" -> e(BAD_REQUEST, msg);
-            case "not_found" -> e(NOT_FOUND, msg);
-            default -> new HttpServerErrorException(INTERNAL_SERVER_ERROR, msg);
-        };
-    }
-
-    private static HttpStatusCodeException e(HttpStatus status, String msg) {
-        return create(status, msg, null, null, null);
     }
 
     public Navn oppslagNavn(String id) {
