@@ -64,7 +64,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .map(b -> oppslagBarn(søker.getId(), b.getId()))
                 .filter(Objects::nonNull)
                 .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
-                .filter(not(PDLBarn::erBeskyttet))
+                .filter(PDLBarn::erIkkeSkjermet)
                 .filter(not(b -> b.erNyligDød(cfg.getDødSjekk())))
                 .collect(toSet());
     }
