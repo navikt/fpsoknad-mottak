@@ -27,7 +27,7 @@ public class PDLConvertingExceptionHandler implements PDLErrorResponseHandler {
 
     @Override
     public <T> T handle(GraphQLErrorsException e) {
-        LOG.warn("PDL oppslag ga feil", e);
+        LOG.warn("PDL oppslag returnerte {} feil", e.getErrors().size(), e);
         throw safeStream(e.getErrors())
                 .findFirst()
                 .map(GraphQLError::getExtensions)
