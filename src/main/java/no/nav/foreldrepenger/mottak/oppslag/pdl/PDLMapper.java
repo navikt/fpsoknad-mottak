@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
+import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.U;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -99,13 +100,12 @@ class PDLMapper {
     }
 
     private static Kjønn kjønnFra(PDLKjønn kjønn) {
-        return switch (kjønn.getKjønn()) {
-            case KVINNE -> K;
-            case MANN -> M;
-            default -> {
-                LOG.warn("Fikk ikke kjønn, antar mann");
-                yield M;
-            }
-        };
+        return Optional.ofNullable(kjønn)
+                .map(k -> switch (k.getKjønn()) {
+                case KVINNE -> K;
+                case MANN -> M;
+                case UKJENT -> U;
+                })
+                .orElse(U);
     }
 }
