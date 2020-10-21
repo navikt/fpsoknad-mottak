@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -72,8 +73,10 @@ class PDLMapper {
 
     static AnnenPart annenPartFra(PDLAnnenPart annen) {
         LOG.info("Mapper annen part {}", annen);
-        var an = new AnnenPart(Fødselsnummer.valueOf(annen.getId()), null, navnFra(annen.getNavn(), annen.getKjønn()),
-                fødselsdatoFra(annen.getFødselsdato())); // TODO aktør
+        var an = Optional.ofNullable(annen)
+                .map(a -> new AnnenPart(Fødselsnummer.valueOf(annen.getId()), null, navnFra(annen.getNavn(), annen.getKjønn()),
+                        fødselsdatoFra(annen.getFødselsdato())))
+                .orElse(null);
         LOG.info("Mappet annen part til {}", an);
         return an;
     }
