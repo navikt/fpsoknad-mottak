@@ -5,7 +5,11 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +19,8 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsR
 
 @Data
 class PDLBarn {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PDLBarn.class);
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private String id;
@@ -63,9 +69,13 @@ class PDLBarn {
     }
 
     boolean erNyligDød(int måneder) {
-        return safeStream(getDødsfall())
+        var nylig = safeStream(getDødsfall())
                 .map(PDLDødsfall::getDødsdato)
+                .filter(Objects::nonNull)
                 .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(måneder)));
+
+        LOG.info("Barn er{}nylig død", nylig ? "" : " IKKE ");
+        return nylig;
     }
 
     boolean erNyligFødt(int måneder) {
