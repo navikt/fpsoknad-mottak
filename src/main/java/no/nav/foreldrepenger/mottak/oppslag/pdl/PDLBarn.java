@@ -73,6 +73,6 @@ class PDLBarn {
     }
 
     boolean erBeskyttet() {
-        return !onlyElem(getBeskyttelse()).getGradering().equals(UGRADERT);
+        return onlyElem(getBeskyttelse()).getGradering().equals(UGRADERT);
     }
 }
