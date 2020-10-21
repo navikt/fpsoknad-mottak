@@ -102,7 +102,10 @@ class PDLMapper {
         return switch (kjønn.getKjønn()) {
             case KVINNE -> K;
             case MANN -> M;
-            default -> null;
+            default -> {
+                LOG.warn("Fikk ikke kjønn, antar mann");
+                yield M;
+            }
         };
     }
 }
