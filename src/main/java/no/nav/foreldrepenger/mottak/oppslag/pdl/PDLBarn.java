@@ -85,9 +85,9 @@ class PDLBarn {
 
     }
 
-    boolean erIkkeSkjermet() {
-        var ikkeSkjermet = onlyElem(getBeskyttelse()).getGradering().equals(UGRADERT);
-        LOG.info("Barn er{}skjermet", ikkeSkjermet ? " IKKE " : " ");
-        return ikkeSkjermet;
+    boolean erSkjermet() {
+        var skjermet = !onlyElem(getBeskyttelse()).getGradering().equals(UGRADERT);
+        LOG.info("Barn er{}skjermet", skjermet ? " " : " IKKE ");
+        return skjermet;
     }
 }
