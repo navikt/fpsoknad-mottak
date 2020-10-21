@@ -34,7 +34,7 @@ class PDLMapper {
     }
 
     static SøkerDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
-        return SøkerDTO.builder()
+        var dto = SøkerDTO.builder()
                 .id(fnrSøker)
                 .landKode(landkodeFra(søker.getStatsborgerskap()))
                 .fødselsdato(fødselsdatoFra(søker.getFødselsdato()))
@@ -44,6 +44,8 @@ class PDLMapper {
                 .kjønn(kjønnFra(søker.getKjønn()))
                 .barn(barnFra(fnrSøker, barn))
                 .build();
+        LOG.info("Returnerer {}", dto);
+        return dto;
     }
 
     static Navn navnFra(Set<PDLNavn> navn, Set<PDLKjønn> kjønn) {

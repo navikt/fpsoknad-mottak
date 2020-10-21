@@ -31,7 +31,7 @@ public class PDLConvertingExceptionHandler implements PDLErrorResponseHandler {
     public <T> T handle(GraphQLErrorsException e) {
         LOG.warn("PDL oppslag returnerte {} feil", e.getErrors().size(), e);
         throw safeStream(e.getErrors())
-                .findFirst()
+                .findFirst() // TODO,
                 .map(GraphQLError::getExtensions)
                 .map(m -> m.get("code"))
                 .filter(Objects::nonNull)
