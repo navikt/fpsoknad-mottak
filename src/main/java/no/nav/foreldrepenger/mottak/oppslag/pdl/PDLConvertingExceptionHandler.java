@@ -10,6 +10,8 @@ import static org.springframework.web.client.HttpClientErrorException.create;
 
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
@@ -21,8 +23,11 @@ import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 @Component
 public class PDLConvertingExceptionHandler implements PDLErrorResponseHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PDLConvertingExceptionHandler.class);
+
     @Override
     public <T> T handle(GraphQLErrorsException e) {
+        LOG.warn("PDL oppslag ga feil", e);
         throw safeStream(e.getErrors())
                 .findFirst()
                 .map(GraphQLError::getExtensions)
