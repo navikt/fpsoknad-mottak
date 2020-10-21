@@ -73,7 +73,6 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return Optional.ofNullable(oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block()))
                 .map(s -> s.withId(id))
                 .orElse(null);
-
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
@@ -91,6 +90,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
         return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block()))
+                .filter(not(PDLAnnenPart::erDød))
                 .map(a -> a.withId(id))
                 .orElse(null);
     }
@@ -107,9 +107,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     public Navn oppslagNavn(String id) {
-        LOG.info("PDL navn oppslag med id {}", id);
-        var n = userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block();
-        LOG.info("PDL navn for {} er {}", id, n);
+        var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block());
         return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), null);
     }
 

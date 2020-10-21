@@ -29,4 +29,8 @@ class PDLAnnenPart {
         this.id = id;
         return this;
     }
+
+    boolean erDød() {
+        return !dødsfall.isEmpty();
+    }
 }
