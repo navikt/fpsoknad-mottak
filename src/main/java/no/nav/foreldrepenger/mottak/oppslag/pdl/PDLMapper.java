@@ -32,20 +32,21 @@ class PDLMapper {
 
     }
 
-    static SøkerDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker p) {
-        LOG.info("Mapper søker fnr={} målform={} bankkonto={} barn={} person?{}", fnrSøker, målform, bankkonto, barn, p);
-        var s = SøkerDTO.builder()
+    static SøkerDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
+        return SøkerDTO.builder()
                 .id(fnrSøker)
-                .landKode(landkodeFra(p.getStatsborgerskap()))
-                .fødselsdato(fødselsdatoFra(p.getFødselsdato()))
-                .navn(navnFra(p.getNavn(), p.getKjønn()))
+                .landKode(landkodeFra(søker.getStatsborgerskap()))
+                .fødselsdato(fødselsdatoFra(søker.getFødselsdato()))
+                .navn(navnFra(søker.getNavn(), søker.getKjønn()))
                 .bankkonto(bankkonto)
                 .målform(målform)
-                .kjønn(kjønnFra(p.getKjønn()))
+                .kjønn(kjønnFra(søker.getKjønn()))
                 .barn(barnFra(fnrSøker, barn))
                 .build();
-        LOG.info("Mappet søker til {}", s);
-        return s;
+    }
+
+    static Navn navnFra(Set<PDLNavn> navn, Set<PDLKjønn> kjønn) {
+        return navnFra(onlyElem(navn), onlyElem(kjønn));
     }
 
     private static Kjønn kjønnFra(Set<PDLKjønn> kjønn) {
@@ -59,7 +60,7 @@ class PDLMapper {
                 .collect(toSet());
     }
 
-    static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
+    private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         return Optional.ofNullable(barn).map(b -> BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(b.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
@@ -70,7 +71,7 @@ class PDLMapper {
                 .orElse(null);
     }
 
-    static AnnenPart annenPartFra(PDLAnnenPart annen) {
+    private static AnnenPart annenPartFra(PDLAnnenPart annen) {
         return Optional.ofNullable(annen)
                 .map(a -> new AnnenPart(Fødselsnummer.valueOf(annen.getId()), null, navnFra(annen.getNavn(), annen.getKjønn()),
                         fødselsdatoFra(annen.getFødselsdato())))
@@ -93,11 +94,7 @@ class PDLMapper {
         return dato.getFødselsdato();
     }
 
-    static Navn navnFra(Set<PDLNavn> navn, Set<PDLKjønn> kjønn) {
-        return navnFra(onlyElem(navn), onlyElem(kjønn));
-    }
-
-    static Navn navnFra(PDLNavn n, PDLKjønn k) {
+    private static Navn navnFra(PDLNavn n, PDLKjønn k) {
         return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), kjønnFra(k));
     }
 
