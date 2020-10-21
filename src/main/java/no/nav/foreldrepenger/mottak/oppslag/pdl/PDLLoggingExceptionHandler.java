@@ -15,7 +15,7 @@ public class PDLLoggingExceptionHandler implements PDLErrorResponseHandler {
 
     @Override
     public <T> T handle(GraphQLErrorsException e) {
-        LOG.warn("GraphQL oppslag feilet", e.getErrors(), e);
+        LOG.warn("GraphQL oppslag mot PDL feilet", e.getErrors(), e);
         return null;
     }
 }

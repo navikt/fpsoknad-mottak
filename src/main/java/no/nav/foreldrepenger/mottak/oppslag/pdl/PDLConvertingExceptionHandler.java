@@ -19,8 +19,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLError;
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnNotProd;
 
 @Component
+@ConditionalOnNotProd
 public class PDLConvertingExceptionHandler implements PDLErrorResponseHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDLConvertingExceptionHandler.class);
