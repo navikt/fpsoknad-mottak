@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,31 +55,26 @@ class PDLMapper {
     private static Set<BarnDTO> barnFra(String fnrSøker, Set<PDLBarn> barn) {
         return safeStream(barn)
                 .map(b -> barnFra(fnrSøker, b))
+                .filter(Objects::nonNull)
                 .collect(toSet());
     }
 
     static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
-
-        LOG.info("Mapper berettiget barn {} {}", barn.getId(), barn);
-        var b = BarnDTO.builder()
-                .fnr(Fødselsnummer.valueOf(barn.getId()))
+        return Optional.ofNullable(barn).map(b -> BarnDTO.builder()
+                .fnr(Fødselsnummer.valueOf(b.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
-                .navn(navnFra(barn.getNavn(), barn.getKjønn()))
-                .fødselsdato(fødselsdatoFra(barn.getFødselsdato()))
-                .annenPart(annenPartFra(barn.getAnnenPart()))
-                .build();
-        LOG.info("Mappet barn til {}", b);
-        return b;
+                .navn(navnFra(b.getNavn(), b.getKjønn()))
+                .fødselsdato(fødselsdatoFra(b.getFødselsdato()))
+                .annenPart(annenPartFra(b.getAnnenPart()))
+                .build())
+                .orElse(null);
     }
 
     static AnnenPart annenPartFra(PDLAnnenPart annen) {
-        LOG.info("Mapper annen part {}", annen);
-        var an = Optional.ofNullable(annen)
+        return Optional.ofNullable(annen)
                 .map(a -> new AnnenPart(Fødselsnummer.valueOf(annen.getId()), null, navnFra(annen.getNavn(), annen.getKjønn()),
                         fødselsdatoFra(annen.getFødselsdato())))
                 .orElse(null);
-        LOG.info("Mappet annen part til {}", an);
-        return an;
     }
 
     private static CountryCode landkodeFra(Set<PDLStatsborgerskap> statsborgerskap) {
