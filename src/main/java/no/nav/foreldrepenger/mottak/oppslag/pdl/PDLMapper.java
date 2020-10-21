@@ -60,7 +60,7 @@ class PDLMapper {
                 .collect(toSet());
     }
 
-    private static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
+    static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
         return Optional.ofNullable(barn).map(b -> BarnDTO.builder()
                 .fnr(Fødselsnummer.valueOf(b.getId()))
                 .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
@@ -71,7 +71,7 @@ class PDLMapper {
                 .orElse(null);
     }
 
-    private static AnnenPart annenPartFra(PDLAnnenPart annen) {
+    static AnnenPart annenPartFra(PDLAnnenPart annen) {
         return Optional.ofNullable(annen)
                 .map(a -> new AnnenPart(Fødselsnummer.valueOf(annen.getId()), null, navnFra(annen.getNavn(), annen.getKjønn()),
                         fødselsdatoFra(annen.getFødselsdato())))
