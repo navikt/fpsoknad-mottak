@@ -70,13 +70,13 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private PDLSøker oppslagSøker(String id) {
-        return Optional.ofNullable(oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block()))
+        return Optional.ofNullable(oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block(), "søker"))
                 .map(s -> s.withId(id))
                 .orElse(null);
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block()))
+        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block(), "barn"))
                 .map(b -> medAnnenPart(b, fnrSøker))
                 .map(b -> b.withId(id))
                 .orElse(null);
@@ -89,17 +89,17 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block()))
+        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block(), "annen part"))
                 .filter(not(PDLAnnenPart::erDød))
                 .map(a -> a.withId(id))
                 .orElse(null);
     }
 
-    private <T> T oppslag(Supplier<T> oppslag) {
+    private <T> T oppslag(Supplier<T> oppslag, String type) {
         try {
-            LOG.info("PDL oppslag {}", oppslag);
+            LOG.info("PDL oppslag {}", type);
             var res = oppslag.get();
-            LOG.info("PDL oppslag respons {}", res);
+            LOG.info("PDL oppslag {} respons {}", type, res);
             return res;
         } catch (GraphQLErrorsException e) {
             return errorHandler.handle(e);
@@ -107,7 +107,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     public Navn oppslagNavn(String id) {
-        var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block());
+        var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block(), "navn");
         return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), null);
     }
 
