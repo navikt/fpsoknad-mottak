@@ -74,20 +74,20 @@ class PDLBarn {
                 .filter(Objects::nonNull)
                 .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(måneder)));
 
-        LOG.info("Barn er{}nylig død", nylig ? " " : " IKKE ");
+        LOG.info("Barn er {} nylig dødt", nylig ? "" : "IKKE");
         return nylig;
     }
 
     boolean erNyligFødt(int måneder) {
         var nylig = onlyElem(getFødselsdato()).fødselsdato().isAfter(LocalDate.now().minusMonths(måneder));
-        LOG.info("Barn er{}nylig født", nylig ? " " : " IKKE ");
+        LOG.info("Barn er {} nylig født", nylig ? "" : "IKKE");
         return nylig;
 
     }
 
     boolean erSkjermet() {
         var skjermet = !onlyElem(getBeskyttelse()).gradering().equals(UGRADERT);
-        LOG.info("Barn er{}skjermet", skjermet ? " " : " IKKE ");
+        LOG.info("Barn er {} skjermet", skjermet ? "" : "IKKE");
         return skjermet;
     }
 }
