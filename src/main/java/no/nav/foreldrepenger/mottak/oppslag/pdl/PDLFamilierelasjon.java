@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect(fieldVisibility = ANY)
 record PDLFamilierelasjon(@JsonProperty("relatertPersonsIdent") String id,
-        PDLFamilierelasjon.PDLRelasjonsRolle relatertPersonrolle,
+        PDLFamilierelasjon.PDLRelasjonsRolle relatertPersonsrolle,
         @JsonProperty("minRolleForPerson") PDLFamilierelasjon.PDLRelasjonsRolle minRolle) {
 
     static enum PDLRelasjonsRolle {

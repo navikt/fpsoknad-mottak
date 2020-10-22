@@ -59,7 +59,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private Set<PDLBarn> barn(PDLSøker søker) {
         return safeStream(søker.getFamilierelasjoner())
-                .filter(b -> b.relatertPersonrolle().equals(BARN))
+                .filter(b -> b.relatertPersonsrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(søker.getId(), b.id()))
                 .filter(Objects::nonNull)
