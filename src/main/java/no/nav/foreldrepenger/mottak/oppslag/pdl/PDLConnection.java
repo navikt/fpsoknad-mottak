@@ -59,9 +59,9 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private Set<PDLBarn> barn(PDLSøker søker) {
         return safeStream(søker.getFamilierelasjoner())
-                .filter(b -> b.getRelatertPersonrolle().equals(BARN))
+                .filter(b -> b.relatertPersonrolle().equals(BARN))
                 .filter(Objects::nonNull)
-                .map(b -> oppslagBarn(søker.getId(), b.getId()))
+                .map(b -> oppslagBarn(søker.getId(), b.id()))
                 .filter(Objects::nonNull)
                 .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
                 .filter(not(PDLBarn::erSkjermet))
@@ -108,7 +108,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public Navn oppslagNavn(String id) {
         var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block(), "navn");
-        return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), null);
+        return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null);
     }
 
     private static Map<String, Object> idFra(String id) {

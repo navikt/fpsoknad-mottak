@@ -32,6 +32,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLSivilstand.PDLSivilstandType;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
@@ -60,7 +61,7 @@ public class PDLSerializationTest {
 
     @Test
     public void testStatsborgerskapPDL() {
-        test(new PDLStatsborgerskap(CountryCode.NO.getAlpha3()));
+        test(ettStatsborgerskap());
     }
 
     @Test
@@ -89,6 +90,25 @@ public class PDLSerializationTest {
     }
 
     @Test
+    public void testFødselPDL() {
+        test(fødsel());
+    }
+
+    @Test
+    public void testFamilierelasjonPDL() {
+        test(familierelasjon());
+    }
+
+    @Test
+    public void testAdresseBeskyttelsePDL() {
+        test(adresseBeskyttelse());
+    }
+
+    private static PDLAdresseBeskyttelse adresseBeskyttelse() {
+        return new PDLAdresseBeskyttelse(PDLAdresseBeskyttelse.PDLAdresseGradering.FORTROLIG);
+    }
+
+    @Test
     public void testBarnMapping() {
         assertEquals(PDLMapper.barnFra(ID_SØKER, pdlBarn().withId(ID_BARN)), barn());
     }
@@ -108,24 +128,19 @@ public class PDLSerializationTest {
         test(pdlSøker());
     }
 
-    // @Test
-    public void testSøkerDTO() throws Exception {
-        var s = søker();
-        var m = PDLMapper.map(ID_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn()), pdlSøker());
-        System.out.println("S " + s.getBarn());
-        System.out.println("M " + m.getBarn());
-
-        assertEquals(s.getBankkonto(), m.getBankkonto());
-        assertEquals(s.getBarn(), m.getBarn());
-        assertEquals(s.getFødselsdato(), m.getFødselsdato());
-        // assertEquals(s.get, m);
+    @Test
+    public void testDødsfallPDL() {
+        test(etDødsfall());
     }
 
-    // @Test
-    public void testSøkerMapping() {
-        var m = PDLMapper.map(ID_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn()), pdlSøker());
-        var s = søker();
-        assertEquals(s.getBankkonto(), m.getBankkonto());
+    @Test
+    public void testSivilstandPDL() {
+        test(new PDLSivilstand(PDLSivilstandType.GIFT, ID_ANNEN));
+    }
+
+    @Test
+    public void testSøkerDTO() throws Exception {
+        assertEquals(søker(), PDLMapper.map(ID_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
 
     @Test
@@ -155,8 +170,20 @@ public class PDLSerializationTest {
         return Set.of(new PDLSivilstand(PDLSivilstandType.GIFT, ID_ANNEN));
     }
 
+    private static PDLFødsel fødsel() {
+        return new PDLFødsel(LocalDate.now().minusYears(1));
+    }
+
     private static PDLAnnenPart pdlAnnenPart() {
-        return new PDLAnnenPart(Set.of(mannsPDLNavn()), fødsel(ANNENFØDT), Set.of(mann()), null).withId(ID_ANNEN);
+        return new PDLAnnenPart(Set.of(mannsPDLNavn()), fødsel(ANNENFØDT), Set.of(mann()), dødsfall()).withId(ID_ANNEN);
+    }
+
+    private static Set<PDLDødsfall> dødsfall() {
+        return Set.of(etDødsfall());
+    }
+
+    private static PDLDødsfall etDødsfall() {
+        return new PDLDødsfall(LocalDate.now().minusYears(1));
     }
 
     private static AnnenPart annenPart() {
@@ -164,7 +191,9 @@ public class PDLSerializationTest {
     }
 
     private static PDLBarn pdlBarn() {
-        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann(), null, null).withAnnenPart(pdlAnnenPart());
+        Set<PDLAdresseBeskyttelse> g;
+        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann(), dødsfall(), Set.of(beskyttelse()))
+                .withAnnenPart(pdlAnnenPart());
     }
 
     private static Set<PDLFødsel> fødsel(LocalDate født) {
@@ -177,6 +206,10 @@ public class PDLSerializationTest {
                 new PDLFamilierelasjon(ID_SØKER, MOR, BARN));
     }
 
+    private static PDLFamilierelasjon familierelasjon() {
+        return new PDLFamilierelasjon(ID_ANNEN, FAR, BARN);
+    }
+
     private static BarnDTO barn() {
         return BarnDTO.builder()
                 .fnr(FNR_BARN)
@@ -187,8 +220,16 @@ public class PDLSerializationTest {
                 .build();
     }
 
+    private static PDLAdresseBeskyttelse beskyttelse() {
+        return new PDLAdresseBeskyttelse(PDLAdresseGradering.FORTROLIG);
+    }
+
     private static Set<PDLStatsborgerskap> norsk() {
-        return Set.of(new PDLStatsborgerskap(CountryCode.NO.getAlpha3()));
+        return Set.of(ettStatsborgerskap());
+    }
+
+    private static PDLStatsborgerskap ettStatsborgerskap() {
+        return new PDLStatsborgerskap(CountryCode.NO.getAlpha3());
     }
 
     private static Set<PDLKjønn> pdlMann() {

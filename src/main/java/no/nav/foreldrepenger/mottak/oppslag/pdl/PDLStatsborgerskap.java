@@ -1,16 +1,11 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+@JsonAutoDetect(fieldVisibility = ANY)
+record PDLStatsborgerskap(@JsonProperty("land") String land) {
 
-@Data
-class PDLStatsborgerskap {
-    private final String land;
-
-    @JsonCreator
-    PDLStatsborgerskap(@JsonProperty("land") String land) {
-        this.land = land;
-    }
 }

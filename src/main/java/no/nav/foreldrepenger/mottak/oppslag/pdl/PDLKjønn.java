@@ -1,18 +1,12 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
-
-@Data
-class PDLKjønn {
-    private final PDLKjønn.Kjønn kjønn;
-
-    @JsonCreator
-    PDLKjønn(@JsonProperty("kjoenn") PDLKjønn.Kjønn kjønn) {
-        this.kjønn = kjønn;
-    }
+@JsonAutoDetect(fieldVisibility = ANY)
+record PDLKjønn(@JsonProperty("kjoenn") PDLKjønn.Kjønn kjønn) {
 
     static PDLKjønn mann() {
         return new PDLKjønn(Kjønn.MANN);
