@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseGradering.UGRADERT;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering.UGRADERT;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -47,10 +47,10 @@ class PDLBarn {
 
     String annenPart(String fnrSøker) {
         return familierelasjoner.stream()
-                .filter(r -> r.getMinRolle().equals(PDLRelasjonsRolle.BARN))
-                .filter(r -> !r.getId().equals(fnrSøker))
+                .filter(r -> r.minRolle().equals(PDLRelasjonsRolle.BARN))
+                .filter(r -> !r.id().equals(fnrSøker))
                 .findFirst()
-                .map(p -> p.getId())
+                .map(p -> p.id())
                 .orElse(null);
     }
 
@@ -70,24 +70,24 @@ class PDLBarn {
 
     boolean erNyligDød(int måneder) {
         var nylig = safeStream(getDødsfall())
-                .map(PDLDødsfall::getDødsdato)
+                .map(PDLDødsfall::dødsdato)
                 .filter(Objects::nonNull)
                 .anyMatch(d -> d.isAfter(LocalDate.now().minusMonths(måneder)));
 
-        LOG.info("Barn er{}nylig død", nylig ? " " : " IKKE ");
+        LOG.info("Barn er {} nylig dødt", nylig ? "" : "IKKE");
         return nylig;
     }
 
     boolean erNyligFødt(int måneder) {
-        var nylig = onlyElem(getFødselsdato()).getFødselsdato().isAfter(LocalDate.now().minusMonths(måneder));
-        LOG.info("Barn er{}nylig født", nylig ? " " : " IKKE ");
+        var nylig = onlyElem(getFødselsdato()).fødselsdato().isAfter(LocalDate.now().minusMonths(måneder));
+        LOG.info("Barn er {} nylig født", nylig ? "" : "IKKE");
         return nylig;
 
     }
 
     boolean erSkjermet() {
-        var skjermet = !onlyElem(getBeskyttelse()).getGradering().equals(UGRADERT);
-        LOG.info("Barn er{}skjermet", skjermet ? " " : " IKKE ");
+        var skjermet = !onlyElem(getBeskyttelse()).gradering().equals(UGRADERT);
+        LOG.info("Barn er {} skjermet", skjermet ? "" : "IKKE");
         return skjermet;
     }
 }

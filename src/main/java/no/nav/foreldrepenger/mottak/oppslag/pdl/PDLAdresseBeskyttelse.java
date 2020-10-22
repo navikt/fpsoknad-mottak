@@ -1,22 +1,17 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-class PDLAdresseBeskyttelse {
-    private final PDLAdresseGradering gradering;
+@JsonAutoDetect(fieldVisibility = ANY)
+record PDLAdresseBeskyttelse(@JsonProperty("gradering") PDLAdresseBeskyttelse.PDLAdresseGradering gradering) {
 
-    @JsonCreator
-    PDLAdresseBeskyttelse(@JsonProperty("gradering") PDLAdresseGradering gradering) {
-        this.gradering = gradering;
-    }
-
-    PDLAdresseGradering getGradering() {
-        return gradering;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [gradering=" + gradering + "]";
+    static enum PDLAdresseGradering {
+        STRENGT_FORTROLIG_UTLAND,
+        STRENGT_FORTROLIG,
+        FORTROLIG,
+        UGRADERT
     }
 }

@@ -43,7 +43,7 @@ public class OppslagServiceStub implements Oppslag {
     }
 
     private static Person person() {
-        return new Person(new Fødselsnummer("010101010101"), "Mor", "Mellommor", "Morsen", Kjønn.K,
+        return new Person(new Fødselsnummer("010101010101"), new Navn("Mor", "Mellommor", "Morsen", Kjønn.K),
                 LocalDate.now().minusYears(25), "NN",
                 CountryCode.NO, false,
                 new Bankkonto("2000.20.20000", "Store Fiskerbank"));

@@ -86,7 +86,7 @@ class PDLMapper {
     }
 
     private static CountryCode landkodeFra(PDLStatsborgerskap statsborgerskap) {
-        return CountryCode.getByAlpha3Code(statsborgerskap.getLand());
+        return CountryCode.getByAlpha3Code(statsborgerskap.land());
     }
 
     private static LocalDate fødselsdatoFra(Set<PDLFødsel> datoer) {
@@ -94,16 +94,16 @@ class PDLMapper {
     }
 
     private static LocalDate fødselsdatoFra(PDLFødsel dato) {
-        return dato.getFødselsdato();
+        return dato.fødselsdato();
     }
 
     private static Navn navnFra(PDLNavn n, PDLKjønn k) {
-        return new Navn(n.getFornavn(), n.getMellomnavn(), n.getEtternavn(), kjønnFra(k));
+        return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), kjønnFra(k));
     }
 
     private static Kjønn kjønnFra(PDLKjønn kjønn) {
         return Optional.ofNullable(kjønn)
-                .map(k -> switch (k.getKjønn()) {
+                .map(k -> switch (k.kjønn()) {
                 case KVINNE -> K;
                 case MANN -> M;
                 case UKJENT -> U;
