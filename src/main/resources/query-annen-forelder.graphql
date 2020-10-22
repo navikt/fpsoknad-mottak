@@ -11,6 +11,9 @@ query($ident: ID!){
     doedsfall {
        doedsdato
     },
+     adressebeskyttelse {
+        gradering
+    },
     foedsel {
         foedselsdato 
     }

@@ -175,7 +175,7 @@ public class PDLSerializationTest {
     }
 
     private static PDLAnnenPart pdlAnnenPart() {
-        return new PDLAnnenPart(Set.of(mannsPDLNavn()), fødsel(ANNENFØDT), Set.of(mann()), dødsfall()).withId(ID_ANNEN);
+        return new PDLAnnenPart(Set.of(mannsPDLNavn()), fødsel(ANNENFØDT), Set.of(mann()), dødsfall(), Set.of(beskyttelse())).withId(ID_ANNEN);
     }
 
     private static Set<PDLDødsfall> dødsfall() {
@@ -191,7 +191,6 @@ public class PDLSerializationTest {
     }
 
     private static PDLBarn pdlBarn() {
-        Set<PDLAdresseBeskyttelse> g;
         return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann(), dødsfall(), Set.of(beskyttelse()))
                 .withAnnenPart(pdlAnnenPart());
     }

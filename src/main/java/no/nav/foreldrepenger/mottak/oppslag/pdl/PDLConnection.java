@@ -64,7 +64,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .map(b -> oppslagBarn(søker.getId(), b.id()))
                 .filter(Objects::nonNull)
                 .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
-                .filter(not(PDLBarn::erSkjermet))
+                .filter(not(PDLBarn::erBeskyttet))
                 .filter(not(b -> b.erNyligDød(cfg.getDødSjekk())))
                 .collect(toSet());
     }
@@ -91,6 +91,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private PDLAnnenPart oppslagAnnenPart(String id) {
         return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block(), "annen part"))
                 .filter(not(PDLAnnenPart::erDød))
+                .filter(not(PDLAnnenPart::erBeskyttet))
                 .map(a -> a.withId(id))
                 .orElse(null);
     }
