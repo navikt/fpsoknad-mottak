@@ -62,7 +62,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     public Navn navnFor(String id) {
-        var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block(), "navn");
+        var n = oppslag(() -> systemClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block(), "navn");
         return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null); // TODO kjønn
     }
 
