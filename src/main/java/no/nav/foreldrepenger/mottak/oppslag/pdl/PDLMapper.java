@@ -105,11 +105,21 @@ class PDLMapper {
 
     private static Kjønn kjønnFra(PDLKjønn kjønn) {
         return Optional.ofNullable(kjønn)
-                .map(k -> switch (k.kjønn()) {
-                case KVINNE -> K;
-                case MANN -> M;
-                case UKJENT -> U;
-                })
+                .map(PDLKjønn::kjønn)
+                .map(PDLMapper::kjønnFra)
                 .orElse(U);
+    }
+
+    private static Kjønn kjønnFra(PDLKjønn.Kjønn kjønn) {
+        switch (kjønn) {
+            case KVINNE:
+                return K;
+            case MANN:
+                return M;
+            case UKJENT:
+                return U;
+            default:
+                return U;
+        }
     }
 }
