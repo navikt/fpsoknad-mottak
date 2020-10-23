@@ -39,14 +39,17 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return cfg.name();
     }
 
+    @Deprecated
     public Navn navn(Fødselsnummer fnr) {
         return getForObject(cfg.navnUri(fnr), Navn.class);
     }
 
+    @Deprecated
     public Fødselsnummer fnr(AktørId aktørId) {
         return getForObject(cfg.fnrUri(aktørId), Fødselsnummer.class, true);
     }
 
+    @Deprecated
     Person søker() {
         LOG.trace("Henter søker");
         Person søker = getForObject(cfg.personUri(), Person.class);
@@ -54,6 +57,7 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         return søker;
     }
 
+    @Deprecated
     AktørId aktørId(Fødselsnummer fnr) {
         return getForObject(cfg.aktørFnrUri(fnr), AktørId.class, true);
     }

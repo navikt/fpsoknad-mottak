@@ -77,7 +77,7 @@ public class MottakController {
         return "Hallo " + navn + " fra ubeskyttet ressurs";
     }
 
-    @GetMapping(value = "/saker")
+    @GetMapping("/saker")
     public List<Sak> saker() {
         return innsyn.saker(oppslag.aktørId());
     }

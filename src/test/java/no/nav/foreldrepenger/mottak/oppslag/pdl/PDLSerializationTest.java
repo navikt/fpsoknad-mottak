@@ -54,7 +54,8 @@ public class PDLSerializationTest {
     private static final LocalDate ANNENFØDT = LocalDate.now().minusYears(30);
     private static final LocalDate MORFØDT = LocalDate.now().minusYears(29);
 
-    private static final AktørId AKTØR_ANNEN = null; // AktørId.valueOf("a" + ID_ANNEN);
+    private static final AktørId AKTØR_SØKER = AktørId.valueOf("22222222222");
+    private static final AktørId AKTØR_ANNEN = AktørId.valueOf("33333333333");
 
     @Inject
     private ObjectMapper mapper;
@@ -140,7 +141,7 @@ public class PDLSerializationTest {
 
     @Test
     public void testSøkerDTO() throws Exception {
-        assertEquals(søker(), PDLMapper.map(ID_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
+        assertEquals(søker(), PDLMapper.map(ID_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
 
     @Test
@@ -154,7 +155,7 @@ public class PDLSerializationTest {
                 .barn(Set.of(barn()))
                 .målform(BOKMÅL)
                 .fødselsdato(MORFØDT)
-                .id(ID_SØKER)
+                .id(FNR_SØKER)
                 .kjønn(K)
                 .landKode(CountryCode.NO)
                 .navn(kvinneNavn())

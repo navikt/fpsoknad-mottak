@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
@@ -33,9 +34,10 @@ class PDLMapper {
 
     }
 
-    static SøkerDTO map(String fnrSøker, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
+    static SøkerDTO map(String fnrSøker, AktørId aktørId, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
         var dto = SøkerDTO.builder()
-                .id(fnrSøker)
+                .id(Fødselsnummer.valueOf(fnrSøker))
+                .aktørId(aktørId)
                 .landKode(landkodeFra(søker.getStatsborgerskap()))
                 .fødselsdato(fødselsdatoFra(søker.getFødselsdato()))
                 .navn(navnFra(søker.getNavn(), søker.getKjønn()))

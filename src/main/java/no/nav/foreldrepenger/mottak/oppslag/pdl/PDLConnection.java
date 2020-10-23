@@ -22,6 +22,7 @@ import org.springframework.web.client.RestOperations;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
@@ -51,10 +52,26 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         this.errorHandler = errorHandler;
     }
 
-    SøkerDTO hentSøker() {
+    public SøkerDTO hentSøker() {
         return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
-                .map(s -> PDLMapper.map(tokenUtil.getSubject(), målform(), kontonr(), barn(s), s))
+                .map(s -> PDLMapper.map(tokenUtil.getSubject(), aktørid(), målform(), kontonr(), barn(s), s))
                 .orElse(null);
+    }
+
+    public Navn oppslagNavn(String id) {
+        var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block(), "navn");
+        return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null); // TODO kjønn
+    }
+
+    private AktørId aktørid() {
+        try {
+            var o = oppslagAktørid(tokenUtil.getSubject());
+            LOG.info("Oppslag aktørid respons {}", o);
+            return null;
+        } catch (Exception e) {
+            LOG.warn("Oppslag aktørid feil", e);
+            return null;
+        }
     }
 
     private Set<PDLBarn> barn(PDLSøker søker) {
@@ -72,6 +89,14 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private PDLSøker oppslagSøker(String id) {
         return Optional.ofNullable(oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block(), "søker"))
                 .map(s -> s.withId(id))
+                .orElse(null);
+    }
+
+    private PDLIdenter oppslagAktørid(String fnr) {
+        return Optional.ofNullable(oppslag(
+                () -> systemClient.post(cfg.aktørQuery(), Map.of(IDENT, fnr, "gruppe", PDLIdentGruppe.AKTORID.name()), PDLIdenter.class)
+                        .block(),
+                "aktør"))
                 .orElse(null);
     }
 
@@ -105,11 +130,6 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         } catch (GraphQLErrorsException e) {
             return errorHandler.handle(e);
         }
-    }
-
-    public Navn oppslagNavn(String id) {
-        var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block(), "navn");
-        return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null);
     }
 
     private static Map<String, Object> idFra(String id) {
