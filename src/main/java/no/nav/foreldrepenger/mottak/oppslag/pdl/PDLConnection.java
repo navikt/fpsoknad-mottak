@@ -103,10 +103,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private PDLIdenter oppslagId(String id) {
-        return Optional.ofNullable(oppslag(
-                () -> systemClient.post(cfg.identQuery(), Map.of(IDENT, id, "gruppe", PDLIdentGruppe.AKTORID.name()), PDLIdenter.class)
-                        .block(),
-                "aktør"))
+        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.identQuery(), idFra(id), PDLIdenter.class).block(), "aktør"))
                 .orElse(null);
     }
 
