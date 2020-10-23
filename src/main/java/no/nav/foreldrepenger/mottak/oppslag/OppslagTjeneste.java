@@ -96,15 +96,15 @@ public class OppslagTjeneste implements Oppslag {
         }
     }
 
-    private static <T> T sammenlign(T tps, T pdl) {
+    private <T> T sammenlign(T tps, T pdl) {
         String name = tps.getClass().getSimpleName();
-        LOG.info("Sammenligner {} ", name);
+        LOG.info("Sammenligner {}, PDL bruk er {}", name, conn.isBrukPdl());
         if (!tps.equals(pdl)) {
             LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
         } else {
             LOG.info("TPS-{} og PDL-{} er like, {}", name, name, pdl);
         }
-        return tps;
+        return conn.isBrukPdl() ? pdl : tps;
     }
 
     @Override

@@ -5,6 +5,8 @@ import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentGruppe.AKTORID;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentGruppe.FOLKEREGISTERIDENT;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.net.URI;
@@ -66,7 +68,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public AktørId aktøridFra(Fødselsnummer fnr) {
         try {
-            return AktørId.valueOf(PDLMapper.mapIdent(oppslagId(fnr.getFnr()), PDLIdentGruppe.AKTORID));
+            return AktørId.valueOf(PDLMapper.mapIdent(oppslagId(fnr.getFnr()), AKTORID));
         } catch (Exception e) {
             LOG.warn("Oppslag aktørid feil", e);
             return null;
@@ -75,7 +77,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public Fødselsnummer fødselsnummerFra(AktørId aktørId) {
         try {
-            return Fødselsnummer.valueOf(PDLMapper.mapIdent(oppslagId(aktørId.getId()), PDLIdentGruppe.FOLKEREGISTERIDENT));
+            return Fødselsnummer.valueOf(PDLMapper.mapIdent(oppslagId(aktørId.getId()), FOLKEREGISTERIDENT));
         } catch (Exception e) {
             LOG.warn("Oppslag fnr feil", e);
             return null;

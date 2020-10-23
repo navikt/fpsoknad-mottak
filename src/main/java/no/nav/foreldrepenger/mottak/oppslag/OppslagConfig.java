@@ -27,6 +27,7 @@ public class OppslagConfig extends AbstractConfig {
     private final String fnrPath;
     private final String personPath;
     private final String personNavnPath;
+    private final boolean brukPdl;
 
     @ConstructorBinding
     public OppslagConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
@@ -36,6 +37,7 @@ public class OppslagConfig extends AbstractConfig {
             @DefaultValue(DEFAULT_PERSON_PATH) String personPath,
             @DefaultValue(DEFAULT_PERSONNAVN_PATH) String personNavnPath,
             @DefaultValue("true") boolean enabled,
+            @DefaultValue("false") boolean brukPdl,
             @DefaultValue(DEFAULT_BASE_URI) URI baseUri) {
         super(baseUri, pingPath, enabled);
         this.aktorPath = aktorPath;
@@ -43,6 +45,11 @@ public class OppslagConfig extends AbstractConfig {
         this.fnrPath = fnrPath;
         this.personPath = personPath;
         this.personNavnPath = personNavnPath;
+        this.brukPdl = brukPdl;
+    }
+
+    public boolean isBrukPdl() {
+        return brukPdl;
     }
 
     URI aktørUri() {

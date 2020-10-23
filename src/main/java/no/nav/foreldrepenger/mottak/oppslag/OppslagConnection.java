@@ -24,6 +24,10 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
         this.cfg = config;
     }
 
+    public boolean isBrukPdl() {
+        return cfg.isBrukPdl();
+    }
+
     @Override
     public String ping() {
         return ping(pingEndpoint());
