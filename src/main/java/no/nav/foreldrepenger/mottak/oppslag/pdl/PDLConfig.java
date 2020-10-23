@@ -21,7 +21,7 @@ public class PDLConfig extends AbstractConfig {
     private static final String BARN_QUERY = "query-barn.graphql";
     private static final String SØKER_QUERY = "query-person.graphql";
     private static final String ANNEN_PART_QUERY = "query-annen-forelder.graphql";
-    private static final String AKTØR_QUERY = "query-aktør.graphql";
+    private static final String AKTØR_QUERY = "query-aktørid.graphql";
 
     private final URI kontonummerURI;
     private final URI maalformURI;
