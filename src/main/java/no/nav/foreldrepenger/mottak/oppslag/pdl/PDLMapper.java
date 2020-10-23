@@ -125,13 +125,12 @@ class PDLMapper {
         }
     }
 
-    static AktørId aktørIdFra(PDLIdenter identer) {
+    static String mapIdent(PDLIdenter identer, PDLIdentGruppe gruppe) {
         return identer.getIdenter()
                 .stream()
-                .filter(i -> i.gruppe().equals(PDLIdentGruppe.AKTORID))
+                .filter(i -> i.gruppe().equals(gruppe))
                 .map(PDLIdentInformasjon::ident)
-                .map(AktørId::valueOf)
                 .findAny()
-                .orElseThrow(() -> e(NOT_FOUND, "Fant ikke aktørid for fødselsnummer"));
+                .orElseThrow(() -> e(NOT_FOUND, "Fant ikke id"));
     }
 }

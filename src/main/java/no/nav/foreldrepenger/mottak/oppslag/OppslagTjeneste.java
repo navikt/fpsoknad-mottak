@@ -36,15 +36,33 @@ public class OppslagTjeneste implements Oppslag {
         return sammenlign(conn.søker(), pdlPerson());
     }
 
-    private static <T> T sammenlign(T tps, T pdl) {
-        String name = tps.getClass().getSimpleName();
-        LOG.info("Sammenligner {} ", name);
-        if (!tps.equals(pdl)) {
-            LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
-        } else {
-            LOG.info("TPS-{} og PDL-{} er like, {}", name, name, pdl);
+    @Override
+    public AktørId aktørId() {
+        return aktørId(tokenHelper.fnr());
+    }
+
+    @Override
+    public AktørId aktørId(Fødselsnummer fnr) {
+        return sammenlign(conn.aktørId(fnr), pdlAktørId(fnr));
+    }
+
+    @Override
+    public Fødselsnummer fnr(AktørId aktørId) {
+        return sammenlign(conn.fnr(aktørId), pdlFnr(aktørId));
+    }
+
+    @Override
+    public Navn navn(Fødselsnummer fnr) {
+        return sammenlign(conn.navn(fnr), pdlNavn());
+    }
+
+    private Fødselsnummer pdlFnr(AktørId aktørId) {
+        try {
+            return pdl.fødselsnummerFra(aktørId);
+        } catch (Exception e) {
+            LOG.warn("Feil ved oppslag PDL fnr");
+            return null;
         }
-        return tps;
     }
 
     private Person pdlPerson() {
@@ -60,24 +78,13 @@ public class OppslagTjeneste implements Oppslag {
         }
     }
 
-    @Override
-    public AktørId aktørId() {
-        return aktørId(tokenHelper.fnr());
-    }
-
-    @Override
-    public AktørId aktørId(Fødselsnummer fnr) {
-        return conn.aktørId(fnr);
-    }
-
-    @Override
-    public Fødselsnummer fnr(AktørId aktørId) {
-        return conn.fnr(aktørId);
-    }
-
-    @Override
-    public Navn navn(Fødselsnummer fnr) {
-        return sammenlign(conn.navn(fnr), pdlNavn());
+    private AktørId pdlAktørId(Fødselsnummer fnr) {
+        try {
+            return pdl.aktøridFra(fnr);
+        } catch (Exception e) {
+            LOG.warn("Feil ved oppslag PDL aktør");
+            return null;
+        }
     }
 
     private Navn pdlNavn() {
@@ -87,6 +94,17 @@ public class OppslagTjeneste implements Oppslag {
             LOG.warn("Feil ved oppslag PDL navn");
             return null;
         }
+    }
+
+    private static <T> T sammenlign(T tps, T pdl) {
+        String name = tps.getClass().getSimpleName();
+        LOG.info("Sammenligner {} ", name);
+        if (!tps.equals(pdl)) {
+            LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
+        } else {
+            LOG.info("TPS-{} og PDL-{} er like, {}", name, name, pdl);
+        }
+        return tps;
     }
 
     @Override

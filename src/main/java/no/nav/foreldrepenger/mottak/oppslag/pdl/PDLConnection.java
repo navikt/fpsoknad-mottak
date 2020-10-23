@@ -23,6 +23,7 @@ import org.springframework.web.client.RestOperations;
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
@@ -54,7 +55,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public SøkerDTO hentSøker() {
         return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
-                .map(s -> PDLMapper.map(tokenUtil.getSubject(), aktørid(), målform(), kontonr(), barn(s), s))
+                .map(s -> PDLMapper.map(tokenUtil.getSubject(), aktøridFra(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
@@ -63,11 +64,20 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null); // TODO kjønn
     }
 
-    private AktørId aktørid() {
+    public AktørId aktøridFra(Fødselsnummer fnr) {
         try {
-            return PDLMapper.aktørIdFra(oppslagAktørid(tokenUtil.getSubject()));
+            return AktørId.valueOf(PDLMapper.mapIdent(oppslagId(fnr.getFnr()), PDLIdentGruppe.AKTORID));
         } catch (Exception e) {
             LOG.warn("Oppslag aktørid feil", e);
+            return null;
+        }
+    }
+
+    public Fødselsnummer fødselsnummerFra(AktørId aktørId) {
+        try {
+            return Fødselsnummer.valueOf(PDLMapper.mapIdent(oppslagId(aktørId.getId()), PDLIdentGruppe.FOLKEREGISTERIDENT));
+        } catch (Exception e) {
+            LOG.warn("Oppslag fnr feil", e);
             return null;
         }
     }
@@ -90,9 +100,9 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .orElse(null);
     }
 
-    private PDLIdenter oppslagAktørid(String fnr) {
+    private PDLIdenter oppslagId(String id) {
         return Optional.ofNullable(oppslag(
-                () -> systemClient.post(cfg.aktørQuery(), Map.of(IDENT, fnr, "gruppe", PDLIdentGruppe.AKTORID.name()), PDLIdenter.class)
+                () -> systemClient.post(cfg.identQuery(), Map.of(IDENT, id, "gruppe", PDLIdentGruppe.AKTORID.name()), PDLIdenter.class)
                         .block(),
                 "aktør"))
                 .orElse(null);
