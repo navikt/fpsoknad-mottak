@@ -58,7 +58,7 @@ public class OppslagTjeneste implements Oppslag {
 
     private Fødselsnummer pdlFnr(AktørId aktørId) {
         try {
-            return pdl.fødselsnummerFra(aktørId);
+            return pdl.fødselsnummerFor(aktørId);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL fnr");
             return null;
@@ -80,7 +80,7 @@ public class OppslagTjeneste implements Oppslag {
 
     private AktørId pdlAktørId(Fødselsnummer fnr) {
         try {
-            return pdl.aktøridFra(fnr);
+            return pdl.aktøridFor(fnr);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL aktør");
             return null;
@@ -89,7 +89,7 @@ public class OppslagTjeneste implements Oppslag {
 
     private Navn pdlNavn(Fødselsnummer fnr) {
         try {
-            return pdl.oppslagNavn(fnr.getFnr());
+            return pdl.navnFor(fnr.getFnr());
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL navn");
             return null;

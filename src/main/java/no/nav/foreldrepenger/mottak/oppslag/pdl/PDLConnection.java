@@ -57,16 +57,16 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public SøkerDTO hentSøker() {
         return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
-                .map(s -> PDLMapper.map(tokenUtil.getSubject(), aktøridFra(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
+                .map(s -> PDLMapper.map(tokenUtil.getSubject(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
-    public Navn oppslagNavn(String id) {
+    public Navn navnFor(String id) {
         var n = oppslag(() -> userClient.post(cfg.navnQuery(), idFra(id), PDLNavn.class).block(), "navn");
         return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null); // TODO kjønn
     }
 
-    public AktørId aktøridFra(Fødselsnummer fnr) {
+    public AktørId aktøridFor(Fødselsnummer fnr) {
         try {
             return AktørId.valueOf(PDLMapper.mapIdent(oppslagId(fnr.getFnr()), AKTORID));
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         }
     }
 
-    public Fødselsnummer fødselsnummerFra(AktørId aktørId) {
+    public Fødselsnummer fødselsnummerFor(AktørId aktørId) {
         try {
             return Fødselsnummer.valueOf(PDLMapper.mapIdent(oppslagId(aktørId.getId()), FOLKEREGISTERIDENT));
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         try {
             LOG.info("PDL oppslag {}", type);
             var res = oppslag.get();
-            LOG.info("PDL oppslag {} respons {}", type, res);
+            LOG.info("PDL oppslag {} respons={}", type, res);
             return res;
         } catch (GraphQLErrorsException e) {
             return errorHandler.handle(e);

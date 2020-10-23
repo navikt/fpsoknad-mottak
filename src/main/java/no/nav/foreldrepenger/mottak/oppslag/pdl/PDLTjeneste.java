@@ -20,7 +20,7 @@ public class PDLTjeneste implements RetryAware {
     }
 
     public Navn navn(String id) {
-        return connection.oppslagNavn(id);
+        return connection.navnFor(id);
     }
 
     @Override
