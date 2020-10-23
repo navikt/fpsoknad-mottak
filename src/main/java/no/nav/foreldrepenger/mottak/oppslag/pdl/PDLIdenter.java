@@ -1,19 +1,13 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Value;
-
-@Value
-public class PDLIdenter {
-    private final Set<PDLIdentInformasjon> identer;
-
-    @JsonCreator
-    public PDLIdenter(@JsonProperty("identer") Set<PDLIdentInformasjon> identer) {
-        this.identer = identer;
-    }
+@JsonAutoDetect(fieldVisibility = ANY)
+record PDLIdenter(@JsonProperty("identer") Set<PDLIdentInformasjon> identer) {
 
 }

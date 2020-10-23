@@ -25,6 +25,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
@@ -126,7 +127,7 @@ class PDLMapper {
     }
 
     static String mapIdent(PDLIdenter identer, PDLIdentGruppe gruppe) {
-        return identer.getIdenter()
+        return identer.identer()
                 .stream()
                 .filter(i -> i.gruppe().equals(gruppe))
                 .map(PDLIdentInformasjon::ident)
