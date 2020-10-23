@@ -4,8 +4,10 @@ import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.U;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConvertingExceptionHandler.e;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -121,5 +123,15 @@ class PDLMapper {
             default:
                 return U;
         }
+    }
+
+    static AktørId aktørIdFra(PDLIdenter identer) {
+        return identer.getIdenter()
+                .stream()
+                .filter(i -> i.gruppe().equals(PDLIdentGruppe.AKTORID))
+                .map(PDLIdentInformasjon::ident)
+                .map(AktørId::valueOf)
+                .findAny()
+                .orElseThrow(() -> e(NOT_FOUND, "Fant ikke aktørid for fødselsnummer"));
     }
 }

@@ -28,7 +28,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
-import no.nav.foreldrepenger.mottak.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -66,10 +65,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private AktørId aktørid() {
         try {
-            var o = oppslagAktørid(tokenUtil.getSubject());
-            StreamUtil.onlyElem(o.getIdenter()).ident();
-            LOG.info("Oppslag aktørid respons {}", o);
-            return null;
+            return PDLMapper.aktørIdFra(oppslagAktørid(tokenUtil.getSubject()));
         } catch (Exception e) {
             LOG.warn("Oppslag aktørid feil", e);
             return null;
