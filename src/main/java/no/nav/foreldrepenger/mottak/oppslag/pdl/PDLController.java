@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
+import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
@@ -23,6 +24,11 @@ public class PDLController {
     @GetMapping("/person")
     public SøkerDTO søker() {
         return pdl.søker();
+    }
+
+    @GetMapping("/navn")
+    public Navn navn() {
+        return pdl.navn();
     }
 
     @GetMapping("/sokerinfo")
