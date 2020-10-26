@@ -52,8 +52,8 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     @Override
-    public Navn navn(Fødselsnummer fnr) {
-        return sammenlign(conn.navn(fnr), pdlNavn(fnr));
+    public Navn navn(String id) {
+        return sammenlign(conn.navn(id), pdlNavn(id));
     }
 
     private Fødselsnummer pdlFnr(AktørId aktørId) {
@@ -87,9 +87,9 @@ public class OppslagTjeneste implements Oppslag {
         }
     }
 
-    private Navn pdlNavn(Fødselsnummer fnr) {
+    private Navn pdlNavn(String id) {
         try {
-            return pdl.navnFor(fnr.getFnr());
+            return pdl.navnFor(id);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL navn");
             return null;
@@ -111,4 +111,5 @@ public class OppslagTjeneste implements Oppslag {
     public String toString() {
         return getClass().getSimpleName() + " [conn=" + conn + ", tokenHelper=" + tokenHelper + "]";
     }
+
 }

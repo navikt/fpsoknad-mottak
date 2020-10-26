@@ -64,8 +64,8 @@ public class OppslagConfig extends AbstractConfig {
         return uri(getBaseUri(), aktorFnrPath, queryParams(FNR, fnr.getFnr()));
     }
 
-    URI navnUri(Fødselsnummer fnr) {
-        return uri(getBaseUri(), personNavnPath, queryParams(FNR, fnr.getFnr()));
+    URI navnUri(String id) {
+        return uri(getBaseUri(), personNavnPath, queryParams(FNR, id));
     }
 
     URI fnrUri(AktørId aktørId) {

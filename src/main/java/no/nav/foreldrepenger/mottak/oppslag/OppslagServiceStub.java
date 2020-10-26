@@ -55,7 +55,7 @@ public class OppslagServiceStub implements Oppslag {
     }
 
     @Override
-    public Navn navn(Fødselsnummer fnr) {
+    public Navn navn(String id) {
         return new Navn("Ole", "Mellom", "Olsen", Kjønn.M);
     }
 }

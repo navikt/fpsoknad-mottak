@@ -44,8 +44,8 @@ public class OppslagConnection extends AbstractRestConnection implements PingEnd
     }
 
     @Deprecated
-    public Navn navn(Fødselsnummer fnr) {
-        return getForObject(cfg.navnUri(fnr), Navn.class);
+    public Navn navn(String id) {
+        return getForObject(cfg.navnUri(id), Navn.class);
     }
 
     @Deprecated

@@ -189,7 +189,7 @@ public class InnsynTjeneste implements Innsyn {
     private Navn navnFor(Fødselsnummer fnr) {
         try {
             LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
-            Navn navn = oppslag.navn(fnr);
+            Navn navn = oppslag.navn(fnr.getFnr());
             LOG.trace("Fikk TPS navn {}", navn);
             var pdlNavn = pdlNavn(fnr);
             LOG.trace("Fikk PDL navn {}", pdlNavn);

@@ -15,5 +15,6 @@ public interface Oppslag extends Pingable {
 
     Fødselsnummer fnr(AktørId aktørId);
 
-    Navn navn(Fødselsnummer fnr);
+    Navn navn(String id);
+
 }

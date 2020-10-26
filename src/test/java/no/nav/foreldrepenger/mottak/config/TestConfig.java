@@ -46,7 +46,7 @@ public class TestConfig {
             }
 
             @Override
-            public Navn navn(Fødselsnummer fnr) {
+            public Navn navn(String fnr) {
                 return new Navn("Ole", "Mellomnavn", "Olsen", Kjønn.M);
             }
         };
