@@ -63,7 +63,7 @@ public class TokenUtil {
 
     public String autentisertBruker() {
         return Optional.ofNullable(getSubject())
-                .orElseThrow(unauthenticated("Fant ikke subject"));
+                .orElseThrow(unauthenticated("Fant ikke subject, antagelig ikke autentisert"));
     }
 
     public Fødselsnummer fnr() {

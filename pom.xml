@@ -258,13 +258,18 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>org.zalando</groupId>
+            <artifactId>problem-spring-web-starter</artifactId>
+            <version>0.26.2</version>
+        </dependency>
+        <dependency>
             <groupId>com.graphql-java-kickstart</groupId>
             <artifactId>graphql-webclient-spring-boot-starter</artifactId>
             <version>0.3.0</version>
         </dependency>
-        <dependency>    
-            <groupId>org.springframework.cloud</groupId>    
-            <artifactId>spring-cloud-vault-config</artifactId>  
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-vault-config</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectreactor</groupId>
