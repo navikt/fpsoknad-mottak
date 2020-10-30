@@ -7,11 +7,13 @@ import static org.springframework.util.StringUtils.capitalize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
+@Component
 public class DKIFConnection extends AbstractWebClientConnection {
     private static final Logger LOG = LoggerFactory.getLogger(DKIFConnection.class);
 
