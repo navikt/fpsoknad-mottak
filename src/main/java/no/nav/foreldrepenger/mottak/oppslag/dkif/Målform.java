@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 
 public enum Målform {
     @JsonEnumDefaultValue
-    NB,
-    NN,
-    E;
+    nb,
+    nn,
+    e;
 
     public static Målform def() {
-        return NB;
+        return nb;
     }
 }
