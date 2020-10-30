@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.oppslag.dkif;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.EqualsAndHashCode;
@@ -27,6 +28,7 @@ public class DigitalKontaktinfo {
 
     @EqualsAndHashCode
     @ToString
+    @JsonIgnoreProperties(ignoreUnknown = true)
     static class Kontaktinformasjon {
 
         private final Målform målform;
