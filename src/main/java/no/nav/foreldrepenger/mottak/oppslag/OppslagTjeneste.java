@@ -101,10 +101,11 @@ public class OppslagTjeneste implements Oppslag {
         LOG.info("Sammenligner {}, PDL bruk er {}", name, conn.isBrukPdl());
         if (!tps.equals(pdl)) {
             LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
+            return conn.isBrukPdl() ? pdl : tps;
         } else {
             LOG.info("TPS-{} og PDL-{} er like, {}", name, name, pdl);
+            return pdl;
         }
-        return conn.isBrukPdl() ? pdl : tps;
     }
 
     @Override
