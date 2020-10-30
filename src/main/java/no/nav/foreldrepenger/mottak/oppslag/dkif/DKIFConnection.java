@@ -27,8 +27,7 @@ public class DKIFConnection extends AbstractWebClientConnection {
     }
 
     public Målform målform() {
-        LOG.info("Henter målform for {}", tokenUtil.fnr());
-        var mf = getWebClient().get()
+        return getWebClient().get()
                 .uri(b -> cfg.kontaktUri(b))
                 .accept(APPLICATION_JSON)
                 .retrieve()
@@ -38,14 +37,17 @@ public class DKIFConnection extends AbstractWebClientConnection {
                 .stream()
                 .map(d -> d.getMålform(tokenUtil.getSubject()))
                 .findFirst()
-                .orElse(Målform.def());
-        LOG.info("Henter målform {}", mf);
-        return mf;
+                .orElse(Målform.NB);
     }
 
     @Override
     public String name() {
         return capitalize(KRR.toLowerCase());
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [cfg=" + cfg + ", tokenUtil=" + tokenUtil + "]";
     }
 
 }

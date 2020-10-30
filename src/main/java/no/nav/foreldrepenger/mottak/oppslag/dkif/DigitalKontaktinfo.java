@@ -11,7 +11,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
-public class DigitalKontaktinfo {
+class DigitalKontaktinfo {
 
     private final Map<String, Kontaktinformasjon> kontaktinfo;
 
