@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
@@ -34,11 +35,12 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @Configuration
 public class WebClientConfiguration {
 
+    private static final String NAV_PERSONIDENTER = "Nav-Personidenter";
     private static final String TEMA = "TEMA";
     public static final String STS = "STS";
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
-
+    public static final String KRR = "KRR";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
 
@@ -46,6 +48,16 @@ public class WebClientConfiguration {
     private String consumer;
 
     private static final Logger LOG = LoggerFactory.getLogger(WebClientConfiguration.class);
+
+    @Bean
+    @Qualifier(KRR)
+    public WebClient webClientDKIF(Builder builder, DKIFConfig cfg, TokenUtil tokenUtil, SystemTokenTjeneste sts) {
+        return builder
+                .baseUrl(cfg.getBaseUri().toString())
+                .filter(correlatingFilterFunction())
+                .filter(dkifExchangeFilterFunction(sts, tokenUtil))
+                .build();
+    }
 
     @Bean
     @Qualifier(STS)
@@ -59,7 +71,7 @@ public class WebClientConfiguration {
 
     @Qualifier(ARBEIDSFORHOLD)
     @Bean
-    public WebClient arbeidsforholdClient(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    public WebClient webClientArbeidsforhold(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
@@ -69,7 +81,7 @@ public class WebClientConfiguration {
 
     @Qualifier(ORGANISASJON)
     @Bean
-    public WebClient organisasjonClient(Builder builder, OrganisasjonConfig cfg) {
+    public WebClient webClientOrganisasjon(Builder builder, OrganisasjonConfig cfg) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
@@ -78,7 +90,7 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_USER)
     @Bean
-    public WebClient pdlClient(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    public WebClient webClientPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
@@ -88,7 +100,7 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_SYSTEM)
     @Bean
-    public WebClient pdlClientRelasjon(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
+    public WebClient webCLientSystemPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
@@ -130,6 +142,16 @@ public class WebClientConfiguration {
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
                     .header(TEMA, FORELDREPENGER)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
+                    .build());
+        };
+    }
+
+    private ExchangeFilterFunction dkifExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+        return (req, next) -> {
+            return next.exchange(ClientRequest.from(req)
+                    .header(AUTHORIZATION, sts.bearerToken())
+                    .header(NAV_CONSUMER_ID, consumerId())
+                    .header(NAV_PERSONIDENTER, tokenUtil.getSubject())
                     .build());
         };
     }

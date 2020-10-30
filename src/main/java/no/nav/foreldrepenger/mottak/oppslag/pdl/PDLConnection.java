@@ -30,6 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -43,14 +44,16 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private final GraphQLWebClient systemClient;
     private final TokenUtil tokenUtil;
     private PDLConfig cfg;
+    private final DKIFConnection dkif;
     private final PDLErrorResponseHandler errorHandler;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
-            RestOperations restOperations, PDLConfig cfg, TokenUtil tokenUtil, PDLErrorResponseHandler errorHandler) {
+            RestOperations restOperations, PDLConfig cfg, DKIFConnection dkif, TokenUtil tokenUtil, PDLErrorResponseHandler errorHandler) {
         super(restOperations, cfg);
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.tokenUtil = tokenUtil;
+        this.dkif = dkif;
         this.cfg = cfg;
         this.errorHandler = errorHandler;
     }
@@ -153,6 +156,14 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private String målform() {
+        try {
+            LOG.info("DKIF oppslag");
+            var mf = dkif.målform();
+            LOG.info("DKIF oppslag fikk {}", mf);
+
+        } catch (Exception e) {
+            LOG.warn("DKIF oppslag feilet", e);
+        }
         return getForObject(cfg.getMaalformURI(), String.class);
     }
 

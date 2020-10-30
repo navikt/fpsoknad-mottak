@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static java.util.Collections.singletonList;
 import static org.springframework.retry.RetryContext.NAME;
 
 import java.util.List;
@@ -21,6 +20,7 @@ import org.springframework.web.client.RestOperations;
 
 @Configuration
 public class RestClientConfiguration {
+
     @Bean
     @Primary
     public RestOperations restTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
@@ -37,7 +37,7 @@ public class RestClientConfiguration {
     public List<RetryListener> retryListeners() {
         Logger log = LoggerFactory.getLogger(getClass());
 
-        return singletonList(new RetryListener() {
+        return List.of(new RetryListener() {
 
             @Override
             public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
