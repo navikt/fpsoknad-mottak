@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @Configuration
 public class WebClientConfiguration {
 
+    private static final String TEMA = "TEMA";
     public static final String STS = "STS";
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
@@ -127,7 +128,7 @@ public class WebClientConfiguration {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(AUTHORIZATION, tokenUtil.bearerToken())
-                    .header("TEMA", FORELDREPENGER)
+                    .header(TEMA, FORELDREPENGER)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
                     .build());
         };
@@ -137,7 +138,7 @@ public class WebClientConfiguration {
         return (req, next) -> {
             return next.exchange(ClientRequest.from(req)
                     .header(AUTHORIZATION, sts.bearerToken())
-                    .header("TEMA", FORELDREPENGER)
+                    .header(TEMA, FORELDREPENGER)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
                     .build());
         };
