@@ -84,9 +84,9 @@ spring:
    jackson:
       default-property-inclusion: non-absent
       mapper:
+         accept-case-insensitive-enums: true
          accept-case-insensitive-properties: true
       deserialization:
-         accept-case-insensitive-enums: true
          accept-single-value-as-array: true
          fail-on-unknown-properties: true
       serialization:
