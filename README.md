@@ -31,7 +31,7 @@ Få tak i en Java truststore med gyldige sertifikater for aktuelt miljø.
 
 # Henvendelser
 
-Spørsmål knyttet til koden eller prosjektet kan rettes til:
+Spørsmål kan rettes til:
 
 * nav.team.foreldrepenger@nav.no
 
