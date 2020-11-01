@@ -22,6 +22,20 @@ jobs:
         run: |
           echo "TAG=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
+      # Brukes ukenummer i cache_key da pomene endrer seg alt for ofte.
+      # Alternative key med cache fra forrige uke som blir lagret etterpå under CACHE_KEY.
+      - name: Set cache key
+        run: |
+          echo "CACHE_KEY=$(expr $(date +%V) - 1 + 1)" >> $GITHUB_ENV
+          echo "PREVIOUS_CACHE_KEY=$(expr $(date +%V) - 1)" >> $GITHUB_ENV
+
+      - name: Henter maven avhengigheter som er cachet
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ env.CACHE_KEY }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ env.PREVIOUS_CACHE_KEY }}
       - name: Hent Maven cache
         uses: actions/cache@v2
         with:
@@ -37,7 +51,7 @@ jobs:
       - name: Kompiler
         run: |
           mvn versions:set -DnewVersion=${TAG}
-          mvn clean install --batch-mode --quiet --settings .github/workflows/.m2/settings.xml
+          mvn clean install --batch-mode --quiet --settings .github/.m2/settings.xml
 
       - name: Bygg, tag og push Docker image
         run: |

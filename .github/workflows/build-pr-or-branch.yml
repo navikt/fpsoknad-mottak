@@ -30,4 +30,4 @@ jobs:
 
       - name: Kompiler
         run: |
-          mvn package  --settings .github/workflows/.m2/settings.xml
+          mvn package  --settings .github/.m2/settings.xml
