@@ -41,7 +41,7 @@ public class Person {
         this.navn = navn;
         this.fødselsdato = fødselsdato;
         this.målform = målform;
-        this.land = land;
+        this.land = Optional.ofNullable(land).orElse(CountryCode.NO);
         this.ikkeNordiskEøsLand = ikkeNordiskEøsLand;
         this.bankkonto = bankkonto;
     }
