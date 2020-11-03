@@ -68,7 +68,7 @@ public class OppslagTjeneste implements Oppslag {
     private Person pdlPerson() {
         try {
             var p = pdl.hentSøker();
-            var np = new Person(p.getId(), p.getNavn(), p.getFødselsdato(), p.getMålform(), p.getLandKode(), false,
+            var np = new Person(p.getId(), p.getNavn(), p.getFødselsdato(), p.getMålform(), p.getLandKode(),
                     p.getBankkonto());
             np.setAktørId(p.getAktørId());
             return np;

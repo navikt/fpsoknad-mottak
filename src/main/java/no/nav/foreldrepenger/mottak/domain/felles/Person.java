@@ -35,14 +35,13 @@ public class Person {
             @JsonProperty("fødselsdato") LocalDate fødselsdato,
             @JsonProperty("målform") String målform,
             @JsonProperty("land") CountryCode land,
-            @JsonProperty("ikkeNordiskEøsLand") Boolean ikkeNordiskEøsLand,
             @JsonProperty("bankkonto") Bankkonto bankkonto) {
         this.fnr = fnr;
         this.navn = navn;
         this.fødselsdato = fødselsdato;
         this.målform = målform;
         this.land = Optional.ofNullable(land).orElse(CountryCode.NO);
-        this.ikkeNordiskEøsLand = ikkeNordiskEøsLand;
+        this.ikkeNordiskEøsLand = IkkeNordiskEØSLand.ikkeNordiskEøsLand(this.land);
         this.bankkonto = bankkonto;
     }
 
