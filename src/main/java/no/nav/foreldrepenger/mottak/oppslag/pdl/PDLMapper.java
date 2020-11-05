@@ -91,7 +91,10 @@ class PDLMapper {
     }
 
     private static CountryCode landkodeFra(PDLStatsborgerskap statsborgerskap) {
-        return CountryCode.getByAlpha3Code(statsborgerskap.land());
+        return Optional.ofNullable(statsborgerskap)
+                .map(PDLStatsborgerskap::land)
+                .map(CountryCode::getByAlpha3Code)
+                .orElse(CountryCode.NO);
     }
 
     private static LocalDate fødselsdatoFra(Set<PDLFødsel> datoer) {
