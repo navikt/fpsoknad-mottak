@@ -7,3 +7,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 @JsonAutoDetect(fieldVisibility = ANY)
 record PDLNavn(String fornavn, String mellomnavn, String etternavn) {
 }
+
+@JsonAutoDetect(fieldVisibility = ANY)
+record PDLWrappedNavn(PDLNavn navn) {
+
+}

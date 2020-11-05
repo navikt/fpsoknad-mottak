@@ -71,9 +71,11 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     public Navn navnFor(String id) {
-        return oppslag(() -> systemClient.post(cfg.navnQuery(), idFra(id), Navn.class).block(), "navn");
-        // return new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null); // TODO
-        // kjønn
+        var navn = oppslag(() -> systemClient.post(cfg.navnQuery(), idFra(id), PDLWrappedNavn.class).block(), "navn");
+        return Optional.ofNullable(navn)
+                .map(PDLWrappedNavn::navn)
+                .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null)).orElse(null);
+        // kjønn mangler
     }
 
     public AktørId aktøridFor(Fødselsnummer fnr) {
