@@ -14,7 +14,7 @@ Mottar søknader om svangerskapspenger, foreldrepenger og engangsstønad fra fro
 
 # Komme i gang
 
-### For å kjøre lokalt:
+### For å kjøre lokalt: 
 
 Sett ekstraparameter `-parameters` til javac (I IntelliJ: Settings > Build, Execution, Deployment > Compiler > Java Compiler > Additional command line parameters).
 Dette for at man skal slippe å annotere alle constructor-parametre med @JsonProperty("xyz").
