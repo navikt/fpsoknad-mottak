@@ -243,7 +243,7 @@ public class TestUtils {
     public static Person person() {
         Person person = new Person(new Fødselsnummer("010101010101"), new Navn("Mor", "Mellommor", "Morsen", Kjønn.K),
                 LocalDate.now().minusYears(25), "NN",
-                CountryCode.NO, false,
+                CountryCode.NO,
                 new Bankkonto("2000.20.20000", "Store Fiskerbank"));
         person.setAktørId(new AktørId("42"));
         return person;
