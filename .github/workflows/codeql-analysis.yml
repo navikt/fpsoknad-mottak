@@ -57,7 +57,7 @@ jobs:
     #  uses: github/codeql-action/autobuild@v1
     - name: Kompiler
       run: | 
-          mvn clean install --batch-mode --quiet --settings .github/workflows/.m2/settings.xml
+          mvn clean install --batch-mode --quiet --settings .github/.m2/settings.xml
                    
 
     # ℹ️ Command-line programs to run using the OS shell.
