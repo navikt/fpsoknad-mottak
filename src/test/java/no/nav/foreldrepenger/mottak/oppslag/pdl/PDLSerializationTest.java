@@ -61,6 +61,11 @@ public class PDLSerializationTest {
     private ObjectMapper mapper;
 
     @Test
+    public void testWrappedNavn() throws Exception {
+        test(new PDLWrappedNavn(Set.of(new PDLNavn("a", "b", "c"))));
+    }
+
+    @Test
     public void testStatsborgerskapPDL() {
         test(ettStatsborgerskap());
     }
