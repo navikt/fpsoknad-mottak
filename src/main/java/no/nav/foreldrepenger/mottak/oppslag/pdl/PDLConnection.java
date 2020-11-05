@@ -7,6 +7,8 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.AKTORID;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.net.URI;
@@ -60,7 +62,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public SøkerDTO hentSøker() {
         return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
-                .map(s -> PDLMapper.map(tokenUtil.getSubject(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
+                .map(s -> map(tokenUtil.getSubject(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
@@ -75,7 +77,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public AktørId aktøridFor(Fødselsnummer fnr) {
         try {
-            return AktørId.valueOf(PDLMapper.mapIdent(oppslagId(fnr.getFnr()), AKTORID));
+            return AktørId.valueOf(mapIdent(oppslagId(fnr.getFnr()), AKTORID));
         } catch (Exception e) {
             LOG.warn("Oppslag aktørid feil", e);
             return null;
@@ -84,7 +86,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public Fødselsnummer fødselsnummerFor(AktørId aktørId) {
         try {
-            return Fødselsnummer.valueOf(PDLMapper.mapIdent(oppslagId(aktørId.getId()), FOLKEREGISTERIDENT));
+            return Fødselsnummer.valueOf(mapIdent(oppslagId(aktørId.getId()), FOLKEREGISTERIDENT));
         } catch (Exception e) {
             LOG.warn("Oppslag fnr feil", e);
             return null;
@@ -139,7 +141,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         try {
             LOG.info("PDL oppslag {}", type);
             var res = oppslag.get();
-            LOG.info("PDL oppslag {} respons={}", type, res);
+            LOG.trace("PDL oppslag {} respons={}", type, res);
             return res;
         } catch (GraphQLErrorsException e) {
             LOG.warn("PDL oppslag {} feilet", type, e);
