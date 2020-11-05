@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
+import no.nav.foreldrepenger.mottak.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -71,15 +72,12 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     public Navn navnFor(String id) {
-        PDLWrappedNavn w = oppslag(() -> systemClient.post(cfg.navnQuery(), idFra(id), PDLWrappedNavn.class).block(), "navn");
-        if (w != null && w.navn() != null) {
-            return w.navn()
-                    .stream()
-                    .findFirst()
-                    .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null))
-                    .orElse(null);
-        }
-        return null;
+        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.navnQuery(), idFra(id), PDLWrappedNavn.class).block(), "navn"))
+                .map(n -> StreamUtil.safeStream(n.navn())
+                        .findFirst()
+                        .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null)))
+                .orElse(null)
+                .orElse(null);
     }
 
     public AktørId aktøridFor(Fødselsnummer fnr) {
