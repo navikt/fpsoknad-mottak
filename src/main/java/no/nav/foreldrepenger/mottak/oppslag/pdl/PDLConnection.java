@@ -73,7 +73,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public Navn navnFor(String id) {
         return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.navnQuery(), idFra(id), PDLWrappedNavn.class).block(), "navn"))
-                .map(n -> StreamUtil.safeStream(n.navn())
+                .map(navn -> StreamUtil.safeStream(navn.navn())
                         .findFirst()
                         .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null)))
                 .orElse(null)
