@@ -151,6 +151,9 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         } catch (GraphQLErrorsException e) {
             LOG.warn("PDL oppslag {} feilet", type, e);
             return errorHandler.handle(e);
+        } catch (Exception e) {
+            LOG.warn("PDL oppslag {} feilet med uventet feil", type, e);
+            return null;
         }
     }
 

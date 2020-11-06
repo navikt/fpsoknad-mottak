@@ -59,7 +59,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                     .map(OrganisasjonMapper::tilOrganisasjonsnavn)
                     .filter(Objects::nonNull)
                     .orElse(orgnr);
-            LOG.info("Hentet organisasjonsnavn OK");
+            LOG.info("Hentet organisasjonsnavn for {} OK", orgnr);
             LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);
             return navn;
         } catch (Exception e) {
