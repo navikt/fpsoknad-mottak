@@ -1,15 +1,13 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.common.base.Joiner;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode.Exclude;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
-import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 @Data
 @JsonPropertyOrder({ "fornavn", "mellomnavn", "etternavn", "kjønn" })
@@ -18,6 +16,7 @@ public class Navn {
     private final String fornavn;
     private final String mellomnavn;
     private final String etternavn;
+    @Exclude
     private final Kjønn kjønn;
 
     @JsonCreator
@@ -33,23 +32,19 @@ public class Navn {
         return Joiner.on(' ').skipNulls().join(fornavn, mellomnavn, etternavn);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Navn))
-            return false;
-        Navn navn = (Navn) o;
-        return Objects.equals(fornavn, navn.fornavn) && Objects.equals(mellomnavn, navn.mellomnavn) && Objects.equals(etternavn, navn.etternavn);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(fornavn, mellomnavn, etternavn);
-    }
-
-    @Override
-    public String toString() {
-        return "Navn [fornavn=" + fornavn + ", mellomnavn=" + StringUtil.mask(mellomnavn) + ", etternavn=" + StringUtil.mask(etternavn) + "]";
-    }
+    /*
+     * @Override public boolean equals(Object o) { if (this == o) return true; if
+     * (!(o instanceof Navn)) return false; Navn navn = (Navn) o; return
+     * Objects.equals(fornavn, navn.fornavn) && Objects.equals(mellomnavn,
+     * navn.mellomnavn) && Objects.equals(etternavn, navn.etternavn); }
+     *
+     * /*
+     *
+     * @Override public int hashCode() { return Objects.hash(fornavn, mellomnavn,
+     * etternavn); }
+     *
+     * @Override public String toString() { return "Navn [fornavn=" + fornavn +
+     * ", mellomnavn=" + StringUtil.mask(mellomnavn) + ", etternavn=" +
+     * StringUtil.mask(etternavn) + "]"; }
+     */
 }
