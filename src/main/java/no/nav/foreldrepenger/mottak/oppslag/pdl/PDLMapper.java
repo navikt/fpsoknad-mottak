@@ -49,7 +49,7 @@ class PDLMapper {
                 .kjønn(kjønnFra(søker.getKjønn()))
                 .barn(barnFra(fnrSøker, barn))
                 .build();
-        LOG.info("Returnerer {}", dto);
+        LOG.trace("Returnerer {}", dto);
         return dto;
     }
 
