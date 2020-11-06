@@ -7,6 +7,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .getBody()
                 .stream()
                 .map(mapper::tilArbeidsforhold)
+                .sorted(Comparator.comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
                 .collect(toList());
         LOG.info("Hentet {} arbeidsforhold for {} -> {} for {}", arbeidsforhold.stream().map(a -> a.getArbeidsgiverId()).collect(toList()), fom, tom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
