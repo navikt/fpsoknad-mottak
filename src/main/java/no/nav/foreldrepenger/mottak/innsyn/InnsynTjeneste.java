@@ -194,7 +194,7 @@ public class InnsynTjeneste implements Innsyn {
             var pdlNavn = pdlNavn(fnr);
             LOG.trace("Fikk PDL navn {}", pdlNavn);
             if (navn != pdlNavn) {
-                LOG.warn("PDL navn {} og TPS navn {} er ikke like", pdlNavn, navn);
+                LOG.warn("PDL navn {} og TPS navn {} er ulike", pdlNavn, navn);
             } else {
                 LOG.info("PDL navn og TPS navn er like");
             }
@@ -209,7 +209,7 @@ public class InnsynTjeneste implements Innsyn {
         try {
             return pdl.navnFor(fnr.getFnr());
         } catch (Exception e) {
-            LOG.warn("PDL Kunne ikke slå opp navn for {}", fnr);
+            LOG.warn("PDL Kunne ikke slå opp navn for {}", fnr, e);
             return null;
         }
     }
