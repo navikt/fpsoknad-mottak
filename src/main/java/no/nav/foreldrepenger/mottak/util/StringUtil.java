@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static java.util.function.Predicate.not;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Base64;
@@ -44,8 +46,20 @@ public final class StringUtil {
         return limit(Arrays.toString(bytes), max);
     }
 
+    public static String partialMask(String value) {
+        return partialMask(value, 11);
+    }
+
+    public static String partialMask(String value, int length) {
+        return (value != null) && (value.length() == length) ? Strings.padEnd(value.substring(0, length / 2 + length % 2), length, '*') : value;
+    }
+
     public static String mask(String value) {
-        return (value != null) && (value.length() == 11) ? Strings.padEnd(value.substring(0, 6), 11, '*') : value;
+        return Optional.ofNullable(value)
+                .map(String::stripLeading)
+                .filter(not(String::isBlank))
+                .map(v -> "*".repeat(v.length()))
+                .orElse("<null>");
     }
 
     public static String encode(String string) {

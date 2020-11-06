@@ -93,7 +93,7 @@ public class InnsendingHendelse {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.mask(fnr.getFnr())
+        return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.partialMask(fnr.getFnr())
                 + ", journalId="
                 + journalId
                 + ", referanseId="

@@ -25,6 +25,6 @@ public class Fødselsnummer {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [fnr=" + mask(fnr) + "]";
+        return getClass().getSimpleName() + " [fnr=" + partialMask(fnr) + "]";
     }
 }

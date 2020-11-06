@@ -109,7 +109,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private String subject() {
         return Optional.ofNullable(tokenUtil.getSubject())
-                .map(StringUtil::mask)
+                .map(StringUtil::partialMask)
                 .orElse("Uautentisert");
     }
 
