@@ -16,13 +16,13 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagTjeneste implements Oppslag {
     private static final Logger LOG = LoggerFactory.getLogger(OppslagTjeneste.class);
-    private final OppslagConnection conn;
-    private final PDLConnection pdl;
+    private final TPSConnection conn;
+    private final PDLConnection pdlConn;
     private final TokenUtil tokenHelper;
 
-    public OppslagTjeneste(PDLConnection pdl, OppslagConnection conn, TokenUtil tokenHelper) {
+    public OppslagTjeneste(PDLConnection pdlConn, TPSConnection conn, TokenUtil tokenHelper) {
         this.conn = conn;
-        this.pdl = pdl;
+        this.pdlConn = pdlConn;
         this.tokenHelper = tokenHelper;
     }
 
@@ -58,7 +58,7 @@ public class OppslagTjeneste implements Oppslag {
 
     private Fødselsnummer pdlFnr(AktørId aktørId) {
         try {
-            return pdl.fødselsnummerFor(aktørId);
+            return pdlConn.fødselsnummerFor(aktørId);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL fnr");
             return null;
@@ -67,7 +67,7 @@ public class OppslagTjeneste implements Oppslag {
 
     private Person pdlPerson() {
         try {
-            var p = pdl.hentSøker();
+            var p = pdlConn.hentSøker();
             var np = new Person(p.getId(), p.getNavn(), p.getFødselsdato(), p.getMålform(), p.getLandKode(),
                     p.getBankkonto());
             np.setAktørId(p.getAktørId());
@@ -80,7 +80,7 @@ public class OppslagTjeneste implements Oppslag {
 
     private AktørId pdlAktørId(Fødselsnummer fnr) {
         try {
-            return pdl.aktøridFor(fnr);
+            return pdlConn.aktøridFor(fnr);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL aktør");
             return null;
@@ -89,7 +89,7 @@ public class OppslagTjeneste implements Oppslag {
 
     private Navn pdlNavn(String id) {
         try {
-            return pdl.navnFor(id);
+            return pdlConn.navnFor(id);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL navn");
             return null;

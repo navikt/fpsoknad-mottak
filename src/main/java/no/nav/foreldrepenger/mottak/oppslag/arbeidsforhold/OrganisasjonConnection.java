@@ -18,7 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
+import no.nav.foreldrepenger.mottak.oppslag.TPSConnection;
 
 @Component
 public class OrganisasjonConnection extends AbstractWebClientConnection {
@@ -26,9 +26,9 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private static final String PRIVAT_ARBEIDSGIVER = "Privat arbeidsgiver";
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonConnection.class);
     private final OrganisasjonConfig cfg;
-    private OppslagConnection oppslag;
+    private TPSConnection oppslag;
 
-    public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient client, OppslagConnection oppslag, OrganisasjonConfig cfg) {
+    public OrganisasjonConnection(@Qualifier(ORGANISASJON) WebClient client, TPSConnection oppslag, OrganisasjonConfig cfg) {
         super(client, cfg);
         this.cfg = cfg;
         this.oppslag = oppslag;

@@ -6,7 +6,7 @@ import no.nav.foreldrepenger.mottak.health.AbstractPingableHealthIndicator;
 
 @Component
 public class OppslagHealthIndicator extends AbstractPingableHealthIndicator {
-    public OppslagHealthIndicator(OppslagConnection connection) {
+    public OppslagHealthIndicator(TPSConnection connection) {
         super(connection);
     }
 }

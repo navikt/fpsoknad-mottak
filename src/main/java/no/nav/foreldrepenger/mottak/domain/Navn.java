@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.common.base.Joiner;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 
 @Data
+@EqualsAndHashCode(exclude = "kjønn")
 @JsonPropertyOrder({ "fornavn", "mellomnavn", "etternavn", "kjønn" })
 public class Navn {
 

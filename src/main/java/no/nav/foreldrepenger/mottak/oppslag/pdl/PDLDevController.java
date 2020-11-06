@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.http.UnprotectedRestController;
 
-@UnprotectedRestController(PDLController.PDL + "/dev")
+@UnprotectedRestController("/pdl/dev")
 public class PDLDevController {
 
     private final PDLTjeneste pdl;
@@ -25,5 +25,4 @@ public class PDLDevController {
     public String toString() {
         return getClass().getSimpleName() + " [pdl=" + pdl + "]";
     }
-
 }

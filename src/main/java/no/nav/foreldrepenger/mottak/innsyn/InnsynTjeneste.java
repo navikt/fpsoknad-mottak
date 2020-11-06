@@ -38,7 +38,7 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagConnection;
+import no.nav.foreldrepenger.mottak.oppslag.TPSConnection;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
@@ -47,13 +47,13 @@ public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
     private final XMLSøknadHandler søknadHandler;
     private final XMLVedtakHandler vedtakHandler;
-    private final OppslagConnection oppslag;
+    private final TPSConnection oppslag;
     private final OrganisasjonConnection organisasjon;
     private final InnsynConnection innsyn;
     private final PDLConnection pdl;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsyn, OppslagConnection oppslag, OrganisasjonConnection organisasjon, PDLConnection pdl) {
+            InnsynConnection innsyn, TPSConnection oppslag, OrganisasjonConnection organisasjon, PDLConnection pdl) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.organisasjon = organisasjon;

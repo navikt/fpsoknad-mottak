@@ -15,11 +15,11 @@ import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 
 @Component
-public class OppslagConnection extends AbstractRestConnection implements PingEndpointAware {
-    public static final Logger LOG = LoggerFactory.getLogger(OppslagConnection.class);
+public class TPSConnection extends AbstractRestConnection implements PingEndpointAware {
+    public static final Logger LOG = LoggerFactory.getLogger(TPSConnection.class);
     private final OppslagConfig cfg;
 
-    public OppslagConnection(RestOperations restOperations, OppslagConfig config) {
+    public TPSConnection(RestOperations restOperations, OppslagConfig config) {
         super(restOperations);
         this.cfg = config;
     }
