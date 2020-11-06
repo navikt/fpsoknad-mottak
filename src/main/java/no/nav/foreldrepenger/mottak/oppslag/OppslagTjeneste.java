@@ -73,7 +73,7 @@ public class OppslagTjeneste implements Oppslag {
             np.setAktørId(p.getAktørId());
             return np;
         } catch (Exception e) {
-            LOG.warn("Feil ved oppslag PDL person");
+            LOG.warn("Feil ved oppslag PDL person", e);
             return null;
         }
     }
@@ -82,7 +82,7 @@ public class OppslagTjeneste implements Oppslag {
         try {
             return pdlConn.aktøridFor(fnr);
         } catch (Exception e) {
-            LOG.warn("Feil ved oppslag PDL aktør");
+            LOG.warn("Feil ved oppslag PDL aktør", e);
             return null;
         }
     }
@@ -91,7 +91,7 @@ public class OppslagTjeneste implements Oppslag {
         try {
             return pdlConn.navnFor(id);
         } catch (Exception e) {
-            LOG.warn("Feil ved oppslag PDL navn");
+            LOG.warn("Feil ved oppslag PDL navn", e);
             return null;
         }
     }
