@@ -40,7 +40,7 @@ public class Navn {
         if (!(o instanceof Navn))
             return false;
         Navn navn = (Navn) o;
-        return fornavn.equals(navn.fornavn) && mellomnavn.equals(navn.mellomnavn) && etternavn.equals(navn.etternavn);
+        return Objects.equals(fornavn, navn.fornavn) && Objects.equals(mellomnavn, navn.mellomnavn) && Objects.equals(etternavn, navn.etternavn);
     }
 
     @Override
