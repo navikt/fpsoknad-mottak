@@ -10,6 +10,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -65,6 +66,7 @@ class PDLMapper {
         return safeStream(barn)
                 .map(b -> barnFra(fnrSøker, b))
                 .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(BarnDTO::getFødselsdato))
                 .collect(toSet());
     }
 
