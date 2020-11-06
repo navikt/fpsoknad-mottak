@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import static no.nav.foreldrepenger.mottak.util.StringUtil.mask;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.partialMask;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
