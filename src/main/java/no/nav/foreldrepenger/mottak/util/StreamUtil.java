@@ -49,7 +49,7 @@ public final class StreamUtil {
 
     public static <T> T onlyElem(Set<T> set) {
         verifiser(set);
-        return set.stream()
+        return safeStream(set)
                 .map(Optional::ofNullable)
                 .findFirst()
                 .orElseGet(Optional::empty)
@@ -64,7 +64,7 @@ public final class StreamUtil {
 
     public static <T> T onlyElem(List<T> list) {
         verifiser(list);
-        return list.stream()
+        return safeStream(list)
                 .map(Optional::ofNullable)
                 .findFirst()
                 .orElseGet(Optional::empty)

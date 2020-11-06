@@ -200,7 +200,7 @@ public class InnsynTjeneste implements Innsyn {
             }
             return navn;
         } catch (Exception e) {
-            LOG.warn("Kunne ikke slå opp navn for annen part for {}", fnr);
+            LOG.warn("Kunne ikke slå opp navn for {}", fnr);
             return null;
         }
     }

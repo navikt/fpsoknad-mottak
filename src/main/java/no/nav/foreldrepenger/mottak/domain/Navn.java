@@ -31,20 +31,4 @@ public class Navn {
     public String navn() {
         return Joiner.on(' ').skipNulls().join(fornavn, mellomnavn, etternavn);
     }
-
-    /*
-     * @Override public boolean equals(Object o) { if (this == o) return true; if
-     * (!(o instanceof Navn)) return false; Navn navn = (Navn) o; return
-     * Objects.equals(fornavn, navn.fornavn) && Objects.equals(mellomnavn,
-     * navn.mellomnavn) && Objects.equals(etternavn, navn.etternavn); }
-     *
-     * /*
-     *
-     * @Override public int hashCode() { return Objects.hash(fornavn, mellomnavn,
-     * etternavn); }
-     *
-     * @Override public String toString() { return "Navn [fornavn=" + fornavn +
-     * ", mellomnavn=" + StringUtil.mask(mellomnavn) + ", etternavn=" +
-     * StringUtil.mask(etternavn) + "]"; }
-     */
 }
