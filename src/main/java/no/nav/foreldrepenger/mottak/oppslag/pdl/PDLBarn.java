@@ -86,7 +86,8 @@ class PDLBarn {
     }
 
     boolean erBeskyttet() {
-        var beskyttet = !onlyElem(getBeskyttelse()).gradering().equals(UGRADERT);
+        var b = onlyElem(getBeskyttelse());
+        var beskyttet = b != null ? !UGRADERT.equals(b.gradering()) : false;
         LOG.info("Barn er {} beskyttet", beskyttet ? "" : "IKKE");
         return beskyttet;
     }
