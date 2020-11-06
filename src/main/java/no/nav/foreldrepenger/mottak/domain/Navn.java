@@ -1,16 +1,17 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.common.base.Joiner;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
+import no.nav.foreldrepenger.mottak.util.StringUtil;
 
 @Data
-@EqualsAndHashCode(exclude = "kjønn")
 @JsonPropertyOrder({ "fornavn", "mellomnavn", "etternavn", "kjønn" })
 public class Navn {
 
@@ -30,5 +31,25 @@ public class Navn {
 
     public String navn() {
         return Joiner.on(' ').skipNulls().join(fornavn, mellomnavn, etternavn);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Navn))
+            return false;
+        Navn navn = (Navn) o;
+        return fornavn.equals(navn.fornavn) && mellomnavn.equals(navn.mellomnavn) && etternavn.equals(navn.etternavn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fornavn, mellomnavn, etternavn);
+    }
+
+    @Override
+    public String toString() {
+        return "Navn [fornavn=" + fornavn + ", mellomnavn=" + StringUtil.mask(mellomnavn) + ", etternavn=" + StringUtil.mask(etternavn) + "]";
     }
 }
