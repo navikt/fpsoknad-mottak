@@ -189,16 +189,16 @@ public class InnsynTjeneste implements Innsyn {
     private Navn navnFor(Fødselsnummer fnr) {
         try {
             LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
-            Navn navn = oppslag.navn(fnr.getFnr());
-            LOG.trace("Fikk TPS navn {}", navn);
+            Navn tpsNavn = oppslag.navn(fnr.getFnr());
+            LOG.trace("Fikk TPS navn {}", tpsNavn);
             var pdlNavn = pdlNavn(fnr);
             LOG.trace("Fikk PDL navn {}", pdlNavn);
-            if (!navn.equals(pdlNavn)) {
-                LOG.warn("PDL navn {} og TPS navn {} er ulike", pdlNavn, navn);
+            if (!tpsNavn.equals(pdlNavn)) {
+                LOG.warn("PDL navn {} og TPS navn {} er ulike", pdlNavn, tpsNavn);
             } else {
-                LOG.info("PDL navn og TPS navn er like");
+                LOG.info("PDL-navn og TPS-navn er like");
             }
-            return navn;
+            return tpsNavn;
         } catch (Exception e) {
             LOG.warn("Kunne ikke slå opp navn for {}", fnr);
             return null;
