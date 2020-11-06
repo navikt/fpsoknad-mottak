@@ -193,7 +193,7 @@ public class InnsynTjeneste implements Innsyn {
             LOG.trace("Fikk TPS navn {}", navn);
             var pdlNavn = pdlNavn(fnr);
             LOG.trace("Fikk PDL navn {}", pdlNavn);
-            if (navn != pdlNavn) {
+            if (!navn.equals(pdlNavn)) {
                 LOG.warn("PDL navn {} og TPS navn {} er ulike", pdlNavn, navn);
             } else {
                 LOG.info("PDL navn og TPS navn er like");
