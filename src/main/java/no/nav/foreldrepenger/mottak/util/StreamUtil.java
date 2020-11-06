@@ -28,7 +28,7 @@ public final class StreamUtil {
                 .stream();
     }
 
-    public static <T> Stream<T> safeStream(Set<T> set) {
+    public static <T> Stream<T> safeStream(Collection<T> set) {
         return Optional.ofNullable(set)
                 .orElseGet(Set::of)
                 .stream();
@@ -49,17 +49,18 @@ public final class StreamUtil {
 
     public static <T> T onlyElem(Set<T> set) {
         verifiser(set);
-        return safeStream(set)
+        return safeStream(verifiser(set))
                 .map(Optional::ofNullable)
                 .findFirst()
                 .orElseGet(Optional::empty)
                 .orElse(null);
     }
 
-    private static <T> void verifiser(Collection<T> collection) {
+    private static <T> Collection<T> verifiser(Collection<T> collection) {
         if (!isEmpty(collection) && collection.size() != 1) {
             LOG.warn("Mer en ett element i {}", collection);
         }
+        return collection;
     }
 
     public static <T> T onlyElem(List<T> list) {
