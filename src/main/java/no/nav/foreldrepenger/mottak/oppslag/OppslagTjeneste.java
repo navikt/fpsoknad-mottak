@@ -97,14 +97,19 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     private <T> T sammenlign(T tps, T pdl) {
-        String name = tps.getClass().getSimpleName();
-        LOG.info("Sammenligner {}, PDL bruk er {}", name, conn.isBrukPdl());
-        if (!tps.equals(pdl)) {
-            LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
-            return conn.isBrukPdl() ? pdl : tps;
-        } else {
-            LOG.info("{} er like", name);
-            return pdl;
+        try {
+            String name = tps.getClass().getSimpleName();
+            LOG.info("Sammenligner {}, PDL bruk er {}", name, conn.isBrukPdl());
+            if (!tps.equals(pdl)) {
+                LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
+                return conn.isBrukPdl() ? pdl : tps;
+            } else {
+                LOG.info("{} er like", name);
+                return pdl;
+            }
+        } catch (Exception e) {
+            LOG.warn("Feil ved sammenligning", e);
+            return tps;
         }
     }
 
