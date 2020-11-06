@@ -18,7 +18,7 @@
     <root level="info">
         <appender-ref ref="stdout" />
     </root>
-    <springProfile name="default">
+    <springProfile name="prod-fss">
         <turboFilter
             class="ch.qos.logback.classic.turbo.MarkerFilter">
             <Name>CONFIDENTIAL_FILTER</Name>
