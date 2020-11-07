@@ -6,6 +6,7 @@ public enum Målform {
     @JsonEnumDefaultValue
     NB,
     NN,
+    EN,
     E;
 
     public static Målform standard() {
