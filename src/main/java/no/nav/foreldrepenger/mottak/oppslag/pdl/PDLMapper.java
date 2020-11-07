@@ -26,6 +26,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
@@ -38,7 +39,7 @@ class PDLMapper {
 
     }
 
-    static SøkerDTO map(String fnrSøker, AktørId aktørId, String målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
+    static SøkerDTO map(String fnrSøker, AktørId aktørId, Målform målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
         var dto = SøkerDTO.builder()
                 .id(Fødselsnummer.valueOf(fnrSøker))
                 .aktørId(aktørId)
@@ -46,7 +47,7 @@ class PDLMapper {
                 .fødselsdato(fødselsdatoFra(søker.getFødselsdato()))
                 .navn(navnFra(søker.getNavn(), søker.getKjønn()))
                 .bankkonto(bankkonto)
-                .målform(målform)
+                .målform(målform.name())
                 .kjønn(kjønnFra(søker.getKjønn()))
                 .barn(barnFra(fnrSøker, barn))
                 .build();

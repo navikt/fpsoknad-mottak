@@ -33,6 +33,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 import no.nav.foreldrepenger.mottak.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -165,16 +166,14 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
         return getForObject(cfg.getKontonummerURI(), Bankkonto.class);
     }
 
-    private String målform() {
+    private Målform målform() {
         try {
-            LOG.info("DKIF oppslag");
-            var mf = dkif.målform();
-            LOG.info("DKIF oppslag fikk {}", mf);
-
+            return Optional.ofNullable(dkif.målform())
+                    .orElse(Målform.standard());
         } catch (Exception e) {
-            LOG.warn("DKIF oppslag feilet", e);
+            LOG.warn("DKIF oppslag målform feilet", e);
+            return Målform.standard();
         }
-        return getForObject(cfg.getMaalformURI(), String.class);
     }
 
     @Override

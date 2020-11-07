@@ -15,7 +15,6 @@ public class PDLConfig extends AbstractConfig {
     private static final String DEFAULT_BASE_URI = "http://pdl-api.default/graphql";
     private static final String DEFAULT_PING_PATH = "/";
     private static final String DEFAULT_KONTONR_URI = "http://fpsoknad-oppslag/api/person/kontonr";
-    private static final String DEFAULT_MAALFORM_URI = "http://fpsoknad-oppslag/api/person/maalform";
 
     private static final String NAVN_QUERY = "query-navn.graphql";
     private static final String BARN_QUERY = "query-barn.graphql";
@@ -24,7 +23,6 @@ public class PDLConfig extends AbstractConfig {
     private static final String IDENT_QUERY = "query-ident.graphql";
 
     private final URI kontonummerURI;
-    private final URI maalformURI;
     private final int barnFoedtInnen;
     private final int doedSjekk;
 
@@ -32,12 +30,10 @@ public class PDLConfig extends AbstractConfig {
     public PDLConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
             @DefaultValue(DEFAULT_BASE_URI) URI baseUri, @DefaultValue(DEFAULT_KONTONR_URI) URI kontonummerURI,
-            @DefaultValue(DEFAULT_MAALFORM_URI) URI maalformUri,
             @DefaultValue(DEFAULT_FØDSEL_MÅNEDER_TILBAKE) int barnFoedtInnen,
             @DefaultValue(DEFAULT_DØD_BARN_MÅNEDER_TILBAKE) int doedSjekk) {
         super(baseUri, pingPath, enabled);
         this.kontonummerURI = kontonummerURI;
-        this.maalformURI = maalformUri;
         this.barnFoedtInnen = barnFoedtInnen;
         this.doedSjekk = doedSjekk;
     }
@@ -68,10 +64,6 @@ public class PDLConfig extends AbstractConfig {
 
     public URI getKontonummerURI() {
         return kontonummerURI;
-    }
-
-    public URI getMaalformURI() {
-        return maalformURI;
     }
 
     @Override

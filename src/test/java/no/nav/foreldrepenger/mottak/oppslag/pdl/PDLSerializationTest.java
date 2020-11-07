@@ -32,6 +32,7 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLSivilstand.PDLSivilstandType;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
@@ -41,7 +42,7 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 @SpringJUnitConfig
 public class PDLSerializationTest {
 
-    private static final String BOKMÅL = "NB";
+    private static final Målform BOKMÅL = Målform.NB;
     private static final String ID_ANNEN = "33333333333";
     private static final String ID_SØKER = "22222222222";
     private static final String ID_BARN = "11111111111";
@@ -158,7 +159,7 @@ public class PDLSerializationTest {
         return SøkerDTO.builder()
                 .bankkonto(bankkonto())
                 .barn(Set.of(barn()))
-                .målform(BOKMÅL)
+                .målform(BOKMÅL.name())
                 .fødselsdato(MORFØDT)
                 .id(FNR_SØKER)
                 .kjønn(K)

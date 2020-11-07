@@ -8,7 +8,7 @@ public enum Målform {
     NN,
     E;
 
-    public static Målform def() {
+    public static Målform standard() {
         return NB;
     }
 }
