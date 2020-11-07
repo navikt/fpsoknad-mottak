@@ -15,6 +15,7 @@ import lombok.Data;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 
 @JsonInclude(NON_NULL)
 @Data
@@ -39,7 +40,7 @@ public class Person {
         this.fnr = fnr;
         this.navn = navn;
         this.fødselsdato = fødselsdato;
-        this.målform = målform;
+        this.målform = Optional.ofNullable(målform).orElse(Målform.standard().name());
         this.land = Optional.ofNullable(land).orElse(CountryCode.NO);
         this.ikkeNordiskEøsLand = IkkeNordiskEØSLand.ikkeNordiskEøsLand(this.land);
         this.bankkonto = bankkonto;
