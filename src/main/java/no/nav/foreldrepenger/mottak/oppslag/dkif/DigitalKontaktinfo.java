@@ -23,7 +23,7 @@ class DigitalKontaktinfo {
         return Optional.ofNullable(kontaktinfo)
                 .map(k -> k.get(ident))
                 .map(Kontaktinformasjon::getMålform)
-                .orElse(Målform.NB);
+                .orElse(Målform.standard());
     }
 
     @EqualsAndHashCode

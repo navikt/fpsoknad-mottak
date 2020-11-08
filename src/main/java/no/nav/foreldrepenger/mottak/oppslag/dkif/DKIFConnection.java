@@ -37,7 +37,7 @@ public class DKIFConnection extends AbstractWebClientConnection {
                 .stream()
                 .map(d -> d.getMålform(tokenUtil.getSubject()))
                 .findFirst()
-                .orElse(Målform.NB);
+                .orElse(Målform.standard());
     }
 
     @Override
