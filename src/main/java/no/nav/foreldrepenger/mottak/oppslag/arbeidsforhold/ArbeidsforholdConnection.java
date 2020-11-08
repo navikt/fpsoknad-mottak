@@ -38,7 +38,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     }
 
     private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom, LocalDate tom) {
-        LOG.info("Henter arbeidsforhold for {} -> {}", fom, tom);
+        LOG.info("Henter arbeidsforhold for perioden {} -> {}", fom, tom);
         var arbeidsforhold = getWebClient().get()
                 .uri(b -> cfg.getArbeidsforholdURI(b, fom, tom))
                 .accept(APPLICATION_JSON)
@@ -50,7 +50,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .map(mapper::tilArbeidsforhold)
                 .sorted(Comparator.comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
                 .collect(toList());
-        LOG.info("Hentet {} arbeidsforhold for {} -> {} for {}", arbeidsforhold.stream().map(a -> a.getArbeidsgiverId()).collect(toList()), fom, tom);
+        LOG.info("Hentet {} arbeidsforhold for perioden {} -> {}", arbeidsforhold.size(), fom, tom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
         return arbeidsforhold;
     }
