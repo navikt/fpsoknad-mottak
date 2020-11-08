@@ -308,7 +308,7 @@ public class InnsynTjeneste implements Innsyn {
                         null));
     }
 
-    public static Double tilDoubleFraBigDecimal(BigDecimal value) {
+    private static Double tilDoubleFraBigDecimal(BigDecimal value) {
         return Optional.ofNullable(value)
                 .map(BigDecimal::doubleValue)
                 .orElse(null);
