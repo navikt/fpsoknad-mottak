@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
+import static no.nav.foreldrepenger.mottak.util.StringUtil.mask;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -30,5 +32,11 @@ public class Navn {
 
     public String navn() {
         return Joiner.on(' ').skipNulls().join(fornavn, mellomnavn, etternavn);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [fornavn=" + fornavn + ", mellomnavn=" + mask(mellomnavn) + ", etternavn=" + mask(etternavn)
+                + ", kjønn=" + kjønn + "]";
     }
 }
