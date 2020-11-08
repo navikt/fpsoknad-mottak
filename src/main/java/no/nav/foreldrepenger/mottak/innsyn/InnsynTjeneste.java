@@ -115,13 +115,13 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private List<Behandling> hentBehandlinger(List<Lenke> lenker, String saksnr) {
-        LOG.info("Henter {} behandling{} for sak {} fra {}", lenker.size(), endelse(lenker), saksnr, lenker);
+        LOG.info("Henter {} behandling{} for sak {}", lenker.size(), endelse(lenker), saksnr);
         var behandlinger = safeStream(lenker)
                 .filter(distinctByKey(Lenke::getHref))
                 .map(innsyn::behandling)
                 .map(this::tilBehandling)
                 .collect(toList());
-        LOG.info("Hentet {} behandling{}", behandlinger.size(), endelse(behandlinger));
+        LOG.info("Hentet {} behandling{} for sak {}", behandlinger.size(), endelse(behandlinger), saksnr);
         if (!behandlinger.isEmpty()) {
             LOG.info(CONFIDENTIAL, "{}", behandlinger);
         }

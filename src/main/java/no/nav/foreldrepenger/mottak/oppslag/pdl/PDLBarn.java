@@ -79,7 +79,7 @@ class PDLBarn {
     }
 
     boolean erNyligFødt(int måneder) {
-        LocalDate dato = onlyElem(getFødselsdato()).fødselsdato();
+        var dato = onlyElem(getFødselsdato()).fødselsdato();
         var nylig = dato.isAfter(LocalDate.now().minusMonths(måneder));
         LOG.info("Barn er {} født for mindre enn {} måneder siden ({})", nylig ? "" : "IKKE", dato);
         return nylig;
