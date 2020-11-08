@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
@@ -38,28 +37,25 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
-import no.nav.foreldrepenger.mottak.oppslag.TPSConnection;
+import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
     private final XMLSøknadHandler søknadHandler;
     private final XMLVedtakHandler vedtakHandler;
-    private final TPSConnection oppslag;
+    private final OppslagTjeneste oppslag;
     private final OrganisasjonConnection organisasjon;
     private final InnsynConnection innsyn;
-    private final PDLConnection pdl;
 
     public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsyn, TPSConnection oppslag, OrganisasjonConnection organisasjon, PDLConnection pdl) {
+            InnsynConnection innsyn, OppslagTjeneste oppslag, OrganisasjonConnection organisasjon) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.organisasjon = organisasjon;
         this.søknadHandler = søknadHandler;
         this.vedtakHandler = vedtakHandler;
-        this.pdl = pdl;
     }
 
     @Override
@@ -179,50 +175,11 @@ public class InnsynTjeneste implements Innsyn {
     private AnnenPart annenPart(AktørId aktørId) {
         if (aktørId != null) {
             LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
-            Fødselsnummer fnr = fnr(aktørId);
+            Fødselsnummer fnr = oppslag.fnr(aktørId);
             LOG.trace(CONFIDENTIAL, "Fikk {}", fnr);
-            return new AnnenPart(fnr, aktørId, navnFor(fnr), null);
+            return new AnnenPart(fnr, aktørId, oppslag.navn(fnr.getFnr()), null);
         }
         return null;
-    }
-
-    private Navn navnFor(Fødselsnummer fnr) {
-        try {
-            LOG.trace(CONFIDENTIAL, "Henter annen part navn fra {}", fnr);
-            Navn tpsNavn = oppslag.navn(fnr.getFnr());
-            LOG.trace("Fikk TPS navn {}", tpsNavn);
-            var pdlNavn = pdlNavn(fnr);
-            LOG.trace("Fikk PDL navn {}", pdlNavn);
-            if (!tpsNavn.equals(pdlNavn)) {
-                LOG.warn("PDL navn {} og TPS navn {} er ulike", pdlNavn, tpsNavn);
-            } else {
-                LOG.info("PDL-navn og TPS-navn er like");
-            }
-            return tpsNavn;
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke slå opp navn for {}", fnr);
-            return null;
-        }
-    }
-
-    private Navn pdlNavn(Fødselsnummer fnr) {
-        try {
-            return pdl.navnFor(fnr.getFnr());
-        } catch (Exception e) {
-            LOG.warn("PDL Kunne ikke slå opp navn for {}", fnr, e);
-            return null;
-        }
-    }
-
-    private Fødselsnummer fnr(AktørId aktørId) {
-        try {
-            return Optional.ofNullable(aktørId)
-                    .map(oppslag::fnr)
-                    .orElse(null);
-        } catch (Exception e) {
-            LOG.warn("Kunne ikke slå opp FNR for annen part for aktørid {}", aktørId);
-            return null;
-        }
     }
 
     private Behandling tilBehandling(BehandlingDTO wrapper) {
