@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
@@ -10,13 +11,9 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.neovisionaries.i18n.CountryCode;
 
@@ -32,8 +29,6 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 class PDLMapper {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PDLMapper.class);
 
     private PDLMapper() {
 
@@ -51,7 +46,6 @@ class PDLMapper {
                 .kjønn(kjønnFra(søker.getKjønn()))
                 .barn(barnFra(fnrSøker, barn))
                 .build();
-        LOG.trace("Returnerer {}", dto);
         return dto;
     }
 
@@ -67,7 +61,7 @@ class PDLMapper {
         return safeStream(barn)
                 .map(b -> barnFra(fnrSøker, b))
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(BarnDTO::getFødselsdato))
+                .sorted(comparing(BarnDTO::getFødselsdato))
                 .collect(toSet());
     }
 

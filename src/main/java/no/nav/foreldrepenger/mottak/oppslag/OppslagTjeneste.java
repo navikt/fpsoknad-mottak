@@ -16,24 +16,24 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "false", matchIfMissing = true)
 public class OppslagTjeneste implements Oppslag {
     private static final Logger LOG = LoggerFactory.getLogger(OppslagTjeneste.class);
-    private final TPSConnection conn;
+    private final TPSConnection tpsConn;
     private final PDLConnection pdlConn;
     private final TokenUtil tokenHelper;
 
-    public OppslagTjeneste(PDLConnection pdlConn, TPSConnection conn, TokenUtil tokenHelper) {
-        this.conn = conn;
+    public OppslagTjeneste(PDLConnection pdlConn, TPSConnection tpsConn, TokenUtil tokenHelper) {
+        this.tpsConn = tpsConn;
         this.pdlConn = pdlConn;
         this.tokenHelper = tokenHelper;
     }
 
     @Override
     public String ping() {
-        return conn.ping();
+        return tpsConn.ping();
     }
 
     @Override
     public Person søker() {
-        return sammenlign(conn.søker(), pdlPerson());
+        return sammenlign(tpsConn.søker(), pdlPerson());
     }
 
     @Override
@@ -43,17 +43,17 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public AktørId aktørId(Fødselsnummer fnr) {
-        return sammenlign(conn.aktørId(fnr), pdlAktørId(fnr));
+        return sammenlign(tpsConn.aktørId(fnr), pdlAktørId(fnr));
     }
 
     @Override
     public Fødselsnummer fnr(AktørId aktørId) {
-        return sammenlign(conn.fnr(aktørId), pdlFnr(aktørId));
+        return sammenlign(tpsConn.fnr(aktørId), pdlFnr(aktørId));
     }
 
     @Override
     public Navn navn(String id) {
-        return sammenlign(conn.navn(id), pdlNavn(id));
+        return sammenlign(tpsConn.navn(id), pdlNavn(id));
     }
 
     private Fødselsnummer pdlFnr(AktørId aktørId) {
@@ -99,10 +99,10 @@ public class OppslagTjeneste implements Oppslag {
     private <T> T sammenlign(T tps, T pdl) {
         try {
             String name = tps.getClass().getSimpleName();
-            LOG.info("Sammenligner {}, PDL bruk er {}", name, conn.isBrukPdl());
+            LOG.info("Sammenligner {}, PDL bruk er {}", name, tpsConn.isBrukPdl());
             if (!tps.equals(pdl)) {
                 LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
-                return conn.isBrukPdl() ? pdl : tps;
+                return tpsConn.isBrukPdl() ? pdl : tps;
             } else {
 
                 LOG.info("TPS-{} og PDL-{} er like", name, name);
@@ -116,7 +116,6 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [conn=" + conn + ", tokenHelper=" + tokenHelper + "]";
+        return getClass().getSimpleName() + " [tpsConn=" + tpsConn + ", pdlConn=" + pdlConn + ", tokenHelper=" + tokenHelper + "]";
     }
-
 }
