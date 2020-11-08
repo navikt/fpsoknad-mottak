@@ -26,7 +26,6 @@ public class Person {
     private final LocalDate fødselsdato;
     private final String målform;
     private final CountryCode land;
-    private final Boolean ikkeNordiskEøsLand;
     private final Bankkonto bankkonto;
     private AktørId aktørId;
 
@@ -42,24 +41,31 @@ public class Person {
         this.fødselsdato = fødselsdato;
         this.målform = Optional.ofNullable(målform).orElse(Målform.standard().name());
         this.land = Optional.ofNullable(land).orElse(CountryCode.NO);
-        this.ikkeNordiskEøsLand = IkkeNordiskEØSLand.ikkeNordiskEøsLand(this.land);
         this.bankkonto = bankkonto;
     }
 
     public String getFornavn() {
-        return Optional.ofNullable(navn).map(Navn::getFornavn).orElse(null);
+        return Optional.ofNullable(navn)
+                .map(Navn::getFornavn)
+                .orElse(null);
     }
 
     public String getMellomnavn() {
-        return Optional.ofNullable(navn).map(Navn::getMellomnavn).orElse(null);
+        return Optional.ofNullable(navn)
+                .map(Navn::getMellomnavn)
+                .orElse(null);
     }
 
     public String getEtternavn() {
-        return Optional.ofNullable(navn).map(Navn::getEtternavn).orElse(null);
+        return Optional.ofNullable(navn)
+                .map(Navn::getEtternavn)
+                .orElse(null);
     }
 
     public Kjønn getKjønn() {
-        return Optional.ofNullable(navn).map(Navn::getKjønn).orElse(Kjønn.U);
+        return Optional.ofNullable(navn)
+                .map(Navn::getKjønn)
+                .orElse(Kjønn.U);
 
     }
 }
