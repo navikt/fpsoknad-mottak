@@ -4,7 +4,7 @@ import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.U;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConvertingExceptionHandler.e;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLHttpStatusCodeExceptionConvertingErrorHandler.exception;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -72,13 +72,14 @@ class PDLMapper {
     }
 
     static BarnDTO barnFra(String fnrSøker, PDLBarn barn) {
-        return Optional.ofNullable(barn).map(b -> BarnDTO.builder()
-                .fnr(Fødselsnummer.valueOf(b.getId()))
-                .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
-                .navn(navnFra(b.getNavn(), b.getKjønn()))
-                .fødselsdato(fødselsdatoFra(b.getFødselsdato()))
-                .annenPart(annenPartFra(b.getAnnenPart()))
-                .build())
+        return Optional.ofNullable(barn)
+                .map(b -> BarnDTO.builder()
+                        .fnr(Fødselsnummer.valueOf(b.getId()))
+                        .fnrSøker(Fødselsnummer.valueOf(fnrSøker))
+                        .navn(navnFra(b.getNavn(), b.getKjønn()))
+                        .fødselsdato(fødselsdatoFra(b.getFødselsdato()))
+                        .annenPart(annenPartFra(b.getAnnenPart()))
+                        .build())
                 .orElse(null);
     }
 
@@ -120,24 +121,18 @@ class PDLMapper {
     }
 
     private static Kjønn kjønnFra(PDLKjønn.Kjønn kjønn) {
-        switch (kjønn) {
-            case KVINNE:
-                return K;
-            case MANN:
-                return M;
-            case UKJENT:
-                return U;
-            default:
-                return U;
-        }
+        return switch (kjønn) {
+            case KVINNE -> K;
+            case MANN -> M;
+            case UKJENT -> U;
+        };
     }
 
     static String mapIdent(PDLIdenter identer, PDLIdentGruppe gruppe) {
-        return identer.identer()
-                .stream()
+        return safeStream(identer.identer())
                 .filter(i -> i.gruppe().equals(gruppe))
                 .map(PDLIdentInformasjon::ident)
                 .findAny()
-                .orElseThrow(() -> e(NOT_FOUND, "Fant ikke id"));
+                .orElseThrow(() -> exception(NOT_FOUND, "Fant ikke id"));
     }
 }

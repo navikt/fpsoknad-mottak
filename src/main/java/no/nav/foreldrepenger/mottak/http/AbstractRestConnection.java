@@ -35,7 +35,7 @@ public abstract class AbstractRestConnection implements RetryAware {
 
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
         var respons = restOperations.postForEntity(uri, payload, responseType);
-        if (respons.hasBody()) {
+        if (respons != null && respons.hasBody()) {
             LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
         }
         return respons;
@@ -53,7 +53,7 @@ public abstract class AbstractRestConnection implements RetryAware {
         return getForObject(uri, responseType, false);
     }
 
-    public <T> T getForObject(URI uri, Class<T> responseType, boolean doThrow) {
+    public <T> T getForObject(URI uri, Class<T> responseType, boolean required) {
         try {
             T respons = restOperations.getForObject(uri, responseType);
             if (respons != null) {
@@ -61,7 +61,7 @@ public abstract class AbstractRestConnection implements RetryAware {
             }
             return respons;
         } catch (HttpClientErrorException e) {
-            if (NOT_FOUND.equals(e.getStatusCode()) && !doThrow) {
+            if (NOT_FOUND.equals(e.getStatusCode()) && !required) {
                 LOG.info("Fant intet objekt på {}, returnerer null", uri);
                 return null;
             }
@@ -73,15 +73,15 @@ public abstract class AbstractRestConnection implements RetryAware {
         return getForEntity(uri, responseType, true);
     }
 
-    public <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType, boolean doThrow) {
+    public <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType, boolean required) {
         try {
             var respons = restOperations.getForEntity(uri, responseType);
-            if (respons.hasBody()) {
+            if (respons != null && respons.hasBody()) {
                 LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
             }
             return respons;
         } catch (HttpClientErrorException e) {
-            if (NOT_FOUND.equals(e.getStatusCode()) && !doThrow) {
+            if (NOT_FOUND.equals(e.getStatusCode()) && !required) {
                 LOG.info("Fant ingen entity på {}, returnerer null", uri);
                 return null;
             }

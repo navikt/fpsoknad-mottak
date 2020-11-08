@@ -1,5 +1,9 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.FORBUDT;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.IKKEFUNNET;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.UAUTENTISERT;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.UGYLDIG;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -19,16 +23,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLError;
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnNotProd;
 
 @Component
-@ConditionalOnNotProd
-public class PDLConvertingExceptionHandler implements PDLErrorResponseHandler {
+public class PDLHttpStatusCodeExceptionConvertingErrorHandler implements PDLErrorResponseHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDLConvertingExceptionHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDLHttpStatusCodeExceptionConvertingErrorHandler.class);
 
     @Override
-    public <T> T handle(GraphQLErrorsException e) {
+    public <T> T handleError(GraphQLErrorsException e) {
         LOG.warn("PDL oppslag returnerte {} feil. {}", e.getErrors().size(), e.getErrors(), e);
         throw safeStream(e.getErrors())
                 .findFirst() // TODO?
@@ -42,15 +44,15 @@ public class PDLConvertingExceptionHandler implements PDLErrorResponseHandler {
 
     private static HttpStatusCodeException exceptionFra(String kode, String msg) {
         return switch (kode) {
-            case "unauthenticated" -> e(UNAUTHORIZED, msg);
-            case "unauthorized" -> e(FORBIDDEN, msg);
-            case "bad_request" -> e(BAD_REQUEST, msg);
-            case "not_found" -> e(NOT_FOUND, msg);
+            case UAUTENTISERT -> exception(UNAUTHORIZED, msg);
+            case FORBUDT -> exception(FORBIDDEN, msg);
+            case UGYLDIG -> exception(BAD_REQUEST, msg);
+            case IKKEFUNNET -> exception(NOT_FOUND, msg);
             default -> new HttpServerErrorException(INTERNAL_SERVER_ERROR, msg);
         };
     }
 
-    static HttpStatusCodeException e(HttpStatus status, String msg) {
+    static HttpStatusCodeException exception(HttpStatus status, String msg) {
         return create(status, msg, null, null, null);
     }
 }

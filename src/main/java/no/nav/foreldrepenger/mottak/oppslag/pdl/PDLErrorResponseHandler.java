@@ -4,6 +4,6 @@ import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 
 interface PDLErrorResponseHandler {
 
-    <T> T handle(GraphQLErrorsException e);
+    <T> T handleError(GraphQLErrorsException e);
 
 }
