@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -35,6 +36,11 @@ public class OppslagController {
     @GetMapping("/navn")
     public Navn navn(@RequestParam(name = "aktorId") AktørId aktorId) {
         return oppslag.navn(aktorId.getId());
+    }
+
+    @GetMapping("/person")
+    public Person søker() {
+        return oppslag.søker();
     }
 
     @Override
