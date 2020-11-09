@@ -48,7 +48,7 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public Fødselsnummer fnr(AktørId aktørId) {
-        return sammenlign(tpsConn.fnr(aktørId), pdlFnr(aktørId));
+        return /* sammenlign(tpsConn.fnr(aktørId), */pdlFnr(aktørId); // );
     }
 
     @Override

@@ -1,26 +1,15 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static no.nav.foreldrepenger.mottak.util.StringUtil.mask;
 
-import lombok.Data;
-import no.nav.foreldrepenger.mottak.util.StringUtil;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-@Data
-public class Bankkonto {
-
-    private final String kontonummer;
-    private final String banknavn;
-
-    @JsonCreator
-    public Bankkonto(@JsonProperty("kontonummer") String kontonummer,
-            @JsonProperty("banknavn") String banknavn) {
-        this.kontonummer = kontonummer;
-        this.banknavn = banknavn;
-    }
+@JsonAutoDetect(fieldVisibility = ANY)
+public record Bankkonto(String kontonummer, String banknavn) {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [kontonummer=" + StringUtil.mask(kontonummer) + ", banknavn=" + banknavn + "]";
+        return getClass().getSimpleName() + " [kontonummer=" + mask(kontonummer) + ", banknavn=" + banknavn + "]";
     }
 }
