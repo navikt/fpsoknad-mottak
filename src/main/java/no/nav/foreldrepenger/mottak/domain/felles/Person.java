@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode.Exclude;
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
@@ -24,6 +25,7 @@ public class Person {
     private final Fødselsnummer fnr;
     private final Navn navn;
     private final LocalDate fødselsdato;
+    @Exclude
     private final String målform;
     private final CountryCode land;
     private final Bankkonto bankkonto;
