@@ -28,7 +28,7 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public String ping() {
-        return tpsConn.ping();
+        return pdlConn.ping();
     }
 
     @Override
