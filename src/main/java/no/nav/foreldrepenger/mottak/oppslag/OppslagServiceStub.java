@@ -23,7 +23,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 @ConditionalOnProperty(name = "oppslag.stub", havingValue = "true")
 public class OppslagServiceStub implements Oppslag {
     @Override
-    public Person søker() {
+    public Person person() {
         return person();
     }
 
@@ -42,7 +42,7 @@ public class OppslagServiceStub implements Oppslag {
         return new Fødselsnummer("01010111111");
     }
 
-    private static Person person() {
+    private static Person p() {
         return new Person(new Fødselsnummer("010101010101"), new Navn("Mor", "Mellommor", "Morsen", Kjønn.K),
                 LocalDate.now().minusYears(25), "NN",
                 CountryCode.NO,

@@ -26,7 +26,7 @@ public class TestConfig {
             }
 
             @Override
-            public Person søker() {
+            public Person person() {
                 return TestUtils.person();
             }
 

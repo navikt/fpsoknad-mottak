@@ -8,7 +8,9 @@ import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
+import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(OppslagController.OPPSLAG)
 public class OppslagController {
@@ -18,14 +20,23 @@ public class OppslagController {
     private final OppslagTjeneste oppslag;
     private final TokenUtil tokenUtil;
 
-    public OppslagController(OppslagTjeneste oppslag, TokenUtil tokenUtil) {
+    private final PDLConnection pdl;
+
+    public OppslagController(OppslagTjeneste oppslag, PDLConnection pdl, TokenUtil tokenUtil) {
         this.oppslag = oppslag;
         this.tokenUtil = tokenUtil;
+        this.pdl = pdl;
     }
 
     @GetMapping("/aktoer")
     public AktørId aktør() {
         return oppslag.aktørId(tokenUtil.fnr());
+    }
+
+    @GetMapping("/ping")
+    @Unprotected
+    public String ping() {
+        return oppslag.ping();
     }
 
     @GetMapping("/fnr")
@@ -39,8 +50,8 @@ public class OppslagController {
     }
 
     @GetMapping("/person")
-    public Person søker() {
-        return oppslag.søker();
+    public Person person() {
+        return oppslag.person();
     }
 
     @Override

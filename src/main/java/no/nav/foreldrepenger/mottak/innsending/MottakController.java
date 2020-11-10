@@ -54,19 +54,19 @@ public class MottakController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = inspektør.inspiser(søknad);
-        return sjekkStatus(søknadSender.søk(søknad, oppslag.søker(), søknadEgenskap),
+        return sjekkStatus(søknadSender.søk(søknad, oppslag.person(), søknadEgenskap),
                 FØRSTEGANGSSØKNAD, varsleHvisVellykket(søknadEgenskap));
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.søker(),
+        return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.person(),
                 inspektør.inspiser(ettersending)), "Ettersending", false);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.søker(), ENDRING_FORELDREPENGER),
+        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.person(), ENDRING_FORELDREPENGER),
                 ENDRINGSSØKNAD);
     }
 
@@ -102,7 +102,7 @@ public class MottakController {
     }
 
     private Varsel varselFra(Kvittering kvittering) {
-        return new Varsel(kvittering.getMottattDato(), oppslag.søker());
+        return new Varsel(kvittering.getMottattDato(), oppslag.person());
     }
 
     @Override

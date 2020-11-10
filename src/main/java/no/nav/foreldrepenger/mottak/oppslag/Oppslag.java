@@ -7,7 +7,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.http.Pingable;
 
 public interface Oppslag extends Pingable {
-    Person søker();
+    Person person();
 
     AktørId aktørId();
 
