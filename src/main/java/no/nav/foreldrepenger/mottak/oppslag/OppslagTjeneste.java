@@ -33,7 +33,7 @@ public class OppslagTjeneste implements Oppslag {
 
     @Override
     public Person person() {
-        return sammenlign(tpsConn.søker(), pdlPerson());
+        return /* sammenlign(tpsConn.søker(), */pdlPerson(); // );
     }
 
     @Override
