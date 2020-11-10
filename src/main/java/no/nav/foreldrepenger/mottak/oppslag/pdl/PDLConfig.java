@@ -16,11 +16,11 @@ public class PDLConfig extends AbstractConfig {
     private static final String DEFAULT_PING_PATH = "/";
     private static final String DEFAULT_KONTONR_URI = "http://fpsoknad-oppslag/api/person/kontonr";
 
-    private static final String NAVN_QUERY = "query-navn.graphql";
-    private static final String BARN_QUERY = "query-barn.graphql";
-    private static final String SØKER_QUERY = "query-person.graphql";
-    private static final String ANNEN_PART_QUERY = "query-annen-forelder.graphql";
-    private static final String IDENT_QUERY = "query-ident.graphql";
+    static final String NAVN_QUERY = "query-navn.graphql";
+    static final String BARN_QUERY = "query-barn.graphql";
+    static final String SØKER_QUERY = "query-person.graphql";
+    static final String ANNEN_PART_QUERY = "query-annen-forelder.graphql";
+    static final String IDENT_QUERY = "query-ident.graphql";
 
     private final URI kontonummerURI;
     private final int barnFoedtInnen;
@@ -38,31 +38,15 @@ public class PDLConfig extends AbstractConfig {
         this.doedSjekk = doedSjekk;
     }
 
-    String navnQuery() {
-        return NAVN_QUERY;
-    }
-
-    String barnQuery() {
-        return BARN_QUERY;
-    }
-
-    String søkerQuery() {
-        return SØKER_QUERY;
-    }
-
-    String annenQuery() {
-        return ANNEN_PART_QUERY;
-    }
-
-    public int getBarnFødtInnen() {
+    int getBarnFødtInnen() {
         return barnFoedtInnen;
     }
 
-    public int getDødSjekk() {
+    int getDødSjekk() {
         return doedSjekk;
     }
 
-    public URI getKontonummerURI() {
+    URI getKontonummerURI() {
         return kontonummerURI;
     }
 
@@ -70,10 +54,6 @@ public class PDLConfig extends AbstractConfig {
     public String toString() {
         return getClass().getSimpleName() + " [pingPath=" + getPingPath() + ", enabled=" + isEnabled() + ", url=" + getBaseUri()
                 + "]";
-    }
-
-    public String identQuery() {
-        return IDENT_QUERY;
     }
 
 }

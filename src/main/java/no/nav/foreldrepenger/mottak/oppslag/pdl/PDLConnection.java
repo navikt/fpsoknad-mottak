@@ -4,6 +4,11 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_SYSTEM;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.PDL_USER;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.ANNEN_PART_QUERY;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.BARN_QUERY;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.IDENT_QUERY;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.NAVN_QUERY;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.SØKER_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.AKTORID;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
@@ -35,7 +40,6 @@ import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
-import no.nav.foreldrepenger.mottak.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -73,8 +77,8 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     public Navn navnFor(String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.navnQuery(), idFra(id), PDLWrappedNavn.class).block(), "navn"))
-                .map(navn -> StreamUtil.safeStream(navn.navn())
+        return Optional.ofNullable(oppslag(() -> systemClient.post(NAVN_QUERY, idFra(id), PDLWrappedNavn.class).block(), "navn"))
+                .map(navn -> safeStream(navn.navn())
                         .findFirst()
                         .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null)))
                 .orElse(null)
@@ -83,7 +87,12 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public AktørId aktøridFor(Fødselsnummer fnr) {
         try {
-            return AktørId.valueOf(mapIdent(oppslagId(fnr.getFnr()), AKTORID));
+            return Optional.ofNullable(fnr)
+                    .map(Fødselsnummer::getFnr)
+                    .map(this::oppslagId)
+                    .map(id -> mapIdent(id, AKTORID))
+                    .map(AktørId::valueOf)
+                    .orElse(null);
         } catch (Exception e) {
             LOG.warn("Oppslag aktørid feil", e);
             return null;
@@ -92,7 +101,12 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     public Fødselsnummer fødselsnummerFor(AktørId aktørId) {
         try {
-            return Fødselsnummer.valueOf(mapIdent(oppslagId(aktørId.getId()), FOLKEREGISTERIDENT));
+            return Optional.ofNullable(aktørId)
+                    .map(AktørId::getId)
+                    .map(this::oppslagId)
+                    .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
+                    .map(Fødselsnummer::valueOf)
+                    .orElse(null);
         } catch (Exception e) {
             LOG.warn("Oppslag fnr feil", e);
             return null;
@@ -112,18 +126,18 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private PDLSøker oppslagSøker(String id) {
-        return Optional.ofNullable(oppslag(() -> userClient.post(cfg.søkerQuery(), idFra(id), PDLSøker.class).block(), "søker"))
+        return Optional.ofNullable(oppslag(() -> userClient.post(SØKER_QUERY, idFra(id), PDLSøker.class).block(), "søker"))
                 .map(s -> s.withId(id))
                 .orElse(null);
     }
 
     private PDLIdenter oppslagId(String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.identQuery(), idFra(id), PDLIdenter.class).block(), "aktør"))
+        return Optional.ofNullable(oppslag(() -> systemClient.post(IDENT_QUERY, idFra(id), PDLIdenter.class).block(), "aktør"))
                 .orElse(null);
     }
 
     private PDLBarn oppslagBarn(String fnrSøker, String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.barnQuery(), idFra(id), PDLBarn.class).block(), "barn"))
+        return Optional.ofNullable(oppslag(() -> systemClient.post(BARN_QUERY, idFra(id), PDLBarn.class).block(), "barn"))
                 .map(b -> medAnnenPart(b, fnrSøker))
                 .map(b -> b.withId(id))
                 .orElse(null);
@@ -136,7 +150,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(cfg.annenQuery(), idFra(id), PDLAnnenPart.class).block(), "annen part"))
+        return Optional.ofNullable(oppslag(() -> systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class).block(), "annen part"))
                 .filter(not(PDLAnnenPart::erDød))
                 .filter(not(PDLAnnenPart::erBeskyttet))
                 .map(a -> a.withId(id))
