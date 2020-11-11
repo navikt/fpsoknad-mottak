@@ -57,43 +57,24 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     private Fødselsnummer pdlFnr(AktørId aktørId) {
-        try {
-            return pdlConn.fødselsnummerFor(aktørId);
-        } catch (Exception e) {
-            LOG.warn("Feil ved oppslag PDL fnr");
-            throw e;
-        }
+        return pdlConn.fødselsnummerFor(aktørId);
     }
 
     private Person pdlPerson() {
-        try {
-            var p = pdlConn.hentSøker();
-            var np = new Person(p.getId(), p.getNavn(), p.getFødselsdato(), p.getMålform(), p.getLandKode(),
-                    p.getBankkonto());
-            np.setAktørId(p.getAktørId());
-            return np;
-        } catch (Exception e) {
-            LOG.warn("Feil ved oppslag PDL person", e);
-            throw e;
-        }
+
+        var p = pdlConn.hentSøker();
+        var np = new Person(p.getId(), p.getNavn(), p.getFødselsdato(), p.getMålform(), p.getLandKode(),
+                p.getBankkonto());
+        np.setAktørId(p.getAktørId());
+        return np;
     }
 
     private AktørId pdlAktørId(Fødselsnummer fnr) {
-        try {
-            return pdlConn.aktøridFor(fnr);
-        } catch (Exception e) {
-            LOG.warn("Feil ved oppslag PDL aktør", e);
-            throw e;
-        }
+        return pdlConn.aktøridFor(fnr);
     }
 
     private Navn pdlNavn(String id) {
-        try {
-            return pdlConn.navnFor(id);
-        } catch (Exception e) {
-            LOG.warn("Feil ved oppslag PDL navn", e);
-            throw e;
-        }
+        return pdlConn.navnFor(id);
     }
 
     @Override
