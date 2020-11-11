@@ -61,7 +61,7 @@ public class OppslagTjeneste implements Oppslag {
             return pdlConn.fødselsnummerFor(aktørId);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL fnr");
-            return null;
+            throw e;
         }
     }
 
@@ -74,7 +74,7 @@ public class OppslagTjeneste implements Oppslag {
             return np;
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL person", e);
-            return null;
+            throw e;
         }
     }
 
@@ -83,7 +83,7 @@ public class OppslagTjeneste implements Oppslag {
             return pdlConn.aktøridFor(fnr);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL aktør", e);
-            return null;
+            throw e;
         }
     }
 
@@ -92,25 +92,7 @@ public class OppslagTjeneste implements Oppslag {
             return pdlConn.navnFor(id);
         } catch (Exception e) {
             LOG.warn("Feil ved oppslag PDL navn", e);
-            return null;
-        }
-    }
-
-    private <T> T sammenlign(T tps, T pdl) {
-        try {
-            String name = tps.getClass().getSimpleName();
-            LOG.info("Sammenligner {}, PDL bruk er {}", name, tpsConn.isBrukPdl());
-            if (!tps.equals(pdl)) {
-                LOG.warn("TPS-{} og PDL-{} er ulike, tps={}, pdl={}", name, name, tps, pdl);
-                return tpsConn.isBrukPdl() ? pdl : tps;
-            } else {
-
-                LOG.info("TPS-{} og PDL-{} er like", name, name);
-                return pdl;
-            }
-        } catch (Exception e) {
-            LOG.warn("Feil ved sammenligning", e);
-            return tps;
+            throw e;
         }
     }
 

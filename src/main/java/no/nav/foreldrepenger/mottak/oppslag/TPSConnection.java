@@ -24,10 +24,6 @@ public class TPSConnection extends AbstractRestConnection implements PingEndpoin
         this.cfg = config;
     }
 
-    public boolean isBrukPdl() {
-        return cfg.isBrukPdl();
-    }
-
     @Override
     public String ping() {
         return ping(pingEndpoint());
