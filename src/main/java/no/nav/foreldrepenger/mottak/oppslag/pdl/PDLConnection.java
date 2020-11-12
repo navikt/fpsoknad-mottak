@@ -88,7 +88,6 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     public AktørId aktøridFor(Fødselsnummer fnr) {
         try {
             return Optional.ofNullable(fnr)
-                    .map(Fødselsnummer::getFnr)
                     .map(this::oppslagId)
                     .map(id -> mapIdent(id, AKTORID))
                     .map(AktørId::valueOf)
@@ -102,7 +101,6 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     public Fødselsnummer fødselsnummerFor(AktørId aktørId) {
         try {
             return Optional.ofNullable(aktørId)
-                    .map(AktørId::getId)
                     .map(this::oppslagId)
                     .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
                     .map(Fødselsnummer::valueOf)
@@ -131,8 +129,16 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
                 .orElse(null);
     }
 
-    private PDLIdenter oppslagId(String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(IDENT_QUERY, idFra(id), PDLIdenter.class).block(), "aktør"))
+    private PDLIdenter oppslagId(Fødselsnummer id) {
+        return oppslagId(id.getFnr(), "fødselsnummer");
+    }
+
+    private PDLIdenter oppslagId(AktørId id) {
+        return oppslagId(id.getId(), "aktør");
+    }
+
+    private PDLIdenter oppslagId(String id, String type) {
+        return Optional.ofNullable(oppslag(() -> systemClient.post(IDENT_QUERY, idFra(id), PDLIdenter.class).block(), type))
                 .orElse(null);
     }
 
