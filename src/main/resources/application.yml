@@ -72,7 +72,6 @@ server:
       context-path: /api
 
 spring:
-   config.import: vault
    cloud.discovery.client.health-indicator.enabled: false
    codec:
       max-in-memory-size: 32MB
