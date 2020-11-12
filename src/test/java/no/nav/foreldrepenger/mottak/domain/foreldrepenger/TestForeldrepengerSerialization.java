@@ -133,7 +133,7 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testSøknad() {
         for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), false);
+            test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), true);
         }
 
     }
