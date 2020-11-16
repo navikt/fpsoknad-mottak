@@ -43,7 +43,6 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
-import no.nav.foreldrepenger.mottak.oppslag.OppslagServiceStub;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
@@ -51,7 +50,6 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 @AutoConfigureJsonTesters
 @ActiveProfiles(profiles = { LOCAL })
 @ExtendWith(SpringExtension.class)
-//@TestPropertySource(properties = {"fppdfgen.enabled=true", "fppdfgen.uri=http://localhost:8180"})
 @ContextConfiguration(classes = {
         MottakConfiguration.class,
         SøknadTextFormatter.class,
@@ -60,10 +58,6 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
         ForeldrepengerPdfGenerator.class,
         EngangsstønadPdfGenerator.class,
         RestTemplate.class,
-        OppslagServiceStub.class,
-        // PdfGeneratorConfig.class,
-        // PdfGeneratorConnection.class,
-        // PdfGeneratorTjeneste.class,
         PdfGeneratorStub.class,
         NySvangerskapspengerPdfGenerator.class,
         DelegerendePDFGenerator.class,

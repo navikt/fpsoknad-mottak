@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.core.io.ClassPathResource;
 
@@ -244,7 +245,7 @@ public class TestUtils {
         Person person = new Person(new Fødselsnummer("010101010101"), new Navn("Mor", "Mellommor", "Morsen", Kjønn.K),
                 LocalDate.now().minusYears(25), "NN",
                 CountryCode.NO,
-                new Bankkonto("2000.20.20000", "Store Fiskerbank"));
+                new Bankkonto("2000.20.20000", "Store Fiskerbank"), Set.of());
         person.setAktørId(new AktørId("42"));
         return person;
     }
