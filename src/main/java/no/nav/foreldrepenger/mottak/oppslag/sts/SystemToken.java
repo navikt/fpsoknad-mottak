@@ -1,65 +1,40 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.localDateTime;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.security.token.support.core.jwt.JwtToken;
 
-public class SystemToken {
+@JsonAutoDetect(fieldVisibility = ANY)
+public record SystemToken(@JsonProperty("access_token") JwtToken accessToken,
+        @JsonProperty("expires_in") Long expiresIn,
+        @JsonProperty("token_type") String tokenType,
+        @JsonProperty("scope") String scope) {
 
-    private final JwtToken accessToken;
-
-    private final Long expiresIn;
-
-    private final String tokenType;
-
-    @JsonCreator
-    public SystemToken(@JsonProperty("access_token") JwtToken accessToken, @JsonProperty("expires_in") Long expiresIn,
-            @JsonProperty("token_type") String tokenType) {
-        this.accessToken = accessToken;
-        this.expiresIn = expiresIn;
-        this.tokenType = tokenType;
-    }
-
-    @Deprecated
-    public boolean isExpired(long slack) {
-        return LocalDateTime.now().isAfter(getExpiration().minusSeconds(slack));
-    }
-
-    public boolean isExpired(Duration slack) {
+    boolean isExpired(Duration slack) {
         return LocalDateTime.now().isAfter(getExpiration().minus(slack));
     }
 
-    private JwtToken getAccessToken() {
-        return accessToken;
+    String getToken() {
+        return accessToken().getTokenAsString();
     }
 
-    public String getToken() {
-        return getAccessToken().getTokenAsString();
-    }
-
-    public LocalDateTime getExpiration() {
-        return localDateTime(getAccessToken().getJwtTokenClaims().getExpirationTime());
-    }
-
-    public String getTokenType() {
-        return tokenType;
-    }
-
-    public Long getExpiresIn() {
-        return expiresIn;
+    LocalDateTime getExpiration() {
+        return localDateTime(accessToken().getJwtTokenClaims().getExpirationTime());
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[accessToken=" + limit(accessToken.getTokenAsString(), 12)
                 + ", expires=" + getExpiration()
+                + ", scope=" + scope
                 + ", tokenType=" + tokenType + "]";
     }
 
