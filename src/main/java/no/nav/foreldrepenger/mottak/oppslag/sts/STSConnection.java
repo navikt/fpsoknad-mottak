@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.STS;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.time.Duration;
@@ -30,7 +31,10 @@ public class STSConnection extends AbstractWebClientConnection {
                 .post()
                 .uri(cfg::getStsURI)
                 .accept(APPLICATION_JSON)
-                .retrieve()
+                .contentType(APPLICATION_FORM_URLENCODED)
+                .body(cfg.stsBody())
+                .exchange()
+                .block()
                 .bodyToMono(SystemToken.class)
                 .block();
         LOG.trace("Refresh av system token OK ({})", token.getExpiration());

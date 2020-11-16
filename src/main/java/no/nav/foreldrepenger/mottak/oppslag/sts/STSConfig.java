@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
 import static com.nimbusds.oauth2.sdk.GrantType.CLIENT_CREDENTIALS;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 import java.net.URI;
 import java.time.Duration;
@@ -8,6 +9,8 @@ import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters.FormInserter;
 import org.springframework.web.util.UriBuilder;
 
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
@@ -56,9 +59,14 @@ public class STSConfig extends AbstractConfig {
 
     URI getStsURI(UriBuilder b) {
         return b.path(stsPath)
-                .queryParam(GRANT_TYPE, CLIENT_CREDENTIALS.getValue())
-                .queryParam(SCOPE, "openid")
                 .build();
+    }
+
+    FormInserter<String> stsBody() {
+        var m = new LinkedMultiValueMap<String, String>();
+        m.add(GRANT_TYPE, CLIENT_CREDENTIALS.getValue());
+        m.add(SCOPE, "openid");
+        return fromFormData(m);
     }
 
     @Override
