@@ -27,7 +27,7 @@ public class STSConnection extends AbstractWebClientConnection {
     SystemToken refresh() {
         LOG.trace("Refresh av system token");
         var token = getWebClient()
-                .get()
+                .post()
                 .uri(cfg::getStsURI)
                 .accept(APPLICATION_JSON)
                 .retrieve()
