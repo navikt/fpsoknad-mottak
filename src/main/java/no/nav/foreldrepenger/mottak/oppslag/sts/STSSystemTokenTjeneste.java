@@ -2,10 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.sts;
 
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
-
 @Service
-@ConditionalOnK8s
 public class STSSystemTokenTjeneste implements SystemTokenTjeneste {
     private final STSConnection connection;
     private SystemToken systemToken;
