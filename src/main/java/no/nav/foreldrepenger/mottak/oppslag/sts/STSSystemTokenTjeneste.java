@@ -1,15 +1,19 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class STSSystemTokenTjeneste implements SystemTokenTjeneste {
+
+    private static final Logger LOG = LoggerFactory.getLogger(STSSystemTokenTjeneste.class);
     private final STSConnection connection;
     private SystemToken systemToken;
 
     public STSSystemTokenTjeneste(STSConnection connection) {
         this.connection = connection;
-        connection.refresh();
+        LOG.info("System token {}", connection.refresh());
     }
 
     @Override
