@@ -18,6 +18,8 @@
         </license>
     </licenses>
     <properties>
+        <mock-oauth2-server.version>0.2.0</mock-oauth2-server.version>
+        <okhttp3.version>4.8.1</okhttp3.version>
         <token-validation-version>1.3.1</token-validation-version>
         <pdfbox.version>2.0.21</pdfbox.version>
         <oidc-spring-support.version>0.2.18</oidc-spring-support.version>
@@ -258,6 +260,12 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>no.nav.security</groupId>
+            <artifactId>mock-oauth2-server</artifactId>
+            <version>${mock-oauth2-server.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.zalando</groupId>
             <artifactId>problem-spring-web-starter</artifactId>
             <version>0.26.2</version>
@@ -488,6 +496,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>30.0-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
     <distributionManagement>

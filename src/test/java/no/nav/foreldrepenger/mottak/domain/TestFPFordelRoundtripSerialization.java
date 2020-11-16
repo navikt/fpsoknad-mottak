@@ -17,11 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.io.IOException;
 import java.util.Collections;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -46,6 +48,8 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenest
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemToken;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.security.mock.oauth2.MockOAuth2Server;
+import no.nav.security.token.support.core.jwt.JwtToken;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
@@ -57,13 +61,15 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 @EnableConfigurationProperties
 public class TestFPFordelRoundtripSerialization {
 
+    private static MockOAuth2Server SERVER;
+
     @Autowired
     private TestRestTemplate template;
 
     @MockBean
     SystemTokenTjeneste userService;
-    @Mock
-    SystemToken token;
+    // @Mock
+    // SystemToken token;
     @MockBean
     InnsendingHendelseProdusent publisher;
 
@@ -86,9 +92,22 @@ public class TestFPFordelRoundtripSerialization {
     @Autowired
     SøknadSender sender;
 
+    @BeforeAll
+    public static void startup() throws IOException {
+        SERVER = new MockOAuth2Server();
+        SERVER.start();
+    }
+
+    @AfterAll
+    public static void shutdown() throws IOException {
+        SERVER.shutdown();
+    }
+
     @BeforeEach
     public void setAuthoriztion() {
-        when(userService.getSystemToken()).thenReturn(token);
+        var token = SERVER.issueToken();
+        var t = new JwtToken(token.serialize().toString());
+        when(userService.getSystemToken()).thenReturn(new SystemToken(t, null, null, null));
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
                 execution) -> {
             request.getHeaders().add(AUTHORIZATION, "Bearer " +
