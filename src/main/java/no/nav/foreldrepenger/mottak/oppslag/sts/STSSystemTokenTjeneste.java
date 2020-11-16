@@ -17,7 +17,7 @@ public class STSSystemTokenTjeneste implements SystemTokenTjeneste {
 
     @Override
     public SystemToken getSystemToken() {
-        if (systemToken.isExpired(connection.getSlack())) {
+        if (systemToken == null || systemToken.isExpired(connection.getSlack())) {
             systemToken = connection.refresh();
         }
         return systemToken;
