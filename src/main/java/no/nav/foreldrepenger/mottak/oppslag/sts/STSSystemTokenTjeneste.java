@@ -12,11 +12,12 @@ public class STSSystemTokenTjeneste implements SystemTokenTjeneste {
 
     public STSSystemTokenTjeneste(STSConnection connection) {
         this.connection = connection;
+        connection.refresh();
     }
 
     @Override
     public SystemToken getSystemToken() {
-        if (systemToken == null || systemToken.isExpired(connection.getSlack())) {
+        if (systemToken.isExpired(connection.getSlack())) {
             systemToken = connection.refresh();
         }
         return systemToken;
