@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.retry.RetryContext.NAME;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class RestClientConfiguration {
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
                 .build();
+        LOG.info("Message interceptor er er {}", Arrays.toString(interceptors));
         LOG.info("Message covnverters før er {}", template.getMessageConverters());
         template.getMessageConverters().add(new FormHttpMessageConverter());
         LOG.info("Message covnverters etter er {}", template.getMessageConverters());
