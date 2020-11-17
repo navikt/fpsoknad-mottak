@@ -20,6 +20,7 @@ import org.springframework.web.client.RestOperations;
 
 @Configuration
 public class RestClientConfiguration {
+    private static final Logger LOG = LoggerFactory.getLogger(RestClientConfiguration.class);
 
     @Bean
     @Primary
@@ -28,8 +29,9 @@ public class RestClientConfiguration {
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
                 .build();
-
+        LOG.info("Message covnverters før er {}", template.getMessageConverters());
         template.getMessageConverters().add(new FormHttpMessageConverter());
+        LOG.info("Message covnverters etter er {}", template.getMessageConverters());
         return template;
     }
 
