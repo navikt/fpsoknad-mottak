@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
@@ -26,15 +25,11 @@ public class RestClientConfiguration {
     @Bean
     @Primary
     public RestOperations restTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
-        var template = builder
+        LOG.info("Message interceptor er er {}", Arrays.toString(interceptors));
+        return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
                 .build();
-        LOG.info("Message interceptor er er {}", Arrays.toString(interceptors));
-        LOG.info("Message covnverters før er {}", template.getMessageConverters());
-        template.getMessageConverters().add(new FormHttpMessageConverter());
-        LOG.info("Message covnverters etter er {}", template.getMessageConverters());
-        return template;
     }
 
     @Bean
