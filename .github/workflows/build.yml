@@ -81,6 +81,9 @@ jobs:
             });
 
       - name: Opprett issue, trigg deploy til dev-fss
+        outputs:
+           issue-id: # id of the crested issue
+           description: 'The ID of the created issue'
         if: success()
         uses: actions/github-script@v3
         with:
@@ -92,7 +95,7 @@ jobs:
                 labels: ['bygg'],
                 title: 'Deploy av ${{ env.TAG }}'})
               .then(response => {
-                      core.setOutput('test', response.data.number);
+                      core.setOutput('issue-id', response.data.number);
                       const issue = { owner: context.issue.owner,
                       repo: context.issue.repo,
                       issue_number: response.data.number }
