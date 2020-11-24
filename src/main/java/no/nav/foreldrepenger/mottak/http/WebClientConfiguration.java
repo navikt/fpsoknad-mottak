@@ -108,14 +108,14 @@ public class WebClientConfiguration {
                 .build();
     }
 
-    @Bean
     @Qualifier(PDL_USER)
+    @Bean
     public GraphQLWebClient pdlWebClient(@Qualifier(PDL_USER) WebClient client, ObjectMapper mapper) {
         return GraphQLWebClient.newInstance(client, mapper);
     }
 
-    @Bean
     @Qualifier(PDL_SYSTEM)
+    @Bean
     public GraphQLWebClient pdlSystemWebClient(@Qualifier(PDL_SYSTEM) WebClient client, ObjectMapper mapper) {
         return GraphQLWebClient.newInstance(client, mapper);
     }

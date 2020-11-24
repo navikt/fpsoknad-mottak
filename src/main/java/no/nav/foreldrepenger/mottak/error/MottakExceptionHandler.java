@@ -2,18 +2,13 @@ package no.nav.foreldrepenger.mottak.error;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
-import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +21,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.zalando.problem.Problem;
-import org.zalando.problem.spring.common.HttpStatusAdapter;
-
-import com.google.common.collect.Lists;
 
 import no.nav.foreldrepenger.mottak.util.StringUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
@@ -108,30 +98,15 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String subject() {
+        tokenUtil.getExpiration();
         return Optional.ofNullable(tokenUtil.getSubject())
                 .map(StringUtil::partialMask)
+                .map(s -> s + " (" + tokenUtil.getExpiration() + ")")
                 .orElse("Uautentisert");
     }
 
     private static ApiError apiErrorFra(HttpStatus status, WebRequest req, Exception e, List<Object> messages) {
-        var uri = URI.create(ServletWebRequest.class.cast(req).getRequest().getRequestURI());
-        var problem = Problem.builder() // TODO maybe later
-                .withType(uri)
-                .withDetail(getMostSpecificCause(e).getMessage())
-                .withStatus(new HttpStatusAdapter(status))
-                .with("uuid", callId());
-        var msgs = messages(e, messages);
-        // return !msgs.isBlank() ? problem.with("messages", msgs).build() :
-        // problem.build();
         return new ApiError(status, e, messages);
-    }
-
-    private static String messages(Throwable t, List<Object> objects) {
-        List<Object> messages = Lists.newArrayList(objects);
-        return messages.stream()
-                .filter(Objects::nonNull)
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
