@@ -22,28 +22,21 @@ public enum Dekningsgrad {
 
     @JsonCreator(mode = Mode.DELEGATING)
     public static Dekningsgrad create(JsonNode node) {
-        if (node.isTextual()) {
-            return create(node.asText());
-        }
-        return create(node.asInt());
+        return node.isTextual() ? create(node.asText()) : create(node.asInt());
     }
 
     private static Dekningsgrad create(int value) {
-        for (Dekningsgrad val : values()) {
-            if (val.kode == value) {
-                return val;
-            }
-        }
-        throw new UnexpectedInputException("Ikke støttet dekningsgrad %s.", value);
+        return Arrays.stream(values())
+                .filter(v -> v.kode == value)
+                .findFirst()
+                .orElseThrow(() -> new UnexpectedInputException("Ikke støttet dekningsgrad %s.", value));
     }
 
     public static Dekningsgrad create(String value) {
-        for (Dekningsgrad val : values()) {
-            if (val.name().equals(value) || String.valueOf(val.kode).equals(value)) {
-                return val;
-            }
-        }
-        throw new UnexpectedInputException("Ikke støttet dekningsgrad %s.", value);
+        return Arrays.stream(values())
+                .filter(v -> v.name().equals(value) || String.valueOf(v.kode).equals(value))
+                .findFirst()
+                .orElseThrow(() -> new UnexpectedInputException("Ikke støttet dekningsgrad %s.", value));
     }
 
     @JsonValue

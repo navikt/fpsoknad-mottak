@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,14 +38,14 @@ final class JacksonUtils {
     }
 
     static Number fromNumber(ObjectNode rootNode) {
-        Iterator<Entry<String, JsonNode>> iterator = rootNode.fields();
+        var iterator = rootNode.fields();
         while (iterator.hasNext()) {
             JsonNode entry = iterator.next().getValue();
-            if (entry instanceof IntNode) {
-                return IntNode.class.cast(entry).asInt();
+            if (entry instanceof IntNode i) {
+                return i.asInt();
             }
-            if (entry instanceof DoubleNode) {
-                return DoubleNode.class.cast(entry).asDouble();
+            if (entry instanceof DoubleNode d) {
+                return d.asDouble();
             }
         }
         throw new UnexpectedInputException("Ukjent node type %s", rootNode.getClass().getSimpleName());
