@@ -168,6 +168,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
             LOG.info("PDL oppslag {}", type);
             var res = oppslag.get();
             LOG.trace("PDL oppslag {} respons={}", type, res);
+            LOG.info("PDL oppslag {} OK", type);
             return res;
         } catch (GraphQLErrorsException e) {
             LOG.warn("PDL oppslag {} feilet", type, e);
