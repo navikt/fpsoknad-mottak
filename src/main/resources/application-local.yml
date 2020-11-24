@@ -1,10 +1,49 @@
+arbeidsforhold:
+    base-uri: ${aareg.rs.url}
+
+organisasjon:
+    base-uri: ${organisasjon.v4.url}
+
+sts:
+    base-uri: ${oidc.sts.issuer.url}
+    sts-path: ${oidc.sts.token.endpoint}
+    username: ${kafka.username}
+    password: ${kafka.password}
+
+sak:
+    securitytokenservice:
+        username: ${securitytokenservice.username}
+        password : ${securitytokenservice.password}
+        url: ${securitytokenservice.url}
+    saker:
+        url: ${sak.rs.url}
+
+securitytokenservice:
+    username: ${kafka.username}
+    password : ${kafka.password}
+    url: ${securitytokenservice.url}
+
+varsel:
+    username: username
+    enabled: false
+
 mottak:
    sender:
       domainevent:
          enabled : false
 
-management:
+no.nav:
+    security:
+        jwt:
+            issuer:
+                selvbetjening:
+                    discoveryurl: ${loginservice.idporten.discovery.url}
+                    accepted_audience: ${loginservice.idporten.audience}
+                    cookie_name: selvbetjening-idtoken
 
+http.proxy:
+
+management:
     endpoints:
       web:
         exposure:
@@ -14,36 +53,32 @@ management:
           enabled: false
           show-details : always
 
-varsel:
-   username: username
-   enabled: false
-   uri: mq://b27apvl176.preprod.local:1413/MQ1LSC02
-   channelname: Q1_FPSOKNAD_VARSEL
-   queue-name: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
-
 kafka:
-  username: username
-  password: password
-
-pdl:
- base-uri: http://localhost:9001/api/graphql
-fppdfgen:
-    enabled: false
-
-no.nav:
-    security:
-      oidc:
-        issuer:
-          selvbetjening:
-            discoveryurl: http://metadata
-            accepted_audience: aud-localhost
-            cookie_name: localhost-idtoken
-
-sts:
-  base-uri: http://www.vg.no
+    username: ${kafka.username}
+    password : ${kafka.password}
 
 server:
-  port: 9001
+    port: 9001
 spring:
-  mvc:
-    log-request-details : true
+    mvc:
+        log-request-details : true
+    kafka:
+        consumer:
+            enable-auto-commit: false
+            bootstrap-servers: ${bootstrap.servers}
+        producer:
+            bootstrap-servers: ${bootstrap.servers}
+
+pdl:
+    base-uri: ${pdl.graphql.base.url}
+    kontonummer-u-r-i: ${fpsoknad.mottak}
+fppdfgen:
+    enabled: false
+oppslag:
+    base-uri: ${oppslag.url}
+fpfordel:
+    base-uri: ${fpfordel.base.url}
+dkif:
+    base-uri: ${dkif.base.url}
+innsyn:
+    base-uri: ${fpinfo.base.url}
