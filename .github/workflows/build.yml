@@ -86,13 +86,13 @@ jobs:
         with:
           github-token: ${{secrets.NOTIFICATION}}
           script: |
-              core.setOutput('test', '42');
               github.issues.create( {
                 owner: context.issue.owner,
                 repo: context.issue.repo,
                 labels: ['bygg'],
                 title: 'Deploy av ${{ env.TAG }}'})
               .then(response => {
+                      core.setOutput('test', response.data.number);
                       const issue = { owner: context.issue.owner,
                       repo: context.issue.repo,
                       issue_number: response.data.number }
