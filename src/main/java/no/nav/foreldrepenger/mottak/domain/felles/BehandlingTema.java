@@ -17,7 +17,7 @@ public enum BehandlingTema {
         try {
             return BehandlingTema.valueOf(name);
         } catch (Exception e) {
-            LOG.warn("Ingen enum verdi for {}", name);
+            LOG.trace("Ingen enum verdi for {}", name);
             return null;
         }
     }
