@@ -61,6 +61,7 @@ jobs:
 
       - name: Lukk gamle bygg-issues
         uses: actions/github-script@v3
+        run: echo '::set-output name=SELECTED_COLOR::green'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
