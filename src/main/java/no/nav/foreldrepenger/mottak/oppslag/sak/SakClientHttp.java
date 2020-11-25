@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import static java.time.LocalDate.now;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static no.nav.foreldrepenger.mottak.util.Constants.INFOTRYGD;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.encode;
@@ -48,7 +46,7 @@ public class SakClientHttp implements SakClient {
     public List<Sak> sakerFor(AktørId aktor, String tema) {
         LOG.info("Henter saker for {}", aktor);
         var response = sakerFor(aktor.getId(), tema, request());
-        return sisteSakFra(Optional.ofNullable(response.getBody()).orElse(emptyList()));
+        return sisteSakFra(Optional.ofNullable(response.getBody()).orElse(List.of()));
 
     }
 
@@ -68,7 +66,7 @@ public class SakClientHttp implements SakClient {
                 .filter(s -> s.getOpprettet().isAfter(now().minusYears(3)))
                 .max(comparing(Sak::getOpprettet))
                 .orElse(null);
-        return sisteSak != null ? singletonList(sisteSak) : emptyList();
+        return sisteSak != null ? List.of(sisteSak) : List.of();
     }
 
     private ResponseEntity<List<RemoteSak>> sakerFor(String aktor, String tema, HttpEntity<String> request) {
@@ -93,7 +91,7 @@ public class SakClientHttp implements SakClient {
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, "Saml " + encode(samlToken));
         headers.setContentType(APPLICATION_JSON);
-        headers.setAccept(singletonList(APPLICATION_JSON));
+        headers.setAccept(List.of(APPLICATION_JSON));
         return headers;
     }
 

@@ -76,7 +76,9 @@ public class TestForeldrepengerSerialization {
     @Test
     public void testProsentAndel() throws Exception {
         ProsentAndel orig = new ProsentAndel(40.0);
+        ProsentAndel orig1 = new ProsentAndel(40);
         test(orig, false, mapper);
+        test(orig1, false, mapper);
         assertEquals(orig, mapper.readValue("{ \"p1\" : 40}", ProsentAndel.class));
         assertEquals(orig, mapper.readValue("{ \"p2\" : 40.0}", ProsentAndel.class));
         orig = new ProsentAndel(40);
