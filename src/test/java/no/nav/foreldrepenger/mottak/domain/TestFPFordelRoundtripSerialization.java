@@ -54,10 +54,35 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { LOCAL })
-@TestPropertySource(properties = { "fpfordel.enabled=false", "sts.uri=http://www.sts.no",
-        "spring.cloud.vault.enabled=false",
-        "spring.cloud.vault.token=00000",
-        "sts.username=un", "sts.password=pw", "securitytokenservice.username=un", "securitytokenservice.password=pw" })
+@TestPropertySource(properties = {
+    "fpfordel.enabled=false",
+    "sts.uri=http://www.sts.no",
+    "spring.cloud.vault.enabled=false",
+    "spring.cloud.vault.token=00000",
+    "sts.username=un",
+    "sts.password=pw",
+    "securitytokenservice.username=un",
+    "securitytokenservice.password=pw",
+    "securitytokenservice.url",
+    "aareg.rs.url=test",
+    "organisasjon.v4.url=test",
+    "oidc.sts.issuer.url=test",
+    "oidc.sts.token.path=test",
+    "kafka.username=vtp",
+    "kafka.password=vtp",
+    "sak.rs.url=test",
+    "loginservice.idporten.discovery.url=test",
+    "loginservice.idporten.audience=test",
+    "bootstrap.servers=test",
+    "pdl.graphql.base.url=test",
+    "fpsoknad.mottak=test",
+    "oppslag.url=test",
+    "fpfordel.base.url=test",
+    "dkif.base.url=test",
+    "fpinfo.base.url=test"
+    })
+
+
 @EnableConfigurationProperties
 public class TestFPFordelRoundtripSerialization {
 
