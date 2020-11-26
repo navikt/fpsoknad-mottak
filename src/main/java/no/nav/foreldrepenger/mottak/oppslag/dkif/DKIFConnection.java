@@ -4,8 +4,6 @@ import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.KRR;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,21 +39,6 @@ public class DKIFConnection extends AbstractWebClientConnection {
                 .map(d -> d.getMålform(tokenUtil.getSubject()))
                 .findFirst()
                 .orElse(Målform.standard());
-    }
-
-    public void målform1() {
-        try {
-            LOG.info("Henter målform1");
-            Map map = getWebClient().get()
-                    .uri(b -> cfg.kontaktUri(b))
-                    .accept(APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(Map.class).block();
-            LOG.info("FIKK " + map);
-        } catch (Exception e) {
-            LOG.warn("OOPS", e);
-
-        }
     }
 
     @Override
