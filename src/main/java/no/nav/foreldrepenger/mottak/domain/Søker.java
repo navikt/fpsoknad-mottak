@@ -30,5 +30,4 @@ public class Søker {
         this.søknadsRolle = søknadsRolle;
         this.målform = Optional.ofNullable(målform).orElse(standard());
     }
-
 }
