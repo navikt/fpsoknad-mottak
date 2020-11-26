@@ -53,6 +53,7 @@ public class MottakController {
 
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
+        LOG.info("Søknad søker er " + søknad.getSøker());
         var søknadEgenskap = inspektør.inspiser(søknad);
         return sjekkStatus(søknadSender.søk(søknad, oppslag.person(), søknadEgenskap),
                 FØRSTEGANGSSØKNAD, varsleHvisVellykket(søknadEgenskap));

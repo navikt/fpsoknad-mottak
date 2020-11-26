@@ -16,6 +16,7 @@ import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Søker {
+
     @NotNull(message = "{ytelse.søknadsrolle.notnull}")
     private final BrukerRolle søknadsRolle;
     private final Målform målform;
