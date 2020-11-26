@@ -18,7 +18,7 @@ import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 public class Søker {
     @NotNull(message = "{ytelse.søknadsrolle.notnull}")
     private final BrukerRolle søknadsRolle;
-    private final Målform språkkode;
+    private final Målform målform;
 
     public Søker(@JsonProperty("søknadsRolle") BrukerRolle søknadsRolle) {
         this(søknadsRolle, standard());
@@ -26,9 +26,9 @@ public class Søker {
 
     @JsonCreator
     public Søker(@JsonProperty("søknadsRolle") BrukerRolle søknadsRolle,
-            @JsonProperty("språkkode") Målform språkkode) {
+            @JsonProperty("språkkode") Målform målform) {
         this.søknadsRolle = søknadsRolle;
-        this.språkkode = Optional.ofNullable(språkkode).orElse(standard());
+        this.målform = Optional.ofNullable(målform).orElse(standard());
     }
 
 }

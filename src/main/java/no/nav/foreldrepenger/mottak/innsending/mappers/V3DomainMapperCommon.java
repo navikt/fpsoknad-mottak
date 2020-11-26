@@ -64,7 +64,7 @@ final class V3DomainMapperCommon {
 
     static Spraakkode målformFra(Søker søker) {
         return Optional.ofNullable(søker)
-                .map(Søker::getSpråkkode)
+                .map(Søker::getMålform)
                 .map(Målform::name)
                 .map(V3DomainMapperCommon::målformFra)
                 .orElse(målformFra(Målform.standard()));
