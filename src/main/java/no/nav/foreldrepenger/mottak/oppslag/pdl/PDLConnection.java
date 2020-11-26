@@ -189,6 +189,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     private Målform målform() {
         try {
+            dkif.målform1();
             var mf = dkif.målform();
             LOG.info("DKIF oppslag målform {}", mf);
             return mf;
