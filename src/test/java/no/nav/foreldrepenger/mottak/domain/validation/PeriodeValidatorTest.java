@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivite
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 
 public class PeriodeValidatorTest {
 
@@ -152,7 +153,7 @@ public class PeriodeValidatorTest {
                 Collections.singletonList(uttaksPeriode(null, null)));
         Set<ConstraintViolation<Fordeling>> constraintViolations = validator.validate(fordeling);
         assertFalse(constraintViolations.isEmpty());
-        Endringssøknad es = new Endringssøknad(LocalDate.now(), new Søker(BrukerRolle.MOR), fordeling, null, null,
+        Endringssøknad es = new Endringssøknad(LocalDate.now(), new Søker(BrukerRolle.MOR, Målform.standard()), fordeling, null, null,
                 null, "42");
         assertFalse(validator.validate(es).isEmpty());
     }
