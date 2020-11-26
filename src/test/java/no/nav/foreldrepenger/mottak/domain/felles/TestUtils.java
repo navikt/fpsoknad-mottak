@@ -40,6 +40,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 
 public class TestUtils {
     public static boolean hasPdfSignature(byte[] bytes) {
@@ -186,7 +187,7 @@ public class TestUtils {
     }
 
     public static Søker søker() {
-        return new Søker(BrukerRolle.MOR);
+        return new Søker(BrukerRolle.MOR, Målform.standard());
     }
 
     public static RelasjonTilBarn termin() {
