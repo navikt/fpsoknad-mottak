@@ -4,7 +4,6 @@ import static com.neovisionaries.i18n.CountryCode.XK;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
-import static no.nav.foreldrepenger.mottak.domain.felles.SpråkKode.defaultSpråk;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.math.BigInteger;
@@ -22,7 +21,6 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Søker;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.SpråkKode;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
@@ -32,6 +30,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
@@ -66,7 +65,7 @@ final class V3DomainMapperCommon {
     static Spraakkode språkFra(Søker søker) {
         return Optional.ofNullable(søker)
                 .map(Søker::getSpråkkode)
-                .map(SpråkKode::name)
+                .map(Målform::name)
                 .map(V3DomainMapperCommon::språkKodeFra)
                 .orElse(defaultSpråkKode());
     }
@@ -364,10 +363,10 @@ final class V3DomainMapperCommon {
     }
 
     private static Spraakkode defaultSpråkKode() {
-        return språkKodeFra(defaultSpråk());
+        return språkKodeFra(Målform.standard());
     }
 
-    private static Spraakkode språkKodeFra(SpråkKode kode) {
+    private static Spraakkode språkKodeFra(Målform kode) {
         return språkKodeFra(kode.name());
     }
 

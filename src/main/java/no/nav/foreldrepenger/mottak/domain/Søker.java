@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.SpråkKode.defaultSpråk;
+import static no.nav.foreldrepenger.mottak.oppslag.dkif.Målform.standard;
 
 import java.util.Optional;
 
@@ -11,24 +11,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.SpråkKode;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Søker {
     @NotNull(message = "{ytelse.søknadsrolle.notnull}")
     private final BrukerRolle søknadsRolle;
-    private final SpråkKode språkkode;
+    private final Målform språkkode;
 
     public Søker(@JsonProperty("søknadsRolle") BrukerRolle søknadsRolle) {
-        this(søknadsRolle, defaultSpråk());
+        this(søknadsRolle, standard());
     }
 
     @JsonCreator
     public Søker(@JsonProperty("søknadsRolle") BrukerRolle søknadsRolle,
-            @JsonProperty("språkkode") SpråkKode språkkode) {
+            @JsonProperty("språkkode") Målform språkkode) {
         this.søknadsRolle = søknadsRolle;
-        this.språkkode = Optional.ofNullable(språkkode).orElse(defaultSpråk());
+        this.språkkode = Optional.ofNullable(språkkode).orElse(standard());
     }
 
 }
