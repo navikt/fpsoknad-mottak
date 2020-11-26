@@ -4,7 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.landFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.medlemsskapFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.språkFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.målformFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -73,7 +73,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
 
     private Soeknad tilModell(Søknad søknad, AktørId søker) {
         return new Soeknad()
-                .withSprakvalg(språkFra(søknad.getSøker()))
+                .withSprakvalg(målformFra(søknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))

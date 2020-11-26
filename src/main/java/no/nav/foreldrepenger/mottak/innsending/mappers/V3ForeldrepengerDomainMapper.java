@@ -6,7 +6,7 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FOREL
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.landFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.medlemsskapFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.opptjeningFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.språkFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.målformFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
@@ -111,7 +111,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private Soeknad tilModell(Søknad søknad, AktørId søker) {
         return new Soeknad()
-                .withSprakvalg(språkFra(søknad.getSøker()))
+                .withSprakvalg(målformFra(søknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(søknad.getFrivilligeVedlegg()))
                 .withPaakrevdeVedlegg(vedleggFra(søknad.getPåkrevdeVedlegg()))
                 .withSoeker(søkerFra(søker, søknad.getSøker()))
@@ -123,7 +123,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
 
     private static Soeknad tilModell(Endringssøknad endringsøknad, AktørId søker) {
         return new Soeknad()
-                .withSprakvalg(språkFra(endringsøknad.getSøker()))
+                .withSprakvalg(målformFra(endringsøknad.getSøker()))
                 .withMottattDato(endringsøknad.getMottattdato())
                 .withSoeker(søkerFra(søker, endringsøknad.getSøker()))
                 .withAndreVedlegg(vedleggFra(endringsøknad.getFrivilligeVedlegg()))

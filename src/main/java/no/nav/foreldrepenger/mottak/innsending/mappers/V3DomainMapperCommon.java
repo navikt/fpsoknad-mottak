@@ -62,12 +62,12 @@ final class V3DomainMapperCommon {
 
     }
 
-    static Spraakkode språkFra(Søker søker) {
+    static Spraakkode målformFra(Søker søker) {
         return Optional.ofNullable(søker)
                 .map(Søker::getSpråkkode)
                 .map(Målform::name)
-                .map(V3DomainMapperCommon::språkKodeFra)
-                .orElse(defaultSpråkKode());
+                .map(V3DomainMapperCommon::målformFra)
+                .orElse(målformFra(Målform.standard()));
     }
 
     static Periode periodeFra(ÅpenPeriode periode) {
@@ -362,15 +362,11 @@ final class V3DomainMapperCommon {
                 .withInnsendingstype(innsendingstypeFra(vedlegg.getInnsendingsType()));
     }
 
-    private static Spraakkode defaultSpråkKode() {
-        return språkKodeFra(Målform.standard());
+    private static Spraakkode målformFra(Målform kode) {
+        return målformFra(kode.name());
     }
 
-    private static Spraakkode språkKodeFra(Målform kode) {
-        return språkKodeFra(kode.name());
-    }
-
-    private static Spraakkode språkKodeFra(String kode) {
+    private static Spraakkode målformFra(String kode) {
         return new Spraakkode().withKode(kode);
     }
 
