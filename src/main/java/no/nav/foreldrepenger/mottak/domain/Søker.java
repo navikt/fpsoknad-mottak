@@ -20,10 +20,6 @@ public class Søker {
     private final BrukerRolle søknadsRolle;
     private final Målform målform;
 
-    public Søker(@JsonProperty("søknadsRolle") BrukerRolle søknadsRolle) {
-        this(søknadsRolle, standard());
-    }
-
     @JsonCreator
     public Søker(@JsonProperty("søknadsRolle") BrukerRolle søknadsRolle,
             @JsonProperty("språkkode") Målform målform) {

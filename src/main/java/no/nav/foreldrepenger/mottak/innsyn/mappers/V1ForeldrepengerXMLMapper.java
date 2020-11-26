@@ -68,6 +68,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriod
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.util.jaxb.FPV1JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v1.Endringssoeknad;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelder;
@@ -601,7 +602,7 @@ public class V1ForeldrepengerXMLMapper extends AbstractXMLMapper {
     }
 
     private static Søker tilSøker(Bruker søker) {
-        return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()));
+        return new Søker(BrukerRolle.valueOf(søker.getSoeknadsrolle().getKode()), Målform.standard());
     }
 
     @Override

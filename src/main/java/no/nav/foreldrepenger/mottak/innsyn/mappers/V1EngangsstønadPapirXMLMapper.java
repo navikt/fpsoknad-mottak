@@ -40,6 +40,7 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -99,7 +100,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
     }
 
     private static Søker tilSøker(Bruker søker) {
-        return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()));
+        return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()), Målform.standard());
     }
 
     private Engangsstønad tilYtelse(OmYtelse omYtelse, LocalDate søknadsDato) {

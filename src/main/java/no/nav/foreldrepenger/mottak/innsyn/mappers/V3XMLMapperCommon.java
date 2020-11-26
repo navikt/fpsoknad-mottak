@@ -39,6 +39,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
+import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
@@ -92,7 +93,7 @@ public class V3XMLMapperCommon {
     }
 
     static Søker tilSøker(Bruker søker) {
-        return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()));
+        return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()), Målform.standard());
     }
 
     static Medlemsskap tilMedlemsskap(Medlemskap medlemskap, LocalDate søknadsDato) {
