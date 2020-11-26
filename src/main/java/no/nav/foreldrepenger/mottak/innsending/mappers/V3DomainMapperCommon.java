@@ -13,6 +13,8 @@ import java.util.Optional;
 
 import javax.xml.bind.JAXBElement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -54,6 +56,8 @@ import no.nav.vedtak.felles.xml.soeknad.kodeverk.v3.Virksomhetstyper;
 
 final class V3DomainMapperCommon {
 
+    private static final Logger LOG = LoggerFactory.getLogger(V3DomainMapperCommon.class);
+
     private static final Land KOSOVO = landFra(DomainMapper.KOSOVO);
 
     private static final no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory FP_FACTORY_V3 = new no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.ObjectFactory();
@@ -63,6 +67,7 @@ final class V3DomainMapperCommon {
     }
 
     static Spraakkode målformFra(Søker søker) {
+        LOG.info("Mapper målform fra {}", søker.getMålform());
         return Optional.ofNullable(søker)
                 .map(Søker::getMålform)
                 .map(Målform::name)
