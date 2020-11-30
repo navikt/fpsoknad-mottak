@@ -25,9 +25,9 @@ import graphql.kickstart.spring.webclient.boot.GraphQLError;
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 
 @Component
-public class PDLHttpStatusCodeExceptionConvertingErrorHandler implements PDLErrorResponseHandler {
+public class PDLExceptionGeneratingResponseHander implements PDLErrorResponseHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDLHttpStatusCodeExceptionConvertingErrorHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDLExceptionGeneratingResponseHander.class);
 
     @Override
     public <T> T handleError(GraphQLErrorsException e) {

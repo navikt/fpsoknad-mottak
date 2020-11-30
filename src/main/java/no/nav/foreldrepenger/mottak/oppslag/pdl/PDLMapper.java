@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.U;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLHttpStatusCodeExceptionConvertingErrorHandler.exception;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLExceptionGeneratingResponseHander.exception;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
