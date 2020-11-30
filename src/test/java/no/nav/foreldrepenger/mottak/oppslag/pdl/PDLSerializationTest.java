@@ -198,7 +198,7 @@ public class PDLSerializationTest {
     }
 
     private static PDLBarn pdlBarn() {
-        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann(), dødsfall(), Set.of(beskyttelse()))
+        return new PDLBarn(fødsel(BARNFØDT), familierelasjoner(), barnPDLNavn(), pdlMann(), Set.of(beskyttelse()), dødsfall())
                 .withAnnenPart(pdlAnnenPart());
     }
 

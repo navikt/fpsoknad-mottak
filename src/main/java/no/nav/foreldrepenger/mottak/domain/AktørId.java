@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Data;
@@ -12,8 +10,7 @@ public class AktørId {
     @JsonValue
     private final String id;
 
-    @JsonCreator
-    public AktørId(@JsonProperty("id") String id) {
+    public AktørId(String id) {
         this.id = id;
     }
 

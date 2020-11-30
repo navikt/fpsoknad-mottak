@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.not;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
 
@@ -13,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.xml.bind.JAXBElement;
 
@@ -62,19 +62,19 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     @Override
     public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
         switch (egenskap.getFagsakType()) {
-        case FORELDREPENGER:
-            return Optional.ofNullable(xml)
-                    .map(V2XMLVedtakMapper::tilFPVedtak)
-                    .orElse(null);
-        case ENGANGSSTØNAD:
-            return Optional.ofNullable(xml)
-                    .map(V2XMLVedtakMapper::tilESVedtak)
-                    .orElse(null);
-        case SVANGERSKAPSPENGER:
-            LOG.warn("Svangerskapspenger vedtak ikke støttet");
-            return null;
-        default:
-            throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
+            case FORELDREPENGER:
+                return Optional.ofNullable(xml)
+                        .map(V2XMLVedtakMapper::tilFPVedtak)
+                        .orElse(null);
+            case ENGANGSSTØNAD:
+                return Optional.ofNullable(xml)
+                        .map(V2XMLVedtakMapper::tilESVedtak)
+                        .orElse(null);
+            case SVANGERSKAPSPENGER:
+                LOG.warn("Svangerskapspenger vedtak ikke støttet");
+                return null;
+            default:
+                throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
         }
     }
 
@@ -237,7 +237,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     private static Optional<String> kodeFra(KodeverksOpplysning opplysning) {
         return Optional.ofNullable(opplysning)
                 .map(KodeverksOpplysning::getKode)
-                .filter(not(UKJENT_KODEVERKSVERDI::equals));
+                .filter(Predicate.not(UKJENT_KODEVERKSVERDI::equals));
     }
 
     private static ProsentAndel tilProsent(DecimalOpplysning prosent) {
