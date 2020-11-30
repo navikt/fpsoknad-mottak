@@ -6,7 +6,7 @@ query($ident: ID!){
 	  etternavn
     },
     kjoenn {
-        kjoenn
+        kjoenn : kjønn
     },
     doedsfall {
        doedsdato
@@ -15,7 +15,7 @@ query($ident: ID!){
         gradering
     },
     foedsel {
-        foedselsdato 
+        foedselsdato : fødselsdato
     }
   }  
 }

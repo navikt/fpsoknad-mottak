@@ -1,7 +1,7 @@
 query($ident: ID!){
   hentPerson(ident: $ident) {
     foedsel {
-        foedselsdato 
+        foedselsdato : fødselsdato
     },
     navn {
 	  fornavn
@@ -9,7 +9,7 @@ query($ident: ID!){
 	  etternavn
     },
     kjoenn {
-        kjoenn
+        kjoenn : kjønn
     },
     adressebeskyttelse {
         gradering
