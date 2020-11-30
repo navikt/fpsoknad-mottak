@@ -8,6 +8,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
@@ -17,7 +19,9 @@ class PDLAnnenPart {
 
     private final Set<PDLNavn> navn;
     private final Set<PDLFødsel> fødselsdato;
+    @JsonProperty("kjoenn")
     private final Set<PDLKjønn> kjønn;
+    @JsonProperty("doedsfall")
     private final Set<PDLDødsfall> dødsfall;
     private final Set<PDLAdresseBeskyttelse> beskyttelse;
 
