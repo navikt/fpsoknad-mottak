@@ -18,6 +18,7 @@ class PDLAnnenPart {
     private static final Logger LOG = LoggerFactory.getLogger(PDLAnnenPart.class);
 
     private final Set<PDLNavn> navn;
+    @JsonProperty("foedsel")
     private final Set<PDLFødsel> fødselsdato;
     @JsonProperty("kjoenn")
     private final Set<PDLKjønn> kjønn;
