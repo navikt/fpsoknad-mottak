@@ -41,7 +41,7 @@ public class RestClientConfiguration {
             @Override
             public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
                     Throwable throwable) {
-                log.warn("Metode {} kastet exception {} for {}. gang",
+                log.info("Metode {} kastet exception {} for {}. gang",
                         context.getAttribute(NAME), throwable.toString(), context.getRetryCount());
             }
 
