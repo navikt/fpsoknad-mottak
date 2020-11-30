@@ -2,5 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import java.time.LocalDate;
 
-record PDLDødsfall(LocalDate dødsdato) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+record PDLDødsfall(@JsonProperty("doedsdato") LocalDate dødsdato) {
 }
