@@ -1,14 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonAutoDetect(fieldVisibility = ANY)
-record PDLFamilierelasjon(@JsonProperty("relatertPersonsIdent") String id,
+record PDLFamilierelasjon(String id,
         PDLFamilierelasjon.PDLRelasjonsRolle relatertPersonsrolle,
-        @JsonProperty("minRolleForPerson") PDLFamilierelasjon.PDLRelasjonsRolle minRolle) {
+        PDLFamilierelasjon.PDLRelasjonsRolle minRolle) {
 
     static enum PDLRelasjonsRolle {
         BARN,

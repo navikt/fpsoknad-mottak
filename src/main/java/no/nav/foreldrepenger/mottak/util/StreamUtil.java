@@ -38,10 +38,6 @@ public final class StreamUtil {
         return safeStream(list).distinct().collect(toList());
     }
 
-    public static <T> Predicate<T> not(Predicate<T> t) {
-        return t.negate();
-    }
-
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
