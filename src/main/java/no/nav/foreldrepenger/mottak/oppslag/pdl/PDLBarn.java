@@ -25,7 +25,6 @@ class PDLBarn {
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private String id;
     private final Set<PDLNavn> navn;
-    @JsonProperty("kjoenn")
     private final Set<PDLKjønn> kjønn;
     private final Set<PDLAdresseBeskyttelse> beskyttelse;
     @JsonProperty("doedsfall")
