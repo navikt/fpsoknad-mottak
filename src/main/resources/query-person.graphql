@@ -6,13 +6,13 @@ query($ident: ID!){
 	  etternavn
     },
     kjoenn {
-        kjoenn : kjønn
+        kjoenn
     },
      statsborgerskap {
         land
     },
     foedsel {
-        foedselsdato : fødselsdato 
+        foedselsdato 
     },
     familierelasjoner {
         relatertPersonsIdent

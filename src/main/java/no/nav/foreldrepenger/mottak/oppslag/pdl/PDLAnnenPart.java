@@ -19,6 +19,7 @@ class PDLAnnenPart {
 
     private final Set<PDLNavn> navn;
     private final Set<PDLFødsel> fødselsdato;
+    @JsonProperty("kjoenn")
     private final Set<PDLKjønn> kjønn;
     @JsonProperty("doedsfall")
     private final Set<PDLDødsfall> dødsfall;

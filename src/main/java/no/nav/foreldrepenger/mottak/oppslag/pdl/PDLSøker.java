@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 class PDLSøker {
     private final Set<PDLNavn> navn;
+    @JsonProperty("kjoenn")
     private final Set<PDLKjønn> kjønn;
     private final Set<PDLStatsborgerskap> statsborgerskap;
     @JsonProperty("foedsel")

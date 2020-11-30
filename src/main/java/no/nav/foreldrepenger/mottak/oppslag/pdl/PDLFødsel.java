@@ -2,5 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import java.time.LocalDate;
 
-record PDLFødsel(LocalDate fødselsdato) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+record PDLFødsel(@JsonProperty("foedselsdato") LocalDate fødselsdato) {
 }
