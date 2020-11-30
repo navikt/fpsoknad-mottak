@@ -12,7 +12,7 @@ class PDLSøker {
     @JsonProperty("kjoenn")
     private final Set<PDLKjønn> kjønn;
     private final Set<PDLStatsborgerskap> statsborgerskap;
-    @JsonProperty("foedselsdato")
+    @JsonProperty("foedsel")
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private final Set<PDLSivilstand> sivilstand;
