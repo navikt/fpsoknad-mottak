@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-record PDLKjønn(PDLKjønn.Kjønn kjønn) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+record PDLKjønn(@JsonProperty("kjoenn") PDLKjønn.Kjønn kjønn) {
 
     static PDLKjønn mann() {
         return new PDLKjønn(Kjønn.MANN);
