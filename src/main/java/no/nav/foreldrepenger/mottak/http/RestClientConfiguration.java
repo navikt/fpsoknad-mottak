@@ -49,8 +49,8 @@ public class RestClientConfiguration {
             public <T, E extends Throwable> void close(RetryContext ctx, RetryCallback<T, E> callback,
                     Throwable t) {
                 if (t != null) {
-                    log.warn("Metode {} avslutter ikke-vellykket retry etter {}. forsøk",
-                            ctx.getAttribute(NAME), ctx.getRetryCount(), t);
+                    log.warn("Metode {} avslutter ikke-vellykket retry etter {}. forsøk ({})",
+                            ctx.getAttribute(NAME), ctx.getRetryCount(), t.getMessage(), t);
                 } else {
                     if (ctx.getRetryCount() > 0) {
                         log.info("Metode {} avslutter vellykket retry etter {}. forsøk",

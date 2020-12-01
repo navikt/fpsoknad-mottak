@@ -14,7 +14,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
@@ -43,6 +45,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .uri(b -> cfg.getArbeidsforholdURI(b, fom, tom))
                 .accept(APPLICATION_JSON)
                 .retrieve()
+                .onStatus(HttpStatus::isError, ClientResponse::createException)
                 .toEntityList(Map.class)
                 .block()
                 .getBody()
