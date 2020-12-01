@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
-record PDLFamilierelasjon(String id,
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+record PDLFamilierelasjon(@JsonProperty("relatertPersonsIdent") String id,
         PDLFamilierelasjon.PDLRelasjonsRolle relatertPersonsrolle,
         PDLFamilierelasjon.PDLRelasjonsRolle minRolle) {
 
