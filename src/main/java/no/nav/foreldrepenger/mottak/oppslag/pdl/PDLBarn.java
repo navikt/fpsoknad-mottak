@@ -21,6 +21,7 @@ import lombok.Data;
 class PDLBarn {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDLBarn.class);
+    @JsonProperty("foedsel")
     private final Set<PDLFødsel> fødselsdato;
     private final Set<PDLFamilierelasjon> familierelasjoner;
     private String id;
