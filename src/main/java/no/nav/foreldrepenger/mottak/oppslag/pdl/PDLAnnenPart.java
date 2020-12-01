@@ -24,6 +24,7 @@ class PDLAnnenPart {
     private final Set<PDLKjønn> kjønn;
     @JsonProperty("doedsfall")
     private final Set<PDLDødsfall> dødsfall;
+    @JsonProperty("adressebeskyttelse")
     private final Set<PDLAdresseBeskyttelse> beskyttelse;
 
     private String id;
