@@ -175,7 +175,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
             return errorHandler.handleError(e);
         } catch (Exception e) {
             LOG.warn("PDL oppslag {} feilet med uventet feil", type, e);
-            return null;
+            throw e;
         }
     }
 
