@@ -156,7 +156,9 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private PDLAnnenPart oppslagAnnenPart(String id) {
-        return Optional.ofNullable(oppslag(() -> systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class).block(), "annen part"))
+        return Optional
+                .ofNullable(oppslag(() -> systemClient.post(ANNEN_PART_QUERY, idFra(id), PDLAnnenPart.class)
+                        .block(), "annen part"))
                 .filter(not(PDLAnnenPart::erDød))
                 .filter(not(PDLAnnenPart::erBeskyttet))
                 .map(a -> a.withId(id))
