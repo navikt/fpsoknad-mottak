@@ -6,7 +6,6 @@ organisasjon:
 
 sts:
     base-uri: ${oidc.sts.issuer.url}
-    sts-path: ${oidc.sts.token.path}
     username: ${kafka.username}
     password: ${kafka.password}
 
