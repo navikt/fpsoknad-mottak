@@ -55,6 +55,14 @@ public class TokenUtil {
                 .orElse(null);
     }
 
+    public AuthenticationLevel getLevel() {
+        return Optional.ofNullable(claimSet())
+                .map(c -> c.get("acr"))
+                .map(String.class::cast)
+                .map(AuthenticationLevel::of)
+                .orElse(AuthenticationLevel.NONE);
+    }
+
     public String getSubject() {
         return Optional.ofNullable(claimSet())
                 .map(JwtTokenClaims::getSubject)

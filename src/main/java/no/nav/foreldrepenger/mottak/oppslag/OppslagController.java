@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,6 +16,8 @@ import no.nav.security.token.support.core.api.Unprotected;
 @ProtectedRestController(OppslagController.OPPSLAG)
 public class OppslagController {
 
+    public static final Logger LOG = LoggerFactory.getLogger(OppslagController.class);
+
     public static final String OPPSLAG = "/oppslag";
 
     private final OppslagTjeneste oppslag;
@@ -22,6 +26,7 @@ public class OppslagController {
     public OppslagController(OppslagTjeneste oppslag, TokenUtil tokenUtil) {
         this.oppslag = oppslag;
         this.tokenUtil = tokenUtil;
+        LOG.trace("Authentication level {}", tokenUtil.getLevel());
     }
 
     @GetMapping("/aktoer")
