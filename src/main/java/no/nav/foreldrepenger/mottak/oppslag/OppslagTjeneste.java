@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 public class OppslagTjeneste implements Oppslag {
     private final PDLConnection pdl;
     private final TokenUtil tokenHelper;
+    private static final Logger LOG = LoggerFactory.getLogger(OppslagTjeneste.class);
 
     public OppslagTjeneste(PDLConnection pdl, TokenUtil tokenHelper) {
         this.pdl = pdl;
@@ -52,7 +55,7 @@ public class OppslagTjeneste implements Oppslag {
     }
 
     private Person pdlPerson() {
-
+        LOG.info("Authentication level {}", tokenHelper.getLevel());
         var p = pdl.hentSøker();
         var np = new Person(p.getId(), p.getNavn(), p.getFødselsdato(), p.getMålform(), p.getLandKode(),
                 p.getBankkonto(), p.getBarn());

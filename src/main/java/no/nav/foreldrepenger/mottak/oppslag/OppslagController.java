@@ -51,7 +51,6 @@ public class OppslagController {
 
     @GetMapping("/person")
     public Person person() {
-        LOG.trace("Authentication level {}", tokenUtil.getLevel());
         return oppslag.person();
     }
 
