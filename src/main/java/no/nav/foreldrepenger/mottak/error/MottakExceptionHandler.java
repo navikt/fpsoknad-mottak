@@ -98,7 +98,6 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String subject() {
-        tokenUtil.getExpiration();
         return Optional.ofNullable(tokenUtil.getSubject())
                 .map(StringUtil::partialMask)
                 .map(s -> s + " (" + tokenUtil.getExpiration() + ")")
@@ -110,13 +109,16 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private static List<String> validationErrors(MethodArgumentNotValidException e) {
-        return e.getBindingResult().getFieldErrors()
+        var feil = e.getBindingResult().getFieldErrors()
                 .stream()
                 .map(MottakExceptionHandler::errorMessage)
                 .collect(toList());
+        LOG.warn("Fant {} valideringsfeil", feil.size());
+        return feil;
     }
 
     private static String errorMessage(FieldError error) {
+        LOG.warn("Forkastet verdi er {}", error.getRejectedValue());
         return error.getField() + " " + error.getDefaultMessage();
     }
 }
