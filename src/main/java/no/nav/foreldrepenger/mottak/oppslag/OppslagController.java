@@ -49,6 +49,11 @@ public class OppslagController {
         return oppslag.navn(aktorId.getId());
     }
 
+    @GetMapping("/navnfnr")
+    public Navn navnfnr(@RequestParam(name = "fnr") Fødselsnummer fnr) {
+        return oppslag.navn(fnr.getFnr());
+    }
+
     @GetMapping("/person")
     public Person person() {
         return oppslag.person();
