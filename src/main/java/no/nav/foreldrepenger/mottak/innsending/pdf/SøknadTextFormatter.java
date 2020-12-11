@@ -133,10 +133,10 @@ public class SøknadTextFormatter {
     }
 
     private String formatOpphold(Utenlandsopphold opphold) {
-        return countryName(opphold.getLand(), opphold.getLand().getName())
+        return countryName(opphold.land(), opphold.land().getName())
                 + ": "
-                + dato(opphold.getFom()) + " - "
-                + dato(opphold.getTom());
+                + dato(opphold.fom()) + " - "
+                + dato(opphold.tom());
     }
 
     private String getMessage(String key, MessageSource messages, Object... values) {
@@ -153,7 +153,7 @@ public class SøknadTextFormatter {
             return Collections.singletonList(Pair.of(countryName(CountryCode.NO), null));
         }
         return safeStream(opphold)
-                .map(o -> Pair.of(countryName(o.getLand(), o.getLand().getName()), dato(o.getFom(), o.getTom())))
+                .map(o -> Pair.of(countryName(o.land(), o.land().getName()), dato(o.fom(), o.tom())))
                 .collect(Collectors.toList());
     }
 

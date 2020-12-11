@@ -38,8 +38,8 @@ public class Medlemsskap {
 
     private static CountryCode landVedDato(List<Utenlandsopphold> utenlandsopphold, LocalDate dato) {
         return safeStream(utenlandsopphold)
-                .filter(s -> s.getVarighet().isWithinPeriod(dato))
-                .map(Utenlandsopphold::getLand)
+                .filter(s -> s.varighet().isWithinPeriod(dato))
+                .map(Utenlandsopphold::land)
                 .findFirst()
                 .orElse(NO);
     }

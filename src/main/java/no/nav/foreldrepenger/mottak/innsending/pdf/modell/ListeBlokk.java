@@ -1,10 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.modell;
 
-
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@JsonNaming(PropertyNamingStrategy.LowerCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCaseStrategy.class)
 public class ListeBlokk extends Blokk {
     private String tittel;
     private List<String> punkter;

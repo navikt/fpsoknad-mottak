@@ -44,8 +44,8 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
                     errorMessageFortidFremtid(context, opphold, "er ikke i utelukkende framtiden");
                     valid = false;
                 }
-                LOG.debug("Sammenligner {} og {}", opphold.getVarighet(), o.getVarighet());
-                if (overlapper(o.getVarighet(), opphold.getVarighet())) {
+                LOG.debug("Sammenligner {} og {}", opphold.varighet(), o.varighet());
+                if (overlapper(o.varighet(), opphold.varighet())) {
                     LOG.debug("Periodene overlapper");
                     errorMessageOverlap(context, opphold, o);
                     valid = false;
@@ -76,8 +76,8 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
         HibernateConstraintValidatorContext hibernateContext = context
                 .unwrap(HibernateConstraintValidatorContext.class);
         hibernateContext.disableDefaultConstraintViolation();
-        hibernateContext.addExpressionVariable("fra", opphold.getFom())
-                .addExpressionVariable("til", opphold.getTom())
+        hibernateContext.addExpressionVariable("fra", opphold.fom())
+                .addExpressionVariable("til", opphold.tom())
                 .addExpressionVariable("txt", txt)
                 .buildConstraintViolationWithTemplate("Perioden ${fra} - ${til} ${txt}")
                 .addConstraintViolation();
@@ -89,10 +89,10 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
                 .unwrap(HibernateConstraintValidatorContext.class);
         hibernateContext.disableDefaultConstraintViolation();
         hibernateContext
-                .addExpressionVariable("fra1", periode1.getFom())
-                .addExpressionVariable("til1", periode1.getTom())
-                .addExpressionVariable("fra2", periode2.getFom())
-                .addExpressionVariable("til2", periode2.getTom())
+                .addExpressionVariable("fra1", periode1.fom())
+                .addExpressionVariable("til1", periode1.tom())
+                .addExpressionVariable("fra2", periode2.fom())
+                .addExpressionVariable("til2", periode2.tom())
                 .buildConstraintViolationWithTemplate("Periodene ${fra1} - ${til1} og ${fra2} - ${til2} overlpper")
                 .addConstraintViolation();
     }
@@ -106,13 +106,13 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
     }
 
     private static boolean isAfterNow(Utenlandsopphold opphold) {
-        return opphold.getFom().isAfter(LocalDate.now()) ||
-                opphold.getTom().isAfter(LocalDate.now());
+        return opphold.fom().isAfter(LocalDate.now()) ||
+                opphold.tom().isAfter(LocalDate.now());
     }
 
     private static boolean isBeforeNow(Utenlandsopphold opphold) {
-        return opphold.getFom().isBefore(LocalDate.now()) ||
-                opphold.getTom().isBefore(LocalDate.now());
+        return opphold.fom().isBefore(LocalDate.now()) ||
+                opphold.tom().isBefore(LocalDate.now());
     }
 
     @Override

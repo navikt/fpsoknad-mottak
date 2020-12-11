@@ -124,9 +124,9 @@ final class V3DomainMapperCommon {
         return Optional.ofNullable(opphold)
                 .map(o -> new OppholdUtlandet()
                         .withPeriode(new Periode()
-                                .withFom(o.getFom())
-                                .withTom(o.getTom()))
-                        .withLand(landFra(o.getLand())))
+                                .withFom(o.fom())
+                                .withTom(o.tom()))
+                        .withLand(landFra(o.land())))
                 .orElse(null);
     }
 
@@ -343,8 +343,8 @@ final class V3DomainMapperCommon {
 
     private static Frilansoppdrag create(FrilansOppdrag oppdrag) {
         return new Frilansoppdrag()
-                .withOppdragsgiver(oppdrag.getOppdragsgiver())
-                .withPeriode(periodeFra(oppdrag.getPeriode()));
+                .withOppdragsgiver(oppdrag.oppdragsgiver())
+                .withPeriode(periodeFra(oppdrag.periode()));
     }
 
     private static List<JAXBElement<Object>> frilansVedleggFraIDs(List<String> vedlegg) {

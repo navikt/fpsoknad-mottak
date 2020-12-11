@@ -35,11 +35,12 @@ public class InfoskrivPdfEkstraktor {
     private static byte[] extractPagesFrom(PDDocument doc, int page) throws IOException {
         PageExtractor pe = new PageExtractor(doc);
         pe.setStartPage(page);
-        var infodoc = pe.extract();
-        var baos = new ByteArrayOutputStream();
-        infodoc.save(baos);
-        infodoc.close();
-        return baos.toByteArray();
+        try (var infodoc = pe.extract()) {
+            var baos = new ByteArrayOutputStream();
+            infodoc.save(baos);
+            infodoc.close();
+            return baos.toByteArray();
+        }
     }
 
     private static int infoskrivStartpage(PDOutlineNode bm) {

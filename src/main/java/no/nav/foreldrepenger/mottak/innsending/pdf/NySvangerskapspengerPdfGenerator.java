@@ -209,7 +209,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         rader.add(felt(txt("nyoppstartet"), jaNei(frilans.isNyOppstartet())));
         if (!frilans.getFrilansOppdrag().isEmpty()) {
             frilans.getFrilansOppdrag().stream()
-                    .map(o -> rad(o.getOppdragsgiver(), textFormatter.enkelPeriode(o.getPeriode())))
+                    .map(o -> rad(o.oppdragsgiver(), textFormatter.enkelPeriode(o.periode())))
                     .forEach(rader::add);
         } else {
             rader.add(felt(txt("oppdrag"), "Nei"));

@@ -65,7 +65,7 @@ public class SvangerskapspengerInfoRenderer {
         if (!frilans.getFrilansOppdrag().isEmpty()) {
             y -= renderer.addLineOfRegularText(txt("oppdrag"), cos, y);
             List<String> oppdrag = safeStream(frilans.getFrilansOppdrag())
-                    .map(o -> o.getOppdragsgiver() + " " + textFormatter.periode(o.getPeriode()))
+                    .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
                     .collect(toList());
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
