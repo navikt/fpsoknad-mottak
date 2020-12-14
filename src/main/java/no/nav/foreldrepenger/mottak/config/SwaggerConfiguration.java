@@ -14,6 +14,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -24,20 +25,20 @@ public class SwaggerConfiguration {
     public Docket productApi() {
         return new Docket(OAS_30)
                 .protocols(Set.of("http", "https"))
-                .securityContexts(List.of(securityContext()))
-                .securitySchemes(List.of(apiKey()))
+                .securityContexts(securityContexts())
+                .securitySchemes(apiKeys())
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build();
     }
 
-    private static ApiKey apiKey() {
-        return new ApiKey("Bearer", "Authorization", "header");
+    private static List<SecurityScheme> apiKeys() {
+        return List.of(new ApiKey("JWT", "Authorization", "header"));
     }
 
-    private static SecurityContext securityContext() {
-        return SecurityContext.builder().securityReferences(defaultAuth()).build();
+    private static List<SecurityContext> securityContexts() {
+        return List.of(SecurityContext.builder().securityReferences(defaultAuth()).build());
     }
 
     private static List<SecurityReference> defaultAuth() {
