@@ -25,8 +25,8 @@ public class SwaggerConfiguration {
     public Docket productApi() {
         return new Docket(OAS_30)
                 .protocols(Set.of("http", "https"))
-                .securityContexts(securityContexts())
-                .securitySchemes(apiKeys())
+                // .securityContexts(securityContexts())
+                // .securitySchemes(apiKeys())
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
@@ -34,7 +34,7 @@ public class SwaggerConfiguration {
     }
 
     private static List<SecurityScheme> apiKeys() {
-        return List.of(HttpAuthenticationScheme.JWT_BEARER_BUILDER.build());
+        return List.of(HttpAuthenticationScheme.JWT_BEARER_BUILDER.name("navn").build());
     }
 
     private static List<SecurityContext> securityContexts() {
