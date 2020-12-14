@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.HttpAuthenticationScheme;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.service.contexts.SecurityContext;
@@ -34,7 +34,7 @@ public class SwaggerConfiguration {
     }
 
     private static List<SecurityScheme> apiKeys() {
-        return List.of(new ApiKey("authkey", "Authorization", "header"));
+        return List.of(HttpAuthenticationScheme.BASIC_AUTH_BUILDER.bearerFormat(null).build());
     }
 
     private static List<SecurityContext> securityContexts() {
