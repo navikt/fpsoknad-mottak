@@ -34,7 +34,7 @@ public class SwaggerConfiguration {
     }
 
     private static List<SecurityScheme> apiKeys() {
-        return List.of(new ApiKey("JWT", "Authorization", "header"));
+        return List.of(new ApiKey("authkey", "Authorization", "header"));
     }
 
     private static List<SecurityContext> securityContexts() {
