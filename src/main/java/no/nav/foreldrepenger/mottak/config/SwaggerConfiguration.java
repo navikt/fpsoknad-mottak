@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.config;
 
 import static springfox.documentation.spi.DocumentationType.OAS_30;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +33,7 @@ public class SwaggerConfiguration {
     }
 
     private static ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
+        return new ApiKey("Bearer", "Authorization", "header");
     }
 
     private static SecurityContext securityContext() {
@@ -45,7 +44,7 @@ public class SwaggerConfiguration {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
+        return List.of(new SecurityReference("JWT", authorizationScopes));
     }
 
 }
