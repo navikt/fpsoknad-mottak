@@ -39,8 +39,8 @@ import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 public class PDLConnection extends AbstractRestConnection implements PingEndpointAware {
@@ -50,30 +50,31 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private static final Logger LOG = LoggerFactory.getLogger(PDLConnection.class);
     private final GraphQLWebClient userClient;
     private final GraphQLWebClient systemClient;
-    private final TokenUtil tokenUtil;
     private PDLConfig cfg;
     private final DKIFConnection dkif;
     private final PDLErrorResponseHandler errorHandler;
 
+    private final KontonummerConnection kontonr;
+
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
-            RestOperations restOperations, PDLConfig cfg, DKIFConnection dkif, TokenUtil tokenUtil, PDLErrorResponseHandler errorHandler) {
+            RestOperations restOperations, PDLConfig cfg, DKIFConnection dkif, KontonummerConnection kontonr, PDLErrorResponseHandler errorHandler) {
         super(restOperations, cfg);
         this.userClient = userClient;
         this.systemClient = systemClient;
-        this.tokenUtil = tokenUtil;
         this.dkif = dkif;
+        this.kontonr = kontonr;
         this.cfg = cfg;
         this.errorHandler = errorHandler;
     }
 
     public SøkerDTO hentSøker() {
-        return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
-                .map(s -> map(tokenUtil.getSubject(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
+        return Optional.ofNullable(oppslagSøker(cfg.getSubject()))
+                .map(s -> map(cfg.getSubject(), aktøridFor(cfg.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
     public Navn navnFor() {
-        return navnFor(tokenUtil.getSubject());
+        return navnFor(cfg.getSubject());
     }
 
     public Navn navnFor(String id) {
@@ -186,7 +187,12 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     }
 
     private Bankkonto kontonr() {
-        return getForObject(cfg.getKontonummerURI(), Bankkonto.class);
+        try {
+            return kontonr.kontonr();
+        } catch (Exception e) {
+            LOG.warn("Kontonummer oppslag feilet", e);
+            return Bankkonto.UKJENT;
+        }
     }
 
     private Målform målform() {
@@ -218,8 +224,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", tokenUtil=" + tokenUtil + ", cfg="
-                + cfg + "]";
+        return getClass().getSimpleName() + " [userClient=" + userClient + ", systemClient=" + systemClient + ", cfg=" + cfg + "]";
     }
 
 }

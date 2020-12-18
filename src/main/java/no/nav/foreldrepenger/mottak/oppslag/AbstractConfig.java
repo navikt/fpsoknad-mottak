@@ -2,12 +2,19 @@ package no.nav.foreldrepenger.mottak.oppslag;
 
 import java.net.URI;
 
+import javax.inject.Inject;
+
+import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.util.URIUtil;
 
 public class AbstractConfig {
     private final URI baseUri;
     private final String pingPath;
     private final boolean enabled;
+
+    @Inject
+    private TokenUtil tokenUtil;
 
     public AbstractConfig(URI baseUri, String pingPath, boolean enabled) {
         this.baseUri = baseUri;
@@ -33,5 +40,13 @@ public class AbstractConfig {
 
     public String name() {
         return baseUri.getHost();
+    }
+
+    public String getSubject() {
+        return tokenUtil.getSubject();
+    }
+
+    public Fødselsnummer fnr() {
+        return tokenUtil.fnr();
     }
 }

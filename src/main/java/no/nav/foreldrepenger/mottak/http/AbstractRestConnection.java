@@ -17,7 +17,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 public abstract class AbstractRestConnection implements RetryAware {
     private final RestOperations restOperations;
-    private final AbstractConfig config;
+    protected final AbstractConfig config;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
     public AbstractRestConnection(RestOperations restOperations) {
