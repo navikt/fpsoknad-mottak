@@ -45,8 +45,8 @@ public class PDLConfig extends AbstractConfig {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [pingPath=" + getPingPath() + ", enabled=" + isEnabled() + ", url=" + getBaseUri()
-                + "]";
+        return getClass().getSimpleName() + " [pingPath=" + getTokenUtil() + ", tokenUtil=" + getPingPath() + ", enabled=" + isEnabled() + ", url="
+                + getBaseUri() + "]";
     }
 
 }

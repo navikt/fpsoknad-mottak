@@ -22,6 +22,14 @@ public class AbstractConfig {
         this.enabled = enabled;
     }
 
+    public TokenUtil getTokenUtil() {
+        return tokenUtil;
+    }
+
+    public void setTokenUtil(TokenUtil tokenUtil) {
+        this.tokenUtil = tokenUtil;
+    }
+
     public URI pingEndpoint() {
         return URIUtil.uri(baseUri, pingPath);
     }

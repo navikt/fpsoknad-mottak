@@ -65,6 +65,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     public SøkerDTO hentSøker() {
+        LOG.info("XXXXXXXXX " + cfg.getSubject());
         return Optional.ofNullable(oppslagSøker(cfg.getSubject()))
                 .map(s -> map(cfg.getSubject(), aktøridFor(cfg.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
