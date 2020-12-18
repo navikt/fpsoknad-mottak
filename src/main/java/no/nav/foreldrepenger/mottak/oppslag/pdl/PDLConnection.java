@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestOperations;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLErrorsException;
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
@@ -35,7 +34,6 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
-import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
@@ -43,7 +41,7 @@ import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 @Component
-public class PDLConnection extends AbstractRestConnection implements PingEndpointAware {
+public class PDLConnection implements PingEndpointAware {
 
     private static final String IDENT = "ident";
 
@@ -57,8 +55,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
     private final KontonummerConnection kontonr;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
-            RestOperations restOperations, PDLConfig cfg, DKIFConnection dkif, KontonummerConnection kontonr, PDLErrorResponseHandler errorHandler) {
-        super(restOperations, cfg);
+            PDLConfig cfg, DKIFConnection dkif, KontonummerConnection kontonr, PDLErrorResponseHandler errorHandler) {
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.dkif = dkif;
@@ -208,7 +205,7 @@ public class PDLConnection extends AbstractRestConnection implements PingEndpoin
 
     @Override
     public String ping() {
-        options(pingEndpoint());
+        // options(pingEndpoint()); finn ut av dette
         return "OK";
     }
 
