@@ -26,7 +26,7 @@ public class KontonummerConnection extends AbstractWebClientConnection {
 
     public Bankkonto kontonr() {
         LOG.info("Henter kontonummer");
-        return webClient
+        var konto = webClient
                 .get()
                 .uri(cfg.getBaseUri())
                 .accept(APPLICATION_JSON)
@@ -35,6 +35,8 @@ public class KontonummerConnection extends AbstractWebClientConnection {
                 .toEntity(Bankkonto.class)
                 .block()
                 .getBody();
+        LOG.info("Hentet kontonummer {}", konto);
+        return konto;
     }
 
     @Override
