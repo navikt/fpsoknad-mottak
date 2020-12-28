@@ -12,8 +12,8 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.SØKER_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.AKTORID;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.net.URI;
@@ -39,6 +39,7 @@ import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 public class PDLConnection implements PingEndpointAware {
@@ -54,24 +55,28 @@ public class PDLConnection implements PingEndpointAware {
 
     private final KontonummerConnection kontonr;
 
-    PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient, @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
-            PDLConfig cfg, DKIFConnection dkif, KontonummerConnection kontonr, PDLErrorResponseHandler errorHandler) {
+    private final TokenUtil tokenUtil;
+
+    PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
+            @Qualifier(PDL_SYSTEM) GraphQLWebClient systemClient,
+            PDLConfig cfg, DKIFConnection dkif, KontonummerConnection kontonr, TokenUtil tokenUtil, PDLErrorResponseHandler errorHandler) {
         this.userClient = userClient;
         this.systemClient = systemClient;
         this.dkif = dkif;
         this.kontonr = kontonr;
         this.cfg = cfg;
+        this.tokenUtil = tokenUtil;
         this.errorHandler = errorHandler;
     }
 
     public SøkerDTO hentSøker() {
-        return Optional.ofNullable(oppslagSøker(cfg.getSubject()))
-                .map(s -> map(cfg.getSubject(), aktøridFor(cfg.fnr()), målform(), kontonr(), barn(s), s))
+        return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
+                .map(s -> map(tokenUtil.getSubject(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
     }
 
     public Navn navnFor() {
-        return navnFor(cfg.getSubject());
+        return navnFor(tokenUtil.getSubject());
     }
 
     public Navn navnFor(String id) {

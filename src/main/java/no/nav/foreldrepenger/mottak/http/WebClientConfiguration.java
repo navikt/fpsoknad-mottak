@@ -53,11 +53,11 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KRR)
-    public WebClient webClientDKIF(Builder builder, DKIFConfig cfg, SystemTokenTjeneste sts) {
+    public WebClient webClientDKIF(Builder builder, DKIFConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                .filter(dkifExchangeFilterFunction(sts, cfg.getTokenUtil()))
+                .filter(dkifExchangeFilterFunction(sts, tokenUtil))
                 .build();
     }
 
@@ -83,11 +83,11 @@ public class WebClientConfiguration {
 
     @Qualifier(ARBEIDSFORHOLD)
     @Bean
-    public WebClient webClientArbeidsforhold(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts) {
+    public WebClient webClientArbeidsforhold(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                .filter(authenticatingFilterFunction(sts, cfg.getTokenUtil()))
+                .filter(authenticatingFilterFunction(sts, tokenUtil))
                 .build();
     }
 
@@ -102,11 +102,11 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_USER)
     @Bean
-    public WebClient webClientPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
+    public WebClient webClientPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                .filter(pdlUserExchangeFilterFunction(sts, cfg.getTokenUtil()))
+                .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
                 .build();
     }
 
