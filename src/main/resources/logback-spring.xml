@@ -30,6 +30,7 @@
     <springProfile name="dev,local">
         <logger name="graphql.kickstart" level="trace" />
         <logger name="no.nav.foreldrepenger" level="trace" />
+        <logger name="no.nav.security" level="trace" />
     </springProfile>
 </configuration>
 
