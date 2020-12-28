@@ -30,7 +30,7 @@ public class DKIFConnection extends AbstractWebClientConnection {
 
     public Målform målform() {
         LOG.info("Henter målform");
-        return getWebClient().get()
+        return webClient.get()
                 .uri(b -> cfg.kontaktUri(b))
                 .accept(APPLICATION_JSON)
                 .retrieve()

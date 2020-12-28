@@ -65,7 +65,6 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     public SøkerDTO hentSøker() {
-        LOG.info("XXXXXXXXX " + cfg.getSubject());
         return Optional.ofNullable(oppslagSøker(cfg.getSubject()))
                 .map(s -> map(cfg.getSubject(), aktøridFor(cfg.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
@@ -85,29 +84,21 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     public AktørId aktøridFor(Fødselsnummer fnr) {
-        try {
-            return Optional.ofNullable(fnr)
-                    .map(this::oppslagId)
-                    .map(id -> mapIdent(id, AKTORID))
-                    .map(AktørId::valueOf)
-                    .orElse(null);
-        } catch (Exception e) {
-            LOG.warn("Oppslag aktørid feil", e);
-            return null;
-        }
+        return Optional.ofNullable(fnr)
+                .map(this::oppslagId)
+                .map(id -> mapIdent(id, AKTORID))
+                .map(AktørId::valueOf)
+                .orElse(null);
+
     }
 
     public Fødselsnummer fødselsnummerFor(AktørId aktørId) {
-        try {
-            return Optional.ofNullable(aktørId)
-                    .map(this::oppslagId)
-                    .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
-                    .map(Fødselsnummer::valueOf)
-                    .orElse(null);
-        } catch (Exception e) {
-            LOG.warn("Oppslag fnr feil", e);
-            return null;
-        }
+        return Optional.ofNullable(aktørId)
+                .map(this::oppslagId)
+                .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
+                .map(Fødselsnummer::valueOf)
+                .orElse(null);
+
     }
 
     private Set<PDLBarn> barn(PDLSøker søker) {
@@ -196,7 +187,7 @@ public class PDLConnection implements PingEndpointAware {
     private Målform målform() {
         try {
             var mf = dkif.målform();
-            LOG.info("DKIF oppslag målform {}", mf);
+            LOG.trace("DKIF oppslag målform {}", mf);
             return mf;
         } catch (Exception e) {
             LOG.warn("DKIF oppslag målform feilet", e);
@@ -206,7 +197,7 @@ public class PDLConnection implements PingEndpointAware {
 
     @Override
     public String ping() {
-        // options(pingEndpoint()); finn ut av dette
+        // options(pingEndpoint()); TODO finn ut av dette
         return "OK";
     }
 

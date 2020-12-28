@@ -10,16 +10,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 public abstract class AbstractWebClientConnection implements RetryAware, PingEndpointAware {
-    private final WebClient webClient;
-    private final AbstractConfig cfg;
+    protected final WebClient webClient;
+    protected final AbstractConfig cfg;
 
     public AbstractWebClientConnection(WebClient webClient, AbstractConfig cfg) {
         this.webClient = webClient;
         this.cfg = cfg;
-    }
-
-    protected WebClient getWebClient() {
-        return webClient;
     }
 
     @Override

@@ -26,6 +26,7 @@ import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConfig;
+import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConfig;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
@@ -43,6 +44,7 @@ public class WebClientConfiguration {
     public static final String KRR = "KRR";
     public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
     public static final String ORGANISASJON = "ORGANISASJON";
+    public static final String KONTONR = "KONTONR";
 
     @Value("${spring.application.name:fpsoknad-mottak}")
     private String consumer;
@@ -56,6 +58,16 @@ public class WebClientConfiguration {
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(dkifExchangeFilterFunction(sts, cfg.getTokenUtil()))
+                .build();
+    }
+
+    @Bean
+    @Qualifier(KONTONR)
+    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenUtil tokenUtil) {
+        return builder
+                .baseUrl(cfg.getBaseUri().toString())
+                .filter(correlatingFilterFunction())
+                .filter(authenticatingFilterFunction(tokenUtil))
                 .build();
     }
 
@@ -128,6 +140,20 @@ public class WebClientConfiguration {
                 return next.exchange(
                         builder.header(AUTHORIZATION, tokenUtil.bearerToken())
                                 .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
+                                .build());
+
+            }
+            LOG.trace("Uautentisert bruker, kan ikke sette auth headers");
+            return next.exchange(builder.build());
+        };
+    }
+
+    private static ExchangeFilterFunction authenticatingFilterFunction(TokenUtil tokenUtil) {
+        return (req, next) -> {
+            var builder = ClientRequest.from(req);
+            if (tokenUtil.erAutentisert()) {
+                return next.exchange(
+                        builder.header(AUTHORIZATION, tokenUtil.bearerToken())
                                 .build());
 
             }

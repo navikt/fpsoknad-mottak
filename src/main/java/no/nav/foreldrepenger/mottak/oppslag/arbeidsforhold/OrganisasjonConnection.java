@@ -48,7 +48,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private String orgNavn(String orgnr) {
         LOG.info("Henter organisasjonsnavn for {}", orgnr);
         try {
-            var navn = Optional.ofNullable(getWebClient()
+            var navn = Optional.ofNullable(webClient
                     .get()
                     .uri(b -> cfg.getOrganisasjonURI(b, orgnr))
                     .accept(APPLICATION_JSON)
@@ -90,7 +90,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[cfg=" + cfg + ", name=" + name() + ", client=" + getWebClient() + "]";
+        return getClass().getSimpleName() + "[cfg=" + cfg + ", name=" + name() + ", client=" + webClient + "]";
     }
 
 }
