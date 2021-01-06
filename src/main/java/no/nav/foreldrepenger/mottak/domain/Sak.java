@@ -25,6 +25,7 @@ public class Sak {
     private final List<Behandling> behandlinger;
     private final LocalDateTime opprettet;
     private final LocalDateTime endret;
+    private final boolean mottattEndringssøknad;
 
     @JsonCreator
     public Sak(@JsonProperty("saksnummer") String saksnummer,
@@ -35,7 +36,8 @@ public class Sak {
             @JsonProperty("aktørIdBarn") List<AktørId> aktørIdBarn,
             @JsonProperty("behandlinger") List<Behandling> behandlinger,
             @JsonProperty("opprettet") LocalDateTime opprettet,
-            @JsonProperty("endret") LocalDateTime endret) {
+            @JsonProperty("endret") LocalDateTime endret,
+            @JsonProperty("mottattEndringssøknad") boolean mottattEndringssøknad) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingTema;
@@ -45,5 +47,6 @@ public class Sak {
         this.behandlinger = Optional.ofNullable(behandlinger).orElse(emptyList());
         this.opprettet = opprettet;
         this.endret = endret;
+        this.mottattEndringssøknad = mottattEndringssøknad;
     }
 }

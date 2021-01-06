@@ -28,6 +28,7 @@ public class SakDTO {
     private final List<Lenke> lenker;
     private final LocalDateTime opprettetTidspunkt;
     private final LocalDateTime endretTidspunkt;
+    private final boolean mottattEndringssøknad;
 
     @JsonCreator
     public SakDTO(@JsonProperty("saksnummer") String saksnummer,
@@ -38,7 +39,8 @@ public class SakDTO {
             @JsonProperty("aktørIdBarna") List<AktørId> aktørIdBarna,
             @JsonProperty("lenker") List<Lenke> lenker,
             @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
-            @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt) {
+            @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt,
+            @JsonProperty("mottattEndringssøknad") boolean mottattEndringssøknad) {
         this.saksnummer = saksnummer;
         this.fagsakStatus = fagsakStatus;
         this.behandlingTema = behandlingTema;
@@ -48,6 +50,7 @@ public class SakDTO {
         this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
         this.opprettetTidspunkt = opprettetTidspunkt;
         this.endretTidspunkt = endretTidspunkt;
+        this.mottattEndringssøknad = mottattEndringssøknad;
     }
 
     public List<Lenke> getLenker() {
@@ -93,56 +96,29 @@ public class SakDTO {
         return endretTidspunkt;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(aktørId, aktørIdAnnenPart, aktørIdBarna, fagsakStatus, behandlingTema,
-                saksnummer, lenker);
+    public boolean isMottattEndringssøknad() {
+        return mottattEndringssøknad;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (obj == null) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        SakDTO other = (SakDTO) obj;
-        if (aktørId == null) {
-            if (other.aktørId != null) {
-                return false;
-            }
-        } else if (!aktørId.equals(other.aktørId)) {
-            return false;
-        }
-        if (aktørIdAnnenPart == null) {
-            if (other.aktørIdAnnenPart != null) {
-                return false;
-            }
-        } else if (!aktørIdAnnenPart.equals(other.aktørIdAnnenPart)) {
-            return false;
-        }
-        if (aktørIdBarna == null) {
-            if (other.aktørIdBarna != null) {
-                return false;
-            }
-        } else if (!aktørIdBarna.equals(other.aktørIdBarna)) {
-            return false;
-        }
-        if (fagsakStatus != other.fagsakStatus) {
-            return false;
-        }
-        if (!behandlingTema.equals(other.behandlingTema)) {
-            return false;
-        }
-        if (saksnummer == null) {
-            return other.saksnummer == null;
-        } else {
-            return saksnummer.equals(other.saksnummer);
-        }
+        SakDTO sakDTO = (SakDTO) o;
+        return mottattEndringssøknad == sakDTO.mottattEndringssøknad && Objects.equals(saksnummer, sakDTO.saksnummer)
+            && fagsakStatus == sakDTO.fagsakStatus && Objects.equals(behandlingTema, sakDTO.behandlingTema)
+            && Objects.equals(aktørId, sakDTO.aktørId) && Objects.equals(aktørIdAnnenPart, sakDTO.aktørIdAnnenPart)
+            && Objects.equals(aktørIdBarna, sakDTO.aktørIdBarna) && Objects.equals(lenker, sakDTO.lenker);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(saksnummer, fagsakStatus, behandlingTema, aktørId, aktørIdAnnenPart, aktørIdBarna, lenker,
+            mottattEndringssøknad);
     }
 
     @Override
@@ -150,6 +126,6 @@ public class SakDTO {
         return getClass().getSimpleName() + " [saksnummer=" + saksnummer + ", fagsakStatus=" + fagsakStatus
                 + ", behandlingTema="
                 + behandlingTema + ", aktørId=" + aktørId + ", aktørIdAnnenPart=" + aktørIdAnnenPart + ", aktørIdBarna="
-                + aktørIdBarna + ", lenker=" + lenker + "]";
+                + aktørIdBarna + ", lenker=" + lenker + ", mottattEndringssøknad=" + mottattEndringssøknad + "]";
     }
 }
