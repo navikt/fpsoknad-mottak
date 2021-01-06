@@ -11,12 +11,14 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.innsyn.FagsakStatus;
 import no.nav.foreldrepenger.mottak.innsyn.Lenke;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SakDTO {
     private static final String BEHANDLINGER = "behandlinger";
     private final String saksnummer;
