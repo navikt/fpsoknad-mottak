@@ -70,10 +70,9 @@ spring:
 
 pdl:
     base-uri: ${pdl.graphql.base.url}
-    kontonummer-u-r-i: ${fpsoknad.mottak}
 fppdfgen:
     enabled: false
-oppslag:
+kontonummer:
     base-uri: ${oppslag.url}
 fpfordel:
     base-uri: ${fpfordel.base.url}
