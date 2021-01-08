@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering.UGRADERT;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.Set;
 
@@ -35,7 +36,7 @@ class PDLAnnenPart {
     }
 
     boolean erDød() {
-        return !dødsfall.isEmpty();
+        return !isEmpty(dødsfall);
     }
 
     boolean erBeskyttet() {

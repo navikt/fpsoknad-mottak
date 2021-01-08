@@ -12,8 +12,8 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.SØKER_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.AKTORID;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.mapIdent;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.net.URI;
@@ -52,9 +52,7 @@ public class PDLConnection implements PingEndpointAware {
     private PDLConfig cfg;
     private final DKIFConnection dkif;
     private final PDLErrorResponseHandler errorHandler;
-
     private final KontonummerConnection kontonr;
-
     private final TokenUtil tokenUtil;
 
     PDLConnection(@Qualifier(PDL_USER) GraphQLWebClient userClient,
