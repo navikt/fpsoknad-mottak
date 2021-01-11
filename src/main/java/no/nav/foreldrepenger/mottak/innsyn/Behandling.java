@@ -16,7 +16,6 @@ public class Behandling {
     private final BehandlingStatus status;
     private final BehandlingType type;
     private final BehandlingTema tema;
-    private final BehandlingÅrsak årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
     private final BehandlingResultat behandlingResultat;

@@ -18,7 +18,6 @@ public class BehandlingDTO {
     private final String status;
     private final String type;
     private final String tema;
-    private final String årsak;
     private final String behandlendeEnhet;
     private final String behandlendeEnhetNavn;
     private final String behandlingResultat;
@@ -28,24 +27,21 @@ public class BehandlingDTO {
     private final List<Lenke> lenker;
 
     @JsonCreator
-    public BehandlingDTO(
-            @JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
-            @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt,
-            @JsonProperty("status") String status,
-            @JsonProperty("type") String type,
-            @JsonProperty("tema") String tema,
-            @JsonProperty("årsak") String årsak,
-            @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
-            @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
-            @JsonProperty("behandlingResultat") String behandlingResultat,
-            @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger,
-            @JsonProperty("lenker") List<Lenke> lenker) {
+    public BehandlingDTO(@JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
+                         @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt,
+                         @JsonProperty("status") String status,
+                         @JsonProperty("type") String type,
+                         @JsonProperty("tema") String tema,
+                         @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
+                         @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
+                         @JsonProperty("behandlingResultat") String behandlingResultat,
+                         @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger,
+                         @JsonProperty("lenker") List<Lenke> lenker) {
         this.opprettetTidspunkt = opprettetTidspunkt;
         this.endretTidspunkt = endretTidspunkt;
         this.status = status;
         this.tema = tema;
         this.type = type;
-        this.årsak = årsak;
         this.behandlendeEnhet = behandlendeEnhet;
         this.behandlendeEnhetNavn = behandlendeEnhetNavn;
         this.behandlingResultat = behandlingResultat;
@@ -63,10 +59,6 @@ public class BehandlingDTO {
 
     public String getTema() {
         return tema;
-    }
-
-    public String getÅrsak() {
-        return årsak;
     }
 
     public String getBehandlendeEnhet() {
@@ -113,10 +105,10 @@ public class BehandlingDTO {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", tema=" + tema + ", årsak="
-                + årsak + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
-                + ", behandlingResultat=" + behandlingResultat + ", opprettetTidspunkt=" + opprettetTidspunkt
-                + ", endretTidspunkt=" + endretTidspunkt + ", inntektsmeldinger=" + inntektsmeldinger + ", lenker="
-                + lenker + "]";
+        return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", tema=" + tema
+            + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
+            + ", behandlingResultat=" + behandlingResultat + ", opprettetTidspunkt=" + opprettetTidspunkt
+            + ", endretTidspunkt=" + endretTidspunkt + ", inntektsmeldinger=" + inntektsmeldinger + ", lenker=" + lenker
+            + "]";
     }
 }

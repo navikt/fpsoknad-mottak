@@ -193,7 +193,6 @@ public class InnsynTjeneste implements Innsyn {
                         .behandlendeEnhetNavn(w.getBehandlendeEnhetNavn())
                         .behandlingResultat(tilResultat(w.getBehandlingResultat()))
                         .status(tilBehandlingStatus(w.getStatus()))
-                        .årsak(tilÅrsak(w.getÅrsak()))
                         .tema(tilTema(w.getTema()))
                         .type(tilType(w.getType()))
                         .inntektsmeldinger(w.getInntektsmeldinger())
@@ -231,12 +230,6 @@ public class InnsynTjeneste implements Innsyn {
     private static BehandlingTema tilTema(String tema) {
         return Optional.ofNullable(tema)
                 .map(BehandlingTema::valueSafelyOf)
-                .orElse(null);
-    }
-
-    private static BehandlingÅrsak tilÅrsak(String årsak) {
-        return Optional.ofNullable(årsak)
-                .map(BehandlingÅrsak::valueSafelyOf)
                 .orElse(null);
     }
 
