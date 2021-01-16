@@ -21,7 +21,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.domain.CallIdGenerator;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 @Order(LOWEST_PRECEDENCE)
@@ -30,12 +32,14 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
 
     private final CallIdGenerator generator;
     private final String applicationName;
+    private final TokenUtil tokenUtil;
 
     @Inject
-    public HeadersToMDCFilterBean(CallIdGenerator generator,
+    public HeadersToMDCFilterBean(TokenUtil tokenUtil, CallIdGenerator generator,
             @Value("${spring.application.name:fpsoknad-mottak}") String applicationName) {
         this.generator = generator;
         this.applicationName = applicationName;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
@@ -49,6 +53,9 @@ public class HeadersToMDCFilterBean extends GenericFilterBean {
         try {
             toMDC(NAV_CONSUMER_ID, request.getHeader(NAV_CONSUMER_ID), applicationName);
             toMDC(NAV_CALL_ID, request.getHeader(NAV_CALL_ID), generator.create());
+            if (tokenUtil.erAutentisert() && (EnvUtil.isDev(getEnvironment()))) {
+                LOG.warn("Token er {}", tokenUtil.getToken());
+            }
         } catch (Exception e) {
             LOG.warn("Noe gikk galt ved setting av MDC-verdier for request {}, MDC-verdier er inkomplette",
                     request.getRequestURI(), e);
