@@ -25,7 +25,7 @@ public class RestClientConfiguration {
     @Bean
     @Primary
     public RestOperations restTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
-        LOG.info("Message interceptor er er {}", Arrays.toString(interceptors));
+        LOG.info("Message interceptor er {}", Arrays.toString(interceptors));
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
