@@ -1,6 +1,0 @@
-spring:
-   cloud:
-      vault:
-         reactive:
-           enabled: false
-         enabled: false
