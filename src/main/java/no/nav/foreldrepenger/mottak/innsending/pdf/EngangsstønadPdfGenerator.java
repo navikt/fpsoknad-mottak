@@ -82,7 +82,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         grupper.add(omBarn(søknad, stønad));
 
         // info om annen forelder
-        if (annenForelder.hasId()) {
+        if (annenForelder != null && annenForelder.hasId()) {
             grupper.add(omAnnenForelder(annenForelder));
         }
 
@@ -104,9 +104,9 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
             farInfo.add(new FritekstBlokk(txt("annenforelderukjent")));
         }
         return TemaBlokk.builder()
-            .medOverskrift(txt("omannenforelder"))
-            .medUnderBlokker(farInfo)
-            .build();
+                .medOverskrift(txt("omannenforelder"))
+                .medUnderBlokker(farInfo)
+                .build();
     }
 
     private List<FeltBlokk> utenlandskForelder(AnnenForelder annenForelder) {
@@ -144,9 +144,9 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         }
         tabeller.add(new FritekstBlokk(fødselssted));
         return TemaBlokk.builder()
-            .medOverskrift(txt("tilknytning"))
-            .medUnderBlokker(tabeller)
-            .build();
+                .medOverskrift(txt("tilknytning"))
+                .medUnderBlokker(tabeller)
+                .build();
     }
 
     private static List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
@@ -171,9 +171,9 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private TemaBlokk omBarn(Søknad søknad, Engangsstønad stønad) {
         return TemaBlokk.builder()
-            .medOverskrift(txt("ombarn"))
-            .medUnderBlokker(omFødsel(søknad, stønad))
-            .build();
+                .medOverskrift(txt("ombarn"))
+                .medUnderBlokker(omFødsel(søknad, stønad))
+                .build();
     }
 
     private List<FritekstBlokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
@@ -218,15 +218,15 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private DokumentPerson personFra(Person person) {
         var navn = textFormatter.sammensattNavn(new Navn(person.getFornavn(),
-            person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
+                person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
         return DokumentPerson.builder().navn(navn).id(person.getFnr().getFnr()).build();
     }
 
     private FeltBlokk feltFra(String felt, String verdi) {
         return FeltBlokk.builder()
-            .medFelt(felt)
-            .medVerdi(verdi)
-            .build();
+                .medFelt(felt)
+                .medVerdi(verdi)
+                .build();
     }
 
     @Override
