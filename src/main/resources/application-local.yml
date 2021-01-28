@@ -59,6 +59,9 @@ kafka:
 server:
     port: 9001
 spring:
+    cloud:
+        vault:
+            enabled: false
     mvc:
         log-request-details : true
     kafka:
