@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
 
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnLocal;
@@ -12,6 +13,6 @@ public class PdfGeneratorStub implements PdfGenerator {
 
     @Override
     public byte[] generate(DokumentBestilling dokument) {
-        return new byte[0];
+        return RandomUtils.nextBytes(1);
     }
 }
