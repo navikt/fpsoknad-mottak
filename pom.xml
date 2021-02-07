@@ -499,11 +499,6 @@
             <artifactId>guava</artifactId>
             <version>30.1-jre</version>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>1.4.30</version>
-        </dependency>
     </dependencies>
     <distributionManagement>
         <repository>
