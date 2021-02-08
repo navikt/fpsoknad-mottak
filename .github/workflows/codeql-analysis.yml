@@ -10,7 +10,9 @@
 # supported CodeQL languages.
 #
 name: "CodeQL"
-
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_USERNAME: x-access-token
 on:
   push:
     branches: [ master ]
