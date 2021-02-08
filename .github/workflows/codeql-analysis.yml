@@ -56,23 +56,18 @@ jobs:
     - name: Sett opp Java 15
       uses: actions/setup-java@v1
       with:
-        java-version: 15       
+        java-version: 15  
+         #   make release
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+        config-file: .github/codeql/codeql-config.yml    
    
     - name: Kompiler
       run: |
           mvn versions:set -DnewVersion=${TAG}
           mvn clean install --batch-mode --quiet --settings .github/.m2/settings.xml
-
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://git.io/JvXDl
-
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
-
-    #- run: |
-    #   make bootstrap
-    #   make release
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
