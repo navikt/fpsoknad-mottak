@@ -47,8 +47,8 @@ public class SakStatusPoller extends AbstractRestConnection {
                 LOG.info("Poller {} for {}. gang av {}", pollURI, i, maxAntallForsøk);
                 var respons = poll(pollURI, delayMillis);
                 if (!respons.hasBody()) {
-                    LOG.warn("Fikk ingen kvittering etter polling av forsendelsesstatus");
-                    return null;
+                    LOG.info("Fikk ingen kvittering etter polling av forsendelsesstatus");
+                    continue;
                 }
                 var kvittering = respons.getBody();
                 LOG.info("Fikk respons kvittering {}", kvittering);
