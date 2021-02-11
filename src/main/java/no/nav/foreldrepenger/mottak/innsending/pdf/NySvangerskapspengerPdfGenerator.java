@@ -141,13 +141,13 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private GruppeBlokk egenNæringMapper(EgenNæring næring) {
         var gruppe = GruppeBlokk.builder();
         List<Blokk> rader = new ArrayList<>();
-        if (næring.getPeriode().getTom() == null) {
-            rader.add(new FritekstBlokk(txt("egennæringpågår", textFormatter.dato(næring.getPeriode().getFom()))));
+        if (næring.getPeriode().tom() == null) {
+            rader.add(new FritekstBlokk(txt("egennæringpågår", textFormatter.dato(næring.getPeriode().fom()))));
         } else {
             rader.add(new FritekstBlokk(
                     txt("egennæringavsluttet",
-                            textFormatter.dato(næring.getPeriode().getFom()),
-                            textFormatter.dato(næring.getPeriode().getTom()))));
+                            textFormatter.dato(næring.getPeriode().fom()),
+                            textFormatter.dato(næring.getPeriode().tom()))));
         }
         if (næring instanceof NorskOrganisasjon) {
             NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
@@ -199,11 +199,11 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             return Optional.empty();
         }
         List<Blokk> rader = new ArrayList<>();
-        if (frilans.getPeriode().getTom() == null) {
-            rader.add(new FritekstBlokk(txt("frilanspågår", textFormatter.dato(frilans.getPeriode().getFom()))));
+        if (frilans.getPeriode().tom() == null) {
+            rader.add(new FritekstBlokk(txt("frilanspågår", textFormatter.dato(frilans.getPeriode().fom()))));
         } else {
-            rader.add(new FritekstBlokk(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().getFom()),
-                    textFormatter.dato(frilans.getPeriode().getTom()))));
+            rader.add(new FritekstBlokk(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().fom()),
+                    textFormatter.dato(frilans.getPeriode().tom()))));
         }
         rader.add(felt(txt("fosterhjem"), jaNei(frilans.isHarInntektFraFosterhjem())));
         rader.add(felt(txt("nyoppstartet"), jaNei(frilans.isNyOppstartet())));

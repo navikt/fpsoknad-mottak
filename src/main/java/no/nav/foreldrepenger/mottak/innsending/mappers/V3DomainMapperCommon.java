@@ -78,8 +78,8 @@ final class V3DomainMapperCommon {
     static Periode periodeFra(ÅpenPeriode periode) {
         return Optional.ofNullable(periode)
                 .map(p -> new Periode()
-                        .withFom(p.getFom())
-                        .withTom(p.getTom()))
+                        .withFom(p.fom())
+                        .withTom(p.tom()))
                 .orElse(null);
     }
 

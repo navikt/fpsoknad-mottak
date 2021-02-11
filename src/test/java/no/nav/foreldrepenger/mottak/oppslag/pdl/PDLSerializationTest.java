@@ -62,52 +62,52 @@ public class PDLSerializationTest {
     private ObjectMapper mapper;
 
     @Test
-    public void testWrappedNavn() throws Exception {
+    void testWrappedNavn() throws Exception {
         test(new PDLWrappedNavn(Set.of(new PDLNavn("a", "b", "c"))));
     }
 
     @Test
-    public void testStatsborgerskapPDL() {
+    void testStatsborgerskapPDL() {
         test(ettStatsborgerskap());
     }
 
     @Test
-    public void testNavnDTO() {
+    void testNavnDTO() {
         test(kvinneNavn());
     }
 
     @Test
-    public void testNavnMapping() {
+    void testNavnMapping() {
         assertEquals(PDLMapper.navnFra(Set.of(kvinnePDLNavn()), pdlKvinne()), kvinneNavn());
     }
 
     @Test
-    public void testNavnPDL() {
+    void testNavnPDL() {
         test(kvinnePDLNavn());
     }
 
     @Test
-    public void testBarnDTO() {
+    void testBarnDTO() {
         test(barn());
     }
 
     @Test
-    public void testBarnPDL() {
+    void testBarnPDL() {
         test(pdlBarn());
     }
 
     @Test
-    public void testFødselPDL() {
+    void testFødselPDL() {
         test(fødsel());
     }
 
     @Test
-    public void testFamilierelasjonPDL() {
+    void testFamilierelasjonPDL() {
         test(familierelasjon());
     }
 
     @Test
-    public void testAdresseBeskyttelsePDL() {
+    void testAdresseBeskyttelsePDL() {
         test(adresseBeskyttelse());
     }
 
@@ -116,42 +116,42 @@ public class PDLSerializationTest {
     }
 
     @Test
-    public void testBarnMapping() {
+    void testBarnMapping() {
         assertEquals(PDLMapper.barnFra(ID_SØKER, pdlBarn().withId(ID_BARN)), barn());
     }
 
     @Test
-    public void testAnnenDTO() {
+    void testAnnenDTO() {
         test(annenPart());
     }
 
     @Test
-    public void testAnnenPDL() {
+    void testAnnenPDL() {
         test(pdlAnnenPart().withId(ID_ANNEN));
     }
 
     @Test
-    public void testSøkerPDL() {
+    void testSøkerPDL() {
         test(pdlSøker());
     }
 
     @Test
-    public void testDødsfallPDL() {
+    void testDødsfallPDL() {
         test(etDødsfall());
     }
 
     @Test
-    public void testSivilstandPDL() {
+    void testSivilstandPDL() {
         test(new PDLSivilstand(PDLSivilstandType.GIFT, ID_ANNEN));
     }
 
     @Test
-    public void testSøkerDTO() throws Exception {
+    void testSøkerDTO() throws Exception {
         assertEquals(søker(), PDLMapper.map(ID_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
 
     @Test
-    public void testAnnenMapping() {
+    void testAnnenMapping() {
         assertEquals(PDLMapper.annenPartFra(pdlAnnenPart()), annenPart());
     }
 

@@ -240,9 +240,9 @@ public class ForeldrepengeInfoRenderer {
     private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
         Collections.sort(arbeidsforhold, (o1, o2) -> {
             if (o1.getPeriode() != null && o2.getPeriode() != null
-                    && o1.getPeriode().getFom() != null
-                    && o2.getPeriode().getFom() != null) {
-                return o1.getPeriode().getFom().compareTo(o2.getPeriode().getFom());
+                    && o1.getPeriode().fom() != null
+                    && o2.getPeriode().fom() != null) {
+                return o1.getPeriode().fom().compareTo(o2.getPeriode().fom());
             }
             return 0;
         });
@@ -252,11 +252,11 @@ public class ForeldrepengeInfoRenderer {
     public float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         List<String> attributter = new ArrayList<>();
-        if (frilans.getPeriode().getTom() == null) {
-            addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.getPeriode().getFom()));
+        if (frilans.getPeriode().tom() == null) {
+            addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.getPeriode().fom()));
         } else {
-            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().getFom()),
-                    textFormatter.dato(frilans.getPeriode().getTom())));
+            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().fom()),
+                    textFormatter.dato(frilans.getPeriode().tom())));
         }
         attributter.add(txt("fosterhjem", jaNei(frilans.isHarInntektFraFosterhjem())));
         attributter.add(txt("nyoppstartet", jaNei(frilans.isNyOppstartet())));
@@ -679,8 +679,8 @@ public class ForeldrepengeInfoRenderer {
     private List<String> utenlandskeArbeidsforhold(UtenlandskArbeidsforhold ua) {
         List<String> attributter = new ArrayList<>();
         addIfSet(attributter, ARBEIDSGIVER, ua.getArbeidsgiverNavn());
-        addIfSet(attributter, "fom", ua.getPeriode().getFom());
-        addIfSet(attributter, "tom", ua.getPeriode().getTom());
+        addIfSet(attributter, "fom", ua.getPeriode().fom());
+        addIfSet(attributter, "tom", ua.getPeriode().tom());
         addIfSet(attributter, "virksomhetsland", ua.getLand());
         return attributter;
     }
@@ -708,11 +708,11 @@ public class ForeldrepengeInfoRenderer {
                 safeStream(næring.getVirksomhetsTyper())
                         .map(v -> textFormatter.capitalize(v.toString()))
                         .collect(joining(","))));
-        if (næring.getPeriode().getTom() == null) {
-            addIfSet(attributter, "egennæringpågår", textFormatter.dato(næring.getPeriode().getFom()));
+        if (næring.getPeriode().tom() == null) {
+            addIfSet(attributter, "egennæringpågår", textFormatter.dato(næring.getPeriode().fom()));
         } else {
-            attributter.add(txt("egennæringavsluttet", næring.getPeriode().getFom(),
-                    textFormatter.dato(næring.getPeriode().getTom())));
+            attributter.add(txt("egennæringavsluttet", næring.getPeriode().fom(),
+                    textFormatter.dato(næring.getPeriode().tom())));
         }
         if (næring.getStillingsprosent() != null) {
             attributter.add(txt("stillingsprosent", prosentFra(næring.getStillingsprosent())));
@@ -786,8 +786,8 @@ public class ForeldrepengeInfoRenderer {
 
     private void addIfSet(List<String> attributter, ÅpenPeriode periode) {
         if (periode != null) {
-            addIfSet(attributter, "fom", periode.getFom());
-            addIfSet(attributter, "tom", periode.getTom());
+            addIfSet(attributter, "fom", periode.fom());
+            addIfSet(attributter, "tom", periode.tom());
         }
     }
 
