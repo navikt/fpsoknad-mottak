@@ -10,7 +10,7 @@
 fpsoknad-mottak
 ================
 
-Mottar søknader om svangerskapspenger, foreldrepenger og engangsstønad fra frontend og sender dem videre inn i NAV for behandling.
+Mottar søknader om svangerskapspenger, foreldrepenger og engangsstønad fra frontend og sender dem videre inn i NAV for behandling.   
 
 # Komme i gang
 
