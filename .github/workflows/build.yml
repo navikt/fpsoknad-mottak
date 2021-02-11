@@ -7,7 +7,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_USERNAME: x-access-token
-  IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
+  IMAGE_BASE: ghcr.io/navikt/${{ github.repository }}
 
 jobs:
   kompiler:
@@ -46,10 +46,16 @@ jobs:
           mvn versions:set -DnewVersion=${TAG}
           mvn clean install --batch-mode --quiet --settings .github/.m2/settings.xml
 
+      - name: Login to GitHub Packages Docker Registry
+        uses: docker/login-action@ab80d026d4753220c4243394c07c7d80f9638d06 # Use commit-sha1 instead of tag for security concerns
+        with:
+         registry: ghcr.io
+         username: ${{ secrets.GHCR_PUSH_USERNAME }}
+         password: ${{ secrets.GHCR_PUSH_TOKEN }}
+       
       - name: Bygg, tag og push Docker image
         run: |
           docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
-          echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
           docker push ${IMAGE_BASE}
 
       - name: Lukk gamle bygg-issues
