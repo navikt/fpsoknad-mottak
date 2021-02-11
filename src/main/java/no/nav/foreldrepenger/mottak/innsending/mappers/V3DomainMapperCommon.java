@@ -256,8 +256,8 @@ final class V3DomainMapperCommon {
         }
         var regnskapsfører = regnskapsførere.get(0);
         return new Regnskapsfoerer()
-                .withTelefon(regnskapsfører.getTelefon())
-                .withNavn(regnskapsfører.getNavn());
+                .withTelefon(regnskapsfører.telefon())
+                .withNavn(regnskapsfører.navn());
     }
 
     static Land landFra(CountryCode land) {

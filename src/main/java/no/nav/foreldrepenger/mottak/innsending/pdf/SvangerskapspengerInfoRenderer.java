@@ -247,11 +247,11 @@ public class SvangerskapspengerInfoRenderer {
         }
         Regnskapsfører rf = regnskapsfører(næring);
         if (rf != null) {
-            if (rf.getTelefon() != null) {
+            if (rf.telefon() != null) {
                 attributter.add(
-                        txt("regnskapsførertelefon", rf.getNavn(), rf.getTelefon(), jaNei(næring.isNærRelasjon())));
+                        txt("regnskapsførertelefon", rf.navn(), rf.telefon(), jaNei(næring.isNærRelasjon())));
             } else {
-                attributter.add(txt("regnskapsfører", rf.getNavn(), jaNei(næring.isNærRelasjon())));
+                attributter.add(txt("regnskapsfører", rf.navn(), jaNei(næring.isNærRelasjon())));
             }
         }
         return attributter;
