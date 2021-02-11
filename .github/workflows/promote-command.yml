@@ -5,7 +5,7 @@ on:
 env:
   NAMESPACE: teamforeldrepenger
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  IMAGE_BASE: ghcr.io/${{ github.repository }}fpsoknad-mottak
+  IMAGE_BASE: ghcr.io/navikt/fpsoknad-mottak
 
 jobs:
   promote:
