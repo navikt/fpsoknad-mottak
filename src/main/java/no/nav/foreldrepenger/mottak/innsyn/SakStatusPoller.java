@@ -52,10 +52,10 @@ public class SakStatusPoller extends AbstractRestConnection {
                 }
                 var kvittering = respons.getBody();
                 LOG.info("Fikk respons kvittering {}", kvittering);
-                switch (kvittering.getForsendelseStatus()) {
+                switch (kvittering.forsendelseStatus()) {
                     case MOTTATT, AVSLÅTT, INNVILGET, PÅ_VENT -> {
                         stop(timer);
-                        LOG.info("Sak har status {} etter {}ms", kvittering.getForsendelseStatus().name(),
+                        LOG.info("Sak har status {} etter {}ms", kvittering.forsendelseStatus().name(),
                                 timer.getTime());
                         return kvittering;
                     }

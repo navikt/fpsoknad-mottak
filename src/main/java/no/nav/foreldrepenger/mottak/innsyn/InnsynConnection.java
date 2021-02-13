@@ -84,7 +84,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     private <T> T hent(Lenke lenke, Class<T> clazz) {
         return Optional.ofNullable(lenke)
-                .map(Lenke::getHref)
+                .map(Lenke::href)
                 .filter(Objects::nonNull)
                 .map(l -> getForObject(config.createLink(l), clazz))
                 .orElse(null);

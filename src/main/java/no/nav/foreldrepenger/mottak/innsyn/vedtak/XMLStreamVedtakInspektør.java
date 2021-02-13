@@ -7,8 +7,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FOREL
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
 
-import javax.xml.stream.XMLStreamReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,7 +39,7 @@ public final class XMLStreamVedtakInspektør extends AbstractInspektør {
         }
         try {
             String rootElementNamespace = rootElementNamespace(xml);
-            XMLStreamReader reader = reader(xml);
+            var reader = reader(xml);
             while (reader.hasNext()) {
                 reader.next();
                 if (reader.getEventType() == START_ELEMENT) {
@@ -60,17 +58,15 @@ public final class XMLStreamVedtakInspektør extends AbstractInspektør {
         }
     }
 
-    private static SøknadType typeFra(String fagsakType) {
-        switch (fagsakType) {
-            case ENGANGSSTØNAD:
-                return INITIELL_ENGANGSSTØNAD;
-            case SVANGERSKAPSPENGER:
-                return INITIELL_SVANGERSKAPSPENGER;
-            case FORELDREPENGER:
-                return INITIELL_FORELDREPENGER;
-            default:
-                LOG.warn("Ukjent fagsaktype {}", fagsakType);
-                return SøknadType.UKJENT;
-        }
+    private static SøknadType typeFra(String type) {
+        return switch (type) {
+            case ENGANGSSTØNAD -> INITIELL_ENGANGSSTØNAD;
+            case SVANGERSKAPSPENGER -> INITIELL_SVANGERSKAPSPENGER;
+            case FORELDREPENGER -> INITIELL_FORELDREPENGER;
+            default -> {
+                LOG.warn("Ukjent fagsaktype {}", type);
+                yield SøknadType.UKJENT;
+            }
+        };
     }
 }

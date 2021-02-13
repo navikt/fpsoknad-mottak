@@ -73,29 +73,33 @@ public class Kvittering {
     public static Kvittering forsendelsesStatusKvittering(ForsendelsesStatusKvittering forsendelsesStatus,
             FPSakFordeltKvittering fordeltKvittering) {
 
-        switch (forsendelsesStatus.getForsendelseStatus()) {
-        case AVSLÅTT:
-            REJECTED.increment();
-            return kvitteringMedType(AVSLÅTT, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case INNVILGET:
-            ACCEPTED.increment();
-            return kvitteringMedType(INNVILGET, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case MOTTATT:
-        case PÅ_VENT:
-            PENDING.increment();
-            return kvitteringMedType(PÅ_VENT, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        case PÅGÅR:
-            RUNNING.increment();
-            return kvitteringMedType(PÅGÅR, fordeltKvittering.getJournalpostId(),
-                    fordeltKvittering.getSaksnummer());
-        default:
-            LOG.warn("Fikk forsendelsesstatus {}", forsendelsesStatus.getForsendelseStatus());
-            FAILED.increment();
-            return new Kvittering(FP_FORDEL_MESSED_UP);
-        }
+        return switch (forsendelsesStatus.forsendelseStatus()) {
+            case AVSLÅTT -> {
+                REJECTED.increment();
+                yield kvitteringMedType(AVSLÅTT, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            }
+            case INNVILGET -> {
+                ACCEPTED.increment();
+                yield kvitteringMedType(INNVILGET, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            }
+            case MOTTATT, PÅ_VENT -> {
+                PENDING.increment();
+                yield kvitteringMedType(PÅ_VENT, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            }
+            case PÅGÅR -> {
+                RUNNING.increment();
+                yield kvitteringMedType(PÅGÅR, fordeltKvittering.getJournalpostId(),
+                        fordeltKvittering.getSaksnummer());
+            }
+            default -> {
+                LOG.warn("Fikk forsendelsesstatus {}", forsendelsesStatus.forsendelseStatus());
+                FAILED.increment();
+                yield new Kvittering(FP_FORDEL_MESSED_UP);
+            }
+        };
     }
 
     public static Kvittering sendtOgForsøktBehandletKvittering(FPSakFordeltKvittering kvittering) {

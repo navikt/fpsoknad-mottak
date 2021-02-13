@@ -113,7 +113,7 @@ public class InnsynTjeneste implements Innsyn {
     private List<Behandling> hentBehandlinger(List<Lenke> lenker, String saksnr) {
         LOG.info("Henter {} behandling{} for sak {}", lenker.size(), endelse(lenker), saksnr);
         var behandlinger = safeStream(lenker)
-                .filter(distinctByKey(Lenke::getHref))
+                .filter(distinctByKey(Lenke::href))
                 .map(innsyn::behandling)
                 .map(this::tilBehandling)
                 .collect(toList());
@@ -156,18 +156,18 @@ public class InnsynTjeneste implements Innsyn {
         LOG.trace(CONFIDENTIAL, "Mapper sak fra {}", wrapper);
         var sak = Optional.ofNullable(wrapper)
                 .map(w -> new Sak(
-                    w.getSaksnummer(),
-                    w.getFagsakStatus(),
-                    w.getBehandlingTema(),
-                    w.getAktørId(),
-                    annenPart(w.getAktørIdAnnenPart()),
-                    w.getAktørIdBarna(),
+                        w.getSaksnummer(),
+                        w.getFagsakStatus(),
+                        w.getBehandlingTema(),
+                        w.getAktørId(),
+                        annenPart(w.getAktørIdAnnenPart()),
+                        w.getAktørIdBarna(),
                         hentBehandlinger(
                                 w.getBehandlingsLenker(),
                                 w.getSaksnummer()),
                         w.getOpprettetTidspunkt(),
-                    w.getEndretTidspunkt(),
-                    w.isMottattEndringssøknad()))
+                        w.getEndretTidspunkt(),
+                        w.isMottattEndringssøknad()))
                 .orElse(null);
         LOG.trace(CONFIDENTIAL, "Mappet til sak {}", sak);
         return sak;

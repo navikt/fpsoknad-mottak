@@ -1,9 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.Mappables.egenskaperFor;
-import static no.nav.foreldrepenger.mottak.util.Mappables.mapperFor;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.mapperFor;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class DelegerendePDFGenerator implements MappablePdfGenerator {
     private final MapperEgenskaper mapperEgenskaper;
 
     public DelegerendePDFGenerator(MappablePdfGenerator... generatorer) {
-        this(asList(generatorer));
+        this(List.of(generatorer));
     }
 
     @Inject

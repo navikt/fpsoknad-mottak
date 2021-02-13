@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -47,7 +46,7 @@ public class VarselXMLGenerator {
 
     private static Varsel tilVarselModel(no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel) {
         return new Varsel()
-                .withMottaker(mottaker(varsel.getSøker()))
+                .withMottaker(mottaker(varsel.søker()))
                 .withVarslingstype(varslingsType())
                 .withParameterListe(parameterListe(varsel));
     }
@@ -63,13 +62,13 @@ public class VarselXMLGenerator {
     }
 
     private static List<Parameter> parameterListe(no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel) {
-        return Arrays.asList(
+        return List.of(
                 new Parameter()
                         .withKey(FORNAVN)
-                        .withValue(formattertNavn(varsel.getSøker().getFornavn())),
+                        .withValue(formattertNavn(varsel.søker().getFornavn())),
                 new Parameter()
                         .withKey(DATO)
-                        .withValue(formattertDato(varsel.getDato())),
+                        .withValue(formattertDato(varsel.dato())),
                 new Parameter()
                         .withKey(URL)
                         .withValue(URL_VALUE));

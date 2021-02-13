@@ -16,7 +16,6 @@ public enum Målform {
     private static final Logger LOG = LoggerFactory.getLogger(Målform.class);
 
     public static Målform standard() {
-        LOG.trace("Bruker default målform NB");
         return NB;
     }
 }

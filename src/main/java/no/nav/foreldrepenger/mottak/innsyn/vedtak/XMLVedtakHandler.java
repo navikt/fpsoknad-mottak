@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.VEDTAK;
-import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

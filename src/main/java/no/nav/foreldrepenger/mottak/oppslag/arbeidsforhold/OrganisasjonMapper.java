@@ -11,6 +11,10 @@ import com.google.common.base.Joiner;
 
 class OrganisasjonMapper {
 
+    private OrganisasjonMapper() {
+
+    }
+
     private static final String NAVN = "navn";
     private static final String NAVNELINJE1 = "navnelinje1";
     private static final String NAVNELINJE2 = "navnelinje2";

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,8 @@ public class ImageVersionContributor implements InfoContributor {
 
     @Override
     public void contribute(Builder builder) {
-        Map<String, String> extras = new HashMap<>();
-        extras.put("cluster", env.getProperty("nais.cluster.name"));
-        extras.put("image version", env.getProperty("nais.app.image"));
-        builder.withDetail("Extras", extras);
+        builder.withDetail("Extras", Map.of(
+                "cluster", env.getProperty("nais.cluster.name"),
+                "image version", env.getProperty("nais.app.image")));
     }
 }
