@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -8,8 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
-
-import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -22,7 +22,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForeld
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
@@ -50,22 +49,20 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     @Override
     public MapperEgenskaper mapperEgenskaper() {
-        return new MapperEgenskaper(SøknadType.INITIELL_ENGANGSSTØNAD);
+        return MapperEgenskaper.of(INITIELL_ENGANGSSTØNAD);
     }
 
     @Override
     public byte[] generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
-        DokumentBestilling engangsstønadSøknad = engangsstønadSøknadFra(søknad, søker);
-        return pdfGenerator.generate(engangsstønadSøknad);
+        return pdfGenerator.generate(esFra(søknad, søker));
     }
 
-    private DokumentBestilling engangsstønadSøknadFra(Søknad søknad, Person søker) {
-        return DokumentBestilling.builder()
-                .dokument(txt("søknad_engang"))
-                .søker(personFra(søker))
-                .mottattDato(mottattDato())
-                .temaer(lagOverskrifter(søknad))
-                .build();
+    private DokumentBestilling esFra(Søknad søknad, Person søker) {
+        return new DokumentBestilling(
+                txt("søknad_engang"),
+                personFra(søker),
+                mottattDato(),
+                lagOverskrifter(søknad));
     }
 
     private MottattDato mottattDato() {
@@ -94,11 +91,11 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     private TemaBlokk omAnnenForelder(AnnenForelder annenForelder) {
         List<Blokk> farInfo = new ArrayList<>();
-        if (annenForelder instanceof NorskForelder) {
-            farInfo.addAll(norskForelder(annenForelder));
+        if (annenForelder instanceof NorskForelder a) {
+            farInfo.addAll(norskForelder(a));
         }
-        if (annenForelder instanceof UtenlandskForelder) {
-            farInfo.addAll(utenlandskForelder(annenForelder));
+        if (annenForelder instanceof UtenlandskForelder a) {
+            farInfo.addAll(utenlandskForelder(a));
         }
         if (annenForelder instanceof UkjentForelder) {
             farInfo.add(new FritekstBlokk(txt("annenforelderukjent")));
@@ -109,8 +106,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                 .build();
     }
 
-    private List<FeltBlokk> utenlandskForelder(AnnenForelder annenForelder) {
-        var utenlandsForelder = (UtenlandskForelder) annenForelder;
+    private List<FeltBlokk> utenlandskForelder(UtenlandskForelder utenlandsForelder) {
         List<FeltBlokk> info = new ArrayList<>();
         info.add(new FeltBlokk(txt("nasjonalitet"),
                 textFormatter.countryName(utenlandsForelder.getLand(), utenlandsForelder.getLand().getName())));
@@ -121,8 +117,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return info;
     }
 
-    private List<FeltBlokk> norskForelder(AnnenForelder annenForelder) {
-        var norskForelder = (NorskForelder) annenForelder;
+    private List<FeltBlokk> norskForelder(NorskForelder norskForelder) {
         List<FeltBlokk> info = new ArrayList<>();
         info.add(new FeltBlokk(txt("nasjonalitet"), txt("nasjonalitet.norsk")));
         info.add(new FeltBlokk(txt("navn"), norskForelder.getNavn()));
@@ -160,13 +155,13 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
             return textFormatter.fromMessageSource("terminføderi",
                     textFormatter.countryName(medlemsskap.landVedDato(stønad.getRelasjonTilBarn().relasjonsDato())),
                     stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
-        } else {
-            Fødsel fødsel = (Fødsel) stønad.getRelasjonTilBarn();
-            CountryCode land = stønad.getMedlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
-            return textFormatter.fromMessageSource("fødtei",
-                    textFormatter.countryName(land),
-                    fødsel.getAntallBarn() > 1 ? "a" : "et");
         }
+        Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
+        var land = stønad.getMedlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
+        return textFormatter.fromMessageSource("fødtei",
+                textFormatter.countryName(land),
+                fødsel.getAntallBarn() > 1 ? "a" : "et");
+
     }
 
     private TemaBlokk omBarn(Søknad søknad, Engangsstønad stønad) {
@@ -179,20 +174,19 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     private List<FritekstBlokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
         if (erFremtidigFødsel(stønad)) {
             return fødsel(søknad, stønad);
-        } else {
-            return født(stønad);
         }
+        return født(stønad);
     }
 
     private List<FritekstBlokk> født(Engangsstønad stønad) {
-        var ff = (Fødsel) stønad.getRelasjonTilBarn();
+        var ff = Fødsel.class.cast(stønad.getRelasjonTilBarn());
         var tekst = txt("gjelderfødselsdato", stønad.getRelasjonTilBarn().getAntallBarn(),
                 textFormatter.datoer(ff.getFødselsdato()));
-        return Collections.singletonList(new FritekstBlokk(tekst));
+        return List.of(new FritekstBlokk(tekst));
     }
 
     private List<FritekstBlokk> fødsel(Søknad søknad, Engangsstønad stønad) {
-        var ff = (FremtidigFødsel) stønad.getRelasjonTilBarn();
+        var ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
         var antallBarn = stønad.getRelasjonTilBarn().getAntallBarn();
         var termindato = textFormatter.dato(ff.getTerminDato());
         var barnInfo = new FritekstBlokk(txt("gjeldertermindato", antallBarn, termindato));
@@ -220,13 +214,6 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         var navn = textFormatter.sammensattNavn(new Navn(person.getFornavn(),
                 person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
         return DokumentPerson.builder().navn(navn).id(person.getFnr().getFnr()).build();
-    }
-
-    private FeltBlokk feltFra(String felt, String verdi) {
-        return FeltBlokk.builder()
-                .medFelt(felt)
-                .medVerdi(verdi)
-                .build();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000001;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
@@ -19,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.common.collect.Lists;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
@@ -89,9 +89,9 @@ public class FordelMetadata {
         return brukerId;
     }
 
-    private static List<Del> søknadsDeler(Søknad søknad, SøknadType søknadType) {
+    private static List<Del> søknadsDeler(Søknad søknad, SøknadType type) {
         var id = new AtomicInteger(1);
-        var dokumenter = newArrayList(søknadsDel(id, søknad, søknadType), søknadsDel(id, søknad, søknadType));
+        var dokumenter = Lists.newArrayList(søknadsDel(id, søknad, type), søknadsDel(id, søknad, type));
         dokumenter.addAll(safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
@@ -99,10 +99,9 @@ public class FordelMetadata {
         return dokumenter;
     }
 
-    private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad, SøknadType søknadType) {
+    private static List<Del> endringssøknadsDeler(Endringssøknad endringssøknad, SøknadType type) {
         var id = new AtomicInteger(1);
-        var dokumenter = newArrayList(endringsøknadsDel(id, søknadType),
-                endringsøknadsDel(id, søknadType));
+        var dokumenter = Lists.newArrayList(endringsøknadsDel(id, type), endringsøknadsDel(id, type));
         dokumenter.addAll(safeStream(endringssøknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
@@ -117,32 +116,32 @@ public class FordelMetadata {
                 .collect(toList());
     }
 
-    private static Del søknadsDel(final AtomicInteger id, Søknad søknad, SøknadType søknadType) {
-        return new Del(dokumentTypeFraRelasjon(søknad, søknadType), id.getAndIncrement());
+    private static Del søknadsDel(final AtomicInteger id, Søknad søknad, SøknadType type) {
+        return new Del(dokumentTypeFraRelasjon(søknad, type), id.getAndIncrement());
     }
 
-    private static Del endringsøknadsDel(final AtomicInteger id, SøknadType søknadType) {
-        if (søknadType.equals(ENDRING_FORELDREPENGER)) {
+    private static Del endringsøknadsDel(final AtomicInteger id, SøknadType type) {
+        if (type.equals(ENDRING_FORELDREPENGER)) {
             return new Del(I000050, id.getAndIncrement());
         }
-        throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
+        throw new UnexpectedInputException("Søknad av type %s ikke støttet", type);
     }
 
     private static Del vedleggsDel(Vedlegg vedlegg, final AtomicInteger id) {
         return new Del(vedlegg.getDokumentType(), id.getAndIncrement());
     }
 
-    private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType søknadType) {
-        return switch (søknadType.fagsakType()) {
+    private static DokumentType dokumentTypeFraRelasjon(Søknad søknad, SøknadType type) {
+        return switch (type.fagsakType()) {
             case FORELDREPENGER -> dokumentTypeFraRelasjonForForeldrepenger(søknad);
             case ENGANGSSTØNAD -> dokumentTypeFraRelasjonForEngangsstønad(søknad);
             case SVANGERSKAPSPENGER -> I000001;
-            default -> throw new UnexpectedInputException("Søknad av type %s ikke støttet", søknadType);
+            default -> throw new UnexpectedInputException("Søknad av type %s ikke støttet", type);
         };
     }
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
-        var relasjon = ((Engangsstønad) søknad.getYtelse()).getRelasjonTilBarn();
+        var relasjon = Engangsstønad.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
         if (relasjon instanceof Fødsel
                 || relasjon instanceof FremtidigFødsel) {
             return I000003;
@@ -155,7 +154,7 @@ public class FordelMetadata {
     }
 
     private static DokumentType dokumentTypeFraRelasjonForForeldrepenger(Søknad søknad) {
-        var relasjon = ((Foreldrepenger) søknad.getYtelse()).getRelasjonTilBarn();
+        var relasjon = Foreldrepenger.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
         if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000005;
         }

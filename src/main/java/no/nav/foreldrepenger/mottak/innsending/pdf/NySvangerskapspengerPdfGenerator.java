@@ -59,7 +59,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Profile({ DEV, LOCAL })
@@ -69,16 +68,13 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String SVP_VEDLEGG_TILRETTELEGGING = "svp.vedlegg.tilrettelegging";
-    private final Oppslag oppslag;
     private final no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold arbeidsforhold;
     private final PdfGenerator pdfGenerator;
 
     @Inject
     public NySvangerskapspengerPdfGenerator(SøknadTextFormatter textFormatter,
-            Oppslag oppslag,
             no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold arbeidsforhold, PdfGenerator pdfGenerator) {
         this.textFormatter = textFormatter;
-        this.oppslag = oppslag;
         this.arbeidsforhold = arbeidsforhold;
         this.pdfGenerator = pdfGenerator;
     }
@@ -95,12 +91,11 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private DokumentBestilling svpSøknadFra(Søknad søknad, Person søker) {
-        return DokumentBestilling.builder()
-                .dokument(txt("svp.søknad"))
-                .søker(personFra(søker))
-                .mottattDato(mottattDato())
-                .temaer(lagInnhold(søknad))
-                .build();
+        return new DokumentBestilling(
+                txt("svp.søknad"),
+                personFra(søker),
+                mottattDato(),
+                lagInnhold(søknad));
     }
 
     private List<TemaBlokk> lagInnhold(Søknad søknad) {

@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
 import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.util.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.Mappables.egenskaperFor;
-import static no.nav.foreldrepenger.mottak.util.Mappables.mapperFor;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.mapperFor;
 
 import java.util.List;
 

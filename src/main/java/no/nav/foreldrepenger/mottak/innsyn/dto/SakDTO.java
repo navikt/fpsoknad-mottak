@@ -62,7 +62,7 @@ public class SakDTO {
     @JsonIgnore
     public List<Lenke> getBehandlingsLenker() {
         return safeStream(getLenker())
-                .filter(s -> BEHANDLINGER.equals(s.getRel()))
+                .filter(s -> BEHANDLINGER.equals(s.rel()))
                 .collect(toList());
     }
 
@@ -112,15 +112,15 @@ public class SakDTO {
         }
         SakDTO sakDTO = (SakDTO) o;
         return mottattEndringssøknad == sakDTO.mottattEndringssøknad && Objects.equals(saksnummer, sakDTO.saksnummer)
-            && fagsakStatus == sakDTO.fagsakStatus && Objects.equals(behandlingTema, sakDTO.behandlingTema)
-            && Objects.equals(aktørId, sakDTO.aktørId) && Objects.equals(aktørIdAnnenPart, sakDTO.aktørIdAnnenPart)
-            && Objects.equals(aktørIdBarna, sakDTO.aktørIdBarna) && Objects.equals(lenker, sakDTO.lenker);
+                && fagsakStatus == sakDTO.fagsakStatus && Objects.equals(behandlingTema, sakDTO.behandlingTema)
+                && Objects.equals(aktørId, sakDTO.aktørId) && Objects.equals(aktørIdAnnenPart, sakDTO.aktørIdAnnenPart)
+                && Objects.equals(aktørIdBarna, sakDTO.aktørIdBarna) && Objects.equals(lenker, sakDTO.lenker);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(saksnummer, fagsakStatus, behandlingTema, aktørId, aktørIdAnnenPart, aktørIdBarna, lenker,
-            mottattEndringssøknad);
+                mottattEndringssøknad);
     }
 
     @Override

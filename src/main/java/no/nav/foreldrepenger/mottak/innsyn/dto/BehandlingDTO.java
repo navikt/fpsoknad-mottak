@@ -30,15 +30,15 @@ public class BehandlingDTO {
 
     @JsonCreator
     public BehandlingDTO(@JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
-                         @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt,
-                         @JsonProperty("status") String status,
-                         @JsonProperty("type") String type,
-                         @JsonProperty("tema") String tema,
-                         @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
-                         @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
-                         @JsonProperty("behandlingResultat") String behandlingResultat,
-                         @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger,
-                         @JsonProperty("lenker") List<Lenke> lenker) {
+            @JsonProperty("endretTidspunkt") LocalDateTime endretTidspunkt,
+            @JsonProperty("status") String status,
+            @JsonProperty("type") String type,
+            @JsonProperty("tema") String tema,
+            @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
+            @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
+            @JsonProperty("behandlingResultat") String behandlingResultat,
+            @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger,
+            @JsonProperty("lenker") List<Lenke> lenker) {
         this.opprettetTidspunkt = opprettetTidspunkt;
         this.endretTidspunkt = endretTidspunkt;
         this.status = status;
@@ -101,16 +101,16 @@ public class BehandlingDTO {
 
     private Lenke getLenke(String type) {
         return safeStream(getLenker())
-                .filter(s -> s.getRel().equals(type))
+                .filter(s -> s.rel().equals(type))
                 .findFirst().orElse(null);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", tema=" + tema
-            + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
-            + ", behandlingResultat=" + behandlingResultat + ", opprettetTidspunkt=" + opprettetTidspunkt
-            + ", endretTidspunkt=" + endretTidspunkt + ", inntektsmeldinger=" + inntektsmeldinger + ", lenker=" + lenker
-            + "]";
+                + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
+                + ", behandlingResultat=" + behandlingResultat + ", opprettetTidspunkt=" + opprettetTidspunkt
+                + ", endretTidspunkt=" + endretTidspunkt + ", inntektsmeldinger=" + inntektsmeldinger + ", lenker=" + lenker
+                + "]";
     }
 }

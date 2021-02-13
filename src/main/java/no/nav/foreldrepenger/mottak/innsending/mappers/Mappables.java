@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.util;
+package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import no.nav.foreldrepenger.mottak.error.UnsupportedEgenskapException;
-import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public final class Mappables {
@@ -34,7 +32,7 @@ public final class Mappables {
                 .filter(m -> m.kanMappe(egenskap))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedEgenskapException(mappables, egenskap));
-        LOG.info("Bruker mapper {} for {}", mapper.getClass().getSimpleName(), egenskap);
+        LOG.trace("Bruker mapper {} for {}", mapper.getClass().getSimpleName(), egenskap);
         return mapper;
     }
 

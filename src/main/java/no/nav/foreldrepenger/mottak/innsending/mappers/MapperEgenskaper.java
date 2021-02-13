@@ -37,7 +37,11 @@ public class MapperEgenskaper {
         this(new SøknadEgenskap(versjon, type));
     }
 
-    public MapperEgenskaper(SøknadType... typer) {
+    public static MapperEgenskaper of(SøknadType... typer) {
+        return new MapperEgenskaper(typer);
+    }
+
+    private MapperEgenskaper(SøknadType... typer) {
         this(DEFAULT_VERSJON, typer);
     }
 
@@ -45,11 +49,11 @@ public class MapperEgenskaper {
         this(typerForVersjon(versjon, typer));
     }
 
-    public MapperEgenskaper(SøknadEgenskap... egenskaper) {
+    MapperEgenskaper(SøknadEgenskap... egenskaper) {
         this(asList(egenskaper));
     }
 
-    public MapperEgenskaper(List<SøknadEgenskap> egenskaper) {
+    MapperEgenskaper(List<SøknadEgenskap> egenskaper) {
         this.egenskaper = egenskaper;
     }
 

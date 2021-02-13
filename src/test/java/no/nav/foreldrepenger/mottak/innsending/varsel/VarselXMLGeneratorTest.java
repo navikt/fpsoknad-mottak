@@ -27,12 +27,12 @@ class VarselXMLGeneratorTest {
         VarselXMLGenerator varselXmlGenerator = new VarselXMLGenerator(jaxb);
         no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel = varsel();
         Varsel v = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(varsel), Varsel.class).getValue();
-        assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.getSøker().getAktørId().getId());
+        assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.søker().getAktørId().getId());
         assertEquals(VARSEL_TYPE, v.getVarslingstype().getValue());
         List<Parameter> parametre = v.getParameterListe();
         assertEquals(3, parametre.size());
-        assertParameter(parametre, DATO, formattertDato(varsel.getDato()));
-        assertParameter(parametre, FORNAVN, formattertNavn(varsel.getSøker().getFornavn()));
+        assertParameter(parametre, DATO, formattertDato(varsel.dato()));
+        assertParameter(parametre, FORNAVN, formattertNavn(varsel.søker().getFornavn()));
         assertParameter(parametre, URL, URL_VALUE);
     }
 

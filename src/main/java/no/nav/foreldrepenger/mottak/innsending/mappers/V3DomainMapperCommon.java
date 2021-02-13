@@ -67,7 +67,7 @@ final class V3DomainMapperCommon {
     }
 
     static Spraakkode målformFra(Søker søker) {
-        LOG.info("Mapper målform fra {}", søker.getMålform());
+        LOG.trace("Mapper målform fra {}", søker.getMålform());
         return Optional.ofNullable(søker)
                 .map(Søker::getMålform)
                 .map(Målform::name)
@@ -390,7 +390,7 @@ final class V3DomainMapperCommon {
     }
 
     private static Land landFra(String alpha3) {
-        Land land = new Land().withKode(alpha3);
+        var land = new Land().withKode(alpha3);
         return land.withKodeverk(land.getKodeverk());
     }
 }
