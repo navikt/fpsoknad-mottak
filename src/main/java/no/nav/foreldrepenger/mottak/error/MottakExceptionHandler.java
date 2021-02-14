@@ -93,7 +93,13 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
             List<Object> messages) {
         var apiError = apiErrorFra(status, req, e, messages);
-        LOG.warn("({}) {} {} ({})", subject(), status, apiError.getMessages(), status.value(), e);
+        if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
+            LOG.warn("[{} ({})] {} {} ({})", req.getContextPath(), subject(), status, apiError.getMessages(),
+                    status.value(), e);
+        } else {
+            LOG.debug("[{}] {} {} ({})", req.getContextPath(), status, apiError.getMessages(),
+                    status.value(), e);
+        }
         return handleExceptionInternal(e, apiError, headers, status, req);
     }
 
