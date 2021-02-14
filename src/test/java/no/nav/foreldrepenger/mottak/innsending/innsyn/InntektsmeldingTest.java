@@ -9,10 +9,10 @@ import org.springframework.util.StreamUtils;
 
 import no.nav.foreldrepenger.mottak.innsyn.inntektsmelding.InntektsmeldingXMLMapper;
 
-public class InntektsmeldingTest {
+class InntektsmeldingTest {
 
     @Test
-    public void testFørstegangssøknadRoundtrip() throws IOException {
+    void testFørstegangssøknadRoundtrip() throws IOException {
         String xml = StreamUtils.copyToString(new ClassPathResource("xml/inntektsmelding.xml").getInputStream(),
                 Charset.defaultCharset());
         InntektsmeldingXMLMapper.tilInntektsmelding(xml);

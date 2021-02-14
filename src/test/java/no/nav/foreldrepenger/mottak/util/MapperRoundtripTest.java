@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
 import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,7 +8,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.quality.Strictness.LENIENT;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
@@ -36,7 +32,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)
-public class MapperRoundtripTest {
+class MapperRoundtripTest {
 
     private static final Inspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
@@ -50,7 +46,7 @@ public class MapperRoundtripTest {
     private XMLSøknadMapper xmlMapper;
 
     @BeforeEach
-    public void before() {
+    void before() {
         when(oppslag.fnr(eq(ID))).thenReturn(NORSK_FORELDER_FNR);
         when(oppslag.aktørId(eq(NORSK_FORELDER_FNR))).thenReturn(ID);
         domainMapper = new DelegerendeDomainMapper(
@@ -62,30 +58,10 @@ public class MapperRoundtripTest {
     }
 
     @Test
-    public void testFørstegangssøknadRoundtrip() {
-        Lists.newArrayList(DEFAULT_VERSJON)
-                .stream()
-                .forEach(this::roundTripInitiell);
+    void testFørstegangssøknadRoundtrip() {
+        var søknad = søknadMedToVedlegg(DEFAULT_VERSJON);
+        String xml = domainMapper.tilXML(søknad, SØKER, SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
+        assertEquals(søknad, xmlMapper.tilSøknad(xml, INSPEKTØR.inspiser(xml)));
     }
 
-    // @Test
-    public void testEndringRoundtrip() {
-        Lists.newArrayList(DEFAULT_VERSJON)
-                .stream()
-                .forEach(this::roundTripEndring);
-    }
-
-    private void roundTripInitiell(Versjon v) {
-        Søknad søknad = søknadMedToVedlegg(v);
-        String xml = domainMapper.tilXML(søknad, SØKER, new SøknadEgenskap(v, SøknadType.INITIELL_FORELDREPENGER));
-        SøknadEgenskap egenskaper = INSPEKTØR.inspiser(xml);
-        assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
-    }
-
-    private void roundTripEndring(Versjon v) {
-        Endringssøknad søknad = endringssøknad(v);
-        String xml = domainMapper.tilXML(søknad, SØKER, new SøknadEgenskap(v, SøknadType.ENDRING_FORELDREPENGER));
-        SøknadEgenskap egenskaper = INSPEKTØR.inspiser(xml);
-        assertEquals(søknad, xmlMapper.tilSøknad(xml, egenskaper));
-    }
 }

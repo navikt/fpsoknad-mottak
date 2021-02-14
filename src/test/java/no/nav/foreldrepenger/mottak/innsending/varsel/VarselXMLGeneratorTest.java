@@ -23,13 +23,13 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.Varsel;
 class VarselXMLGeneratorTest {
     @Test
     void testVarselXMLRoundtrip() {
-        V1VarselJAXBUtil jaxb = new V1VarselJAXBUtil(true);
-        VarselXMLGenerator varselXmlGenerator = new VarselXMLGenerator(jaxb);
-        no.nav.foreldrepenger.mottak.innsending.varsel.Varsel varsel = varsel();
-        Varsel v = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(varsel), Varsel.class).getValue();
+        var jaxb = new V1VarselJAXBUtil(true);
+        var varselXmlGenerator = new VarselXMLGenerator(jaxb);
+        var varsel = varsel();
+        var v = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(varsel), Varsel.class).getValue();
         assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.søker().getAktørId().getId());
         assertEquals(VARSEL_TYPE, v.getVarslingstype().getValue());
-        List<Parameter> parametre = v.getParameterListe();
+        var parametre = v.getParameterListe();
         assertEquals(3, parametre.size());
         assertParameter(parametre, DATO, formattertDato(varsel.dato()));
         assertParameter(parametre, FORNAVN, formattertNavn(varsel.søker().getFornavn()));

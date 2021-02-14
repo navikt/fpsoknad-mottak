@@ -12,24 +12,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class PdfElementRendererTest {
+class PdfElementRendererTest {
 
     private static PdfElementRenderer renderer;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         renderer = new PdfElementRenderer();
     }
 
     @Test
-    public void softLineBreakOnSpace() {
+    void softLineBreakOnSpace() {
         List<String> lines = splitLine("test1 test2", 8);
         assertEquals("test1", lines.get(0));
         assertEquals("test2", lines.get(1));
     }
 
     @Test
-    public void hardLineBreak() {
+    void hardLineBreak() {
         List<String> linesA = splitLine("test1 test2test3", 10);
         assertEquals("test1", linesA.get(0));
         assertEquals("test2test3", linesA.get(1));
@@ -44,7 +44,7 @@ public class PdfElementRendererTest {
     }
 
     @Test
-    public void charsNotRepresentedInFontGlyphStrippedOrReplaced() throws IOException {
+    void charsNotRepresentedInFontGlyphStrippedOrReplaced() throws IOException {
 
         PDFont font = PDType0Font.load(new PDDocument(),
                 new ClassPathResource("/pdf/NotoSans-Bold.ttf").getInputStream());

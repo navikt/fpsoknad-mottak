@@ -11,38 +11,38 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 
-public class OrgnrValidatorTest {
+class OrgnrValidatorTest {
 
     private static final String NAV = "999263550";
     private static Validator validator;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Test
-    public void testOK() {
+    void testOK() {
         assertTrue(validator.validate(new TestClass(NAV)).isEmpty());
     }
 
     @Test
-    public void testOKbutWrongFirstDigit() {
+    void testOKbutWrongFirstDigit() {
         assertFalse(validator.validate(new TestClass("123456785")).isEmpty());
     }
 
     @Test
-    public void testStrange() {
+    void testStrange() {
         assertTrue(validator.validate(new TestClass("999999999")).isEmpty());
     }
 
     @Test
-    public void testNull() {
+    void testNull() {
         assertTrue(validator.validate(new TestClass(null)).isEmpty());
     }
 
     @Test
-    public void testLength() {
+    void testLength() {
         assertFalse(validator.validate(new TestClass("666")).isEmpty());
     }
 

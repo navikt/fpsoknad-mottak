@@ -28,7 +28,7 @@ import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)
-public class TokenUtilTest {
+class TokenUtilTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("42");
     @Mock
@@ -41,14 +41,14 @@ public class TokenUtilTest {
     private TokenUtil tokenHelper;
 
     @BeforeEach
-    public void before() {
+    void before() {
         when(holder.getTokenValidationContext()).thenReturn(context);
         when(context.getClaims(eq(ISSUER))).thenReturn(claims);
         tokenHelper = new TokenUtil(holder);
     }
 
     @Test
-    public void testOK() {
+    void testOK() {
         when(claims.get(eq("exp")))
                 .thenReturn(toDate(LocalDateTime.now().minusHours(1)).toInstant().getEpochSecond());
         when(claims.getSubject()).thenReturn(FNR.getFnr());
@@ -57,28 +57,28 @@ public class TokenUtilTest {
     }
 
     @Test
-    public void testNoContext() {
+    void testNoContext() {
         when(holder.getTokenValidationContext()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
         assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
-    public void testNoClaims() {
+    void testNoClaims() {
         when(context.getClaims(eq("selvbetjening"))).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
         assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
-    public void testNoClaimset() {
+    void testNoClaimset() {
         when(context.getClaims(eq(ISSUER))).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
         assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
     }
 
     @Test
-    public void testNoSubject() {
+    void testNoSubject() {
         when(claims.getSubject()).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
         assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());

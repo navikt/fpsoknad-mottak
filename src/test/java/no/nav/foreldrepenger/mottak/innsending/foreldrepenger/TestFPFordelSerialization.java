@@ -33,7 +33,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,12 +49,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -80,7 +77,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
         "spring.cloud.vault.enabled=false",
         "sts.username=un", "sts.password=pw" })
 @ComponentScan(basePackages = "no.nav.foreldrepenger.mottak")
-public class TestFPFordelSerialization {
+class TestFPFordelSerialization {
 
     private static final Inspektør INSPEKTØR = new XMLStreamSøknadInspektør();
 
@@ -110,46 +107,64 @@ public class TestFPFordelSerialization {
     private static final List<EnkeltArbeidsforhold> ARB_FORHOLD = arbeidsforhold();
 
     @BeforeEach
-    public void before() {
+    void before() {
         when(oppslag.aktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.fnr(eq(AKTØRID))).thenReturn(FNR);
         when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
     }
 
     @Test
-    public void testEndringssøknadRoundtrip() {
-        Lists.newArrayList(DEFAULT_VERSJON)
-                .forEach(this::testEndringssøknadRoundtrip);
+    void testEndringssøknadRoundtrip() {
+        testEndringssøknadRoundtrip(DEFAULT_VERSJON);
     }
 
     @Test
-    public void testESFpFordel() {
-        Søknad engangstønad = engangssøknad(false, termin(), norskForelder(), V3);
-        assertNotNull(domainMapper.tilXML(engangstønad, AKTØRID, new SøknadEgenskap(INITIELL_ENGANGSSTØNAD)));
+    void testESFpFordel() {
+        var engangstønad = engangssøknad(false, termin(), norskForelder(), V3);
+        assertNotNull(domainMapper.tilXML(engangstønad, AKTØRID, SøknadEgenskap.of(INITIELL_ENGANGSSTØNAD)));
     }
 
     @Test
-    public void testSøknadRoundtrip() {
-        Lists.newArrayList(DEFAULT_VERSJON).stream()
-                .forEach(this::testSøknadRoundtrip);
+    void testSøknadRoundtrip() {
+        var original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(DEFAULT_VERSJON);
+        String xml = domainMapper.tilXML(original, AKTØRID, new SøknadEgenskap(DEFAULT_VERSJON, INITIELL_FORELDREPENGER));
+        var egenskap = INSPEKTØR.inspiser(xml);
+        assertEquals(DEFAULT_VERSJON, egenskap.getVersjon());
+        assertEquals(egenskap.getType(), INITIELL_FORELDREPENGER);
+        assertEquals(original, xmlMapper.tilSøknad(xml, egenskap));
     }
 
     @Test
-    public void testKonvolutt() {
-        Lists.newArrayList(DEFAULT_VERSJON)
-                .forEach(this::testKonvolutt);
+    void testKonvolutt() {
+        var søknad = søknad(DEFAULT_VERSJON, false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
+        var konvolutt = konvoluttGenerator.generer(søknad, person(),
+                SøknadEgenskap.of(INITIELL_FORELDREPENGER));
+        assertNotNull(konvolutt.getMetadata());
+        assertEquals(1, konvolutt.getVedlegg().size());
+        assertMediaType(konvolutt.getPayload(), MULTIPART_MIXED_VALUE);
+        assertEquals(søknad, konvolutt.getInnsending());
+        assertNotNull(konvolutt.XMLHovedDokument());
+        assertNotNull(konvolutt.PDFHovedDokument());
+        assertTrue(konvolutt.erInitiellForeldrepenger());
     }
 
     @Test
-    public void testKonvoluttEndring() {
-        Lists.newArrayList(DEFAULT_VERSJON)
-                .forEach(this::testKonvoluttEndring);
+    void testKonvoluttEndring() {
+        var es = endringssøknad(DEFAULT_VERSJON, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
+        var konvolutt = konvoluttGenerator.generer(es, person(),
+                SøknadEgenskap.of(ENDRING_FORELDREPENGER));
+        assertNotNull(konvolutt.getMetadata());
+        assertNotNull(konvolutt.XMLHovedDokument());
+        assertNotNull(konvolutt.PDFHovedDokument());
+        assertEquals(es, konvolutt.getInnsending());
+        assertEquals(2, konvolutt.getVedlegg().size());
+        assertTrue(konvolutt.erEndring());
     }
 
     @Test
-    public void testKonvoluttEttersending() {
-        Ettersending es = new Ettersending(foreldrepenger, "42", VEDLEGG1, V2);
-        Konvolutt konvolutt = konvoluttGenerator.generer(es,
+    void testKonvoluttEttersending() {
+        var es = new Ettersending(foreldrepenger, "42", VEDLEGG1, V2);
+        var konvolutt = konvoluttGenerator.generer(es,
                 person(), SøknadEgenskap.ETTERSENDING_FORELDREPENGER);
         assertNotNull(konvolutt.getMetadata());
         assertEquals(2, konvolutt.getVedlegg().size());
@@ -160,54 +175,18 @@ public class TestFPFordelSerialization {
 
     }
 
-    private void testSøknadRoundtrip(Versjon v) {
-        Søknad original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(v);
-        String xml = domainMapper.tilXML(original, AKTØRID, new SøknadEgenskap(v, INITIELL_FORELDREPENGER));
-        SøknadEgenskap egenskap = INSPEKTØR.inspiser(xml);
-        assertEquals(v, egenskap.getVersjon());
-        assertEquals(egenskap.getType(), INITIELL_FORELDREPENGER);
-        assertEquals(original, xmlMapper.tilSøknad(xml, egenskap));
-    }
-
     public void testEndringssøknadRoundtrip(Versjon v) {
-        Endringssøknad original = endringssøknad(v, VEDLEGG1, V2);
+        var original = endringssøknad(v, VEDLEGG1, V2);
         String xml = domainMapper.tilXML(original, AKTØRID, new SøknadEgenskap(v, ENDRING_FORELDREPENGER));
-        SøknadEgenskap egenskap = INSPEKTØR.inspiser(xml);
+        var egenskap = INSPEKTØR.inspiser(xml);
         assertEquals(v, egenskap.getVersjon());
         assertEquals(ENDRING_FORELDREPENGER, egenskap.getType());
         Endringssøknad respons = Endringssøknad.class.cast(xmlMapper.tilSøknad(xml, egenskap));
-        Fordeling originalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        var originalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(original.getYtelse()).getFordeling();
         assertEquals(originalFordeling, no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
                 .cast(respons.getYtelse()).getFordeling());
         assertEquals(original.getSaksnr(), respons.getSaksnr());
-    }
-
-    private void testKonvolutt(Versjon v) {
-        Søknad søknad = søknad(v, false, valgfrittVedlegg(ForeldrepengerTestUtils.ID142, LASTET_OPP));
-        Konvolutt konvolutt = konvoluttGenerator.generer(søknad, person(),
-                new SøknadEgenskap(v, INITIELL_FORELDREPENGER));
-        assertNotNull(konvolutt.getMetadata());
-        assertEquals(1, konvolutt.getVedlegg().size());
-        assertMediaType(konvolutt.getPayload(), MULTIPART_MIXED_VALUE);
-        assertEquals(søknad, konvolutt.getInnsending());
-        assertNotNull(konvolutt.XMLHovedDokument());
-        assertNotNull(konvolutt.PDFHovedDokument());
-        assertTrue(konvolutt.erInitiellForeldrepenger());
-
-    }
-
-    private void testKonvoluttEndring(Versjon v) {
-        Endringssøknad es = endringssøknad(v, ForeldrepengerTestUtils.VEDLEGG1, ForeldrepengerTestUtils.V2);
-        Konvolutt konvolutt = konvoluttGenerator.generer(es, person(),
-                new SøknadEgenskap(v, ENDRING_FORELDREPENGER));
-        assertNotNull(konvolutt.getMetadata());
-        assertNotNull(konvolutt.XMLHovedDokument());
-        assertNotNull(konvolutt.PDFHovedDokument());
-        assertEquals(es, konvolutt.getInnsending());
-        assertEquals(2, konvolutt.getVedlegg().size());
-        assertTrue(konvolutt.erEndring());
-
     }
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {

@@ -52,7 +52,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 @TestPropertySource(properties = {
         "sak.securitytokenservice.url=http://sts", "sak.saker.url=http://sak", "sak.securitytokenservice.password=mypw",
         "sak.securitytokenservice.username=myuser" })
-public class StsAndSakClientTest {
+class StsAndSakClientTest {
 
     private static final Fødselsnummer FNR = Fødselsnummer.valueOf("11111111111");
     private static final String ID = "222222222";
@@ -78,13 +78,13 @@ public class StsAndSakClientTest {
     private StsClient stsclient;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         when(tokenHandler.getToken()).thenReturn(SIGNED_JWT);
         when(tokenHandler.fnr()).thenReturn(FNR);
     }
 
     @Test
-    public void testSakAndSTSRetryRecovery() {
+    void testSakAndSTSRetryRecovery() {
         whenSak()
                 .thenThrow(internalServerError())
                 .thenReturn(remoteSaker());
@@ -96,7 +96,7 @@ public class StsAndSakClientTest {
     }
 
     @Test
-    public void testSTSogSakOK() {
+    void testSTSogSakOK() {
         whenSak().thenReturn(remoteSaker());
         whenSTS().thenReturn(ENVELOPE);
         assertEquals(sakclient.sakerFor(AKTOR, Constants.FORELDREPENGER).size(), 1);
@@ -105,7 +105,7 @@ public class StsAndSakClientTest {
     }
 
     @Test
-    public void testSakRetryUntilFail() {
+    void testSakRetryUntilFail() {
         whenSTS().thenReturn(ENVELOPE);
         whenSak().thenThrow(internalServerError());
         assertThrows(HttpServerErrorException.class, () -> sakclient.sakerFor(AKTOR, Constants.FORELDREPENGER));
@@ -114,14 +114,14 @@ public class StsAndSakClientTest {
     }
 
     @Test
-    public void testSTSRetryUntilFail() {
+    void testSTSRetryUntilFail() {
         whenSTS().thenThrow(internalServerError());
         assertThrows(HttpServerErrorException.class, () -> stsclient.oidcToSamlToken("test", FNR));
         verifySTS(2);
     }
 
     @Test
-    public void testInject() {
+    void testInject() {
         String payload = stsclient.injectToken(MY_OIDC_TOKEN);
         assertTrue(payload.startsWith("<?xml"));
         assertTrue(payload.contains("<wsse:Username>" + MYUSER +
@@ -133,7 +133,7 @@ public class StsAndSakClientTest {
     }
 
     @Test
-    public void testExtraction() {
+    void testExtraction() {
         assertEquals(ASSERTION,
                 StsClientHttp.samlAssertionFra(ENVELOPE));
     }
@@ -162,7 +162,6 @@ public class StsAndSakClientTest {
                 any(HttpEntity.class), eq(String.class));
     }
 
-    @SuppressWarnings("unchecked")
     private void verifySak(int n) {
         verify(restOperations, times(n)).exchange(eq(SAKURL), eq(GET),
                 any(HttpEntity.class),

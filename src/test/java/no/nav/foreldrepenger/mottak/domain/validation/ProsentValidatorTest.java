@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Prosent;
 
-public class ProsentValidatorTest {
+class ProsentValidatorTest {
 
     private static class ProsentBruker {
 
@@ -27,37 +27,37 @@ public class ProsentValidatorTest {
     private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
-    public void testMax() {
+    void testMax() {
         test(true, 100);
     }
 
     @Test
-    public void testMax2() {
+    void testMax2() {
         test(true, 100, 200);
     }
 
     @Test
-    public void testOverMax() {
+    void testOverMax() {
         test(false, 100, 201);
     }
 
     @Test
-    public void testUnderMin() {
+    void testUnderMin() {
         test(false, -50);
     }
 
     @Test
-    public void testUnderMin2() {
+    void testUnderMin2() {
         test(false, -2, -20);
     }
 
     @Test
-    public void testMin() {
+    void testMin() {
         test(0);
     }
 
     @Test
-    public void testMin2() {
+    void testMin2() {
         test(true, 0, -10);
     }
 

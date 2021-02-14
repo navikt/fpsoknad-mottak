@@ -54,7 +54,6 @@ import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V3ForeldrepengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
 import no.nav.foreldrepenger.mottak.innsending.pdf.EngangsstønadPdfGenerator;
@@ -142,20 +141,20 @@ class FPFordelTest {
     }
 
     private FordelSøknadSender sender() {
-        MottakConfiguration mottakConfig = new MottakConfiguration();
-        PdfElementRenderer jalla1 = new PdfElementRenderer();
-        SøknadTextFormatter jalla2 = new SøknadTextFormatter(mottakConfig.landkoder(),
+        var mottakConfig = new MottakConfiguration();
+        var jalla1 = new PdfElementRenderer();
+        var jalla2 = new SøknadTextFormatter(mottakConfig.landkoder(),
                 mottakConfig.kvitteringstekster());
-        ForeldrepengeInfoRenderer jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
-        InfoskrivRenderer infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
-        ForeldrepengerPdfGenerator fp = new ForeldrepengerPdfGenerator(oppslag, arbeidsforhold, jalla,
+        var jalla = new ForeldrepengeInfoRenderer(jalla1, jalla2);
+        var infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
+        var fp = new ForeldrepengerPdfGenerator(oppslag, arbeidsforhold, jalla,
                 infoskrivRenderer);
-        EngangsstønadPdfGenerator es = new EngangsstønadPdfGenerator(jalla2, pdfGenerator);
-        DelegerendePDFGenerator pdfGenerator = new DelegerendePDFGenerator(fp, es);
-        InfoskrivPdfEkstraktor pdfSplitter = new InfoskrivPdfEkstraktor();
+        var es = new EngangsstønadPdfGenerator(jalla2, pdfGenerator);
+        var pdfGenerator = new DelegerendePDFGenerator(fp, es);
+        var pdfSplitter = new InfoskrivPdfEkstraktor();
 
-        DomainMapper domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
-        KonvoluttGenerator konvoluttGenerator = new KonvoluttGenerator(new MetdataGenerator(new JacksonWrapper(mapper)),
+        var domainMapper = new DelegerendeDomainMapper(new V3ForeldrepengerDomainMapper(oppslag));
+        var konvoluttGenerator = new KonvoluttGenerator(new MetdataGenerator(new JacksonWrapper(mapper)),
                 domainMapper, pdfGenerator);
         return new FordelSøknadSender(
                 new FordelConnection(restOperations, cfg,

@@ -16,17 +16,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.mappers.V1SvangerskapspengerDomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V1SVPXMLMapper;
 
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
-public class TestSvangerskapsepengerSerialization {
+class TestSvangerskapsepengerSerialization {
 
     @Autowired
     ObjectMapper mapper;
@@ -36,32 +34,32 @@ public class TestSvangerskapsepengerSerialization {
     private static final DomainMapper DOMAINMAPPER = new V1SvangerskapspengerDomainMapper(false);
 
     @Test
-    public void testSVP() {
+    void testSVP() {
         test(svp(), false, mapper);
     }
 
     @Test
-    public void testTilrettelegging() {
+    void testTilrettelegging() {
         test(delvisTilrettelegging(), false, mapper);
     }
 
     @Test
-    public void testInspeksjon() {
-        Søknad svp = svp();
+    void testInspeksjon() {
+        var svp = svp();
         String xml = DOMAINMAPPER.tilXML(svp, new AktørId("42"), INSPEKTØR.inspiser(svp));
-        SøknadEgenskap resultat = INSPEKTØR.inspiser(xml);
+        var resultat = INSPEKTØR.inspiser(xml);
         assertEquals(V1, resultat.getVersjon());
         assertEquals(INITIELL_SVANGERSKAPSPENGER, resultat.getType());
     }
 
     @Test
-    public void testRoundtrip() {
-        Søknad svp = svp();
+    void testRoundtrip() {
+        var svp = svp();
         String xml = DOMAINMAPPER.tilXML(svp, new AktørId("42"), INSPEKTØR.inspiser(svp));
-        SøknadEgenskap egenskap = INSPEKTØR.inspiser(xml);
-        Søknad svp1 = new V1SVPXMLMapper(true).tilSøknad(xml, egenskap);
-        Svangerskapspenger orig = (Svangerskapspenger) svp.getYtelse();
-        Svangerskapspenger res = (Svangerskapspenger) svp1.getYtelse();
+        var egenskap = INSPEKTØR.inspiser(xml);
+        var svp1 = new V1SVPXMLMapper(true).tilSøknad(xml, egenskap);
+        var orig = (Svangerskapspenger) svp.getYtelse();
+        var res = (Svangerskapspenger) svp1.getYtelse();
         assertEquals(orig.getOpptjening(), res.getOpptjening());
     }
 }

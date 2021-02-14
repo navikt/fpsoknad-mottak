@@ -4,25 +4,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class StringUtilTest {
+class StringUtilTest {
 
     @Test
-    public void testPadFnr() {
+    void testPadFnr() {
         assertEquals("111111*****", StringUtil.partialMask("11111111111"));
     }
 
     @Test
-    public void testPadAllFnr() {
+    void testPadAllFnr() {
         assertEquals("***********", StringUtil.mask("11111111111"));
     }
 
     @Test
-    public void testPadAllNull() {
+    void testPadAllNull() {
         assertEquals("<null>", StringUtil.mask(null));
     }
 
     @Test
-    public void testPadAllEmpty() {
+    void testPadAllEmpty() {
         assertEquals("<null>", StringUtil.mask(""));
     }
 

@@ -13,32 +13,32 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 
-public class PastOrTodayValidatorTest {
+class PastOrTodayValidatorTest {
 
     private static Validator validator;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Test
-    public void testiDag() {
+    void testiDag() {
         assertTrue(validator.validate(new TestClass(LocalDate.now())).isEmpty());
     }
 
     @Test
-    public void testFortid() {
+    void testFortid() {
         assertTrue(validator.validate(new TestClass(LocalDate.now().minusDays(1))).isEmpty());
     }
 
     @Test
-    public void testNull() {
+    void testNull() {
         assertFalse(validator.validate(new TestClass(null)).isEmpty());
     }
 
     @Test
-    public void testFramtid() {
+    void testFramtid() {
         assertFalse(validator.validate(new TestClass(LocalDate.now().plusDays(1))).isEmpty());
     }
 

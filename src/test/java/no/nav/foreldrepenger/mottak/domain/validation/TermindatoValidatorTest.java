@@ -4,9 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.util.Set;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
@@ -15,49 +13,48 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.validation.annotations.Termindato;
 
-public class TermindatoValidatorTest {
+class TermindatoValidatorTest {
 
     private static Validator validator;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Test
-    public void testiDag() {
+    void testiDag() {
         assertTrue(validator.validate(new TestClass(LocalDate.now())).isEmpty());
     }
 
     @Test
-    public void testNærFortid() {
+    void testNærFortid() {
         assertTrue(validator.validate(new TestClass(LocalDate.now().minusDays(1))).isEmpty());
     }
 
     @Test
-    public void testFjernFortid() {
-        Set<ConstraintViolation<TestClass>> validate = validator
-                .validate(new TestClass(LocalDate.now().minusWeeks(3).minusDays(1)));
-        assertFalse(validate.isEmpty());
+    void testFjernFortid() {
+        assertFalse(validator
+                .validate(new TestClass(LocalDate.now().minusWeeks(3).minusDays(1))).isEmpty());
     }
 
     @Test
-    public void testFjernFortid1() {
+    void testFjernFortid1() {
         assertTrue(validator.validate(new TestClass1(LocalDate.now().minusWeeks(3).minusDays(1))).isEmpty());
     }
 
     @Test
-    public void testNull() {
+    void testNull() {
         assertFalse(validator.validate(new TestClass(null)).isEmpty());
     }
 
     @Test
-    public void testFramtid() {
+    void testFramtid() {
         assertTrue(validator.validate(new TestClass(LocalDate.now().plusDays(1))).isEmpty());
     }
 
     @Test
-    public void testAkkuratTreUkerFortid() {
+    void testAkkuratTreUkerFortid() {
         assertTrue(validator.validate(new TestClass(LocalDate.now().minusWeeks(3))).isEmpty());
     }
 

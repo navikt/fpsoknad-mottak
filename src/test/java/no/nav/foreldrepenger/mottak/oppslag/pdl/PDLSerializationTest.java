@@ -40,7 +40,7 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 @AutoConfigureJsonTesters
 @SpringJUnitConfig
-public class PDLSerializationTest {
+class PDLSerializationTest {
 
     private static final Målform BOKMÅL = Målform.NB;
     private static final String ID_ANNEN = "33333333333";

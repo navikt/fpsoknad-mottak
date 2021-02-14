@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.Navn;
 
-public class NavnTest {
+class NavnTest {
 
     @Test
-    public void navnEquals() {
+    void navnEquals() {
         var n = new Navn("Ole", "Mellomnavn", "Olsen", null);
         var n1 = new Navn("Ole", "Mellomnavn", "Olsen", Kjønn.M);
         assertEquals(n, n1);

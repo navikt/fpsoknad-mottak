@@ -29,136 +29,135 @@ import no.nav.foreldrepenger.mottak.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
 import no.nav.foreldrepenger.mottak.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
-public class TestEngangsstønadSerialization {
+class TestEngangsstønadSerialization {
 
     @Inject
     ObjectMapper mapper;
     private static final Logger LOG = LoggerFactory.getLogger(TestEngangsstønadSerialization.class);
 
     @Test
-    public void testKvittering() {
-        Kvittering kvittering = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
+    void testKvittering() {
+        var kvittering = new Kvittering(LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK);
         kvittering.setJournalId("555");
         kvittering.setSaksNr("666");
         test(kvittering, false);
     }
 
     @Test
-    public void testVedlegg() {
+    void testVedlegg() {
         test(påkrevdVedlegg("pdf/terminbekreftelse.pdf"), false);
     }
 
     @Test
-    public void testSøknadNorge() throws Exception {
-        Søknad engangssøknad = engangssøknad(false, fødsel(), norskForelder(),
+    void testSøknadNorge() throws Exception {
+        var engangssøknad = engangssøknad(false, fødsel(), norskForelder(),
                 påkrevdVedlegg(ForeldrepengerTestUtils.ID142));
         test(engangssøknad, false);
     }
 
     @Test
-    public void testEngangsstønadNorge() throws Exception {
-        Engangsstønad engangstønad = engangstønad(false, termin(), norskForelder());
+    void testEngangsstønadNorge() throws Exception {
+        var engangstønad = engangstønad(false, termin(), norskForelder());
         test(engangstønad, false);
     }
 
     @Test
-    public void testEngangsstønadUtland() {
+    void testEngangsstønadUtland() {
         test(TestUtils.engangstønad(true, termin(), utenlandskForelder()), false);
     }
 
     @Test
-    public void testEngangsstønadUkjentFar() {
+    void testEngangsstønadUkjentFar() {
         test(engangstønad(true, termin(), ukjentForelder()), false);
     }
 
     @Test
-    public void testNorskAnnenForelder() {
+    void testNorskAnnenForelder() {
         test(norskForelder(), false);
     }
 
     @Test
-    public void testUtenlandskAnnenForelder() {
+    void testUtenlandskAnnenForelder() {
         test(utenlandskForelder(), false);
     }
 
     @Test
-    public void testUkjentForelder() {
+    void testUkjentForelder() {
         test(ukjentForelder(), false);
     }
 
     @Test
-    public void testMedlemsskap() {
+    void testMedlemsskap() {
         test(TestUtils.medlemsskap(false));
     }
 
     @Test
-    public void testMedlemsskapUtland() {
+    void testMedlemsskapUtland() {
         test(TestUtils.medlemsskap(false));
     }
 
     @Test
-    public void testFnr() {
+    void testFnr() {
         test(new Fødselsnummer("03016536325"), false);
     }
 
     @Test
-    public void testAktør() {
+    void testAktør() {
         test(new AktørId("111111111"), false);
     }
 
     @Test
-    public void testAdopsjon() {
+    void testAdopsjon() {
         test(TestUtils.adopsjon());
     }
 
     @Test
-    public void testFødsel() {
+    void testFødsel() {
         test(fødsel(), false);
     }
 
     @Test
-    public void testFremtidigOppholdNorge() {
+    void testFremtidigOppholdNorge() {
         test(TestUtils.framtidigOppholdINorge(), false);
     }
 
     @Test
-    public void testFremtidigOppholdUtland() {
+    void testFremtidigOppholdUtland() {
         test(TestUtils.framtidigOppHoldIUtlandet(), false);
     }
 
     @Test
-    public void testOmsorgsovertagkelse() {
+    void testOmsorgsovertagkelse() {
         test(TestUtils.omsorgsovertakelse());
     }
 
     @Test
-    public void testSøker() {
+    void testSøker() {
         test(TestUtils.søker());
     }
 
     @Test
-    public void testAktorId() {
+    void testAktorId() {
         test(TestUtils.aktoer());
     }
 
     @Test
-    public void testTermin() {
+    void testTermin() {
         test(termin());
     }
 
     @Test
-    public void testUtenlandsopphold() {
+    void testUtenlandsopphold() {
         test(TestUtils.utenlandsopphold(), false);
     }
 
     @Test
-    public void testVarighet() {
+    void testVarighet() {
         test(TestUtils.varighet());
     }
 

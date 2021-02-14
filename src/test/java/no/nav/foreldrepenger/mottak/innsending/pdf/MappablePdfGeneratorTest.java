@@ -65,7 +65,7 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
         InfoskrivPdfEkstraktor.class,
         SvangerskapspengerInfoRenderer.class,
         SpringTokenValidationContextHolder.class, TestConfig.class })
-public class MappablePdfGeneratorTest {
+class MappablePdfGeneratorTest {
 
     private static final String TILLEGGSOPPLYSNINGER = "Begrunnelse for å søke om utsettelse, " +
             "på grunn av sykdom tilbake i tid: Jeg var innlagt på sykehus og hadde ingen " +
@@ -83,18 +83,18 @@ public class MappablePdfGeneratorTest {
     ArbeidsforholdTjeneste arbeidsforholdTjeneste;
 
     @BeforeEach
-    public void before() {
+    void before() {
         when(arbeidsforholdTjeneste.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
     }
 
     @Test
-    public void signature() {
+    void signature() {
         assertTrue(hasPdfSignature(
                 gen.generer(foreldrepengeSøknad(DEFAULT_VERSJON), person(), INITIELL_FORELDREPENGER)));
     }
 
     @Test
-    public void førstegangssøknad() throws Exception {
+    void førstegangssøknad() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
@@ -103,7 +103,7 @@ public class MappablePdfGeneratorTest {
     }
 
     @Test
-    public void endring() throws Exception {
+    void endring() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("endring.pdf")) {
             Endringssøknad endringssøknad = endringssøknad(DEFAULT_VERSJON, VEDLEGG1);
             endringssøknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
@@ -112,22 +112,22 @@ public class MappablePdfGeneratorTest {
     }
 
     @Test
-    public void engangs() throws Exception {
-        try (FileOutputStream fos = new FileOutputStream("engangssøknad.pdf")) {
+    void engangs() throws Exception {
+        try (var fos = new FileOutputStream("engangssøknad.pdf")) {
             fos.write(gen.generer(engangssøknad(fødsel(), true), person(), INITIELL_ENGANGSSTØNAD));
         }
     }
 
     @Test
-    public void svanger() throws Exception {
-        try (FileOutputStream fos = new FileOutputStream("svangerskapspenger.pdf")) {
+    void svanger() throws Exception {
+        try (var fos = new FileOutputStream("svangerskapspenger.pdf")) {
             fos.write(gen.generer(svp(), person(), INITIELL_SVANGERSKAPSPENGER));
         }
     }
 
     @Test
-    public void infoskrivSplitter() throws Exception {
-        try (FileOutputStream fos = new FileOutputStream("infoskriv.pdf")) {
+    void infoskrivSplitter() throws Exception {
+        try (var fos = new FileOutputStream("infoskriv.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
             byte[] fullSøknadPdf = gen.generer(søknad, person(), INITIELL_FORELDREPENGER);

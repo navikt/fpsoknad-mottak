@@ -4,20 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class SøknadTextFormatterTest {
+class SøknadTextFormatterTest {
 
     @Test
-    public void capitalize() {
-        String orig = "ENUM_TO_STRING";
-        SøknadTextFormatter formatter = new SøknadTextFormatter(null, null);
-        assertEquals("Enum to string", formatter.capitalize(orig));
+    void capitalize() {
+        assertEquals("Enum to string", new SøknadTextFormatter(null, null).capitalize("ENUM_TO_STRING"));
     }
 
     @Test
-    public void datesMayBeNull() {
-        SøknadTextFormatter formatter = new SøknadTextFormatter(null, null);
-        String formatted = formatter.dato(null);
-        assertEquals("", formatted);
+    void datesMayBeNull() {
+        assertEquals("", new SøknadTextFormatter(null, null).dato(null));
     }
 
 }

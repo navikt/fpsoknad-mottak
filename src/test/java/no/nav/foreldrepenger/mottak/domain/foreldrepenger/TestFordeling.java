@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ukeDagNær;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet.ARBEID_OG_UTDANNING;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak.UTTAK_FEDREKVOTE_ANNEN_FORELDER;
@@ -12,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,13 +23,13 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overførings
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
 
-public class TestFordeling {
+class TestFordeling {
 
     @Test
-    public void testFordelingUttakFørstErUtsettelse() {
+    void testFordelingUttakFørstErUtsettelse() {
 
-        LocalDate utsettelseStart = ukeDagNær(LocalDate.now().plusMonths(2));
-        Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
+        var utsettelseStart = ukeDagNær(LocalDate.now().plusMonths(2));
+        var f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, List.of(
                 new UttaksPeriode(ukeDagNær(LocalDate.now().plusMonths(3)), ukeDagNær(LocalDate.now().plusMonths(4)),
                         FEDREKVOTE,
                         true, ARBEID_OG_UTDANNING, true, new ProsentAndel(75),
@@ -44,10 +44,10 @@ public class TestFordeling {
     }
 
     @Test
-    public void testFordelingUttakFørstErUttak() {
+    void testFordelingUttakFørstErUttak() {
 
-        LocalDate uttakStart = ukeDagNær(LocalDate.now().minusMonths(2));
-        Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
+        var uttakStart = ukeDagNær(LocalDate.now().minusMonths(2));
+        var f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, List.of(
                 new OppholdsPeriode(ukeDagNær(LocalDate.now().plusMonths(1)), ukeDagNær(LocalDate.now().plusMonths(2)),
                         UTTAK_FEDREKVOTE_ANNEN_FORELDER, null),
                 new OverføringsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
@@ -64,19 +64,19 @@ public class TestFordeling {
     }
 
     @Test
-    public void testOverføringsperiodeErUttak() {
+    void testOverføringsperiodeErUttak() {
 
-        LocalDate uttaksStart = ukeDagNær(LocalDate.now().minusMonths(1));
-        Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
-            new OverføringsPeriode(uttaksStart, ukeDagNær(LocalDate.now().plusMonths(2)),
-                IKKE_RETT_ANNEN_FORELDER, FEDREKVOTE, null)));
+        var uttaksStart = ukeDagNær(LocalDate.now().minusMonths(1));
+        var f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, List.of(
+                new OverføringsPeriode(uttaksStart, ukeDagNær(LocalDate.now().plusMonths(2)),
+                        IKKE_RETT_ANNEN_FORELDER, FEDREKVOTE, null)));
         assertEquals(uttaksStart, f.getFørsteUttaksdag());
     }
 
     @Test
-    public void testIngenFørsteDag() {
+    void testIngenFørsteDag() {
 
-        Fordeling f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, newArrayList(
+        var f = new Fordeling(true, IKKE_RETT_ANNEN_FORELDER, List.of(
                 new OppholdsPeriode(ukeDagNær(LocalDate.now()), ukeDagNær(LocalDate.now().plusMonths(1)),
                         UTTAK_FEDREKVOTE_ANNEN_FORELDER, null)));
         assertNull(f.getFørsteUttaksdag());

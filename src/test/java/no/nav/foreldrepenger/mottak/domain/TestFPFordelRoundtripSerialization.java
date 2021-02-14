@@ -47,7 +47,6 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemToken;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.core.jwt.JwtToken;
 import no.nav.security.token.support.test.JwtTokenGenerator;
@@ -83,7 +82,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 })
 
 @EnableConfigurationProperties
-public class TestFPFordelRoundtripSerialization {
+class TestFPFordelRoundtripSerialization {
 
     private static MockOAuth2Server SERVER;
 
@@ -92,11 +91,8 @@ public class TestFPFordelRoundtripSerialization {
 
     @MockBean
     SystemTokenTjeneste userService;
-    // @Mock
-    // SystemToken token;
     @MockBean
     InnsendingHendelseProdusent publisher;
-
     @MockBean
     ArbeidsforholdTjeneste arbeidsforhold;
     @Autowired
@@ -128,7 +124,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @BeforeEach
-    public void setAuthoriztion() {
+    void setAuthoriztion() {
         var t = new JwtToken(SERVER.issueToken().serialize().toString());
         when(userService.getSystemToken()).thenReturn(new SystemToken(t, null, null, null));
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
@@ -152,16 +148,16 @@ public class TestFPFordelRoundtripSerialization {
 
     @Test
     void testFPSøknadSendV3() {
-        Versjon versjon = V3;
-        Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
-        Kvittering kvittering = sender.søk(søknad, TestUtils.person(),
+        var versjon = V3;
+        var søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
+        var kvittering = sender.søk(søknad, TestUtils.person(),
                 new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
         assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
     @Test
     void testESSøknadSendFPFordel() {
-        Søknad engangssøknad = engangssøknad(false, fødsel(),
+        var engangssøknad = engangssøknad(false, fødsel(),
                 norskForelder(),
                 påkrevdVedlegg(ID142));
         var kvittering = template.postForObject(INNSENDING + "/send",

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
+import java.util.List;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -15,35 +16,35 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 
-public class LukketPeriodeMedVedleggValidatorTest {
+class LukketPeriodeMedVedleggValidatorTest {
 
     private static Validator validator;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @Test
-    public void testOKEnDag() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
+    void testOKEnDag() {
+        var periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 1),
                 LocalDate.of(2019, Month.MARCH, 1), Collections.emptyList()) {
         };
         assertTrue(validator.validate(periode).isEmpty());
     }
 
     @Test
-    public void testNullStart() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(null,
+    void testNullStart() {
+        var periode = new LukketPeriodeMedVedlegg(null,
                 LocalDate.of(2019, Month.MARCH, 3), Collections.emptyList()) {
         };
         assertFalse(validator.validate(periode).isEmpty());
     }
 
     @Test
-    public void testNullEnd() {
-        LukketPeriodeMedVedlegg periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 3), null,
-                Collections.emptyList()) {
+    void testNullEnd() {
+        var periode = new LukketPeriodeMedVedlegg(LocalDate.of(2019, Month.MARCH, 3), null,
+                List.of()) {
         };
         assertFalse(validator.validate(periode).isEmpty());
     }
