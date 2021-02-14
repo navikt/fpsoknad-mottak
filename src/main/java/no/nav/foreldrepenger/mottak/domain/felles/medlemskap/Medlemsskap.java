@@ -6,6 +6,7 @@ import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.validation.Valid;
@@ -33,7 +34,9 @@ public class Medlemsskap {
     }
 
     public CountryCode landVedDato(LocalDate dato) {
-        return dato == null ? NO : landVedDato(utenlandsOpphold(), dato);
+        return Optional.ofNullable(dato)
+                .map(d -> landVedDato(utenlandsOpphold(), d))
+                .orElse(NO);
     }
 
     private static CountryCode landVedDato(List<Utenlandsopphold> utenlandsopphold, LocalDate dato) {

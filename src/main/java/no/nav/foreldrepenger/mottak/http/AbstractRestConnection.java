@@ -20,11 +20,11 @@ public abstract class AbstractRestConnection implements RetryAware {
     protected final AbstractConfig config;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRestConnection.class);
 
-    public AbstractRestConnection(RestOperations restOperations) {
+    protected AbstractRestConnection(RestOperations restOperations) {
         this(restOperations, null);
     }
 
-    public AbstractRestConnection(RestOperations restOperations, AbstractConfig config) {
+    protected AbstractRestConnection(RestOperations restOperations, AbstractConfig config) {
         this.restOperations = restOperations;
         this.config = config;
     }
@@ -35,7 +35,7 @@ public abstract class AbstractRestConnection implements RetryAware {
 
     protected <T> ResponseEntity<T> postForEntity(URI uri, HttpEntity<?> payload, Class<T> responseType) {
         var respons = restOperations.postForEntity(uri, payload, responseType);
-        if (respons != null && respons.hasBody()) {
+        if (respons.hasBody()) {
             LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
         }
         return respons;
@@ -76,7 +76,7 @@ public abstract class AbstractRestConnection implements RetryAware {
     public <T> ResponseEntity<T> getForEntity(URI uri, Class<T> responseType, boolean required) {
         try {
             var respons = restOperations.getForEntity(uri, responseType);
-            if (respons != null && respons.hasBody()) {
+            if (respons.hasBody()) {
                 LOG.trace(CONFIDENTIAL, "Respons: {}", respons.getBody());
             }
             return respons;

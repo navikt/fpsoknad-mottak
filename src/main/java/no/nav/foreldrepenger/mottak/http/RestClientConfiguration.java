@@ -25,7 +25,7 @@ public class RestClientConfiguration {
     @Bean
     @Primary
     public RestOperations restTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
-        LOG.info("Message interceptor er {}", Arrays.toString(interceptors));
+        LOG.info("Message interceptorer er {}", Arrays.toString(interceptors));
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
@@ -42,7 +42,7 @@ public class RestClientConfiguration {
             public <T, E extends Throwable> void onError(RetryContext context, RetryCallback<T, E> callback,
                     Throwable throwable) {
                 log.info("Metode {} kastet exception {} for {}. gang",
-                        context.getAttribute(NAME), throwable.toString(), context.getRetryCount());
+                        context.getAttribute(NAME), throwable, context.getRetryCount());
             }
 
             @Override
