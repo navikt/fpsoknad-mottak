@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
@@ -46,7 +44,7 @@ import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.ar
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Service
@@ -59,12 +57,12 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private final PdfElementRenderer renderer;
     private final SøknadTextFormatter textFormatter;
     private final SvangerskapspengerInfoRenderer infoRenderer;
-    private final ArbeidsforholdTjeneste arbeidsforhold;
+    private final ArbeidsInfo arbeidsforhold;
 
     @Inject
     public SvangerskapspengerPdfGenerator(PdfElementRenderer renderer,
             SøknadTextFormatter textFormatter,
-            ArbeidsforholdTjeneste arbeidsforhold, SvangerskapspengerInfoRenderer infoRenderer) {
+            ArbeidsInfo arbeidsforhold, SvangerskapspengerInfoRenderer infoRenderer) {
         this.renderer = renderer;
         this.textFormatter = textFormatter;
         this.arbeidsforhold = arbeidsforhold;
@@ -84,7 +82,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             float headerSize = STARTY - y;
             y -= omBarn(svp, cos, y);
             y -= blankLine();
-            Opptjening opptjening = svp.getOpptjening();
+            var opptjening = svp.getOpptjening();
             if (!svp.getTilrettelegging().isEmpty()) {
                 y -= renderer.addLeftHeading(textFormatter.fromMessageSource("tilrettelegging"), cos, y);
                 var tilretteleggingsPerioder = tilretteleggingByArbeidsforhold(
@@ -92,7 +90,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 // type arbeidsforhold kommer i random rekkefølge
                 for (var arb : tilretteleggingsPerioder.entrySet()) {
                     var tilrettelagtArbeidsforhold = arb.getKey();
-                    List<Tilrettelegging> tilrettelegging = sortertTilretteleggingsliste(arb.getValue());
+                    var tilrettelegging = sortertTilretteleggingsliste(arb.getValue());
                     var scratch1 = newPage();
                     var scratchcos = new FontAwareCos(doc, scratch1);
                     float startY = STARTY;
@@ -201,19 +199,22 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate termindato, LocalDate fødselsdato) {
-        LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
+        var relasjonsDato = Optional.ofNullable(fødselsdato)
+                .map(d -> fødselsdato)
+                .orElse(termindato);
         return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
                 .collect(Collectors.toList());
     }
 
     private float renderTilrettelegging(List<EnkeltArbeidsforhold> arbeidsgivere,
-            Arbeidsforhold arbeidsforhold, List<Tilrettelegging> tilrettelegging,
+            Arbeidsforhold arbeidsforhold,
+            List<Tilrettelegging> tilrettelegging,
             List<Vedlegg> vedlegg, FontAwareCos cos, float y)
             throws IOException {
-        if (arbeidsforhold instanceof Virksomhet) {
+        if (arbeidsforhold instanceof Virksomhet v) {
             y -= renderer.addLineOfRegularText(
-                    virksomhetsnavn(arbeidsgivere, Virksomhet.class.cast(arbeidsforhold).getOrgnr()), cos, y);
+                    virksomhetsnavn(arbeidsgivere, v.getOrgnr()), cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= blankLine();
         }
@@ -222,24 +223,24 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= blankLine();
         }
-        if (arbeidsforhold instanceof SelvstendigNæringsdrivende) {
+        if (arbeidsforhold instanceof SelvstendigNæringsdrivende s) {
             y -= renderer.addLineOfRegularText(txt("svp.selvstendig"), cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                    SelvstendigNæringsdrivende.class.cast(arbeidsforhold).getRisikoFaktorer()),
+                    s.getRisikoFaktorer()),
                     cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                    SelvstendigNæringsdrivende.class.cast(arbeidsforhold).getTilretteleggingstiltak()),
+                    s.getTilretteleggingstiltak()),
                     cos, y);
             y -= blankLine();
         }
-        if (arbeidsforhold instanceof Frilanser) {
+        if (arbeidsforhold instanceof Frilanser f) {
             y -= renderer.addLineOfRegularText(txt("svp.frilans"), cos, y);
             y -= renderTilretteleggingsperioder(tilrettelegging, vedlegg, cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.risikofaktorer",
-                    Frilanser.class.cast(arbeidsforhold).getRisikoFaktorer()), cos, y);
+                    f.getRisikoFaktorer()), cos, y);
             y -= renderer.addBulletPoint(INDENT, txt("svp.tiltak",
-                    Frilanser.class.cast(arbeidsforhold).getTilretteleggingstiltak()), cos, y);
+                    f.getTilretteleggingstiltak()), cos, y);
             y -= blankLine();
         }
         return y;
@@ -288,19 +289,19 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         var tilrettelegging = perioder.stream().findAny().orElseThrow(IllegalArgumentException::new);
         y -= renderer.addBulletPoint(INDENT,
                 txt("svp.behovfra", DATEFMT.format(tilrettelegging.getBehovForTilretteleggingFom())), cos, y);
-        for (Tilrettelegging periode : perioder) {
-            if (periode instanceof HelTilrettelegging) {
-                y -= renderHelTilrettelegging(HelTilrettelegging.class.cast(periode), cos, y);
-            } else if (periode instanceof DelvisTilrettelegging) {
-                y -= renderDelvisTilrettelegging(DelvisTilrettelegging.class.cast(periode), cos, y);
-            } else if (periode instanceof IngenTilrettelegging) {
-                y -= renderIngenTilrettelegging(IngenTilrettelegging.class.cast(periode), cos, y);
+        for (var periode : perioder) {
+            if (periode instanceof HelTilrettelegging h) {
+                y -= renderHelTilrettelegging(h, cos, y);
+            } else if (periode instanceof DelvisTilrettelegging d) {
+                y -= renderDelvisTilrettelegging(d, cos, y);
+            } else if (periode instanceof IngenTilrettelegging i) {
+                y -= renderIngenTilrettelegging(i, cos, y);
             }
         }
-        List<String> vedleggRefs = perioder.stream()
+        var vedleggRefs = perioder.stream()
                 .map(Tilrettelegging::getVedlegg)
                 .findAny()
-                .orElseGet(Collections::emptyList);
+                .orElseGet(List::of);
 
         y -= renderVedlegg(vedlegg, vedleggRefs, SVP_VEDLEGG_TILRETTELEGGING, cos, y);
         return startY - y;
@@ -344,8 +345,8 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         if (!vedleggRefs.isEmpty()) {
             y -= renderer.addBulletPoint(INDENT, txt("vedlegg1"), cos, y);
         }
-        for (String vedleggRef : vedleggRefs) {
-            Optional<Vedlegg> details = safeStream(vedlegg)
+        for (var vedleggRef : vedleggRefs) {
+            var details = safeStream(vedlegg)
                     .filter(s -> vedleggRef.equals(s.getId()))
                     .findFirst();
             if (details.isPresent()) {
@@ -369,13 +370,11 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
     }
 
-    private String virksomhetsnavn(
-            List<no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold> arbeidsgivere,
-            String orgnr) {
+    private String virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, String orgnr) {
         return safeStream(arbeidsgivere)
                 .filter(arb -> arb.getArbeidsgiverId().equals(orgnr))
                 .findFirst()
-                .map(no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold::getArbeidsgiverNavn)
+                .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
                 .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));
     }
 

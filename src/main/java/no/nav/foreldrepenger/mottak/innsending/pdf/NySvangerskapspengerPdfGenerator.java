@@ -68,12 +68,12 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String SVP_VEDLEGG_TILRETTELEGGING = "svp.vedlegg.tilrettelegging";
-    private final no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold arbeidsforhold;
+    private final no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo arbeidsforhold;
     private final PdfGenerator pdfGenerator;
 
     @Inject
     public NySvangerskapspengerPdfGenerator(SøknadTextFormatter textFormatter,
-            no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.Arbeidsforhold arbeidsforhold, PdfGenerator pdfGenerator) {
+            no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo arbeidsforhold, PdfGenerator pdfGenerator) {
         this.textFormatter = textFormatter;
         this.arbeidsforhold = arbeidsforhold;
         this.pdfGenerator = pdfGenerator;

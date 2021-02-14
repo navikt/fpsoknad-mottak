@@ -13,7 +13,7 @@ import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sak.SakClient;
 
@@ -26,47 +26,47 @@ public class InnsynController {
 
     private final Oppslag oppslag;
     private final Innsyn innsyn;
-    private final ArbeidsforholdTjeneste arbeidsforhold;
+    private final ArbeidsInfo arbeidsforhold;
     private SakClient sakClient;
 
-    public InnsynController(Innsyn innsyn, Oppslag oppslag, ArbeidsforholdTjeneste arbeidsforhold, SakClient sakClient) {
+    public InnsynController(Innsyn innsyn, Oppslag oppslag, ArbeidsInfo arbeidsforhold, SakClient sakClient) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.arbeidsforhold = arbeidsforhold;
         this.sakClient = sakClient;
     }
 
-    @GetMapping(value = SAK)
+    @GetMapping(SAK)
     public List<no.nav.foreldrepenger.mottak.oppslag.sak.Sak> saker(@RequestParam(name = "tema", defaultValue = FORELDREPENGER) String tema) {
         return sakClient.sakerFor(oppslag.aktørId(), tema);
     }
 
-    @GetMapping(value = "/saker")
+    @GetMapping("/saker")
     public List<Sak> saker() {
         return innsyn.saker(oppslag.aktørId());
     }
 
-    @GetMapping(value = "/arbeidsforhold")
+    @GetMapping("/arbeidsforhold")
     public List<EnkeltArbeidsforhold> arbeidsforhold() {
         return arbeidsforhold.hentAktiveArbeidsforhold();
     }
 
-    @GetMapping(value = "/orgnavn")
+    @GetMapping("/orgnavn")
     public String orgnavn(@RequestParam(name = "orgnr") String orgnr) {
         return arbeidsforhold.orgnavn(orgnr);
     }
 
-    @GetMapping(value = "/uttaksplan")
+    @GetMapping("/uttaksplan")
     public Uttaksplan uttaksplan(@RequestParam(name = "saksnummer") String saksnummer) {
         return innsyn.uttaksplan(saksnummer);
     }
 
-    @GetMapping(value = "/uttaksplanannen")
+    @GetMapping("/uttaksplanannen")
     public Uttaksplan uttaksplan(@RequestParam(name = "annenPart") Fødselsnummer annenPart) {
         return innsyn.uttaksplan(oppslag.aktørId(), oppslag.aktørId(annenPart));
     }
 
-    @GetMapping(value = "/vedtak")
+    @GetMapping("/vedtak")
     public Vedtak vedtak(@RequestParam(name = "saksnummer") String saksnummer) {
         return innsyn.vedtak(oppslag.aktørId(), saksnummer);
     }

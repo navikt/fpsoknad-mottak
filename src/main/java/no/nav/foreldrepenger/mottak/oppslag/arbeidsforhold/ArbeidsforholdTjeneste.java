@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import no.nav.foreldrepenger.mottak.http.RetryAware;
 
 @Service
-public class ArbeidsforholdTjeneste implements RetryAware, Arbeidsforhold {
+public class ArbeidsforholdTjeneste implements RetryAware, ArbeidsInfo {
 
     private final ArbeidsforholdConnection connection;
     private final OrganisasjonConnection orgConnection;
@@ -22,6 +22,7 @@ public class ArbeidsforholdTjeneste implements RetryAware, Arbeidsforhold {
         return connection.hentArbeidsforhold();
     }
 
+    @Override
     public String orgnavn(String orgnr) {
         return orgConnection.navn(orgnr);
     }
@@ -33,7 +34,6 @@ public class ArbeidsforholdTjeneste implements RetryAware, Arbeidsforhold {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[connection=" + connection + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + ", orgConnection=" + orgConnection + "]";
     }
-
 }
