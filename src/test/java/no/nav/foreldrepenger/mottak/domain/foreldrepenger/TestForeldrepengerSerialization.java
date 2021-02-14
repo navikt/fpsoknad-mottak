@@ -29,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -49,6 +49,10 @@ import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
@@ -69,12 +73,12 @@ public class TestForeldrepengerSerialization {
     ObjectMapper mapper;
 
     @Test
-    public void testGosysKvittering() throws Exception {
+    void testGosysKvittering() throws Exception {
         test(new GosysKvittering("42"), false, mapper);
     }
 
     @Test
-    public void testProsentAndel() throws Exception {
+    void testProsentAndel() throws Exception {
         ProsentAndel orig = new ProsentAndel(40.0);
         ProsentAndel orig1 = new ProsentAndel(40);
         test(orig, false, mapper);
@@ -89,181 +93,174 @@ public class TestForeldrepengerSerialization {
     }
 
     @Test
-    public void testPollKvittering() throws Exception {
+    void testPollKvittering() throws Exception {
         test(new PendingKvittering(Duration.ofSeconds(6)), false, mapper);
     }
 
     @Test
-    public void testFordeltKvittering() throws Exception {
+    void testFordeltKvittering() throws Exception {
         test(new FPSakFordeltKvittering("123", "456"), false, mapper);
     }
 
     @Test
-    public void test123() throws Exception {
+    void test123() throws Exception {
         test(UtsettelsePeriodeType.FERIE, false, mapper);
     }
 
     @Test
-    public void testDekningsgrad() throws Exception {
+    void testDekningsgrad() throws Exception {
         test(Dekningsgrad.GRAD100, false, mapper);
     }
 
     @Test
-    public void testPerson() {
+    void testPerson() {
         test(person());
     }
 
     @Test
-    public void testEttersending() throws Exception {
+    void testEttersending() throws Exception {
         test(ettersending(), false);
     }
 
     @Test
-    public void testEndringssøknad() {
-        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(endringssøknad(v), false);
-        }
+    void testEndringssøknad() {
+        test(endringssøknad(DEFAULT_VERSJON), false);
     }
 
     @Test
-    public void testForeldrepenger() {
-        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(foreldrepenger(v, false), false);
-        }
+    void testForeldrepenger() {
+        test(foreldrepenger(DEFAULT_VERSJON, false), false);
     }
 
     @Test
-    public void testSøknad() {
-        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(v, false), true);
-        }
-
+    void testSøknad() {
+        test(ForeldrepengerTestUtils.søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, false), true);
     }
 
     @Test
-    public void testOpptjening() {
-        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(opptjening(v));
-        }
-
+    void testOpptjening() {
+        test(opptjening(DEFAULT_VERSJON));
     }
 
     @Test
-    public void testRettigheter() {
+    void testRettigheter() {
         test(rettigheter());
     }
 
     @Test
-    public void testUkjentForelder() {
+    void testUkjentForelder() {
         test(new UkjentForelder());
     }
 
     @Test
-    public void testStønadskontoType() {
+    void testStønadskontoType() {
         test(StønadskontoType.IKKE_SATT, false);
     }
 
     @Test
-    public void testSøknadMetadata() {
+    void testSøknadMetadata() {
         test(new SøknadMetadata(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), "42"), false);
     }
 
     @Test
-    public void testSøknadInspeksjon() {
+    void testSøknadInspeksjon() {
         test(new SøknadEgenskap(Versjon.V1, SøknadType.INITIELL_FORELDREPENGER), false);
     }
 
     @Test
-    public void testVedleggMetadata() {
+    void testVedleggMetadata() {
         test(new VedleggMetaData("42", InnsendingsType.LASTET_OPP, DokumentType.I000002));
     }
 
     @Test
-    public void testUtenlandskForelder() {
+    void testUtenlandskForelder() {
         test(utenlandskForelder());
     }
 
     @Test
-    public void testNorskForelder() {
+    void testNorskForelder() {
         test(norskForelder());
     }
 
     @Test
-    public void testFordeling() {
-        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(fordeling(v), false);
-        }
+    void testFordeling() {
+        test(fordeling(DEFAULT_VERSJON), false);
+
     }
 
     @Test
-    public void testUttaksPeride() {
+    void testUttaksPeride() {
         test(uttaksPeriode(), false);
     }
 
     @Test
-    public void testGradertPeriode() {
-        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(gradertPeriode(v), false);
-        }
+    void testGradertPeriode() {
+        test(gradertPeriode(DEFAULT_VERSJON), false);
     }
 
     @Test
-    public void testOverføringsperiode() {
+    void testOverføringsperiode() {
         test(overføringsPeriode(), false);
     }
 
     @Test
-    public void testOppholdsPeriode() {
+    void testOppholdsPeriode() {
         test(oppholdsPeriode());
     }
 
     @Test
-    public void testUtsettelsesPeriode() {
+    void testUtsettelsesPeriode() {
         test(utsettelsesPeriode());
     }
 
     @Test
-    public void testÅpenPeriode() {
+    void testÅpenPeriode() {
         test(åpenPeriode());
     }
 
     @Test
-    public void testAdopsjon() {
+    void testAdopsjon() {
         test(adopsjon());
     }
 
     @Test
-    public void testOmsorgsovertagelsse() {
+    void testOmsorgsovertagelsse() {
         test(omsorgsovertakelse());
     }
 
     @Test
-    public void testTermin() {
+    void testTermin() {
         test(termin());
     }
 
     @Test
-    public void testAnnenOpptjening() {
-        for (Versjon v : Lists.newArrayList(DEFAULT_VERSJON)) {
-            test(annenOpptjening(v));
-        }
+    void testAnnenOpptjening() {
+        test(annenOpptjening(DEFAULT_VERSJON));
     }
 
     @Test
-    public void testUtenlandskArbeidsforhold() {
+    void testUtenlandskArbeidsforhold() {
         test(utenlandskArbeidsforhold(), false);
     }
 
     @Test
-    public void testEgenNæringUtenlandskOrganisasjon() throws Exception {
-        ClassPathResource res = new ClassPathResource("json/utenlandskOrg.json");
-        UtenlandskOrganisasjon org = mapper.readValue(res.getInputStream(), UtenlandskOrganisasjon.class);
-        assertEquals(CountryCode.UG, org.getRegistrertILand());
+    void relasjonTilBarn() {
+        RelasjonTilBarn f = new Fødsel(LocalDate.now());
+        test(f, true);
+        f = new FremtidigFødsel(LocalDate.now(), LocalDate.now());
+        test(f, true);
+        f = new Adopsjon(1, LocalDate.now(), true, null, null, null);
+    }
+
+    @Test
+    void testEgenNæringUtenlandskOrganisasjon() throws Exception {
+        assertEquals(CountryCode.UG, mapper.readValue(new ClassPathResource("json/utenlandskOrg.json").getInputStream(), UtenlandskOrganisasjon.class)
+                .getRegistrertILand());
         test(utenlandskEgenNæring(), false);
     }
 
     @Test
-    public void testEgenNæringNorskorganisasjon() {
+    void testEgenNæringNorskorganisasjon() {
         test(norskEgenNæring());
     }
 

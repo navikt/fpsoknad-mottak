@@ -34,7 +34,7 @@ public abstract class RelasjonTilBarn {
     @Positive
     private final int antallBarn;
 
-    public RelasjonTilBarn(int antallBarn, List<String> vedlegg) {
+    protected RelasjonTilBarn(int antallBarn, List<String> vedlegg) {
         this.antallBarn = antallBarn;
         this.vedlegg = Optional.ofNullable(vedlegg).orElse(emptyList());
     }

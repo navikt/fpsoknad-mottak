@@ -61,28 +61,25 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
 
     @Override
     public Vedtak tilVedtak(String xml, SøknadEgenskap egenskap) {
-        switch (egenskap.getFagsakType()) {
-            case FORELDREPENGER:
-                return Optional.ofNullable(xml)
-                        .map(V2XMLVedtakMapper::tilFPVedtak)
-                        .orElse(null);
-            case ENGANGSSTØNAD:
-                return Optional.ofNullable(xml)
-                        .map(V2XMLVedtakMapper::tilESVedtak)
-                        .orElse(null);
-            case SVANGERSKAPSPENGER:
+        return switch (egenskap.getFagsakType()) {
+            case FORELDREPENGER -> Optional.ofNullable(xml)
+                    .map(V2XMLVedtakMapper::tilFPVedtak)
+                    .orElse(null);
+            case ENGANGSSTØNAD -> Optional.ofNullable(xml)
+                    .map(V2XMLVedtakMapper::tilESVedtak)
+                    .orElse(null);
+            case SVANGERSKAPSPENGER -> {
                 LOG.warn("Svangerskapspenger vedtak ikke støttet");
-                return null;
-            default:
-                throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
-        }
+                yield null;
+            }
+            default -> throw new UnexpectedInputException("Ukjent fagsak type %s", egenskap.getFagsakType());
+        };
     }
 
     private static Vedtak tilFPVedtak(String xml) {
         try {
-            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalFP(xml);
-            SaksInformasjon saksInfo = tilSaksInformasjon(vedtak);
-            return new Vedtak(tilUttak(((JAXBElement<UttakForeldrepenger>) vedtak.getBehandlingsresultat()
+            var saksInfo = tilSaksInformasjon(unmarshalFP(xml));
+            return new Vedtak(tilUttak(((JAXBElement<UttakForeldrepenger>) unmarshalFP(xml).getBehandlingsresultat()
                     .getBeregningsresultat().getUttak().getAny().get(0)).getValue()), saksInfo);
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak {} for foreldrepenger", xml, e);
@@ -113,8 +110,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
 
     private static Vedtak tilESVedtak(String xml) {
         try {
-            no.nav.vedtak.felles.xml.vedtak.v2.Vedtak vedtak = unmarshalES(xml);
-            return new Vedtak(null, tilSaksInformasjon(vedtak));
+            return new Vedtak(null, tilSaksInformasjon(unmarshalES(xml)));
         } catch (Exception e) {
             LOG.warn("Feil ved unmarshalling av vedtak {} for engangsstønad", xml, e);
             return null;

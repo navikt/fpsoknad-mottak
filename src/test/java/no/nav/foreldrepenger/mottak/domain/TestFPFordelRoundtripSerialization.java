@@ -55,33 +55,32 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { LOCAL })
 @TestPropertySource(properties = {
-    "fpfordel.enabled=false",
-    "sts.uri=http://www.sts.no",
-    "spring.cloud.vault.enabled=false",
-    "spring.cloud.vault.token=00000",
-    "sts.username=un",
-    "sts.password=pw",
-    "securitytokenservice.username=un",
-    "securitytokenservice.password=pw",
-    "securitytokenservice.url",
-    "aareg.rs.url=test",
-    "organisasjon.v4.url=test",
-    "oidc.sts.issuer.url=test",
-    "oidc.sts.token.path=test",
-    "kafka.username=vtp",
-    "kafka.password=vtp",
-    "sak.rs.url=test",
-    "loginservice.idporten.discovery.url=test",
-    "loginservice.idporten.audience=test",
-    "bootstrap.servers=test",
-    "pdl.graphql.base.url=test",
-    "fpsoknad.mottak=test",
-    "oppslag.url=test",
-    "fpfordel.base.url=test",
-    "dkif.base.url=test",
-    "fpinfo.base.url=test"
-    })
-
+        "fpfordel.enabled=false",
+        "sts.uri=http://www.sts.no",
+        "spring.cloud.vault.enabled=false",
+        "spring.cloud.vault.token=00000",
+        "sts.username=un",
+        "sts.password=pw",
+        "securitytokenservice.username=un",
+        "securitytokenservice.password=pw",
+        "securitytokenservice.url",
+        "aareg.rs.url=test",
+        "organisasjon.v4.url=test",
+        "oidc.sts.issuer.url=test",
+        "oidc.sts.token.path=test",
+        "kafka.username=vtp",
+        "kafka.password=vtp",
+        "sak.rs.url=test",
+        "loginservice.idporten.discovery.url=test",
+        "loginservice.idporten.audience=test",
+        "bootstrap.servers=test",
+        "pdl.graphql.base.url=test",
+        "fpsoknad.mottak=test",
+        "oppslag.url=test",
+        "fpfordel.base.url=test",
+        "dkif.base.url=test",
+        "fpinfo.base.url=test"
+})
 
 @EnableConfigurationProperties
 public class TestFPFordelRoundtripSerialization {
@@ -118,20 +117,19 @@ public class TestFPFordelRoundtripSerialization {
     SøknadSender sender;
 
     @BeforeAll
-    public static void startup() throws IOException {
+    static void startup() throws IOException {
         SERVER = new MockOAuth2Server();
         SERVER.start();
     }
 
     @AfterAll
-    public static void shutdown() throws IOException {
+    static void shutdown() throws IOException {
         SERVER.shutdown();
     }
 
     @BeforeEach
     public void setAuthoriztion() {
-        var token = SERVER.issueToken();
-        var t = new JwtToken(token.serialize().toString());
+        var t = new JwtToken(SERVER.issueToken().serialize().toString());
         when(userService.getSystemToken()).thenReturn(new SystemToken(t, null, null, null));
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
                 execution) -> {
@@ -142,18 +140,18 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testPing() {
+    void testPing() {
         assertEquals("Hallo joe fra ubeskyttet ressurs",
                 template.getForObject(INNSENDING + "/ping?navn=joe", String.class));
     }
 
     @Test
-    public void test1() {
+    void test1() {
         assertEquals(new AktørId("42"), template.getForObject(INNSENDING_PREPROD + "/test", AktørId.class));
     }
 
     @Test
-    public void testFPSøknadSendV3() {
+    void testFPSøknadSendV3() {
         Versjon versjon = V3;
         Søknad søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
         Kvittering kvittering = sender.søk(søknad, TestUtils.person(),
@@ -162,7 +160,7 @@ public class TestFPFordelRoundtripSerialization {
     }
 
     @Test
-    public void testESSøknadSendFPFordel() {
+    void testESSøknadSendFPFordel() {
         Søknad engangssøknad = engangssøknad(false, fødsel(),
                 norskForelder(),
                 påkrevdVedlegg(ID142));
