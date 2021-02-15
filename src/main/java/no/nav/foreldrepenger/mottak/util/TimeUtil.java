@@ -39,7 +39,7 @@ public final class TimeUtil {
         }
     }
 
-    public static boolean dateWithinPeriod(LocalDate start, LocalDate end) {
+    public static boolean nowWithinPeriod(LocalDate start, LocalDate end) {
         var now = LocalDate.now();
         if (now.isEqual(start) || now.isEqual(end)) {
             return true;
