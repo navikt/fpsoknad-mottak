@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static no.nav.foreldrepenger.mottak.util.Constants.FNR;
 import static no.nav.foreldrepenger.mottak.util.MapUtil.get;
-import static no.nav.foreldrepenger.mottak.util.TimeUtil.dateWithinPeriod;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.dato;
+import static no.nav.foreldrepenger.mottak.util.TimeUtil.nowWithinPeriod;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,12 +51,8 @@ class ArbeidsforholdMapper {
                 .from(dato(get(periode, FOM)))
                 .to(Optional.ofNullable(dato(get(periode, TOM))))
                 .stillingsprosent(stillingsprosent(get(map, ARBEIDSAVTALER, List.class)))
-                .arbeidsgiverNavn(navn(id.getFirst()))
+                .arbeidsgiverNavn(organisasjon.navn(id.getFirst()))
                 .build();
-    }
-
-    private String navn(String orgnr) {
-        return organisasjon.navn(orgnr);
     }
 
     private static ProsentAndel stillingsprosent(List<?> avtaler) {
@@ -72,8 +68,16 @@ class ArbeidsforholdMapper {
 
     private static boolean erGjeldende(Map<?, ?> avtale) {
         var periode = get(avtale, GYLDIGHETSPERIODE, Map.class);
-        return dateWithinPeriod(dato(get(periode, FOM)), Optional.ofNullable(dato(get(periode, TOM)))
-                .orElse(LocalDate.now()));
+        var fom = dato(get(periode, FOM));
+        if (fom.isAfter(LocalDate.now())) {
+            LOG.trace("Fremtidig arbeidsforhold begynner {}", fom);
+            return true;
+        }
+        var tom = Optional.ofNullable(dato(get(periode, TOM)))
+                .orElse(LocalDate.now());
+        var gyldig = nowWithinPeriod(fom, tom);
+        LOG.trace("Arbeidsorhold gyldig: {}", gyldig);
+        return gyldig;
     }
 
     private static Pair<String, String> id(Map<?, ?> map) {

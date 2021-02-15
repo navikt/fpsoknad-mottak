@@ -60,12 +60,11 @@ public class ArbeidsforholdConfig extends AbstractConfig {
         return tidTilbake;
     }
 
-    URI getArbeidsforholdURI(UriBuilder b, LocalDate fom, LocalDate tom) {
+    URI getArbeidsforholdURI(UriBuilder b, LocalDate fom) {
         return b.path(getArbeidsforholdPath())
                 .queryParam(HISTORIKK, isHistorikk())
                 .queryParam(SPORINGSINFORMASJON, isSporingsinformasjon())
                 .queryParam(FOM, fom.format(ISO_LOCAL_DATE))
-                .queryParam(TOM, tom.format(ISO_LOCAL_DATE))
                 .build();
     }
 
