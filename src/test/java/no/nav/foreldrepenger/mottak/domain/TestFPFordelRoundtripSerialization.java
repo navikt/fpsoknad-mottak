@@ -64,7 +64,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
         "securitytokenservice.password=pw",
         "securitytokenservice.url",
         "aareg.rs.url=test",
-        "organisasjon.v4.url=test",
+        "organisasjon.rs.url=test",
         "oidc.sts.issuer.url=test",
         "oidc.sts.token.path=test",
         "kafka.username=vtp",
