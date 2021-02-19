@@ -93,12 +93,6 @@ jobs:
                         title: 'Deploy av ${{ env.TAG }}'})
                       .then(response => {
                               core.setOutput('id', response.data.number);
-                              const issue = { owner: context.issue.owner,
-                              repo: context.issue.repo,
-                              issue_number: response.data.number }
-                             github.issues.createComment({...issue,
-                                    title: 'Deploy av ${{ env.TAG }}',
-                                    body: '/promote dev-fss'})
                        });
 
             - name: Trigger verdikjedetestene i fpsak-autotest prosjektet
