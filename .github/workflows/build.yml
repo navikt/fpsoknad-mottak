@@ -9,6 +9,7 @@ env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     GITHUB_USERNAME: x-access-token
     IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
+    IMAGE_BASE_CR: ghcr.io/${{ github.repository }}
 
 jobs:
     kompiler:
@@ -44,12 +45,20 @@ jobs:
               run: |
                   mvn versions:set -DnewVersion=${TAG}
                   mvn clean install --batch-mode --quiet --settings .github/.m2/settings.xml
+
             - name: Bygg, tag og push Docker image
               run: |
-                  docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
-                  echo  $GITHUB_TOKEN | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+                  docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest --tag ${IMAGE_BASE_CR}:${TAG} --tag ${IMAGE_BASE_CR}:latest .
+                  echo "$GITHUB_PASSWORD" | docker login --username "$GITHUB_USERNAME" --password-stdin https://docker.pkg.github.com
+                  echo "$GITHUB_PASSWORD" | docker login --username "$GITHUB_USERNAME" --password-stdin ghcr.io
                   docker push ${IMAGE_BASE}:${TAG}
                   docker push ${IMAGE_BASE}:latest
+                  docker push ${IMAGE_BASE_CR}:${TAG}
+                  docker push ${IMAGE_BASE_CR}:latest
+              env:
+                  GITHUB_USERNAME: x-access-token
+                  GITHUB_PASSWORD: ${{ secrets.NOTIFICATION }}
+
             - name: Lukk gamle bygg-issues
               uses: actions/github-script@v3
               with:
@@ -91,5 +100,12 @@ jobs:
                                     title: 'Deploy av ${{ env.TAG }}',
                                     body: '/promote dev-fss'})
                        });
-            - name: Test ID
-              run: echo "${{steps.issue.outputs.id}}"
+
+            - name: Trigger verdikjedetestene i fpsak-autotest prosjektet
+              if: success()
+              uses: peter-evans/repository-dispatch@v1
+              with:
+                  token: ${{ secrets.NOTIFICATION }}
+                  repository: navikt/fpsak-autotest
+                  event-type: mottak-verdikjede
+                  client-payload: '{ "trigger": "${{ github.repository }}", "version": "${{ env.TAG }}", "issue-number": "${{ steps.issue.outputs.id }}" }'
