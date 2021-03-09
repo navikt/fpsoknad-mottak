@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
@@ -102,7 +103,20 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
         if (relasjon instanceof Fødsel f) {
             return create(f, vedlegg);
         }
+        if (relasjon instanceof Adopsjon a) {
+            return create(a, vedlegg);
+        }
         throw new UnexpectedInputException("Relasjon %s er ikke støttet", relasjon.getClass().getSimpleName());
+    }
+
+    private static SoekersRelasjonTilBarnet create(Adopsjon adopsjon, List<Vedlegg> vedlegg) {
+        return new no.nav.vedtak.felles.xml.soeknad.felles.v3.Adopsjon()
+                .withVedlegg(relasjonTilBarnVedleggFra(vedlegg))
+                .withAntallBarn(adopsjon.getAntallBarn())
+                .withFoedselsdato(adopsjon.getFødselsdato())
+                .withOmsorgsovertakelsesdato(adopsjon.getOmsorgsovertakelsesdato())
+                .withAdopsjonAvEktefellesBarn(adopsjon.isEktefellesBarn())
+                .withAnkomstdato(adopsjon.getAnkomstDato());
     }
 
     private static SoekersRelasjonTilBarnet create(Fødsel fødsel, List<Vedlegg> vedlegg) {

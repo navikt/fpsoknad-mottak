@@ -12,7 +12,6 @@ import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.Ytelse;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
