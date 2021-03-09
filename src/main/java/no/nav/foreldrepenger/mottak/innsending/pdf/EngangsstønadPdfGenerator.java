@@ -5,7 +5,6 @@ import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGAN
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
@@ -172,10 +172,18 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<FritekstBlokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
+        if (erAdopsjon(stønad)) {
+            return adopsjon(stønad);
+        }
         if (erFremtidigFødsel(stønad)) {
             return fødsel(søknad, stønad);
         }
         return født(stønad);
+    }
+
+    private List<FritekstBlokk> adopsjon(Engangsstønad stønad) {
+        var a = Adopsjon.class.cast(stønad.getRelasjonTilBarn());
+        return List.of(new FritekstBlokk("TODO"));
     }
 
     private List<FritekstBlokk> født(Engangsstønad stønad) {
@@ -195,11 +203,15 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                     textFormatter.dato(ff.getUtstedtDato())));
             return List.of(barnInfo, vedleggInfo);
         }
-        return Collections.singletonList(barnInfo);
+        return List.of(barnInfo);
     }
 
     private static boolean erFremtidigFødsel(Engangsstønad stønad) {
         return stønad.getRelasjonTilBarn() instanceof FremtidigFødsel;
+    }
+
+    private static boolean erAdopsjon(Engangsstønad stønad) {
+        return stønad.getRelasjonTilBarn() instanceof Adopsjon;
     }
 
     private String txt(String gjelder, Object... values) {
