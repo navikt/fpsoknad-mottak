@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
@@ -29,12 +31,14 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentPerson;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.FeltBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.FritekstBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.GruppeBlokk;
+import no.nav.foreldrepenger.mottak.innsending.pdf.modell.ListeBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
+import no.nav.foreldrepenger.mottak.util.StreamUtil;
 
 @Component
 public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
@@ -172,9 +176,9 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
                 .build();
     }
 
-    private List<FritekstBlokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
+    private List<Blokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
         if (erAdopsjon(stønad)) {
-            return adopsjon(stønad);
+            return adopsjon(stønad, søknad.getVedlegg());
         }
         if (erFremtidigFødsel(stønad)) {
             return fødsel(søknad, stønad);
@@ -182,24 +186,25 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return født(stønad);
     }
 
-    private List<FritekstBlokk> adopsjon(Engangsstønad stønad) {
+    private List<Blokk> adopsjon(Engangsstønad stønad, List<Vedlegg> v) {
         var a = Adopsjon.class.cast(stønad.getRelasjonTilBarn());
-        var adopsjonsdato = txt("adopsjonsdato", textFormatter.dato(a.getOmsorgsovertakelsesdato()));
-        var fødselsdato = txt("fødselsdato", textFormatter.datoer(a.getFødselsdato()));
-        // addIfSet(attributter, "ankomstdato", adopsjon.getAnkomstDato());
-        // addIfTrue(attributter, "ektefellesbarn", adopsjon.isEktefellesBarn());
-        // vedlegg
-        return List.of(new FritekstBlokk(adopsjonsdato), new FritekstBlokk(fødselsdato));
+        var adopsjonsdato = new FritekstBlokk(txt("adopsjonsdato", textFormatter.dato(a.getOmsorgsovertakelsesdato())));
+        var fødselsdato = new FritekstBlokk(txt("fødselsdato", textFormatter.datoer(a.getFødselsdato())));
+        var ektefelles = new FritekstBlokk(txt("ektefellesbarn", textFormatter.yesNo(a.isEktefellesBarn())));
+        var antall = new FritekstBlokk(txt("antallbarn", a.getAntallBarn()));
+        return List.of(adopsjonsdato, fødselsdato, ektefelles, antall, new ListeBlokk(txt("vedlegg"), StreamUtil.safeStream(v)
+                .map(Vedlegg::getBeskrivelse)
+                .collect(toList())));
     }
 
-    private List<FritekstBlokk> født(Engangsstønad stønad) {
+    private List<Blokk> født(Engangsstønad stønad) {
         var ff = Fødsel.class.cast(stønad.getRelasjonTilBarn());
         var tekst = txt("gjelderfødselsdato", stønad.getRelasjonTilBarn().getAntallBarn(),
                 textFormatter.datoer(ff.getFødselsdato()));
         return List.of(new FritekstBlokk(tekst));
     }
 
-    private List<FritekstBlokk> fødsel(Søknad søknad, Engangsstønad stønad) {
+    private List<Blokk> fødsel(Søknad søknad, Engangsstønad stønad) {
         var ff = FremtidigFødsel.class.cast(stønad.getRelasjonTilBarn());
         var antallBarn = stønad.getRelasjonTilBarn().getAntallBarn();
         var termindato = textFormatter.dato(ff.getTerminDato());
