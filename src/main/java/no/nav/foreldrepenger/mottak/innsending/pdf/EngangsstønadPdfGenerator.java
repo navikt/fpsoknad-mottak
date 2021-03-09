@@ -151,11 +151,12 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     }
 
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {
-        if (erFremtidigFødsel(stønad)) {
+        if (erFremtidigFødsel(stønad) || erAdopsjon(stønad)) {
             return textFormatter.fromMessageSource("terminføderi",
                     textFormatter.countryName(medlemsskap.landVedDato(stønad.getRelasjonTilBarn().relasjonsDato())),
                     stønad.getRelasjonTilBarn().getAntallBarn() > 1 ? "a" : "et");
         }
+
         Fødsel fødsel = Fødsel.class.cast(stønad.getRelasjonTilBarn());
         var land = stønad.getMedlemsskap().landVedDato(fødsel.getFødselsdato().get(0));
         return textFormatter.fromMessageSource("fødtei",
