@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000001;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000003;
+import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000004;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
@@ -142,13 +143,11 @@ public class FordelMetadata {
 
     private static DokumentType dokumentTypeFraRelasjonForEngangsstønad(Søknad søknad) {
         var relasjon = Engangsstønad.class.cast(søknad.getYtelse()).getRelasjonTilBarn();
-        if (relasjon instanceof Fødsel
-                || relasjon instanceof FremtidigFødsel) {
+        if (relasjon instanceof Fødsel || relasjon instanceof FremtidigFødsel) {
             return I000003;
         }
-        if (relasjon instanceof Omsorgsovertakelse
-                || relasjon instanceof Adopsjon) {
-            return I000003;
+        if (relasjon instanceof Omsorgsovertakelse || relasjon instanceof Adopsjon) {
+            return I000004;
         }
         throw new UnexpectedInputException("Ukjent relasjon %s", relasjon.getClass().getSimpleName());
     }
