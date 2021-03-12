@@ -59,6 +59,7 @@ public class KonvoluttGenerator {
     }
 
     public Konvolutt generer(Søknad søknad, Person søker, SøknadEgenskap egenskap) {
+        LOG.trace("Genererer konvolutt fra søknad {}", søknad);
         var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
         builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.getAktørId()), APPLICATION_JSON);
