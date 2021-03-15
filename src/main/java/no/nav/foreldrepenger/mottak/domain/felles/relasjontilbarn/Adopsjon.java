@@ -21,13 +21,17 @@ public class Adopsjon extends RelasjonTilBarn {
     @NotNull(message = "{ytelse.relasjontilbarn.adopsjon.omsorggsovertakelsesdato.notnull}")
     private final LocalDate omsorgsovertakelsesdato;
     private final boolean ektefellesBarn;
+    private final boolean søkerAdopsjonAlene;
+
     private final LocalDate ankomstDato;
     private final List<@PastOrToday(message = "{ytelse.relasjontilbarn.adopsjon.fødselssdato.framtid}") LocalDate> fødselsdato;
 
     @JsonCreator
     public Adopsjon(@JsonProperty("antallBarn") int antallBarn,
             @JsonProperty("omsorgsovertakelsesdato") LocalDate omsorgsovertakelsesdato,
-            @JsonProperty("ektefellesBarn") boolean ektefellesBarn, @JsonProperty("vedlegg") List<String> vedlegg,
+            @JsonProperty("ektefellesBarn") boolean ektefellesBarn,
+            @JsonProperty("søkerAdopsjonAlene") boolean søkerAdopsjonAlene,
+            @JsonProperty("vedlegg") List<String> vedlegg,
             @JsonProperty("ankomstDato") LocalDate ankomstDato,
             @JsonProperty("fødselsdato") List<LocalDate> fødselsdato) {
         super(antallBarn, vedlegg);
@@ -35,6 +39,7 @@ public class Adopsjon extends RelasjonTilBarn {
         this.ektefellesBarn = ektefellesBarn;
         this.ankomstDato = ankomstDato;
         this.fødselsdato = fødselsdato;
+        this.søkerAdopsjonAlene = søkerAdopsjonAlene;
     }
 
     @Override
