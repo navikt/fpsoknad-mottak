@@ -144,9 +144,9 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
     }
 
     private static Medlemsskap tilMedlemsskap(Medlemskap medlemskap, LocalDate søknadsDato) {
-        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(ArbeidsInformasjon.IKKE_ARBEIDET,
+        var tidligere = new TidligereOppholdsInformasjon(ArbeidsInformasjon.IKKE_ARBEIDET,
                 utenlandsOppholdFør(medlemskap.getOppholdUtlandet(), søknadsDato));
-        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(
+        var framtidig = new FramtidigOppholdsInformasjon(
                 utenlandsOppholdEtter(medlemskap.getOppholdUtlandet(), søknadsDato));
         return new Medlemsskap(tidligere, framtidig);
     }
