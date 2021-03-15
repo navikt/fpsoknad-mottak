@@ -264,6 +264,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
                     adopsjon.getAntallBarn(),
                     adopsjon.getOmsorgsovertakelsesdato(),
                     adopsjon.isAdopsjonAvEktefellesBarn(),
+                    false,
                     emptyList(),
                     adopsjon.getAnkomstdato(),
                     adopsjon.getFoedselsdato());

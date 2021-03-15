@@ -142,7 +142,7 @@ public class TestUtils {
     }
 
     public static Adopsjon adopsjon() {
-        return new Adopsjon(1, nå(), false, emptyList(), nå(), listeMedNå());
+        return new Adopsjon(1, nå(), false, false, emptyList(), nå(), listeMedNå());
     }
 
     public static RelasjonTilBarn fødsel() {

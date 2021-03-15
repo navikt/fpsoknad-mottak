@@ -191,6 +191,8 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         var adopsjonsdato = new FritekstBlokk(txt("adopsjonsdato", textFormatter.dato(a.getOmsorgsovertakelsesdato())));
         var fødselsdato = new FritekstBlokk(txt("fødselsdato", textFormatter.datoer(a.getFødselsdato())));
         var ektefelles = new FritekstBlokk(txt("ektefellesbarn", textFormatter.yesNo(a.isEktefellesBarn())));
+        var alene = new FritekstBlokk(txt("søkeradopsjonalene", textFormatter.yesNo(a.isSøkerAdopsjonAlene())));
+
         var antall = new FritekstBlokk(txt("antallbarn", a.getAntallBarn()));
         return List.of(adopsjonsdato, fødselsdato, ektefelles, antall, new ListeBlokk(txt("vedlegg1"), StreamUtil.safeStream(v)
                 .map(Vedlegg::getBeskrivelse)

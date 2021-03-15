@@ -249,7 +249,7 @@ public class TestForeldrepengerSerialization {
         test(f, true);
         f = new FremtidigFødsel(LocalDate.now(), LocalDate.now());
         test(f, true);
-        f = new Adopsjon(1, LocalDate.now(), true, null, null, null);
+        f = new Adopsjon(1, LocalDate.now(), true, false, null, null, null);
     }
 
     @Test
