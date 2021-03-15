@@ -49,7 +49,6 @@ import no.nav.foreldrepenger.mottak.oppslag.sts.SystemToken;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.core.jwt.JwtToken;
-import no.nav.security.token.support.test.JwtTokenGenerator;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @ActiveProfiles(profiles = { LOCAL })
@@ -130,7 +129,7 @@ class TestFPFordelRoundtripSerialization {
         template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
                 execution) -> {
             request.getHeaders().add(AUTHORIZATION, "Bearer " +
-                    JwtTokenGenerator.createSignedJWT("12345678910").serialize());
+                    SERVER.issueToken("12345678910").serialize());
             return execution.execute(request, body);
         }));
     }

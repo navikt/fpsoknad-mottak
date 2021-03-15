@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
@@ -80,7 +81,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         List<TemaBlokk> grupper = new ArrayList<>();
 
         // info om barn
-        grupper.add(omBarn(søknad, stønad));
+        grupper.add(omBarn(søknad, søknad.getSøker().getSøknadsRolle().equals(BrukerRolle.FAR), stønad));
 
         // info om annen forelder
         if (annenForelder != null && annenForelder.hasId()) {
@@ -169,16 +170,16 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
 
     }
 
-    private TemaBlokk omBarn(Søknad søknad, Engangsstønad stønad) {
+    private TemaBlokk omBarn(Søknad søknad, boolean erMann, Engangsstønad stønad) {
         return TemaBlokk.builder()
                 .medOverskrift(txt("ombarn"))
-                .medUnderBlokker(omFødsel(søknad, stønad))
+                .medUnderBlokker(omFødsel(søknad, erMann, stønad))
                 .build();
     }
 
-    private List<Blokk> omFødsel(Søknad søknad, Engangsstønad stønad) {
+    private List<Blokk> omFødsel(Søknad søknad, boolean erMann, Engangsstønad stønad) {
         if (erAdopsjon(stønad)) {
-            return adopsjon(stønad, søknad.getVedlegg());
+            return adopsjon(stønad, erMann, søknad.getVedlegg());
         }
         if (erFremtidigFødsel(stønad)) {
             return fødsel(søknad, stønad);
@@ -186,17 +187,21 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         return født(stønad);
     }
 
-    private List<Blokk> adopsjon(Engangsstønad stønad, List<Vedlegg> v) {
+    private List<Blokk> adopsjon(Engangsstønad stønad, boolean erMann, List<Vedlegg> v) {
         var a = Adopsjon.class.cast(stønad.getRelasjonTilBarn());
-        var adopsjonsdato = new FritekstBlokk(txt("adopsjonsdato", textFormatter.dato(a.getOmsorgsovertakelsesdato())));
-        var fødselsdato = new FritekstBlokk(txt("fødselsdato", textFormatter.datoer(a.getFødselsdato())));
-        var ektefelles = new FritekstBlokk(txt("ektefellesbarn", textFormatter.yesNo(a.isEktefellesBarn())));
-        var alene = new FritekstBlokk(txt("søkeradopsjonalene", textFormatter.yesNo(a.isSøkerAdopsjonAlene())));
+        var blokker = new ArrayList<Blokk>();
+        blokker.add(new FritekstBlokk(txt("adopsjonsdato", textFormatter.dato(a.getOmsorgsovertakelsesdato()))));
+        blokker.add(new FritekstBlokk(txt("fødselsdato", textFormatter.datoer(a.getFødselsdato()))));
+        blokker.add(new FritekstBlokk(txt("ektefellesbarn", textFormatter.yesNo(a.isEktefellesBarn()))));
+        if (erMann) {
+            blokker.add(new FritekstBlokk(txt("søkeradopsjonalene", textFormatter.yesNo(a.isSøkerAdopsjonAlene()))));
+        }
 
-        var antall = new FritekstBlokk(txt("antallbarn", a.getAntallBarn()));
-        return List.of(adopsjonsdato, fødselsdato, ektefelles, alene, antall, new ListeBlokk(txt("vedlegg1"), StreamUtil.safeStream(v)
+        blokker.add(new FritekstBlokk(txt("antallbarn", a.getAntallBarn())));
+        blokker.add(new ListeBlokk(txt("vedlegg1"), StreamUtil.safeStream(v)
                 .map(Vedlegg::getBeskrivelse)
                 .collect(toList())));
+        return blokker;
     }
 
     private List<Blokk> født(Engangsstønad stønad) {
