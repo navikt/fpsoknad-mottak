@@ -149,7 +149,7 @@ class FPFordelTest {
         var infoskrivRenderer = new InfoskrivRenderer(jalla1, jalla2);
         var fp = new ForeldrepengerPdfGenerator(oppslag, arbeidsforhold, jalla,
                 infoskrivRenderer);
-        var es = new EngangsstønadPdfGenerator(jalla2, pdfGenerator);
+        var es = new EngangsstønadPdfGenerator(jalla2, pdfGenerator, tokenHelper);
         var pdfGenerator = new DelegerendePDFGenerator(fp, es);
         var pdfSplitter = new InfoskrivPdfEkstraktor();
 
