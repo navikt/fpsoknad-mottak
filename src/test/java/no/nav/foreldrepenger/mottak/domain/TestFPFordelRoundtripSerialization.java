@@ -47,6 +47,7 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemToken;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.core.jwt.JwtToken;
 
@@ -94,6 +95,9 @@ class TestFPFordelRoundtripSerialization {
     InnsendingHendelseProdusent publisher;
     @MockBean
     ArbeidsInfo arbeidsforhold;
+
+    @MockBean
+    TokenUtil tokenUtil;
     @Autowired
     ObjectMapper mapper;
 
