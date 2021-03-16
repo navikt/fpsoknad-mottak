@@ -13,10 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
 import no.nav.foreldrepenger.mottak.domain.Navn;
 import no.nav.foreldrepenger.mottak.domain.Søknad;
 import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
 import no.nav.foreldrepenger.mottak.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
@@ -42,6 +42,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.Pair;
 import no.nav.foreldrepenger.mottak.util.StreamUtil;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
@@ -49,10 +50,12 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final SøknadTextFormatter textFormatter;
     private final PdfGenerator pdfGenerator;
+    private final TokenUtil tokenUtil;
 
-    public EngangsstønadPdfGenerator(SøknadTextFormatter textFormatter, PdfGenerator pdfGenerator) {
+    public EngangsstønadPdfGenerator(SøknadTextFormatter textFormatter, PdfGenerator pdfGenerator, TokenUtil tokenUtil) {
         this.textFormatter = textFormatter;
         this.pdfGenerator = pdfGenerator;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
@@ -82,9 +85,10 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         var medlemsskap = stønad.getMedlemsskap();
         var annenForelder = stønad.getAnnenForelder();
         List<TemaBlokk> grupper = new ArrayList<>();
-        LOG.info("ROLLE " + søknad.getSøker().getSøknadsRolle());
+
+        LOG.info("KJØNN {}", tokenUtil.kjønn());
         // info om barn
-        grupper.add(omBarn(søknad, søknad.getSøker().getSøknadsRolle().equals(BrukerRolle.FAR), stønad));
+        grupper.add(omBarn(søknad, Kjønn.M.equals(tokenUtil.kjønn()), stønad));
 
         // info om annen forelder
         if (annenForelder != null && annenForelder.hasId()) {
