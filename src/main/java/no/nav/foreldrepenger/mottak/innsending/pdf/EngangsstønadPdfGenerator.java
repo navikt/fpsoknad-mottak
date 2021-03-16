@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
@@ -43,6 +45,7 @@ import no.nav.foreldrepenger.mottak.util.StreamUtil;
 
 @Component
 public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
+    private static final Logger LOG = LoggerFactory.getLogger(EngangsstønadPdfGenerator.class);
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final SøknadTextFormatter textFormatter;
     private final PdfGenerator pdfGenerator;
@@ -79,7 +82,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         var medlemsskap = stønad.getMedlemsskap();
         var annenForelder = stønad.getAnnenForelder();
         List<TemaBlokk> grupper = new ArrayList<>();
-
+        LOG.info("ROLLE " + søknad.getSøker().getSøknadsRolle());
         // info om barn
         grupper.add(omBarn(søknad, søknad.getSøker().getSøknadsRolle().equals(BrukerRolle.FAR), stønad));
 
