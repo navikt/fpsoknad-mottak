@@ -45,6 +45,7 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGeneratorStub;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
@@ -81,6 +82,9 @@ class MappablePdfGeneratorTest {
 
     @MockBean
     ArbeidsforholdTjeneste arbeidsforholdTjeneste;
+
+    @MockBean
+    TokenUtil tokenUtil;
 
     @BeforeEach
     void before() {
