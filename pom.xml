@@ -54,7 +54,7 @@
                         <arg>--enable-preview</arg>
                     </compilerArgs>
                     <parameters>true</parameters>
-                    <release>15</release>
+                    <release>16</release>
                 </configuration>
             </plugin>
             <plugin>
