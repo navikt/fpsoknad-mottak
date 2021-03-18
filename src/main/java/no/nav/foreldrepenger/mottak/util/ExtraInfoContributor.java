@@ -2,7 +2,9 @@ package no.nav.foreldrepenger.mottak.util;
 
 import static java.lang.management.ManagementFactory.getRuntimeMXBean;
 import static java.time.Instant.ofEpochMilli;
-import static no.nav.foreldrepenger.boot.conditionals.Cluster.*
+import static no.nav.foreldrepenger.boot.conditionals.Cluster.NAIS_CLUSTER_NAME;
+import static no.nav.foreldrepenger.boot.conditionals.Cluster.NAIS_NAMESPACE_NAME;
+
 import java.time.ZoneId;
 import java.util.Map;
 
@@ -13,7 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ImageVersionContributor implements InfoContributor {
+public class ExtraInfoContributor implements InfoContributor {
 
     @Autowired
     Environment env;
