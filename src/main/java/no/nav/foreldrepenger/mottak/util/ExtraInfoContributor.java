@@ -25,9 +25,10 @@ public class ExtraInfoContributor implements InfoContributor {
     @Override
     public void contribute(Builder builder) {
         builder.withDetail("Extras", Map.of(
-                "startup time", ofEpochMilli(getRuntimeMXBean().getStartTime()).atZone(ZoneId.systemDefault()).toLocalDateTime(),
-                "cluster name", env.getProperty(NAIS_CLUSTER_NAME),
-                "namespace name", env.getProperty(NAIS_NAMESPACE_NAME),
-                "image name", env.getProperty("nais.app.image")));
+                "Java version", env.getProperty("java.version"),
+                "Startup time", ofEpochMilli(getRuntimeMXBean().getStartTime()).atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                "Cluster name", env.getProperty(NAIS_CLUSTER_NAME),
+                "Namespace name", env.getProperty(NAIS_NAMESPACE_NAME),
+                "Image name", env.getProperty("nais.app.image")));
     }
 }
