@@ -8,7 +8,6 @@ import static no.nav.foreldrepenger.boot.conditionals.Cluster.NAIS_NAMESPACE_NAM
 import java.time.ZoneId;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.info.Info.Builder;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.core.env.Environment;
@@ -17,8 +16,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExtraInfoContributor implements InfoContributor {
 
-    @Autowired
-    Environment env;
+    private final Environment env;
+
+    public ExtraInfoContributor(Environment env) {
+        this.env = env;
+    }
 
     @Override
     public void contribute(Builder builder) {
