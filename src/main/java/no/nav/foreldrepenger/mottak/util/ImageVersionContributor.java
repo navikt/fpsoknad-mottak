@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
 import java.lang.management.ManagementFactory;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ public class ImageVersionContributor implements InfoContributor {
     @Override
     public void contribute(Builder builder) {
         builder.withDetail("Extras", Map.of(
-                "startup", ManagementFactory.getRuntimeMXBean().getStartTime(),
+                "startup", Instant.ofEpochMilli(ManagementFactory.getRuntimeMXBean().getStartTime()).atZone(ZoneId.systemDefault()).toLocalDateTime(),
                 "cluster", env.getProperty("nais.cluster.name"),
                 "image version", env.getProperty("nais.app.image")));
     }
