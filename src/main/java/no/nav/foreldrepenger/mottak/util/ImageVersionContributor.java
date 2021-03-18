@@ -1,7 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import java.lang.management.ManagementFactory;
-import java.time.Instant;
+import static java.lang.management.ManagementFactory.getRuntimeMXBean;
+import static java.time.Instant.ofEpochMilli;
+
 import java.time.ZoneId;
 import java.util.Map;
 
@@ -20,8 +21,8 @@ public class ImageVersionContributor implements InfoContributor {
     @Override
     public void contribute(Builder builder) {
         builder.withDetail("Extras", Map.of(
-                "startup", Instant.ofEpochMilli(ManagementFactory.getRuntimeMXBean().getStartTime()).atZone(ZoneId.systemDefault()).toLocalDateTime(),
-                "cluster", env.getProperty("nais.cluster.name"),
-                "image version", env.getProperty("nais.app.image")));
+                "startup time", ofEpochMilli(getRuntimeMXBean().getStartTime()).atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                "cluster name", env.getProperty("nais.cluster.name"),
+                "image name", env.getProperty("nais.app.image")));
     }
 }
