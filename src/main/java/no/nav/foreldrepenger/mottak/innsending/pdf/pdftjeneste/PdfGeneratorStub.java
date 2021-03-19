@@ -1,14 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste;
 
 
+import static no.nav.foreldrepenger.boot.conditionals.Cluster.LOCAL;
+import static no.nav.foreldrepenger.boot.conditionals.Cluster.TEST;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnLocal;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnClusters;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 
 @Service
-@ConditionalOnLocal
+@ConditionalOnClusters(clusters = { TEST, LOCAL })
 public class PdfGeneratorStub implements PdfGenerator {
 
     @Override

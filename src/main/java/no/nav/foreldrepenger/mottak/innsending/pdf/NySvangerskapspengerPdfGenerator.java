@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.DEV;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
@@ -61,7 +62,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
-@Profile({ DEV, LOCAL })
+@Profile({ DEV, LOCAL, TEST })
 @Component
 public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private final SøknadTextFormatter textFormatter;

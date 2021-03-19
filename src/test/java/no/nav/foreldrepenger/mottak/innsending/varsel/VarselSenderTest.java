@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ActiveProfiles(LOCAL)
+@ActiveProfiles({ LOCAL, TEST })
 @EnableConfigurationProperties(VarselConfig.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {

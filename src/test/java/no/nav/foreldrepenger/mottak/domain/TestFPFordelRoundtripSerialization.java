@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
@@ -52,7 +53,7 @@ import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.core.jwt.JwtToken;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
-@ActiveProfiles(profiles = { LOCAL })
+@ActiveProfiles(profiles = { LOCAL, TEST })
 @TestPropertySource(properties = {
         "fpfordel.enabled=false",
         "sts.uri=http://www.sts.no",
