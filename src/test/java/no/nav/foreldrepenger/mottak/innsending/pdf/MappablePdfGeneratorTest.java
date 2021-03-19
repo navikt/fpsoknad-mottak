@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.hasPdfSignature;
@@ -49,7 +50,7 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
 
 @AutoConfigureJsonTesters
-@ActiveProfiles(profiles = { LOCAL })
+@ActiveProfiles(profiles = { LOCAL, TEST })
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         MottakConfiguration.class,
