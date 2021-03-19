@@ -46,7 +46,8 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     }
 
     private String orgNavn(String orgnr) {
-        LOG.info("Henter organisasjonsnavn for {}", orgnr);
+        var maskertOrgnr = orgnr.replaceAll("^\\d{5}", "*****");
+        LOG.info("Henter organisasjonsnavn for {}", maskertOrgnr);
         try {
             var navn = Optional.ofNullable(webClient
                     .get()
@@ -59,11 +60,11 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                     .map(OrganisasjonMapper::tilOrganisasjonsnavn)
                     .filter(Objects::nonNull)
                     .orElse(orgnr);
-            LOG.info("Hentet organisasjonsnavn for {} OK", orgnr);
+            LOG.info("Hentet organisasjonsnavn for {} OK", maskertOrgnr);
             LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);
             return navn;
         } catch (Exception e) {
-            LOG.warn("Fant ikke organisasjonsnavn for {}", orgnr);
+            LOG.warn("Fant ikke organisasjonsnavn for {}", maskertOrgnr);
             return orgnr;
         }
     }
