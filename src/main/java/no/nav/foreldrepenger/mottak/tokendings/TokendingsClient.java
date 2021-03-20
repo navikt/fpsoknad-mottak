@@ -2,16 +2,36 @@ package no.nav.foreldrepenger.mottak.tokendings;
 
 import static com.nimbusds.oauth2.sdk.auth.JWTAuthentication.CLIENT_ASSERTION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+import java.net.URI;
+
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Component
 public class TokendingsClient {
 
     private final WebClient client;
+    private final TokendingsConfig cfg;
+    private final TokendingsConfigurationMetadata metadata;
 
-    public TokendingsClient(WebClient client) {
-        this.client = client;
+    public TokendingsClient(TokendingsConfig cfg) {
+        this.client = WebClient.create();
+        this.cfg = cfg;
+        this.metadata = getMetadata(cfg.getWellKnownUrl());
+    }
+
+    private TokendingsConfigurationMetadata getMetadata(URI wellKnownUrl) {
+        return client
+                .get()
+                .uri(wellKnownUrl)
+                .accept(APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(TokendingsConfigurationMetadata.class)
+                .block();
+
     }
 
     public TokendingsResponse exchange(String clientAssertion, String subjectToken, String audience) {
