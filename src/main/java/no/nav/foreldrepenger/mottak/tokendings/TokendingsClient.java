@@ -6,11 +6,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
 
-import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Component
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
+
+@ConditionalOnK8s
 public class TokendingsClient {
 
     private final WebClient client;
