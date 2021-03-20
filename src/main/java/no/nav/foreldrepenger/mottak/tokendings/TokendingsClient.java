@@ -29,13 +29,16 @@ public class TokendingsClient {
     }
 
     private TokendingsConfigurationMetadata getMetadata(URI wellKnownUrl) {
-        return client
+        LOG.info("HENTER METADATA");
+        var metadata = client
                 .get()
                 .uri(wellKnownUrl)
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(TokendingsConfigurationMetadata.class)
                 .block();
+        LOG.info("HENTET METADATA");
+        return metadata;
 
     }
 

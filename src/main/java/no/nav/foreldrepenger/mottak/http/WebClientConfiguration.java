@@ -112,7 +112,7 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_SYSTEM)
     @Bean
-    public WebClient webCLientSystemPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
+    public WebClient webClientSystemPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
@@ -163,42 +163,36 @@ public class WebClientConfiguration {
     }
 
     private static ExchangeFilterFunction pdlUserExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
-        return (req, next) -> {
-            return next.exchange(ClientRequest.from(req)
-                    .header(AUTHORIZATION, tokenUtil.bearerToken())
-                    .header(TEMA, FORELDREPENGER)
-                    .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
-                    .build());
-        };
+        return (req, next) -> next.exchange(ClientRequest.from(req)
+                .header(AUTHORIZATION, tokenUtil.bearerToken())
+                .header(TEMA, FORELDREPENGER)
+                .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
+                .build());
+
     }
 
     private ExchangeFilterFunction dkifExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
-        return (req, next) -> {
-            return next.exchange(ClientRequest.from(req)
-                    .header(AUTHORIZATION, sts.bearerToken())
-                    .header(NAV_CONSUMER_ID, consumerId())
-                    .header(NAV_PERSONIDENTER, tokenUtil.getSubject())
-                    .build());
-        };
+        return (req, next) -> next.exchange(ClientRequest.from(req)
+                .header(AUTHORIZATION, sts.bearerToken())
+                .header(NAV_CONSUMER_ID, consumerId())
+                .header(NAV_PERSONIDENTER, tokenUtil.getSubject())
+                .build());
+
     }
 
     private static ExchangeFilterFunction pdlSystemUserExchangeFilterFunction(SystemTokenTjeneste sts) {
-        return (req, next) -> {
-            return next.exchange(ClientRequest.from(req)
-                    .header(AUTHORIZATION, sts.bearerToken())
-                    .header(TEMA, FORELDREPENGER)
-                    .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
-                    .build());
-        };
+        return (req, next) -> next.exchange(ClientRequest.from(req)
+                .header(AUTHORIZATION, sts.bearerToken())
+                .header(TEMA, FORELDREPENGER)
+                .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
+                .build());
     }
 
     private ExchangeFilterFunction correlatingFilterFunction() {
-        return (req, next) -> {
-            return next.exchange(ClientRequest.from(req)
-                    .header(NAV_CONSUMER_ID, consumerId())
-                    .header(NAV_CALL_ID1, MDCUtil.callId())
-                    .build());
-        };
+        return (req, next) -> next.exchange(ClientRequest.from(req)
+                .header(NAV_CONSUMER_ID, consumerId())
+                .header(NAV_CALL_ID1, MDCUtil.callId())
+                .build());
     }
 
     private String consumerId() {
