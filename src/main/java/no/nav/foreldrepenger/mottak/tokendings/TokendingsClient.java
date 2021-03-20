@@ -6,6 +6,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,6 +15,7 @@ import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 
 @ConditionalOnK8s
 public class TokendingsClient {
+    private static final Logger LOG = LoggerFactory.getLogger(TokendingsClient.class);
 
     private final WebClient client;
     private final TokendingsConfig cfg;
@@ -22,6 +25,7 @@ public class TokendingsClient {
         this.client = WebClient.create();
         this.cfg = cfg;
         this.metadata = getMetadata(cfg.getWellKnownUrl());
+        LOG.info("METADATA " + metadata);
     }
 
     private TokendingsConfigurationMetadata getMetadata(URI wellKnownUrl) {
