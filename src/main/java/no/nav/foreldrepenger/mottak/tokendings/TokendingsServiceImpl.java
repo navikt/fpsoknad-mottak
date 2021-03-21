@@ -12,7 +12,7 @@ public class TokendingsServiceImpl implements TokendingsService {
     }
 
     @Override
-    public String exchangeToken(TokendingsTargetApp targetApp) {
-        return connection.exchange(targetApp).accessToken();
+    public String exchangeToken(String token, TokendingsTargetApp targetApp) {
+        return connection.exchange(token, targetApp).accessToken();
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.tokendings;
 
 public interface TokendingsService {
-    String exchangeToken(TokendingsTargetApp targetApp);
+
+    String exchangeToken(String token, TokendingsTargetApp targetApp);
 }

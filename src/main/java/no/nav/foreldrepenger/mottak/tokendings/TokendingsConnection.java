@@ -9,7 +9,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
-import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @ConditionalOnK8s
 public class TokendingsConnection {
@@ -17,17 +16,15 @@ public class TokendingsConnection {
     private final WebClient client;
     private final TokendingsMetadata metadata;
     private final TokendingsConfig cfg;
-    private final TokenUtil tokenUtil;
 
-    public TokendingsConnection(TokendingsConfig cfg, TokenUtil tokenUtil) {
+    public TokendingsConnection(TokendingsConfig cfg) {
         this.client = WebClient.create();
         this.cfg = cfg;
         this.metadata = metadataFra(cfg.getWellKnownUrl());
-        this.tokenUtil = tokenUtil;
     }
 
-    public TokendingsResponse exchange(TokendingsTargetApp targetApp) {
-        return exchange(tokenUtil.getToken(), targetApp.asAudience());
+    public TokendingsResponse exchange(String token, TokendingsTargetApp targetApp) {
+        return exchange(token, targetApp.asAudience());
     }
 
     private TokendingsResponse exchange(String subjectToken, String audience) {
