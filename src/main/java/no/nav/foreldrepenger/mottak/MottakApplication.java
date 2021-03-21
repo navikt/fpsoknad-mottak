@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak;
 
 import static no.nav.foreldrepenger.boot.conditionals.Cluster.profiler;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -19,6 +20,7 @@ import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 @ConfigurationPropertiesScan
 public class MottakApplication {
     public static void main(String[] args) {
+        LoggerFactory.getLogger(MottakApplication.class).info(System.getenv().toString());
         new SpringApplicationBuilder(MottakApplication.class)
                 .profiles(profiler())
                 .main(MottakApplication.class)
