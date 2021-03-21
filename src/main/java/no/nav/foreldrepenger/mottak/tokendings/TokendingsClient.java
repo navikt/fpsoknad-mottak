@@ -24,32 +24,28 @@ public class TokendingsClient {
     public TokendingsClient(TokendingsConfig cfg) {
         this.client = WebClient.create();
         this.cfg = cfg;
-        this.metadata = getMetadata(cfg.getWellKnownUrl());
-        LOG.info("METADATA " + metadata);
+        this.metadata = metadataFra(cfg.getWellKnownUrl());
     }
 
-    private TokendingsConfigurationMetadata getMetadata(URI wellKnownUrl) {
-        LOG.info("HENTER METADATA");
-        var metadata = client
+    private TokendingsConfigurationMetadata metadataFra(URI wellKnownUrl) {
+        return client
                 .get()
                 .uri(wellKnownUrl)
                 .accept(APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(TokendingsConfigurationMetadata.class)
                 .block();
-        LOG.info("HENTET METADATA");
-        return metadata;
 
     }
 
-    public TokendingsResponse exchange(String clientAssertion, String subjectToken, String audience) {
+    public TokendingsResponse exchange(String clientAssertion, String subjectToken, TargetApp targetApp) {
         var form = new LinkedMultiValueMap<>();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange");
         form.add("client_assertion_type", CLIENT_ASSERTION_TYPE);
         form.add("client_assertion", clientAssertion);
         form.add("subject_token_type", "urn:ietf:params:oauth:token-type:jwt");
         form.add("subject_token", subjectToken);
-        form.add("audience", audience);
+        form.add("audience", targetApp.asString());
 
         return client
                 .post()
