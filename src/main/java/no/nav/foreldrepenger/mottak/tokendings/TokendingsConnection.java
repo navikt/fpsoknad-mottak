@@ -1,44 +1,40 @@
 package no.nav.foreldrepenger.mottak.tokendings;
 
 import static com.nimbusds.oauth2.sdk.auth.JWTAuthentication.CLIENT_ASSERTION_TYPE;
-import static no.nav.foreldrepenger.mottak.tokendings.TokendingsClientAssertion.clientAssertionFra;
+import static no.nav.foreldrepenger.mottak.tokendings.TokendingsClientAssertion.clientAssertion;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @ConditionalOnK8s
 public class TokendingsConnection {
-    private static final Logger LOG = LoggerFactory.getLogger(TokendingsConnection.class);
 
     private final WebClient client;
     private final TokendingsMetadata metadata;
     private final TokendingsConfig cfg;
+    private final TokenUtil tokenUtil;
 
-    public TokendingsConnection(TokendingsConfig cfg) {
+    public TokendingsConnection(TokendingsConfig cfg, TokenUtil tokenUtil) {
         this.client = WebClient.create();
         this.cfg = cfg;
         this.metadata = metadataFra(cfg.getWellKnownUrl());
+        this.tokenUtil = tokenUtil;
     }
 
-    public TokendingsResponse exchange(String subjectToken, TokendingsTargetApp targetApp) {
-        return exchange(clientAssertion(), subjectToken, targetApp.asAudience());
+    public TokendingsResponse exchange(TokendingsTargetApp targetApp) {
+        return exchange(tokenUtil.getToken(), targetApp.asAudience());
     }
 
-    private String clientAssertion() {
-        return clientAssertionFra(cfg.getClientId(), metadata.tokenEndpoint().toString(), cfg.getPrivateRSAKey());
-    }
-
-    private TokendingsResponse exchange(String clientAssertion, String subjectToken, String audience) {
+    private TokendingsResponse exchange(String subjectToken, String audience) {
         var form = new LinkedMultiValueMap<>();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange");
         form.add("client_assertion_type", CLIENT_ASSERTION_TYPE);
-        form.add("client_assertion", clientAssertion);
+        form.add("client_assertion", clientAssertion(cfg.getClientId(), metadata.tokenEndpoint().toString(), cfg.getPrivateRSAKey()));
         form.add("subject_token_type", "urn:ietf:params:oauth:token-type:jwt");
         form.add("subject_token", subjectToken);
         form.add("audience", audience);
@@ -61,5 +57,4 @@ public class TokendingsConnection {
                 .bodyToMono(TokendingsMetadata.class)
                 .block();
     }
-
 }

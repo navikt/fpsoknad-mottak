@@ -19,7 +19,7 @@ class TokendingsClientAssertion {
 
     }
 
-    static String clientAssertionFra(String clientId, String audience, RSAKey rsaKey) {
+    static String clientAssertion(String clientId, String audience, RSAKey rsaKey) {
         var now = Date.from(Instant.now());
         return sign(new JWTClaimsSet.Builder()
                 .subject(clientId)

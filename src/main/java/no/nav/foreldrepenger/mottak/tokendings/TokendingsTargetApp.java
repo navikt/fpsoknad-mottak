@@ -4,14 +4,18 @@ import com.google.common.base.Joiner;
 
 import no.nav.foreldrepenger.boot.conditionals.Cluster;
 
-record TokendingsTargetApp(Cluster targetCluster, String targetNamespace, String targetNavn) {
+public record TokendingsTargetApp(Cluster targetCluster, String targetNamespace, String targetNavn) {
 
-    TokendingsTargetApp(String targetNamespace, String targetNavn) {
+    public TokendingsTargetApp(String targetNamespace, String targetNavn) {
         this(Cluster.currentCluster(), targetNamespace, targetNavn);
     }
 
-    TokendingsTargetApp(String targetNavn) {
+    public TokendingsTargetApp(String targetNavn) {
         this(Cluster.currentCluster(), Cluster.currentNamespace(), targetNavn);
+    }
+
+    public static TokendingsTargetApp of(String targetNavn) {
+        return new TokendingsTargetApp(targetNavn);
     }
 
     String asAudience() {

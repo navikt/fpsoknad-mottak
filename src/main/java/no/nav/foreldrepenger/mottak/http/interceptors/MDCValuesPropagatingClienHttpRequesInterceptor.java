@@ -23,7 +23,6 @@ public class MDCValuesPropagatingClienHttpRequesInterceptor implements ClientHtt
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
-
         propagerFraMDC(request, NAV_CALL_ID, NAV_CONSUMER_ID);
         propager(request, X_CORRELATION_ID, callId());
         return execution.execute(request, body);
