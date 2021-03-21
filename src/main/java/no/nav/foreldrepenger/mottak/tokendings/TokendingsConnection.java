@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.tokendings;
 
 import static com.nimbusds.oauth2.sdk.auth.JWTAuthentication.CLIENT_ASSERTION_TYPE;
+import static no.nav.foreldrepenger.mottak.tokendings.TokendingsClientAssertion.clientAssertionFra;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -32,7 +33,7 @@ public class TokendingsConnection {
     }
 
     private String clientAssertion() {
-        return TokendingsClientAssertion.clientAssertionFra(cfg.getClientId(), metadata.tokenEndpoint().toString(), cfg.getPrivateRSAKey());
+        return clientAssertionFra(cfg.getClientId(), metadata.tokenEndpoint().toString(), cfg.getPrivateRSAKey());
     }
 
     private TokendingsResponse exchange(String clientAssertion, String subjectToken, String audience) {
