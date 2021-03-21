@@ -11,9 +11,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import com.nimbusds.jose.jwk.RSAKey;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
-
-@ConditionalOnK8s
 @ConfigurationProperties(prefix = "token.x")
 public class TokendingsConfig {
     @NestedConfigurationProperty
@@ -42,6 +39,10 @@ public class TokendingsConfig {
 
     public String getClientId() {
         return clientId;
+    }
+
+    public String getPrivateJwk() {
+        return privateJwk;
     }
 
     @Override
