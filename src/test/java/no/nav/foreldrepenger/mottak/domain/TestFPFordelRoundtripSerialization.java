@@ -79,6 +79,10 @@ import no.nav.security.token.support.core.jwt.JwtToken;
         "oppslag.url=test",
         "fpfordel.base.url=test",
         "dkif.base.url=test",
+        "token.x.well.known.url=http//www.localhost",
+        "token.x.well.client.id=123",
+        "token.x.well.private.jwk=123",
+
         "fpinfo.base.url=test"
 })
 

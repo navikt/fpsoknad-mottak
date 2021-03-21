@@ -11,6 +11,9 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import com.nimbusds.jose.jwk.RSAKey;
 
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
+
+@ConditionalOnK8s
 @ConfigurationProperties(prefix = "token.x")
 public class TokendingsConfig {
     @NestedConfigurationProperty
