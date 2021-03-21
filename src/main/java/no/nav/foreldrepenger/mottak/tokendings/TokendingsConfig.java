@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.tokendings;
 
 import static com.nimbusds.jose.jwk.RSAKey.parse;
 
-import java.net.URI;
 import java.text.ParseException;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,14 +16,14 @@ import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 @ConfigurationProperties(prefix = "token.x")
 public class TokendingsConfig {
     @NestedConfigurationProperty
-    private final URI wellKnownUrl;
+    private final String wellKnownUrl;
     @NestedConfigurationProperty
     private final String clientId;
     @NestedConfigurationProperty
     private final String privateJwk;
 
     @ConstructorBinding
-    public TokendingsConfig(URI wellKnownUrl, String clientId, String privateJwk) throws ParseException {
+    public TokendingsConfig(String wellKnownUrl, String clientId, String privateJwk) throws ParseException {
         this.wellKnownUrl = wellKnownUrl;
         this.clientId = clientId;
         this.privateJwk = privateJwk;
@@ -40,7 +39,7 @@ public class TokendingsConfig {
         }
     }
 
-    public URI getWellKnownUrl() {
+    public String getWellKnownUrl() {
         return wellKnownUrl;
     }
 

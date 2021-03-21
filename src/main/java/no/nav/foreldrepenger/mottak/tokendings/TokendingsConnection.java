@@ -5,8 +5,6 @@ import static no.nav.foreldrepenger.mottak.tokendings.TokendingsClientAssertion.
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import java.net.URI;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
@@ -54,7 +52,7 @@ public class TokendingsConnection {
                 .block();
     }
 
-    private TokendingsMetadata metadataFra(URI wellKnownUrl) {
+    private TokendingsMetadata metadataFra(String wellKnownUrl) {
         return client
                 .get()
                 .uri(wellKnownUrl)
