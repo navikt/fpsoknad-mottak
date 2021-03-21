@@ -4,29 +4,22 @@ import static com.nimbusds.jose.jwk.RSAKey.parse;
 
 import java.text.ParseException;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.core.env.Environment;
 
 import com.nimbusds.jose.jwk.RSAKey;
 
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 
 @ConditionalOnK8s
-@ConfigurationProperties(prefix = "token.x")
 public class TokendingsConfig {
-    @NestedConfigurationProperty
     private final String wellKnownUrl;
-    @NestedConfigurationProperty
     private final String clientId;
-    @NestedConfigurationProperty
     private final String privateJwk;
 
-    @ConstructorBinding
-    public TokendingsConfig(String wellKnownUrl, String clientId, String privateJwk) throws ParseException {
-        this.wellKnownUrl = wellKnownUrl;
-        this.clientId = clientId;
-        this.privateJwk = privateJwk;
+    public TokendingsConfig(Environment env) {
+        this.wellKnownUrl = env.getRequiredProperty("token.x.well.known.url");
+        this.clientId = env.getRequiredProperty("token.x.client.id");
+        this.privateJwk = env.getRequiredProperty("token.x.private.jwk");
     }
 
     public RSAKey getPrivateRSAKey() {
