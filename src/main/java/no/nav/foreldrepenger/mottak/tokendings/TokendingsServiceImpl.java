@@ -1,29 +1,21 @@
 package no.nav.foreldrepenger.mottak.tokendings;
 
-import static no.nav.foreldrepenger.mottak.tokendings.ClientAssertion.assertion;
+import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.RSAKey;
-
+@Service
+@ConditionalOnK8s
 public class TokendingsServiceImpl implements TokendingsService {
 
-    private final TokendingsClient tokendingsClient;
-    private final String audience;
-    private final String clientId;
-    private final RSAKey privateRSAKey;
+    private final TokendingsConnection connection;
 
-    public TokendingsServiceImpl(TokendingsClient tokendingsClient, String jwtAudience, String clientId, String privateJwk)
-            throws ParseException {
-        this.tokendingsClient = tokendingsClient;
-        this.audience = jwtAudience;
-        this.clientId = clientId;
-        this.privateRSAKey = RSAKey.parse(privateJwk);
+    public TokendingsServiceImpl(TokendingsConnection connection, TokendingsConfig cfg) {
+        this.connection = connection;
     }
 
     @Override
-    public String exchangeToken(String token, TargetApp targetApp) throws JOSEException {
-        return tokendingsClient.exchange(token, assertion(clientId, audience, privateRSAKey), targetApp).accessToken();
+    public String exchangeToken(String token, TokendingsTargetApp targetApp) {
+        return connection.exchange(token, targetApp).accessToken();
     }
 }

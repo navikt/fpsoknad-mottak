@@ -8,19 +8,20 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSHeader.Builder;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-public class ClientAssertion {
-    private ClientAssertion() {
+class TokendingsClientAssertion {
+    private TokendingsClientAssertion() {
 
     }
 
-    static String assertion(String clientId, String audience, RSAKey rsaKey) throws JOSEException {
+    static String clientAssertionFra(String clientId, String audience, RSAKey rsaKey) {
         var now = Date.from(Instant.now());
+
         return sign(new JWTClaimsSet.Builder()
                 .subject(clientId)
                 .issuer(clientId)
@@ -31,13 +32,18 @@ public class ClientAssertion {
                 .jwtID(UUID.randomUUID().toString())
                 .build(), rsaKey)
                         .serialize();
+
     }
 
-    private static SignedJWT sign(JWTClaimsSet claimsSet, RSAKey rsaKey) throws JOSEException {
-        var signedJWT = new SignedJWT(new JWSHeader.Builder(RS256)
+    private static SignedJWT sign(JWTClaimsSet claimsSet, RSAKey rsaKey) {
+        var signedJWT = new SignedJWT(new Builder(RS256)
                 .keyID(rsaKey.getKeyID())
                 .type(JWT).build(), claimsSet);
-        signedJWT.sign(new RSASSASigner(rsaKey.toPrivateKey()));
-        return signedJWT;
+        try {
+            signedJWT.sign(new RSASSASigner(rsaKey.toPrivateKey()));
+            return signedJWT;
+        } catch (JOSEException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

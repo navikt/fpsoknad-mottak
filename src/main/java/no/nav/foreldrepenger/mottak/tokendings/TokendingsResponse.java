@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.tokendings;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonNaming(SnakeCaseStrategy.class)
-public record TokendingsResponse(String accessToken, String issuedTokenType, String tokenType, String expiresIn) {
+record TokendingsResponse(
+        @JsonProperty("access_token") String accessToken,
+        @JsonProperty("issued_token_type") String issuedTokenType,
+        @JsonProperty("token_type") String tokenType,
+        @JsonProperty("expires_in") String expiresIn) {
 }

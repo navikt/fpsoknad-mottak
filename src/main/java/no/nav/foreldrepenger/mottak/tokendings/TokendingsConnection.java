@@ -14,46 +14,52 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 
 @ConditionalOnK8s
-public class TokendingsClient {
-    private static final Logger LOG = LoggerFactory.getLogger(TokendingsClient.class);
+public class TokendingsConnection {
+    private static final Logger LOG = LoggerFactory.getLogger(TokendingsConnection.class);
 
     private final WebClient client;
+    private final TokendingsMetadata metadata;
     private final TokendingsConfig cfg;
-    private final TokendingsConfigurationMetadata metadata;
 
-    public TokendingsClient(TokendingsConfig cfg) {
+    public TokendingsConnection(TokendingsConfig cfg) {
         this.client = WebClient.create();
         this.cfg = cfg;
         this.metadata = metadataFra(cfg.getWellKnownUrl());
     }
 
-    private TokendingsConfigurationMetadata metadataFra(URI wellKnownUrl) {
-        return client
-                .get()
-                .uri(wellKnownUrl)
-                .accept(APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(TokendingsConfigurationMetadata.class)
-                .block();
-
+    public TokendingsResponse exchange(String subjectToken, TokendingsTargetApp targetApp) {
+        return exchange(clientAssertion(), subjectToken, targetApp.asAudience());
     }
 
-    public TokendingsResponse exchange(String clientAssertion, String subjectToken, TargetApp targetApp) {
+    private String clientAssertion() {
+        return TokendingsClientAssertion.clientAssertionFra(cfg.getClientId(), metadata.tokenEndpoint().toString(), cfg.getPrivateRSAKey());
+    }
+
+    private TokendingsResponse exchange(String clientAssertion, String subjectToken, String audience) {
         var form = new LinkedMultiValueMap<>();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange");
         form.add("client_assertion_type", CLIENT_ASSERTION_TYPE);
         form.add("client_assertion", clientAssertion);
         form.add("subject_token_type", "urn:ietf:params:oauth:token-type:jwt");
         form.add("subject_token", subjectToken);
-        form.add("audience", targetApp.asString());
-
+        form.add("audience", audience);
         return client
                 .post()
-                // .uri("URL")
+                .uri(metadata.tokenEndpoint())
                 .contentType(APPLICATION_FORM_URLENCODED)
                 .bodyValue(form)
                 .retrieve()
                 .bodyToMono(TokendingsResponse.class)
+                .block();
+    }
+
+    private TokendingsMetadata metadataFra(URI wellKnownUrl) {
+        return client
+                .get()
+                .uri(wellKnownUrl)
+                .accept(APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(TokendingsMetadata.class)
                 .block();
     }
 
