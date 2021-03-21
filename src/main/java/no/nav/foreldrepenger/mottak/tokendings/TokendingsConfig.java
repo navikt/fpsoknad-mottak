@@ -22,18 +22,22 @@ public class TokendingsConfig {
     private final String clientId;
     @NestedConfigurationProperty
     private final String privateJwk;
-    private final RSAKey privateRSAKey;
 
     @ConstructorBinding
     public TokendingsConfig(URI wellKnownUrl, String clientId, String privateJwk) throws ParseException {
         this.wellKnownUrl = wellKnownUrl;
         this.clientId = clientId;
         this.privateJwk = privateJwk;
-        this.privateRSAKey = parse(privateJwk);
     }
 
     public RSAKey getPrivateRSAKey() {
-        return privateRSAKey;
+        try {
+            return parse(privateJwk);
+
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+
+        }
     }
 
     public URI getWellKnownUrl() {
