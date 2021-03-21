@@ -14,22 +14,20 @@ import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 public class TokendingsConfig {
     private final String wellKnownUrl;
     private final String clientId;
-    private final String privateJwk;
+    private final RSAKey privateRSAKey;
 
     public TokendingsConfig(Environment env) {
         this.wellKnownUrl = env.getRequiredProperty("token.x.well.known.url");
         this.clientId = env.getRequiredProperty("token.x.client.id");
-        this.privateJwk = env.getRequiredProperty("token.x.private.jwk");
+        try {
+            this.privateRSAKey = parse(env.getRequiredProperty("token.x.private.jwk"));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public RSAKey getPrivateRSAKey() {
-        try {
-            return parse(privateJwk);
-
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-
-        }
+        return privateRSAKey;
     }
 
     public String getWellKnownUrl() {
@@ -38,10 +36,6 @@ public class TokendingsConfig {
 
     public String getClientId() {
         return clientId;
-    }
-
-    public String getPrivateJwk() {
-        return privateJwk;
     }
 
     @Override
