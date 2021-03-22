@@ -34,12 +34,14 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -62,15 +64,19 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
-import no.nav.foreldrepenger.mottak.tokendings.TokendingsService;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
+@EnableConfigurationProperties
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @AutoConfigureJsonTesters
+@Disabled
 @TestPropertySource(properties = { "sak.saker.url=http://sak",
+        "token.x.well.known.url=http//www.localhost",
+        "token.x.client.id=123",
+        "token.x.private.jwk=123",
         "sak.securitytokenservice.password=pw",
         "sak.securitytokenservice.username=user",
         "sak.securitytokenservice.url=http://sts",
@@ -91,8 +97,6 @@ class TestFPFordelSerialization {
     @MockBean
     TokenUtil tokenUtil;
 
-    @MockBean
-    private TokendingsService dings;
     @MockBean
     private ArbeidsforholdTjeneste arbeidsforhold;
     @MockBean

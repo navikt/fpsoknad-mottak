@@ -8,9 +8,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
-
-@ConditionalOnK8s
+//@ConditionalOnK8s
 public class TokendingsConnection {
 
     private final WebClient client;

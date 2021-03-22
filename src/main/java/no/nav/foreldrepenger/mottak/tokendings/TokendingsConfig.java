@@ -8,9 +8,7 @@ import org.springframework.core.env.Environment;
 
 import com.nimbusds.jose.jwk.RSAKey;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
-
-@ConditionalOnK8s
+//@ConditionalOnK8s
 public class TokendingsConfig {
     private final String wellKnownUrl;
     private final String clientId;
