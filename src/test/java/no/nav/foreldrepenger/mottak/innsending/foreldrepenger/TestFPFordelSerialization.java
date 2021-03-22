@@ -62,6 +62,7 @@ import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
+import no.nav.foreldrepenger.mottak.tokendings.TokendingsService;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
@@ -89,6 +90,9 @@ class TestFPFordelSerialization {
     private Oppslag oppslag;
     @MockBean
     TokenUtil tokenUtil;
+
+    @MockBean
+    private TokendingsService dings;
     @MockBean
     private ArbeidsforholdTjeneste arbeidsforhold;
     @MockBean
