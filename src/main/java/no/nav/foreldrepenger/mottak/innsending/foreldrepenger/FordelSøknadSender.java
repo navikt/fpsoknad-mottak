@@ -12,8 +12,6 @@ import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.tokendings.TokendingsService;
-import no.nav.foreldrepenger.mottak.tokendings.TokendingsTargetApp;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
@@ -25,16 +23,14 @@ public class FordelSøknadSender implements SøknadSender {
     private final InfoskrivPdfEkstraktor ekstraktor;
     private final InnsendingHendelseProdusent hendelser;
     private final TokenUtil tokenUtil;
-    private final TokendingsService dings;
 
     public FordelSøknadSender(FordelConnection connection, KonvoluttGenerator generator,
-            InfoskrivPdfEkstraktor ekstraktor, InnsendingHendelseProdusent hendelseProdusent, TokenUtil tokenUtil, TokendingsService dings) {
+            InfoskrivPdfEkstraktor ekstraktor, InnsendingHendelseProdusent hendelseProdusent, TokenUtil tokenUtil) {
         this.connection = connection;
         this.generator = generator;
         this.ekstraktor = ekstraktor;
         this.hendelser = hendelseProdusent;
         this.tokenUtil = tokenUtil;
-        this.dings = dings;
     }
 
     @Override
@@ -63,14 +59,6 @@ public class FordelSøknadSender implements SøknadSender {
 
     private Kvittering send(Konvolutt konvolutt, String dialogId) {
 
-        if (dings != null && tokenUtil.erAutentisert()) {
-            try {
-                String ex = dings.exchangeToken(tokenUtil.getToken(), TokendingsTargetApp.of("fpinfo"));
-                LOG.info("TEST EXCHANGE " + ex.length());
-            } catch (Exception e) {
-                LOG.warn("OOPS, TEST ", e);
-            }
-        }
         var kvittering = connection.send(konvolutt);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());

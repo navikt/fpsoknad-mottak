@@ -159,7 +159,7 @@ class FPFordelTest {
         return new FordelSøknadSender(
                 new FordelConnection(restOperations, cfg,
                         new ResponseHandler(restOperations, 3, poller)),
-                konvoluttGenerator, pdfSplitter, new LoggingHendelseProdusent(), tokenHelper, null);
+                konvoluttGenerator, pdfSplitter, new LoggingHendelseProdusent(), tokenHelper);
     }
 
     private static ResponseEntity<FordelKvittering> gosysReceipt() {
