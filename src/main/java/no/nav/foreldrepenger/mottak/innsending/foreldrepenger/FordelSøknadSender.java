@@ -62,9 +62,14 @@ public class FordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering send(Konvolutt konvolutt, String dialogId) {
+
         if (dings != null && tokenUtil.erAutentisert()) {
-            String ex = dings.exchangeToken(tokenUtil.getToken(), TokendingsTargetApp.of("fpinfo"));
-            LOG.info("TEST EXCHANGE " + ex.length());
+            try {
+                String ex = dings.exchangeToken(tokenUtil.getToken(), TokendingsTargetApp.of("fpinfo"));
+                LOG.info("TEST EXCHANGE " + ex.length());
+            } catch (Exception e) {
+                LOG.warn("OOPS, TEST ", e);
+            }
         }
         var kvittering = connection.send(konvolutt);
         if (konvolutt.erInitiellForeldrepenger()) {
