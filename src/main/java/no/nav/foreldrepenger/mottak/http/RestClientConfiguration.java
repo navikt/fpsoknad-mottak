@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.retry.RetryContext.NAME;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +19,10 @@ import org.springframework.retry.RetryListener;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 
+import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
+import no.nav.security.token.support.client.core.ClientProperties;
+import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+
 @Configuration
 public class RestClientConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(RestClientConfiguration.class);
@@ -30,6 +35,16 @@ public class RestClientConfiguration {
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptors)
                 .build();
+    }
+
+    @Bean
+    public ClientPropertiesFinder propertiesFinder() {
+        return new ClientPropertiesFinder() {
+            @Override
+            public ClientProperties findProperties(ClientConfigurationProperties configs, URI uri) {
+                return configs.getRegistration().get(uri.getHost());
+            }
+        };
     }
 
     @Bean
