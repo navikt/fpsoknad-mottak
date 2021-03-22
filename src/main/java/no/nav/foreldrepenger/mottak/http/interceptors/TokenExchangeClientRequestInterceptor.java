@@ -20,19 +20,19 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
     private static final Logger LOG = LoggerFactory.getLogger(TokenExchangeClientRequestInterceptor.class);
     private final ClientConfigurationProperties configs;
     private final OAuth2AccessTokenService service;
-    private final ClientPropertiesFinder mapper;
+    private final ClientPropertiesFinder finder;
 
     public TokenExchangeClientRequestInterceptor(ClientConfigurationProperties configs,
-            OAuth2AccessTokenService service, ClientPropertiesFinder mapper) {
+            OAuth2AccessTokenService service, ClientPropertiesFinder finder) {
         this.configs = configs;
         this.service = service;
-        this.mapper = mapper;
+        this.finder = finder;
     }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         URI uri = request.getURI();
-        var config = mapper.findProperties(configs, uri);
+        var config = finder.findProperties(configs, uri);
         if (config != null) {
             try {
                 LOG.info("Veksler inn token for {}", uri);
