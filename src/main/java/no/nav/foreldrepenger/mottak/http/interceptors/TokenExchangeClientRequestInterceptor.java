@@ -17,23 +17,36 @@ import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(TokenExchangeClientRequestInterceptor.class);
-    private final ClientConfigurationProperties config;
+    private final ClientConfigurationProperties configs;
     private final OAuth2AccessTokenService service;
 
-    public TokenExchangeClientRequestInterceptor(ClientConfigurationProperties config,
+    public TokenExchangeClientRequestInterceptor(ClientConfigurationProperties configs,
             OAuth2AccessTokenService service) {
-        this.config = config;
+        this.configs = configs;
         this.service = service;
     }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        LOG.info("Token exchange intercept call to {} with config {}", request.getURI(), config);
+        String targetApp = request.getURI().getHost();
+        var config = configs.getRegistration().get(targetApp);
+        if (config != null) {
+            try {
+                LOG.info("Veksler inn token for {}", targetApp);
+                var token = service.getAccessToken(config);
+                LOG.info("Vekslet inn token {} for {}", token.getAccessToken().length(), targetApp);
+                // TODO erstatt AUTHORIZATION header
+            } catch (Exception e) {
+                LOG.warn("OOPS", e);
+            }
+        } else {
+            LOG.info("Ingen konfig for {}", targetApp);
+        }
         return execution.execute(request, body);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [config=" + config + ", service=" + service + "]";
+        return getClass().getSimpleName() + " [service=" + service + "]";
     }
 }
