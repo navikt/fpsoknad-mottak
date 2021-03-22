@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.http.interceptors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class TokenExchangeResponseMixin {
 
 }
