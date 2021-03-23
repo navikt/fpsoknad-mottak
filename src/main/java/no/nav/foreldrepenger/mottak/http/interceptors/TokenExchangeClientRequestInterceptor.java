@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.interceptors;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.IOException;
 import java.net.URI;
@@ -48,7 +49,7 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Nytt token {}", token);
                 }
-                // request.getHeaders().set(HttpHeaders.AUTHORIZATION, token);
+                request.getHeaders().add(AUTHORIZATION, token);
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Headers etter {}", request.getHeaders());
                 }
