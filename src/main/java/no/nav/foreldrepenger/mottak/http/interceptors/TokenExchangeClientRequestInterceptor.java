@@ -42,11 +42,8 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
             try {
                 LOG.info("Veksler inn token for {}", uri);
                 var token = service.getAccessToken(config).getAccessToken();
-                LOG.info("Vekslet inn token {} for {}", token.length(), uri);
                 if (EnvUtil.isDevOrLocal(env)) {
-                    LOG.info("Nytt token {}", StringUtil.limit(token), 50);
-                    LOG.info("Gammelt token i header {}", StringUtil.limit(request.getHeaders().getFirst("Authorization")), 50);
-
+                    LOG.info("Nytt token {}", token);
                 }
                 request.getHeaders().setBearerAuth(token);
                 if (EnvUtil.isDevOrLocal(env)) {
