@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.http.interceptors;
 
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,7 +21,7 @@ import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 
 @ConditionalOnK8s
-@Order(LOWEST_PRECEDENCE)
+@Order(HIGHEST_PRECEDENCE)
 public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestInterceptor, EnvironmentAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(TokenExchangeClientRequestInterceptor.class);
