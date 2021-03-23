@@ -14,7 +14,6 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
-import no.nav.foreldrepenger.mottak.util.StringUtil;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 
@@ -40,14 +39,14 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
         var config = finder.findProperties(configs, uri);
         if (config != null) {
             try {
-                LOG.info("Veksler inn token for {}", uri);
+                LOG.info("Headers før {}", request.getHeaders());
                 var token = service.getAccessToken(config).getAccessToken();
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Nytt token {}", token);
                 }
                 request.getHeaders().setBearerAuth(token);
                 if (EnvUtil.isDevOrLocal(env)) {
-                    LOG.info("Nytt token i header {}", StringUtil.limit(request.getHeaders().getFirst("Authorization")), 50);
+                    LOG.info("Headers etter {}", request.getHeaders());
                 }
             } catch (Exception e) {
                 LOG.warn("OOPS", e);
