@@ -39,7 +39,7 @@ public class RestClientConfiguration {
         LOG.info("Filtered message interceptorer er {}", filtered);
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(filtered)
+                .interceptors(interceptors)
                 .build();
     }
 

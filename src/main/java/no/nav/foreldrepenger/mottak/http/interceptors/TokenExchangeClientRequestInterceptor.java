@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -49,7 +48,7 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Nytt token {}", token);
                 }
-                request.getHeaders().set(HttpHeaders.AUTHORIZATION, token);
+                // request.getHeaders().set(HttpHeaders.AUTHORIZATION, token);
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Headers etter {}", request.getHeaders());
                 }
