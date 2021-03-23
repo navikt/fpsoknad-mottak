@@ -1,11 +1,14 @@
 package no.nav.foreldrepenger.mottak.http.interceptors;
 
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+
 import java.io.IOException;
 import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.EnvironmentAware;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -18,6 +21,7 @@ import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 
 @ConditionalOnK8s
+@Order(LOWEST_PRECEDENCE)
 public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestInterceptor, EnvironmentAware {
 
     private static final Logger LOG = LoggerFactory.getLogger(TokenExchangeClientRequestInterceptor.class);
@@ -44,7 +48,7 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Nytt token {}", token);
                 }
-                request.getHeaders().setBearerAuth(token);
+                // request.getHeaders().setBearerAuth(token);
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Headers etter {}", request.getHeaders());
                 }
