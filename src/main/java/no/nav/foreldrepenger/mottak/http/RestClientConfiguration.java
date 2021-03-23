@@ -5,6 +5,8 @@ import static org.springframework.retry.RetryContext.NAME;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import org.springframework.web.client.RestOperations;
 import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
 import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
 public class RestClientConfiguration {
@@ -31,9 +34,12 @@ public class RestClientConfiguration {
     @Primary
     public RestOperations restTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
         LOG.info("Message interceptorer er {}", Arrays.toString(interceptors));
+        var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
+                .collect(Collectors.toList());
+        LOG.info("Filtered message interceptorer er {}", filtered);
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(interceptors)
+                .interceptors(filtered)
                 .build();
     }
 
