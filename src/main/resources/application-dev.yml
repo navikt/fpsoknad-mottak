@@ -1,18 +1,3 @@
-no.nav:
-   security:
-     jwt:
-       client:
-         registration:
-           fpinfo:
-              well-known-url: ${token.x.well.known.url}
-              grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-              authentication:
-                client-id: ${token.x.client.id}
-                client-jwk: ${token.x.private.jwk}
-                client-auth-method: private_key_jwt
-              token-exchange:
-                audience: dev-fss:teamforeldrepenger:fpinfo
-
 management :
    endpoints:
       web:
@@ -59,7 +44,6 @@ varsel:
   uri: mq://b27apvl176.preprod.local:1413/MQ1LSC02
   channelname: Q1_FPSOKNAD_VARSEL
   queue-name: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
-
 
 sak:
   saker:

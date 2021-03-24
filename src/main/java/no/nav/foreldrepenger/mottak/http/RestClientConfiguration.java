@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static org.springframework.retry.RetryContext.NAME;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,8 +21,6 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
-import no.nav.security.token.support.client.core.ClientProperties;
-import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
@@ -45,12 +42,7 @@ public class RestClientConfiguration {
 
     @Bean
     public ClientPropertiesFinder propertiesFinder() {
-        return new ClientPropertiesFinder() {
-            @Override
-            public ClientProperties findProperties(ClientConfigurationProperties configs, URI uri) {
-                return configs.getRegistration().get(uri.getHost());
-            }
-        };
+        return (configs, uri) -> configs.getRegistration().get(uri.getHost());
     }
 
     @Bean
