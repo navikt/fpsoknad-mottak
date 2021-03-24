@@ -48,7 +48,7 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Nytt token {}", token);
                 }
-                // request.getHeaders().add(AUTHORIZATION, token);
+                // request.getHeaders().setBearerAuth(token);
                 if (EnvUtil.isDevOrLocal(env)) {
                     LOG.info("Headers etter {}", request.getHeaders());
                 }
