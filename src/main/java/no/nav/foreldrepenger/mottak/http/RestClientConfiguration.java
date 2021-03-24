@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static java.util.function.Predicate.not;
 import static org.springframework.retry.RetryContext.NAME;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -32,8 +32,7 @@ public class RestClientConfiguration {
     @Bean
     @Primary
     public RestOperations nonTokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
-        LOG.info("Message interceptorer er {}", Arrays.toString(interceptors));
-        var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(TokenExchangeClientRequestInterceptor.class)))
+        var filtered = Arrays.stream(interceptors).filter(not(i -> i.getClass().equals(TokenExchangeClientRequestInterceptor.class)))
                 .collect(Collectors.toList());
         LOG.info("Filtered message interceptorer for non token X er {}", filtered);
         return builder
@@ -45,7 +44,7 @@ public class RestClientConfiguration {
     @Bean
     @Qualifier("tokenx")
     public RestOperations tokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
-        var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
+        var filtered = Arrays.stream(interceptors).filter(not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
                 .collect(Collectors.toList());
         LOG.info("Filtered message interceptorer for token X er {}", filtered);
         return builder
