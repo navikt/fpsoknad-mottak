@@ -35,7 +35,7 @@ public class RestClientConfiguration {
         LOG.info("Message interceptorer er {}", Arrays.toString(interceptors));
         var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(TokenExchangeClientRequestInterceptor.class)))
                 .collect(Collectors.toList());
-        LOG.info("Filtered message interceptorer non token X er {}", filtered);
+        LOG.info("Filtered message interceptorer for non token X er {}", filtered);
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(filtered)
@@ -47,7 +47,7 @@ public class RestClientConfiguration {
     public RestOperations tokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
         var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
                 .collect(Collectors.toList());
-        LOG.info("Filtered message interceptorer token X er {}", filtered);
+        LOG.info("Filtered message interceptorer for token X er {}", filtered);
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(filtered)
