@@ -10,6 +10,7 @@ import java.time.Duration;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class SakStatusPoller extends AbstractRestConnection {
 
     private final int maxAntallForsøk;
 
-    public SakStatusPoller(RestOperations restOperations, @Value("${fpinfo.max:10}") int maxAntallForsøk) {
+    public SakStatusPoller(@Qualifier("tokenx") RestOperations restOperations, @Value("${fpinfo.max:10}") int maxAntallForsøk) {
         super(restOperations);
         this.maxAntallForsøk = maxAntallForsøk;
     }
