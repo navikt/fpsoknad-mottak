@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.retry.annotation.EnableRetry;
 
+import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client;
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 
 @EnableJwtTokenValidation(ignore = { "graphql.spring", "org.springframework", "springfox.documentation" })
@@ -16,7 +17,7 @@ import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 @EnableCaching
 @EnableRetry
 @EnableKafka
-//@EnableOAuth2Client(cacheEnabled = true)
+@EnableOAuth2Client(cacheEnabled = true)
 @ConfigurationPropertiesScan
 public class MottakApplication {
     public static void main(String[] args) {
