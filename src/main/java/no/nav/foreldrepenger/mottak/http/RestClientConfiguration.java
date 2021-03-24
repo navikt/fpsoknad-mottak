@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
+import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
@@ -29,14 +31,26 @@ public class RestClientConfiguration {
 
     @Bean
     @Primary
-    public RestOperations restTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
+    public RestOperations nonTokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
         LOG.info("Message interceptorer er {}", Arrays.toString(interceptors));
-        var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
+        var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(TokenExchangeClientRequestInterceptor.class)))
                 .collect(Collectors.toList());
-        LOG.info("Filtered message interceptorer er {}", filtered);
+        LOG.info("Filtered message interceptorer for non token X er {}", filtered);
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(interceptors)
+                .interceptors(filtered)
+                .build();
+    }
+
+    @Bean
+    @Qualifier("tokenx")
+    public RestOperations tokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
+        var filtered = Arrays.stream(interceptors).filter(Predicate.not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
+                .collect(Collectors.toList());
+        LOG.info("Filtered message interceptorer for token X er {}", filtered);
+        return builder
+                .requestFactory(NonRedirectingRequestFactory.class)
+                .interceptors(filtered)
                 .build();
     }
 
