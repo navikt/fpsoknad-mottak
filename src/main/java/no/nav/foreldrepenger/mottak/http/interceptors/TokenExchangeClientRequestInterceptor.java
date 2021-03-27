@@ -39,13 +39,8 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
         URI uri = request.getURI();
         var config = finder.findProperties(configs, uri);
         if (config != null) {
-            try {
                 var token = service.getAccessToken(config).getAccessToken();
                 request.getHeaders().setBearerAuth(token);
-                }
-            } catch (Exception e) {
-                LOG.warn("OOPS", e);
-            }
         } else {
             LOG.info("Ingen konfig for {}", uri);
         }
