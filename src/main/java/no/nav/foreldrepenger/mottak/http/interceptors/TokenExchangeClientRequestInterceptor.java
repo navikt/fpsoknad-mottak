@@ -7,9 +7,7 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -22,13 +20,12 @@ import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 
 @ConditionalOnK8s
 @Order(HIGHEST_PRECEDENCE)
-public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestInterceptor, EnvironmentAware {
+public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(TokenExchangeClientRequestInterceptor.class);
     private final ClientConfigurationProperties configs;
     private final OAuth2AccessTokenService service;
     private final ClientPropertiesFinder finder;
-    private Environment env;
 
     public TokenExchangeClientRequestInterceptor(ClientConfigurationProperties configs,
             OAuth2AccessTokenService service, ClientPropertiesFinder finder) {
@@ -43,14 +40,8 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
         var config = finder.findProperties(configs, uri);
         if (config != null) {
             try {
-                LOG.info("Headers før {}", request.getHeaders());
                 var token = service.getAccessToken(config).getAccessToken();
-                if (EnvUtil.isDevOrLocal(env)) {
-                    LOG.info("Nytt token {}", token);
-                }
                 request.getHeaders().setBearerAuth(token);
-                if (EnvUtil.isDevOrLocal(env)) {
-                    LOG.info("Headers etter {}", request.getHeaders());
                 }
             } catch (Exception e) {
                 LOG.warn("OOPS", e);
@@ -64,11 +55,5 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [service=" + service + "]";
-    }
-
-    @Override
-    public void setEnvironment(Environment env) {
-        this.env = env;
-
     }
 }
