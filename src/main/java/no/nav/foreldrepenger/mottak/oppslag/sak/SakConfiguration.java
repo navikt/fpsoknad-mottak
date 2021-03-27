@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestOperations;
 
+import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
@@ -40,6 +41,7 @@ public class SakConfiguration {
     public RestOperations restOperationsSak(ClientHttpRequestInterceptor... interceptors) {
         List<ClientHttpRequestInterceptor> interceptorListWithoutAuth = Arrays.stream(interceptors)
                 .filter(i -> !(i instanceof BearerTokenClientHttpRequestInterceptor))
+                .filter(i -> !(i instanceof TokenExchangeClientRequestInterceptor))
                 .collect(toCollection(ArrayList::new));
 
         return new RestTemplateBuilder()
