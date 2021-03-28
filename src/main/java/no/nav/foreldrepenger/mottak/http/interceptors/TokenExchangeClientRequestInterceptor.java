@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.http.interceptors;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 import java.io.IOException;
-import java.net.URI;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
-import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 
@@ -35,16 +34,12 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
     }
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        URI uri = request.getURI();
-        var config = finder.findProperties(configs, uri);
-        if (config != null) {
-                var token = service.getAccessToken(config).getAccessToken();
-                request.getHeaders().setBearerAuth(token);
-        } else {
-            LOG.info("Ingen konfig for {}", uri);
-        }
-        return execution.execute(request, body);
+    public ClientHttpResponse intercept(HttpRequest req, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+        Optional.ofNullable(finder.findProperties(configs, req))
+                .ifPresentOrElse(config -> req.getHeaders().setBearerAuth(service.getAccessToken(config).getAccessToken()),
+                        () -> LOG.info("Ingen konfig for {}", req.getURI()));
+
+        return execution.execute(req, body);
     }
 
     @Override
