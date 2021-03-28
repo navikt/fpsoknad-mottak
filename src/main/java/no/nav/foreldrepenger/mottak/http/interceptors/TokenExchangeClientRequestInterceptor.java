@@ -44,6 +44,7 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [service=" + service + "]";
+        return getClass().getSimpleName() + " [configs=" + configs + ", service=" + service + ", finder=" + finder + "]";
     }
+
 }
