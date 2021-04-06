@@ -1,18 +1,15 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.localDateTime;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import no.nav.security.token.support.core.jwt.JwtToken;
 
-@JsonAutoDetect(fieldVisibility = ANY)
 public record SystemToken(@JsonProperty("access_token") JwtToken accessToken,
         @JsonProperty("expires_in") Long expiresIn,
         @JsonProperty("token_type") String tokenType,
