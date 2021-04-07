@@ -105,7 +105,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     private Set<PDLBarn> barn(PDLSøker søker) {
-        return safeStream(søker.getForelderBarnRelasjoner())
+        return safeStream(søker.getForelderBarnRelasjon())
                 .filter(b -> b.relatertPersonsrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(søker.getId(), b.id()))
