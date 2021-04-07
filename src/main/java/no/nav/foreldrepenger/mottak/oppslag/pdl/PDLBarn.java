@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.function.Predicate.not;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering.UGRADERT;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -23,7 +23,7 @@ class PDLBarn {
     private static final Logger LOG = LoggerFactory.getLogger(PDLBarn.class);
     @JsonProperty("foedsel")
     private final Set<PDLFødsel> fødselsdato;
-    private final Set<PDLFamilierelasjon> familierelasjoner;
+    private final Set<PDLForelderBarnRelasjon> forelderBarnRelasjon;
     private String id;
     private final Set<PDLNavn> navn;
     @JsonProperty("kjoenn")
@@ -36,11 +36,11 @@ class PDLBarn {
     private PDLAnnenPart annenPart;
 
     String annenPart(String fnrSøker) {
-        return familierelasjoner.stream()
+        return forelderBarnRelasjon.stream()
                 .filter(r -> r.minRolle().equals(BARN))
                 .filter(not(r -> r.id().equals(fnrSøker)))
                 .findFirst()
-                .map(PDLFamilierelasjon::id)
+                .map(PDLForelderBarnRelasjon::id)
                 .orElse(null);
     }
 

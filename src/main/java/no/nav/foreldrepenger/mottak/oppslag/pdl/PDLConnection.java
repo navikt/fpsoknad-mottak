@@ -9,7 +9,7 @@ import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.BARN_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.IDENT_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.NAVN_QUERY;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConfig.SØKER_QUERY;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.AKTORID;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe.FOLKEREGISTERIDENT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLMapper.map;
@@ -105,7 +105,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     private Set<PDLBarn> barn(PDLSøker søker) {
-        return safeStream(søker.getFamilierelasjoner())
+        return safeStream(søker.getForelderBarnRelasjoner())
                 .filter(b -> b.relatertPersonsrolle().equals(BARN))
                 .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(søker.getId(), b.id()))
