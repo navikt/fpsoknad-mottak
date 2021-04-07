@@ -3,9 +3,9 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.BARN;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.FAR;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLFamilierelasjon.PDLRelasjonsRolle.MOR;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.FAR;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.MOR;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLKjønn.mann;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLKjønn.Kjønn.KVINNE;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLKjønn.Kjønn.MANN;
@@ -102,8 +102,8 @@ class PDLSerializationTest {
     }
 
     @Test
-    void testFamilierelasjonPDL() {
-        test(familierelasjon());
+    void testFprelderBarnRelasjonPDL() {
+        test(forelderbarnrelasjon());
     }
 
     @Test
@@ -206,14 +206,14 @@ class PDLSerializationTest {
         return Set.of(new PDLFødsel(født));
     }
 
-    private static Set<PDLFamilierelasjon> familierelasjoner() {
+    private static Set<PDLForelderBarnRelasjon> familierelasjoner() {
         return Set.of(
-                new PDLFamilierelasjon(ID_ANNEN, FAR, BARN),
-                new PDLFamilierelasjon(ID_SØKER, MOR, BARN));
+                new PDLForelderBarnRelasjon(ID_ANNEN, FAR, BARN),
+                new PDLForelderBarnRelasjon(ID_SØKER, MOR, BARN));
     }
 
-    private static PDLFamilierelasjon familierelasjon() {
-        return new PDLFamilierelasjon(ID_ANNEN, FAR, BARN);
+    private static PDLForelderBarnRelasjon forelderbarnrelasjon() {
+        return new PDLForelderBarnRelasjon(ID_ANNEN, FAR, BARN);
     }
 
     private static BarnDTO barn() {
