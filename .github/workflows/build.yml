@@ -45,7 +45,7 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.NOTIFICATION }} # Må ha denne fordi vi henter artifakt fra fp-felles.
 
             - name: Log into ghcr registry
-              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u x-access-token --password-stdin
+              run: echo "${{ secrets.NOTIFICATION }}" | docker login ghcr.io -u x-access-token --password-stdin
 
             - name: Bygg, tag og push Docker image
               run: |
