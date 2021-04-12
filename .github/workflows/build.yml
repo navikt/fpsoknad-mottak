@@ -6,19 +6,15 @@ on:
         branches:
             - master
 env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     GITHUB_USERNAME: x-access-token
-    IMAGE_BASE: docker.pkg.github.com/${{ github.repository }}/fpsoknad-mottak
+    GITHUB_TOKEN: ${{ secrets.NOTIFICATION }} # Må ha denne fordi vi henter artifakt fra fp-felles.
     IMAGE_BASE_CR: ghcr.io/${{ github.repository }}
 
 jobs:
     kompiler:
         runs-on: ubuntu-latest
         steps:
-
-
-            - name: Sjekk ut kode
-              uses: actions/checkout@v2
+            - uses: actions/checkout@v2
 
             - name: Hent tag
               run: |
@@ -42,24 +38,18 @@ jobs:
                   java-version: 16
                   distribution: 'adopt'
 
-
             - name: Kompiler
               run: |
                   mvn versions:set -DnewVersion=${TAG}
                   mvn clean install --batch-mode --quiet --settings .github/.m2/settings.xml
 
+            - name: Log into ghcr registry
+              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
             - name: Bygg, tag og push Docker image
               run: |
-                  docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest --tag ${IMAGE_BASE_CR}:${TAG} --tag ${IMAGE_BASE_CR}:latest .
-                  echo "$GITHUB_PASSWORD" | docker login --username "$GITHUB_USERNAME" --password-stdin https://docker.pkg.github.com
-                  echo "$GITHUB_PASSWORD" | docker login --username "$GITHUB_USERNAME" --password-stdin ghcr.io
-                  docker push ${IMAGE_BASE}:${TAG}
-                  docker push ${IMAGE_BASE}:latest
-                  docker push ${IMAGE_BASE_CR}:${TAG}
-                  docker push ${IMAGE_BASE_CR}:latest
-              env:
-                  GITHUB_USERNAME: x-access-token
-                  GITHUB_PASSWORD: ${{ secrets.GHCR_PUSH_TOKEN }}
+                  docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
+                  docker push ${IMAGE_BASE} --all-tags
 
             - name: Lukk gamle bygg-issues
               uses: actions/github-script@v3
@@ -81,27 +71,36 @@ jobs:
                           });
                         });
                       });
-            - name: Opprett issue, trigg deploy til dev-fss
-              id: issue
-              if: success()
-              uses: actions/github-script@v3
-              with:
-                  github-token: ${{secrets.NOTIFICATION}}
-                  script: |
-                      github.issues.create( {
-                        owner: context.issue.owner,
-                        repo: context.issue.repo,
-                        labels: ['bygg'],
-                        title: 'Deploy av ${{ env.TAG }}'})
-                      .then(response => {
-                              core.setOutput('id', response.data.number);
-                       });
+            -  name: Opprett deployment issue
+               id: createdeployissue
+               if: success()
+               uses: actions/github-script@v3
+               with:
+                   github-token: ${{secrets.GITHUB_TOKEN}}
+                   script: |
+                       github.issues.create( {
+                         owner: context.issue.owner,
+                         repo: context.issue.repo,
+                         labels: ['deployment'],
+                         title: 'Deploy av ${{ env.TAG }}'})
+                       .then(response => {
+                               core.setOutput('number', response.data.number);
+                        });
 
-            - name: Trigger verdikjedetestene i fpsak-autotest prosjektet
-              if: success()
-              uses: peter-evans/repository-dispatch@v1
+            - uses: navikt/github-app-token-generator@v1
+              id: get-token
               with:
-                  token: ${{ secrets.NOTIFICATION }}
-                  repository: navikt/fpsak-autotest
-                  event-type: mottak-verdikjede
-                  client-payload: '{ "trigger": "${{ github.repository }}", "version": "${{ env.TAG }}", "issue-number": "${{ steps.issue.outputs.id }}" }'
+                  private-key: ${{ secrets.FP_PRIVATE_KEY }}
+                  app-id: ${{ secrets.FP_APP_ID }}
+
+            - name: Trigger tester for FP
+              run: |
+                  curl -XPOST -u "x-access-token:${{ steps.get-token.outputs.token }}" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  https://api.github.com/repos/navikt/fpsak-autotest/actions/workflows/trigger.yml/dispatches \
+                  -d '{"ref":"master",
+                          "inputs":{
+                              "trigger": "${{ github.repository }}",
+                              "version": "${{ env.TAG }}",
+                              "issue_number": "${{ steps.createdeployissue.outputs.number }}"
+                          }}'
