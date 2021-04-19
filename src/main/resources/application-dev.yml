@@ -5,20 +5,39 @@ management :
             include:  '*'
    endpoint:
      health:
-        show-details : always   
+        show-details : always
+no.nav:
+    security:
+        jwt:
+            client:
+                registration:
+                    fpinfo:
+                        well-known-url: ${token.x.well.known.url}
+                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+                        authentication:
+                            client-id: ${token.x.client.id}
+                            client-jwk: ${token.x.private.jwk}
+                            client-auth-method: private_key_jwt
+                        token-exchange:
+                            audience: dev-fss:teamforeldrepenger:fpinfo
+            issuer:
+                selvbetjening:
+                    discoveryurl: ${loginservice.idporten.discovery.url}
+                    accepted_audience: ${loginservice.idporten.audience}
+                    cookie_name: selvbetjening-idtoken
 spring:
    config.import: vault://
    cloud:
       vault:
          reactive:
            enabled: false
-         enabled: true 
+         enabled: true
          uri: https://vault.adeo.no
          authentication: KUBERNETES
          kubernetes:
             role: fpsoknad-mottak
             kubernetes-path: kubernetes/preprod/fss
-            service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token        
+            service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
          kv:
             enabled: true
             backend: kv/preprod/fss
@@ -26,8 +45,8 @@ spring:
             default-context: fpsoknad-mottak/teamforeldrepenger
    codec:
      log-request-details: true
-   kafka:  
-       consumer: 
+   kafka:
+       consumer:
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
        producer:
          bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00046.preprod.local:8443
@@ -48,9 +67,8 @@ varsel:
 sak:
   saker:
      url: https://sak-q1.nais.preprod.local/api/v1/saker
-    
+
 securitytokenservice:
-    url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/             
-       
-     
-  
+    url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
+
+

@@ -1,59 +1,41 @@
 arbeidsforhold:
-    base-uri: https://modapp.adeo.no/aareg-services/api 
-    sporingsinformasjon: true 
-    
+    base-uri: https://modapp.adeo.no/aareg-services/api
+    sporingsinformasjon: true
+
 organisasjon:
-    base-uri: https://modapp.adeo.no/ereg/api  
-      
+    base-uri: https://modapp.adeo.no/ereg/api
+
 sts:
   base-uri:  https://security-token-service.nais.adeo.no
   username: ${kafka.username}
-  password: ${kafka.password} 
-  
+  password: ${kafka.password}
+
 sak:
   securitytokenservice:
     username: ${securitytokenservice.username}
     password : ${securitytokenservice.password}
-    url: ${securitytokenservice.url} 
-  saker:  
+    url: ${securitytokenservice.url}
+  saker:
      url: https://sak.nais.adeo.no/api/v1/saker
-     
+
 securitytokenservice:
     username: ${kafka.username}
     password : ${kafka.password}
-    url: https://sts.adeo.no/SecurityTokenServiceProvider/       
-          
+    url: https://sts.adeo.no/SecurityTokenServiceProvider/
+
 varsel:
    uri: mq://a01apvl063.adeo.no:1414/MPLSC02
    channelname: P_FPSOKNAD_VARSEL
    queue-name: QA.P_VARSELPRODUKSJON.SEND_VARSEL
    username: srvappserver
-   
+
 mottak:
    sender:
       domainevent:
          enabled: true
          topic: fpsoknad-mottak
-        
-no.nav:
-   security:
-     jwt:
-        client:
-         registration:
-           fpinfo:
-             well-known-url: ${token.x.well.known.url}
-             grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-             authentication:
-               client-id: ${token.x.client.id}
-               client-jwk: ${token.x.private.jwk}
-               client-auth-method: private_key_jwt
-             token-exchange:
-               audience: dev-fss:teamforeldrepenger:fpinfo 
-        issuer:
-         selvbetjening:
-            discoveryurl: ${loginservice.idporten.discovery.url}
-            accepted_audience: ${loginservice.idporten.audience}  
-            cookie_name: selvbetjening-idtoken
+
+
 http:
    proxy: http://webproxy-nais.nav.no:8088
 
