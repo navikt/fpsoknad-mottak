@@ -31,15 +31,6 @@ mottak:
       domainevent:
          enabled : false
 
-no.nav:
-    security:
-        jwt:
-            issuer:
-                selvbetjening:
-                    discoveryurl: ${loginservice.idporten.discovery.url}
-                    accepted_audience: ${loginservice.idporten.audience}
-                    cookie_name: selvbetjening-idtoken
-
 http.proxy:
 
 management:

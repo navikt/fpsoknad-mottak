@@ -4,19 +4,8 @@ no.nav:
             client:
                 registration:
                     fpinfo:
-                        well-known-url: ${token.x.well.known.url}
-                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
-                        authentication:
-                            client-id: ${token.x.client.id}
-                            client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt
                         token-exchange:
                             audience: prod-fss:teamforeldrepenger:fpinfo
-            issuer:
-                selvbetjening:
-                    discoveryurl: ${loginservice.idporten.discovery.url}
-                    accepted_audience: ${loginservice.idporten.audience}
-                    cookie_name: selvbetjening-idtoken
 
 spring:
     config.import: vault://
