@@ -47,6 +47,15 @@ kafka:
     username: ${kafka.username}
     password : ${kafka.password}
 
+no.nav:
+    security:
+        jwt:
+            client:
+                registration:
+                    fpinfo:
+                        token-exchange:
+                            audience: local:teamforeldrepenger:fpinfo
+
 server:
     port: 9001
 spring:

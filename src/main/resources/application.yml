@@ -47,8 +47,6 @@ no.nav:
                             client-id: ${token.x.client.id}
                             client-jwk: ${token.x.private.jwk}
                             client-auth-method: private_key_jwt
-                        token-exchange:
-                            audience: dev-fss:teamforeldrepenger:fpinfo
             issuer:
                 selvbetjening:
                     discoveryurl: ${loginservice.idporten.discovery.url}
