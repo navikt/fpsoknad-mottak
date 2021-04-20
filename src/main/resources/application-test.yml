@@ -31,15 +31,6 @@ mottak:
       domainevent:
          enabled : false
 
-no.nav:
-    security:
-        jwt:
-            issuer:
-                selvbetjening:
-                    discoveryurl: ${loginservice.idporten.discovery.url}
-                    accepted_audience: ${loginservice.idporten.audience}
-                    cookie_name: selvbetjening-idtoken
-
 http.proxy:
 
 management:
@@ -55,7 +46,14 @@ management:
 kafka:
     username: ${kafka.username}
     password : ${kafka.password}
-
+no.nav:
+    security:
+        jwt:
+            client:
+                registration:
+                    fpinfo:
+                        token-exchange:
+                            audience: test:teamforeldrepenger:fpinfo
 server:
     port: 9001
 spring:
