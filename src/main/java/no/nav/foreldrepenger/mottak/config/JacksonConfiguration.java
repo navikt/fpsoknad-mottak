@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenResponse;
 
@@ -15,6 +16,11 @@ class JacksonConfiguration {
     @Bean
     public Module customSerializers() {
         return new CustomSerializerModule();
+    }
+
+    @Bean
+    public Module parameterNamesModule() {
+        return new ParameterNamesModule();
     }
 
     @Bean
