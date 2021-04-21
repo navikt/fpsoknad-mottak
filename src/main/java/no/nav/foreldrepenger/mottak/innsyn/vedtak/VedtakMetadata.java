@@ -5,7 +5,7 @@ import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 
 public record VedtakMetadata(String journalpostId, SøknadEgenskap e) {
     public FagsakType getType() {
-        return e.getFagsakType();
+        return e.fagsakType();
     }
 
     public String getVersjon() {

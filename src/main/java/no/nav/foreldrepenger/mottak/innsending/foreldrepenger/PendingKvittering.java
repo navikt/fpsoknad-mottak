@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PendingKvittering extends FordelKvittering {
 
@@ -20,7 +19,7 @@ public class PendingKvittering extends FordelKvittering {
     }
 
     @JsonCreator
-    public PendingKvittering(@JsonProperty("pollInterval") Duration pollInterval) {
+    public PendingKvittering(Duration pollInterval) {
         super(STATUS);
         this.pollInterval = pollInterval;
     }

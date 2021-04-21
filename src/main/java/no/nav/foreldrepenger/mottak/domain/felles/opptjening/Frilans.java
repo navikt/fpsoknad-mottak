@@ -7,9 +7,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -27,12 +24,11 @@ public class Frilans {
     private final List<FrilansOppdrag> frilansOppdrag;
     private final List<String> vedlegg;
 
-    @JsonCreator
-    public Frilans(@JsonProperty("periode") ÅpenPeriode periode,
-            @JsonProperty("harInntektFraFosterhjem") boolean harInntektFraFosterhjem,
-            @JsonProperty("nyOppstartet") boolean nyOppstartet,
-            @JsonProperty("frilansOppdrag") List<FrilansOppdrag> frilansOppdrag,
-            @JsonProperty("vedlegg") List<String> vedlegg) {
+    public Frilans(ÅpenPeriode periode,
+            boolean harInntektFraFosterhjem,
+            boolean nyOppstartet,
+            List<FrilansOppdrag> frilansOppdrag,
+            List<String> vedlegg) {
         this.periode = periode;
         this.harInntektFraFosterhjem = harInntektFraFosterhjem;
         this.nyOppstartet = nyOppstartet;

@@ -38,11 +38,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 
+import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
 import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
 import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
@@ -65,6 +67,7 @@ import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = JacksonConfiguration.class)
 public class TestForeldrepengerSerialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestForeldrepengerSerialization.class);

@@ -75,7 +75,7 @@ public class Konvolutt {
     }
 
     public FagsakType getFagsakType() {
-        return getEgenskap().getFagsakType();
+        return getEgenskap().fagsakType();
     }
 
     public SøknadType getType() {

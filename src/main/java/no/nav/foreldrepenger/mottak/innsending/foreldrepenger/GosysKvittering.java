@@ -2,17 +2,13 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class GosysKvittering extends FordelKvittering {
 
     static final String STATUS = "GOSYS";
 
     private final String journalpostId;
 
-    @JsonCreator
-    public GosysKvittering(@JsonProperty("journalpostId") String journalpostId) {
+    public GosysKvittering(String journalpostId) {
         super(STATUS);
         this.journalpostId = journalpostId;
     }

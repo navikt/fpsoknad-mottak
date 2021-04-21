@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +26,7 @@ public final class NorskForelder extends AnnenForelder {
     }
 
     @JsonCreator
-    public NorskForelder(@JsonProperty("fnr") Fødselsnummer fnr, @JsonProperty("navn") String navn) {
+    public NorskForelder(Fødselsnummer fnr, String navn) {
         this.fnr = fnr;
         this.navn = navn;
     }

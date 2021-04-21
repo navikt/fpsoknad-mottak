@@ -7,9 +7,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,10 +24,7 @@ public class TidligereOppholdsInformasjon {
     @Valid
     private final List<Utenlandsopphold> utenlandsOpphold;
 
-    @JsonCreator
-    public TidligereOppholdsInformasjon(
-            @JsonProperty("arbeidSiste12") ArbeidsInformasjon arbeidSiste12,
-            @JsonProperty("utenlandsOpphold") List<Utenlandsopphold> utenlandsOpphold) {
+    public TidligereOppholdsInformasjon(ArbeidsInformasjon arbeidSiste12, List<Utenlandsopphold> utenlandsOpphold) {
         this.arbeidSiste12 = arbeidSiste12;
         this.utenlandsOpphold = Optional.ofNullable(utenlandsOpphold).orElse(emptyList());
     }

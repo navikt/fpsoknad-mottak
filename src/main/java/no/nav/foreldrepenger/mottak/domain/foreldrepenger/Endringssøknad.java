@@ -9,7 +9,6 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,14 +46,14 @@ public class Endringssøknad extends Søknad {
     }
 
     @JsonCreator
-    public Endringssøknad(@JsonProperty("mottattdato") LocalDate mottattDato,
-            @JsonProperty("søker") Søker søker,
-            @JsonProperty("fordeling") Fordeling fordeling,
-            @JsonProperty("annenForelder") AnnenForelder annenForelder,
-            @JsonProperty("fødsel") Fødsel fødsel,
-            @JsonProperty("rettigheter") Rettigheter rettigheter,
-            @JsonProperty("saksnr") String saksnr,
-            @JsonProperty("vedlegg") List<Vedlegg> vedlegg) {
+    public Endringssøknad(LocalDate mottattDato,
+            Søker søker,
+            Fordeling fordeling,
+            AnnenForelder annenForelder,
+            Fødsel fødsel,
+            Rettigheter rettigheter,
+            String saksnr,
+            List<Vedlegg> vedlegg) {
         super(mottattDato, søker, new Foreldrepenger(annenForelder, fødsel, rettigheter, null, null, fordeling, null),
                 vedlegg);
         this.saksnr = saksnr;

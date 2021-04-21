@@ -32,7 +32,7 @@ class VedtakTest {
         String xml = load("xml/FPVedtakV2.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V2, e.getVersjon());
-        assertEquals(FORELDREPENGER, e.getFagsakType());
+        assertEquals(FORELDREPENGER, e.fagsakType());
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNotNull(vedtak);
         assertNotNull(vedtak.getUttak());
@@ -43,7 +43,7 @@ class VedtakTest {
         String xml = load("xml/ESVedtakV1.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V1, e.getVersjon());
-        assertEquals(ENGANGSSTØNAD, e.getFagsakType());
+        assertEquals(ENGANGSSTØNAD, e.fagsakType());
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNotNull(vedtak);
     }
@@ -53,7 +53,7 @@ class VedtakTest {
         String xml = load("xml/ESVedtakV2.xml");
         SøknadEgenskap e = INSPEKTØR.inspiser(xml);
         assertEquals(V2, e.getVersjon());
-        assertEquals(ENGANGSSTØNAD, e.getFagsakType());
+        assertEquals(ENGANGSSTØNAD, e.fagsakType());
         Vedtak vedtak = MAPPER.tilVedtak(xml, e);
         assertNotNull(vedtak);
     }
