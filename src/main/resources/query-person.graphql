@@ -18,10 +18,6 @@ query($ident: ID!){
         relatertPersonsIdent
         relatertPersonsRolle
         minRolleForPerson
-    },
-    sivilstand {
-       type
-       relatertVedSivilstand   
     }
   }  
 }

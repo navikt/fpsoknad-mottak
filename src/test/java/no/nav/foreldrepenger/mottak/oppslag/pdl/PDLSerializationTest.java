@@ -34,7 +34,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLSivilstand.PDLSivilstandType;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
@@ -141,11 +140,6 @@ class PDLSerializationTest {
     }
 
     @Test
-    void testSivilstandPDL() {
-        test(new PDLSivilstand(PDLSivilstandType.GIFT, ID_ANNEN));
-    }
-
-    @Test
     void testSøkerDTO() throws Exception {
         assertEquals(søker(), PDLMapper.map(ID_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
@@ -169,12 +163,7 @@ class PDLSerializationTest {
     }
 
     private static PDLSøker pdlSøker() {
-        return new PDLSøker(Set.of(kvinnePDLNavn()), pdlKvinne(), norsk(), fødsel(MORFØDT), familierelasjoner(),
-                sivilstand());
-    }
-
-    private static Set<PDLSivilstand> sivilstand() {
-        return Set.of(new PDLSivilstand(PDLSivilstandType.GIFT, ID_ANNEN));
+        return new PDLSøker(Set.of(kvinnePDLNavn()), pdlKvinne(), norsk(), fødsel(MORFØDT), familierelasjoner());
     }
 
     private static PDLFødsel fødsel() {
