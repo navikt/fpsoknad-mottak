@@ -31,9 +31,6 @@ public @interface ProtectedRestController {
     @AliasFor(annotation = RequestMapping.class, attribute = "value")
     String[] value() default {};
 
-    @AliasFor(annotation = ProtectedWithClaims.class, attribute = "claimMap")
-    String[] claimMap() default CLAIMS;
-
     @AliasFor(annotation = RequestMapping.class, attribute = "produces")
     String[] produces() default APPLICATION_JSON_VALUE;
 
