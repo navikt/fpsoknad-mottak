@@ -23,7 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnDev;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnNotProd;
 import no.nav.foreldrepenger.boot.conditionals.ConditionalOnProd;
 import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
@@ -68,7 +68,7 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTONR)
-    @ConditionalOnDev
+    @ConditionalOnNotProd
     public WebClient webClientKontonummerDev(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction filter) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
