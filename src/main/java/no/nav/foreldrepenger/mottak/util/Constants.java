@@ -13,6 +13,7 @@ public final class Constants {
     public static final String NAV_AKTØR_ID = "Nav-Aktør-Id";
     public static final String CALL_ID = "callId";
     public static final String ISSUER = "selvbetjening";
+    public static final String TOKENX = "tokenx";
     public static final String NAV_TOKEN_EXPIRY_ID = "Nav-Token-Expiry";
     public static final String NAV_PERSON_IDENT = "Nav-Personident";
     public static final String FNR = "fnr";
