@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.forsendelsesStatusKvittering;
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.sendtOgForsøktBehandletKvittering;
+import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
 
 import java.net.URI;
@@ -27,7 +28,7 @@ public class SakStatusPoller extends AbstractRestConnection {
 
     private final int maxAntallForsøk;
 
-    public SakStatusPoller(@Qualifier("tokenx") RestOperations restOperations, @Value("${fpinfo.max:10}") int maxAntallForsøk) {
+    public SakStatusPoller(@Qualifier(TOKENX) RestOperations restOperations, @Value("${fpinfo.max:10}") int maxAntallForsøk) {
         super(restOperations);
         this.maxAntallForsøk = maxAntallForsøk;
     }

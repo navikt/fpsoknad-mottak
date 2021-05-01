@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
+import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
     private final InnsynConfig config;
 
-    public InnsynConnection(@Qualifier("tokenx") RestOperations restOperations, InnsynConfig config) {
+    public InnsynConnection(@Qualifier(TOKENX) RestOperations restOperations, InnsynConfig config) {
         super(restOperations);
         this.config = config;
     }
