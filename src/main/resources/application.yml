@@ -51,9 +51,8 @@ no.nav:
                 selvbetjening:
                     discoveryurl: ${loginservice.idporten.discovery.url}
                     accepted_audience: ${loginservice.idporten.audience}
-                    cookie_name: selvbetjening-idtoken
                 tokenx:
-                    discoveryurl: ${token.x.well.known.url} 
+                    discoveryurl: ${token.x.well.known.url}
                     accepted_audience: ${token.x.client.id}
    
 
