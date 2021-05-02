@@ -55,9 +55,12 @@ no.nav:
                             client-jwk: ${token.x.private.jwk}
                             client-auth-method: private_key_jwt
             issuer:
-                selvbetjening:
-                    discovery-url: ${loginservice.idporten.discovery.url}
-                    accepted-audience: ${loginservice.idporten.audience}
+              tokenx:
+                 discovery-url: ${token.x.well.known.url}
+                 accepted-audience: ${token.x.client.id}
+              selvbetjening:
+                 discovery-url: ${loginservice.idporten.discovery.url}
+                 accepted-audience: ${loginservice.idporten.audience}
 
 http:
    proxy: http://webproxy-nais.nav.no:8088
