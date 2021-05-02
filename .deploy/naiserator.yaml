@@ -8,6 +8,10 @@ metadata:
 spec:
   tokenx:
     enabled: true
+    accessPolicy:
+     inbound:
+       rules:
+        - application: fpinfo-historikk
   envFrom:
     - configmap: loginservice-idporten
   image: {{image}}
