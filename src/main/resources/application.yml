@@ -40,6 +40,13 @@ no.nav:
         jwt:
             client:
                 registration:
+                    fpsoknad-oppslag:
+                        well-known-url: ${token.x.well.known.url}
+                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+                        authentication:
+                            client-id: ${token.x.client.id}
+                            client-jwk: ${token.x.private.jwk}
+                            client-auth-method: private_key_jwt
                     fpinfo:
                         well-known-url: ${token.x.well.known.url}
                         grant-type: urn:ietf:params:oauth:grant-type:token-exchange
