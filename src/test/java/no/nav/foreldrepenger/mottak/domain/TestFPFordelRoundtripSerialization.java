@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
+import no.nav.foreldrepenger.mottak.http.WebClientConfiguration.TokenXExchangeFilterFunction;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingHendelseProdusent;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator;
@@ -103,6 +104,8 @@ class TestFPFordelRoundtripSerialization {
 
     @MockBean
     TokenUtil tokenUtil;
+    @MockBean
+    TokenXExchangeFilterFunction tokenX;
     @Autowired
     ObjectMapper mapper;
 

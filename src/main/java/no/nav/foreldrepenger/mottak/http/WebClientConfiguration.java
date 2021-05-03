@@ -16,13 +16,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
+import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConfig;
@@ -32,6 +36,9 @@ import no.nav.foreldrepenger.mottak.oppslag.sts.STSConfig;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
+import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
+import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
+import reactor.core.publisher.Mono;
 
 @Configuration
 public class WebClientConfiguration {
@@ -63,7 +70,8 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTONR)
-    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenUtil tokenUtil) {
+    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenX) {
+        LOG.info("XXXX " + tokenX);
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
@@ -198,6 +206,40 @@ public class WebClientConfiguration {
     private String consumerId() {
         return Optional.ofNullable(MDCUtil.consumerId())
                 .orElse(consumer);
+    }
+
+    @ConditionalOnK8s
+    public class TokenXExchangeFilterFunction implements ExchangeFilterFunction {
+
+        private static final Logger LOG = LoggerFactory.getLogger(TokenXExchangeFilterFunction.class);
+
+        private final OAuth2AccessTokenService service;
+        private final ClientPropertiesFinder finder;
+        private final ClientConfigurationProperties configs;
+
+        TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service,
+                no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder finder) {
+            this.service = service;
+            this.finder = finder;
+            this.configs = configs;
+        }
+
+        @Override
+        public Mono<ClientResponse> filter(ClientRequest req, ExchangeFunction next) {
+            var config = finder.findProperties(configs, req.url());
+            if (config != null) {
+                LOG.trace("Exchanging for {}", req.url());
+                return next.exchange(ClientRequest.from(req).header(AUTHORIZATION + "Bearer ", service.getAccessToken(config).getAccessToken())
+                        .build());
+            }
+            LOG.trace("No exchanging for {}", req.url());
+            return next.exchange(ClientRequest.from(req).build());
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + " [service=" + service + ", finder=" + finder + ", configs=" + configs + "]";
+        }
     }
 
 }

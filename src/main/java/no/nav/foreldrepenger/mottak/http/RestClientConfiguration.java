@@ -56,7 +56,7 @@ public class RestClientConfiguration {
 
     @Bean
     public ClientPropertiesFinder propertiesFinder() {
-        return (configs, req) -> configs.getRegistration().get(req.getURI().getHost());
+        return (configs, req) -> configs.getRegistration().get(req.getHost());
     }
 
     @Bean
