@@ -56,8 +56,11 @@ public class RestClientConfiguration {
 
     @Bean
     public ClientPropertiesFinder propertiesFinder() {
-        return (configs, req) -> configs.getRegistration().get(req.getHost());
-    }
+        return (configs, req) -> {
+            LOG.trace("Slår opp properties for {}", req.getHost());
+            return configs.getRegistration().get(req.getHost());
+        };
+    };
 
     @Bean
     public List<RetryListener> retryListeners() {
