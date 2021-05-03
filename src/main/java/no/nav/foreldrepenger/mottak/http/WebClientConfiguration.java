@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -25,7 +26,6 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
@@ -208,7 +208,7 @@ public class WebClientConfiguration {
                 .orElse(consumer);
     }
 
-    @ConditionalOnK8s
+    @Component
     public class TokenXExchangeFilterFunction implements ExchangeFilterFunction {
 
         private static final Logger LOG = LoggerFactory.getLogger(TokenXExchangeFilterFunction.class);
