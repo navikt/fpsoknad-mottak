@@ -223,18 +223,18 @@ public class WebClientConfiguration {
             this.service = service;
             this.finder = finder;
             this.configs = configs;
-            LOG.info("Konstruert");
         }
 
         @Override
         public Mono<ClientResponse> filter(ClientRequest req, ExchangeFunction next) {
+            LOG.trace("Sjekker token exchange for {}", req.url());
             var config = finder.findProperties(configs, req.url());
             if (config != null) {
-                LOG.info("Exchanging for {}", req.url());
+                LOG.trace("Gjør token exchange for {}", req.url());
                 return next.exchange(ClientRequest.from(req).header(AUTHORIZATION + "Bearer ", service.getAccessToken(config).getAccessToken())
                         .build());
             }
-            LOG.info("No exchanging for {}", req.url());
+            LOG.trace("Ingen token exchange for {}", req.url());
             return next.exchange(ClientRequest.from(req).build());
         }
 
