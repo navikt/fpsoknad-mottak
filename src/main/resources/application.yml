@@ -61,7 +61,6 @@ no.nav:
               selvbetjening:
                  discovery-url: ${loginservice.idporten.discovery.url}
                  accepted-audience: ${loginservice.idporten.audience}
-                 proxy-url: http://webproxy.nais:8088
 
 management:
    metrics:
