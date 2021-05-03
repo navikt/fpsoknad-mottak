@@ -229,11 +229,11 @@ public class WebClientConfiguration {
         public Mono<ClientResponse> filter(ClientRequest req, ExchangeFunction next) {
             var config = finder.findProperties(configs, req.url());
             if (config != null) {
-                LOG.trace("Exchanging for {}", req.url());
+                LOG.info("Exchanging for {}", req.url());
                 return next.exchange(ClientRequest.from(req).header(AUTHORIZATION + "Bearer ", service.getAccessToken(config).getAccessToken())
                         .build());
             }
-            LOG.trace("No exchanging for {}", req.url());
+            LOG.info("No exchanging for {}", req.url());
             return next.exchange(ClientRequest.from(req).build());
         }
 

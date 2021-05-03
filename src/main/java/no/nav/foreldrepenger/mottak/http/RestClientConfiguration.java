@@ -60,7 +60,7 @@ public class RestClientConfiguration {
             LOG.trace("Slår opp properties for {}", req.getHost());
             return configs.getRegistration().get(req.getHost());
         };
-    };
+    }
 
     @Bean
     public List<RetryListener> retryListeners() {
