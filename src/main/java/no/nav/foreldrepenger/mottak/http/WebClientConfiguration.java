@@ -223,6 +223,7 @@ public class WebClientConfiguration {
             this.service = service;
             this.finder = finder;
             this.configs = configs;
+            LOG.info("Konstruert");
         }
 
         @Override
