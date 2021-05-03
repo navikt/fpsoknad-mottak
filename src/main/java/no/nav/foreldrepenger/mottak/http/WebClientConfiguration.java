@@ -76,7 +76,6 @@ public class WebClientConfiguration {
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(tokenXFilterFunction)
-                // .filter(authenticatingFilterFunction(tokenUtil))
                 .build();
     }
 
@@ -230,7 +229,7 @@ public class WebClientConfiguration {
             LOG.trace("Sjekker token exchange for {}", req.url());
             var config = finder.findProperties(configs, req.url());
             if (config != null) {
-                LOG.trace("Gjør token exchange for {}", req.url());
+                LOG.trace("Gjør token exchange for {} med konfig {}", req.url(), config);
                 return next.exchange(ClientRequest.from(req).header(AUTHORIZATION + "Bearer ", service.getAccessToken(config).getAccessToken())
                         .build());
             }
@@ -243,5 +242,4 @@ public class WebClientConfiguration {
             return getClass().getSimpleName() + " [service=" + service + ", finder=" + finder + ", configs=" + configs + "]";
         }
     }
-
 }
