@@ -72,11 +72,11 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTONR)
-    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenUtil tokenUtil) {
+    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                .filter(authenticatingFilterFunction(tokenUtil))
+                .filter(tokenXFilterFunction)
                 .build();
     }
 
