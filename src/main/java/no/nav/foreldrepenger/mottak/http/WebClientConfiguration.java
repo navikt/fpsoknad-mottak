@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.http;
 
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.Constants.FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
@@ -227,16 +226,17 @@ public class WebClientConfiguration {
 
         @Override
         public Mono<ClientResponse> filter(ClientRequest req, ExchangeFunction next) {
-            LOG.trace("Sjekker token exchange for {}", req.url());
-            var config = finder.findProperties(configs, req.url());
+            var url = req.url();
+            LOG.trace("Sjekker token exchange for {}", url);
+            var config = finder.findProperties(configs, url);
             if (config != null) {
-                LOG.trace("Gjør token exchange for {} med konfig {}", req.url(), config);
+                LOG.trace("Gjør token exchange for {} med konfig {}", url, config);
                 var token = service.getAccessToken(config).getAccessToken();
-                LOG.trace(CONFIDENTIAL, "Token er {}", token);
+                LOG.info("Token exchange for {} OK", url);
                 return next.exchange(ClientRequest.from(req).header(AUTHORIZATION, BEARER + token)
                         .build());
             }
-            LOG.trace("Ingen token exchange for {}", req.url());
+            LOG.trace("Ingen token exchange for {}", url);
             return next.exchange(ClientRequest.from(req).build());
         }
 
