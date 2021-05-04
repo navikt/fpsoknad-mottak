@@ -10,8 +10,8 @@ no.nav:
                     fpinfo:
                         token-exchange:
                             audience: prod-fss:teamforeldrepenger:fpinfo
-        issuer:
-              selvbetjening:
+            issuer:
+               selvbetjening:
                  proxy-url: http://webproxy.nais:8088
 spring:
     config.import: vault://
