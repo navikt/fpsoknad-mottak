@@ -1,10 +1,12 @@
 package no.nav.foreldrepenger.mottak.http;
 
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.util.Constants.FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_PERSON_IDENT;
+import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Optional;
@@ -70,8 +72,7 @@ public class WebClientConfiguration {
 
     @Bean
     @Qualifier(KONTONR)
-    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenUtil tokenUtil,
-            TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientKontonummer(Builder builder, KontonummerConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
@@ -230,7 +231,9 @@ public class WebClientConfiguration {
             var config = finder.findProperties(configs, req.url());
             if (config != null) {
                 LOG.trace("Gjør token exchange for {} med konfig {}", req.url(), config);
-                return next.exchange(ClientRequest.from(req).header(AUTHORIZATION + "Bearer ", service.getAccessToken(config).getAccessToken())
+                var token = service.getAccessToken(config).getAccessToken();
+                LOG.trace(CONFIDENTIAL, "Token er {}", token);
+                return next.exchange(ClientRequest.from(req).header(AUTHORIZATION, BEARER + token)
                         .build());
             }
             LOG.trace("Ingen token exchange for {}", req.url());

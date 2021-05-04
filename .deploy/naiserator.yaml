@@ -8,7 +8,7 @@ metadata:
 spec:
   tokenx:
     enabled: true
-    accessPolicy:
+  accessPolicy:
      inbound:
        rules:
         - application: fpinfo-historikk

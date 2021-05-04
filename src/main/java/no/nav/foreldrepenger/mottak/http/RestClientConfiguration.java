@@ -57,7 +57,7 @@ public class RestClientConfiguration {
     @Bean
     public ClientPropertiesFinder propertiesFinder() {
         return (configs, req) -> {
-            LOG.trace("Slår opp properties for {}", req.getHost());
+            LOG.trace("Slår opp properties for {} fra {}", req.getHost(), configs);
             return configs.getRegistration().get(req.getHost());
         };
     }
