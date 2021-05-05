@@ -110,13 +110,14 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_USER)
     @Bean
-    public WebClient webClientPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
+    public WebClient webClientPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil,
+            TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                .filter(temaFilterFunction())
-                .filter(tokenXFilterFunction)
-                // .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
+                // .filter(temaFilterFunction())
+                // .filter(tokenXFilterFunction)
+                .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
                 .build();
     }
 
