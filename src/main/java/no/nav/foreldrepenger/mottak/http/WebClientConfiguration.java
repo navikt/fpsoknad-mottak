@@ -115,9 +115,9 @@ public class WebClientConfiguration {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                // .filter(temaFilterFunction())
-                // .filter(tokenXFilterFunction)
-                .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
+                .filter(temaFilterFunction())
+                .filter(tokenXFilterFunction)
+                // .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
                 .build();
     }
 
