@@ -227,8 +227,7 @@ public class WebClientConfiguration {
         private final ClientPropertiesFinder finder;
         private final ClientConfigurationProperties configs;
 
-        TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service,
-                no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder finder) {
+        TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service, ClientPropertiesFinder finder) {
             this.service = service;
             this.finder = finder;
             this.configs = configs;

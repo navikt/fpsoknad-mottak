@@ -22,6 +22,8 @@ import org.springframework.retry.RetryListener;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestOperations;
 
+import com.google.common.base.Splitter;
+
 import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
@@ -58,7 +60,8 @@ public class RestClientConfiguration {
     public ClientPropertiesFinder propertiesFinder() {
         return (configs, req) -> {
             LOG.trace("Slår opp properties for {} fra {}", req.getHost(), configs);
-            return configs.getRegistration().get(req.getHost());
+            var name = Splitter.on(".").splitToList(req.getHost()).get(0);
+            return configs.getRegistration().get(name);
         };
     }
 
