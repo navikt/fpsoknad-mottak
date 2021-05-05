@@ -110,11 +110,13 @@ public class WebClientConfiguration {
 
     @Qualifier(PDL_USER)
     @Bean
-    public WebClient webClientPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
+    public WebClient webClientPDL(Builder builder, PDLConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil, TokenXExchangeFilterFunction tokenXFilterFunction) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
-                .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
+                .filter(temaFilterFunction())
+                .filter(tokenXFilterFunction)
+                // .filter(pdlUserExchangeFilterFunction(sts, tokenUtil))
                 .build();
     }
 
@@ -175,6 +177,13 @@ public class WebClientConfiguration {
                 .header(AUTHORIZATION, tokenUtil.bearerToken())
                 .header(TEMA, FORELDREPENGER)
                 .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
+                .build());
+
+    }
+
+    private static ExchangeFilterFunction temaFilterFunction() {
+        return (req, next) -> next.exchange(ClientRequest.from(req)
+                .header(TEMA, FORELDREPENGER)
                 .build());
 
     }

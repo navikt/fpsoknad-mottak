@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 public class PDLConfig extends AbstractConfig {
     private static final String DEFAULT_DØD_BARN_MÅNEDER_TILBAKE = "4";
     private static final String DEFAULT_FØDSEL_MÅNEDER_TILBAKE = "24";
-    private static final String DEFAULT_BASE_URI = "http://pdl-api.default/graphql";
+    private static final String DEFAULT_BASE_URI = "http://pdl-api.pdl/graphql";
     private static final String DEFAULT_PING_PATH = "/";
 
     static final String NAVN_QUERY = "query-navn.graphql";
