@@ -59,9 +59,8 @@ public class RestClientConfiguration {
     @Bean
     public ClientPropertiesFinder propertiesFinder() {
         return (configs, req) -> {
-            LOG.trace("Slår opp properties for {} fra {}", req.getHost(), configs);
-            var name = Splitter.on(".").splitToList(req.getHost()).get(0);
-            return configs.getRegistration().get(name);
+            LOG.info("Slår opp token X konfig for {}", req.getHost());
+            return configs.getRegistration().get(Splitter.on(".").splitToList(req.getHost()).get(0));
         };
     }
 
