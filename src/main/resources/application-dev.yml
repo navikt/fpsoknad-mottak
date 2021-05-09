@@ -17,6 +17,9 @@ no.nav:
                     fpinfo:
                         token-exchange:
                             audience: dev-fss:teamforeldrepenger:fpinfo
+                    fpfordel:
+                        token-exchange:
+                            audience: dev-fss:teamforeldrepenger:fpfordel                    
                     pdl-api:
                         token-exchange:
                             audience: dev-fss:pdl:pdl-api
