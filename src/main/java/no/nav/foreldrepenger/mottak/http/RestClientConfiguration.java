@@ -7,6 +7,7 @@ import static org.springframework.retry.RetryContext.NAME;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,8 @@ public class RestClientConfiguration {
     public RestOperations tokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
         var filtered = Arrays.stream(interceptors).filter(not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
                 .collect(toList());
-        LOG.info("Filtered message interceptorer for token X er {}", filtered);
+        LOG.trace("Filtered message interceptorer for token X er {}",
+                filtered.stream().map(m -> m.getClass().getSimpleName()).collect(Collectors.toList()));
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(filtered)
