@@ -11,8 +11,6 @@ fpsoknad-mottak
 
 Mottar søknader om svangerskapspenger, foreldrepenger og engangsstønad fra frontend og sender dem videre inn i NAV for behandling.   
 
-# Komme i gang
-
 ### For å kjøre lokalt: 
 
 Sett ekstraparameter `-parameters` til javac (I IntelliJ: Settings > Build, Execution, Deployment > Compiler > Java Compiler > Additional command line parameters).
