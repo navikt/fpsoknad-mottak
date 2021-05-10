@@ -13,11 +13,10 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 
-@ConditionalOnK8s
+//@ConditionalOnK8s
 @Order(HIGHEST_PRECEDENCE)
 public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestInterceptor {
 
