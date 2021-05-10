@@ -55,6 +55,9 @@ no.nav:
                     fpinfo:
                         token-exchange:
                             audience: local:teamforeldrepenger:fpinfo
+                    fpfordel:
+                        token-exchange:
+                            audience: local:teamforeldrepenger:fpfordel        
 
 server:
     port: 9001
