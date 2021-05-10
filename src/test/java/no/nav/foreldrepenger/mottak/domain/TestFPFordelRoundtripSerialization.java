@@ -24,12 +24,11 @@ import java.util.Collections;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -37,7 +36,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.mottak.MottakApplicationLocal;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.http.WebClientConfiguration.TokenXExchangeFilterFunction;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
@@ -52,8 +50,10 @@ import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.core.jwt.JwtToken;
+import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
+//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
+@Disabled
 @ActiveProfiles(profiles = { LOCAL, TEST })
 @TestPropertySource(properties = {
         "fpfordel.enabled=false",
@@ -88,6 +88,7 @@ import no.nav.security.token.support.core.jwt.JwtToken;
 })
 
 @EnableConfigurationProperties
+@EnableJwtTokenValidation
 class TestFPFordelRoundtripSerialization {
 
     private static MockOAuth2Server SERVER;
