@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.mottak.http.interceptors;
 
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID1;
+import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.Constants.X_CORRELATION_ID;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
@@ -25,6 +27,8 @@ public class MDCValuesPropagatingClienHttpRequesInterceptor implements ClientHtt
             throws IOException {
         propagerFraMDC(request, NAV_CALL_ID, NAV_CONSUMER_ID);
         propager(request, X_CORRELATION_ID, callId());
+        propager(request, NAV_CALL_ID1, callId());
+        propager(request, NAV_CALL_ID2, callId());
         return execution.execute(request, body);
     }
 
