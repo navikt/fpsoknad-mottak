@@ -29,7 +29,7 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.mottak.http.interceptors.ClientPropertiesFinder;
+import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConfig;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConfig;
@@ -159,29 +159,6 @@ public class WebClientConfiguration {
         };
     }
 
-    private static ExchangeFilterFunction authenticatingFilterFunction(TokenUtil tokenUtil) {
-        return (req, next) -> {
-            var builder = ClientRequest.from(req);
-            if (tokenUtil.erAutentisert()) {
-                return next.exchange(
-                        builder.header(AUTHORIZATION, tokenUtil.bearerToken())
-                                .build());
-
-            }
-            LOG.trace("Uautentisert bruker, kan ikke sette auth headers");
-            return next.exchange(builder.build());
-        };
-    }
-
-    private static ExchangeFilterFunction pdlUserExchangeFilterFunction(SystemTokenTjeneste sts, TokenUtil tokenUtil) {
-        return (req, next) -> next.exchange(ClientRequest.from(req)
-                .header(AUTHORIZATION, tokenUtil.bearerToken())
-                .header(TEMA, FORELDREPENGER)
-                .header(NAV_CONSUMER_TOKEN, sts.bearerToken())
-                .build());
-
-    }
-
     private static ExchangeFilterFunction temaFilterFunction() {
         return (req, next) -> next.exchange(ClientRequest.from(req)
                 .header(TEMA, FORELDREPENGER)
@@ -227,10 +204,10 @@ public class WebClientConfiguration {
         private static final Logger LOG = LoggerFactory.getLogger(TokenXExchangeFilterFunction.class);
 
         private final OAuth2AccessTokenService service;
-        private final ClientPropertiesFinder finder;
+        private final TokenXConfigFinder finder;
         private final ClientConfigurationProperties configs;
 
-        TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service, ClientPropertiesFinder finder) {
+        TokenXExchangeFilterFunction(ClientConfigurationProperties configs, OAuth2AccessTokenService service, TokenXConfigFinder finder) {
             this.service = service;
             this.finder = finder;
             this.configs = configs;

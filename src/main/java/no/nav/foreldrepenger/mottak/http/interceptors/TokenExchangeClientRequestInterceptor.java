@@ -25,10 +25,10 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
     private static final Logger LOG = LoggerFactory.getLogger(TokenExchangeClientRequestInterceptor.class);
     private final ClientConfigurationProperties configs;
     private final OAuth2AccessTokenService service;
-    private final ClientPropertiesFinder finder;
+    private final TokenXConfigFinder finder;
 
     public TokenExchangeClientRequestInterceptor(ClientConfigurationProperties configs,
-            OAuth2AccessTokenService service, ClientPropertiesFinder finder) {
+            OAuth2AccessTokenService service, TokenXConfigFinder finder) {
         this.configs = configs;
         this.service = service;
         this.finder = finder;
