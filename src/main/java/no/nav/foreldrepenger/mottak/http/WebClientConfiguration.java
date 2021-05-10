@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static no.nav.foreldrepenger.mottak.util.Constants.FORELDREPENGER;
+import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID1;
+import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.mottak.util.Constants.NAV_PERSON_IDENT;
@@ -207,7 +209,10 @@ public class WebClientConfiguration {
     private ExchangeFilterFunction correlatingFilterFunction() {
         return (req, next) -> next.exchange(ClientRequest.from(req)
                 .header(NAV_CONSUMER_ID, consumerId())
+                .header(NAV_CALL_ID, MDCUtil.callId())
                 .header(NAV_CALL_ID1, MDCUtil.callId())
+                .header(NAV_CALL_ID2, MDCUtil.callId())
+
                 .build());
     }
 
