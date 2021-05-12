@@ -26,6 +26,7 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnVTP;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
