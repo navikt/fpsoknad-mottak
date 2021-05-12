@@ -26,10 +26,8 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnVTP;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
-import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
@@ -49,11 +47,13 @@ public class RestClientConfiguration {
                 .build();
     }
 
-    @ConditionalOnVTP
-    @Bean
-    public ClientHttpRequestInterceptor localPassthrough(TokenValidationContextHolder holder) {
-        return new BearerTokenClientHttpRequestInterceptor(holder);
-    }
+    /*
+     * @ConditionalOnVTP
+     * 
+     * @Bean public ClientHttpRequestInterceptor
+     * localPassthrough(TokenValidationContextHolder holder) { return new
+     * BearerTokenClientHttpRequestInterceptor(holder); }
+     */
 
     @Bean
     @Qualifier(TOKENX)
