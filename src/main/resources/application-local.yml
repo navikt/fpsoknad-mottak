@@ -1,26 +1,26 @@
 arbeidsforhold:
-    base-uri: ${aareg.rs.url}
+    base-uri: http://localhost:8060/rest/aareg-services/api
 
 organisasjon:
-    base-uri: ${organisasjon.rs.url}
+    base-uri: http://localhost:8060/rest/ereg/api/v1/organisasjon
 
 sts:
-    base-uri: ${oidc.sts.issuer.url}
-    username: ${kafka.username}
-    password: ${kafka.password}
+    base-uri: http://localhost:8060
+    username: vtp
+    password: vtp
 
 sak:
     securitytokenservice:
-        username: ${securitytokenservice.username}
-        password : ${securitytokenservice.password}
-        url: ${securitytokenservice.url}
+        username: vtp
+        password : vtp
+        url: http://localhost:8060/soap/SecurityTokenServiceProvider/
     saker:
-        url: ${sak.rs.url}
+        url: http://localhost:8060/rest/sak/api/v1/saker
 
 securitytokenservice:
-    username: ${kafka.username}
-    password : ${kafka.password}
-    url: ${securitytokenservice.url}
+    username: vtp
+    password : vtp
+    url: http://localhost:8060/soap/SecurityTokenServiceProvider/
 
 varsel:
     username: username
@@ -30,6 +30,47 @@ mottak:
    sender:
       domainevent:
          enabled : false
+
+no.nav:
+    security:
+        jwt:
+            client:
+                registration:
+                    fpsoknad-oppslag:
+                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        token-exchange:
+                            audience: local:teamforeldrepenger:fpsoknad-oppslag
+                        authentication:
+                            client-id: fpsoknad-mottak
+                            client-jwk: src/test/resources/tokenx/jwk.json
+                    fpinfo:
+                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        token-exchange:
+                            audience: local:teamforeldrepenger:fpinfo
+                        authentication:
+                            client-id: fpsoknad-mottak
+                            client-jwk: src/test/resources/tokenx/jwk.json
+                    fpfordel:
+                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        token-exchange:
+                            audience: local:teamforeldrepenger:fpfordel
+                        authentication:
+                            client-id: fpsoknad-mottak
+                            client-jwk: src/test/resources/tokenx/jwk.json
+                    pdl-api:
+                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        token-exchange:
+                            audience: local:teamforeldrepenger:pdl-api
+                        authentication:
+                            client-id: fpsoknad-mottak
+                            client-jwk: src/test/resources/tokenx/jwk.json
+            issuer:
+                tokenx:
+                    discovery-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                    accepted-audience: fpsoknad-mottak
+                selvbetjening:
+                    discovery-url: http://vtp:8060/rest/AzureAd/aadb2c/v2.0/.well-known/openid-configuration
+                    accepted-audience: OIDC
 
 http.proxy:
 
@@ -44,20 +85,8 @@ management:
           show-details : always
 
 kafka:
-    username: ${kafka.username}
-    password : ${kafka.password}
-
-no.nav:
-    security:
-        jwt:
-            client:
-                registration:
-                    fpinfo:
-                        token-exchange:
-                            audience: local:teamforeldrepenger:fpinfo
-                    fpfordel:
-                        token-exchange:
-                            audience: local:teamforeldrepenger:fpfordel        
+    username: vtp
+    password: vtp
 
 server:
     port: 9001
@@ -70,19 +99,19 @@ spring:
     kafka:
         consumer:
             enable-auto-commit: false
-            bootstrap-servers: ${bootstrap.servers}
+            bootstrap-servers: localhost:9093
         producer:
-            bootstrap-servers: ${bootstrap.servers}
+            bootstrap-servers: localhost:9093
 
 pdl:
-    base-uri: ${pdl.graphql.base.url}
+    base-uri: http://localhost:8060/rest/api/pdl/graphql
 fppdfgen:
     enabled: false
 kontonummer:
-    base-uri: ${oppslag.url}
+    base-uri: http://localhost:8060/rest/dummy/oppslag
 fpfordel:
-    base-uri: ${fpfordel.base.url}
+    base-uri: http://localhost:8090/fpfordel
 dkif:
-    base-uri: ${dkif.base.url}
+    base-uri: http://localhost:8060/rest/api
 innsyn:
-    base-uri: ${fpinfo.base.url}
+    base-uri: http://localhost:8040
