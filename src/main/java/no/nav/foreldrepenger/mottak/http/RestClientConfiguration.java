@@ -15,9 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
@@ -26,15 +28,16 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
-import no.nav.foreldrepenger.boot.conditionals.ConditionalOnVTP;
+import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
-public class RestClientConfiguration {
+public class RestClientConfiguration implements EnvironmentAware {
     private static final Logger LOG = LoggerFactory.getLogger(RestClientConfiguration.class);
+    private Environment env;
 
     @Bean
     @Primary
@@ -49,15 +52,10 @@ public class RestClientConfiguration {
                 .build();
     }
 
-    @ConditionalOnVTP
-    @Bean
-    public ClientHttpRequestInterceptor localPassthrough(TokenValidationContextHolder holder) {
-        return new BearerTokenClientHttpRequestInterceptor(holder);
-    }
-
     @Bean
     @Qualifier(TOKENX)
-    public RestOperations tokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
+    public RestOperations tokenXTemplate(RestTemplateBuilder builder, TokenValidationContextHolder holder,
+            ClientHttpRequestInterceptor... interceptors) {
         var filtered = Arrays.stream(interceptors)
                 .filter(not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
                 .collect(toList());
@@ -65,6 +63,13 @@ public class RestClientConfiguration {
                 filtered.stream()
                         .map(m -> m.getClass().getSimpleName())
                         .collect(toList()));
+        if (EnvUtil.isVTP(env)) {
+            return builder
+                    .requestFactory(NonRedirectingRequestFactory.class)
+                    .interceptors(filtered)
+                    .additionalInterceptors(new BearerTokenClientHttpRequestInterceptor(holder))
+                    .build();
+        }
         return builder
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(filtered)
@@ -123,6 +128,11 @@ public class RestClientConfiguration {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void setEnvironment(Environment env) {
+        this.env = env;
     }
 
 }
