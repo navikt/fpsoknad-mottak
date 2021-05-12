@@ -69,7 +69,7 @@ no.nav:
                     discovery-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
                     accepted-audience: fpsoknad-mottak
                 selvbetjening:
-                    discovery-url: http://vtp:8060/rest/AzureAd/aadb2c/v2.0/.well-known/openid-configuration
+                    discovery-url: http://localhost:8060/rest/AzureAd/aadb2c/v2.0/.well-known/openid-configuration
                     accepted-audience: OIDC
 
 http.proxy:
