@@ -26,8 +26,10 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
+import no.nav.foreldrepenger.boot.conditionals.ConditionalOnLocal;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
+import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
@@ -45,6 +47,12 @@ public class RestClientConfiguration {
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(filtered)
                 .build();
+    }
+
+    @ConditionalOnLocal
+    @Bean
+    public ClientHttpRequestInterceptor localPassthrough(TokenValidationContextHolder holder) {
+        return new BearerTokenClientHttpRequestInterceptor(holder);
     }
 
     @Bean
