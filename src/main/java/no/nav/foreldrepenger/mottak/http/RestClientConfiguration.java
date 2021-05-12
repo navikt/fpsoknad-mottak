@@ -14,6 +14,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ import com.google.common.base.Splitter;
 
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
+import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
@@ -47,13 +49,11 @@ public class RestClientConfiguration {
                 .build();
     }
 
-    /*
-     * @ConditionalOnVTP
-     * 
-     * @Bean public ClientHttpRequestInterceptor
-     * localPassthrough(TokenValidationContextHolder holder) { return new
-     * BearerTokenClientHttpRequestInterceptor(holder); }
-     */
+    @ConditionalOnProperty(name = "nais.cluster.name", havingValue = "vtp")
+    @Bean
+    public ClientHttpRequestInterceptor localPassthrough(TokenValidationContextHolder holder) {
+        return new BearerTokenClientHttpRequestInterceptor(holder);
+    }
 
     @Bean
     @Qualifier(TOKENX)
