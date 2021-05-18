@@ -1,12 +1,14 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.ikkeSendt;
+import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 
 import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
@@ -24,7 +26,7 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
     private final FordelConfig cfg;
     private final ResponseHandler handler;
 
-    public FordelConnection(/* @Qualifier(TOKENX) */RestOperations restOperations, FordelConfig cfg,
+    public FordelConnection(@Qualifier(TOKENX) RestOperations restOperations, FordelConfig cfg,
             ResponseHandler responseHandler) {
         super(restOperations, cfg);
         this.cfg = cfg;

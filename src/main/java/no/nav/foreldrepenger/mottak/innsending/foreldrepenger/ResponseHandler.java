@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.Kvittering.gosysKvittering;
 import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
+import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.GITTOPP_KVITTERING;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -31,7 +33,7 @@ public class ResponseHandler extends AbstractRestConnection {
     private final int fpfordelMax;
     private final SakStatusPoller poller;
 
-    public ResponseHandler(/* @Qualifier(TOKENX) */RestOperations restOperations, @Value("${fpfordel.max:10}") int maxAntallForsøk,
+    public ResponseHandler(@Qualifier(TOKENX) RestOperations restOperations, @Value("${fpfordel.max:10}") int maxAntallForsøk,
             SakStatusPoller poller) {
         super(restOperations);
         this.fpfordelMax = maxAntallForsøk;
