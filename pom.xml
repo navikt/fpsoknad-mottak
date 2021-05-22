@@ -19,6 +19,7 @@
         </license>
     </licenses>
     <properties>
+        <jetty.version>10.0.3</jetty.version>
         <jackson-bom.version>2.12.0</jackson-bom.version>
         <mock-oauth2-server.version>0.3.2</mock-oauth2-server.version>
         <okhttp3.version>4.8.1</okhttp3.version>
