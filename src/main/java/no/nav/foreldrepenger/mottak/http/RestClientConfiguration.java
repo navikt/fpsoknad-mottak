@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isVTP;
 import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
 import static org.springframework.retry.RetryContext.NAME;
 import static org.springframework.util.ReflectionUtils.findField;
@@ -28,7 +29,6 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
-import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
@@ -41,37 +41,34 @@ public class RestClientConfiguration implements EnvironmentAware {
 
     @Bean
     @Primary
-    public RestOperations nonTokenXTemplate(RestTemplateBuilder builder, ClientHttpRequestInterceptor... interceptors) {
+    public RestOperations nonTokenXTemplate(RestTemplateBuilder b, ClientHttpRequestInterceptor... interceptors) {
+        return b
+                .requestFactory(NonRedirectingRequestFactory.class)
+                .interceptors(interceptorsWithoutBearerToken(interceptors))
+                .build();
+    }
+
+    private static List<ClientHttpRequestInterceptor> interceptorsWithoutBearerToken(ClientHttpRequestInterceptor... interceptors) {
         var filtered = Arrays.stream(interceptors)
                 .filter(not(i -> i.getClass().equals(TokenExchangeClientRequestInterceptor.class)))
                 .collect(toList());
-        LOG.info("Filtered message interceptorer for non token X er {}", filtered);
-        return builder
-                .requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(filtered)
-                .build();
+        LOG.info("Filtered message  er {}", filtered);
+        return filtered;
     }
 
     @Bean
     @Qualifier(TOKENX)
-    public RestOperations tokenXTemplate(RestTemplateBuilder builder, TokenValidationContextHolder holder,
+    public RestOperations tokenXTemplate(RestTemplateBuilder b, TokenValidationContextHolder holder,
             ClientHttpRequestInterceptor... interceptors) {
-        var filtered = Arrays.stream(interceptors)
-                .filter(not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
-                .collect(toList());
-        LOG.trace("Filtered message interceptorer for token X er {}",
-                filtered.stream()
-                        .map(m -> m.getClass().getSimpleName())
-                        .collect(toList()));
-        if (EnvUtil.isVTP(env)) {
-            return builder
+        var filtered = interceptorsWithoutBearerToken(interceptors);
+        if (isVTP(env)) {
+            return b
                     .requestFactory(NonRedirectingRequestFactory.class)
                     .interceptors(filtered)
                     .additionalInterceptors(new BearerTokenClientHttpRequestInterceptor(holder))
                     .build();
         }
-        return builder
-                .requestFactory(NonRedirectingRequestFactory.class)
+        return b.requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(filtered)
                 .build();
     }
@@ -79,21 +76,13 @@ public class RestClientConfiguration implements EnvironmentAware {
     @Bean
     public TokenXConfigFinder configFinder() {
         return (configs, req) -> {
-            LOG.info("Oppslag token X konfig for {}", req.getHost());
-            var config = configs.getRegistration().get(Splitter.on(".").splitToList(req.getHost()).get(0));
-            if (config != null) {
-                LOG.info("Oppslag token X konfig for {} OK", req.getHost());
-            } else {
-                LOG.info("Oppslag token X konfig for {} fant ingenting", req.getHost());
-            }
-            return config;
+            return configs.getRegistration().get(Splitter.on(".").splitToList(req.getHost()).get(0));
         };
     }
 
     @Bean
     public List<RetryListener> retryListeners() {
-        Logger log = LoggerFactory.getLogger(getClass());
-
+        var log = LoggerFactory.getLogger(getClass());
         return List.of(new RetryListener() {
 
             @Override
