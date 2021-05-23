@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +15,6 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.collect.Lists;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
@@ -53,7 +53,7 @@ class ApiError {
     }
 
     private static List<String> messages(Throwable t, List<Object> objects) {
-        List<Object> messages = Lists.newArrayList(objects);
+        var messages = new ArrayList<>(objects);
         messages.add(getMostSpecificCause(t).getMessage());
         return messages.stream()
                 .filter(Objects::nonNull)
