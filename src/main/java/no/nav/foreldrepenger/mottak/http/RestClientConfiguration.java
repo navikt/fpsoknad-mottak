@@ -29,7 +29,6 @@ import org.springframework.web.client.RestOperations;
 
 import com.google.common.base.Splitter;
 
-import no.nav.foreldrepenger.mottak.http.interceptors.TokenExchangeClientRequestInterceptor;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
@@ -50,9 +49,9 @@ public class RestClientConfiguration implements EnvironmentAware {
 
     private static List<ClientHttpRequestInterceptor> interceptorsWithoutBearerToken(ClientHttpRequestInterceptor... interceptors) {
         var filtered = Arrays.stream(interceptors)
-                .filter(not(i -> i.getClass().equals(TokenExchangeClientRequestInterceptor.class)))
+                .filter(not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
                 .collect(toList());
-        LOG.info("Filtered message interceptors er {}", filtered);
+        LOG.trace("Filtered message interceptors er {}", filtered);
         return filtered;
     }
 
@@ -62,6 +61,7 @@ public class RestClientConfiguration implements EnvironmentAware {
             ClientHttpRequestInterceptor... interceptors) {
         var filtered = interceptorsWithoutBearerToken(interceptors);
         if (isVTP(env)) {
+            LOG.trace("VTP, legger til bearer token igjen");
             return b
                     .requestFactory(NonRedirectingRequestFactory.class)
                     .interceptors(filtered)
