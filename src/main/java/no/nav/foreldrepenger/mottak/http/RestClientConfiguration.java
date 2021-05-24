@@ -52,7 +52,7 @@ public class RestClientConfiguration implements EnvironmentAware {
         var filtered = Arrays.stream(interceptors)
                 .filter(not(i -> i.getClass().equals(TokenExchangeClientRequestInterceptor.class)))
                 .collect(toList());
-        LOG.info("Filtered message  er {}", filtered);
+        LOG.info("Filtered message interceptors er {}", filtered);
         return filtered;
     }
 
@@ -76,7 +76,14 @@ public class RestClientConfiguration implements EnvironmentAware {
     @Bean
     public TokenXConfigFinder configFinder() {
         return (configs, req) -> {
-            return configs.getRegistration().get(Splitter.on(".").splitToList(req.getHost()).get(0));
+            LOG.info("Oppslag token X konfig for {}", req.getHost());
+            var config = configs.getRegistration().get(Splitter.on(".").splitToList(req.getHost()).get(0));
+            if (config != null) {
+                LOG.info("Oppslag token X konfig for {} OK", req.getHost());
+            } else {
+                LOG.info("Oppslag token X konfig for {} fant ingenting", req.getHost());
+            }
+            return config;
         };
     }
 
