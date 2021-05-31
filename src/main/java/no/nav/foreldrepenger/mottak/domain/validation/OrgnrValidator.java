@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
+import static no.nav.foreldrepenger.mottak.domain.Orgnummer.MAGIC;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -16,9 +18,14 @@ public class OrgnrValidator implements ConstraintValidator<Orgnr, String> {
         if (orgnr.length() != 9) {
             return false;
         }
+
+        if (orgnr.equals(MAGIC)) {
+            return true;
+        }
         if (!(orgnr.startsWith("8") || orgnr.startsWith("9"))) {
             return false;
         }
+
         int value = mod11OfNumberWithControlDigit(orgnr.substring(0, 8));
         return orgnr.charAt(8) - 48 == value;
     }

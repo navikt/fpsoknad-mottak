@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
+import static no.nav.foreldrepenger.mottak.domain.Orgnummer.MAGIC;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -17,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Navn;
+import no.nav.foreldrepenger.mottak.domain.Orgnummer;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 
@@ -41,7 +43,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
             return personNavn(Fødselsnummer.valueOf(orgnr));
         }
         if (isOrgnr(orgnr)) {
-            return orgNavn(orgnr);
+            return orgNavn(Orgnummer.valueOf(orgnr));
         }
         return "";
     }
@@ -51,16 +53,15 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     }
 
     private static boolean isOrgnr(String nr) {
-        return nr != null && nr.length() == 9 && !nr.equals(MAGIC_ORG);
+        return nr != null && nr.length() == 9 && !nr.equals(MAGIC);
     }
 
-    private String orgNavn(String orgnr) {
-        var maskertOrgnr = orgnr.replaceAll("^\\d{5}", "*****");
-        LOG.info("Henter organisasjonsnavn for {}", maskertOrgnr);
+    private String orgNavn(Orgnummer orgnr) {
+        LOG.info("Henter organisasjonsnavn for {}", orgnr.maskert());
         try {
             var navn = Optional.ofNullable(webClient
                     .get()
-                    .uri(b -> cfg.getOrganisasjonURI(b, orgnr))
+                    .uri(b -> cfg.getOrganisasjonURI(b, orgnr.orgnr()))
                     .accept(APPLICATION_JSON)
                     .retrieve()
                     .toEntity(Map.class)
@@ -68,13 +69,13 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                     .getBody())
                     .map(OrganisasjonMapper::tilOrganisasjonsnavn)
                     .filter(Objects::nonNull)
-                    .orElse(orgnr);
-            LOG.info("Hentet organisasjonsnavn for {} OK", maskertOrgnr);
+                    .orElse(orgnr.orgnr());
+            LOG.info("Hentet organisasjonsnavn for {} OK", orgnr.maskert());
             LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);
             return navn;
         } catch (Exception e) {
-            LOG.warn("Fant ikke organisasjonsnavn for {}", maskertOrgnr);
-            return orgnr;
+            LOG.warn("Fant ikke organisasjonsnavn for {}", orgnr.maskert());
+            return orgnr.orgnr();
         }
     }
 
