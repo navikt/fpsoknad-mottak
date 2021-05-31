@@ -23,6 +23,7 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 @Component
 public class OrganisasjonConnection extends AbstractWebClientConnection {
 
+    private static final String MAGIC_ORG = "342352362";
     private static final String PRIVAT_ARBEIDSGIVER = "Privat arbeidsgiver";
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonConnection.class);
     private final OrganisasjonConfig cfg;
@@ -36,13 +37,21 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
 
     @Cacheable(cacheNames = "organisasjon")
     public String navn(String orgnr) {
-        if (orgnr != null && orgnr.length() == 11) {
+        if (isFnr(orgnr)) {
             return personNavn(Fødselsnummer.valueOf(orgnr));
         }
-        if (orgnr != null && orgnr.length() == 9) {
+        if (isOrgnr(orgnr)) {
             return orgNavn(orgnr);
         }
         return "";
+    }
+
+    private static boolean isFnr(String nr) {
+        return nr != null && nr.length() == 11;
+    }
+
+    private static boolean isOrgnr(String nr) {
+        return nr != null && nr.length() == 9 && !nr.equals(MAGIC_ORG);
     }
 
     private String orgNavn(String orgnr) {
