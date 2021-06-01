@@ -81,7 +81,7 @@ public class RestClientConfiguration implements EnvironmentAware {
             if (cfg != null) {
                 LOG.trace("Oppslag token X konfig for {} OK", req.getHost());
             } else {
-                LOG.warn("Oppslag token X konfig for {} fant ingenting", req.getHost());
+                LOG.trace("Oppslag token X konfig for {} fant ingenting", req.getHost());
             }
             return cfg;
         };
