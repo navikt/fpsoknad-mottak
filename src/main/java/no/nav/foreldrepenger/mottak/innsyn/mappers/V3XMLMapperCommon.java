@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
+import static no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon.IKKE_ARBEIDET;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -27,7 +27,6 @@ import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
 import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
@@ -63,20 +62,17 @@ public class V3XMLMapperCommon {
 
     static List<Vedlegg> tilVedlegg(List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> påkrevd,
             List<no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg> valgfritt) {
-        Stream<Vedlegg> vf = safeStream(valgfritt)
+        return Stream.concat(safeStream(valgfritt)
                 .map(V3XMLMapperCommon::metadataFra)
-                .map(s -> new ValgfrittVedlegg(s, null));
-        Stream<Vedlegg> pk = safeStream(påkrevd)
-                .map(V3XMLMapperCommon::metadataFra)
-                .map(s -> new PåkrevdVedlegg(s, null));
-        return Stream.concat(vf, pk).collect(toList());
+                .map(s -> new ValgfrittVedlegg(s, null)),
+                safeStream(påkrevd)
+                        .map(V3XMLMapperCommon::metadataFra)
+                        .map(s -> new PåkrevdVedlegg(s, null)))
+                .collect(toList());
     }
 
-    private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg vedlegg) {
-        return new VedleggMetaData(
-                vedlegg.getId(),
-                tilInnsendingsType(vedlegg.getInnsendingstype()),
-                tilDokumentType(vedlegg.getSkjemanummer()));
+    private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg v) {
+        return new VedleggMetaData(v.getId(), tilInnsendingsType(v.getInnsendingstype()), tilDokumentType(v.getSkjemanummer()));
     }
 
     private static DokumentType tilDokumentType(String skjemanummer) {
@@ -96,12 +92,9 @@ public class V3XMLMapperCommon {
         return new Søker(tilRolle(søker.getSoeknadsrolle().getKode()), Målform.standard());
     }
 
-    static Medlemsskap tilMedlemsskap(Medlemskap medlemskap, LocalDate søknadsDato) {
-        TidligereOppholdsInformasjon tidligere = new TidligereOppholdsInformasjon(ArbeidsInformasjon.IKKE_ARBEIDET,
-                utenlandsOppholdFør(medlemskap.getOppholdUtlandet(), søknadsDato));
-        FramtidigOppholdsInformasjon framtidig = new FramtidigOppholdsInformasjon(
-                utenlandsOppholdEtter(medlemskap.getOppholdUtlandet(), søknadsDato));
-        return new Medlemsskap(tidligere, framtidig);
+    static Medlemsskap tilMedlemsskap(Medlemskap m, LocalDate d) {
+        return new Medlemsskap(new TidligereOppholdsInformasjon(IKKE_ARBEIDET, utenlandsOppholdFør(m.getOppholdUtlandet(), d)),
+                new FramtidigOppholdsInformasjon(utenlandsOppholdEtter(m.getOppholdUtlandet(), d)));
     }
 
     private static BrukerRolle tilRolle(String kode) {
@@ -111,15 +104,14 @@ public class V3XMLMapperCommon {
     }
 
     private static List<Utenlandsopphold> utenlandsOppholdFør(List<OppholdUtlandet> opphold, LocalDate søknadsDato) {
-        return utenlandsOpphold(opphold, søknadsDato, før(søknadsDato));
+        return utenlandsOpphold(opphold, før(søknadsDato));
     }
 
     private static List<Utenlandsopphold> utenlandsOppholdEtter(List<OppholdUtlandet> opphold, LocalDate søknadsDato) {
-        return utenlandsOpphold(opphold, søknadsDato, etter(søknadsDato));
+        return utenlandsOpphold(opphold, etter(søknadsDato));
     }
 
-    private static List<Utenlandsopphold> utenlandsOpphold(List<OppholdUtlandet> opphold, LocalDate søknadsDato,
-            Predicate<? super OppholdUtlandet> predicate) {
+    private static List<Utenlandsopphold> utenlandsOpphold(List<OppholdUtlandet> opphold, Predicate<? super OppholdUtlandet> predicate) {
         return safeStream(opphold)
                 .filter(predicate)
                 .map(u -> new Utenlandsopphold(tilLand(u.getLand()),
@@ -146,28 +138,25 @@ public class V3XMLMapperCommon {
                 .orElse(defaultLand);
     }
 
-    static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening tilOpptjening(
-            Opptjening opptjening) {
-        if (opptjening == null) {
-            return null;
-        }
-        return new no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening(
-                tilUtenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
-                tilEgenNæring(opptjening.getEgenNaering()),
-                tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
-                tilFrilans(opptjening.getFrilans()));
+    static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening tilOpptjening(Opptjening opptjening) {
+        return Optional.ofNullable(opptjening)
+                .map(o -> new no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening(
+                        tilUtenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
+                        tilEgenNæring(opptjening.getEgenNaering()),
+                        tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
+                        tilFrilans(opptjening.getFrilans())))
+                .orElse(null);
     }
 
     private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans tilFrilans(Frilans frilans) {
-        if (frilans == null) {
-            return null;
-        }
-        return new no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans(
-                tilÅpenPeriode(frilans.getPeriode()),
-                frilans.isHarInntektFraFosterhjem(),
-                frilans.isErNyoppstartet(),
-                tilFrilansOppdrag(frilans.getFrilansoppdrag()),
-                emptyList());
+        return Optional.ofNullable(frilans)
+                .map(f -> new no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans(
+                        tilÅpenPeriode(f.getPeriode()),
+                        f.isHarInntektFraFosterhjem(),
+                        f.isErNyoppstartet(),
+                        tilFrilansOppdrag(f.getFrilansoppdrag()),
+                        List.of()))
+                .orElse(null);
     }
 
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
@@ -176,26 +165,24 @@ public class V3XMLMapperCommon {
                 .collect(toList());
     }
 
-    private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
-        if (frilansoppdrag == null) {
-            return null;
-        }
-        return new FrilansOppdrag(
-                frilansoppdrag.getOppdragsgiver(),
-                tilÅpenPeriode(frilansoppdrag.getPeriode()));
+    private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag fo) {
+        return Optional.ofNullable(fo)
+                .map(f -> new FrilansOppdrag(f.getOppdragsgiver(), tilÅpenPeriode(f.getPeriode())))
+                .orElse(null);
     }
 
     private static ÅpenPeriode tilÅpenPeriode(List<Periode> periode) {
-        return (periode == null) || periode.isEmpty() ? null : tilÅpenPeriode(periode.get(0));
+        return Optional.ofNullable(periode)
+                .orElseGet(List::of)
+                .stream()
+                .findFirst()
+                .map(V3XMLMapperCommon::tilÅpenPeriode).orElse(null);
     }
 
     private static ÅpenPeriode tilÅpenPeriode(Periode periode) {
-        if (periode == null) {
-            return null;
-        }
-        return new ÅpenPeriode(
-                periode.getFom(),
-                periode.getTom());
+        return Optional.ofNullable(periode)
+                .map(p -> new ÅpenPeriode(p.getFom(), p.getTom()))
+                .orElse(null);
     }
 
     private static List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> tilAnnenOpptjening(
@@ -205,15 +192,12 @@ public class V3XMLMapperCommon {
                 .collect(toList());
     }
 
-    private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening tilAnnenOpptjening(
-            AnnenOpptjening annenOpptjening) {
-        if (annenOpptjening == null) {
-            return null;
-        }
-        return new no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening(
-                AnnenOpptjeningType.valueOf(annenOpptjening.getType().getKode()),
-                tilÅpenPeriode(annenOpptjening.getPeriode()),
-                emptyList());
+    private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening tilAnnenOpptjening(AnnenOpptjening ao) {
+        return Optional.ofNullable(ao)
+                .map(a -> new no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening(
+                        AnnenOpptjeningType.valueOf(a.getType().getKode()),
+                        tilÅpenPeriode(a.getPeriode()), List.of()))
+                .orElse(null);
     }
 
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
@@ -226,77 +210,82 @@ public class V3XMLMapperCommon {
         if (egenNæring == null) {
             return null;
         }
-        if (egenNæring instanceof NorskOrganisasjon norskOrg) {
-            return no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.builder()
-                    .beskrivelseEndring(norskOrg.getBeskrivelseAvEndring())
-                    .endringsDato(norskOrg.getEndringsDato())
-                    .erNyOpprettet(norskOrg.isErNyoppstartet())
-                    .erVarigEndring(norskOrg.isErVarigEndring())
-                    .erNyIArbeidslivet(norskOrg.isErNyIArbeidslivet())
-                    .næringsinntektBrutto(norskOrg.getNaeringsinntektBrutto().longValue())
-                    .nærRelasjon(norskOrg.isNaerRelasjon())
-                    .orgName(norskOrg.getNavn())
-                    .orgNummer(norskOrg.getOrganisasjonsnummer())
-                    .periode(tilÅpenPeriode(norskOrg.getPeriode()))
-                    .regnskapsførere(tilRegnskapsFørere(norskOrg.getRegnskapsfoerer()))
-                    .virksomhetsTyper(tilVirksomhetsTyper(norskOrg.getVirksomhetstype()))
-                    .build();
+        if (egenNæring instanceof NorskOrganisasjon n) {
+            return tilNorskNæring(n);
         }
-        if (egenNæring instanceof UtenlandskOrganisasjon utenlandskOrg) {
-            return no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.builder()
-                    .registrertILand(tilLand(utenlandskOrg.getRegistrertILand()))
-                    .orgName(utenlandskOrg.getNavn())
-                    .beskrivelseEndring(utenlandskOrg.getBeskrivelseAvEndring())
-                    .endringsDato(utenlandskOrg.getEndringsDato())
-                    .erNyOpprettet(utenlandskOrg.isErNyoppstartet())
-                    .erVarigEndring(utenlandskOrg.isErVarigEndring())
-                    .erNyIArbeidslivet(utenlandskOrg.isErNyIArbeidslivet())
-                    .næringsinntektBrutto(utenlandskOrg.getNaeringsinntektBrutto().longValue())
-                    .nærRelasjon(utenlandskOrg.isNaerRelasjon())
-                    .periode(tilÅpenPeriode(utenlandskOrg.getPeriode()))
-                    .regnskapsførere(tilRegnskapsFørere(utenlandskOrg.getRegnskapsfoerer()))
-                    .virksomhetsTyper(tilVirksomhetsTyper(utenlandskOrg.getVirksomhetstype()))
-                    .build();
+        if (egenNæring instanceof UtenlandskOrganisasjon u) {
+            return tilUtenlandskNæring(u);
         }
-        throw new UnexpectedInputException("Ikke"
-                + " støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
+        throw new UnexpectedInputException("Ikke støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
     }
 
-    private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer regnskapsfoerer) {
-        if (regnskapsfoerer == null) {
-            return emptyList();
-        }
-        return singletonList(new Regnskapsfører(
-                regnskapsfoerer.getNavn(),
-                regnskapsfoerer.getTelefon()));
+    private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon tilUtenlandskNæring(UtenlandskOrganisasjon u) {
+        return no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.builder()
+                .registrertILand(tilLand(u.getRegistrertILand()))
+                .orgName(u.getNavn())
+                .beskrivelseEndring(u.getBeskrivelseAvEndring())
+                .endringsDato(u.getEndringsDato())
+                .erNyOpprettet(u.isErNyoppstartet())
+                .erVarigEndring(u.isErVarigEndring())
+                .erNyIArbeidslivet(u.isErNyIArbeidslivet())
+                .næringsinntektBrutto(u.getNaeringsinntektBrutto().longValue())
+                .nærRelasjon(u.isNaerRelasjon())
+                .periode(tilÅpenPeriode(u.getPeriode()))
+                .regnskapsførere(tilRegnskapsFørere(u.getRegnskapsfoerer()))
+                .virksomhetsTyper(tilVirksomhetsTyper(u.getVirksomhetstype()))
+                .build();
+    }
+
+    private static EgenNæring tilNorskNæring(NorskOrganisasjon n) {
+        return no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.builder()
+                .beskrivelseEndring(n.getBeskrivelseAvEndring())
+                .endringsDato(n.getEndringsDato())
+                .erNyOpprettet(n.isErNyoppstartet())
+                .erVarigEndring(n.isErVarigEndring())
+                .erNyIArbeidslivet(n.isErNyIArbeidslivet())
+                .næringsinntektBrutto(n.getNaeringsinntektBrutto().longValue())
+                .nærRelasjon(n.isNaerRelasjon())
+                .orgName(n.getNavn())
+                .orgNummer(n.getOrganisasjonsnummer())
+                .periode(tilÅpenPeriode(n.getPeriode()))
+                .regnskapsførere(tilRegnskapsFørere(n.getRegnskapsfoerer()))
+                .virksomhetsTyper(tilVirksomhetsTyper(n.getVirksomhetstype()))
+                .build();
+    }
+
+    private static List<Regnskapsfører> tilRegnskapsFørere(Regnskapsfoerer rf) {
+        return Optional.ofNullable(rf)
+                .map(r -> new Regnskapsfører(r.getNavn(), r.getTelefon()))
+                .map(r -> List.of(r)).orElse(List.of());
     }
 
     private static List<UtenlandskArbeidsforhold> tilUtenlandskeArbeidsforhold(
-            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold> utenlandskeArbeidsforhold) {
-        return safeStream(utenlandskeArbeidsforhold)
+            List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold> u) {
+        return safeStream(u)
                 .map(V3XMLMapperCommon::tilUtenlandskArbeidsforhold)
                 .collect(toList());
     }
 
     private static UtenlandskArbeidsforhold tilUtenlandskArbeidsforhold(
-            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold arbeidforhold) {
+            no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold u) {
         return new UtenlandskArbeidsforhold(
-                arbeidforhold.getArbeidsgiversnavn(),
-                tilÅpenPeriode(arbeidforhold.getPeriode()),
+                u.getArbeidsgiversnavn(),
+                tilÅpenPeriode(u.getPeriode()),
                 null,
-                tilLand(arbeidforhold.getArbeidsland()));
+                tilLand(u.getArbeidsland()));
     }
 
-    private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstyper) {
-        return safeStream(virksomhetstyper)
+    private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> v) {
+        return safeStream(v)
                 .map(V3XMLMapperCommon::tilVirksomhetsType)
                 .collect(toList());
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
-        if ((type == null) || type.getKode().equals(UKJENT_KODEVERKSVERDI)) {
-            return null;
-        }
-        return Virksomhetstype.valueOf(type.getKode());
+        return Optional.ofNullable(type)
+                .filter(not(t -> t.getKode().equals(UKJENT_KODEVERKSVERDI)))
+                .map(Virksomhetstyper::getKode)
+                .map(Virksomhetstype::valueOf)
+                .orElse(null);
     }
 }
