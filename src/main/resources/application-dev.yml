@@ -27,7 +27,6 @@ no.nav:
               selvbetjening:
                  proxy-url: http://webproxy.nais:8088
 spring:
-   config.import: vault://
    cloud:
       vault:
          reactive:
