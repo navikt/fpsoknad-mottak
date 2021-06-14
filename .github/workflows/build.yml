@@ -19,16 +19,16 @@ jobs:
                   echo "TAG=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
             # Brukes ukenummer i cache_key da pomene endrer seg alt for ofte.
             # Alternative key med cache fra forrige uke som blir lagret etterpå under CACHE_KEY.
-            - name: Set cache key
-              run: |
-                  echo "CACHE_KEY=$(expr $(date +%V) - 1 + 1)" >> $GITHUB_ENV
-                  echo "PREVIOUS_CACHE_KEY=$(expr $(date +%V) - 1)" >> $GITHUB_ENV
-            - name: Hent Maven cache
-              uses: actions/cache@v2.1.6
-              with:
-                  path: ~/.m2/repository
-                  key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-                  restore-keys: ${{ runner.os }}-maven-
+#             - name: Set cache key
+#               run: |
+#                   echo "CACHE_KEY=$(expr $(date +%V) - 1 + 1)" >> $GITHUB_ENV
+#                   echo "PREVIOUS_CACHE_KEY=$(expr $(date +%V) - 1)" >> $GITHUB_ENV
+#             - name: Hent Maven cache
+#               uses: actions/cache@v2.1.6
+#               with:
+#                   path: ~/.m2/repository
+#                   key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#                   restore-keys: ${{ runner.os }}-maven-
 
             - name: Sett opp Java 16
               uses: actions/setup-java@v2
@@ -42,7 +42,7 @@ jobs:
                   mvn clean install --batch-mode --quiet --settings .github/.m2/settings.xml
               env:
                   GITHUB_USERNAME: x-access-token
-                  GITHUB_TOKEN: ${{ secrets.NOTIFICATION }} # Må ha denne fordi vi henter artifakt fra fp-felles.
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Login to GitHub Packages Docker Registry
               uses: docker/login-action@31f1bb4610792058145ecedb9770b0145e118a96 # Use commit-sha1 instead of tag for security concerns
