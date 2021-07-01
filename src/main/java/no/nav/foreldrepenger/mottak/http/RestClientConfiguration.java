@@ -9,6 +9,7 @@ import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.getField;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +36,8 @@ import no.nav.security.token.support.spring.validation.interceptor.BearerTokenCl
 
 @Configuration
 public class RestClientConfiguration implements EnvironmentAware {
+    private static final Duration READ_TIMEOUT = Duration.ofSeconds(30);
+    private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
     private static final Logger LOG = LoggerFactory.getLogger(RestClientConfiguration.class);
     private Environment env;
 
@@ -44,6 +47,8 @@ public class RestClientConfiguration implements EnvironmentAware {
         return b
                 .requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptorsWithoutBearerToken(interceptors))
+                .setConnectTimeout(CONNECT_TIMEOUT)
+                .setReadTimeout(READ_TIMEOUT)
                 .build();
     }
 
@@ -66,6 +71,8 @@ public class RestClientConfiguration implements EnvironmentAware {
                     .requestFactory(NonRedirectingRequestFactory.class)
                     .interceptors(filtered)
                     .additionalInterceptors(new BearerTokenClientHttpRequestInterceptor(holder))
+                    .setConnectTimeout(CONNECT_TIMEOUT)
+                    .setReadTimeout(READ_TIMEOUT)
                     .build();
         }
         return b.requestFactory(NonRedirectingRequestFactory.class)
