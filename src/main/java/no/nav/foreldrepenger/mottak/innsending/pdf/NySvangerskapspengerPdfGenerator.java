@@ -59,6 +59,7 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Profile({ DEV, LOCAL, TEST })
@@ -68,7 +69,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static final DateTimeFormatter DATEFMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String SVP_VEDLEGG_TILRETTELEGGING = "svp.vedlegg.tilrettelegging";
-    private final no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsInfo arbeidsforhold;
+    private final ArbeidsInfo arbeidsforhold;
     private final PdfGenerator pdfGenerator;
 
     @Inject
@@ -101,7 +102,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private List<TemaBlokk> lagInnhold(Søknad søknad) {
 
         var stønad = (Svangerskapspenger) søknad.getYtelse();
-        List<EnkeltArbeidsforhold> aktiveArbeidsforhold = hentAktiveArbeidsforhold(stønad.getTermindato(), stønad.getFødselsdato());
+        var aktiveArbeidsforhold = hentAktiveArbeidsforhold(stønad.getTermindato(), stønad.getFødselsdato());
         var medlemsskap = stønad.getMedlemsskap();
         // var annenForelder = stønad.getAnnenForelder();
         List<TemaBlokk> temaer = new ArrayList<>();
@@ -243,13 +244,14 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private static List<EnkeltArbeidsforhold> sorterArbeidsforhold(List<EnkeltArbeidsforhold> arbeidsforhold) {
-        Collections.sort(arbeidsforhold, (o1, o2) -> {
+        final List<EnkeltArbeidsforhold> mutableList = new ArrayList<>(arbeidsforhold);
+        Collections.sort(mutableList, (o1, o2) -> {
             if (o1.getFrom() != null && o2.getFrom() != null) {
                 return o1.getFrom().compareTo(o2.getFrom());
             }
             return 0;
         });
-        return arbeidsforhold;
+        return mutableList;
     }
 
     private TemaBlokk tilretteleggingsbehov(Svangerskapspenger stønad,
