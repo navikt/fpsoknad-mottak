@@ -9,6 +9,7 @@ import static org.springframework.util.StringUtils.capitalize;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .stream()
                 .map(mapper::tilArbeidsforhold)
                 .sorted(comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
-                .toList();
+                .collect(Collectors.toList());
         LOG.info("Hentet {} arbeidsforhold for perioden fra {}", arbeidsforhold.size(), fom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
         return arbeidsforhold;
