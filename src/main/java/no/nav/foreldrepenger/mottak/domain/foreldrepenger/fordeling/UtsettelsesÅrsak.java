@@ -4,6 +4,7 @@ public enum UtsettelsesÅrsak {
     ARBEID,
     LOVBESTEMT_FERIE,
     SYKDOM,
+    FRI,
     INSTITUSJONSOPPHOLD_SØKER,
     INSTITUSJONSOPPHOLD_BARNET,
     HV_OVELSE("periode.utsettelse.hv"),
