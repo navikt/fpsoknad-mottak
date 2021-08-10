@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.BrukerRolle.MEDMOR;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
@@ -265,7 +264,7 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
             List<String> oppdrag = safeStream(frilans.getFrilansOppdrag())
                     .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
-                    .collect(toList());
+                    .toList();
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         } else {
@@ -632,7 +631,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLeftHeading(txt("vedlegg"), cos, y);
         List<String> formatted = safeStream(vedlegg)
                 .map(Vedlegg::getBeskrivelse)
-                .collect(toList());
+                .toList();
         y -= renderer.addBulletList(formatted, cos, y);
         return startY - y;
     }
@@ -688,7 +687,7 @@ public class ForeldrepengeInfoRenderer {
     private List<List<String>> egneNæringer(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
                 .map(this::egenNæring)
-                .collect(toList());
+                .toList();
     }
 
     private List<String> egenNæring(EgenNæring næring) {

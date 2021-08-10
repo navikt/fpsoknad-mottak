@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
@@ -74,7 +73,7 @@ public class InnsynTjeneste implements Innsyn {
                 .stream()
                 .sorted(comparing(Behandling::getEndretTidspunkt)
                         .reversed())
-                .collect(toList())
+                .toList()
                 .stream()
                 .findFirst()
                 .map(Behandling::getVedtak)
@@ -102,7 +101,7 @@ public class InnsynTjeneste implements Innsyn {
         var saker = safeStream(innsyn.saker(id))
                 .filter(distinctByKey(SakDTO::getSaksnummer))
                 .map(this::tilSak)
-                .collect(toList());
+                .toList();
         LOG.info("Hentet {} sak{}", saker.size(), endelse(saker));
         if (!saker.isEmpty()) {
             LOG.info(CONFIDENTIAL, "{}", saker);
@@ -116,7 +115,7 @@ public class InnsynTjeneste implements Innsyn {
                 .filter(distinctByKey(Lenke::href))
                 .map(innsyn::behandling)
                 .map(this::tilBehandling)
-                .collect(toList());
+                .toList();
         LOG.info("Hentet {} behandling{} for sak {}", behandlinger.size(), endelse(behandlinger), saksnr);
         if (!behandlinger.isEmpty()) {
             LOG.info(CONFIDENTIAL, "{}", behandlinger);
@@ -263,7 +262,7 @@ public class InnsynTjeneste implements Innsyn {
     private List<UttaksPeriode> map(List<UttaksPeriodeDTO> perioder) {
         return safeStream(perioder)
                 .map(this::map)
-                .collect(toList());
+                .toList();
     }
 
     private UttaksPeriode map(UttaksPeriodeDTO periode) {

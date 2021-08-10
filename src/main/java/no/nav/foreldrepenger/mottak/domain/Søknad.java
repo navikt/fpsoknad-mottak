@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
@@ -64,7 +63,7 @@ public class Søknad {
         return safeStream(vedlegg)
                 .filter(PåkrevdVedlegg.class::isInstance)
                 .map(PåkrevdVedlegg.class::cast)
-                .collect(toList());
+                .toList();
     }
 
     @JsonIgnore
@@ -72,7 +71,7 @@ public class Søknad {
         return safeStream(vedlegg)
                 .filter(ValgfrittVedlegg.class::isInstance)
                 .map(ValgfrittVedlegg.class::cast)
-                .collect(toList());
+                .toList();
     }
 
     @JsonIgnore

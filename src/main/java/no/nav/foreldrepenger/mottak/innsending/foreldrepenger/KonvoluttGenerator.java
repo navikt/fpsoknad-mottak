@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
@@ -180,7 +179,7 @@ public class KonvoluttGenerator {
                 .filter(v -> type.equals(v.getInnsendingsType()))
                 .map(Vedlegg::getDokumentType)
                 .map(DokumentType::name)
-                .collect(toList());
+                .toList();
     }
 
     @Override

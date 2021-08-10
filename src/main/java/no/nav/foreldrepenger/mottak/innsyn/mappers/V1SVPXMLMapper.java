@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
@@ -97,7 +96,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
         return safeStream(tilrettelegginger)
                 .map(V1SVPXMLMapper::create)
                 .flatMap(Collection::stream)
-                .collect(toList());
+                .toList();
     }
 
     private static List<Tilrettelegging> create(
@@ -129,7 +128,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
             LocalDate behovFra) {
         return safeStream(hele)
                 .map(h -> hel(h, arbeidsforhold, behovFra))
-                .collect(toList());
+                .toList();
     }
 
     private static List<DelvisTilrettelegging> delvis(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.DelvisTilrettelegging> delvise,
@@ -137,7 +136,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
             LocalDate behovFra) {
         return safeStream(delvise)
                 .map(d -> delvis(d, arbeidsforhold, behovFra))
-                .collect(toList());
+                .toList();
     }
 
     private static List<IngenTilrettelegging> ingen(List<no.nav.vedtak.felles.xml.soeknad.svangerskapspenger.v1.IngenTilrettelegging> ingen,
@@ -145,7 +144,7 @@ public class V1SVPXMLMapper implements XMLSøknadMapper {
             LocalDate behovFra) {
         return safeStream(ingen)
                 .map(i -> ingen(i, arbeidsforhold, behovFra))
-                .collect(toList());
+                .toList();
     }
 
     private static DelvisTilrettelegging delvis(

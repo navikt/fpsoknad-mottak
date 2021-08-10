@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilLand;
@@ -231,7 +230,7 @@ public class V3ForeldrepengerXMLMapper extends AbstractXMLMapper {
             List<no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
                 .map(V3ForeldrepengerXMLMapper::tilLukketPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(

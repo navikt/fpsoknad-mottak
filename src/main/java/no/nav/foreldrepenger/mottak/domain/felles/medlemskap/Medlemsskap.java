@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.felles.medlemskap;
 
 import static com.neovisionaries.i18n.CountryCode.NO;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;
@@ -51,6 +50,6 @@ public class Medlemsskap {
         return Stream
                 .concat(safeStream(tidligereOppholdsInfo.getUtenlandsOpphold()),
                         safeStream(framtidigOppholdsInfo.getUtenlandsOpphold()))
-                .collect(toList());
+                .toList();
     }
 }

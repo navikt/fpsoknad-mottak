@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -53,7 +52,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .stream()
                 .map(mapper::tilArbeidsforhold)
                 .sorted(comparing(EnkeltArbeidsforhold::getArbeidsgiverNavn))
-                .collect(toList());
+                .toList();
         LOG.info("Hentet {} arbeidsforhold for perioden fra {}", arbeidsforhold.size(), fom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
         return arbeidsforhold;

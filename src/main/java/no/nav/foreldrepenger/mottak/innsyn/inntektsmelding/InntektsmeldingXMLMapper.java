@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilBoolean;
 import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilDoubleFraBigDecimal;
@@ -95,7 +94,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(perioder.getValue().getDelvisFravaer())
                 .map(InntektsmeldingXMLMapper::tilDelvisFraværsPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static DelvisFraværsPeriode tilDelvisFraværsPeriode(DelvisFravaer fravær) {
@@ -108,7 +107,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(perioder.getValue().getFravaerPeriode())
                 .map(InntektsmeldingXMLMapper::tilLukketPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static List<LukketPeriode> tilPleiepengePerioder(JAXBElement<PleiepengerPeriodeListe> pleiepenger) {
@@ -117,7 +116,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(pleiepenger.getValue().getPeriode())
                 .map(InntektsmeldingXMLMapper::tilLukketPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static Avsender tilAvsender(Avsendersystem avsender) {
@@ -135,7 +134,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(gjenopptakelser.getValue().getNaturalytelseDetaljer())
                 .map(InntektsmeldingXMLMapper::tilNaturalYtelse)
-                .collect(toList());
+                .toList();
     }
 
     private static List<Naturalytelse> tilOpphørNaturalYtelse(JAXBElement<OpphoerAvNaturalytelseListe> opphør) {
@@ -144,7 +143,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(opphør.getValue().getOpphoerAvNaturalytelse())
                 .map(InntektsmeldingXMLMapper::tilNaturalYtelse)
-                .collect(toList());
+                .toList();
     }
 
     private static Naturalytelse tilNaturalYtelse(NaturalytelseDetaljer detaljer) {
@@ -186,7 +185,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(endringer.getValue().getEndringIRefusjon())
                 .map(InntektsmeldingXMLMapper::tilRefusjonsEndring)
-                .collect(toList());
+                .toList();
     }
 
     private static RefusjonsEndring tilRefusjonsEndring(EndringIRefusjon endring) {
@@ -212,7 +211,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(perioder.getValue().getGraderingIForeldrepenger())
                 .map(InntektsmeldingXMLMapper::tilGraderingsPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static GraderingsPeriode tilGraderingsPeriode(GraderingIForeldrepenger periode) {
@@ -254,7 +253,7 @@ public final class InntektsmeldingXMLMapper {
         }
         return safeStream(perioder.getValue().getUtsettelseAvForeldrepenger())
                 .map(InntektsmeldingXMLMapper::tilUtsettelsesPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static UtsettelsesPeriode tilUtsettelsesPeriode(UtsettelseAvForeldrepenger periode) {

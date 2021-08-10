@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.dto;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
@@ -63,7 +62,7 @@ public class SakDTO {
     public List<Lenke> getBehandlingsLenker() {
         return safeStream(getLenker())
                 .filter(s -> BEHANDLINGER.equals(s.rel()))
-                .collect(toList());
+                .toList();
     }
 
     public String getSaksnummer() {

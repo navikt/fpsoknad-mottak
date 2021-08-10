@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static com.neovisionaries.i18n.CountryCode.XK;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -117,7 +116,7 @@ final class V3DomainMapperCommon {
     private static List<OppholdUtlandet> oppholdUtlandetFra(Medlemsskap ms) {
         return safeStream(ms.utenlandsOpphold())
                 .map(V3DomainMapperCommon::utenlandOppholdFra)
-                .collect(toList());
+                .toList();
     }
 
     private static OppholdUtlandet utenlandOppholdFra(Utenlandsopphold opphold) {
@@ -133,7 +132,7 @@ final class V3DomainMapperCommon {
     private static List<Virksomhetstyper> virksomhetsTyperFra(List<Virksomhetstype> typer) {
         return safeStream(typer)
                 .map(V3DomainMapperCommon::virksomhetsTypeFra)
-                .collect(toList());
+                .toList();
     }
 
     private static Virksomhetstyper virksomhetsTypeFra(Virksomhetstype type) {
@@ -152,7 +151,7 @@ final class V3DomainMapperCommon {
     private static List<EgenNaering> egneNæringerFra(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
                 .map(V3DomainMapperCommon::egenNæringFra)
-                .collect(toList());
+                .toList();
     }
 
     private static EgenNaering egenNæringFra(EgenNæring egenNæring) {
@@ -213,14 +212,14 @@ final class V3DomainMapperCommon {
     private static List<JAXBElement<Object>> egenNæringVedleggFraIDs(List<String> vedlegg) {
         return safeStream(vedlegg)
                 .map(s -> FP_FACTORY_V3.createEgenNaeringVedlegg(new Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     private static List<AnnenOpptjening> andreOpptjeningerFra(
             List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
                 .map(V3DomainMapperCommon::annenOpptjeningFra)
-                .collect(toList());
+                .toList();
     }
 
     private static AnnenOpptjening annenOpptjeningFra(
@@ -273,7 +272,7 @@ final class V3DomainMapperCommon {
             List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold> arbeidsforhold) {
         return safeStream(arbeidsforhold)
                 .map(V3DomainMapperCommon::utenlandskArbeidsforholdFra)
-                .collect(toList());
+                .toList();
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold utenlandskArbeidsforholdFra(
@@ -288,7 +287,7 @@ final class V3DomainMapperCommon {
     private static List<JAXBElement<Object>> utenlandsArbeidsforholdVedleggFra(List<String> vedlegg) {
         return safeStream(vedlegg)
                 .map(s -> FP_FACTORY_V3.createUtenlandskArbeidsforholdVedlegg(new Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     static Bruker søkerFra(AktørId aktørId, Søker søker) {
@@ -301,7 +300,7 @@ final class V3DomainMapperCommon {
             List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
                 .map(V3DomainMapperCommon::vedleggFra)
-                .collect(toList());
+                .toList();
     }
 
     private static Innsendingstype innsendingstypeFra(InnsendingsType innsendingsType) {
@@ -332,7 +331,7 @@ final class V3DomainMapperCommon {
     private static List<Frilansoppdrag> frilansOppdragFra(List<FrilansOppdrag> frilansOppdrag) {
         return safeStream(frilansOppdrag)
                 .map(V3DomainMapperCommon::frilansOppdragFra)
-                .collect(toList());
+                .toList();
     }
 
     private static Frilansoppdrag frilansOppdragFra(FrilansOppdrag oppdrag) {
@@ -350,13 +349,13 @@ final class V3DomainMapperCommon {
     private static List<JAXBElement<Object>> frilansVedleggFraIDs(List<String> vedlegg) {
         return safeStream(vedlegg)
                 .map(s -> FP_FACTORY_V3.createFrilansVedlegg(new Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     private static List<JAXBElement<Object>> annenOpptjeningVedleggFra(List<String> vedlegg) {
         return safeStream(vedlegg)
                 .map(s -> FP_FACTORY_V3.createAnnenOpptjeningVedlegg(new Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {

@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.HOVEDDOKUMENT;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.METADATA;
 import static no.nav.foreldrepenger.mottak.innsending.foreldrepenger.KonvoluttGenerator.VEDLEGG;
@@ -106,7 +105,7 @@ public class Konvolutt {
                 .filter(HttpEntity::hasBody)
                 .map(HttpEntity::getBody)
                 .map(byte[].class::cast)
-                .collect(toList());
+                .toList();
     }
 
     public String XMLHovedDokument() {

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.landFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.medlemsskapFra;
@@ -139,7 +138,7 @@ public class V3EngangsstønadDomainMapper implements DomainMapper {
                 .map(Vedlegg::getId)
                 .map(s -> FELLES_FACTORY_V3.createSoekersRelasjonTilBarnetVedlegg(
                         new no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     private AnnenForelder annenForelderFra(

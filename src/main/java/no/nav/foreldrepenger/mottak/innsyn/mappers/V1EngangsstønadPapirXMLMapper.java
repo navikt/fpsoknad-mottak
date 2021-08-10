@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
@@ -165,7 +164,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
                 .filter(predicate)
                 .map(u -> new Utenlandsopphold(tilLand(u.getLand()),
                         new LukketPeriode(u.getPeriode().getFom(), u.getPeriode().getTom())))
-                .collect(toList());
+                .toList();
     }
 
     private static Predicate<? super OppholdUtlandet> før(LocalDate søknadsDato) {

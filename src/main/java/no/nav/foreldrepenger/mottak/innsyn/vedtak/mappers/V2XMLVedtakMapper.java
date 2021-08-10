@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
@@ -134,7 +133,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     private static List<UttaksPeriode> tilUttaksPerioder(List<UttaksresultatPeriode> perioder) {
         return safeStream(perioder)
                 .map(V2XMLVedtakMapper::tilUttaksPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static LocalDate tilDato(DateOpplysning dato) {
@@ -171,7 +170,7 @@ public class V2XMLVedtakMapper implements XMLVedtakMapper {
     private static List<PeriodeAktivitet> tilPeriodeaktiviteter(List<UttaksresultatPeriodeAktivitet> aktiviteter) {
         return safeStream(aktiviteter)
                 .map(V2XMLVedtakMapper::tilPeriodeAktivitet)
-                .collect(toList());
+                .toList();
     }
 
     private static PeriodeAktivitet tilPeriodeAktivitet(UttaksresultatPeriodeAktivitet aktivitet) {

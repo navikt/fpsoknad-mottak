@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.DEV;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
@@ -391,7 +390,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
         return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
-                .collect(toList());
+                .toList();
     }
 
     private TemaBlokk omBarn(Søknad søknad, Svangerskapspenger stønad) {

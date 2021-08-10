@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.FagsakType.SVANGERSKAPSPENGER;
 
 import java.util.Arrays;
@@ -72,7 +71,7 @@ public enum Versjon {
         return stream(values())
                 .map(e -> e.namespaces)
                 .flatMap(List::stream)
-                .collect(toList());
+                .toList();
     }
 
     public boolean erUkjent() {

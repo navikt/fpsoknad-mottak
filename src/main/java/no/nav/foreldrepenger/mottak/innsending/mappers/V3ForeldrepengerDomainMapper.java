@@ -1,12 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.landFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.medlemsskapFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.opptjeningFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.målformFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.opptjeningFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
@@ -203,13 +202,13 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
             List<LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
                 .map(V3ForeldrepengerDomainMapper::lukketPeriodeFra)
-                .collect(toList());
+                .toList();
     }
 
     private static List<JAXBElement<Object>> lukketPeriodeVedleggFra(List<String> vedlegg) {
         return safeStream(vedlegg)
                 .map(s -> UTTAK_FACTORY_V3.createLukketPeriodeMedVedleggVedlegg(new Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg lukketPeriodeFra(
@@ -284,12 +283,8 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withArbeidsgiver(arbeidsgiverFra(gradertPeriode.getVirksomhetsnummer()))
                 .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
                 .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
-        if (gradertPeriode.getFrilans() != null) {
-            gradering.setErFrilanser(gradertPeriode.getFrilans().booleanValue());
-        }
-        if (gradertPeriode.getSelvstendig() != null) {
-            gradering.setErSelvstNæringsdrivende(gradertPeriode.getSelvstendig().booleanValue());
-        }
+        Optional.ofNullable(gradertPeriode.getFrilans()).ifPresent(p -> gradering.setErFrilanser(p.booleanValue()));
+        Optional.ofNullable(gradertPeriode.getSelvstendig()).ifPresent(p -> gradering.setErSelvstNæringsdrivende(p.booleanValue()));
         return gradertPeriode.isØnskerSamtidigUttak()
                 ? gradering.withSamtidigUttakProsent(prosentFra(gradertPeriode.getSamtidigUttakProsent()))
                 : gradering;
@@ -519,7 +514,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     private static List<JAXBElement<Object>> relasjonTilBarnVedleggFra(List<String> vedlegg) {
         return safeStream(vedlegg)
                 .map(s -> FELLES_FACTORY_V3.createSoekersRelasjonTilBarnetVedlegg(new Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     @Override

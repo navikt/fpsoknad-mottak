@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
@@ -173,7 +172,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
         var pk = safeStream(påkrevd)
                 .map(V2ForeldrepengerXMLMapper::metadataFra)
                 .map(s -> new PåkrevdVedlegg(s, null));
-        return Stream.concat(vf, pk).collect(toList());
+        return Stream.concat(vf, pk).toList();
     }
 
     private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v2.Vedlegg vedlegg) {
@@ -303,7 +302,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
         return safeStream(frilansoppdrag)
                 .map(V2ForeldrepengerXMLMapper::tilFrilansOppdrag)
-                .collect(toList());
+                .toList();
     }
 
     private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag frilansoppdrag) {
@@ -328,7 +327,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
             List<AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
                 .map(V2ForeldrepengerXMLMapper::tilAnnenOpptjening)
-                .collect(toList());
+                .toList();
     }
 
     private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening tilAnnenOpptjening(
@@ -345,7 +344,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
         return safeStream(egenNaering)
                 .map(V2ForeldrepengerXMLMapper::tilEgenNæring)
-                .collect(toList());
+                .toList();
     }
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
@@ -402,7 +401,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> virksomhetstyper) {
         return safeStream(virksomhetstyper)
                 .map(V2ForeldrepengerXMLMapper::tilVirksomhetsType)
-                .collect(toList());
+                .toList();
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {
@@ -425,7 +424,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v2.UtenlandskArbeidsforhold> utenlandskeArbeidsforhold) {
         return safeStream(utenlandskeArbeidsforhold)
                 .map(V2ForeldrepengerXMLMapper::tilUtenlandskArbeidsforhold)
-                .collect(toList());
+                .toList();
     }
 
     private static UtenlandskArbeidsforhold tilUtenlandskArbeidsforhold(
@@ -476,7 +475,7 @@ public class V2ForeldrepengerXMLMapper extends AbstractXMLMapper {
             List<no.nav.vedtak.felles.xml.soeknad.uttak.v2.LukketPeriodeMedVedlegg> perioder) {
         return safeStream(perioder)
                 .map(V2ForeldrepengerXMLMapper::tilLukketPeriode)
-                .collect(toList());
+                .toList();
     }
 
     private static LukketPeriodeMedVedlegg tilLukketPeriode(

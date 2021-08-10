@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.KVITTERINGSTEKSTER;
 import static no.nav.foreldrepenger.mottak.config.MottakConfiguration.LANDKODER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -129,7 +128,7 @@ public class SøknadTextFormatter {
         }
         return safeStream(opphold)
                 .map(this::formatOpphold)
-                .collect(toList());
+                .toList();
     }
 
     private String formatOpphold(Utenlandsopphold opphold) {

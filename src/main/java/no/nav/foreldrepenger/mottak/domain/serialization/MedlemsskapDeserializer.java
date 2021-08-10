@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.domain.serialization;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.arrayNode;
 import static no.nav.foreldrepenger.mottak.domain.serialization.JacksonUtils.textValue;
 
@@ -57,7 +56,7 @@ public class MedlemsskapDeserializer extends StdDeserializer<Medlemsskap> {
         return StreamSupport
                 .stream(((Iterable<JsonNode>) () -> iterator).spliterator(), false)
                 .map(s -> utenlandopphold(iterator, parser.getCodec()))
-                .collect(toList());
+                .toList();
     }
 
     private static Utenlandsopphold utenlandopphold(Iterator<JsonNode> utland, ObjectCodec codec) {

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 
 import java.time.LocalDateTime;
@@ -207,7 +206,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         blokker.add(new FritekstBlokk(txt("antallbarn", a.getAntallBarn())));
         blokker.add(new ListeBlokk(txt("vedlegg1"), StreamUtil.safeStream(v)
                 .map(Vedlegg::getBeskrivelse)
-                .collect(toList())));
+                .toList()));
         return blokker;
     }
 

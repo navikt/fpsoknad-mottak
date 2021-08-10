@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -66,7 +65,7 @@ public class SvangerskapspengerInfoRenderer {
             y -= renderer.addLineOfRegularText(txt("oppdrag"), cos, y);
             List<String> oppdrag = safeStream(frilans.getFrilansOppdrag())
                     .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
-                    .collect(toList());
+                    .toList();
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
             y -= PdfElementRenderer.BLANK_LINE;
         } else {
@@ -207,7 +206,7 @@ public class SvangerskapspengerInfoRenderer {
     private List<List<String>> egneNæringer(List<EgenNæring> egenNæring) {
         return safeStream(egenNæring)
                 .map(this::egenNæring)
-                .collect(toList());
+                .toList();
     }
 
     private List<String> egenNæring(EgenNæring næring) {

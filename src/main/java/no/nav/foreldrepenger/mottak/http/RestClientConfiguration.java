@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isVTP;
 import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
 import static org.springframework.retry.RetryContext.NAME;
@@ -55,7 +54,7 @@ public class RestClientConfiguration implements EnvironmentAware {
     private static List<ClientHttpRequestInterceptor> interceptorsWithoutBearerToken(ClientHttpRequestInterceptor... interceptors) {
         var filtered = Arrays.stream(interceptors)
                 .filter(not(i -> i.getClass().equals(BearerTokenClientHttpRequestInterceptor.class)))
-                .collect(toList());
+                .toList();
         LOG.trace("Filtered message interceptors er {}", filtered);
         return filtered;
     }

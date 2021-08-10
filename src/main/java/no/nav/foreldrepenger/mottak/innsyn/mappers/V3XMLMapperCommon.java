@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon.IKKE_ARBEIDET;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -68,7 +67,7 @@ public class V3XMLMapperCommon {
                 safeStream(påkrevd)
                         .map(V3XMLMapperCommon::metadataFra)
                         .map(s -> new PåkrevdVedlegg(s, null)))
-                .collect(toList());
+                .toList();
     }
 
     private static VedleggMetaData metadataFra(no.nav.vedtak.felles.xml.soeknad.felles.v3.Vedlegg v) {
@@ -116,7 +115,7 @@ public class V3XMLMapperCommon {
                 .filter(predicate)
                 .map(u -> new Utenlandsopphold(tilLand(u.getLand()),
                         new LukketPeriode(u.getPeriode().getFom(), u.getPeriode().getTom())))
-                .collect(toList());
+                .toList();
     }
 
     private static Predicate<? super OppholdUtlandet> før(LocalDate søknadsDato) {
@@ -162,7 +161,7 @@ public class V3XMLMapperCommon {
     private static List<FrilansOppdrag> tilFrilansOppdrag(List<Frilansoppdrag> frilansoppdrag) {
         return safeStream(frilansoppdrag)
                 .map(V3XMLMapperCommon::tilFrilansOppdrag)
-                .collect(toList());
+                .toList();
     }
 
     private static FrilansOppdrag tilFrilansOppdrag(Frilansoppdrag fo) {
@@ -189,7 +188,7 @@ public class V3XMLMapperCommon {
             List<AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
                 .map(V3XMLMapperCommon::tilAnnenOpptjening)
-                .collect(toList());
+                .toList();
     }
 
     private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening tilAnnenOpptjening(AnnenOpptjening ao) {
@@ -203,7 +202,7 @@ public class V3XMLMapperCommon {
     private static List<EgenNæring> tilEgenNæring(List<EgenNaering> egenNaering) {
         return safeStream(egenNaering)
                 .map(V3XMLMapperCommon::tilEgenNæring)
-                .collect(toList());
+                .toList();
     }
 
     private static EgenNæring tilEgenNæring(EgenNaering egenNæring) {
@@ -263,7 +262,7 @@ public class V3XMLMapperCommon {
             List<no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold> u) {
         return safeStream(u)
                 .map(V3XMLMapperCommon::tilUtenlandskArbeidsforhold)
-                .collect(toList());
+                .toList();
     }
 
     private static UtenlandskArbeidsforhold tilUtenlandskArbeidsforhold(
@@ -278,7 +277,7 @@ public class V3XMLMapperCommon {
     private static List<Virksomhetstype> tilVirksomhetsTyper(List<Virksomhetstyper> v) {
         return safeStream(v)
                 .map(V3XMLMapperCommon::tilVirksomhetsType)
-                .collect(toList());
+                .toList();
     }
 
     private static Virksomhetstype tilVirksomhetsType(Virksomhetstyper type) {

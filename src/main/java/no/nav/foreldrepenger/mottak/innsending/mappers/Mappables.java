@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.util.Collection;
@@ -24,7 +23,7 @@ public final class Mappables {
                 .map(Mappable::mapperEgenskaper)
                 .map(MapperEgenskaper::getEgenskaper)
                 .flatMap(Collection::stream)
-                .collect(toList()));
+                .toList());
     }
 
     public static <T extends Mappable> T mapperFor(List<T> mappables, SøknadEgenskap egenskap) {

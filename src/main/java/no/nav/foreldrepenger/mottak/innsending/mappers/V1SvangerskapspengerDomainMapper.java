@@ -1,10 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.medlemsskapFra;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.opptjeningFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.målformFra;
+import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.opptjeningFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.søkerFra;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.V3DomainMapperCommon.vedleggFra;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -111,7 +110,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
                         tilretteleggingByArbeidsforhold(tilrettelegginger)
                                 .values().stream()
                                 .map(V1SvangerskapspengerDomainMapper::create)
-                                .collect(toList()));
+                                .toList());
     }
 
     private static Tilrettelegging create(
@@ -171,7 +170,7 @@ public class V1SvangerskapspengerDomainMapper implements DomainMapper {
     private static List<JAXBElement<Object>> tilretteleggingVedleggFraIDs(List<String> vedlegg) {
         return safeStream(vedlegg)
                 .map(s -> SVP_FACTORY_V1.createTilretteleggingVedlegg(new Vedlegg().withId(s)))
-                .collect(toList());
+                .toList();
     }
 
     private static Arbeidsforhold arbeidsforholdFra(

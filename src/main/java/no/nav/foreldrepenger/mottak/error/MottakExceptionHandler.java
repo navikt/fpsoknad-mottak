@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.error;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -118,7 +117,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         var feil = e.getBindingResult().getFieldErrors()
                 .stream()
                 .map(MottakExceptionHandler::errorMessage)
-                .collect(toList());
+                .toList();
         LOG.warn("Fant {} valideringsfeil", feil.size());
         return feil;
     }

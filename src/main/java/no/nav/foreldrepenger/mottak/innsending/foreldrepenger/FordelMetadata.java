@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000001;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
 import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000003;
@@ -96,7 +95,7 @@ public class FordelMetadata {
         dokumenter.addAll(safeStream(søknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
-                .collect(toList()));
+                .toList());
         return dokumenter;
     }
 
@@ -106,7 +105,7 @@ public class FordelMetadata {
         dokumenter.addAll(safeStream(endringssøknad.getVedlegg())
                 .filter(s -> LASTET_OPP.equals(s.getInnsendingsType()))
                 .map(s -> vedleggsDel(s, id))
-                .collect(toList()));
+                .toList());
         return dokumenter;
     }
 
@@ -114,7 +113,7 @@ public class FordelMetadata {
         var id = new AtomicInteger(1);
         return safeStream(ettersending.getVedlegg())
                 .map(s -> vedleggsDel(s, id))
-                .collect(toList());
+                .toList();
     }
 
     private static Del søknadsDel(final AtomicInteger id, Søknad søknad, SøknadType type) {

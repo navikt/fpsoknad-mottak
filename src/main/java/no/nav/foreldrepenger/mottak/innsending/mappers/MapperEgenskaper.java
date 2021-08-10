@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
@@ -68,7 +67,7 @@ public class MapperEgenskaper {
     private static List<SøknadEgenskap> typerForVersjon(final Versjon versjon, SøknadType... typer) {
         return Arrays.stream(typer)
                 .map(type -> new SøknadEgenskap(versjon, type))
-                .collect(toList());
+                .toList();
     }
 
     @Override

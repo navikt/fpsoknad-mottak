@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.Collection;
@@ -35,7 +34,7 @@ public final class StreamUtil {
     }
 
     public static <T> List<T> distinct(List<T> list) {
-        return safeStream(list).distinct().collect(toList());
+        return safeStream(list).distinct().toList();
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
