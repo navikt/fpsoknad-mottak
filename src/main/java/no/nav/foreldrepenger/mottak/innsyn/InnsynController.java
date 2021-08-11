@@ -27,7 +27,7 @@ public class InnsynController {
     private final Oppslag oppslag;
     private final Innsyn innsyn;
     private final ArbeidsInfo arbeidsforhold;
-    private SakClient sakClient;
+    private final SakClient sakClient;
 
     public InnsynController(Innsyn innsyn, Oppslag oppslag, ArbeidsInfo arbeidsforhold, SakClient sakClient) {
         this.innsyn = innsyn;
