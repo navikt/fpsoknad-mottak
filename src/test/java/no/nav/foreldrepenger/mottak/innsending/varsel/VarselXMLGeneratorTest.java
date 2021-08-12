@@ -27,7 +27,7 @@ class VarselXMLGeneratorTest {
         var varselXmlGenerator = new VarselXMLGenerator(jaxb);
         var varsel = varsel();
         var v = jaxb.unmarshalToElement(varselXmlGenerator.tilXml(varsel), Varsel.class).getValue();
-        assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.søker().getAktørId().id());
+        assertEquals(AktoerId.class.cast(v.getMottaker()).getAktoerId(), varsel.søker().getAktørId().getId());
         assertEquals(VARSEL_TYPE, v.getVarslingstype().getValue());
         var parametre = v.getParameterListe();
         assertEquals(3, parametre.size());

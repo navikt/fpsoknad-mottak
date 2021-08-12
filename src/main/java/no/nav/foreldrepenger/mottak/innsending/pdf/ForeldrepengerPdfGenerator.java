@@ -227,7 +227,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
                 }
 
                 if (stønad.getFordeling() != null) {
-                    cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().søknadsRolle(), stønad.getFordeling(),
+                    cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.getFordeling(),
                             stønad.getDekningsgrad(),
                             søknad.getVedlegg(),
                             stønad.getRelasjonTilBarn().getAntallBarn(), false,
@@ -318,7 +318,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             if (stønad.getFordeling() != null) {
-                cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().søknadsRolle(), stønad.getFordeling(),
+                cos = fpRenderer.fordeling(doc, søker, søknad.getSøker().getSøknadsRolle(), stønad.getFordeling(),
                         stønad.getDekningsgrad(),
                         søknad.getVedlegg(),
                         stønad.getRelasjonTilBarn().getAntallBarn(), true,
