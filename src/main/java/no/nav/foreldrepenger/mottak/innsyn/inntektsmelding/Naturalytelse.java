@@ -2,13 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding;
 
 import java.time.LocalDate;
 
-import lombok.Data;
 
-@Data
-public class Naturalytelse {
-
-    private final NaturalytelseType type;
-    private final Double beløpPrMåned;
-    private final LocalDate fom;
+record Naturalytelse(NaturalytelseType type, Double beløpPrMåned, LocalDate fom) {
 
 }

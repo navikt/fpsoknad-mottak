@@ -3,11 +3,8 @@ package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding;
 import java.time.LocalDate;
 import java.util.List;
 
-import lombok.Data;
+record Refusjon(Double beløpPrMåned,
+      LocalDate opphørsDato,
+      List<RefusjonsEndring> refusjonsEndringer) {
 
-@Data
-public class Refusjon {
-    private final Double beløpPrMåned;
-    private final LocalDate opphørsDato;
-    private final List<RefusjonsEndring> refusjonsEndringer;
 }

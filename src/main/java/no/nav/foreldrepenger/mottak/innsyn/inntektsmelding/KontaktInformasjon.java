@@ -1,10 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding;
 
-import lombok.Data;
-
-@Data
-public class KontaktInformasjon {
-    private final String kontaktinformasjonNavn;
-    private final String telefonnummer;
+record KontaktInformasjon(String kontaktinformasjonNavn, String telefonnummer) {
 
 }
