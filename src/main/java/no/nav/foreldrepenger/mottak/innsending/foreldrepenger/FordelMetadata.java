@@ -63,7 +63,7 @@ public class FordelMetadata {
 
     public FordelMetadata(List<Del> deler, AktørId aktorId, String ref, String saksnr) {
         this.forsendelsesId = ref;
-        this.brukerId = aktorId.id();
+        this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();
         this.deler = deler;
         this.saksnummer = saksnr;

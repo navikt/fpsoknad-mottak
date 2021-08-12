@@ -68,14 +68,14 @@ public class SøknadTextFormatter {
     public String navn(Navn navn) {
         String sammensattnavn = Joiner.on(' ')
                 .skipNulls()
-                .join(navn.fornavn(), navn.mellomnavn(), navn.etternavn());
+                .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
         return sammensattnavn.isEmpty() ? "" : fromMessageSource("navninline", sammensattnavn);
     }
 
     public String sammensattNavn(Navn navn) {
         return Joiner.on(' ')
                 .skipNulls()
-                .join(navn.fornavn(), navn.mellomnavn(), navn.etternavn());
+                .join(navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn());
     }
 
     public String navn(Person søker) {

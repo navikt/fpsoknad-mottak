@@ -292,8 +292,8 @@ final class V3DomainMapperCommon {
 
     static Bruker søkerFra(AktørId aktørId, Søker søker) {
         return new Bruker()
-                .withAktoerId(aktørId.id())
-                .withSoeknadsrolle(brukerRolleFra(søker.søknadsRolle()));
+                .withAktoerId(aktørId.getId())
+                .withSoeknadsrolle(brukerRolleFra(søker.getSøknadsRolle()));
     }
 
     static List<Vedlegg> vedleggFra(

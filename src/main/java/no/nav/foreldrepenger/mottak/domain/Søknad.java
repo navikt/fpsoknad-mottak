@@ -76,7 +76,7 @@ public class Søknad {
 
     @JsonIgnore
     public BrukerRolle getSøknadsRolle() {
-        return søker.søknadsRolle();
+        return søker.getSøknadsRolle();
     }
 
     @JsonIgnore
