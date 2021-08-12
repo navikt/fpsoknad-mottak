@@ -53,7 +53,7 @@ public class VarselXMLGenerator {
 
     private static AktoerId mottaker(Person søker) {
         return new AktoerId()
-                .withAktoerId(søker.getAktørId().getId());
+                .withAktoerId(søker.getAktørId().id());
     }
 
     private static Varslingstyper varslingsType() {

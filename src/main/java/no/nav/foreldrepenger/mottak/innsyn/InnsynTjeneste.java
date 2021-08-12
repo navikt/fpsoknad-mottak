@@ -96,7 +96,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public List<Sak> saker(AktørId aktørId) {
-        String id = aktørId.getId();
+        String id = aktørId.id();
         LOG.info("Henter sak(er) for {}", id);
         var saker = safeStream(innsyn.saker(id))
                 .filter(distinctByKey(SakDTO::getSaksnummer))
@@ -296,7 +296,7 @@ public class InnsynTjeneste implements Innsyn {
         return Optional.ofNullable(orgnr)
                 .map(o -> new ArbeidsgiverInfo(o, ORGANISASJON, organisasjon.navn(o)))
                 .orElse(new ArbeidsgiverInfo(Optional.ofNullable(aktørId)
-                        .map(AktørId::getId)
+                        .map(AktørId::id)
                         .orElse(null), PRIVAT,
                         null));
     }

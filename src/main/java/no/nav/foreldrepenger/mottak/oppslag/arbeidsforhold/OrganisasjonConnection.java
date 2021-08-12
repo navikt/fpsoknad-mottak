@@ -86,7 +86,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
             var navn = Optional.ofNullable(n)
                     .map(Navn::navn)
                     .orElse(PRIVAT_ARBEIDSGIVER);
-            LOG.info("Hentet personnavn {} for {}", n.getFornavn(), fnr);
+            LOG.info("Hentet personnavn {} for {}", n.fornavn(), fnr);
             return navn;
         } catch (Exception e) {
             LOG.warn("Fant ikke personnavn for {}", fnr);

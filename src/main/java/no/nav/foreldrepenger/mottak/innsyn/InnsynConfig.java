@@ -45,7 +45,7 @@ public class InnsynConfig extends AbstractConfig {
 
     URI uttaksplanURI(AktørId aktørId, AktørId annenPart) {
         return uri(getBaseUri(), ANNENFORELDERPLAN,
-                queryParams(ANNENPART, annenPart.getId(), BRUKER, aktørId.getId()));
+                queryParams(ANNENPART, annenPart.id(), BRUKER, aktørId.id()));
     }
 
     URI createLink(String l) {

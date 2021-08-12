@@ -45,7 +45,7 @@ public class SakClientHttp implements SakClient {
     @Override
     public List<Sak> sakerFor(AktørId aktor, String tema) {
         LOG.info("Henter saker for {}", aktor);
-        var response = sakerFor(aktor.getId(), tema, request());
+        var response = sakerFor(aktor.id(), tema, request());
         return sisteSakFra(Optional.ofNullable(response.getBody()).orElse(List.of()));
 
     }
