@@ -52,25 +52,25 @@ public class Person {
 
     public String getFornavn() {
         return Optional.ofNullable(navn)
-                .map(Navn::getFornavn)
+                .map(Navn::fornavn)
                 .orElse(null);
     }
 
     public String getMellomnavn() {
         return Optional.ofNullable(navn)
-                .map(Navn::getMellomnavn)
+                .map(Navn::mellomnavn)
                 .orElse(null);
     }
 
     public String getEtternavn() {
         return Optional.ofNullable(navn)
-                .map(Navn::getEtternavn)
+                .map(Navn::etternavn)
                 .orElse(null);
     }
 
     public Kjønn getKjønn() {
         return Optional.ofNullable(navn)
-                .map(Navn::getKjønn)
+                .map(Navn::kjønn)
                 .orElse(Kjønn.U);
 
     }
