@@ -103,12 +103,12 @@ class TestEngangsstønadSerialization {
 
     @Test
     void testFnr() {
-        test(new Fødselsnummer("03016536325"), false);
+        test(new Fødselsnummer("03016536325"), true);
     }
 
     @Test
     void testAktør() {
-        test(new AktørId("111111111"), false);
+        test(new AktørId("111111111"), true);
     }
 
     @Test
