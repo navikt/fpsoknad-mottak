@@ -56,7 +56,6 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
                 .collect(Collectors.toList());
         LOG.info("Hentet {} arbeidsforhold for perioden fra {}", arbeidsforhold.size(), fom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
-        LOG.info("Arbeidsforhold {}", arbeidsforhold.stream().map(EnkeltArbeidsforhold::getArbeidsgiverId).toList());
         return arbeidsforhold;
     }
 
