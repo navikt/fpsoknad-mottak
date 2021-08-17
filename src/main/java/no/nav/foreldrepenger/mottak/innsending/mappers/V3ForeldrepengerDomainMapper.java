@@ -31,6 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.FriUtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
@@ -226,12 +227,16 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         if (periode instanceof OppholdsPeriode p) {
             return create(p);
         }
+        if (periode instanceof FriUtsettelsesPeriode p) {
+            return create(p);
+        }
         if (periode instanceof UtsettelsesPeriode p) {
             return create(p);
         }
         if (periode instanceof GradertUttaksPeriode p) {
             return create(p);
         }
+
         if (periode instanceof UttaksPeriode p) {
             return create(p);
         }
@@ -267,6 +272,16 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType(), true))
                 .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
                 .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
+            FriUtsettelsesPeriode utsettelsesPeriode) {
+        return new Utsettelsesperiode()
+                .withFom(utsettelsesPeriode.getFom())
+                .withTom(utsettelsesPeriode.getTom())
+                .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(utsettelsesPeriode.getMorsAktivitetsType(), true))
+                .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()));
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
@@ -349,6 +364,16 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet aktivitet) {
+        return morsAktivitetFra(aktivitet, false);
+    }
+
+    private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet aktivitet, boolean optional) {
+        if (optional) {
+            return Optional.ofNullable(aktivitet)
+                    .map(MorsAktivitet::name)
+                    .map(V3ForeldrepengerDomainMapper::morsAktivitetFra)
+                    .orElse(null);
+        }
         return Optional.ofNullable(aktivitet)
                 .map(MorsAktivitet::name)
                 .map(V3ForeldrepengerDomainMapper::morsAktivitetFra)
