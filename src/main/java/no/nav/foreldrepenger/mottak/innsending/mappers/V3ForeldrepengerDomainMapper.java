@@ -31,6 +31,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
 import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.FriUtsettelsesPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
@@ -211,9 +212,8 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .toList();
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg lukketPeriodeFra(
-            LukketPeriodeMedVedlegg periode) {
-        return Optional.ofNullable(periode)
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg lukketPeriodeFra(LukketPeriodeMedVedlegg p) {
+        return Optional.ofNullable(p)
                 .map(V3ForeldrepengerDomainMapper::create)
                 .orElse(null);
     }
@@ -226,81 +226,89 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         if (periode instanceof OppholdsPeriode p) {
             return create(p);
         }
+        if (periode instanceof FriUtsettelsesPeriode p) {
+            return create(p);
+        }
         if (periode instanceof UtsettelsesPeriode p) {
             return create(p);
         }
         if (periode instanceof GradertUttaksPeriode p) {
             return create(p);
         }
+
         if (periode instanceof UttaksPeriode p) {
             return create(p);
         }
         throw new UnexpectedInputException("Ukjent periode " + periode.getClass().getSimpleName());
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
-            OverføringsPeriode overføringsPeriode) {
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(OverføringsPeriode o) {
         return new Overfoeringsperiode()
-                .withFom(overføringsPeriode.getFom())
-                .withTom(overføringsPeriode.getTom())
-                .withOverfoeringAv(uttaksperiodeTypeFra(overføringsPeriode.getUttaksperiodeType()))
-                .withAarsak(påkrevdOverføringsÅrsakFra(overføringsPeriode.getÅrsak()))
-                .withVedlegg(lukketPeriodeVedleggFra(overføringsPeriode.getVedlegg()));
+                .withFom(o.getFom())
+                .withTom(o.getTom())
+                .withOverfoeringAv(uttaksperiodeTypeFra(o.getUttaksperiodeType()))
+                .withAarsak(påkrevdOverføringsÅrsakFra(o.getÅrsak()))
+                .withVedlegg(lukketPeriodeVedleggFra(o.getVedlegg()));
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
-            OppholdsPeriode oppholdsPeriode) {
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(OppholdsPeriode o) {
         return new Oppholdsperiode()
-                .withFom(oppholdsPeriode.getFom())
-                .withTom(oppholdsPeriode.getTom())
-                .withAarsak(oppholdsÅrsakFra(oppholdsPeriode.getÅrsak()))
-                .withVedlegg(lukketPeriodeVedleggFra(oppholdsPeriode.getVedlegg()));
+                .withFom(o.getFom())
+                .withTom(o.getTom())
+                .withAarsak(oppholdsÅrsakFra(o.getÅrsak()))
+                .withVedlegg(lukketPeriodeVedleggFra(o.getVedlegg()));
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
-            UtsettelsesPeriode utsettelsesPeriode) {
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(UtsettelsesPeriode u) {
         return new Utsettelsesperiode()
-                .withFom(utsettelsesPeriode.getFom())
-                .withTom(utsettelsesPeriode.getTom())
-                .withErArbeidstaker(utsettelsesPeriode.isErArbeidstaker())
-                .withMorsAktivitetIPerioden(morsAktivitetFra(utsettelsesPeriode.getMorsAktivitetsType()))
-                .withUtsettelseAv(uttaksperiodeTypeFra(utsettelsesPeriode.getUttaksperiodeType(), true))
-                .withAarsak(utsettelsesÅrsakFra(utsettelsesPeriode.getÅrsak()))
-                .withVedlegg(lukketPeriodeVedleggFra(utsettelsesPeriode.getVedlegg()));
+                .withFom(u.getFom())
+                .withTom(u.getTom())
+                .withErArbeidstaker(u.isErArbeidstaker())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(u.getMorsAktivitetsType()))
+                .withUtsettelseAv(uttaksperiodeTypeFra(u.getUttaksperiodeType(), true))
+                .withAarsak(utsettelsesÅrsakFra(u.getÅrsak()))
+                .withVedlegg(lukketPeriodeVedleggFra(u.getVedlegg()));
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
-            GradertUttaksPeriode gradertPeriode) {
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(FriUtsettelsesPeriode p) {
+        return new Utsettelsesperiode()
+                .withFom(p.getFom())
+                .withTom(p.getTom())
+                .withErArbeidstaker(p.isErArbeidstaker())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(p.getMorsAktivitetsType(), true))
+                .withAarsak(utsettelsesÅrsakFra(p.getÅrsak()));
+    }
+
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(GradertUttaksPeriode g) {
         var gradering = new Gradering()
-                .withFom(gradertPeriode.getFom())
-                .withTom(gradertPeriode.getTom())
-                .withType(uttaksperiodeTypeFra(gradertPeriode.getUttaksperiodeType()))
-                .withOenskerSamtidigUttak(gradertPeriode.isØnskerSamtidigUttak())
-                .withMorsAktivitetIPerioden(morsAktivitetFra(gradertPeriode.getMorsAktivitetsType()))
-                .withOenskerFlerbarnsdager(gradertPeriode.isØnskerFlerbarnsdager())
-                .withErArbeidstaker(gradertPeriode.isErArbeidstaker())
-                .withArbeidtidProsent(prosentFra(gradertPeriode.getArbeidstidProsent()))
-                .withArbeidsgiver(arbeidsgiverFra(gradertPeriode.getVirksomhetsnummer()))
-                .withArbeidsforholdSomSkalGraderes(gradertPeriode.isArbeidsForholdSomskalGraderes())
-                .withVedlegg(lukketPeriodeVedleggFra(gradertPeriode.getVedlegg()));
-        Optional.ofNullable(gradertPeriode.getFrilans()).ifPresent(p -> gradering.setErFrilanser(p.booleanValue()));
-        Optional.ofNullable(gradertPeriode.getSelvstendig()).ifPresent(p -> gradering.setErSelvstNæringsdrivende(p.booleanValue()));
-        return gradertPeriode.isØnskerSamtidigUttak()
-                ? gradering.withSamtidigUttakProsent(prosentFra(gradertPeriode.getSamtidigUttakProsent()))
+                .withFom(g.getFom())
+                .withTom(g.getTom())
+                .withType(uttaksperiodeTypeFra(g.getUttaksperiodeType()))
+                .withOenskerSamtidigUttak(g.isØnskerSamtidigUttak())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(g.getMorsAktivitetsType()))
+                .withOenskerFlerbarnsdager(g.isØnskerFlerbarnsdager())
+                .withErArbeidstaker(g.isErArbeidstaker())
+                .withArbeidtidProsent(prosentFra(g.getArbeidstidProsent()))
+                .withArbeidsgiver(arbeidsgiverFra(g.getVirksomhetsnummer()))
+                .withArbeidsforholdSomSkalGraderes(g.isArbeidsForholdSomskalGraderes())
+                .withVedlegg(lukketPeriodeVedleggFra(g.getVedlegg()));
+        Optional.ofNullable(g.getFrilans()).ifPresent(p -> gradering.setErFrilanser(p.booleanValue()));
+        Optional.ofNullable(g.getSelvstendig()).ifPresent(p -> gradering.setErSelvstNæringsdrivende(p.booleanValue()));
+        return g.isØnskerSamtidigUttak()
+                ? gradering.withSamtidigUttakProsent(prosentFra(g.getSamtidigUttakProsent()))
                 : gradering;
     }
 
-    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(
-            UttaksPeriode uttaksPeriode) {
+    private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(UttaksPeriode u) {
         return new Uttaksperiode()
-                .withFom(uttaksPeriode.getFom())
-                .withTom(uttaksPeriode.getTom())
-                .withSamtidigUttakProsent(prosentFra(uttaksPeriode.getSamtidigUttakProsent()))
-                .withOenskerFlerbarnsdager(uttaksPeriode.isØnskerFlerbarnsdager())
-                .withType(uttaksperiodeTypeFra(uttaksPeriode.getUttaksperiodeType()))
-                .withOenskerSamtidigUttak(uttaksPeriode.isØnskerSamtidigUttak())
-                .withMorsAktivitetIPerioden(morsAktivitetFra(uttaksPeriode.getMorsAktivitetsType()))
-                .withVedlegg(lukketPeriodeVedleggFra(uttaksPeriode.getVedlegg()));
+                .withFom(u.getFom())
+                .withTom(u.getTom())
+                .withSamtidigUttakProsent(prosentFra(u.getSamtidigUttakProsent()))
+                .withOenskerFlerbarnsdager(u.isØnskerFlerbarnsdager())
+                .withType(uttaksperiodeTypeFra(u.getUttaksperiodeType()))
+                .withOenskerSamtidigUttak(u.isØnskerSamtidigUttak())
+                .withMorsAktivitetIPerioden(morsAktivitetFra(u.getMorsAktivitetsType()))
+                .withVedlegg(lukketPeriodeVedleggFra(u.getVedlegg()));
     }
 
     private static double prosentFra(ProsentAndel prosent) {
@@ -349,6 +357,16 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet aktivitet) {
+        return morsAktivitetFra(aktivitet, false);
+    }
+
+    private static MorsAktivitetsTyper morsAktivitetFra(MorsAktivitet aktivitet, boolean optional) {
+        if (optional) {
+            return Optional.ofNullable(aktivitet)
+                    .map(MorsAktivitet::name)
+                    .map(V3ForeldrepengerDomainMapper::morsAktivitetFra)
+                    .orElse(null);
+        }
         return Optional.ofNullable(aktivitet)
                 .map(MorsAktivitet::name)
                 .map(V3ForeldrepengerDomainMapper::morsAktivitetFra)
@@ -403,12 +421,11 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return overføringsÅrsak.withKodeverk(overføringsÅrsak.getKodeverk());
     }
 
-    private static Rettigheter rettigheterFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter, boolean ukjentForelder) {
+    private static Rettigheter rettigheterFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter r, boolean ukjentForelder) {
         if (ukjentForelder) {
             return rettigheterForUkjentForelder();
         }
-        return Optional.ofNullable(rettigheter)
+        return Optional.ofNullable(r)
                 .map(V3ForeldrepengerDomainMapper::create)
                 .orElse(null);
     }
@@ -420,11 +437,11 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withHarAleneomsorgForBarnet(true);
     }
 
-    private static Rettigheter create(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter rettigheter) {
+    private static Rettigheter create(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter r) {
         return new Rettigheter()
                 .withHarOmsorgForBarnetIPeriodene(true)
-                .withHarAnnenForelderRett(rettigheter.isHarAnnenForelderRett())
-                .withHarAleneomsorgForBarnet(rettigheter.isHarAleneOmsorgForBarnet());
+                .withHarAnnenForelderRett(r.isHarAnnenForelderRett())
+                .withHarAleneomsorgForBarnet(r.isHarAleneOmsorgForBarnet());
     }
 
     private AnnenForelder annenForelderFra(
