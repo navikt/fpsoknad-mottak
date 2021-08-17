@@ -15,8 +15,8 @@ import lombok.ToString;
 public class FriUtsettelsesPeriode extends UtsettelsesPeriode {
 
     public FriUtsettelsesPeriode(LocalDate fom, LocalDate tom, boolean erArbeidstaker,
-            @NotNull UtsettelsesÅrsak årsak, MorsAktivitet morsAktivitetsType) {
-        super(fom, tom, erArbeidstaker, null, årsak, null, morsAktivitetsType, List.of());
+            @NotNull UtsettelsesÅrsak årsak, StønadskontoType type, MorsAktivitet morsAktivitetsType, List<String> vedlegg) {
+        super(fom, tom, erArbeidstaker, null, årsak, type, morsAktivitetsType, vedlegg);
     }
 
 }

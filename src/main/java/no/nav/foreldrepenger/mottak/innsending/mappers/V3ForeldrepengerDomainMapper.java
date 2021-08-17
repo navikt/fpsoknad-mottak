@@ -274,6 +274,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return new Utsettelsesperiode()
                 .withFom(p.getFom())
                 .withTom(p.getTom())
+                .withUtsettelseAv(uttaksperiodeTypeFra(p.getUttaksperiodeType(), true))
                 .withErArbeidstaker(p.isErArbeidstaker())
                 .withMorsAktivitetIPerioden(morsAktivitetFra(p.getMorsAktivitetsType(), true))
                 .withAarsak(utsettelsesÅrsakFra(p.getÅrsak()));
