@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 
-public class UtenlandskOrganisasjon extends EgenNæring {
+public final class UtenlandskOrganisasjon extends EgenNæring {
 
     @Length(max = 100)
     private String orgName;

@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 @Valid
-public class Ettersending {
+public final class Ettersending {
 
     @NotNull
     private final String saksnr;

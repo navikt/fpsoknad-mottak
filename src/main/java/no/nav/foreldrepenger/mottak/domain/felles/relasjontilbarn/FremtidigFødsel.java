@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class FremtidigFødsel extends RelasjonTilBarn {
+public final class FremtidigFødsel extends RelasjonTilBarn {
     private final LocalDate terminDato;
     @PastOrToday(nullable = true)
     private final LocalDate utstedtDato;

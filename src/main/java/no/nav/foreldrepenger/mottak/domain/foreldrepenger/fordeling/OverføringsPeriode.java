@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class OverføringsPeriode extends LukketPeriodeMedVedlegg {
+public final class OverføringsPeriode extends LukketPeriodeMedVedlegg {
 
     private final Overføringsårsak årsak;
     private final StønadskontoType uttaksperiodeType;

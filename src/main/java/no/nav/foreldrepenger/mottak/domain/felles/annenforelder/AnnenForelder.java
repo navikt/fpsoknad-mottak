@@ -16,7 +16,7 @@ import lombok.Data;
         @Type(value = NorskForelder.class, name = "norsk")
 })
 @Data
-public abstract class AnnenForelder {
+public abstract sealed class AnnenForelder permits NorskForelder,UtenlandskForelder,UkjentForelder {
 
     public abstract boolean hasId();
 

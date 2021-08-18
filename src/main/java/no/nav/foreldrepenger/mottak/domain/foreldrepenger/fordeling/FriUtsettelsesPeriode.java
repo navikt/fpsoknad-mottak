@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class FriUtsettelsesPeriode extends UtsettelsesPeriode {
+public final class FriUtsettelsesPeriode extends UtsettelsesPeriode {
 
     public FriUtsettelsesPeriode(LocalDate fom, LocalDate tom, boolean erArbeidstaker,
             @NotNull UtsettelsesÅrsak årsak, StønadskontoType type, MorsAktivitet morsAktivitetsType, List<String> vedlegg) {
