@@ -275,9 +275,9 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withFom(p.getFom())
                 .withTom(p.getTom())
                 .withUtsettelseAv(uttaksperiodeTypeFra(p.getUttaksperiodeType(), true))
-                .withErArbeidstaker(p.isErArbeidstaker())
                 .withMorsAktivitetIPerioden(morsAktivitetFra(p.getMorsAktivitetsType(), true))
-                .withAarsak(utsettelsesÅrsakFra(p.getÅrsak()));
+                .withAarsak(utsettelsesÅrsakFra(p.getÅrsak()))
+                .withVedlegg(lukketPeriodeVedleggFra(p.getVedlegg()));
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.uttak.v3.LukketPeriodeMedVedlegg create(GradertUttaksPeriode g) {
