@@ -15,7 +15,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 @Data
 @EqualsAndHashCode(callSuper = true, exclude = { "virksomhetsnummer" })
 @ToString(callSuper = true, exclude = { "virksomhetsnummer" })
-public class GradertUttaksPeriode extends UttaksPeriode {
+public final class GradertUttaksPeriode extends UttaksPeriode {
     private final ProsentAndel arbeidstidProsent;
     private final boolean erArbeidstaker;
     private final List<String> virksomhetsnummer;

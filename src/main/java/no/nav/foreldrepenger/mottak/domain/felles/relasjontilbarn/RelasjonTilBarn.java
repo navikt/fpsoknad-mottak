@@ -26,7 +26,7 @@ import lombok.Data;
         @Type(value = FremtidigFødsel.class, name = "termin"),
         @Type(value = Omsorgsovertakelse.class, name = "omsorgsovertakelse")
 })
-public abstract class RelasjonTilBarn {
+public abstract sealed class RelasjonTilBarn permits Fødsel,FremtidigFødsel,Adopsjon,Omsorgsovertakelse {
 
     public abstract LocalDate relasjonsDato();
 

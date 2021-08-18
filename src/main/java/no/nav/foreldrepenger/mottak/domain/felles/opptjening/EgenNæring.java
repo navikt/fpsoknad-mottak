@@ -33,7 +33,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
 
 @ToString(exclude = "vedlegg")
 @EqualsAndHashCode(exclude = "vedlegg")
-public abstract class EgenNæring {
+public abstract sealed class EgenNæring permits NorskOrganisasjon,UtenlandskOrganisasjon {
 
     private final List<Virksomhetstype> virksomhetsTyper;
     private final ÅpenPeriode periode;

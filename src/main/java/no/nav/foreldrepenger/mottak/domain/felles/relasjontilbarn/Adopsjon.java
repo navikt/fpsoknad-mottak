@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.PastOrToday;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Adopsjon extends RelasjonTilBarn {
+public final class Adopsjon extends RelasjonTilBarn {
 
     @NotNull(message = "{ytelse.relasjontilbarn.adopsjon.omsorggsovertakelsesdato.notnull}")
     private final LocalDate omsorgsovertakelsesdato;

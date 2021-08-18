@@ -96,6 +96,6 @@ public class UttaksPeriodeDTO implements Comparable<UttaksPeriodeDTO> {
 
     @Override
     public int compareTo(UttaksPeriodeDTO other) {
-        return this.getPeriode().getFom().compareTo(other.getPeriode().getFom());
+        return this.getPeriode().fom().compareTo(other.getPeriode().fom());
     }
 }

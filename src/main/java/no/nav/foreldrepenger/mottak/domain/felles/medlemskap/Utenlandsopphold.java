@@ -11,10 +11,10 @@ import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
 public record Utenlandsopphold(@NotNull CountryCode land, LukketPeriode varighet) {
 
     public LocalDate fom() {
-        return varighet.getFom();
+        return varighet.fom();
     }
 
     public LocalDate tom() {
-        return varighet.getTom();
+        return varighet.fom();
     }
 }

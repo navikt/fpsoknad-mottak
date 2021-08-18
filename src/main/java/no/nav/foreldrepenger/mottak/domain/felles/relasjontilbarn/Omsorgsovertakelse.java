@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Omsorgsovertakelse extends RelasjonTilBarn {
+public final class Omsorgsovertakelse extends RelasjonTilBarn {
 
     private final LocalDate omsorgsovertakelsesdato;
     private final OmsorgsOvertakelsesÅrsak årsak;

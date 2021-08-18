@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
 @Valid
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class NorskOrganisasjon extends EgenNæring {
+public final class NorskOrganisasjon extends EgenNæring {
 
     @Orgnr
     private final String orgNummer;

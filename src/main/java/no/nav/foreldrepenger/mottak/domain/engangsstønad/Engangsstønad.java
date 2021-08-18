@@ -18,7 +18,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBar
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @JsonPropertyOrder({ "medlemsskap", "relasjonTilBarn", "annenForelder" })
-public class Engangsstønad extends Ytelse {
+public final class Engangsstønad extends Ytelse {
 
     @Valid
     private final Medlemsskap medlemsskap;

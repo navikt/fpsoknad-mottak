@@ -26,7 +26,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
 @JsonSubTypes({
         @Type(value = GradertUttaksPeriode.class, name = "gradert")
 })
-public class UttaksPeriode extends LukketPeriodeMedVedlegg {
+public sealed class UttaksPeriode extends LukketPeriodeMedVedlegg permits GradertUttaksPeriode {
     private final StønadskontoType uttaksperiodeType;
     private final boolean ønskerSamtidigUttak;
     private final MorsAktivitet morsAktivitetsType;

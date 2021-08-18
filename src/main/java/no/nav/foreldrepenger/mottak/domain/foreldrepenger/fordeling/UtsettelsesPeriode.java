@@ -18,7 +18,7 @@ import lombok.ToString;
 @JsonSubTypes({
         @Type(value = FriUtsettelsesPeriode.class, name = "fri")
 })
-public class UtsettelsesPeriode extends LukketPeriodeMedVedlegg {
+public sealed class UtsettelsesPeriode extends LukketPeriodeMedVedlegg permits FriUtsettelsesPeriode {
 
     private final UtsettelsesÅrsak årsak;
     private final StønadskontoType uttaksperiodeType;
