@@ -10,7 +10,7 @@ public class PeriodeValidator implements ConstraintValidator<Periode, LukketPeri
 
     @Override
     public boolean isValid(LukketPeriode periode, ConstraintValidatorContext context) {
-        return periode.fom().isBefore(periode.fom());
+        return periode.fom().isBefore(periode.tom());
     }
 
 }

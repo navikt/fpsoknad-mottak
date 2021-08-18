@@ -59,11 +59,11 @@ public class OppholdValidator implements ConstraintValidator<Opphold, List<Utenl
 
     private static boolean overlapper(LukketPeriode førstePeriode, LukketPeriode annenPeriode) {
         LOG.info("Sammeligner {} med {}", førstePeriode, annenPeriode);
-        if (annenPeriode.fom().isAfter(førstePeriode.fom())) {
+        if (annenPeriode.fom().isAfter(førstePeriode.tom())) {
             LOG.info("Periodene overlapper ikke");
             return false;
         }
-        if (annenPeriode.fom().isBefore(førstePeriode.fom())) {
+        if (annenPeriode.tom().isBefore(førstePeriode.fom())) {
             LOG.info("Periodene overlapper ikke");
             return false;
         }
