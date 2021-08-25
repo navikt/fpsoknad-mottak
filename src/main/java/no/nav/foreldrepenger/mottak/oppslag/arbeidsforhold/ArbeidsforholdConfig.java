@@ -14,7 +14,7 @@ import org.springframework.web.util.UriBuilder;
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 @ConfigurationProperties(prefix = "arbeidsforhold")
-public class ArbeidsforholdConfig extends AbstractConfig {
+class ArbeidsforholdConfig extends AbstractConfig {
 
     private static final String DEFAULT_PING = "ping";
     private static final String TREÅR = "3y";
@@ -31,7 +31,7 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private final Period tidTilbake;
 
     @ConstructorBinding
-    public ArbeidsforholdConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
+    ArbeidsforholdConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
             @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath, @DefaultValue("true") boolean enabled,
             @DefaultValue(TREÅR) Period tidTilbake, boolean sporingsinformasjon) {
         super(baseUri, pingPath, enabled);
@@ -40,11 +40,11 @@ public class ArbeidsforholdConfig extends AbstractConfig {
         this.sporingsinformasjon = sporingsinformasjon;
     }
 
-    public String getArbeidsforholdPath() {
+    String getArbeidsforholdPath() {
         return arbeidsforholdPath;
     }
 
-    public boolean isHistorikk() {
+    boolean isHistorikk() {
         return historikk;
     }
 

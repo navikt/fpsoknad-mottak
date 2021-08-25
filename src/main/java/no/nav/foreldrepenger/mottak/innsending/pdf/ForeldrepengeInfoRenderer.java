@@ -152,7 +152,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public List<String> annen(AnnenOpptjening annen) {
-        ArrayList<String> attributter = new ArrayList<>();
+        var attributter = new ArrayList<String>();
         attributter.add(txt("type", cap(annen.getType().name())));
         addIfSet(attributter, annen.getPeriode());
         return attributter;
@@ -193,11 +193,11 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT, txt("vedlegg1"), cos, y);
         }
         for (String id : vedleggRefs) {
-            Optional<Vedlegg> details = safeStream(vedlegg)
+            var details = safeStream(vedlegg)
                     .filter(s -> id.equals(s.getId()))
                     .findFirst();
             if (details.isPresent()) {
-                String beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
+                var beskrivelse = vedleggsBeskrivelse(keyIfAnnet, details.get());
                 y -= renderer.addBulletPoint(INDENT,
                         txt("vedlegg2", beskrivelse, cap(details.get().getInnsendingsType().name())),
                         cos, y);
@@ -262,7 +262,7 @@ public class ForeldrepengeInfoRenderer {
         y -= renderer.addLinesOfRegularText(INDENT, attributter, cos, y);
         if (!frilans.getFrilansOppdrag().isEmpty()) {
             y -= renderer.addLineOfRegularText(INDENT, txt("oppdrag"), cos, y);
-            List<String> oppdrag = safeStream(frilans.getFrilansOppdrag())
+            var oppdrag = safeStream(frilans.getFrilansOppdrag())
                     .map(o -> o.oppdragsgiver() + " " + textFormatter.periode(o.periode()))
                     .toList();
             y -= renderer.addBulletList(INDENT, oppdrag, cos, y);
@@ -283,9 +283,9 @@ public class ForeldrepengeInfoRenderer {
     public float medlemsskap(Medlemsskap medlemsskap, RelasjonTilBarn relasjonTilBarn,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("medlemsskap"), cos, y);
-        TidligereOppholdsInformasjon tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
-        FramtidigOppholdsInformasjon framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
-        String land = textFormatter.countryName(medlemsskap.landVedDato(relasjonTilBarn.relasjonsDato()));
+        var tidligereOpphold = medlemsskap.getTidligereOppholdsInfo();
+        var framtidigeOpphold = medlemsskap.getFramtidigOppholdsInfo();
+        var land = textFormatter.countryName(medlemsskap.landVedDato(relasjonTilBarn.relasjonsDato()));
         if (relasjonTilBarn instanceof FremtidigFødsel) {
             y -= renderer.addLineOfRegularText(INDENT,
                     txt("terminføderi", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
@@ -347,14 +347,14 @@ public class ForeldrepengeInfoRenderer {
         if (dekningsgrad != null) {
             y -= renderer.addLineOfRegularText(txt("dekningsgrad", dekningsgrad.kode()), cos, y);
         }
-        float headerSize = 190;
+        var headerSize = 190F;
         for (LukketPeriodeMedVedlegg periode : sorted(fordeling.getPerioder())) {
             if (periode.getClass().equals(UttaksPeriode.class)) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var x = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
                         scratchcos, STARTY - 190);
-                float behov = STARTY - 190 - x;
+                var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
                     y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
@@ -364,12 +364,12 @@ public class ForeldrepengeInfoRenderer {
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof GradertUttaksPeriode) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
                         scratchcos,
                         STARTY - 190);
-                float behov = STARTY - 190 - x;
+                var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
                     y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
@@ -379,11 +379,11 @@ public class ForeldrepengeInfoRenderer {
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof OppholdsPeriode) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, scratchcos,
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, scratchcos,
                         STARTY - 190);
-                float behov = STARTY - 190 - x;
+                var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
                     y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, cos, y);
@@ -392,11 +392,11 @@ public class ForeldrepengeInfoRenderer {
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof UtsettelsesPeriode) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
                         scratchcos, STARTY - 190);
-                float behov = STARTY - 190 - x;
+                var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
                     y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
@@ -407,11 +407,11 @@ public class ForeldrepengeInfoRenderer {
                     y = STARTY - (headerSize + behov);
                 }
             } else if (periode instanceof OverføringsPeriode) {
-                PDPage scratch1 = newPage();
-                FontAwareCos scratchcos = new FontAwareCos(doc, scratch1);
-                float x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), rolle, vedlegg,
+                var scratch1 = newPage();
+                var scratchcos = new FontAwareCos(doc, scratch1);
+                var x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), rolle, vedlegg,
                         scratchcos, STARTY - 190);
-                float behov = STARTY - 190 - x;
+                var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
                     y = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), rolle, vedlegg,
@@ -481,10 +481,12 @@ public class ForeldrepengeInfoRenderer {
                     .add(txt(UTTAKSPERIODETYPE, kontoTypeForRolle(utsettelse.getUttaksperiodeType(), rolle)));
         }
 
-        if (utsettelse.getÅrsak().getKey() != null) {
-            attributter.add(txt("utsettelsesårsak", txt(utsettelse.getÅrsak().getKey())));
-        } else {
-            attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
+        if (utsettelse.getÅrsak() != null) {
+            if (utsettelse.getÅrsak().getKey() != null) {
+                attributter.add(txt("utsettelsesårsak", txt(utsettelse.getÅrsak().getKey())));
+            } else {
+                attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
+            }
         }
 
         // attributter.add(txt("utsettelsesårsak", cap(utsettelse.getÅrsak().name())));
@@ -574,7 +576,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<String> uttaksData(UttaksPeriode uttak, int antallBarn, BrukerRolle rolle) {
-        ArrayList<String> attributter = new ArrayList<>();
+        var attributter = new ArrayList<String>();
         addIfSet(attributter, "fom", uttak.getFom());
         addIfSet(attributter, "tom", uttak.getTom());
         addIfSet(attributter, DAGER, String.valueOf(uttak.dager()));
@@ -627,9 +629,9 @@ public class ForeldrepengeInfoRenderer {
     }
 
     public float vedlegg(List<Vedlegg> vedlegg, FontAwareCos cos, float y) throws IOException {
-        float startY = y;
+        var startY = y;
         y -= renderer.addLeftHeading(txt("vedlegg"), cos, y);
-        List<String> formatted = safeStream(vedlegg)
+        var formatted = safeStream(vedlegg)
                 .map(Vedlegg::getBeskrivelse)
                 .toList();
         y -= renderer.addBulletList(formatted, cos, y);
@@ -644,7 +646,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
-        UtenlandskForelder utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
+        var utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> attributter = new ArrayList<>();
         attributter.add(Optional.ofNullable(utenlandsForelder.getNavn())
                 .map(n -> txt("navninline", n))
@@ -693,13 +695,13 @@ public class ForeldrepengeInfoRenderer {
     private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
         if (næring instanceof NorskOrganisasjon) {
-            NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
+            var org = NorskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
             addIfSet(attributter, "orgnummer", org.getOrgNummer());
             addIfSet(attributter, "registrertiland", CountryCode.NO);
         }
         if (næring instanceof UtenlandskOrganisasjon) {
-            UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
+            var org = UtenlandskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
             addIfSet(attributter, "registrertiland", org.getRegistrertILand());
         }
@@ -727,7 +729,7 @@ public class ForeldrepengeInfoRenderer {
             attributter.add(txt("nystartetvirksomhet", jaNei(true)));
             addIfSet(attributter, "egennæringoppstartsdato", næring.getOppstartsDato());
         }
-        Regnskapsfører rf = regnskapsfører(næring);
+        var rf = regnskapsfører(næring);
         if (rf != null) {
             if (rf.telefon() != null) {
                 attributter.add(
