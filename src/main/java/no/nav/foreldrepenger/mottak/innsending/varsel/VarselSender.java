@@ -3,22 +3,21 @@ package no.nav.foreldrepenger.mottak.innsending.varsel;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VarselSender {
+class VarselSender implements Varsler {
 
     private final VarselConnection connection;
-    private final VarselXMLGenerator generator;
 
-    public VarselSender(VarselConnection connection, VarselXMLGenerator generator) {
+    public VarselSender(VarselConnection connection) {
         this.connection = connection;
-        this.generator = generator;
     }
 
+    @Override
     public void varsle(Varsel varsel) {
-        connection.varsle(generator.tilXml(varsel));
+        connection.varsle(varsel);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [connection=" + connection + ", generator=" + generator + "]";
+        return getClass().getSimpleName() + " [connection=" + connection + "]";
     }
 }

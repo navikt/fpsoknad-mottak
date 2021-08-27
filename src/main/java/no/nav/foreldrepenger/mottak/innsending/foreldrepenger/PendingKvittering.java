@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PendingKvittering extends FordelKvittering {
+public final class PendingKvittering extends FordelKvittering {
 
     static final String STATUS = "PENDING";
     @JsonFormat(shape = STRING)
