@@ -69,7 +69,7 @@ public class FontAwarePdfDocument extends PDDocument {
     }
 
     private static void setPdfMetadata(PDDocument doc) {
-        XMPMetadata xmp = XMPMetadata.createXMPMetadata();
+        var xmp = XMPMetadata.createXMPMetadata();
 
         try {
             var dc = xmp.createAndAddDublinCoreSchema();

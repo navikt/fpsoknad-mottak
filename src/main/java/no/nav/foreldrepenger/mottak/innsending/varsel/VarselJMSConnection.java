@@ -25,10 +25,12 @@ public class VarselJMSConnection implements VarselConnection {
     private static final Logger LOG = LoggerFactory.getLogger(VarselJMSConnection.class);
 
     private final JmsTemplate template;
+    private final VarselXMLGenerator generator;
     private final VarselConfig cfg;
 
-    public VarselJMSConnection(JmsTemplate template, VarselConfig cfg) {
+    public VarselJMSConnection(JmsTemplate template, VarselXMLGenerator generator, VarselConfig cfg) {
         this.template = template;
+        this.generator = generator;
         this.cfg = cfg;
     }
 
@@ -53,17 +55,12 @@ public class VarselJMSConnection implements VarselConnection {
     }
 
     @Override
-    public String name() {
-        return "varseltjeneste";
-    }
-
-    @Override
-    public void varsle(String xml) {
+    public void varsle(Varsel varsel) {
         if (isEnabled()) {
             LOG.info("Legger melding for varsel på {}-kø ({})", name(), cfg.getURI());
             try {
                 template.send(session -> {
-                    TextMessage msg = session.createTextMessage(xml);
+                    TextMessage msg = session.createTextMessage(generator.tilXml(varsel));
                     msg.setStringProperty(CALL_ID, callId());
                     LOG.info("Varsel lagt på kø OK");
                     return msg;
