@@ -1,5 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf.modell;
 
-enum PersonType {
+public enum PersonType {
     UKJENT, UTENLANDSK, NORSK
 }

@@ -4,11 +4,6 @@ import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 
 public interface VarselConnection extends PingEndpointAware {
 
-    void varsle(Varsel varsel);
-
-    @Override
-    default String name() {
-        return getClass().getSimpleName();
-    }
+    void varsle(String xml);
 
 }

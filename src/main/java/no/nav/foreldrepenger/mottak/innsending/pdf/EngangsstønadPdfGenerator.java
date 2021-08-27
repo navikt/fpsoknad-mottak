@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,7 +158,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     private static List<TabellRad> tabellRader(List<Pair<String, String>> rader) {
         return rader.stream()
                 .map(r -> new TabellRad(r.getFirst(), r.getSecond(), null))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private String fødselssted(Medlemsskap medlemsskap, Engangsstønad stønad) {

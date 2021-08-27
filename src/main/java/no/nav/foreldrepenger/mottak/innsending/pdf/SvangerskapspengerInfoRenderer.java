@@ -211,12 +211,14 @@ public class SvangerskapspengerInfoRenderer {
 
     private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
-        if (næring instanceof NorskOrganisasjon org) {
+        if (næring instanceof NorskOrganisasjon) {
+            NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
             addIfSet(attributter, "orgnummer", org.getOrgNummer());
             addIfSet(attributter, "registrertiland", CountryCode.NO);
         }
-        if (næring instanceof UtenlandskOrganisasjon org) {
+        if (næring instanceof UtenlandskOrganisasjon) {
+            UtenlandskOrganisasjon org = UtenlandskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
             addIfSet(attributter, "registrertiland", org.getRegistrertILand());
         }

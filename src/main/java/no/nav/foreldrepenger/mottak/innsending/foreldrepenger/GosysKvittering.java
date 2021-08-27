@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class GosysKvittering extends FordelKvittering {
+public class GosysKvittering extends FordelKvittering {
 
     static final String STATUS = "GOSYS";
 
