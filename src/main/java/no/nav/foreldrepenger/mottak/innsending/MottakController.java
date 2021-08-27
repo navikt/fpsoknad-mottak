@@ -25,7 +25,7 @@ import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsending.varsel.Varsel;
-import no.nav.foreldrepenger.mottak.innsending.varsel.Varsler;
+import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
@@ -40,15 +40,15 @@ public class MottakController {
     private final Oppslag oppslag;
     private final SøknadSender søknadSender;
     private final Inspektør inspektør;
-    private final Varsler varsler;
+    private final VarselSender varselSender;
 
-    public MottakController(SøknadSender søknadSender, Varsler varsler, Oppslag oppslag, Innsyn innsyn,
+    public MottakController(SøknadSender søknadSender, VarselSender varselSender, Oppslag oppslag, Innsyn innsyn,
             @Qualifier(SØKNAD) Inspektør inspektør) {
         this.søknadSender = søknadSender;
         this.oppslag = oppslag;
         this.innsyn = innsyn;
         this.inspektør = inspektør;
-        this.varsler = varsler;
+        this.varselSender = varselSender;
     }
 
     @PostMapping("/send")
@@ -96,7 +96,7 @@ public class MottakController {
                     kvittering.getLeveranseStatus());
         }
         if (varsle && kvittering.erVellykket()) {
-            varsler.varsle(varselFra(kvittering));
+            varselSender.varsle(varselFra(kvittering));
         }
         return kvittering;
     }

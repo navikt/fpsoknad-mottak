@@ -36,7 +36,9 @@ import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
 import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
 import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
@@ -98,12 +100,12 @@ public class ForeldrepengeInfoRenderer {
             Rettigheter rettigheter,
             FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("omannenforelder"), cos, y);
-        if (annenForelder instanceof NorskForelder n) {
-            y -= renderer.addLinesOfRegularText(INDENT, norskForelder(n), cos, y);
+        if (annenForelder instanceof NorskForelder) {
+            y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
                     txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
-        } else if (annenForelder instanceof UtenlandskForelder u) {
-            y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(u), cos, y);
+        } else if (annenForelder instanceof UtenlandskForelder) {
+            y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(annenForelder), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
                     txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
         } else {
@@ -292,15 +294,15 @@ public class ForeldrepengeInfoRenderer {
             y -= renderer.addLineOfRegularText(INDENT,
                     txt("fødtei", land, pluralize(relasjonTilBarn.getAntallBarn())), cos, y);
         }
-        if (relasjonTilBarn instanceof Adopsjon a) {
-            if (a.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+        if (relasjonTilBarn instanceof Adopsjon) {
+            if (Adopsjon.class.cast(relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
             } else {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
             }
         }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse o) {
-            if (o.getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
+        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
+            if (Omsorgsovertakelse.class.cast(relasjonTilBarn).getOmsorgsovertakelsesdato().isBefore(LocalDate.now())) {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertok", land), cos, y);
             } else {
                 y -= renderer.addLineOfRegularText(INDENT, txt("adopsjonomsorgovertar", land), cos, y);
@@ -355,60 +357,66 @@ public class ForeldrepengeInfoRenderer {
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos, y);
+                    y = renderUttaksPeriode(UttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
+                            y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof GradertUttaksPeriode g) {
+            } else if (periode instanceof GradertUttaksPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderGradertPeriode(g, rolle, vedlegg, antallBarn,
+                var x = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn,
                         scratchcos,
                         STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderGradertPeriode(g, rolle, vedlegg, antallBarn, cos, y);
+                    y = renderGradertPeriode(GradertUttaksPeriode.class.cast(periode), rolle, vedlegg, antallBarn, cos,
+                            y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof OppholdsPeriode o) {
+            } else if (periode instanceof OppholdsPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderOppholdsPeriode(o, vedlegg, scratchcos,
+                var x = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, scratchcos,
                         STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOppholdsPeriode(o, vedlegg, cos, y);
+                    y = renderOppholdsPeriode(OppholdsPeriode.class.cast(periode), vedlegg, cos, y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof UtsettelsesPeriode u) {
+            } else if (periode instanceof UtsettelsesPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderUtsettelsesPeriode(u, rolle, vedlegg,
+                var x = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
                         scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderUtsettelsesPeriode(u, rolle, vedlegg, cos, y);
+                    y = renderUtsettelsesPeriode(UtsettelsesPeriode.class.cast(periode), rolle, vedlegg,
+                            cos,
+                            y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
                 }
-            } else if (periode instanceof OverføringsPeriode o) {
+            } else if (periode instanceof OverføringsPeriode) {
                 var scratch1 = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch1);
-                var x = renderOverføringsPeriode(o, rolle, vedlegg,
+                var x = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), rolle, vedlegg,
                         scratchcos, STARTY - 190);
                 var behov = STARTY - 190 - x;
                 if (behov < y) {
                     scratchcos.close();
-                    y = renderOverføringsPeriode(o, rolle, vedlegg, cos, y);
+                    y = renderOverføringsPeriode(OverføringsPeriode.class.cast(periode), rolle, vedlegg,
+                            cos,
+                            y);
                 } else {
                     cos = nySide(doc, cos, scratch1, scratchcos, søker, erEndring);
                     y = STARTY - (headerSize + behov);
@@ -637,7 +645,8 @@ public class ForeldrepengeInfoRenderer {
                 textFormatter.fromMessageSource("fødselsnummerinline", søker.getFnr().getFnr()));
     }
 
-    private List<String> utenlandskForelder(UtenlandskForelder utenlandsForelder) {
+    private List<String> utenlandskForelder(AnnenForelder annenForelder) {
+        var utenlandsForelder = UtenlandskForelder.class.cast(annenForelder);
         List<String> attributter = new ArrayList<>();
         attributter.add(Optional.ofNullable(utenlandsForelder.getNavn())
                 .map(n -> txt("navninline", n))
@@ -685,12 +694,14 @@ public class ForeldrepengeInfoRenderer {
 
     private List<String> egenNæring(EgenNæring næring) {
         List<String> attributter = new ArrayList<>();
-        if (næring instanceof NorskOrganisasjon org) {
+        if (næring instanceof NorskOrganisasjon) {
+            var org = NorskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
             addIfSet(attributter, "orgnummer", org.getOrgNummer());
             addIfSet(attributter, "registrertiland", CountryCode.NO);
         }
-        if (næring instanceof UtenlandskOrganisasjon org) {
+        if (næring instanceof UtenlandskOrganisasjon) {
+            var org = UtenlandskOrganisasjon.class.cast(næring);
             addIfSet(attributter, "virksomhetsnavn", org.getOrgName());
             addIfSet(attributter, "registrertiland", org.getRegistrertILand());
         }
@@ -798,17 +809,17 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private List<String> barn(RelasjonTilBarn relasjonTilBarn) {
-        if (relasjonTilBarn instanceof Fødsel f) {
-            return fødsel(f);
+        if (relasjonTilBarn instanceof Fødsel) {
+            return fødsel(Fødsel.class.cast(relasjonTilBarn));
         }
-        if (relasjonTilBarn instanceof Adopsjon a) {
-            return adopsjon(a);
+        if (relasjonTilBarn instanceof Adopsjon) {
+            return adopsjon(Adopsjon.class.cast(relasjonTilBarn));
         }
-        if (relasjonTilBarn instanceof FremtidigFødsel ff) {
-            return termin(ff);
+        if (relasjonTilBarn instanceof FremtidigFødsel) {
+            return termin(FremtidigFødsel.class.cast(relasjonTilBarn));
         }
-        if (relasjonTilBarn instanceof Omsorgsovertakelse o) {
-            return omsorgsovertakelse(o);
+        if (relasjonTilBarn instanceof Omsorgsovertakelse) {
+            return omsorgsovertakelse(Omsorgsovertakelse.class.cast(relasjonTilBarn));
         }
         throw new IllegalArgumentException(relasjonTilBarn.getClass().getSimpleName() + " ikke støttet");
     }

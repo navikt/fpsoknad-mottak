@@ -18,7 +18,10 @@ public class VoidVarselConnection implements VarselConnection {
         return URI.create("http://localhost");
     }
 
-
+    @Override
+    public String name() {
+        return getClass().getSimpleName();
+    }
 
     @Override
     public String ping() {
@@ -26,7 +29,7 @@ public class VoidVarselConnection implements VarselConnection {
     }
 
     @Override
-    public void varsle(Varsel varsel) {
-        LOG.info("Sender varsel {}, liksom", varsel);
+    public void varsle(String xml) {
+        LOG.info("Sender XML, liksom");
     }
 }
