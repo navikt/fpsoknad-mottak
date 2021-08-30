@@ -36,7 +36,7 @@ import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 
 @JsonPropertyOrder({ "forsendelsesId", "saksnummer", "brukerId", "forsendelseMottatt", "filer" })
-class FordelMetadata {
+public class FordelMetadata {
     private final String forsendelsesId;
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private final LocalDateTime forsendelseMottatt;
@@ -45,23 +45,23 @@ class FordelMetadata {
     private final List<Del> deler;
     private final String saksnummer;
 
-    FordelMetadata(Ettersending ettersending, AktørId aktorId, String ref) {
+    public FordelMetadata(Ettersending ettersending, AktørId aktorId, String ref) {
         this(ettersendingsDeler(ettersending), aktorId, ref, ettersending.getSaksnr());
     }
 
-    FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref) {
+    public FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref) {
         this(søknad, søknadType, aktorId, ref, null);
     }
 
-    FordelMetadata(Endringssøknad endringssøknad, SøknadType søknadType, AktørId aktorId, String ref) {
+    public FordelMetadata(Endringssøknad endringssøknad, SøknadType søknadType, AktørId aktorId, String ref) {
         this(endringssøknadsDeler(endringssøknad, søknadType), aktorId, ref, endringssøknad.getSaksnr());
     }
 
-    FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref, String saksnr) {
+    public FordelMetadata(Søknad søknad, SøknadType søknadType, AktørId aktorId, String ref, String saksnr) {
         this(søknadsDeler(søknad, søknadType), aktorId, ref, saksnr);
     }
 
-    FordelMetadata(List<Del> deler, AktørId aktorId, String ref, String saksnr) {
+    public FordelMetadata(List<Del> deler, AktørId aktorId, String ref, String saksnr) {
         this.forsendelsesId = ref;
         this.brukerId = aktorId.getId();
         this.forsendelseMottatt = LocalDateTime.now();
@@ -69,23 +69,23 @@ class FordelMetadata {
         this.saksnummer = saksnr;
     }
 
-    String getSaksnummer() {
+    public String getSaksnummer() {
         return saksnummer;
     }
 
-    List<Del> getFiler() {
+    public List<Del> getFiler() {
         return deler;
     }
 
-    String getForsendelsesId() {
+    public String getForsendelsesId() {
         return forsendelsesId;
     }
 
-    LocalDateTime getForsendelseMottatt() {
+    public LocalDateTime getForsendelseMottatt() {
         return forsendelseMottatt;
     }
 
-    String getBrukerId() {
+    public String getBrukerId() {
         return brukerId;
     }
 

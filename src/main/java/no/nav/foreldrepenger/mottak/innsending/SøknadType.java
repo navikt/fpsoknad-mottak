@@ -57,8 +57,6 @@ public enum SøknadType {
     }
 
     public FagsakType fagsakType() {
-        
-        
         if (erForeldrepenger()) {
             return FORELDREPENGER;
         }

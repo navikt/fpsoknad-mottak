@@ -20,7 +20,7 @@ import no.nav.foreldrepenger.boot.conditionals.ConditionalOnK8s;
 
 @Configuration
 @ConditionalOnK8s
-class VarselJMSConfiguration {
+public class VarselJMSConfiguration {
 
     private static final int UTF_8_WITH_PUA = 1208;
 

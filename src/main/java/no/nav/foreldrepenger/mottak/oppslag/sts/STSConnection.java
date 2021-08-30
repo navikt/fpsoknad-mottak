@@ -33,9 +33,11 @@ public class STSConnection extends AbstractWebClientConnection {
                 .accept(APPLICATION_JSON)
                 .contentType(APPLICATION_FORM_URLENCODED)
                 .body(cfg.stsBody())
-                .exchangeToMono(r -> r.bodyToMono(SystemToken.class))
+                .exchange()
+                .block()
+                .bodyToMono(SystemToken.class)
                 .block();
-        LOG.trace("Refresh av system token OK, (utløper {})", token.getExpiration());
+        LOG.trace("Refresh av system token OK ({})", token.getExpiration());
         return token;
     }
 
