@@ -19,7 +19,7 @@ import no.nav.melding.virksomhet.varsel.v1.varsel.Varsel;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Varslingstyper;
 
 @Service
-class VarselXMLGenerator {
+public class VarselXMLGenerator {
     private static final ObjectFactory VARSEL_FACTORY_V1 = new ObjectFactory();
     static final String VARSEL_TYPE = "ForeldrepengerSoknadsvarsel";
     static final String FORNAVN = "FORNAVN";

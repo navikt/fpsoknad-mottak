@@ -33,7 +33,7 @@ public class InfoskrivPdfEkstraktor {
     }
 
     private static byte[] extractPagesFrom(PDDocument doc, int page) throws IOException {
-        var pe = new PageExtractor(doc);
+        PageExtractor pe = new PageExtractor(doc);
         pe.setStartPage(page);
         try (var infodoc = pe.extract()) {
             var baos = new ByteArrayOutputStream();

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @Type(value = GosysKvittering.class, name = GosysKvittering.STATUS),
         @Type(value = FPSakFordeltKvittering.class, name = FPSakFordeltKvittering.STATUS)
 })
-public abstract sealed class FordelKvittering permits GosysKvittering,FPSakFordeltKvittering,PendingKvittering {
+public abstract class FordelKvittering {
 
     private final String forsendelseStatus;
 
