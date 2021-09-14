@@ -6,6 +6,8 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
+
 public record DigitalKontaktinfo(Map<String, Kontaktinformasjon> kontaktinfo) {
 
     public Målform getMålform(String ident) {

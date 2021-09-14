@@ -15,7 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestOperations;
 
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 
 public class StsClientHttp implements StsClient {
 

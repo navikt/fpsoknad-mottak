@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 
 @Component

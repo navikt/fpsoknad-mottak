@@ -20,29 +20,29 @@ import javax.xml.bind.JAXBElement;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.FriUtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.FriUtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.MorsAktivitet;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OppholdsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Oppholdsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Overføringsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -138,7 +138,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private JAXBElement<Foreldrepenger> foreldrepengerFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger ytelse) {
+            no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger ytelse) {
         return FP_FACTORY_V3.createForeldrepenger(new Foreldrepenger()
                 .withDekningsgrad(dekningsgradFra(ytelse.getDekningsgrad()))
                 .withMedlemskap(medlemsskapFra(ytelse.getMedlemsskap(), ytelse.getRelasjonTilBarn().relasjonsDato()))
@@ -157,24 +157,24 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     private OmYtelse ytelseFra(Søknad søknad) {
         return new OmYtelse()
                 .withAny(JAXB.marshalToElement(
-                        foreldrepengerFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+                        foreldrepengerFra(no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
                                 .cast(søknad.getYtelse()))));
     }
 
     private static Fordeling fordelingFra(Endringssøknad endringssøknad) {
-        return fordelingFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        return fordelingFra(no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
                 .cast(endringssøknad.getYtelse()).getFordeling());
     }
 
     private static boolean erAnnenForelderUkjent(
-            no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder annenForelder) {
-        return annenForelder instanceof no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
+            no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder annenForelder) {
+        return annenForelder instanceof no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
     }
 
     private static Dekningsgrad dekningsgradFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad dekningsgrad) {
+            no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad dekningsgrad) {
         return Optional.ofNullable(dekningsgrad)
-                .map(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad::kode)
+                .map(no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad::kode)
                 .map(V3ForeldrepengerDomainMapper::dekningsgradFra)
                 .map(g -> new Dekningsgrad().withDekningsgrad(g))
                 .orElse(null);
@@ -186,13 +186,13 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private static Fordeling fordelingFra(
-            no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling fordeling) {
+            no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Fordeling fordeling) {
         return Optional.ofNullable(fordeling)
                 .map(V3ForeldrepengerDomainMapper::create)
                 .orElse(null);
     }
 
-    private static Fordeling create(no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling fordeling) {
+    private static Fordeling create(no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Fordeling fordeling) {
         return new Fordeling()
                 .withPerioder(perioderFra(fordeling.getPerioder()))
                 .withOenskerKvoteOverfoert(valgfriOverføringsÅrsakFra(fordeling.getØnskerKvoteOverført()))
@@ -422,7 +422,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
         return overføringsÅrsak.withKodeverk(overføringsÅrsak.getKodeverk());
     }
 
-    private static Rettigheter rettigheterFra(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter r, boolean ukjentForelder) {
+    private static Rettigheter rettigheterFra(no.nav.foreldrepenger.common.domain.foreldrepenger.Rettigheter r, boolean ukjentForelder) {
         if (ukjentForelder) {
             return rettigheterForUkjentForelder();
         }
@@ -438,7 +438,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
                 .withHarAleneomsorgForBarnet(true);
     }
 
-    private static Rettigheter create(no.nav.foreldrepenger.mottak.domain.foreldrepenger.Rettigheter r) {
+    private static Rettigheter create(no.nav.foreldrepenger.common.domain.foreldrepenger.Rettigheter r) {
         return new Rettigheter()
                 .withHarOmsorgForBarnetIPeriodene(true)
                 .withHarAnnenForelderRett(r.isHarAnnenForelderRett())
@@ -446,7 +446,7 @@ public class V3ForeldrepengerDomainMapper implements DomainMapper {
     }
 
     private AnnenForelder annenForelderFra(
-            no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder annenForelder) {
+            no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder annenForelder) {
         if (erAnnenForelderUkjent(annenForelder)) {
             return new UkjentForelder();
         }

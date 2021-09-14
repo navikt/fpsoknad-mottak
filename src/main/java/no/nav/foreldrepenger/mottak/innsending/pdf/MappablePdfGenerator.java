@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.mottak.innsending.mappers.Mappable;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 

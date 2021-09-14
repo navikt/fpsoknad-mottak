@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
-import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.K;
-import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.M;
-import static no.nav.foreldrepenger.mottak.domain.felles.Kjønn.U;
+import static no.nav.foreldrepenger.common.domain.felles.Kjønn.K;
+import static no.nav.foreldrepenger.common.domain.felles.Kjønn.M;
+import static no.nav.foreldrepenger.common.domain.felles.Kjønn.U;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLExceptionGeneratingResponseHander.exception;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
@@ -17,15 +17,15 @@ import java.util.Set;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
-import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
-import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
+import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.Kjønn;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.BarnDTO;
+import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 class PDLMapper {

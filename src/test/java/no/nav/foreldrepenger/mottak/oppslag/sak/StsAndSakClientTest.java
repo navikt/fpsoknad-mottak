@@ -38,8 +38,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestOperations;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.util.Constants;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.test.JwtTokenGenerator;

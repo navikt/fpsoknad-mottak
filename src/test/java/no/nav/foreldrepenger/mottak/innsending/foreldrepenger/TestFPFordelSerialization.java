@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType.foreldrepenger;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.common.domain.felles.EttersendingsType.foreldrepenger;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
@@ -49,11 +49,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
@@ -192,9 +192,9 @@ class TestFPFordelSerialization {
         assertEquals(v, egenskap.getVersjon());
         assertEquals(ENDRING_FORELDREPENGER, egenskap.getType());
         Endringssøknad respons = Endringssøknad.class.cast(xmlMapper.tilSøknad(xml, egenskap));
-        var originalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        var originalFordeling = no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
                 .cast(original.getYtelse()).getFordeling();
-        assertEquals(originalFordeling, no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        assertEquals(originalFordeling, no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
                 .cast(respons.getYtelse()).getFordeling());
         assertEquals(original.getSaksnr(), respons.getSaksnr());
     }

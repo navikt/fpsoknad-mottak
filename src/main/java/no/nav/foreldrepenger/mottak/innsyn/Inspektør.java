@@ -8,12 +8,12 @@ import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_FOREL
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.Ytelse;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.Ytelse;
+import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.util.Versjon;

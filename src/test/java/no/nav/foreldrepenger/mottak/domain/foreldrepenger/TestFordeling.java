@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.ukeDagNær;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet.ARBEID_OG_UTDANNING;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak.UTTAK_FEDREKVOTE_ANNEN_FORELDER;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak.IKKE_RETT_ANNEN_FORELDER;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.MorsAktivitet.ARBEID_OG_UTDANNING;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Oppholdsårsak.UTTAK_FEDREKVOTE_ANNEN_FORELDER;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Overføringsårsak.IKKE_RETT_ANNEN_FORELDER;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak.INSTITUSJONSOPPHOLD_BARNET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -15,13 +15,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Fordeling;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OppholdsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Overføringsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
 
 class TestFordeling {
 

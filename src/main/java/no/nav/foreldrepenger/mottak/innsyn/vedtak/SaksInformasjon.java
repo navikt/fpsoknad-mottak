@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 import java.time.LocalDate;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
+import no.nav.foreldrepenger.common.domain.felles.BehandlingTema;
 
 @Data
 public class SaksInformasjon {

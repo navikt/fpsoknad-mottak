@@ -18,28 +18,28 @@ import org.springframework.stereotype.Component;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.BrukerRolle;
+import no.nav.foreldrepenger.common.domain.Søker;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.ArbeidsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;
@@ -130,7 +130,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
                     emptyList());
         }
         if (relasjonTilBarnet instanceof Adopsjon adopsjon) {
-            return new no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon(
+            return new no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon(
                     adopsjon.getAntallBarn(),
                     adopsjon.getOmsorgsovertakelsesdato(),
                     adopsjon.isAdopsjonAvEktefellesBarn(),
@@ -181,7 +181,7 @@ public class V1EngangsstønadPapirXMLMapper implements XMLSøknadMapper {
             return null;
         }
         if (annenForelder instanceof UkjentForelder) {
-            return new no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder();
+            return new no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder();
         }
         if (annenForelder instanceof AnnenForelderMedNorskIdent norskForelder) {
             return new NorskForelder(

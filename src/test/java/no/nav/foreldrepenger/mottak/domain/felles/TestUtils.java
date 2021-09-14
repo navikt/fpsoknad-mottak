@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.domain.felles;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static no.nav.foreldrepenger.mottak.domain.ResourceHandleUtil.bytesFra;
 import static org.springframework.util.StreamUtils.copyToString;
 
 import java.io.IOException;
@@ -18,29 +19,39 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.AnnenForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UkjentForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.RelasjonTilBarn;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.BrukerRolle;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Søker;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
+import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.common.domain.felles.Kjønn;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.PåkrevdVedlegg;
+import no.nav.foreldrepenger.common.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggMetaData;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.AnnenForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UkjentForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.ArbeidsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 
 public class TestUtils {
     public static boolean hasPdfSignature(byte[] bytes) {
@@ -133,12 +144,13 @@ public class TestUtils {
     }
 
     public static PåkrevdVedlegg påkrevdVedlegg(String id, String name) {
-        return new PåkrevdVedlegg(id, DokumentType.I000062, new ClassPathResource(name));
+        var vedleggMetaData = new VedleggMetaData(id, InnsendingsType.LASTET_OPP, DokumentType.I000062);
+        return new PåkrevdVedlegg(vedleggMetaData, bytesFra(new ClassPathResource(name)));
     }
 
     static ValgfrittVedlegg valgfrittVedlegg(String id, InnsendingsType type, String name) {
-        return new ValgfrittVedlegg(id, type, DokumentType.I000062,
-                new ClassPathResource(name));
+        var vedleggMetaData = new VedleggMetaData(id, type, DokumentType.I000062);
+        return new ValgfrittVedlegg(vedleggMetaData, bytesFra(new ClassPathResource(name)));
     }
 
     public static Adopsjon adopsjon() {

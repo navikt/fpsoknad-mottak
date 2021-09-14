@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 import com.nimbusds.jwt.util.DateUtils;
 
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.security.token.support.core.context.TokenValidationContext;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;

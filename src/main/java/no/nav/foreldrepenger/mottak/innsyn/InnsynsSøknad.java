@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.Søknad;
 
 public record InnsynsSøknad(SøknadMetadata metadata, Søknad søknad) {
 

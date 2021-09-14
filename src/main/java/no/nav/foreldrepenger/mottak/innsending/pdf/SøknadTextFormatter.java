@@ -24,10 +24,10 @@ import org.springframework.util.CollectionUtils;
 import com.google.common.base.Joiner;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.mottak.util.Pair;
 
 @Component

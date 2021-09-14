@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 
 @Component

@@ -1,14 +1,15 @@
 package no.nav.foreldrepenger.mottak.domain.felles;
 
-import static no.nav.foreldrepenger.mottak.domain.Orgnummer.MAGIC;
+import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.Orgnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
+import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 
 class NavnOrgTest {
 

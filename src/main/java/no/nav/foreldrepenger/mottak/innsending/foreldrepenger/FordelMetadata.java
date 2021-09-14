@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000001;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000002;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000003;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000004;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000005;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000050;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000001;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000002;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000003;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000004;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000005;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000050;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -20,18 +20,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.common.collect.Lists;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.engangsstønad.Engangsstønad;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 

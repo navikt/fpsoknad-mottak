@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
 import no.nav.foreldrepenger.mottak.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.Person;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.mottak.http.Pingable;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 

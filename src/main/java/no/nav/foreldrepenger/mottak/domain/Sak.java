@@ -10,7 +10,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.mottak.innsyn.Behandling;
 import no.nav.foreldrepenger.mottak.innsyn.FagsakStatus;
 

@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 
 @ConfigurationProperties(prefix = "innsyn")

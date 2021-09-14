@@ -9,7 +9,7 @@ import javax.validation.Validator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.validation.annotations.Orgnr;
+import no.nav.foreldrepenger.common.domain.validation.annotations.Orgnr;
 
 class OrgnrValidatorTest {
 

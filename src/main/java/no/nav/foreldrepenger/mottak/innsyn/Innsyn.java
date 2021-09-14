@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.Sak;
 import no.nav.foreldrepenger.mottak.http.Pingable;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;

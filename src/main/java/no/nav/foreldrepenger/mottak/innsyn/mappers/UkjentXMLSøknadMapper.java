@@ -4,7 +4,7 @@ import static no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper.U
 
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 

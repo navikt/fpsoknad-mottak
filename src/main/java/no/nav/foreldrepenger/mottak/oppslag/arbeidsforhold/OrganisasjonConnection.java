@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static no.nav.foreldrepenger.mottak.domain.Orgnummer.MAGIC;
+import static no.nav.foreldrepenger.common.domain.Orgnummer.MAGIC;
 import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ORGANISASJON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
@@ -16,9 +16,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.Orgnummer;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 

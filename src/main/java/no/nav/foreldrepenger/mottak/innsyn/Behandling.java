@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
+import no.nav.foreldrepenger.common.domain.felles.BehandlingTema;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
 
 @Data

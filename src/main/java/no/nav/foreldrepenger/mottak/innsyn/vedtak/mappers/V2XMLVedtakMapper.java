@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.common.domain.felles.BehandlingTema;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;

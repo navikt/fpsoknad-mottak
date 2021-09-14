@@ -4,15 +4,15 @@ import static com.fasterxml.jackson.core.json.PackageVersion.VERSION;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapDeserializer;
-import no.nav.foreldrepenger.mottak.domain.serialization.MedlemsskapSerializer;
-import no.nav.foreldrepenger.mottak.domain.serialization.NorskForelderDeserializer;
-import no.nav.foreldrepenger.mottak.domain.serialization.NorskForelderSerializer;
-import no.nav.foreldrepenger.mottak.domain.serialization.UtenlandskForelderDeserializer;
-import no.nav.foreldrepenger.mottak.domain.serialization.UtenlandskForelderSerializer;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.common.domain.serialization.MedlemsskapDeserializer;
+import no.nav.foreldrepenger.common.domain.serialization.MedlemsskapSerializer;
+import no.nav.foreldrepenger.common.domain.serialization.NorskForelderDeserializer;
+import no.nav.foreldrepenger.common.domain.serialization.NorskForelderSerializer;
+import no.nav.foreldrepenger.common.domain.serialization.UtenlandskForelderDeserializer;
+import no.nav.foreldrepenger.common.domain.serialization.UtenlandskForelderSerializer;
 
 class CustomSerializerModule extends SimpleModule {
     public CustomSerializerModule() {

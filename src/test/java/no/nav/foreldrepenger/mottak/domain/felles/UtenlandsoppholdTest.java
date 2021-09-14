@@ -9,11 +9,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.ArbeidsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
 
 class UtenlandsoppholdTest {
 

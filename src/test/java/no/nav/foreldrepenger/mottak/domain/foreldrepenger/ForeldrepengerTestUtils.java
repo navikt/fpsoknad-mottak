@@ -4,15 +4,16 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000062;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000063;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500002;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I500005;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000062;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000063;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I500002;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I500005;
+import static no.nav.foreldrepenger.common.domain.felles.opptjening.Virksomhetstype.FISKE;
+import static no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
+import static no.nav.foreldrepenger.mottak.domain.ResourceHandleUtil.bytesFra;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.medlemsskap;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.søker;
-import static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype.FISKE;
-import static no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.OmsorgsOvertakelsesÅrsak.SKAL_OVERTA_ALENE;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType.FEDREKVOTE;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -24,55 +25,60 @@ import org.springframework.core.io.ClassPathResource;
 import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Søknad;
-import no.nav.foreldrepenger.mottak.domain.Ytelse;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.domain.Ytelse;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.EttersendingsType;
+import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggMetaData;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.NorskForelder;
+import no.nav.foreldrepenger.common.domain.felles.annenforelder.UtenlandskForelder;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjeningType;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.FrilansOppdrag;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.NorskOrganisasjon;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskOrganisasjon;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Omsorgsovertakelse;
+import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Rettigheter;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Fordeling;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.MorsAktivitet;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OppholdsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Oppholdsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.OverføringsPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Overføringsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.Tilrettelegging;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Arbeidsforhold;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Frilanser;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.PrivatArbeidsgiver;
+import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Virksomhet;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.NorskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.annenforelder.UtenlandskForelder;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Adopsjon;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.FremtidigFødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Fødsel;
-import no.nav.foreldrepenger.mottak.domain.felles.relasjontilbarn.Omsorgsovertakelse;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.GradertUttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.LukketPeriodeMedVedlegg;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OppholdsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.OverføringsPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.Svangerskapspenger;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.DelvisTilrettelegging;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.HelTilrettelegging;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.IngenTilrettelegging;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.Tilrettelegging;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Arbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Frilanser;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.PrivatArbeidsgiver;
-import no.nav.foreldrepenger.mottak.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Virksomhet;
 import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class ForeldrepengerTestUtils {
@@ -406,8 +412,9 @@ public class ForeldrepengerTestUtils {
 
     private static ValgfrittVedlegg opplastetVedlegg(String id, DokumentType type) {
         try {
-            return new ValgfrittVedlegg(id, InnsendingsType.LASTET_OPP, type,
-                    new ClassPathResource("pdf/terminbekreftelse.pdf"));
+            var vedleggMetaData = new VedleggMetaData(id, InnsendingsType.LASTET_OPP, type);
+            return new ValgfrittVedlegg(vedleggMetaData,
+                bytesFra(new ClassPathResource("pdf/terminbekreftelse.pdf")));
         } catch (Exception e) {
             throw new IllegalArgumentException();
         }
@@ -415,7 +422,8 @@ public class ForeldrepengerTestUtils {
 
     private static ValgfrittVedlegg ikkeOpplastet(String id, DokumentType type) {
         try {
-            return new ValgfrittVedlegg(id, InnsendingsType.SEND_SENERE, type, null);
+            var vedleggMetaData = new VedleggMetaData(id, InnsendingsType.SEND_SENERE, type);
+            return new ValgfrittVedlegg(vedleggMetaData, null);
         } catch (Exception e) {
             throw new IllegalArgumentException();
         }

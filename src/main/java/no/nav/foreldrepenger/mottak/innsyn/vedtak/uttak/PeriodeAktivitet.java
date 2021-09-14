@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak.uttak;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
 
 @Data
 public class PeriodeAktivitet {

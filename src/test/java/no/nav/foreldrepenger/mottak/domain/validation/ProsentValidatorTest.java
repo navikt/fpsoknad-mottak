@@ -7,7 +7,7 @@ import javax.validation.Validator;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.foreldrepenger.mottak.domain.validation.annotations.Prosent;
+import no.nav.foreldrepenger.common.domain.validation.annotations.Prosent;
 
 class ProsentValidatorTest {
 

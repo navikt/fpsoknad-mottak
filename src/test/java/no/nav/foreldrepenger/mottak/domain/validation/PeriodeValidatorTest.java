@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.validation;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon.ARBEIDET_I_UTLANDET;
+import static no.nav.foreldrepenger.common.domain.felles.medlemskap.ArbeidsInformasjon.ARBEIDET_I_UTLANDET;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,20 +18,20 @@ import org.junit.jupiter.api.Test;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Fordeling;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.UttaksPeriode;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.domain.BrukerRolle;
+import no.nav.foreldrepenger.common.domain.Søker;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Fordeling;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.MorsAktivitet;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Overføringsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 
 class PeriodeValidatorTest {
 

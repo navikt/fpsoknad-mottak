@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.MorsAktivitet;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Oppholdsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.Overføringsårsak;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.fordeling.StønadskontoType;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.MorsAktivitet;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Oppholdsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Overføringsårsak;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
 import no.nav.foreldrepenger.mottak.innsyn.GraderingAvslagÅrsak;
 import no.nav.foreldrepenger.mottak.innsyn.PeriodeResultatType;
 

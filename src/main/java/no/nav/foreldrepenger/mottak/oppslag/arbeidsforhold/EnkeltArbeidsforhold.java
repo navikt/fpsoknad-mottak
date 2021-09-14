@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
 
 @Data
 @Builder

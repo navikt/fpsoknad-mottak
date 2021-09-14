@@ -18,11 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.mottak.domain.Sak;
-import no.nav.foreldrepenger.mottak.domain.felles.AnnenPart;
-import no.nav.foreldrepenger.mottak.domain.felles.BehandlingTema;
+import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
+import no.nav.foreldrepenger.common.domain.felles.BehandlingTema;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;

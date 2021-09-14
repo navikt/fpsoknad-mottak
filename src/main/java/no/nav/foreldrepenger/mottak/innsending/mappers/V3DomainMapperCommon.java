@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static com.neovisionaries.i18n.CountryCode.XK;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.SEND_SENERE;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.SEND_SENERE;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.math.BigInteger;
@@ -18,20 +18,20 @@ import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.BrukerRolle;
+import no.nav.foreldrepenger.common.domain.Søker;
+import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjeningType;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.FrilansOppdrag;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
@@ -83,7 +83,7 @@ final class V3DomainMapperCommon {
     }
 
     static Opptjening opptjeningFra(
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening opptjening) {
+            no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening opptjening) {
         return new Opptjening()
                 .withUtenlandskArbeidsforhold(utenlandskeArbeidsforholdFra(opptjening.getUtenlandskArbeidsforhold()))
                 .withFrilans(frilansFra(opptjening.getFrilans()))
@@ -161,17 +161,17 @@ final class V3DomainMapperCommon {
     }
 
     private static EgenNaering create(EgenNæring egenNæring) {
-        if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon o) {
+        if (egenNæring instanceof no.nav.foreldrepenger.common.domain.felles.opptjening.NorskOrganisasjon o) {
             return create(o);
         }
-        if (egenNæring instanceof no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon u) {
+        if (egenNæring instanceof no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskOrganisasjon u) {
             return create(u);
         }
         throw new UnexpectedInputException("Vil aldri skje");
     }
 
     private static UtenlandskOrganisasjon create(
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon utenlandskOrg) {
+            no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskOrganisasjon utenlandskOrg) {
         return new UtenlandskOrganisasjon()
                 .withVedlegg(egenNæringVedleggFraIDs(utenlandskOrg.getVedlegg()))
                 .withBeskrivelseAvEndring(utenlandskOrg.getBeskrivelseEndring())
@@ -190,7 +190,7 @@ final class V3DomainMapperCommon {
     }
 
     private static NorskOrganisasjon create(
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon norskOrg) {
+            no.nav.foreldrepenger.common.domain.felles.opptjening.NorskOrganisasjon norskOrg) {
         return new NorskOrganisasjon()
                 .withVedlegg(egenNæringVedleggFraIDs(norskOrg.getVedlegg()))
                 .withBeskrivelseAvEndring(norskOrg.getBeskrivelseEndring())
@@ -216,14 +216,14 @@ final class V3DomainMapperCommon {
     }
 
     private static List<AnnenOpptjening> andreOpptjeningerFra(
-            List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> annenOpptjening) {
+            List<no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
                 .map(V3DomainMapperCommon::annenOpptjeningFra)
                 .toList();
     }
 
     private static AnnenOpptjening annenOpptjeningFra(
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening annen) {
+            no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening annen) {
         return Optional.ofNullable(annen)
                 .map(V3DomainMapperCommon::create)
                 .orElse(null);
@@ -235,7 +235,7 @@ final class V3DomainMapperCommon {
         return type;
     }
 
-    private static AnnenOpptjening create(no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening annen) {
+    private static AnnenOpptjening create(no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening annen) {
         return new AnnenOpptjening()
                 .withVedlegg(annenOpptjeningVedleggFra(annen.getVedlegg()))
                 .withType(annenOpptjeningTypeFra(annen.getType()))
@@ -269,14 +269,14 @@ final class V3DomainMapperCommon {
     }
 
     private static List<UtenlandskArbeidsforhold> utenlandskeArbeidsforholdFra(
-            List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold> arbeidsforhold) {
+            List<no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold> arbeidsforhold) {
         return safeStream(arbeidsforhold)
                 .map(V3DomainMapperCommon::utenlandskArbeidsforholdFra)
                 .toList();
     }
 
     private static no.nav.vedtak.felles.xml.soeknad.foreldrepenger.v3.UtenlandskArbeidsforhold utenlandskArbeidsforholdFra(
-            no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold forhold) {
+            no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold forhold) {
         return new UtenlandskArbeidsforhold()
                 .withVedlegg(utenlandsArbeidsforholdVedleggFra(forhold.getVedlegg()))
                 .withArbeidsgiversnavn(forhold.getArbeidsgiverNavn())
@@ -297,7 +297,7 @@ final class V3DomainMapperCommon {
     }
 
     static List<Vedlegg> vedleggFra(
-            List<? extends no.nav.foreldrepenger.mottak.domain.felles.Vedlegg> vedlegg) {
+            List<? extends no.nav.foreldrepenger.common.domain.felles.Vedlegg> vedlegg) {
         return safeStream(vedlegg)
                 .map(V3DomainMapperCommon::vedleggFra)
                 .toList();
@@ -312,13 +312,13 @@ final class V3DomainMapperCommon {
         };
     }
 
-    private static Frilans frilansFra(no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans frilans) {
+    private static Frilans frilansFra(no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans frilans) {
         return Optional.ofNullable(frilans)
                 .map(V3DomainMapperCommon::create)
                 .orElse(null);
     }
 
-    private static Frilans create(no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans frilans) {
+    private static Frilans create(no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans frilans) {
         return new Frilans()
                 .withVedlegg(frilansVedleggFraIDs(frilans.getVedlegg()))
                 .withErNyoppstartet(frilans.isNyOppstartet())
@@ -358,7 +358,7 @@ final class V3DomainMapperCommon {
                 .toList();
     }
 
-    private static Vedlegg vedleggFra(no.nav.foreldrepenger.mottak.domain.felles.Vedlegg vedlegg) {
+    private static Vedlegg vedleggFra(no.nav.foreldrepenger.common.domain.felles.Vedlegg vedlegg) {
         return new Vedlegg()
                 .withId(vedlegg.getId())
                 .withTilleggsinformasjon(vedlegg.getBeskrivelse())

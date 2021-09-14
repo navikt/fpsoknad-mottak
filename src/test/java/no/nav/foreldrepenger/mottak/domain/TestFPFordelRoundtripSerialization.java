@@ -36,6 +36,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
 import no.nav.foreldrepenger.mottak.http.WebClientConfiguration.TokenXExchangeFilterFunction;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;

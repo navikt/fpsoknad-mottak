@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000049;
-import static no.nav.foreldrepenger.mottak.domain.felles.DokumentType.I000060;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
+import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.io.IOException;
@@ -19,14 +19,14 @@ import org.springframework.util.CollectionUtils;
 
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.NorskOrganisasjon;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskOrganisasjon;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 
 @Component
