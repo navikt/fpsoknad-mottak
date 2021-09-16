@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.util.Constants.ISSUER;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.Constants.ISSUER;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 
 import java.time.LocalDateTime;
 import java.util.Date;

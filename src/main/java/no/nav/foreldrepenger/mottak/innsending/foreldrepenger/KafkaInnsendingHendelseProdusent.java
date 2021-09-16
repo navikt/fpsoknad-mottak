@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
 import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
@@ -18,7 +18,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Kvittering;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 
 @Component

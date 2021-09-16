@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.function.Predicate.not;
 import static no.nav.foreldrepenger.common.domain.felles.medlemskap.ArbeidsInformasjon.IKKE_ARBEIDET;
-import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
+import static no.nav.foreldrepenger.common.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
 import java.time.LocalDate;

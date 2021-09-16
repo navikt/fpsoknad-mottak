@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.egenskaperFor;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.mapperFor;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.mapperFor;
 
 import java.util.List;
 
@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
 @Component

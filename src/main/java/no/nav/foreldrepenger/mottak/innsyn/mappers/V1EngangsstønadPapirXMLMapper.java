@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Collections.emptyList;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.common.util.Versjon.V1;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.common.util.Versjon.V1;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,11 +35,11 @@ import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.Adopsjon;
 import no.nav.vedtak.felles.xml.soeknad.felles.v1.AnnenForelderMedNorskIdent;

@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.common.domain.Kvittering.ikkeSendt;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
 
 import java.net.URI;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.common.domain.Kvittering;
-import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.FordelKvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
 
 @Component
 public class FordelConnection extends AbstractRestConnection implements PingEndpointAware {

@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.http.filters;
 
-import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.mottak.util.MDCUtil.toMDC;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 

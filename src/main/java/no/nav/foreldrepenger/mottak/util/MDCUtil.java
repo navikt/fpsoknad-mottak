@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CALL_ID;
-import static no.nav.foreldrepenger.mottak.util.Constants.NAV_CONSUMER_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
+import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 
 import java.util.Optional;
 

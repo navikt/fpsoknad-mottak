@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
 
 public abstract class AbstractXMLMapper implements XMLSøknadMapper {
     protected final Oppslag oppslag;

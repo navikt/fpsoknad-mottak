@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

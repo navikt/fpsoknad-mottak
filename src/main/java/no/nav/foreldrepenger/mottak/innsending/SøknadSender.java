@@ -5,8 +5,8 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.http.Pingable;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
 public interface SøknadSender extends Pingable {
 

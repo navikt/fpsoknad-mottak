@@ -28,8 +28,8 @@ import org.springframework.core.io.ClassPathResource;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.DelegerendeXMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.UkjentXMLSøknadMapper;
@@ -38,7 +38,7 @@ import no.nav.foreldrepenger.mottak.innsyn.mappers.V1EngangsstønadPapirXMLMappe
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V1ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.V2ForeldrepengerXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)

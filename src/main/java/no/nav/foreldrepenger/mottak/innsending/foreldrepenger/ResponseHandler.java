@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.common.domain.Kvittering.gosysKvittering;
 import static no.nav.foreldrepenger.common.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.GITTOPP_KVITTERING;
