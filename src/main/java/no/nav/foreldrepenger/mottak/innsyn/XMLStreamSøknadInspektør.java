@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.DOKMOT_ES_V1;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.UKJENT;
+import static no.nav.foreldrepenger.common.util.Versjon.erEngangsstønadV1Dokmot;
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.DOKMOT_ES_V1;
-import static no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap.UKJENT;
-import static no.nav.foreldrepenger.mottak.util.Versjon.erEngangsstønadV1Dokmot;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.util.Versjon;
 import no.nav.foreldrepenger.mottak.AbstractInspektør;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @Component
 @Qualifier(SØKNAD)

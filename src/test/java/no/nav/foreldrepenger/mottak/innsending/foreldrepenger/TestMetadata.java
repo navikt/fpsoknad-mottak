@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;

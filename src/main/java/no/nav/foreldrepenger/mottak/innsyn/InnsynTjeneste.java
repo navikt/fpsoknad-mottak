@@ -20,9 +20,18 @@ import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Sak;
+import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.BehandlingTema;
+import no.nav.foreldrepenger.common.innsyn.Behandling;
+import no.nav.foreldrepenger.common.innsyn.BehandlingResultat;
+import no.nav.foreldrepenger.common.innsyn.BehandlingStatus;
+import no.nav.foreldrepenger.common.innsyn.BehandlingType;
+import no.nav.foreldrepenger.common.innsyn.InnsynsSøknad;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsyn.SøknadMetadata;
+import no.nav.foreldrepenger.common.innsyn.vedtak.Vedtak;
+import no.nav.foreldrepenger.common.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
@@ -33,8 +42,6 @@ import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksPeriodeDTO;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.Vedtak;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
@@ -185,7 +192,7 @@ public class InnsynTjeneste implements Innsyn {
     private Behandling tilBehandling(BehandlingDTO wrapper) {
         LOG.trace(CONFIDENTIAL, "Mapper behandling fra {}", wrapper);
         return Optional.ofNullable(wrapper)
-                .map(w -> new Behandling.BehandlingBuilder()
+                .map(w -> Behandling.builder()
                         .opprettetTidspunkt(w.getOpprettetTidspunkt())
                         .endretTidspunkt(w.getEndretTidspunkt())
                         .behandlendeEnhet(w.getBehandlendeEnhet())

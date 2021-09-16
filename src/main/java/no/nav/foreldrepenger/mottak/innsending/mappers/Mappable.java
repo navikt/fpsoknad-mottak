@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
 public interface Mappable {
 

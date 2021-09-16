@@ -78,8 +78,8 @@ import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.ar
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Frilanser;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.PrivatArbeidsgiver;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.tilrettelegging.arbeidsforhold.Virksomhet;
+import no.nav.foreldrepenger.common.util.Versjon;
 import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public class ForeldrepengerTestUtils {
 

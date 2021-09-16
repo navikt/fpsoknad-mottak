@@ -1,8 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.util.Versjon.V3;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilLand;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilMedlemsskap;
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilOpptjening;
@@ -11,7 +12,6 @@ import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.tilV
 import static no.nav.foreldrepenger.mottak.innsyn.mappers.V3XMLMapperCommon.ytelse;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -45,10 +45,10 @@ import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.Stønadskont
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesPeriode;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UtsettelsesÅrsak;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.UttaksPeriode;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.jaxb.FPV3JAXBUtil;
 import no.nav.vedtak.felles.xml.soeknad.endringssoeknad.v3.Endringssoeknad;

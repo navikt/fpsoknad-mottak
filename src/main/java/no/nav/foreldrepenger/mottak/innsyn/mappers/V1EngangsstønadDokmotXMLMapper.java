@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD_DOKMOT;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD_DOKMOT;
+import static no.nav.foreldrepenger.common.util.Versjon.V1;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -16,8 +16,8 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.jaxb.ESV1JAXBUtil;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.OpplysningerOmBarn;
 import no.nav.foreldrepenger.soeknadsskjema.engangsstoenad.v1.SoeknadsskjemaEngangsstoenad;

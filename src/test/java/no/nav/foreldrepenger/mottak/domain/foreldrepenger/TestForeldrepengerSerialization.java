@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.mottak.domain.foreldrepenger;
 
+import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.adopsjon;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
@@ -23,7 +24,6 @@ import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.utsettelsesPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.uttaksPeriode;
 import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.åpenPeriode;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -55,14 +55,14 @@ import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.RelasjonTilBarn;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.fordeling.StønadskontoType;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.FPSakFordeltKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.GosysKvittering;
-import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.PendingKvittering;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadMetadata;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.GosysKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.PendingKvittering;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsyn.SøknadMetadata;
+import no.nav.foreldrepenger.common.util.Versjon;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UtsettelsePeriodeType;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
 @Component
 @Qualifier(DELEGERENDE)
