@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.util;
 
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
 import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.NORSK_FORELDER_FNR;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;

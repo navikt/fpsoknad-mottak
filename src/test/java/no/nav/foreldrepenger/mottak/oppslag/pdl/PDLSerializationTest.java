@@ -2,13 +2,13 @@ package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static no.nav.foreldrepenger.common.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.common.domain.felles.Kjønn.M;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.FAR;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.MOR;
-import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLKjønn.mann;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLKjønn.Kjønn.KVINNE;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLKjønn.Kjønn.MANN;
+import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLKjønn.mann;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -33,8 +33,8 @@ import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
 import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 @AutoConfigureJsonTesters

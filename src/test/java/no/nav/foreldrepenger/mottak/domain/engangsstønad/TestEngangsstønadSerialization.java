@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.mottak.domain.engangsstønad;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangstønad;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.fødsel;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.påkrevdVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.serialize;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.ukjentForelder;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.utenlandskForelder;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangstønad;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.norskForelder;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.påkrevdVedlegg;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.serialize;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.termin;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.ukjentForelder;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.utenlandskForelder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -29,8 +29,8 @@ import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.LeveranseStatus;
-import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.common.domain.felles.TestUtils;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters

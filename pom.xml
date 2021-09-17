@@ -19,6 +19,9 @@
         </license>
     </licenses>
     <properties>
+        <java.version>16</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <mock-oauth2-server.version>0.3.4</mock-oauth2-server.version>
         <token-validation-version>1.3.8</token-validation-version>
         <pdfbox.version>2.0.24</pdfbox.version>
@@ -31,6 +34,7 @@
         <xjb.location>src/main/xjb</xjb.location>
         <mq.version>9.2.3.0</mq.version>
         <kontrakter.version>6.0.4</kontrakter.version>
+        <mottak-felles.version>0.1.0</mottak-felles.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
@@ -60,7 +64,9 @@
                         <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED</arg>
                     </compilerArgs>
                     <parameters>true</parameters>
-                    <release>16</release>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -454,7 +460,14 @@
         <dependency>
             <groupId>no.nav.foreldrepenger</groupId>
             <artifactId>fpsoknad-felles</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${mottak-felles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.foreldrepenger</groupId>
+            <artifactId>fpsoknad-felles</artifactId>
+            <version>${mottak-felles.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.foreldrepenger</groupId>

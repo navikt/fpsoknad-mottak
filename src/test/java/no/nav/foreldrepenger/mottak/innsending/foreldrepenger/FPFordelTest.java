@@ -4,9 +4,9 @@ import static no.nav.foreldrepenger.common.domain.LeveranseStatus.FP_FORDEL_MESS
 import static no.nav.foreldrepenger.common.domain.LeveranseStatus.GOSYS;
 import static no.nav.foreldrepenger.common.domain.LeveranseStatus.PÅGÅR;
 import static no.nav.foreldrepenger.common.domain.LeveranseStatus.SENDT_OG_FORSØKT_BEHANDLET_FPSAK;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.foreldrepengeSøknad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
