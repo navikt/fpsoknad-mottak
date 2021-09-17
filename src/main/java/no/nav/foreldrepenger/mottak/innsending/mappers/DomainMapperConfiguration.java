@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,11 +13,17 @@ import no.nav.foreldrepenger.common.oppslag.Oppslag;
 public class DomainMapperConfiguration {
 
     @Bean
-    public List<DomainMapper> mappers(Oppslag oppslag) {
-        return List.of(
-            new V1SvangerskapspengerDomainMapper(),
-            new V3EngangsstønadDomainMapper(oppslag),
-            new V3ForeldrepengerDomainMapper(oppslag));
+    public DomainMapper mapperForeldrepenger(Oppslag oppslag) {
+        return new V3ForeldrepengerDomainMapper(oppslag);
+    }
 
+    @Bean
+    public DomainMapper mapperEngangsstønad(Oppslag oppslag) {
+        return new V3EngangsstønadDomainMapper(oppslag);
+    }
+
+    @Bean
+    public DomainMapper mapperSVP() {
+        return new V1SvangerskapspengerDomainMapper();
     }
 }
