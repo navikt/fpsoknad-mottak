@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 
 public class FontAwarePdfDocument extends PDDocument {
     private static final String S_RGB_IEC61966_2_1 = "sRGB IEC61966-2.1";

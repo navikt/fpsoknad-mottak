@@ -3,9 +3,9 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
 import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.SEND_SENERE;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpHeaders.CONTENT_ENCODING;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
@@ -33,8 +33,8 @@ import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.MappablePdfGenerator;
 
 @Component

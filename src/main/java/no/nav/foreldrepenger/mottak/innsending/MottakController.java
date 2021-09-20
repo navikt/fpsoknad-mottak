@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
+import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRINGSSØKNAD;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.FØRSTEGANGSSØKNAD;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
 
 import java.util.List;
 
@@ -23,13 +23,13 @@ import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsending.varsel.Varsel;
 import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(MottakController.INNSENDING)

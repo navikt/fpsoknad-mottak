@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.egenskaperFor;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.mapperFor;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.egenskaperFor;
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.mapperFor;
 
 import java.util.List;
 
@@ -13,8 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.common.domain.Søknad;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.common.innsyn.mappers.XMLSøknadMapper;
 
 @Component
 @Qualifier(DELEGERENDE)

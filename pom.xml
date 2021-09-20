@@ -28,13 +28,9 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <springfox.version>3.0.0</springfox.version>
-        <xsd.location>${project.build.directory}/classes</xsd.location>
-        <jaxb.location>${project.build.directory}/classes/</jaxb.location>
-        <xsd.location>src/main/xsd</xsd.location>
-        <xjb.location>src/main/xjb</xjb.location>
         <mq.version>9.2.3.0</mq.version>
         <kontrakter.version>6.0.4</kontrakter.version>
-        <mottak-felles.version>0.1.0</mottak-felles.version>
+        <mottak-felles.version>0.2.0</mottak-felles.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>
@@ -71,166 +67,11 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>behandlingsprosess-vedtak-v1</artifactId>
-                                    <version>${kontrakter.version}</version>
-                                    <outputDirectory>${xsd.location}/behandlingsprosess-vedtak-v1</outputDirectory>
-                                    <includes>**\/*.xsd</includes>
-                                </artifactItem>
-                                 <artifactItem>
-                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>behandlingsprosess-vedtak-v2</artifactId>
-                                    <version>${kontrakter.version}</version>
-                                    <outputDirectory>${xsd.location}/behandlingsprosess-vedtak-v2</outputDirectory>
-                                    <includes>**\/*.xsd</includes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>soeknad-v3</artifactId>
-                                    <version>${kontrakter.version}</version>
-                                    <outputDirectory>${xsd.location}/soeknad-v3</outputDirectory>
-                                    <includes>**\/*.xsd</includes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>soeknad-v2</artifactId>
-                                    <version>${kontrakter.version}</version>
-                                    <outputDirectory>${xsd.location}/soeknad-v2</outputDirectory>
-                                    <includes>**\/*.xsd</includes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>soeknad-v1</artifactId>
-                                    <version>${kontrakter.version}</version>
-                                    <outputDirectory>${xsd.location}/soeknad-v1</outputDirectory>
-                                    <includes>**\/*.xsd</includes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>behandlingsprosess-vedtak-v2</artifactId>
-                                    <version>${kontrakter.version}</version>
-                                    <outputDirectory>${xsd.location}/behandlingsprosess-vedtak-v2</outputDirectory>
-                                    <includes>**\/*.xsd</includes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>no.nav.foreldrepenger.kontrakter</groupId>
-                                    <artifactId>inntektsmelding-v1</artifactId>
-                                    <version>${kontrakter.version}</version>
-                                    <outputDirectory>${xsd.location}/inntektsmelding-v1</outputDirectory>
-                                    <includes>**\/*.xsd</includes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>--enable-preview</argLine>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/classes</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${xsd.location}</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.14.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                        <version>2.3.3</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <bindings>
-                        <binding>
-                            <fileset>
-                                <directory>${xjb.location}</directory>
-                                <includes>
-                                    <include>*.xjb</include>
-                                </includes>
-                            </fileset>
-                        </binding>
-                    </bindings>
-                    <extension>true</extension>
-                    <args>
-                        <arg>-no-header</arg>
-                        <arg>-npa</arg>
-                        <arg>-Xfluent-api</arg>
-                        <arg>-Xannotate</arg>
-                    </args>
-                    <schemas>
-                        <schema>
-                            <fileset>
-                                <directory>${xsd.location}</directory>
-                                <includes>
-                                    <include>**/*.xsd</include>
-                                </includes>
-                            </fileset>
-                        </schema>
-                    </schemas>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.jvnet.jaxb2_commons</groupId>
-                            <artifactId>jaxb2-basics</artifactId>
-                            <version>1.11.1</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.jvnet.jaxb2_commons</groupId>
-                            <artifactId>jaxb2-basics-annotate</artifactId>
-                            <version>1.1.0</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>net.java.dev.jaxb2-commons</groupId>
-                            <artifactId>jaxb-fluent-api</artifactId>
-                            <version>2.1.8</version>
-                        </plugin>
-                    </plugins>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -361,6 +202,12 @@
             <groupId>com.ibm.mq</groupId>
             <artifactId>com.ibm.mq.allclient</artifactId>
             <version>${mq.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.json</groupId>
+                    <artifactId>json</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.neovisionaries</groupId>

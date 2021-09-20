@@ -17,11 +17,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
-import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
-import no.nav.foreldrepenger.mottak.innsending.mappers.V1SvangerskapspengerDomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
+import no.nav.foreldrepenger.common.innsending.mappers.V1SvangerskapspengerDomainMapper;
+import no.nav.foreldrepenger.common.innsyn.mappers.V1SVPXMLMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
-import no.nav.foreldrepenger.mottak.innsyn.mappers.V1SVPXMLMapper;
 
 @AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)

@@ -2,12 +2,12 @@ package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.common.domain.Kvittering.gosysKvittering;
 import static no.nav.foreldrepenger.common.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.GITTOPP_KVITTERING;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.MANUELL_KVITTERING;
-import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.FEILET_KVITTERINGER;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.FORDELT_KVITTERING;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.GITTOPP_KVITTERING;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.MANUELL_KVITTERING;
+import static no.nav.foreldrepenger.common.util.TimeUtil.waitFor;
 import static org.springframework.http.HttpHeaders.LOCATION;
 
 import java.net.URI;

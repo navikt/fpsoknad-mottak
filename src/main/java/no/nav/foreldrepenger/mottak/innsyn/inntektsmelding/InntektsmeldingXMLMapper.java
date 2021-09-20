@@ -1,11 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsyn.inntektsmelding;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilBoolean;
-import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilDoubleFraBigDecimal;
-import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilDoubleFraBigInteger;
-import static no.nav.foreldrepenger.mottak.util.jaxb.AbstractJAXBUtil.tilTekst;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.common.util.jaxb.AbstractJAXBUtil.tilBoolean;
+import static no.nav.foreldrepenger.common.util.jaxb.AbstractJAXBUtil.tilDoubleFraBigDecimal;
+import static no.nav.foreldrepenger.common.util.jaxb.AbstractJAXBUtil.tilDoubleFraBigInteger;
+import static no.nav.foreldrepenger.common.util.jaxb.AbstractJAXBUtil.tilTekst;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.util.jaxb.InntektsmeldingJAXBUtil;
+import no.nav.foreldrepenger.common.util.jaxb.InntektsmeldingJAXBUtil;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.Avsendersystem;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.AvtaltFerieListe;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.DelvisFravaer;

@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsending.pdf;
 import static java.util.stream.Collectors.joining;
 import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000049;
 import static no.nav.foreldrepenger.common.domain.felles.DokumentType.I000060;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 import java.io.IOException;
 import java.time.LocalDate;

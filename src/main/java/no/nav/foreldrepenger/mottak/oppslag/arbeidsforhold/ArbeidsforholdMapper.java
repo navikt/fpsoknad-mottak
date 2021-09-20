@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static no.nav.foreldrepenger.mottak.util.Constants.FNR;
-import static no.nav.foreldrepenger.mottak.util.MapUtil.get;
-import static no.nav.foreldrepenger.mottak.util.TimeUtil.dato;
-import static no.nav.foreldrepenger.mottak.util.TimeUtil.nowWithinPeriod;
+import static no.nav.foreldrepenger.common.util.Constants.FNR;
+import static no.nav.foreldrepenger.common.util.MapUtil.get;
+import static no.nav.foreldrepenger.common.util.TimeUtil.dato;
+import static no.nav.foreldrepenger.common.util.TimeUtil.nowWithinPeriod;
 
 import java.time.LocalDate;
 import java.util.List;

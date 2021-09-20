@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.util.Constants.ISSUER;
+import static no.nav.foreldrepenger.common.util.Constants.ISSUER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;

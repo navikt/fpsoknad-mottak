@@ -3,12 +3,12 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
+import static no.nav.foreldrepenger.common.util.StreamUtil.distinctByKey;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.common.util.StringUtil.endelse;
+import static no.nav.foreldrepenger.common.util.StringUtil.limit;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.distinctByKey;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
-import static no.nav.foreldrepenger.mottak.util.StringUtil.endelse;
-import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
 
 import java.math.BigDecimal;
 import java.util.List;

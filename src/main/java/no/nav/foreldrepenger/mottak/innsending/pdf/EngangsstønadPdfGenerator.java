@@ -26,9 +26,10 @@ import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Adopsjon;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.FremtidigFødsel;
 import no.nav.foreldrepenger.common.domain.felles.relasjontilbarn.Fødsel;
+import no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.util.Pair;
-import no.nav.foreldrepenger.mottak.innsending.mappers.MapperEgenskaper;
+import no.nav.foreldrepenger.common.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.Blokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentBestilling;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.DokumentPerson;
@@ -40,7 +41,6 @@ import no.nav.foreldrepenger.mottak.innsending.pdf.modell.MottattDato;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TabellRad;
 import no.nav.foreldrepenger.mottak.innsending.pdf.modell.TemaBlokk;
 import no.nav.foreldrepenger.mottak.innsending.pdf.pdftjeneste.PdfGenerator;
-import no.nav.foreldrepenger.mottak.util.StreamUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component

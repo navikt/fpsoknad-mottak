@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
 import static no.nav.foreldrepenger.common.domain.Kvittering.ikkeSendt;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FP_SENDFEIL;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.FP_SENDFEIL;
 
 import java.net.URI;
 

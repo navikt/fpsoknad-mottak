@@ -1,21 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static no.nav.foreldrepenger.mottak.AbstractInspektør.VEDTAK;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.UKJENT;
-import static no.nav.foreldrepenger.mottak.AbstractInspektør.VEDTAK;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import no.nav.foreldrepenger.mottak.AbstractInspektør;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.util.Versjon;
-import no.nav.foreldrepenger.mottak.AbstractInspektør;
 
 @Component
 @Qualifier(VEDTAK)

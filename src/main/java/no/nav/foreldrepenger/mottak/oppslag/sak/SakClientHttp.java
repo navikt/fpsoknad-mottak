@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.oppslag.sak;
 
 import static java.time.LocalDate.now;
 import static java.util.Comparator.comparing;
-import static no.nav.foreldrepenger.mottak.util.Constants.INFOTRYGD;
-import static no.nav.foreldrepenger.mottak.util.StringUtil.encode;
+import static no.nav.foreldrepenger.common.util.Constants.INFOTRYGD;
+import static no.nav.foreldrepenger.common.util.StringUtil.encode;
 import static no.nav.foreldrepenger.mottak.util.URIUtil.uri;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

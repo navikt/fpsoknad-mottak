@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.uttaksplan;
 
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 import java.util.List;
 

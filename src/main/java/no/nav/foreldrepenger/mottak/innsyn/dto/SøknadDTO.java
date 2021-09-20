@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.dto;
 
-import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
+import static no.nav.foreldrepenger.common.util.StringUtil.limit;
 import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import java.util.Objects;

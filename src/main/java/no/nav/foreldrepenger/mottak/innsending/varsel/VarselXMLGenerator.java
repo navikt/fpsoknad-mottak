@@ -11,7 +11,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.common.domain.felles.Person;
-import no.nav.foreldrepenger.mottak.util.jaxb.V1VarselJAXBUtil;
+import no.nav.foreldrepenger.common.util.jaxb.V1VarselJAXBUtil;
 import no.nav.melding.virksomhet.varsel.v1.varsel.AktoerId;
 import no.nav.melding.virksomhet.varsel.v1.varsel.ObjectFactory;
 import no.nav.melding.virksomhet.varsel.v1.varsel.Parameter;

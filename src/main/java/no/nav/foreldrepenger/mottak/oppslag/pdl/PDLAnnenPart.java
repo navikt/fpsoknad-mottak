@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static no.nav.foreldrepenger.common.util.StreamUtil.onlyElem;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering.UGRADERT;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.Set;

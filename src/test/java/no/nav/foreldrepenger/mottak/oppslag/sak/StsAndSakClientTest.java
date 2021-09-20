@@ -40,7 +40,7 @@ import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.util.Constants;
+import no.nav.foreldrepenger.common.util.Constants;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.test.JwtTokenGenerator;
 

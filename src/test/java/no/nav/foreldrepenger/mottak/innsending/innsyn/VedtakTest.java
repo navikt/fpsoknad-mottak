@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsyn.vedtak.Vedtak;
+import no.nav.foreldrepenger.common.innsyn.vedtak.mappers.V1EngangsstønadXMLVedtakMapper;
+import no.nav.foreldrepenger.common.innsyn.vedtak.mappers.V2XMLVedtakMapper;
+import no.nav.foreldrepenger.common.innsyn.vedtak.mappers.XMLVedtakMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLStreamVedtakInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.DelegerendeXMLVedtakMapper;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V1EngangsstønadXMLVedtakMapper;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.V2XMLVedtakMapper;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLVedtakMapper;
 
 class VedtakTest {
 

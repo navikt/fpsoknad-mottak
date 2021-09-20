@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.function.Predicate.not;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isVTP;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static org.springframework.retry.RetryContext.NAME;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.getField;

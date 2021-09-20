@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.error;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
-import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
 import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 
 import java.time.LocalDateTime;

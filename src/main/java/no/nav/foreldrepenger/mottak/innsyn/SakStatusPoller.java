@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.mottak.innsyn;
 
 import static no.nav.foreldrepenger.common.domain.Kvittering.forsendelsesStatusKvittering;
 import static no.nav.foreldrepenger.common.domain.Kvittering.sendtOgForsøktBehandletKvittering;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
-import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.TimeUtil.waitFor;
 
 import java.net.URI;
 import java.time.Duration;

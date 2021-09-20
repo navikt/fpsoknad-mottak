@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 
 import java.net.URI;
 import java.util.Arrays;

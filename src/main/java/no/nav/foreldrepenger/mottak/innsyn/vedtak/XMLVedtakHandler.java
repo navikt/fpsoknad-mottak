@@ -1,15 +1,15 @@
 package no.nav.foreldrepenger.mottak.innsyn.vedtak;
 
+import static no.nav.foreldrepenger.common.innsending.mappers.Mappables.DELEGERENDE;
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.VEDTAK;
-import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.innsyn.vedtak.Vedtak;
+import no.nav.foreldrepenger.common.innsyn.vedtak.mappers.XMLVedtakMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.mappers.XMLVedtakMapper;
 
 @Component
 public class XMLVedtakHandler {

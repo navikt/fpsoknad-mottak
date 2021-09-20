@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.util;
 
-import static no.nav.foreldrepenger.mottak.util.StringUtil.taint;
+import static no.nav.foreldrepenger.common.util.StringUtil.taint;
 
 import java.net.URI;
 
