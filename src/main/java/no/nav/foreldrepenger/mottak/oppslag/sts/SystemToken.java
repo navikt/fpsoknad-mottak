@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag.sts;
 
-import static no.nav.foreldrepenger.mottak.util.StringUtil.limit;
-import static no.nav.foreldrepenger.mottak.util.TimeUtil.localDateTime;
+import static no.nav.foreldrepenger.common.util.StringUtil.limit;
+import static no.nav.foreldrepenger.common.util.TimeUtil.localDateTime;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

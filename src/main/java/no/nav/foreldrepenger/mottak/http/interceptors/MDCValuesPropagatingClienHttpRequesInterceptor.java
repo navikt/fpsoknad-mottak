@@ -5,7 +5,7 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID1;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.common.util.Constants.X_CORRELATION_ID;
-import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 import java.io.IOException;

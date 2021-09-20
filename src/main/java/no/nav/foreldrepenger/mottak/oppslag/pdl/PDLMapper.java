@@ -5,9 +5,9 @@ import static java.util.stream.Collectors.toSet;
 import static no.nav.foreldrepenger.common.domain.felles.Kjønn.K;
 import static no.nav.foreldrepenger.common.domain.felles.Kjønn.M;
 import static no.nav.foreldrepenger.common.domain.felles.Kjønn.U;
+import static no.nav.foreldrepenger.common.util.StreamUtil.onlyElem;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLExceptionGeneratingResponseHander.exception;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.onlyElem;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.time.LocalDate;
@@ -24,8 +24,8 @@ import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe;
 import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
+import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLIdentInformasjon.PDLIdentGruppe;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 class PDLMapper {

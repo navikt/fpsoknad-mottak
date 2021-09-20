@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.error;
 
 import static java.util.stream.Collectors.joining;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
+import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.FORBUDT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.IKKEFUNNET;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.UAUTENTISERT;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConstants.UGYLDIG;
-import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;

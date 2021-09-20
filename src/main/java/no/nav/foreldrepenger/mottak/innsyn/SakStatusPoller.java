@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.mottak.innsyn;
 import static no.nav.foreldrepenger.common.domain.Kvittering.forsendelsesStatusKvittering;
 import static no.nav.foreldrepenger.common.domain.Kvittering.sendtOgForsøktBehandletKvittering;
 import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
-import static no.nav.foreldrepenger.mottak.util.TimeUtil.waitFor;
+import static no.nav.foreldrepenger.common.util.TimeUtil.waitFor;
 
 import java.net.URI;
 import java.time.Duration;
@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestOperations;
 
 import no.nav.foreldrepenger.common.domain.Kvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
 import no.nav.foreldrepenger.common.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
-import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
 
 @Service
 public class SakStatusPoller extends AbstractRestConnection {

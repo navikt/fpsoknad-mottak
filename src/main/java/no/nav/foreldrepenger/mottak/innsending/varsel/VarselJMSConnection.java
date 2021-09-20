@@ -1,9 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
 import static no.nav.foreldrepenger.common.util.Constants.CALL_ID;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_FAILED;
-import static no.nav.foreldrepenger.mottak.util.CounterRegistry.VARSEL_SUCCESS;
-import static no.nav.foreldrepenger.mottak.util.MDCUtil.callId;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.VARSEL_FAILED;
+import static no.nav.foreldrepenger.common.util.CounterRegistry.VARSEL_SUCCESS;
+import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
 
 import java.net.URI;
 

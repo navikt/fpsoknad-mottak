@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
-import static no.nav.foreldrepenger.mottak.util.MapUtil.get;
+import static no.nav.foreldrepenger.common.util.MapUtil.get;
 
 import java.util.Map;
 
