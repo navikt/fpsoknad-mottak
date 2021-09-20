@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 
 @ConfigurationProperties(prefix = "varsel")
 public class VarselConfig {

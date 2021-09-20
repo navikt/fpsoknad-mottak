@@ -30,7 +30,7 @@
         <springfox.version>3.0.0</springfox.version>
         <mq.version>9.2.3.0</mq.version>
         <kontrakter.version>6.0.4</kontrakter.version>
-        <mottak-felles.version>0.1.0</mottak-felles.version>
+        <mottak-felles.version>0.2.0</mottak-felles.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/navikt/fpsoknad-mottak.git</connection>

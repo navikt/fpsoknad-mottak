@@ -14,9 +14,9 @@ import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.util.Versjon;
 
 public interface Inspektør {

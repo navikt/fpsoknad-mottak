@@ -23,6 +23,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import no.nav.foreldrepenger.common.error.SøknadEgenskapException;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 import no.nav.foreldrepenger.common.util.StringUtil;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 import no.nav.security.token.support.core.exceptions.JwtTokenValidatorException;

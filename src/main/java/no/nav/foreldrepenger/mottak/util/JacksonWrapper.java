@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
+import no.nav.foreldrepenger.common.error.UnexpectedInputException;
 
 @Component
 public class JacksonWrapper {
