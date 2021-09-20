@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedToVedlegg;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.felles.TestUtils;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.common.domain.felles.TestUtils;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils;
 
 class TestMetadata {
 

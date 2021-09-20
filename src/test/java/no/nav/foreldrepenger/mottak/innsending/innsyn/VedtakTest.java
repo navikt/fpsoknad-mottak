@@ -2,9 +2,9 @@ package no.nav.foreldrepenger.mottak.innsending.innsyn;
 
 import static no.nav.foreldrepenger.common.domain.FagsakType.ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.domain.FagsakType.FORELDREPENGER;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.load;
 import static no.nav.foreldrepenger.common.util.Versjon.V1;
 import static no.nav.foreldrepenger.common.util.Versjon.V2;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.load;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
