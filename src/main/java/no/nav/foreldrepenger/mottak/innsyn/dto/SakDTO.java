@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.innsyn.FagsakStatus;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.innsyn.FagsakStatus;
 import no.nav.foreldrepenger.mottak.innsyn.Lenke;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

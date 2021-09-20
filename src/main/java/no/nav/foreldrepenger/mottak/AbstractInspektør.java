@@ -10,8 +10,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.common.util.Versjon;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 public abstract class AbstractInspektør implements Inspektør {
     public static final String SØKNAD = "søknad";

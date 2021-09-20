@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
 
 @Data
 public class SøknadsGrunnlag {

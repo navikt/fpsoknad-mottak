@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Data;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
 
 @Data
 public class Inntektsmelding {

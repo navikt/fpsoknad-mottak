@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Dekningsgrad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 
 @AutoConfigureJsonTesters

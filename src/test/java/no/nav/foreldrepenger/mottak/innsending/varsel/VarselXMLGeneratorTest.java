@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.varsel;
 
 import static java.time.LocalDateTime.now;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
 import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.DATO;
 import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.FORNAVN;
 import static no.nav.foreldrepenger.mottak.innsending.varsel.VarselXMLGenerator.URL;

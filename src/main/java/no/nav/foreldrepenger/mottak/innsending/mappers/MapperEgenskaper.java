@@ -1,21 +1,21 @@
 package no.nav.foreldrepenger.mottak.innsending.mappers;
 
 import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_SVP_VERSJON;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V1;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V2;
-import static no.nav.foreldrepenger.mottak.util.Versjon.V3;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_SVANGERSKAPSPENGER;
+import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_SVP_VERSJON;
+import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
+import static no.nav.foreldrepenger.common.util.Versjon.V1;
+import static no.nav.foreldrepenger.common.util.Versjon.V2;
+import static no.nav.foreldrepenger.common.util.Versjon.V3;
 
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.util.Versjon;
 
 public class MapperEgenskaper {
     private final List<SøknadEgenskap> egenskaper;

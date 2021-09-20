@@ -8,11 +8,12 @@ import com.neovisionaries.i18n.CountryCode;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.Navn;
-import no.nav.foreldrepenger.mottak.domain.felles.Bankkonto;
-import no.nav.foreldrepenger.mottak.domain.felles.Kjønn;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.Kjønn;
+import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
 
 @Data
 @Builder

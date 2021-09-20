@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
-import no.nav.foreldrepenger.mottak.domain.FagsakType;
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.domain.FagsakType;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
 public class Konvolutt {
     private final SøknadEgenskap egenskap;

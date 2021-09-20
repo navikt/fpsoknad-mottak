@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.Kvittering.gosysKvittering;
-import static no.nav.foreldrepenger.mottak.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
+import static no.nav.foreldrepenger.common.domain.Kvittering.gosysKvittering;
+import static no.nav.foreldrepenger.common.domain.LeveranseStatus.FP_FORDEL_MESSED_UP;
 import static no.nav.foreldrepenger.mottak.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.mottak.util.CounterRegistry.FORDELT_KVITTERING;
@@ -22,7 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
-import no.nav.foreldrepenger.mottak.domain.Kvittering;
+import no.nav.foreldrepenger.common.domain.Kvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.FPSakFordeltKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.FordelKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.GosysKvittering;
+import no.nav.foreldrepenger.common.innsending.foreldrepenger.PendingKvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.innsyn.SakStatusPoller;
 

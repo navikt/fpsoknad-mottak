@@ -8,10 +8,10 @@
 
      <jaxb:globalBindings>
         <xjc:javaType
-            adapter="no.nav.foreldrepenger.mottak.domain.serialization.LocalDateAdapter"
+            adapter="no.nav.foreldrepenger.common.domain.serialization.LocalDateAdapter"
             name="java.time.LocalDate" xmlType="xsd:date" />
         <xjc:javaType
-            adapter="no.nav.foreldrepenger.mottak.domain.serialization.LocalDateTimeAdapter"
+            adapter="no.nav.foreldrepenger.common.domain.serialization.LocalDateTimeAdapter"
             name="java.time.LocalDateTime" xmlType="xsd:dateTime" />
     </jaxb:globalBindings>
 </jaxb:bindings>

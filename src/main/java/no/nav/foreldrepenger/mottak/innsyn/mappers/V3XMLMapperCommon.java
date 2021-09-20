@@ -1,7 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsyn.mappers;
 
 import static java.util.function.Predicate.not;
-import static no.nav.foreldrepenger.mottak.domain.felles.medlemskap.ArbeidsInformasjon.IKKE_ARBEIDET;
+import static no.nav.foreldrepenger.common.domain.felles.medlemskap.ArbeidsInformasjon.IKKE_ARBEIDET;
 import static no.nav.foreldrepenger.mottak.util.Constants.UKJENT_KODEVERKSVERDI;
 import static no.nav.foreldrepenger.mottak.util.StreamUtil.safeStream;
 
@@ -16,28 +16,28 @@ import javax.xml.bind.JAXBElement;
 import com.google.common.collect.Iterables;
 import com.neovisionaries.i18n.CountryCode;
 
-import no.nav.foreldrepenger.mottak.domain.BrukerRolle;
-import no.nav.foreldrepenger.mottak.domain.Søker;
-import no.nav.foreldrepenger.mottak.domain.felles.DokumentType;
-import no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType;
-import no.nav.foreldrepenger.mottak.domain.felles.LukketPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.PåkrevdVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.ValgfrittVedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.Vedlegg;
-import no.nav.foreldrepenger.mottak.domain.felles.VedleggMetaData;
-import no.nav.foreldrepenger.mottak.domain.felles.ÅpenPeriode;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Medlemsskap;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.TidligereOppholdsInformasjon;
-import no.nav.foreldrepenger.mottak.domain.felles.medlemskap.Utenlandsopphold;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjeningType;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.EgenNæring;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.FrilansOppdrag;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Regnskapsfører;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskArbeidsforhold;
-import no.nav.foreldrepenger.mottak.domain.felles.opptjening.Virksomhetstype;
+import no.nav.foreldrepenger.common.domain.BrukerRolle;
+import no.nav.foreldrepenger.common.domain.Søker;
+import no.nav.foreldrepenger.common.domain.felles.DokumentType;
+import no.nav.foreldrepenger.common.domain.felles.InnsendingsType;
+import no.nav.foreldrepenger.common.domain.felles.LukketPeriode;
+import no.nav.foreldrepenger.common.domain.felles.PåkrevdVedlegg;
+import no.nav.foreldrepenger.common.domain.felles.ValgfrittVedlegg;
+import no.nav.foreldrepenger.common.domain.felles.Vedlegg;
+import no.nav.foreldrepenger.common.domain.felles.VedleggMetaData;
+import no.nav.foreldrepenger.common.domain.felles.ÅpenPeriode;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.FramtidigOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Medlemsskap;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.TidligereOppholdsInformasjon;
+import no.nav.foreldrepenger.common.domain.felles.medlemskap.Utenlandsopphold;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjeningType;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.EgenNæring;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.FrilansOppdrag;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Regnskapsfører;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskArbeidsforhold;
+import no.nav.foreldrepenger.common.domain.felles.opptjening.Virksomhetstype;
 import no.nav.foreldrepenger.mottak.error.UnexpectedInputException;
-import no.nav.foreldrepenger.mottak.oppslag.dkif.Målform;
+import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Bruker;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.Medlemskap;
 import no.nav.vedtak.felles.xml.soeknad.felles.v3.OppholdUtlandet;
@@ -137,9 +137,9 @@ public class V3XMLMapperCommon {
                 .orElse(defaultLand);
     }
 
-    static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening tilOpptjening(Opptjening opptjening) {
+    static no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening tilOpptjening(Opptjening opptjening) {
         return Optional.ofNullable(opptjening)
-                .map(o -> new no.nav.foreldrepenger.mottak.domain.felles.opptjening.Opptjening(
+                .map(o -> new no.nav.foreldrepenger.common.domain.felles.opptjening.Opptjening(
                         tilUtenlandskeArbeidsforhold(opptjening.getUtenlandskArbeidsforhold()),
                         tilEgenNæring(opptjening.getEgenNaering()),
                         tilAnnenOpptjening(opptjening.getAnnenOpptjening()),
@@ -147,9 +147,9 @@ public class V3XMLMapperCommon {
                 .orElse(null);
     }
 
-    private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans tilFrilans(Frilans frilans) {
+    private static no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans tilFrilans(Frilans frilans) {
         return Optional.ofNullable(frilans)
-                .map(f -> new no.nav.foreldrepenger.mottak.domain.felles.opptjening.Frilans(
+                .map(f -> new no.nav.foreldrepenger.common.domain.felles.opptjening.Frilans(
                         tilÅpenPeriode(f.getPeriode()),
                         f.isHarInntektFraFosterhjem(),
                         f.isErNyoppstartet(),
@@ -184,16 +184,16 @@ public class V3XMLMapperCommon {
                 .orElse(null);
     }
 
-    private static List<no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening> tilAnnenOpptjening(
+    private static List<no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening> tilAnnenOpptjening(
             List<AnnenOpptjening> annenOpptjening) {
         return safeStream(annenOpptjening)
                 .map(V3XMLMapperCommon::tilAnnenOpptjening)
                 .toList();
     }
 
-    private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening tilAnnenOpptjening(AnnenOpptjening ao) {
+    private static no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening tilAnnenOpptjening(AnnenOpptjening ao) {
         return Optional.ofNullable(ao)
-                .map(a -> new no.nav.foreldrepenger.mottak.domain.felles.opptjening.AnnenOpptjening(
+                .map(a -> new no.nav.foreldrepenger.common.domain.felles.opptjening.AnnenOpptjening(
                         AnnenOpptjeningType.valueOf(a.getType().getKode()),
                         tilÅpenPeriode(a.getPeriode()), List.of()))
                 .orElse(null);
@@ -218,8 +218,8 @@ public class V3XMLMapperCommon {
         throw new UnexpectedInputException("Ikke støttet arbeidsforhold " + egenNæring.getClass().getSimpleName());
     }
 
-    private static no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon tilUtenlandskNæring(UtenlandskOrganisasjon u) {
-        return no.nav.foreldrepenger.mottak.domain.felles.opptjening.UtenlandskOrganisasjon.builder()
+    private static no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskOrganisasjon tilUtenlandskNæring(UtenlandskOrganisasjon u) {
+        return no.nav.foreldrepenger.common.domain.felles.opptjening.UtenlandskOrganisasjon.builder()
                 .registrertILand(tilLand(u.getRegistrertILand()))
                 .orgName(u.getNavn())
                 .beskrivelseEndring(u.getBeskrivelseAvEndring())
@@ -236,7 +236,7 @@ public class V3XMLMapperCommon {
     }
 
     private static EgenNæring tilNorskNæring(NorskOrganisasjon n) {
-        return no.nav.foreldrepenger.mottak.domain.felles.opptjening.NorskOrganisasjon.builder()
+        return no.nav.foreldrepenger.common.domain.felles.opptjening.NorskOrganisasjon.builder()
                 .beskrivelseEndring(n.getBeskrivelseAvEndring())
                 .endringsDato(n.getEndringsDato())
                 .erNyOpprettet(n.isErNyoppstartet())

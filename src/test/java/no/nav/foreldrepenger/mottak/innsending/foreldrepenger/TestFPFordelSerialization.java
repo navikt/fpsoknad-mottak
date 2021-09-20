@@ -1,23 +1,23 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.mottak.domain.felles.EttersendingsType.foreldrepenger;
-import static no.nav.foreldrepenger.mottak.domain.felles.InnsendingsType.LASTET_OPP;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.engangssøknad;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.norskForelder;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.person;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.termin;
-import static no.nav.foreldrepenger.mottak.domain.felles.TestUtils.valgfrittVedlegg;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.V2;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.V3;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
-import static no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
-import static no.nav.foreldrepenger.mottak.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.domain.felles.EttersendingsType.foreldrepenger;
+import static no.nav.foreldrepenger.common.domain.felles.InnsendingsType.LASTET_OPP;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.norskForelder;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.person;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.termin;
+import static no.nav.foreldrepenger.common.domain.felles.TestUtils.valgfrittVedlegg;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.V2;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.V3;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
+import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
+import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.util.Versjon.DEFAULT_VERSJON;
 import static no.nav.foreldrepenger.mottak.innsending.mappers.Mappables.DELEGERENDE;
-import static no.nav.foreldrepenger.mottak.util.Versjon.DEFAULT_VERSJON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -49,15 +49,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import no.nav.foreldrepenger.mottak.domain.AktørId;
-import no.nav.foreldrepenger.mottak.domain.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.domain.felles.Ettersending;
-import no.nav.foreldrepenger.mottak.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.mottak.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Fødselsnummer;
+import no.nav.foreldrepenger.common.domain.felles.Ettersending;
+import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.util.Versjon;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.oppslag.Oppslag;
@@ -65,7 +66,6 @@ import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjenest
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
-import no.nav.foreldrepenger.mottak.util.Versjon;
 
 @EnableConfigurationProperties
 @ExtendWith(MockitoExtension.class)
@@ -192,9 +192,9 @@ class TestFPFordelSerialization {
         assertEquals(v, egenskap.getVersjon());
         assertEquals(ENDRING_FORELDREPENGER, egenskap.getType());
         Endringssøknad respons = Endringssøknad.class.cast(xmlMapper.tilSøknad(xml, egenskap));
-        var originalFordeling = no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        var originalFordeling = no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
                 .cast(original.getYtelse()).getFordeling();
-        assertEquals(originalFordeling, no.nav.foreldrepenger.mottak.domain.foreldrepenger.Foreldrepenger.class
+        assertEquals(originalFordeling, no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
                 .cast(respons.getYtelse()).getFordeling());
         assertEquals(original.getSaksnr(), respons.getSaksnr());
     }

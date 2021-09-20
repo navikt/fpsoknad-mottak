@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.error;
 
-import no.nav.foreldrepenger.mottak.innsending.SøknadType;
-import no.nav.foreldrepenger.mottak.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.mottak.util.Versjon;
+import no.nav.foreldrepenger.common.innsending.SøknadType;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.util.Versjon;
 
 public abstract class SøknadEgenskapException extends RuntimeException {
     private final SøknadEgenskap egenskap;
