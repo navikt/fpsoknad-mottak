@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
@@ -148,7 +149,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         if (næring instanceof NorskOrganisasjon) {
             NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
             gruppe.medOverskrift(txt("virksomhetsnavn", org.getOrgName()));
-            rader.add(rad(txt("orgnummer"), org.getOrgNummer()));
+            rader.add(rad(txt("orgnummer"), org.getOrgNummer().orgnr()));
             rader.add(rad(txt("registrertiland"), textFormatter.countryName(CountryCode.NO)));
         }
         if (næring instanceof UtenlandskOrganisasjon) {
@@ -370,9 +371,9 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
                 .build();
     }
 
-    private String virksomhetsnavn(String orgnr) {
+    private String virksomhetsnavn(Orgnummer orgnr) {
         return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
-                .filter(af -> af.getArbeidsgiverId().equals(orgnr))
+                .filter(af -> af.getArbeidsgiverId().equals(orgnr.orgnr()))
                 .findFirst()
                 .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
                 .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));

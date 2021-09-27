@@ -26,6 +26,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.common.domain.Navn;
+import no.nav.foreldrepenger.common.domain.Orgnummer;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
@@ -370,12 +371,12 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         return vedlegg.getDokumentType().equals(I000060) || vedlegg.getDokumentType().equals(I000049);
     }
 
-    private String virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, String orgnr) {
+    private String virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, Orgnummer orgnr) {
         return safeStream(arbeidsgivere)
-                .filter(arb -> arb.getArbeidsgiverId().equals(orgnr))
+                .filter(arb -> arb.getArbeidsgiverId().equals(orgnr.orgnr()))
                 .findFirst()
                 .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
-                .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));
+                .orElse(txt("arbeidsgiverIkkeFunnet", orgnr.orgnr()));
     }
 
     private float omBarn(Svangerskapspenger svp, FontAwareCos cos, float y) throws IOException {
