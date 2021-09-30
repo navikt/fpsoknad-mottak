@@ -79,10 +79,9 @@ public class PDLConnection implements PingEndpointAware {
 
     public Navn navnFor(String id) {
         return Optional.ofNullable(oppslag(() -> systemClient.post(NAVN_QUERY, idFra(id), PDLWrappedNavn.class).block(), "navn"))
-                .map(navn -> safeStream(navn.navn())
+                .flatMap(navn -> safeStream(navn.navn())
                         .findFirst()
                         .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null)))
-                .orElse(null)
                 .orElse(null);
     }
 
@@ -92,7 +91,6 @@ public class PDLConnection implements PingEndpointAware {
                 .map(id -> mapIdent(id, AKTORID))
                 .map(AktørId::valueOf)
                 .orElse(null);
-
     }
 
     public Fødselsnummer fødselsnummerFor(AktørId aktørId) {
@@ -107,7 +105,6 @@ public class PDLConnection implements PingEndpointAware {
     private Set<PDLBarn> barn(PDLSøker søker) {
         return safeStream(søker.getForelderBarnRelasjon())
                 .filter(b -> b.relatertPersonsrolle().equals(BARN))
-                .filter(Objects::nonNull)
                 .map(b -> oppslagBarn(søker.getId(), b.id()))
                 .filter(Objects::nonNull)
                 .filter(b -> b.erNyligFødt(cfg.getBarnFødtInnen()))
