@@ -124,7 +124,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     private PDLIdenter oppslagId(AktørId id) {
-        return oppslagId(id.getId(), "aktør");
+        return oppslagId(id.value(), "aktør");
     }
 
     private PDLIdenter oppslagId(String id, String type) {
