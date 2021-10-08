@@ -373,10 +373,10 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private String virksomhetsnavn(List<EnkeltArbeidsforhold> arbeidsgivere, Orgnummer orgnr) {
         return safeStream(arbeidsgivere)
-                .filter(arb -> arb.getArbeidsgiverId().equals(orgnr.orgnr()))
+                .filter(arb -> arb.getArbeidsgiverId().equals(orgnr.value()))
                 .findFirst()
                 .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
-                .orElse(txt("arbeidsgiverIkkeFunnet", orgnr.orgnr()));
+                .orElse(txt("arbeidsgiverIkkeFunnet", orgnr.value()));
     }
 
     private float omBarn(Svangerskapspenger svp, FontAwareCos cos, float y) throws IOException {

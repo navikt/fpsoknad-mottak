@@ -149,7 +149,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
         if (næring instanceof NorskOrganisasjon) {
             NorskOrganisasjon org = NorskOrganisasjon.class.cast(næring);
             gruppe.medOverskrift(txt("virksomhetsnavn", org.getOrgName()));
-            rader.add(rad(txt("orgnummer"), org.getOrgNummer().orgnr()));
+            rader.add(rad(txt("orgnummer"), org.getOrgNummer().value()));
             rader.add(rad(txt("registrertiland"), textFormatter.countryName(CountryCode.NO)));
         }
         if (næring instanceof UtenlandskOrganisasjon) {
@@ -373,7 +373,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private String virksomhetsnavn(Orgnummer orgnr) {
         return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
-                .filter(af -> af.getArbeidsgiverId().equals(orgnr.orgnr()))
+                .filter(af -> af.getArbeidsgiverId().equals(orgnr.value()))
                 .findFirst()
                 .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
                 .orElse(txt("arbeidsgiverIkkeFunnet", orgnr));

@@ -61,7 +61,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
         try {
             var navn = Optional.ofNullable(webClient
                     .get()
-                    .uri(b -> cfg.getOrganisasjonURI(b, orgnr.orgnr()))
+                    .uri(b -> cfg.getOrganisasjonURI(b, orgnr.value()))
                     .accept(APPLICATION_JSON)
                     .retrieve()
                     .toEntity(Map.class)
@@ -69,13 +69,13 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
                     .getBody())
                     .map(OrganisasjonMapper::tilOrganisasjonsnavn)
                     .filter(Objects::nonNull)
-                    .orElse(orgnr.orgnr());
+                    .orElse(orgnr.value());
             LOG.info("Hentet organisasjonsnavn for {} OK", orgnr.maskert());
             LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);
             return navn;
         } catch (Exception e) {
             LOG.warn("Fant ikke organisasjonsnavn for {}", orgnr.maskert());
-            return orgnr.orgnr();
+            return orgnr.value();
         }
     }
 
