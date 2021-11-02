@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.function.Predicate.not;
-import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.isVTP;
 import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static org.springframework.retry.RetryContext.NAME;
 import static org.springframework.util.ReflectionUtils.findField;
@@ -64,16 +63,6 @@ public class RestClientConfiguration implements EnvironmentAware {
     public RestOperations tokenXTemplate(RestTemplateBuilder b, TokenValidationContextHolder holder,
             ClientHttpRequestInterceptor... interceptors) {
         var filtered = interceptorsWithoutBearerToken(interceptors);
-        if (isVTP(env)) {
-            LOG.trace("VTP, legger til bearer token igjen");
-            return b
-                    .requestFactory(NonRedirectingRequestFactory.class)
-                    .interceptors(filtered)
-                    .additionalInterceptors(new BearerTokenClientHttpRequestInterceptor(holder))
-                    .setConnectTimeout(CONNECT_TIMEOUT)
-                    .setReadTimeout(READ_TIMEOUT)
-                    .build();
-        }
         return b.requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(filtered)
                 .build();

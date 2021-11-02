@@ -51,9 +51,18 @@ no.nav:
         jwt:
             client:
                 registration:
+                    fpfordel:
+                        token-exchange:
+                            audience: lokal
+                    fpsoknad-oppslag:
+                        token-exchange:
+                            audience: lokal
+                    pdl-api:
+                        token-exchange:
+                            audience: lokal
                     fpinfo:
                         token-exchange:
-                            audience: test:teamforeldrepenger:fpinfo
+                            audience: lokal
 server:
     port: 9001
 spring:

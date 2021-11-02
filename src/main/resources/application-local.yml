@@ -37,36 +37,45 @@ no.nav:
             client:
                 registration:
                     fpsoknad-oppslag:
-                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                         token-exchange:
                             audience: local:teamforeldrepenger:fpsoknad-oppslag
                         authentication:
                             client-id: fpsoknad-mottak
                             client-jwk: src/test/resources/tokenx/jwk.json
                     fpinfo:
-                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                         token-exchange:
                             audience: local:teamforeldrepenger:fpinfo
                         authentication:
                             client-id: fpsoknad-mottak
                             client-jwk: src/test/resources/tokenx/jwk.json
                     fpfordel:
-                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                         token-exchange:
                             audience: local:teamforeldrepenger:fpfordel
                         authentication:
                             client-id: fpsoknad-mottak
                             client-jwk: src/test/resources/tokenx/jwk.json
                     pdl-api:
-                        well-known-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                        well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                         token-exchange:
                             audience: local:teamforeldrepenger:pdl-api
                         authentication:
                             client-id: fpsoknad-mottak
                             client-jwk: src/test/resources/tokenx/jwk.json
+                    localhost:
+                        well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
+                        grant-type: urn:ietf:params:oauth:grant-type:token-exchange
+                        token-exchange:
+                            audience: lokal
+                        authentication:
+                            client-id: fpsoknad-mottak
+                            client-jwk: src/test/resources/tokenx/jwk.json
+                            client-auth-method: private_key_jwt
             issuer:
                 tokenx:
-                    discovery-url: http://localhost:8060/rest/v1/sts/.well-known/openid-configuration
+                    discovery-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                     accepted-audience: fpsoknad-mottak
                 selvbetjening:
                     discovery-url: http://localhost:8060/rest/AzureAd/aadb2c/v2.0/.well-known/openid-configuration
