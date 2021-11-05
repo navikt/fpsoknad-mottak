@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.FileOutputStream;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,6 +101,15 @@ class MappablePdfGeneratorTest {
 
     @Test
     void førstegangssøknad() throws Exception {
+        try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
+            Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
+            søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);
+            fos.write(gen.generer(søknad, person(), INITIELL_FORELDREPENGER));
+        }
+    }
+
+    @Test
+    void førstegangssøknadtest2() throws Exception {
         try (FileOutputStream fos = new FileOutputStream("søknad.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);

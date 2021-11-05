@@ -39,7 +39,6 @@ public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestI
         Optional.ofNullable(finder.findProperties(configs, req.getURI()))
                 .ifPresentOrElse(config -> req.getHeaders().setBearerAuth(service.getAccessToken(config).getAccessToken()),
                         () -> LOG.info("Ingen konfig for {}", req.getURI()));
-
         return execution.execute(req, body);
     }
 

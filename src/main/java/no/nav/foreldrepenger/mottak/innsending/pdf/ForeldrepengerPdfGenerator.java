@@ -120,8 +120,7 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
             }
 
             Opptjening opptjening = stønad.getOpptjening();
-            List<EnkeltArbeidsforhold> arbeidsforhold = aktiveArbeidsforhold(
-                    stønad.getRelasjonTilBarn().relasjonsDato());
+            var arbeidsforhold = aktiveArbeidsforhold(stønad.getRelasjonTilBarn().relasjonsDato());
             if (opptjening != null) {
                 var scratch = newPage();
                 var scratchcos = new FontAwareCos(doc, scratch);
@@ -251,9 +250,14 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
-        return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
+        try {
+            return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
                 .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOG.info("Fikk exception ved forsøk på å hente arbeidsforhold, fortsetter med tom liste", e);
+            return List.of();
+        }
     }
 
     private byte[] generer(Endringssøknad søknad, Person søker) {

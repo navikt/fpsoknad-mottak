@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -54,8 +55,8 @@ public class InfoskrivRenderer {
             return cosOriginal;
         }
 
-        String navn = textFormatter.navn(søker);
-        LocalDate datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
+        var navn = textFormatter.navn(søker);
+        var datoInntektsmelding = søknad.getFørsteInntektsmeldingDag();
         var ytelse = Foreldrepenger.class.cast(søknad.getYtelse());
 
         var cos = førstesideInfoskriv(doc, cosOriginal);
@@ -207,10 +208,8 @@ public class InfoskrivRenderer {
                 .orElse("Ukjent");
     }
 
-    // gir NPE når det ikke finnes inntektsmeldingsdato.
-    // fikser når vi vet hvorfor denne er null - mulig bruker ikke skal ha infoskriv
-    private static String fristTekstFra(LocalDate dato) {
-        return erSperreFristPassert(dato) ? "" : " etter " + formattertDato(dato);
+    private static String fristTekstFra(LocalDate datoInntektsmelding) {
+        return erSperreFristPassert(datoInntektsmelding) ? "" : " etter " + formattertDato(datoInntektsmelding);
     }
 
     private static boolean erSperreFristPassert(LocalDate fristDato) {
@@ -245,8 +244,7 @@ public class InfoskrivRenderer {
     }
 
     private static List<LukketPeriodeMedVedlegg> sorted(List<LukketPeriodeMedVedlegg> perioder) {
-        Collections.sort(perioder,
-                (o1, o2) -> o1.getFom().compareTo(o2.getFom()));
+        perioder.sort(Comparator.comparing(LukketPeriodeMedVedlegg::getFom));
         return perioder;
     }
 

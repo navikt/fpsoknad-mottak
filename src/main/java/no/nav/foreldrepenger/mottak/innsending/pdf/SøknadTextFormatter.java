@@ -102,17 +102,17 @@ public class SøknadTextFormatter {
     }
 
     public String periode(ÅpenPeriode periode) {
-        StringBuilder sb = new StringBuilder("fra og med " + dato(periode.fom()));
+        var sb = new StringBuilder("fra og med " + dato(periode.fom()));
         if (periode.tom() != null) {
-            sb.append(periode.tom() != null ? " til og med " + dato(periode.tom()) : " pågående");
+            sb.append(" til og med ").append(dato(periode.tom()));
         }
         return sb.toString();
     }
 
     public String enkelPeriode(ÅpenPeriode periode) {
-        StringBuilder sb = new StringBuilder(dato(periode.fom()));
+        var sb = new StringBuilder(dato(periode.fom()));
         if (periode.tom() != null) {
-            sb.append(periode.tom() != null ? " - " + dato(periode.tom()) : " pågående");
+            sb.append(" - ").append(dato(periode.tom()));
         }
         return sb.toString();
     }
