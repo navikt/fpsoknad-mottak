@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Autentiser bruker
-        if: !contains(github.event.comment.author_association, 'MEMBER')
+        if: "!contains(github.event.comment.author_association, 'MEMBER')"
         uses: actions/github-script@v5
         with:
           script: |
