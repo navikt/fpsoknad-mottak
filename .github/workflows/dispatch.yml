@@ -1,0 +1,32 @@
+name: Slash command dispatch
+on:
+    issue_comment:
+        types: [created]
+
+env:
+    IMAGE_BASE: ghcr.io/${{ github.repository }}
+
+jobs:
+    dispatcher:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: navikt/github-app-token-generator@v1.1
+              id: get-token
+              with:
+                private-key: ${{ secrets.FP_PRIVATE_KEY }}
+                app-id: ${{ secrets.FP_APP_ID }}
+
+            - name: Slash command dispatch
+              uses: peter-evans/slash-command-dispatch@v2.3.0
+              with:
+                token: ${{ steps.get-token.outputs.token }}
+                commands: promote
+                issue-type: issue
+                allow_edits: true
+                dispatch-type: workflow
+                static-args: |
+                    tag=${{ github.event.issue.body }}
+                    image_version=$(echo '${{  github.event.issue.title }}' | awk '{print $NF}'
+                    issue_number=${{ github.event.issue.number }}
+                    cluster=$(echo '${{github.event.comment.body}}' | cut -d' ' -f2)
+
