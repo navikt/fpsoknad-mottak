@@ -14,7 +14,4 @@ jobs:
                 commands: promote # matcher repository dispatch med navent 'promote-command'
                 issue-type: issue
                 allow-edits: true
-                static_args: |
-                        "issue-number=${{  github.event.issue.id }}"
-                        "cluster=$(echo '${{github.event.comment.body}}' | cut -d' ' -f2)""
 
