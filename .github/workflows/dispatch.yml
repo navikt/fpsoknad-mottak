@@ -21,13 +21,13 @@ jobs:
               with:
 #                 token: ${{ steps.get-token.outputs.token }}
                 token: ${{ secrets.NOTIFICATION }}
-                commands: promote
+                dispatch-type: workflow
+                commands: promote.yml
                 issue-type: issue
                 allow-edits: true
-                dispatch-type: workflow
                 static-args: |
                     tag=${{ github.event.issue.body }}
                     image_version=$(echo '${{  github.event.issue.title }}' | awk '{print $NF}'
                     issue_number=${{ github.event.issue.number }}
-                    cluster=$(echo '${{github.event.comment.body}}' | cut -d' ' -f2)
+                    cluster=${{github.event.client_payload.slash_command.args.unnamed.arg1}}
 
