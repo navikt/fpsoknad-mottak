@@ -16,9 +16,9 @@ jobs:
               with:
                   github-token: ${{secrets.GITHUB_TOKEN}}
                   script: |
-                      const issueInput = { owner: context.issue.owner,
-                                      repo: context.issue.repo,
-                                      issue_number: 1 }
+                      const issueInput = {  owner: context.issue.owner,
+                                            repo: context.issue.repo,
+                                            issue_number: ${{ github.event.client_payload.github.payload.issue.number }} }
                       const issue = github.rest.issues.get({...issueInput
                       }).then(response => {
                                core.setOutput('sha', response.data.body);
