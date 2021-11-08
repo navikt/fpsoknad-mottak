@@ -16,12 +16,12 @@ jobs:
               with:
                   github-token: ${{secrets.GITHUB_TOKEN}}
                   script: |
-                      const issueInput = {  owner: context.issue.owner,
-                                            repo: context.issue.repo,
-                                            issue_number: ${{ github.event.client_payload.github.payload.issue.number }} }
-                      const issue = github.rest.issues.get({...issueInput
+                      github.rest.issues.get({
+                        owner: context.issue.owner,
+                        repo: context.issue.repo,
+                        issue_number: ${{ github.event.client_payload.github.payload.issue.number }}
                       }).then(response => {
-                               core.setOutput('sha', response.data.body);
+                        core.setOutput('sha', response.data.body);
                       });
 
             - name: Sjekk ut kode
