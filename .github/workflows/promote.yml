@@ -5,12 +5,13 @@ on:
 env:
     NAMESPACE: teamforeldrepenger
     IMAGE_BASE: ghcr.io/${{ github.repository }}
+    CLUSTER: ${{ github.event.client_payload.slash_command.args.unnamed.arg1 }} # dev-fss eller prod-fss
 
 jobs:
     promote:
         runs-on: ubuntu-latest
         steps:
-            - name: Hent github.sha for issue
+            - name: Henter informasjon fra issuet
               id: issue_comment
               uses: actions/github-script@v5
               with:
@@ -25,16 +26,14 @@ jobs:
                         core.setOutput('title', response.data.title);
                       });
 
+            - name: Setter IMAGE som brukes i deploy filen
+              run: echo "IMAGE=$IMAGE_BASE:$(echo ${{ steps.issue_comment.outputs.title }} | awk '{print $NF}')" >> $GITHUB_ENV
+
             - name: Sjekk ut kode
               uses: actions/checkout@v2
               with:
                   ref: ${{ steps.issue_comment.outputs.sha }}
-
-            - name: Sett variabler for cluster og tag
-              run: |
-                  echo "IMAGE=$IMAGE_BASE:$(echo ${{ steps.issue_comment.outputs.title }} | awk '{print $NF}')" >> $GITHUB_ENV
-                  echo "CLUSTER=${{github.event.client_payload.slash_command.args.unnamed.arg1}}" >> $GITHUB_ENV
-
+                  
             - name: Promoter til cluster og namespace
               uses: nais/deploy/actions/deploy@v1
               env:
