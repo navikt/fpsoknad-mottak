@@ -10,15 +10,27 @@ jobs:
     promote:
         runs-on: ubuntu-latest
         steps:
-            # Trenger vi denne?
-            #      - name: Sjekk ut kode
-            #        uses: actions/checkout@v2
-            #        with:
-            #          ref: ${{ github.event.inputs.tag }}
+            - name: Hent github.sha for issue
+              id: issue_comment
+              uses: actions/github-script@v5
+              with:
+                  github-token: ${{secrets.GITHUB_TOKEN}}
+                  script: |
+                      const issueInput = { owner: context.issue.owner,
+                                      repo: context.issue.repo,
+                                      issue_number: 1 }
+                      const issue = github.rest.issues.get({...issueInput
+                      }).then(response => {
+                               core.setOutput('kommentar', response.data.body);
+                      });
+
+            - name: Sjekk ut kode
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ steps.issue_comment.outputs.kommentar }}
 
             - name: Sett variabler for cluster og tag
               run: |
-                  echo "TAG=$(echo ${{ github.event.client_payload.github.payload.issue.title }} | awk '{print $NF}' | awk -F- '{print $NF}')" >> $GITHUB_ENV
                   echo "IMAGE=$IMAGE_BASE:$(echo ${{ github.event.client_payload.github.payload.issue.title }} | awk '{print $NF}')" >> $GITHUB_ENV
                   echo "CLUSTER=${{github.event.client_payload.slash_command.args.unnamed.arg1}}" >> $GITHUB_ENV
 
@@ -41,9 +53,9 @@ jobs:
                                       repo: context.issue.repo,
                                       issue_number: ${{ github.event.client_payload.github.payload.issue.number }} }
                       github.rest.issues.createComment({...issue,
-                                      title: 'Deploy av ${{ env.TAG }}',
                                       body: 'promote til ${{ env.CLUSTER }} ${{ env.NAMESPACE }} feilet'})
-                      github.rest.issues.addLabels({...issue, labels: ['deployment-failed','${{ env.CLUSTER }}-${{ env.NAMESPACE }}']})
+                      github.rest.issues.addLabels({...issue,
+                                        labels: ['deployment-failed','${{ env.CLUSTER }}-${{ env.NAMESPACE }}']})
 
             - name: Oppdater kommentar med deployment status
               if: success()
