@@ -21,13 +21,13 @@ jobs:
                                       issue_number: 1 }
                       const issue = github.rest.issues.get({...issueInput
                       }).then(response => {
-                               core.setOutput('kommentar', response.data.body);
+                               core.setOutput('sha', response.data.body);
                       });
 
             - name: Sjekk ut kode
               uses: actions/checkout@v2
               with:
-                  ref: ${{ steps.issue_comment.outputs.kommentar }}
+                  ref: ${{ steps.issue_comment.outputs.sha }}
 
             - name: Sett variabler for cluster og tag
               run: |
@@ -39,9 +39,9 @@ jobs:
               env:
                   PRINT_PAYLOAD: true
                   APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-                  CLUSTER: ${{ github.event.inputs.cluster }}
+                  CLUSTER: ${{ env.CLUSTER }}
                   RESOURCE: .deploy/naiserator.yaml
-                  VARS: .deploy/${{ github.event.inputs.cluster }}-${{ env.NAMESPACE }}.json
+                  VARS: .deploy/${{ env.CLUSTER }}-${{ env.NAMESPACE }}.json
 
             - name: Oppdater kommentar med deployment status ved feil
               if: failure()
