@@ -1,27 +1,13 @@
 name: Promote
 on:
-    workflow_dispatch:
-        inputs:
-            tag:
-                description: 'Github tag (sha)'
-                required: true
-            image_version:
-                description: 'Versjon av docker image som skal deployes'
-                required: true
-            issue_number:
-                description: 'Issue number på issue som det ble kommentert i'
-                required: true
-            cluster:
-                description: 'Cluster som vi skal deploy image til (dev-fss eller prod-fss)'
-                required: true
-                default: 'dev-fss'
+    repository_dispatch:
+        types: [promote-command]
 env:
     NAMESPACE: teamforeldrepenger
-    IMAGE: ghcr.io/${{ github.repository }}:${{ github.event.inputs.image_version }} # Brukes av .deploy fil
+    IMAGE_BASE: ghcr.io/${{ github.repository }}
 
 jobs:
     promote:
-        if: contains(github.event.comment.html_url, '/issues/') && startsWith( github.event.comment.body, '/promote ' )
         runs-on: ubuntu-latest
         steps:
             # Trenger vi denne?
@@ -29,6 +15,12 @@ jobs:
             #        uses: actions/checkout@v2
             #        with:
             #          ref: ${{ github.event.inputs.tag }}
+
+            - name: Sett variabler for cluster og tag
+              run: |
+                  echo "TAG=$(echo ${{ github.event.client_payload.github.payload.issue.title }} | awk '{print $NF}' | awk -F- '{print $NF}')" >> $GITHUB_ENV
+                  echo "IMAGE=$IMAGE_BASE:$(echo ${{ github.event.client_payload.github.payload.issue.title }} | awk '{print $NF}')" >> $GITHUB_ENV
+                  echo "CLUSTER=${{github.event.client_payload.slash_command.args.unnamed.arg1}}" >> $GITHUB_ENV
 
             - name: Promoter til cluster og namespace
               uses: nais/deploy/actions/deploy@v1
@@ -47,11 +39,11 @@ jobs:
                   script: |
                       const issue = { owner: context.issue.owner,
                                       repo: context.issue.repo,
-                                      issue_number: ${{ github.event.inputs.issue_number }} }
+                                      issue_number: ${{ github.event.client_payload.github.payload.issue.number }} }
                       github.rest.issues.createComment({...issue,
-                                              title: 'Deploy av ${{ github.event.inputs.tag }}',
-                                              body: 'promote til ${{ github.event.inputs.cluster }} ${{ env.NAMESPACE }} feilet'})
-                      github.rest.issues.addLabels({...issue, labels: ['deployment-failed','${{ github.event.inputs.cluster }}:${{ env.NAMESPACE }}']})
+                                      title: 'Deploy av ${{ env.TAG }}',
+                                      body: 'promote til ${{ env.CLUSTER }} ${{ env.NAMESPACE }} feilet'})
+                      github.rest.issues.addLabels({...issue, labels: ['deployment-failed','${{ env.CLUSTER }}-${{ env.NAMESPACE }}']})
 
             - name: Oppdater kommentar med deployment status
               if: success()
@@ -63,5 +55,5 @@ jobs:
                                       repo: context.issue.repo,
                                       issue_number: ${{ github.event.inputs.issue_number }} }
                       github.rest.issues.createComment({...issue,
-                                              body: 'promote til  ${{ github.event.inputs.cluster }} ${{ env.NAMESPACE }} utført'})
-                      github.rest.issues.addLabels({...issue, labels: ['deployment','${{ github.event.inputs.cluster }}-${{ env.NAMESPACE }}']})
+                                      body: 'promote til ${{ env.CLUSTER }} ${{ env.NAMESPACE }} utført'})
+                      github.rest.issues.addLabels({...issue, labels: ['deployment','${{ env.CLUSTER }}-${{ env.NAMESPACE }}']})

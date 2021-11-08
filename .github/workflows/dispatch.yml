@@ -3,9 +3,6 @@ on:
     issue_comment:
         types: [created]
 
-env:
-    IMAGE_BASE: ghcr.io/${{ github.repository }}
-
 jobs:
     dispatcher:
         runs-on: ubuntu-latest
@@ -21,13 +18,7 @@ jobs:
               with:
 #                 token: ${{ steps.get-token.outputs.token }}
                 token: ${{ secrets.NOTIFICATION }}
-                dispatch-type: workflow
-                commands: promote.yml
+                commands: promote # matcher repository dispatch med navent 'promote-command'
                 issue-type: issue
                 allow-edits: true
-                static-args: |
-                    tag=${{ github.event.issue.body }}
-                    image_version=$(echo '${{  github.event.issue.title }}' | awk '{print $NF}'
-                    issue_number=${{ github.event.issue.number }}
-                    cluster=${{github.event.client_payload.slash_command.args.unnamed.arg1}}
 
