@@ -19,7 +19,7 @@ no.nav:
                             audience: dev-fss:teamforeldrepenger:fpinfo
                     fpfordel:
                         token-exchange:
-                            audience: dev-fss:teamforeldrepenger:fpfordel                    
+                            audience: dev-fss:teamforeldrepenger:fpfordel
                     pdl-api:
                         token-exchange:
                             audience: dev-fss:pdl:pdl-api
@@ -67,7 +67,7 @@ varsel:
 
 sak:
   saker:
-     url: https://sak-q1.nais.preprod.local/api/v1/saker
+     url: http://sak-q1.teamdokumenthandtering/api/v1/saker
 
 securitytokenservice:
     url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
