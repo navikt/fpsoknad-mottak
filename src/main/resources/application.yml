@@ -16,7 +16,7 @@ sak:
     password : ${securitytokenservice.password}
     url: ${securitytokenservice.url}
   saker:
-     url: https://sak.nais.adeo.no/api/v1/saker
+     url: http://sak.teamdokumenthandtering/api/v1/saker
 
 securitytokenservice:
     username: ${kafka.username}
@@ -60,14 +60,14 @@ no.nav:
                         authentication:
                             client-id: ${token.x.client.id}
                             client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt         
+                            client-auth-method: private_key_jwt
                     pdl-api:
                         well-known-url: ${token.x.well.known.url}
                         grant-type: urn:ietf:params:oauth:grant-type:token-exchange
                         authentication:
                             client-id: ${token.x.client.id}
                             client-jwk: ${token.x.private.jwk}
-                            client-auth-method: private_key_jwt         
+                            client-auth-method: private_key_jwt
             issuer:
               tokenx:
                  discovery-url: ${token.x.well.known.url}
