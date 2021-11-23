@@ -6,7 +6,7 @@ import no.nav.foreldrepenger.mottak.http.Pingable;
 
 public interface ArbeidsInfo extends Pingable {
 
-    List<EnkeltArbeidsforhold> hentAktiveArbeidsforhold();
+    List<EnkeltArbeidsforhold> hentArbeidsforhold();
 
     String orgnavn(String orgnr);
 

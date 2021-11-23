@@ -18,7 +18,7 @@ public class ArbeidsforholdTjeneste implements RetryAware, ArbeidsInfo {
     }
 
     @Override
-    public List<EnkeltArbeidsforhold> hentAktiveArbeidsforhold() {
+    public List<EnkeltArbeidsforhold> hentArbeidsforhold() {
         return connection.hentArbeidsforhold();
     }
 

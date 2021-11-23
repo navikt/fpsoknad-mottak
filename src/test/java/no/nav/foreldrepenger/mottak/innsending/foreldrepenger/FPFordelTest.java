@@ -133,7 +133,7 @@ class FPFordelTest {
     void before() {
         cfg = new FordelConfig(URI.create(FPFORDELURIBASE));
         when(oppslag.aktørId(any(Fødselsnummer.class))).thenReturn(AKTØRID);
-        when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(arbeidsforhold.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
         pollReceipt202 = pollReceipt(HttpStatus.ACCEPTED);
         pollReceipt200 = pollReceipt(HttpStatus.OK);
 

@@ -89,7 +89,7 @@ class MappablePdfGeneratorTest {
 
     @BeforeEach
     void before() {
-        when(arbeidsforholdTjeneste.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
     }
 
     @Test
@@ -109,7 +109,7 @@ class MappablePdfGeneratorTest {
 
     @Test
     void foreldrepengerFortsettUtenArbeidsforholdVedExceptionFraTjeneste() throws Exception {
-        when(arbeidsforholdTjeneste.hentAktiveArbeidsforhold()).thenThrow(RuntimeException.class);
+        when(arbeidsforholdTjeneste.hentArbeidsforhold()).thenThrow(RuntimeException.class);
         try (FileOutputStream fos = new FileOutputStream("søknad_exception_fra_arbeidsforholdtjeneste.pdf")) {
             Søknad søknad = søknadMedEttIkkeOpplastedVedlegg(DEFAULT_VERSJON, true);
             søknad.setTilleggsopplysninger(TILLEGGSOPPLYSNINGER);

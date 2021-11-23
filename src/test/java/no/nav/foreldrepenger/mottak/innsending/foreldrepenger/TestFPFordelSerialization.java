@@ -120,7 +120,7 @@ class TestFPFordelSerialization {
     void before() {
         when(oppslag.aktørId(eq(FNR))).thenReturn(AKTØRID);
         when(oppslag.fnr(eq(AKTØRID))).thenReturn(FNR);
-        when(arbeidsforhold.hentAktiveArbeidsforhold()).thenReturn(ARB_FORHOLD);
+        when(arbeidsforhold.hentArbeidsforhold()).thenReturn(ARB_FORHOLD);
     }
 
     @Test

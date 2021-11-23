@@ -48,7 +48,7 @@ public class InnsynController {
 
     @GetMapping("/arbeidsforhold")
     public List<EnkeltArbeidsforhold> arbeidsforhold() {
-        return arbeidsforhold.hentAktiveArbeidsforhold();
+        return arbeidsforhold.hentArbeidsforhold();
     }
 
     @GetMapping("/orgnavn")

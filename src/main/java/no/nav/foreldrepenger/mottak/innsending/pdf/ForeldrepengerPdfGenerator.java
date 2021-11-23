@@ -1,8 +1,8 @@
 package no.nav.foreldrepenger.mottak.innsending.pdf;
 
 import static no.nav.foreldrepenger.common.innsending.mappers.MapperEgenskaper.ALLE_FORELDREPENGER;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.mottak.innsending.pdf.PdfOutlineItem.FORELDREPENGER_OUTLINE;
+import static no.nav.foreldrepenger.mottak.util.CollectionUtil.tryOrEmpty;
 import static org.apache.pdfbox.pdmodel.common.PDRectangle.A4;
 
 import java.io.ByteArrayOutputStream;
@@ -250,14 +250,9 @@ public class ForeldrepengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate relasjonsdato) {
-        try {
-            return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
+        return tryOrEmpty(arbeidsforhold::hentArbeidsforhold).stream()
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsdato)))
                 .collect(Collectors.toList());
-        } catch (Exception e) {
-            LOG.info("Fikk exception ved forsøk på å hente arbeidsforhold, fortsetter med tom liste", e);
-            return List.of();
-        }
     }
 
     private byte[] generer(Endringssøknad søknad, Person søker) {

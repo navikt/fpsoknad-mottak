@@ -201,7 +201,7 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private List<EnkeltArbeidsforhold> aktiveArbeidsforhold(LocalDate termindato, LocalDate fødselsdato) {
         var relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
-        return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
+        return safeStream(arbeidsforhold.hentArbeidsforhold())
             .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
             .collect(Collectors.toList());
     }

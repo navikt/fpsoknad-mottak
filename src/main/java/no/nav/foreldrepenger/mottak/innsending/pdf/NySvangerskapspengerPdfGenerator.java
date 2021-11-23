@@ -372,7 +372,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     }
 
     private String virksomhetsnavn(Orgnummer orgnr) {
-        return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
+        return safeStream(arbeidsforhold.hentArbeidsforhold())
                 .filter(af -> af.getArbeidsgiverId().equals(orgnr.value()))
                 .findFirst()
                 .map(EnkeltArbeidsforhold::getArbeidsgiverNavn)
@@ -391,7 +391,7 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             LocalDate termindato,
             LocalDate fødselsdato) {
         LocalDate relasjonsDato = fødselsdato != null ? fødselsdato : termindato;
-        return safeStream(arbeidsforhold.hentAktiveArbeidsforhold())
+        return safeStream(arbeidsforhold.hentArbeidsforhold())
                 .filter(a -> a.getTo().isEmpty() || (a.getTo().isPresent() && a.getTo().get().isAfter(relasjonsDato)))
                 .toList();
     }

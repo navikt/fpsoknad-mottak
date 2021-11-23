@@ -45,8 +45,7 @@ public class ResponseHandler extends AbstractRestConnection {
     }
 
     public Kvittering handle(ResponseEntity<FordelKvittering> leveranseRespons) {
-        StopWatch timer = new StopWatch();
-        timer.start();
+        var timer = StopWatch.createStarted();
         if (!leveranseRespons.hasBody()) {
             LOG.warn("Fikk ingen kvittering etter leveranse av søknad");
             FEILET_KVITTERINGER.increment();
@@ -112,7 +111,6 @@ public class ResponseHandler extends AbstractRestConnection {
             }
         }
         return new Kvittering(FP_FORDEL_MESSED_UP);
-
     }
 
     private static long stop(StopWatch timer) {
