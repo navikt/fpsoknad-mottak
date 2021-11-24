@@ -21,8 +21,7 @@ jobs:
             cache: 'maven'
 
       - name: Hent tag
-        run: |
-            echo "TAG=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+        run: echo "TAG=$(date +%Y.%m.%d.%H%M%S)-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Kompiler
         run: |
@@ -35,66 +34,66 @@ jobs:
       - name: Login to GitHub Packages Docker Registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9 # Use commit-sha1 instead of tag for security concerns
         with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Bygg, tag og push Docker image
         run: |
-            docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
-            docker push ${IMAGE_BASE} --all-tags
+          docker build --pull --tag ${IMAGE_BASE}:${TAG} --tag ${IMAGE_BASE}:latest .
+          docker push ${IMAGE_BASE} --all-tags
 
       - name: Lukk gamle bygg-issues
         uses: actions/github-script@v5
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            script: |
-                github.rest.issues.listForRepo({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  state: 'open',
-                  labels: ['deployment']
-                }).then(response => {
-                  response.data.forEach(issue => {
-                    github.rest.issues.update({
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      issue_number: issue.number,
-                      state: 'closed'
-                    });
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+              github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: ['deployment']
+              }).then(response => {
+                response.data.forEach(issue => {
+                  github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    state: 'closed'
                   });
                 });
-      -  name: Opprett deployment issue
-          id: createdeployissue
-          if: success()
-          uses: actions/github-script@v5
-          with:
-              github-token: ${{secrets.GITHUB_TOKEN}}
-              script: |
-                  github.rest.issues.create( {
-                    owner: context.issue.owner,
-                    repo: context.issue.repo,
-                    labels: ['deployment'],
-                    title: 'Deploy av ${{ env.TAG }}',
-                    body: '${{ github.sha }}'})
-                  .then(response => {
-                          core.setOutput('number', response.data.number);
-                  });
+              });
+      - name: Opprett deployment issue
+        id: createdeployissue
+        if: success()
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.create( {
+              owner: context.issue.owner,
+              repo: context.issue.repo,
+              labels: ['deployment'],
+              title: 'Deploy av ${{ env.TAG }}',
+              body: '${{ github.sha }}'})
+            .then(response => {
+                    core.setOutput('number', response.data.number);
+            });
 
       - uses: navikt/github-app-token-generator@v1.1
         id: get-token
         with:
-            private-key: ${{ secrets.FP_PRIVATE_KEY }}
-            app-id: ${{ secrets.FP_APP_ID }}
+          private-key: ${{ secrets.FP_PRIVATE_KEY }}
+          app-id: ${{ secrets.FP_APP_ID }}
 
       - name: Trigger tester for FP
         run: |
-            curl -XPOST -u "x-access-token:${{ steps.get-token.outputs.token }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/navikt/fpsak-autotest/actions/workflows/trigger.yml/dispatches \
-            -d '{"ref":"master",
-                    "inputs":{
-                        "trigger": "${{ github.repository }}",
-                        "version": "${{ env.TAG }}",
-                        "issue_number": "${{ steps.createdeployissue.outputs.number }}"
-                    }}'
+          curl -XPOST -u "x-access-token:${{ steps.get-token.outputs.token }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/navikt/fpsak-autotest/actions/workflows/trigger.yml/dispatches \
+          -d '{"ref":"master",
+                  "inputs":{
+                      "trigger": "${{ github.repository }}",
+                      "version": "${{ env.TAG }}",
+                      "issue_number": "${{ steps.createdeployissue.outputs.number }}"
+                  }}'
