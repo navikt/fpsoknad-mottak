@@ -19,7 +19,7 @@ Dette for at man skal slippe å annotere alle constructor-parametre med @JsonPro
 Start no.nav.foreldrepenger.mottak.MottakApplicationLocal.
 ### For å kjøre i et internt testmiljø med registre tilgjengelig: 
  
-Få tak i en Java truststore med gyldige sertifikater for aktuelt miljø.
+Få tak i en Java truststore med gyldige sertifikater for aktuelt miljø. 
 
 `java -jar fpsoknad-mottak-<version>.jar -Djavax.net.ssl.trustStore=/path/til/truststore -Djavax.net.ssl.trustStorePassword=........`
 
