@@ -22,6 +22,8 @@
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <sonar.projectKey>navikt_fpsoknad-mottak</sonar.projectKey>
         <sonar.organization>navit</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <mock-oauth2-server.version>0.4.0</mock-oauth2-server.version>
@@ -71,7 +73,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>--enable-preview</argLine>
+                    <!-- Må ha @{argLine} ellers blir properties satt av jacoco-maven-plugin overkrevet -->
+                    <argLine>@{argLine} --enable-preview</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -88,6 +91,25 @@
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

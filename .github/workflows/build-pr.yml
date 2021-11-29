@@ -19,7 +19,7 @@ jobs:
 
       - name: Kompiler
         run: |
-          mvn -B install --settings .github/.m2/settings.xml org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=navikt_fpsoknad-mottak -Dsonar.login=${SONAR_TOKEN}
+          mvn jacoco:prepare-agent install jacoco:report sonar:sonar -e --batch-mode --settings .github/.m2/settings.xml -Dsonar.login=${SONAR_TOKEN}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
