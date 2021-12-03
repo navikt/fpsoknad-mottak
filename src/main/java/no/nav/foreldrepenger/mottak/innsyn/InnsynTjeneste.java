@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.Saker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,14 @@ public class InnsynTjeneste implements Innsyn {
     @Override
     public String ping() {
         return innsyn.ping();
+    }
+
+    @Override
+    public Saker sakerV2(AktørId aktørId) {
+        LOG.info("Henter sakerV2 for {}", aktørId.value());
+        var saker = innsyn.sakerV2(aktørId.value());
+        LOG.info(CONFIDENTIAL, "{}", saker);
+        return saker;
     }
 
     @Override

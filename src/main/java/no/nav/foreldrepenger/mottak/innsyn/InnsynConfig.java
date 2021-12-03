@@ -26,6 +26,9 @@ public class InnsynConfig extends AbstractConfig {
     private static final String UTTAKSPLAN = DEFAULT_BASE_PATH + "uttaksplan";
     private final String basePath;
 
+    private static final String DEFAULT_BASE_V2_PATH = "fpinfo/api/v2/";
+    private static final String SAKV2 = DEFAULT_BASE_V2_PATH + "saker";
+
     @ConstructorBinding
     public InnsynConfig(@DefaultValue(DEFAULT_PING_PATH) String pingPath,
             @DefaultValue("true") boolean enabled,
@@ -50,6 +53,10 @@ public class InnsynConfig extends AbstractConfig {
 
     URI createLink(String l) {
         return URI.create(getBaseUri() + l);
+    }
+
+    URI sakV2URI(String aktørId) {
+        return uri(getBaseUri(), SAKV2, queryParams(AKTOR_ID, aktørId));
     }
 
     @Override

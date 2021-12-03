@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.Saker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,6 +56,12 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
                 getForObject(config.sakURI(aktørId), SakDTO[].class))
                 .map(Arrays::asList)
                 .orElse(emptyList());
+    }
+
+    Saker sakerV2(String aktørId) {
+        LOG.trace("Henter sakerV2 for {}", aktørId);
+        return Optional.ofNullable(getForObject(config.sakV2URI(aktørId), Saker.class))
+            .orElseThrow();
     }
 
     UttaksplanDTO uttaksplan(String saksnummer) {

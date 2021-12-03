@@ -5,6 +5,7 @@ import java.util.List;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.mottak.http.Pingable;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.Saker;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.common.innsyn.vedtak.Vedtak;
 
@@ -17,4 +18,5 @@ public interface Innsyn extends Pingable {
 
     Uttaksplan uttaksplan(AktørId aktørId, AktørId annenPart);
 
+    Saker sakerV2(AktørId aktørId);
 }
