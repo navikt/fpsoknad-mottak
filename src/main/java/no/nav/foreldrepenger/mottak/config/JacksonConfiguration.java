@@ -1,26 +1,23 @@
 package no.nav.foreldrepenger.mottak.config;
 
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.foreldrepenger.common.domain.serialization.CustomSerializerModule;
+import no.nav.foreldrepenger.common.mapper.DefaultJsonMapper;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenResponse;
 
 @Configuration
 class JacksonConfiguration {
 
     @Bean
-    public Module customSerializers() {
-        return new CustomSerializerModule();
-    }
-
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customizer() {
-        return b -> b.mixIn(OAuth2AccessTokenResponse.class, IgnoreUnknownMixin.class);
+    public ObjectMapper customObjectmapper() {
+        return DefaultJsonMapper.MAPPER
+            .registerModule(new JsonComponentModule()) // Spring Bean and Jackson Module to register @JsonComponent annotated beans
+            .addMixIn(OAuth2AccessTokenResponse.class, IgnoreUnknownMixin.class);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
