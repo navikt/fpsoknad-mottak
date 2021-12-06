@@ -16,11 +16,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -57,11 +56,11 @@ class PDLSerializationTest {
     private static final AktørId AKTØR_SØKER = AktørId.valueOf("22222222222");
     private static final AktørId AKTØR_ANNEN = AktørId.valueOf("33333333333");
 
-    @Inject
+    @Autowired
     private ObjectMapper mapper;
 
     @Test
-    void testWrappedNavn() throws Exception {
+    void testWrappedNavn() {
         test(new PDLWrappedNavn(Set.of(new PDLNavn("a", "b", "c"))));
     }
 
@@ -140,7 +139,7 @@ class PDLSerializationTest {
     }
 
     @Test
-    void testSøkerDTO() throws Exception {
+    void testSøkerDTO() {
         assertEquals(søker(), PDLMapper.map(ID_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
 

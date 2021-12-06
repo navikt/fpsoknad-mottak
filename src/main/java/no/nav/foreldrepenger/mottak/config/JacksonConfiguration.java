@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.mottak.config;
 import org.springframework.boot.jackson.JsonComponentModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenRespons
 class JacksonConfiguration {
 
     @Bean
+    @Primary
     public ObjectMapper customObjectmapper() {
         return DefaultJsonMapper.MAPPER
             .registerModule(new JsonComponentModule()) // Spring Bean and Jackson Module to register @JsonComponent annotated beans
