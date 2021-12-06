@@ -17,11 +17,12 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
@@ -33,11 +34,13 @@ import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
+import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
-@AutoConfigureJsonTesters
-@SpringJUnitConfig
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = JacksonConfiguration.class)
 class PDLSerializationTest {
 
     private static final Målform BOKMÅL = Målform.NB;

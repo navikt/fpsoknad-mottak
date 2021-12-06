@@ -12,7 +12,7 @@ import no.nav.foreldrepenger.common.mapper.DefaultJsonMapper;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenResponse;
 
 @Configuration
-class JacksonConfiguration {
+public class JacksonConfiguration {
 
     @Bean
     @Primary

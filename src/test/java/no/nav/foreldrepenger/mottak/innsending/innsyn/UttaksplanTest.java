@@ -8,16 +8,17 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
+import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 
-@AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = JacksonConfiguration.class)
 public class UttaksplanTest {
 
     @Autowired
