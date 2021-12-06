@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.time.LocalDateTime;
 import java.util.Set;
 
 record FpSak(Saksnummer saksnummer,
@@ -14,8 +11,6 @@ record FpSak(Saksnummer saksnummer,
              Familiehendelse familiehendelse,
              FpVedtak gjeldendeVedtak,
              FpÅpenBehandling åpenBehandling,
-             @JsonIgnore LocalDateTime opprettetTidspunkt,
              Set<AktørId> barn,
              Dekningsgrad dekningsgrad) implements Sak {
-
 }

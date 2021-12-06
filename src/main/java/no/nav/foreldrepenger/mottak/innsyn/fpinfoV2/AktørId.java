@@ -1,10 +1,19 @@
 package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Objects;
 
-record AktørId(String value) implements SerializableValue {
+public record AktørId(@JsonValue String value) {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public AktørId {
-        Objects.requireNonNull(value, "aktørId kan ikke være null");
+        Objects.requireNonNull(value, "AktørId kan ikke være null");
+    }
+
+    @Override
+    public String value() {
+        return value;
     }
 }

@@ -1,4 +1,3 @@
 package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
 
-record VedtakPeriodeResultat(boolean innvilget, ResultatÅrsak årsak) {
-}
+record VedtakPeriodeResultat(boolean innvilget) { }
