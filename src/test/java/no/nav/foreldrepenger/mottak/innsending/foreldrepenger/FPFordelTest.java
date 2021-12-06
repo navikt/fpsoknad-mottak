@@ -36,11 +36,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestOperations;
 
@@ -61,6 +61,7 @@ import no.nav.foreldrepenger.common.innsyn.ForsendelseStatus;
 import no.nav.foreldrepenger.common.innsyn.ForsendelsesStatusKvittering;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
+import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.config.MottakConfiguration;
 import no.nav.foreldrepenger.mottak.innsending.mappers.DelegerendeDomainMapper;
 import no.nav.foreldrepenger.mottak.innsending.pdf.DelegerendePDFGenerator;
@@ -81,8 +82,8 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = LENIENT)
-@AutoConfigureJsonTesters
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = JacksonConfiguration.class)
 class FPFordelTest {
 
     private static final AktørId AKTØRID = new AktørId("1111111111");
@@ -221,7 +222,7 @@ class FPFordelTest {
         when(restOperations.getForEntity(eq(FPFORDELPOLLURI), eq(FordelKvittering.class))).thenReturn(pollReceipt200,
                 goysReceipt);
         Kvittering kvittering = sender.søk(foreldrepengeSøknad(DEFAULT_VERSJON), person(),
-                new SøknadEgenskap(SøknadType.INITIELL_FORELDREPENGER));
+               SøknadEgenskap.of(SøknadType.INITIELL_FORELDREPENGER));
         assertEquals(kvittering.getLeveranseStatus(), GOSYS);
         assertEquals(kvittering.getJournalId(), JOURNALID);
         assertNull(kvittering.getSaksNr());

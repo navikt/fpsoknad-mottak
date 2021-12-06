@@ -55,6 +55,7 @@ import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.core.jwt.JwtToken;
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 
+// TODO: Hva tester denne. Sjekk om det er støtte og fjern hvis det er det.
 //@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { MottakApplicationLocal.class })
 @Disabled
 @ActiveProfiles(profiles = { LOCAL, TEST })
