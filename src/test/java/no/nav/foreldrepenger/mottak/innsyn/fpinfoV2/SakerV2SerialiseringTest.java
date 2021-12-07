@@ -28,17 +28,12 @@ public class SakerV2SerialiseringTest {
     private final static AktørId barn = new AktørId("1");
 
     @Test
-    public void sakerV2ForeldrepengerRoundtripTest() {
-
+    public void annenPartRoundtripTest() throws Exception {
+        roundtripTest(annenPart);
     }
 
     @Test
-    public void testSerialiseringAnnenPart() throws Exception {
-        test(annenPart);
-    }
-
-    @Test
-    public void SakerMedForeldrepengesakRoundtrip() throws Exception {
+    public void sakerV2ForeldrepengerRoundtripTest() throws Exception {
         var saksnummer = new Saksnummer("123");
         var familieHendelse = new Familiehendelse(LocalDate.of(2021, 12, 6),
             LocalDate.of(2021, 12, 5), 1, LocalDate.of(2021, 12, 12));
@@ -61,10 +56,10 @@ public class SakerV2SerialiseringTest {
             Dekningsgrad.ÅTTI);
         var saker = new Saker(Set.of(fpSak), Set.of(), Set.of());
 
-        test(saker);
+        roundtripTest(saker);
     }
 
-    private void test(Object object) throws IOException {
+    private void roundtripTest(Object object) throws IOException {
         assertEquals(object, mapper.readValue(write(object), object.getClass()));
     }
 
