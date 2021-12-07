@@ -4,7 +4,7 @@ import java.util.Set;
 
 record SvpSak(Saksnummer saksnummer,
               Familiehendelse familiehendelse,
-              Set<AktørId> barn,
+              Set<PersonDetaljer> barn,
               boolean sakAvsluttet,
               boolean gjelderAdopsjon) implements Sak {
 }

@@ -1,16 +1,17 @@
 package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
 
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class AktørId extends PersonDetaljer {
+public class Person extends PersonDetaljer {
     private final String value;
 
     @JsonCreator
-    public AktørId(String value) {
-        Objects.requireNonNull(value, "AktørId kan ikke være null");
+    public Person(String value) {
+        Objects.requireNonNull(value,"Fødselsnummer kan ikke være null");
         this.value = value;
     }
 
@@ -21,19 +22,19 @@ public class AktørId extends PersonDetaljer {
 
     @Override
     public String toString() {
-        return "AktørId: " + value;
+        return "Fødselsnummer: ************";
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AktørId aktørId = (AktørId) o;
-        return Objects.equals(value, aktørId.value);
+        Person that = (Person) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(AktørId.class.getSimpleName(), value);
+        return Objects.hash(Person.class.getSimpleName(), value);
     }
 }

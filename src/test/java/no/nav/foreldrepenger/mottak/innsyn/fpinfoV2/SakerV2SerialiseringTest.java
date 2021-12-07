@@ -59,6 +59,19 @@ public class SakerV2SerialiseringTest {
         roundtripTest(saker);
     }
 
+    @Test
+    public void annenPartTilFnr() throws IOException {
+        var annenPartNy = new AnnenPart(annenPart.getPersonDetaljer());
+        assertEquals(annenPartNy, annenPart);
+
+        var person = new Person(((AktørId) annenPart.getPersonDetaljer()).value());
+        annenPartNy.setPersonDetaljer(person);
+        assertNotEquals(annenPartNy, annenPart);
+        assertEquals(annenPartNy.getPersonDetaljer().getClass(), Person.class);
+
+        roundtripTest(annenPartNy);
+    }
+
     private void roundtripTest(Object object) throws IOException {
         assertEquals(object, mapper.readValue(write(object), object.getClass()));
     }

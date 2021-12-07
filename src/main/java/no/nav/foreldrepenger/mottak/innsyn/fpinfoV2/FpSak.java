@@ -12,6 +12,6 @@ record FpSak(Saksnummer saksnummer,
              Familiehendelse familiehendelse,
              FpVedtak gjeldendeVedtak,
              FpÅpenBehandling åpenBehandling,
-             Set<AktørId> barn,
+             Set<PersonDetaljer> barn,
              Dekningsgrad dekningsgrad) implements Sak {
 }
