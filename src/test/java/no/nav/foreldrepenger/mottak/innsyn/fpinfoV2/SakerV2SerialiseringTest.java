@@ -3,6 +3,10 @@ package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.persondetaljer.AktørId;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.persondetaljer.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.persondetaljer.Kjønn;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.persondetaljer.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,6 +37,13 @@ public class SakerV2SerialiseringTest {
     }
 
     @Test
+    public void annenPartPersonRoundtripTest() throws IOException {
+        var person = new Person(new Fødselsnummer("12345678901"), "Navn", null, "Navnesen", Kjønn.K, LocalDate.now().minusDays(1));
+        var annenPartPerson = new AnnenPart(person);
+        roundtripTest(annenPartPerson);
+    }
+
+    @Test
     public void sakerV2ForeldrepengerRoundtripTest() throws Exception {
         var saksnummer = new Saksnummer("123");
         var familieHendelse = new Familiehendelse(LocalDate.of(2021, 12, 6),
@@ -57,19 +68,6 @@ public class SakerV2SerialiseringTest {
         var saker = new Saker(Set.of(fpSak), Set.of(), Set.of());
 
         roundtripTest(saker);
-    }
-
-    @Test
-    public void annenPartTilFnr() throws IOException {
-        var annenPartNy = new AnnenPart(annenPart.getPersonDetaljer());
-        assertEquals(annenPartNy, annenPart);
-
-        var person = new Person(((AktørId) annenPart.getPersonDetaljer()).value());
-        annenPartNy.setPersonDetaljer(person);
-        assertNotEquals(annenPartNy, annenPart);
-        assertEquals(annenPartNy.getPersonDetaljer().getClass(), Person.class);
-
-        roundtripTest(annenPartNy);
     }
 
     private void roundtripTest(Object object) throws IOException {
