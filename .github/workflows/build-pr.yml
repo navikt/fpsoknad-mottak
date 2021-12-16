@@ -18,8 +18,16 @@ jobs:
           cache: 'maven'
 
       - name: Kompiler
+        if: ${{ github.actor != 'dependabot[bot]' }}
         run: |
           mvn jacoco:prepare-agent install jacoco:report sonar:sonar -e --batch-mode --settings .github/.m2/settings.xml -Dsonar.login=${SONAR_TOKEN}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Kompiler
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        run: |
+          mvn install -e --batch-mode --settings .github/.m2/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
