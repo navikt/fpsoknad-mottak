@@ -1,8 +1,12 @@
-package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
+package no.nav.foreldrepenger.mottak.innsyn.fpinfov2;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Kjønn;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,6 +34,13 @@ public class SakerV2SerialiseringTest {
     @Test
     public void annenPartRoundtripTest() throws Exception {
         roundtripTest(annenPart);
+    }
+
+    @Test
+    public void annenPartPersonRoundtripTest() throws IOException {
+        var person = new Person(new Fødselsnummer("12345678901"), "Navn", null, "Navnesen", Kjønn.K, LocalDate.now().minusDays(1));
+        var annenPartPerson = new AnnenPart(person);
+        roundtripTest(annenPartPerson);
     }
 
     @Test

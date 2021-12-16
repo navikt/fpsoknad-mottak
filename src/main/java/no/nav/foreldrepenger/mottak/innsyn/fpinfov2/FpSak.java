@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
+package no.nav.foreldrepenger.mottak.innsyn.fpinfov2;
 
 import java.util.Set;
 
@@ -12,6 +12,6 @@ record FpSak(Saksnummer saksnummer,
              Familiehendelse familiehendelse,
              FpVedtak gjeldendeVedtak,
              FpÅpenBehandling åpenBehandling,
-             Set<AktørId> barn,
+             Set<PersonDetaljer> barn,
              Dekningsgrad dekningsgrad) implements Sak {
 }

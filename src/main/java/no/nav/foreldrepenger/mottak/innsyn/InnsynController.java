@@ -4,7 +4,7 @@ import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.mottak.innsyn.fpinfoV2.Saker;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
+package no.nav.foreldrepenger.mottak.innsyn.fpinfov2;
 
 record EsÅpenBehandling(BehandlingTilstand tilstand) {
 

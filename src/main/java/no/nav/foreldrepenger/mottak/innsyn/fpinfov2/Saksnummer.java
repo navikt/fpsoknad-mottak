@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn.fpinfoV2;
+package no.nav.foreldrepenger.mottak.innsyn.fpinfov2;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

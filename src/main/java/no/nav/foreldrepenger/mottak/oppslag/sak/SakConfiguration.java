@@ -45,8 +45,7 @@ public class SakConfiguration {
                 .collect(toCollection(ArrayList::new));
 
         return new RestTemplateBuilder()
-                .interceptors(interceptorListWithoutAuth.stream()
-                        .toArray(ClientHttpRequestInterceptor[]::new))
+                .interceptors(interceptorListWithoutAuth.toArray(ClientHttpRequestInterceptor[]::new))
                 .build();
 
     }
