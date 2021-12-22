@@ -42,7 +42,6 @@ import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.common.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.mottak.http.WebClientConfiguration.TokenXExchangeFilterFunction;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.foreldrepenger.InnsendingHendelseProdusent;
@@ -119,9 +118,6 @@ class TestFPFordelRoundtripSerialization {
     @Autowired
     @Qualifier(DELEGERENDE)
     DomainMapper søknadXMLGenerator;
-    @Autowired
-    @Qualifier(DELEGERENDE)
-    XMLSøknadMapper xmlMapper;
     @Autowired
     KonvoluttGenerator konvoluttGenerator;
 

@@ -12,7 +12,6 @@ import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerT
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.VEDLEGG1;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.endringssøknad;
 import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknad;
-import static no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils.søknadMedEttOpplastetEttIkkeOpplastetVedlegg;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.ENDRING_FORELDREPENGER;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsending.SøknadType.INITIELL_FORELDREPENGER;
@@ -53,15 +52,10 @@ import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.ProsentAndel;
-import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.ForeldrepengerTestUtils;
 import no.nav.foreldrepenger.common.innsending.mappers.DomainMapper;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.common.innsyn.mappers.XMLSøknadMapper;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
-import no.nav.foreldrepenger.common.util.Versjon;
-import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
-import no.nav.foreldrepenger.mottak.innsyn.XMLStreamSøknadInspektør;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.EnkeltArbeidsforhold;
 import no.nav.foreldrepenger.mottak.oppslag.sts.SystemTokenTjeneste;
@@ -86,8 +80,6 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
 @ComponentScan(basePackages = "no.nav.foreldrepenger.mottak")
 class TestFPFordelSerialization {
 
-    private static final Inspektør INSPEKTØR = new XMLStreamSøknadInspektør();
-
     @MockBean
     SystemTokenTjeneste userService;
 
@@ -98,15 +90,10 @@ class TestFPFordelSerialization {
 
     @MockBean
     private ArbeidsforholdTjeneste arbeidsforhold;
-    @MockBean
-    private InnsendingHendelseProdusent publisher;
 
     @Inject
     private KonvoluttGenerator konvoluttGenerator;
 
-    @Inject
-    @Qualifier(DELEGERENDE)
-    private XMLSøknadMapper xmlMapper;
     @Inject
     @Qualifier(DELEGERENDE)
     private DomainMapper domainMapper;
@@ -123,24 +110,9 @@ class TestFPFordelSerialization {
     }
 
     @Test
-    void testEndringssøknadRoundtrip() {
-        testEndringssøknadRoundtrip(DEFAULT_VERSJON);
-    }
-
-    @Test
     void testESFpFordel() {
         var engangstønad = engangssøknad(false, termin(), norskForelder(), V3);
         assertNotNull(domainMapper.tilXML(engangstønad, AKTØRID, SøknadEgenskap.of(INITIELL_ENGANGSSTØNAD)));
-    }
-
-    @Test
-    void testSøknadRoundtrip() {
-        var original = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(DEFAULT_VERSJON);
-        String xml = domainMapper.tilXML(original, AKTØRID, new SøknadEgenskap(DEFAULT_VERSJON, INITIELL_FORELDREPENGER));
-        var egenskap = INSPEKTØR.inspiser(xml);
-        assertEquals(DEFAULT_VERSJON, egenskap.getVersjon());
-        assertEquals(egenskap.getType(), INITIELL_FORELDREPENGER);
-        assertEquals(original, xmlMapper.tilSøknad(xml, egenskap));
     }
 
     @Test
@@ -182,20 +154,6 @@ class TestFPFordelSerialization {
         assertEquals(es, konvolutt.getInnsending());
         assertTrue(konvolutt.erEttersending());
 
-    }
-
-    public void testEndringssøknadRoundtrip(Versjon v) {
-        var original = endringssøknad(v, VEDLEGG1, V2);
-        String xml = domainMapper.tilXML(original, AKTØRID, new SøknadEgenskap(v, ENDRING_FORELDREPENGER));
-        var egenskap = INSPEKTØR.inspiser(xml);
-        assertEquals(v, egenskap.getVersjon());
-        assertEquals(ENDRING_FORELDREPENGER, egenskap.getType());
-        Endringssøknad respons = Endringssøknad.class.cast(xmlMapper.tilSøknad(xml, egenskap));
-        var originalFordeling = no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
-                .cast(original.getYtelse()).getFordeling();
-        assertEquals(originalFordeling, no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger.class
-                .cast(respons.getYtelse()).getFordeling());
-        assertEquals(original.getSaksnr(), respons.getSaksnr());
     }
 
     private static List<EnkeltArbeidsforhold> arbeidsforhold() {
