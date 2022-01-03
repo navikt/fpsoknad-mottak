@@ -11,10 +11,15 @@ import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.OR
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.*;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Kjønn;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -72,10 +77,44 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public Saker sakerV2(AktørId aktørId) {
-        LOG.info("Henter sakerV2 for {}", aktørId.value());
+        LOG.info("Henter sakerV2 for aktørId {}", aktørId.value());
         var saker = innsyn.sakerV2(aktørId.value());
-        LOG.info(CONFIDENTIAL, "{}", saker);
-        return saker;
+        var beriketSaker = berikPerson(saker);
+        LOG.info(CONFIDENTIAL, "{}", beriketSaker);
+        return beriketSaker;
+    }
+
+    private Saker berikPerson(Saker saker) {
+        var beriketFpSaker = saker.foreldrepenger().stream()
+            .map(this::berikPerson)
+            .collect(Collectors.toSet());
+        return new Saker(beriketFpSaker, saker.engangsstønad(), saker.svangerskapspenger());
+    }
+
+    private FpSak berikPerson(FpSak sak) {
+        return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.kanSøkeOmEndring(),
+            sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.rettighetType(),
+            berik(sak.annenPart()), sak.familiehendelse(), sak.gjeldendeVedtak(), sak.åpenBehandling(),
+            barn(sak.barn()), sak.dekningsgrad());
+    }
+
+    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn) {
+        return barn.stream()
+            .map(b -> {
+                var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) b;
+                var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
+                return new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
+                    "Barn", "", "Barnesen", Kjønn.U, LocalDate.now());
+            })
+            .collect(Collectors.toSet());
+    }
+
+    private no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart berik(no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart annenPart) {
+        var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) annenPart.personDetaljer();
+        var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
+        var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
+            "Fornavn", "Mellomnavn", "Etternavn", Kjønn.U, LocalDate.now());
+        return new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart(person);
     }
 
     @Override

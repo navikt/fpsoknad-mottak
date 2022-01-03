@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.fpinfov2;
 
 import java.util.Set;
 
-record EsSak(Saksnummer saksnummer,
+public record EsSak(Saksnummer saksnummer,
              Familiehendelse familiehendelse,
              EsVedtak gjeldendeVedtak,
              EsÅpenBehandling åpenBehandling,

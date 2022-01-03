@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.mottak.innsyn.fpinfov2;
 
 import java.util.Set;
 
-record FpSak(Saksnummer saksnummer,
+public record FpSak(Saksnummer saksnummer,
              boolean sakAvsluttet,
              boolean kanSøkeOmEndring,
              boolean sakTilhørerMor,
