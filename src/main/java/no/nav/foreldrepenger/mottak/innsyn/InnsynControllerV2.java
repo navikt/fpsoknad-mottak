@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import static no.nav.foreldrepenger.mottak.innsyn.InnsynControllerV2.*;
 
-@ConditionalOnNotProd
+
 @ProtectedRestController(INNSYNV2)
 public class InnsynControllerV2 {
     public static final String INNSYNV2 = "/innsyn/v2";
