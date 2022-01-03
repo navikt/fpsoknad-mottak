@@ -4,7 +4,6 @@ import static no.nav.foreldrepenger.common.util.Constants.FORELDREPENGER;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -70,11 +69,6 @@ public class InnsynController {
     @GetMapping("/vedtak")
     public Vedtak vedtak(@RequestParam(name = "saksnummer") String saksnummer) {
         return innsyn.vedtak(oppslag.aktørId(), saksnummer);
-    }
-
-    @GetMapping("/v2/saker")
-    public Saker sakerV2() {
-        return innsyn.sakerV2(oppslag.aktørId());
     }
 
     @Override
