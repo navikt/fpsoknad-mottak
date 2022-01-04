@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Kvittering;
+import no.nav.foreldrepenger.common.util.MDCUtil;
 
 @Component
 @ConditionalOnProperty(value = "mottak.sender.domainevent.enabled", havingValue = "false")
@@ -15,11 +15,12 @@ public class LoggingHendelseProdusent implements InnsendingHendelseProdusent {
     private static final Logger LOG = LoggerFactory.getLogger(LoggingHendelseProdusent.class);
 
     @Override
-    public void publiser(Fødselsnummer fnr, Kvittering kvittering, String referanseId, Konvolutt konvolutt) {
+    public void publiser(Fødselsnummer fnr, FordelResultat kvittering, String dialogId, Konvolutt konvolutt) {
+        var callId = MDCUtil.callId();
         LOG.info(
                 "Publiserer hendelse fra {} for søknad av type {} med opplastede vedlegg {}, ikkeopplastede vedlegg {} og referanseId {}",
                 kvittering, konvolutt.getType(),
-                konvolutt.getOpplastedeVedlegg(), konvolutt.getIkkeOpplastedeVedlegg(), referanseId);
+                konvolutt.getOpplastedeVedlegg(), konvolutt.getIkkeOpplastedeVedlegg(), callId);
     }
 
 }

@@ -4,6 +4,9 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID;
 import static no.nav.foreldrepenger.common.util.MDCUtil.callId;
 import static org.springframework.kafka.support.KafkaHeaders.TOPIC;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Kvittering;
+import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.util.JacksonWrapper;
 
@@ -40,19 +43,29 @@ public class KafkaInnsendingHendelseProdusent implements InnsendingHendelseProdu
     }
 
     @Override
-    public void publiser(Fødselsnummer fnr, Kvittering kvittering, String dialogId, Konvolutt konvolutt) {
-        var h = new InnsendingHendelse(oppslag.aktørId(), fnr, dialogId, kvittering,
-                konvolutt);
+    public void publiser(Fødselsnummer fnr, FordelResultat kvittering, String dialogId, Konvolutt konvolutt) {
+        var callId = callId();
+        var førsteBehandlingsdato = førsteInntektsmeldingDag(konvolutt).orElse(null);
+        var h = new InnsendingHendelse(oppslag.aktørId(), fnr, dialogId, konvolutt, kvittering.journalId(),
+            callId, førsteBehandlingsdato, kvittering.saksnummer());
         LOG.info("Publiserer hendelse {} på topic {}", h, topic);
         send(MessageBuilder
                 .withPayload(mapper.writeValueAsString(h))
                 .setHeader(TOPIC, topic)
-                .setHeader(NAV_CALL_ID, callId())
+                .setHeader(NAV_CALL_ID, callId)
                 .build());
     }
 
+    private Optional<LocalDate> førsteInntektsmeldingDag(Konvolutt konvolutt) {
+        if (konvolutt.erInitiellForeldrepenger()) {
+            var søknad = (Søknad) konvolutt.getInnsending();
+            return Optional.of(søknad.getFørsteInntektsmeldingDag());
+        }
+        return Optional.empty();
+    }
+
     private void send(Message<String> melding) {
-        kafkaOperations.send(melding).addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+        kafkaOperations.send(melding).addCallback(new ListenableFutureCallback<>() {
 
             @Override
             public void onSuccess(SendResult<String, String> result) {

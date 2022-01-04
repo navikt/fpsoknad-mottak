@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -9,9 +11,9 @@ import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.innsending.SøknadSender;
 import no.nav.foreldrepenger.mottak.innsending.pdf.InfoskrivPdfEkstraktor;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Service
@@ -24,8 +26,11 @@ public class FordelSøknadSender implements SøknadSender {
     private final InnsendingHendelseProdusent hendelser;
     private final TokenUtil tokenUtil;
 
-    public FordelSøknadSender(FordelConnection connection, KonvoluttGenerator generator,
-            InfoskrivPdfEkstraktor ekstraktor, InnsendingHendelseProdusent hendelseProdusent, TokenUtil tokenUtil) {
+    public FordelSøknadSender(FordelConnection connection,
+                              KonvoluttGenerator generator,
+                              InfoskrivPdfEkstraktor ekstraktor,
+                              InnsendingHendelseProdusent hendelseProdusent,
+                              TokenUtil tokenUtil) {
         this.connection = connection;
         this.generator = generator;
         this.ekstraktor = ekstraktor;
@@ -58,24 +63,23 @@ public class FordelSøknadSender implements SøknadSender {
     }
 
     private Kvittering send(Konvolutt konvolutt, String dialogId) {
+        var pdfHovedDokument = konvolutt.PDFHovedDokument();
+        var infoskrivPdf = konvolutt.erInitiellForeldrepenger() ? infoskrivPdf(pdfHovedDokument) : null;
+        var mottattDato = LocalDateTime.now();
+        FordelResultat fordelKvittering;
+        try {
+            fordelKvittering = connection.send(konvolutt);
+        } catch (UventetFpFordelResponseException e) {
+            LOG.warn("Uventet response fra forfordel. Returnerer kvittering uten saksnummer", e);
+            return new Kvittering(mottattDato, null, pdfHovedDokument, infoskrivPdf);
+        }
 
-        var kvittering = connection.send(konvolutt);
-        if (konvolutt.erInitiellForeldrepenger()) {
-            Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
-            kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
-            kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
-            kvittering.setInfoskrivPdf(infoskrivPdf(kvittering.getPdf()));
-        }
-        if (konvolutt.erEndring()) {
-            kvittering.setFørsteDag(Endringssøknad.class.cast(konvolutt.getInnsending()).getFørsteUttaksdag());
-        }
-        if (connection.isEnabled()) {
-            publiserHendelse(konvolutt, dialogId, kvittering);
-        }
-        return kvittering;
+        publiserHendelse(konvolutt, dialogId, fordelKvittering);
+
+        return new Kvittering(mottattDato, fordelKvittering.saksnummer(), pdfHovedDokument, infoskrivPdf);
     }
 
-    private void publiserHendelse(Konvolutt konvolutt, String dialogId, Kvittering kvittering) {
+    private void publiserHendelse(Konvolutt konvolutt, String dialogId, FordelResultat kvittering) {
         try {
             hendelser.publiser(tokenUtil.fnr(), kvittering, dialogId, konvolutt);
         } catch (Exception e) {

@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.util.MultiValueMap;
 
-import no.nav.foreldrepenger.common.domain.FagsakType;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
 
@@ -71,10 +70,6 @@ public class Konvolutt {
 
     public SøknadEgenskap getEgenskap() {
         return egenskap;
-    }
-
-    public FagsakType getFagsakType() {
-        return getEgenskap().getFagsakType();
     }
 
     public SøknadType getType() {

@@ -6,8 +6,6 @@ import java.util.List;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
-import no.nav.foreldrepenger.common.domain.Kvittering;
-import no.nav.foreldrepenger.common.domain.LeveranseStatus;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.util.StringUtil;
 
@@ -19,27 +17,30 @@ public class InnsendingHendelse {
     private final String referanseId;
     private final String dialogId;
     private final String saksnummer;
-    private final LeveranseStatus leveranseStatus;
     private final SøknadType hendelse;
     private final List<String> opplastedeVedlegg;
     private final List<String> ikkeOpplastedeVedlegg;
     private final LocalDateTime innsendt;
-
     private final LocalDate førsteBehandlingsdato;
 
-    public InnsendingHendelse(AktørId aktørId, Fødselsnummer fnr, String dialogId, Kvittering kvittering,
-            Konvolutt konvolutt) {
+    public InnsendingHendelse(AktørId aktørId,
+                              Fødselsnummer fnr,
+                              String dialogId,
+                              Konvolutt konvolutt,
+                              String journalId,
+                              String referanseId,
+                              LocalDate førsteBehandlingsdato,
+                              String saksnummer) {
         this.aktørId = aktørId;
         this.fnr = fnr;
-        this.journalId = kvittering.getJournalId();
-        this.referanseId = kvittering.getReferanseId();
+        this.journalId = journalId;
+        this.referanseId = referanseId;
         this.dialogId = dialogId;
-        this.saksnummer = kvittering.getSaksNr();
-        this.leveranseStatus = kvittering.getLeveranseStatus();
+        this.saksnummer = saksnummer;
         this.hendelse = konvolutt.getType();
         this.opplastedeVedlegg = konvolutt.getOpplastedeVedlegg();
         this.ikkeOpplastedeVedlegg = konvolutt.getIkkeOpplastedeVedlegg();
-        this.førsteBehandlingsdato = kvittering.getFørsteInntektsmeldingDag();
+        this.førsteBehandlingsdato = førsteBehandlingsdato;
         this.innsendt = konvolutt.getOpprettet();
     }
 
@@ -75,10 +76,6 @@ public class InnsendingHendelse {
         return saksnummer;
     }
 
-    public LeveranseStatus getLeveranseStatus() {
-        return leveranseStatus;
-    }
-
     public SøknadType getHendelse() {
         return hendelse;
     }
@@ -94,13 +91,9 @@ public class InnsendingHendelse {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.partialMask(fnr.getFnr())
-                + ", journalId="
-                + journalId
-                + ", referanseId="
-                + referanseId + ", dialogId=" + dialogId + ", saksnummer=" + saksnummer + ", leveranseStatus="
-                + leveranseStatus + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
-                + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsendt=" + innsendt
-                + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
+            + ", journalId=" + journalId + ", referanseId=" + referanseId + ", dialogId=" + dialogId + ", saksnummer="
+            + saksnummer + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
+            + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsendt=" + innsendt + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
     }
 
 }
