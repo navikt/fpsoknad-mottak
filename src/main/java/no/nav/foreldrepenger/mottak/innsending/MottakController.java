@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.mottak.innsending;
 
-import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
-import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 import static no.nav.foreldrepenger.mottak.AbstractInspektør.SØKNAD;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRINGSSØKNAD;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ENDRING_FORELDREPENGER;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.FØRSTEGANGSSØKNAD;
+import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.INITIELL_SVANGERSKAPSPENGER;
 
 import java.util.List;
 
@@ -21,13 +23,13 @@ import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.common.domain.Søknad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Endringssøknad;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.foreldrepenger.mottak.http.ProtectedRestController;
 import no.nav.foreldrepenger.mottak.innsending.varsel.Varsel;
 import no.nav.foreldrepenger.mottak.innsending.varsel.VarselSender;
 import no.nav.foreldrepenger.mottak.innsyn.Innsyn;
 import no.nav.foreldrepenger.mottak.innsyn.Inspektør;
+import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
+import no.nav.foreldrepenger.common.oppslag.Oppslag;
 import no.nav.security.token.support.core.api.Unprotected;
 
 @ProtectedRestController(MottakController.INNSENDING)
@@ -52,20 +54,20 @@ public class MottakController {
     @PostMapping("/send")
     public Kvittering initiell(@Valid @RequestBody Søknad søknad) {
         var søknadEgenskap = inspektør.inspiser(søknad);
-        var kvittering = søknadSender.søk(søknad, oppslag.person(), søknadEgenskap);
-        return sendVarsel(kvittering, varsleHvisVellykket(søknadEgenskap));
+        return sjekkStatus(søknadSender.søk(søknad, oppslag.person(), søknadEgenskap),
+                FØRSTEGANGSSØKNAD, varsleHvisVellykket(søknadEgenskap));
     }
 
     @PostMapping("/ettersend")
     public Kvittering ettersend(@Valid @RequestBody Ettersending ettersending) {
-        var kvittering = søknadSender.ettersend(ettersending, oppslag.person(), inspektør.inspiser(ettersending));
-        return sendVarsel(kvittering, false);
+        return sjekkStatus(søknadSender.ettersend(ettersending, oppslag.person(),
+                inspektør.inspiser(ettersending)), "Ettersending", false);
     }
 
     @PostMapping("/endre")
     public Kvittering endre(@Valid @RequestBody Endringssøknad endringssøknad) {
-        var kvittering = søknadSender.endreSøknad(endringssøknad, oppslag.person(), ENDRING_FORELDREPENGER);
-        return sendVarsel(kvittering);
+        return sjekkStatus(søknadSender.endreSøknad(endringssøknad, oppslag.person(), ENDRING_FORELDREPENGER),
+                ENDRINGSSØKNAD);
     }
 
     @GetMapping("/ping")
@@ -84,12 +86,16 @@ public class MottakController {
         return søknadEgenskap != INITIELL_SVANGERSKAPSPENGER;
     }
 
-    private Kvittering sendVarsel(Kvittering kvittering) {
-        return sendVarsel(kvittering, true);
+    private Kvittering sjekkStatus(Kvittering kvittering, String type) {
+        return sjekkStatus(kvittering, type, true);
     }
 
-    private Kvittering sendVarsel(Kvittering kvittering, boolean varsle) {
-        if (varsle) {
+    private Kvittering sjekkStatus(Kvittering kvittering, String type, boolean varsle) {
+        if (!kvittering.erVellykket()) {
+            LOG.warn("{} fikk ikke entydig status ({}), dette bør sjekkes opp nærmere", type,
+                    kvittering.getLeveranseStatus());
+        }
+        if (varsle && kvittering.erVellykket()) {
             varselSender.varsle(varselFra(kvittering));
         }
         return kvittering;

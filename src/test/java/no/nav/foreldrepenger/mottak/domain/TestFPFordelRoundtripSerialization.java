@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.mottak.domain;
 
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.LOCAL;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.TEST;
+import static no.nav.foreldrepenger.common.domain.LeveranseStatus.IKKE_SENDT_FPSAK;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.engangssøknad;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.fødsel;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.norskForelder;
@@ -14,7 +15,6 @@ import static no.nav.foreldrepenger.common.util.Versjon.V3;
 import static no.nav.foreldrepenger.mottak.innsending.MottakController.INNSENDING;
 import static no.nav.foreldrepenger.mottak.innsending.MottakDevController.INNSENDING_PREPROD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -141,10 +141,12 @@ class TestFPFordelRoundtripSerialization {
 
     @BeforeEach
     void setAuthoriztion() {
-        var t = new JwtToken(SERVER.issueToken().serialize());
+        var t = new JwtToken(SERVER.issueToken().serialize().toString());
         when(userService.getSystemToken()).thenReturn(new SystemToken(t, null, null, null));
-        template.getRestTemplate().setInterceptors(Collections.singletonList((request, body, execution) -> {
-            request.getHeaders().add(AUTHORIZATION, "Bearer " + SERVER.issueToken("12345678910").serialize());
+        template.getRestTemplate().setInterceptors(Collections.singletonList((request, body,
+                execution) -> {
+            request.getHeaders().add(AUTHORIZATION, "Bearer " +
+                    SERVER.issueToken("12345678910").serialize());
             return execution.execute(request, body);
         }));
     }
@@ -166,7 +168,7 @@ class TestFPFordelRoundtripSerialization {
         var søknad = søknadMedEttOpplastetEttIkkeOpplastetVedlegg(versjon);
         var kvittering = sender.søk(søknad, TestUtils.person(),
                 new SøknadEgenskap(versjon, INITIELL_FORELDREPENGER));
-        assertNotNull(kvittering.getPdf());
+        assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
     @Test
@@ -176,7 +178,7 @@ class TestFPFordelRoundtripSerialization {
                 påkrevdVedlegg(ID142));
         var kvittering = template.postForObject(INNSENDING + "/send",
                 engangssøknad, Kvittering.class);
-        assertNotNull(kvittering.getPdf());
+        assertEquals(IKKE_SENDT_FPSAK, kvittering.getLeveranseStatus());
     }
 
 }
