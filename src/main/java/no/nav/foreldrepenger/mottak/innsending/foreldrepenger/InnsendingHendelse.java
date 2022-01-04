@@ -7,7 +7,6 @@ import java.util.List;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Kvittering;
-import no.nav.foreldrepenger.common.domain.LeveranseStatus;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.util.StringUtil;
 
@@ -19,7 +18,6 @@ public class InnsendingHendelse {
     private final String referanseId;
     private final String dialogId;
     private final String saksnummer;
-    private final LeveranseStatus leveranseStatus;
     private final SøknadType hendelse;
     private final List<String> opplastedeVedlegg;
     private final List<String> ikkeOpplastedeVedlegg;
@@ -35,7 +33,6 @@ public class InnsendingHendelse {
         this.referanseId = kvittering.getReferanseId();
         this.dialogId = dialogId;
         this.saksnummer = kvittering.getSaksNr();
-        this.leveranseStatus = kvittering.getLeveranseStatus();
         this.hendelse = konvolutt.getType();
         this.opplastedeVedlegg = konvolutt.getOpplastedeVedlegg();
         this.ikkeOpplastedeVedlegg = konvolutt.getIkkeOpplastedeVedlegg();
@@ -75,10 +72,6 @@ public class InnsendingHendelse {
         return saksnummer;
     }
 
-    public LeveranseStatus getLeveranseStatus() {
-        return leveranseStatus;
-    }
-
     public SøknadType getHendelse() {
         return hendelse;
     }
@@ -94,13 +87,9 @@ public class InnsendingHendelse {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.partialMask(fnr.getFnr())
-                + ", journalId="
-                + journalId
-                + ", referanseId="
-                + referanseId + ", dialogId=" + dialogId + ", saksnummer=" + saksnummer + ", leveranseStatus="
-                + leveranseStatus + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
-                + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsendt=" + innsendt
-                + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
+            + ", journalId=" + journalId + ", referanseId=" + referanseId + ", dialogId=" + dialogId + ", saksnummer="
+            + saksnummer + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
+            + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsendt=" + innsendt + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
     }
 
 }

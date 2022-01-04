@@ -62,12 +62,8 @@ public class FordelSøknadSender implements SøknadSender {
         var kvittering = connection.send(konvolutt);
         if (konvolutt.erInitiellForeldrepenger()) {
             Søknad søknad = Søknad.class.cast(konvolutt.getInnsending());
-            kvittering.setFørsteDag(søknad.getFørsteUttaksdag());
             kvittering.setFørsteInntektsmeldingDag(søknad.getFørsteInntektsmeldingDag());
             kvittering.setInfoskrivPdf(infoskrivPdf(kvittering.getPdf()));
-        }
-        if (konvolutt.erEndring()) {
-            kvittering.setFørsteDag(Endringssøknad.class.cast(konvolutt.getInnsending()).getFørsteUttaksdag());
         }
         if (connection.isEnabled()) {
             publiserHendelse(konvolutt, dialogId, kvittering);
