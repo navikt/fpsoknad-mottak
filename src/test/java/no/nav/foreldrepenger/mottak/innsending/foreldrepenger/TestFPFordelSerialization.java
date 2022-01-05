@@ -80,7 +80,6 @@ import no.nav.foreldrepenger.mottak.util.TokenUtil;
         "sak.securitytokenservice.password=pw",
         "sak.securitytokenservice.username=user",
         "sak.securitytokenservice.url=http://sts",
-        "varsel.uri=mq:80/test",
         "sts.uri=http://www.sts.no",
         "spring.cloud.vault.enabled=false",
         "sts.username=un", "sts.password=pw" })

@@ -60,10 +60,6 @@ organisasjon:
   base-uri: https://modapp-q1.adeo.no/ereg/api
 sts:
   base-uri: https://security-token-service.nais.preprod.local
-varsel:
-  uri: mq://b27apvl176.preprod.local:1413/MQ1LSC02
-  channelname: Q1_FPSOKNAD_VARSEL
-  queue-name: QA.Q1_VARSELPRODUKSJON.SEND_VARSEL
 
 sak:
   saker:
