@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.domain.Kvittering.ikkeSendt;
 import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.common.util.CounterRegistry.FP_SENDFEIL;
 
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
-import no.nav.foreldrepenger.common.domain.Kvittering;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.innsending.foreldrepenger.FordelKvittering;
 import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
@@ -34,25 +32,14 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
         this.handler = responseHandler;
     }
 
-    public Kvittering send(Konvolutt konvolutt) {
-        if (isEnabled()) {
-            return doSend(konvolutt);
-        }
-        LOG.info("Sending av {} er deaktivert, ingenting å sende", konvolutt.getType());
-        return ikkeSendt(konvolutt.PDFHovedDokument());
-    }
-
-    private Kvittering doSend(Konvolutt konvolutt) {
+    public FordelResultat send(Konvolutt konvolutt) {
         try {
             LOG.info("Sender {} til {}", name(konvolutt.getType()), name());
             var kvittering = handler.handle(post(konvolutt));
-            kvittering.setPdf(konvolutt.PDFHovedDokument());
             LOG.info("Sendte {} til {}, fikk kvittering {}", name(konvolutt.getType()), name(), kvittering);
             return kvittering;
         } catch (Exception e) {
             LOG.info("Feil ved sending av {}", konvolutt.getMetadata());
-            LOG.info("Hoveddokument {}", konvolutt.XMLHovedDokument());
-            LOG.info("Hoveddokument PDF {}", konvolutt.PDFHovedDokument());
             FP_SENDFEIL.increment();
             throw e;
         }
@@ -72,10 +59,6 @@ public class FordelConnection extends AbstractRestConnection implements PingEndp
     @Override
     public URI pingEndpoint() {
         return cfg.pingEndpoint();
-    }
-
-    public boolean isEnabled() {
-        return cfg.isEnabled();
     }
 
     @Override
