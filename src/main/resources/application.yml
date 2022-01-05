@@ -23,12 +23,6 @@ securitytokenservice:
     password : ${kafka.password}
     url: https://sts.adeo.no/SecurityTokenServiceProvider/
 
-varsel:
-   uri: mq://a01apvl063.adeo.no:1414/MPLSC02
-   channelname: P_FPSOKNAD_VARSEL
-   queue-name: QA.P_VARSELPRODUKSJON.SEND_VARSEL
-   username: srvappserver
-
 mottak:
    sender:
       domainevent:
@@ -94,8 +88,6 @@ management:
       ping:
         enabled: false
       diskspace:
-        enabled: false
-      jms:
         enabled: false
 server:
    servlet:

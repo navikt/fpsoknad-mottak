@@ -22,10 +22,6 @@ securitytokenservice:
     password : ${kafka.password}
     url: ${securitytokenservice.url}
 
-varsel:
-    username: username
-    enabled: false
-
 mottak:
    sender:
       domainevent:

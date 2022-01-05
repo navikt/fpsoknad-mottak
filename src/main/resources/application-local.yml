@@ -22,10 +22,6 @@ securitytokenservice:
     password : vtp
     url: http://localhost:8060/soap/SecurityTokenServiceProvider/
 
-varsel:
-    username: username
-    enabled: false
-
 mottak:
    sender:
       domainevent:
