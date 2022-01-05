@@ -110,6 +110,9 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart berik(no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart annenPart) {
+        if (annenPart == null) {
+            return null;
+        }
         var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) annenPart.personDetaljer();
         var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
         var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
