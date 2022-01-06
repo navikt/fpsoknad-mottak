@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,8 +20,7 @@ import no.nav.foreldrepenger.mottak.http.AbstractRestConnection;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
 
 @Component
@@ -81,14 +79,6 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
 
     BehandlingDTO behandling(Lenke lenke) {
         return hent(lenke, BehandlingDTO.class);
-    }
-
-    VedtakDTO vedtak(Lenke lenke) {
-        return hent(lenke, VedtakDTO.class);
-    }
-
-    SøknadDTO søknad(Lenke lenke) {
-        return hent(lenke, SøknadDTO.class);
     }
 
     private <T> T hent(Lenke lenke, Class<T> clazz) {

@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.mottak.innsyn;
+package no.nav.foreldrepenger.mottak.innsending;
 
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ETTERSENDING_ENGANGSSTØNAD;
 import static no.nav.foreldrepenger.common.innsyn.SøknadEgenskap.ETTERSENDING_FORELDREPENGER;
@@ -14,15 +14,11 @@ import no.nav.foreldrepenger.common.domain.engangsstønad.Engangsstønad;
 import no.nav.foreldrepenger.common.domain.felles.Ettersending;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Foreldrepenger;
 import no.nav.foreldrepenger.common.domain.svangerskapspenger.Svangerskapspenger;
-import no.nav.foreldrepenger.common.error.UnexpectedInputException;
-import no.nav.foreldrepenger.common.innsending.SøknadType;
 import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.common.util.Versjon;
 
-public interface Inspektør {
-    SøknadEgenskap inspiser(String xml);
+final class Inspektør {
 
-    default SøknadEgenskap inspiser(Søknad søknad) {
+    static SøknadEgenskap inspiser(Søknad søknad) {
         Ytelse ytelse = søknad.getYtelse();
         if (ytelse instanceof Foreldrepenger) {
             return INITIELL_FORELDREPENGER;
@@ -36,24 +32,11 @@ public interface Inspektør {
         return UKJENT;
     }
 
-    default SøknadEgenskap inspiser(Ettersending ettersending) {
+    static SøknadEgenskap inspiser(Ettersending ettersending) {
         return switch (ettersending.getType()) {
             case engangsstønad -> ETTERSENDING_ENGANGSSTØNAD;
             case foreldrepenger -> ETTERSENDING_FORELDREPENGER;
             case svangerskapspenger -> ETTERSENDING_SVANGERSKAPSPENGER;
-            default -> throw new UnexpectedInputException("Ukjent eller ikke satt ettersendingstype %s", ettersending.getType());
         };
-    }
-
-    default SøknadType type(Søknad søknad) {
-        return inspiser(søknad).getType();
-    }
-
-    default SøknadType type(String xml) {
-        return inspiser(xml).getType();
-    }
-
-    default Versjon versjon(String xml) {
-        return inspiser(xml).getVersjon();
     }
 }

@@ -25,7 +25,6 @@ import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLConnection;
 @Component
 public class OrganisasjonConnection extends AbstractWebClientConnection {
 
-    private static final String MAGIC_ORG = "342352362";
     private static final String PRIVAT_ARBEIDSGIVER = "Privat arbeidsgiver";
     private static final Logger LOG = LoggerFactory.getLogger(OrganisasjonConnection.class);
     private final OrganisasjonConfig cfg;

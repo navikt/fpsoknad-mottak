@@ -1,12 +1,9 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
-import static java.util.Collections.emptyList;
-import static java.util.Comparator.comparing;
 import static no.nav.foreldrepenger.boot.conditionals.EnvUtil.CONFIDENTIAL;
 import static no.nav.foreldrepenger.common.util.StreamUtil.distinctByKey;
 import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 import static no.nav.foreldrepenger.common.util.StringUtil.endelse;
-import static no.nav.foreldrepenger.common.util.StringUtil.limit;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.ORGANISASJON;
 import static no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverType.PRIVAT;
 
@@ -17,9 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.*;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Kjønn;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,41 +27,33 @@ import no.nav.foreldrepenger.common.innsyn.Behandling;
 import no.nav.foreldrepenger.common.innsyn.BehandlingResultat;
 import no.nav.foreldrepenger.common.innsyn.BehandlingStatus;
 import no.nav.foreldrepenger.common.innsyn.BehandlingType;
-import no.nav.foreldrepenger.common.innsyn.InnsynsSøknad;
-import no.nav.foreldrepenger.common.innsyn.SøknadEgenskap;
-import no.nav.foreldrepenger.common.innsyn.SøknadMetadata;
-import no.nav.foreldrepenger.common.innsyn.vedtak.Vedtak;
-import no.nav.foreldrepenger.common.innsyn.vedtak.VedtakMetadata;
 import no.nav.foreldrepenger.mottak.innsyn.dto.BehandlingDTO;
 import no.nav.foreldrepenger.mottak.innsyn.dto.SakDTO;
-import no.nav.foreldrepenger.mottak.innsyn.dto.SøknadDTO;
-import no.nav.foreldrepenger.mottak.innsyn.dto.VedtakDTO;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.FpSak;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.PersonDetaljer;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.Saker;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Kjønn;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Person;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.ArbeidsgiverInfo;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.SøknadsGrunnlag;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.UttaksPeriode;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.Uttaksplan;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksPeriodeDTO;
 import no.nav.foreldrepenger.mottak.innsyn.uttaksplan.dto.UttaksplanDTO;
-import no.nav.foreldrepenger.mottak.innsyn.vedtak.XMLVedtakHandler;
 import no.nav.foreldrepenger.mottak.oppslag.OppslagTjeneste;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.OrganisasjonConnection;
 
 @Service
 public class InnsynTjeneste implements Innsyn {
     private static final Logger LOG = LoggerFactory.getLogger(InnsynTjeneste.class);
-    private final XMLSøknadHandler søknadHandler;
-    private final XMLVedtakHandler vedtakHandler;
     private final OppslagTjeneste oppslag;
     private final OrganisasjonConnection organisasjon;
     private final InnsynConnection innsyn;
 
-    public InnsynTjeneste(XMLSøknadHandler søknadHandler, XMLVedtakHandler vedtakHandler,
-            InnsynConnection innsyn, OppslagTjeneste oppslag, OrganisasjonConnection organisasjon) {
+    public InnsynTjeneste(InnsynConnection innsyn, OppslagTjeneste oppslag, OrganisasjonConnection organisasjon) {
         this.innsyn = innsyn;
         this.oppslag = oppslag;
         this.organisasjon = organisasjon;
-        this.søknadHandler = søknadHandler;
-        this.vedtakHandler = vedtakHandler;
     }
 
     @Override
@@ -121,24 +107,6 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     @Override
-    public Vedtak vedtak(AktørId aktørId, String saksnummer) {
-        return Optional.ofNullable(safeStream(saker(aktørId))
-                .filter(s -> s.getSaksnummer().equals(saksnummer))
-                .findFirst()
-                .orElse(null))
-                .map(Sak::getBehandlinger)
-                .orElse(emptyList())
-                .stream()
-                .sorted(comparing(Behandling::getEndretTidspunkt)
-                        .reversed())
-                .toList()
-                .stream()
-                .findFirst()
-                .map(Behandling::getVedtak)
-                .orElse(null);
-    }
-
-    @Override
     public Uttaksplan uttaksplan(String saksnummer) {
         return Optional.ofNullable(innsyn.uttaksplan(saksnummer))
                 .map(this::tilUttaksplan)
@@ -179,34 +147,6 @@ public class InnsynTjeneste implements Innsyn {
             LOG.info(CONFIDENTIAL, "{}", behandlinger);
         }
         return behandlinger;
-    }
-
-    @SuppressWarnings("unused")
-    private InnsynsSøknad hentSøknad(Lenke lenke) {
-        var søknad = Optional.ofNullable(innsyn.søknad(lenke))
-                .map(this::tilSøknad)
-                .orElse(null);
-        if (søknad == null) {
-            LOG.info("Hentet ingen søknad");
-        } else {
-            LOG.info("Hentet søknad");
-            LOG.info(CONFIDENTIAL, "{}", søknad);
-        }
-        return søknad;
-    }
-
-    @SuppressWarnings("unused")
-    private Vedtak hentVedtak(Lenke lenke) {
-        var vedtak = Optional.ofNullable(innsyn.vedtak(lenke))
-                .map(this::tilVedtak)
-                .orElse(null);
-        if (vedtak == null) {
-            LOG.info("Hentet intet vedtak");
-        } else {
-            LOG.info("Hentet vedtak med id {}", vedtak.getFagsakId());
-            LOG.info(CONFIDENTIAL, "{}", vedtak.getMetadata());
-        }
-        return vedtak;
     }
 
     private Sak tilSak(SakDTO wrapper) {
@@ -255,33 +195,6 @@ public class InnsynTjeneste implements Innsyn {
                         .inntektsmeldinger(w.getInntektsmeldinger())
                         .build())
                 .orElse(null);
-    }
-
-    private InnsynsSøknad tilSøknad(SøknadDTO wrapper) {
-        String xml = wrapper.getXml();
-        try {
-            LOG.trace(CONFIDENTIAL, "Mapper søknad fra {}", wrapper);
-            SøknadEgenskap egenskaper = søknadHandler.inspiser(xml);
-            return new InnsynsSøknad(new SøknadMetadata(egenskaper, wrapper.getJournalpostId()),
-                    søknadHandler.tilSøknad(xml, egenskaper));
-        } catch (Exception e) {
-            LOG.trace("Feil ved mapping av søknad fra {}", limit(xml, 50), e);
-            return null;
-        }
-    }
-
-    private Vedtak tilVedtak(VedtakDTO wrapper) {
-        String xml = wrapper.getXml();
-        try {
-            SøknadEgenskap e = vedtakHandler.inspiser(xml);
-            LOG.trace(CONFIDENTIAL, "Mapper vedtak av type {} fra {}", e, wrapper);
-            return Optional.ofNullable(vedtakHandler.tilVedtak(xml, e))
-                    .map(v -> v.withMetadata(new VedtakMetadata(wrapper.getJournalpostId(), e)))
-                    .orElse(null);
-        } catch (Exception e) {
-            LOG.trace("Feil ved mapping av vedtak fra {}", limit(xml, 50), e);
-            return null;
-        }
     }
 
     private static BehandlingTema tilTema(String tema) {
@@ -367,8 +280,7 @@ public class InnsynTjeneste implements Innsyn {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[søknadHandler=" + søknadHandler + ", vedtakHandler=" + vedtakHandler
-                + ", oppslag=" + oppslag + ", innsyn=" + innsyn + "]";
+        return getClass().getSimpleName() + "[oppslag=" + oppslag + ", innsyn=" + innsyn + "]";
     }
 
 }

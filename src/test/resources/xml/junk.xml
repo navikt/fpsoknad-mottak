@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns7:soeknad
-    xmlns:ns6="urn:no:nav:vedtak:felles:xml:soeknad:engangsstoenad:v1"
-    xmlns:ns5="urn:no:nav:vedtak:felles:xml:soeknad:felles:v1"
-    xmlns:ns7="urn:no:nav:vedtak:felles:xml:soeknad:v1"
-    xmlns:ns2="urn:no:nav:vedtak:felles:xml:soeknad:uttak:v1"
-    xmlns:ns4="urn:no:nav:vedtak:felles:xml:soeknad:foreldrepenger:v1"
-    xmlns:ns3="urn:no:nav:vedtak:felles:xml:soeknad:endringssoeknad:v1">
-</ns7:soeknad>

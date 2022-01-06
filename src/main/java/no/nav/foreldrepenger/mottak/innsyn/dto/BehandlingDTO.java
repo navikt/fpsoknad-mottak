@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn.dto;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.common.util.StreamUtil.safeStream;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,12 +10,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import no.nav.foreldrepenger.mottak.innsyn.Lenke;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BehandlingDTO {
-    private static final String SØKNAD = "søknad";
-    private static final String VEDTAK = "vedtak";
     private final String status;
     private final String type;
     private final String tema;
@@ -26,7 +21,6 @@ public class BehandlingDTO {
     private final LocalDateTime opprettetTidspunkt;
     private final LocalDateTime endretTidspunkt;
     private final List<String> inntektsmeldinger;
-    private final List<Lenke> lenker;
 
     @JsonCreator
     public BehandlingDTO(@JsonProperty("opprettetTidspunkt") LocalDateTime opprettetTidspunkt,
@@ -37,8 +31,7 @@ public class BehandlingDTO {
             @JsonProperty("behandlendeEnhet") String behandlendeEnhet,
             @JsonProperty("behandlendeEnhetNavn") String behandlendeEnhetNavn,
             @JsonProperty("behandlingResultat") String behandlingResultat,
-            @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger,
-            @JsonProperty("lenker") List<Lenke> lenker) {
+            @JsonProperty("inntektsmeldinger") List<String> inntektsmeldinger) {
         this.opprettetTidspunkt = opprettetTidspunkt;
         this.endretTidspunkt = endretTidspunkt;
         this.status = status;
@@ -48,7 +41,6 @@ public class BehandlingDTO {
         this.behandlendeEnhetNavn = behandlendeEnhetNavn;
         this.behandlingResultat = behandlingResultat;
         this.inntektsmeldinger = Optional.ofNullable(inntektsmeldinger).orElse(emptyList());
-        this.lenker = Optional.ofNullable(lenker).orElse(emptyList());
     }
 
     public String getStatus() {
@@ -87,30 +79,11 @@ public class BehandlingDTO {
         return inntektsmeldinger;
     }
 
-    public List<Lenke> getLenker() {
-        return lenker;
-    }
-
-    public Lenke getSøknadsLenke() {
-        return getLenke(SØKNAD);
-    }
-
-    public Lenke getVedtaksLenke() {
-        return getLenke(VEDTAK);
-    }
-
-    private Lenke getLenke(String type) {
-        return safeStream(getLenker())
-                .filter(s -> s.rel().equals(type))
-                .findFirst().orElse(null);
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [status=" + status + ", type=" + type + ", tema=" + tema
                 + ", behandlendeEnhet=" + behandlendeEnhet + ", behandlendeEnhetNavn=" + behandlendeEnhetNavn
                 + ", behandlingResultat=" + behandlingResultat + ", opprettetTidspunkt=" + opprettetTidspunkt
-                + ", endretTidspunkt=" + endretTidspunkt + ", inntektsmeldinger=" + inntektsmeldinger + ", lenker=" + lenker
-                + "]";
+                + ", endretTidspunkt=" + endretTidspunkt + ", inntektsmeldinger=" + inntektsmeldinger + "]";
     }
 }
