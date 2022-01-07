@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -78,19 +79,28 @@ public class InnsynTjeneste implements Innsyn {
     }
 
     private FpSak berikPerson(FpSak sak) {
+        var søker = oppslag.person();
         return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.kanSøkeOmEndring(),
             sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.rettighetType(),
             berik(sak.annenPart()), sak.familiehendelse(), sak.gjeldendeVedtak(), sak.åpenBehandling(),
-            barn(sak.barn()), sak.dekningsgrad());
+            barn(sak.barn(), søker.getBarn()), sak.dekningsgrad());
     }
 
-    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn) {
+    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn, Set<BarnDTO> søkerBarn) {
         return barn.stream()
             .map(b -> {
                 var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) b;
                 var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
-                return new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
-                    "Barn", "", "Barnesen", Kjønn.U, LocalDate.now());
+                return søkerBarn.stream()
+                    .filter(sb -> sb.getFnr().getFnr().equals(fødselsnummer.getFnr()))
+                    .findFirst()
+                    .map(bb -> new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(bb.getFnr().getFnr()),
+                            bb.getNavn().getFornavn(), bb.getNavn().getMellomnavn(), bb.getNavn().getEtternavn(), Kjønn.U, bb.getFødselsdato()))
+                    .orElseGet(() -> {
+                        LOG.warn("Barn med aktørId {} ikke i resultat fra pdl query basert på knytning til søker", aktørId.value());
+                        return new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
+                            "Barn", "", "Barnesen", Kjønn.U, LocalDate.now());
+                    });
             })
             .collect(Collectors.toSet());
     }
@@ -101,8 +111,9 @@ public class InnsynTjeneste implements Innsyn {
         }
         var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) annenPart.personDetaljer();
         var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
+        var navn = oppslag.navn(fødselsnummer.getFnr());
         var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
-            "Fornavn", "Mellomnavn", "Etternavn", Kjønn.U, LocalDate.now());
+            navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn(), Kjønn.valueOf(navn.getKjønn().name()), null);
         return new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart(person);
     }
 
