@@ -407,8 +407,8 @@ public class SvangerskapspengerPdfGenerator implements MappablePdfGenerator {
     private List<String> søker(Person søker) {
         return Arrays.asList(
                 textFormatter.navn(
-                        new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn(), søker.getKjønn())),
-                textFormatter.fromMessageSource("fødselsnummerinline", søker.getFnr().getFnr()));
+                        new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())),
+                textFormatter.fromMessageSource("fødselsnummerinline", søker.fnr().getFnr()));
     }
 
     private String txt(String key, Object... values) {

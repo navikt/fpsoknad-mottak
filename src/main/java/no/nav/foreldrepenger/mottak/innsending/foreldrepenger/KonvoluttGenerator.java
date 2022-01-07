@@ -61,8 +61,8 @@ public class KonvoluttGenerator {
         LOG.trace("Genererer konvolutt fra søknad {}", søknad);
         var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
-        builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.getAktørId()), APPLICATION_JSON);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.getAktørId(), egenskap), APPLICATION_XML)
+        builder.part(METADATA, metadataFor(søknad, egenskap.getType(), søker.aktørId()), APPLICATION_JSON);
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(søknad, søker.aktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(søknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
@@ -77,9 +77,9 @@ public class KonvoluttGenerator {
     public Konvolutt generer(Endringssøknad endringsøknad, Person søker, SøknadEgenskap egenskap) {
         var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
-        builder.part(METADATA, metadataFor(endringsøknad, egenskap.getType(), søker.getAktørId()),
+        builder.part(METADATA, metadataFor(endringsøknad, egenskap.getType(), søker.aktørId()),
                 APPLICATION_JSON);
-        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.getAktørId(), egenskap), APPLICATION_XML)
+        builder.part(HOVEDDOKUMENT, xmlHovedDokument(endringsøknad, søker.aktørId(), egenskap), APPLICATION_XML)
                 .header(CONTENT_ID, id(id));
         builder.part(HOVEDDOKUMENT, pdfHovedDokument(endringsøknad, søker, egenskap), APPLICATION_PDF)
                 .header(CONTENT_ID, id(id))
@@ -94,7 +94,7 @@ public class KonvoluttGenerator {
     public Konvolutt generer(Ettersending ettersending, Person søker, SøknadEgenskap egenskap) {
         var id = new AtomicInteger(1);
         var builder = new MultipartBodyBuilder();
-        builder.part(METADATA, metadataFor(ettersending, søker.getAktørId()), APPLICATION_JSON);
+        builder.part(METADATA, metadataFor(ettersending, søker.aktørId()), APPLICATION_JSON);
         safeStream(ettersending.getVedlegg())
                 .forEach(vedlegg -> addVedlegg(builder, vedlegg, id));
         return new Konvolutt(egenskap, ettersending, new HttpEntity<>(builder.build(), headers()),

@@ -419,8 +419,8 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
 
     private DokumentPerson personFra(Person person) {
         var navn = textFormatter.sammensattNavn(new Navn(person.getFornavn(),
-                person.getMellomnavn(), person.getEtternavn(), person.getKjønn()));
-        return DokumentPerson.builder().navn(navn).id(person.getFnr().getFnr()).build();
+                person.getMellomnavn(), person.getEtternavn()));
+        return DokumentPerson.builder().navn(navn).id(person.fnr().getFnr()).build();
     }
 
     private MottattDato mottattDato() {

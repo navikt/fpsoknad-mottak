@@ -638,9 +638,8 @@ public class ForeldrepengeInfoRenderer {
 
     private List<String> søker(Person søker) {
         return asList(
-                textFormatter.navn(
-                        new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn(), søker.getKjønn())),
-                textFormatter.fromMessageSource("fødselsnummerinline", søker.getFnr().getFnr()));
+                textFormatter.navn(new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())),
+                textFormatter.fromMessageSource("fødselsnummerinline", søker.fnr().getFnr()));
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
