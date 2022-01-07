@@ -112,8 +112,9 @@ public class InnsynTjeneste implements Innsyn {
         var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) annenPart.personDetaljer();
         var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
         var navn = oppslag.navn(fødselsnummer.getFnr());
+        var kjønn = navn.getKjønn() != null ? Kjønn.valueOf(navn.getKjønn().name()) : Kjønn.U;
         var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
-            navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn(), Kjønn.valueOf(navn.getKjønn().name()), null);
+            navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn(), kjønn, null);
         return new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart(person);
     }
 
