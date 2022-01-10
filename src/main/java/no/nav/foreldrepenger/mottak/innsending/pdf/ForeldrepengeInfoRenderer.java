@@ -225,7 +225,7 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private static List<EnkeltArbeidsforhold> sorterArbeidsforhold(List<EnkeltArbeidsforhold> arbeidsforhold) {
-        Collections.sort(arbeidsforhold, (o1, o2) -> {
+        arbeidsforhold.sort((o1, o2) -> {
             if (o1.getFrom() != null && o2.getFrom() != null) {
                 return o1.getFrom().compareTo(o2.getFrom());
             }
@@ -235,10 +235,10 @@ public class ForeldrepengeInfoRenderer {
     }
 
     private static List<UtenlandskArbeidsforhold> sorterUtelandske(List<UtenlandskArbeidsforhold> arbeidsforhold) {
-        Collections.sort(arbeidsforhold, (o1, o2) -> {
+        arbeidsforhold.sort((o1, o2) -> {
             if (o1.getPeriode() != null && o2.getPeriode() != null
-                    && o1.getPeriode().fom() != null
-                    && o2.getPeriode().fom() != null) {
+                && o1.getPeriode().fom() != null
+                && o2.getPeriode().fom() != null) {
                 return o1.getPeriode().fom().compareTo(o2.getPeriode().fom());
             }
             return 0;
