@@ -14,12 +14,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Barn;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Sak;
 import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
@@ -83,19 +83,19 @@ public class InnsynTjeneste implements Innsyn {
         return new FpSak(sak.saksnummer(), sak.sakAvsluttet(), sak.kanSøkeOmEndring(),
             sak.sakTilhørerMor(), sak.gjelderAdopsjon(), sak.rettighetType(),
             berik(sak.annenPart()), sak.familiehendelse(), sak.gjeldendeVedtak(), sak.åpenBehandling(),
-            barn(sak.barn(), søker.getBarn()), sak.dekningsgrad());
+            barn(sak.barn(), søker.barn()), sak.dekningsgrad());
     }
 
-    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn, Set<BarnDTO> søkerBarn) {
+    private Set<PersonDetaljer> barn(Set<PersonDetaljer> barn, Set<Barn> søkerBarn) {
         return barn.stream()
             .map(b -> {
                 var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) b;
                 var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
                 return søkerBarn.stream()
-                    .filter(sb -> sb.getFnr().getFnr().equals(fødselsnummer.getFnr()))
+                    .filter(sb -> sb.fnr().getFnr().equals(fødselsnummer.getFnr()))
                     .findFirst()
-                    .map(bb -> new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(bb.getFnr().getFnr()),
-                            bb.getNavn().getFornavn(), bb.getNavn().getMellomnavn(), bb.getNavn().getEtternavn(), Kjønn.U, bb.getFødselsdato()))
+                    .map(bb -> new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(bb.fnr().getFnr()),
+                            bb.navn().fornavn(), bb.navn().mellomnavn(), bb.navn().etternavn(), Kjønn.U, bb.fødselsdato()))
                     .orElseGet(() -> {
                         LOG.warn("Barn med aktørId {} ikke i resultat fra pdl query basert på knytning til søker", aktørId.value());
                         return new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
@@ -112,9 +112,8 @@ public class InnsynTjeneste implements Innsyn {
         var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) annenPart.personDetaljer();
         var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
         var navn = oppslag.navn(fødselsnummer.getFnr());
-        var kjønn = navn.getKjønn() != null ? Kjønn.valueOf(navn.getKjønn().name()) : Kjønn.U;
         var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
-            navn.getFornavn(), navn.getMellomnavn(), navn.getEtternavn(), kjønn, null);
+            navn.fornavn(), navn.mellomnavn(), navn.etternavn(), null, null);
         return new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart(person);
     }
 

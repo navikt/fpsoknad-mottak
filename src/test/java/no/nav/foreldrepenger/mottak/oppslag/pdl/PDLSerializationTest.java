@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.oppslag.pdl;
 
 import static no.nav.foreldrepenger.common.domain.felles.Kjønn.K;
-import static no.nav.foreldrepenger.common.domain.felles.Kjønn.M;
 import static no.nav.foreldrepenger.common.domain.felles.TestUtils.serialize;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.BARN;
 import static no.nav.foreldrepenger.mottak.oppslag.pdl.PDLForelderBarnRelasjon.PDLRelasjonsRolle.FAR;
@@ -28,15 +27,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neovisionaries.i18n.CountryCode;
 
 import no.nav.foreldrepenger.common.domain.AktørId;
+import no.nav.foreldrepenger.common.domain.Barn;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.AnnenPart;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.Kjønn;
+import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
-import no.nav.foreldrepenger.common.oppslag.pdl.dto.BarnDTO;
 import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
 import no.nav.foreldrepenger.mottak.oppslag.pdl.PDLAdresseBeskyttelse.PDLAdresseGradering;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 
 
 @ExtendWith(SpringExtension.class)
@@ -79,7 +79,7 @@ class PDLSerializationTest {
 
     @Test
     void testNavnMapping() {
-        assertEquals(PDLMapper.navnFra(Set.of(kvinnePDLNavn()), pdlKvinne()), kvinneNavn());
+        assertEquals(PDLMapper.navnFra(Set.of(kvinnePDLNavn())), kvinneNavn());
     }
 
     @Test
@@ -118,7 +118,7 @@ class PDLSerializationTest {
 
     @Test
     void testBarnMapping() {
-        assertEquals(PDLMapper.barnFra(ID_SØKER, pdlBarn().withId(ID_BARN)), barn());
+        assertEquals(PDLMapper.barnFra(pdlBarn().withId(ID_BARN)), barn());
     }
 
     @Test
@@ -143,7 +143,8 @@ class PDLSerializationTest {
 
     @Test
     void testSøkerDTO() {
-        assertEquals(søker(), PDLMapper.map(ID_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
+        assertEquals(søker(), PDLMapper
+            .map(ID_SØKER, AKTØR_SØKER, BOKMÅL, bankkonto(), Set.of(pdlBarn().withId(ID_BARN)), pdlSøker()));
     }
 
     @Test
@@ -151,17 +152,18 @@ class PDLSerializationTest {
         assertEquals(PDLMapper.annenPartFra(pdlAnnenPart()), annenPart());
     }
 
-    private static SøkerDTO søker() {
-        return SøkerDTO.builder()
-                .bankkonto(bankkonto())
-                .barn(Set.of(barn()))
-                .målform(BOKMÅL.name())
-                .fødselsdato(MORFØDT)
-                .id(FNR_SØKER)
-                .kjønn(K)
-                .landKode(CountryCode.NO)
-                .navn(kvinneNavn())
-                .build();
+    private static Person søker() {
+        return Person.builder()
+            .fnr(FNR_SØKER)
+            .aktørId(AKTØR_SØKER)
+            .målform(BOKMÅL)
+            .bankkonto(bankkonto())
+            .barn(Set.of(barn()))
+            .fødselsdato(MORFØDT)
+            .kjønn(K)
+            .land(CountryCode.NO)
+            .navn(kvinneNavn())
+            .build();
     }
 
     private static PDLSøker pdlSøker() {
@@ -185,7 +187,7 @@ class PDLSerializationTest {
     }
 
     private static AnnenPart annenPart() {
-        return new AnnenPart(FNR_ANNEN, AKTØR_ANNEN, mannsNavn(), ANNENFØDT);
+        return new AnnenPart(FNR_ANNEN, null, mannsNavn(), ANNENFØDT);
     }
 
     private static PDLBarn pdlBarn() {
@@ -207,14 +209,8 @@ class PDLSerializationTest {
         return new PDLForelderBarnRelasjon(ID_ANNEN, FAR, BARN);
     }
 
-    private static BarnDTO barn() {
-        return BarnDTO.builder()
-                .fnr(FNR_BARN)
-                .fnrSøker(FNR_SØKER)
-                .fødselsdato(BARNFØDT)
-                .navn(barnsNavn())
-                .annenPart(annenPart())
-                .build();
+    private static Barn barn() {
+        return new Barn(FNR_BARN, BARNFØDT, barnsNavn(), Kjønn.M, annenPart());
     }
 
     private static PDLAdresseBeskyttelse beskyttelse() {
@@ -238,15 +234,15 @@ class PDLSerializationTest {
     }
 
     private static Navn mannsNavn() {
-        return new Navn("Ole", "Olemann", "Olsen", M);
+        return new Navn("Ole", "Olemann", "Olsen");
     }
 
     private static Navn barnsNavn() {
-        return new Navn("Barn", "Barnslig", "Barnesen", M);
+        return new Navn("Barn", "Barnslig", "Barnesen");
     }
 
     private static Navn kvinneNavn() {
-        return new Navn("Mor", "Mellommor", "Morsen", K);
+        return new Navn("Mor", "Mellommor", "Morsen");
     }
 
     private static PDLNavn kvinnePDLNavn() {

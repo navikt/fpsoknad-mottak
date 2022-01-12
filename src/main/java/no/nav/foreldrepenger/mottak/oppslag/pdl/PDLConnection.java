@@ -34,11 +34,11 @@ import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
 import no.nav.foreldrepenger.common.domain.felles.Bankkonto;
+import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.oppslag.dkif.Målform;
 import no.nav.foreldrepenger.mottak.http.PingEndpointAware;
 import no.nav.foreldrepenger.mottak.oppslag.dkif.DKIFConnection;
 import no.nav.foreldrepenger.mottak.oppslag.kontonummer.KontonummerConnection;
-import no.nav.foreldrepenger.mottak.oppslag.pdl.dto.SøkerDTO;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
@@ -67,21 +67,17 @@ public class PDLConnection implements PingEndpointAware {
         this.errorHandler = errorHandler;
     }
 
-    public SøkerDTO hentSøker() {
+    public Person hentSøker() {
         return Optional.ofNullable(oppslagSøker(tokenUtil.getSubject()))
                 .map(s -> map(tokenUtil.getSubject(), aktøridFor(tokenUtil.fnr()), målform(), kontonr(), barn(s), s))
                 .orElse(null);
-    }
-
-    public Navn navnFor() {
-        return navnFor(tokenUtil.getSubject());
     }
 
     public Navn navnFor(String id) {
         return Optional.ofNullable(oppslag(() -> systemClient.post(NAVN_QUERY, idFra(id), PDLWrappedNavn.class).block(), "navn"))
                 .flatMap(navn -> safeStream(navn.navn())
                         .findFirst()
-                        .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn(), null)))
+                        .map(n -> new Navn(n.fornavn(), n.mellomnavn(), n.etternavn())))
                 .orElse(null);
     }
 

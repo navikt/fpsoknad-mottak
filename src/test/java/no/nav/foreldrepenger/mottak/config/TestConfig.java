@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Primary;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.domain.Navn;
-import no.nav.foreldrepenger.common.domain.felles.Kjønn;
 import no.nav.foreldrepenger.common.domain.felles.Person;
 import no.nav.foreldrepenger.common.domain.felles.TestUtils;
 import no.nav.foreldrepenger.common.oppslag.Oppslag;
@@ -47,7 +46,7 @@ public class TestConfig {
 
             @Override
             public Navn navn(String fnr) {
-                return new Navn("Ole", "Mellomnavn", "Olsen", Kjønn.M);
+                return new Navn("Ole", "Mellomnavn", "Olsen");
             }
         };
     }
