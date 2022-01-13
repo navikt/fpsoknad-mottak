@@ -249,11 +249,10 @@ public class ForeldrepengeInfoRenderer {
     public float frilans(Frilans frilans, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("frilans"), cos, y);
         List<String> attributter = new ArrayList<>();
-        if (frilans.getPeriode().tom() == null) {
+        if (frilans.isJobberFremdelesSomFrilans()) {
             addIfSet(attributter, "frilanspågår", textFormatter.dato(frilans.getPeriode().fom()));
         } else {
-            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().fom()),
-                    textFormatter.dato(frilans.getPeriode().tom())));
+            attributter.add(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().fom())));
         }
         attributter.add(txt("fosterhjem", jaNei(frilans.isHarInntektFraFosterhjem())));
         attributter.add(txt("nyoppstartet", jaNei(frilans.isNyOppstartet())));
