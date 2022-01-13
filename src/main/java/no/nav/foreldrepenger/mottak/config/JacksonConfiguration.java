@@ -20,8 +20,7 @@ public class JacksonConfiguration {
     public ObjectMapper customObjectmapper() {
         return DefaultJsonMapper.MAPPER
             .registerModule(new JsonComponentModule()) // Spring Bean and Jackson Module to register @JsonComponent annotated beans
-            .addMixIn(OAuth2AccessTokenResponse.class, IgnoreUnknownMixin.class)
-            .addMixIn(Frilans.class, IgnoreUnknownMixin.class);
+            .addMixIn(OAuth2AccessTokenResponse.class, IgnoreUnknownMixin.class);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
