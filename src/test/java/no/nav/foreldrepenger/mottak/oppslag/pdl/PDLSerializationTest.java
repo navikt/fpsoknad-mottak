@@ -48,9 +48,9 @@ class PDLSerializationTest {
     private static final String ID_SØKER = "22222222222";
     private static final String ID_BARN = "11111111111";
     private static final Logger LOG = LoggerFactory.getLogger(PDLSerializationTest.class);
-    private static final Fødselsnummer FNR_BARN = Fødselsnummer.valueOf(ID_BARN);
-    private static final Fødselsnummer FNR_SØKER = Fødselsnummer.valueOf(ID_SØKER);
-    private static final Fødselsnummer FNR_ANNEN = Fødselsnummer.valueOf(ID_ANNEN);
+    private static final Fødselsnummer FNR_BARN = new Fødselsnummer(ID_BARN);
+    private static final Fødselsnummer FNR_SØKER = new Fødselsnummer(ID_SØKER);
+    private static final Fødselsnummer FNR_ANNEN = new Fødselsnummer(ID_ANNEN);
 
     private static final LocalDate BARNFØDT = LocalDate.now().minusYears(1);
     private static final LocalDate ANNENFØDT = LocalDate.now().minusYears(30);

@@ -36,7 +36,7 @@ class PDLMapper {
 
     static Person map(String fnrSøker, AktørId aktørId, Målform målform, Bankkonto bankkonto, Set<PDLBarn> barn, PDLSøker søker) {
         return Person.builder()
-            .fnr(Fødselsnummer.valueOf(fnrSøker))
+            .fnr(new Fødselsnummer(fnrSøker))
             .aktørId(aktørId)
             .land(landkodeFra(søker.getStatsborgerskap()))
             .fødselsdato(fødselsdatoFra(søker.getFødselsdato()))
@@ -67,14 +67,14 @@ class PDLMapper {
 
     static Barn barnFra(PDLBarn barn) {
         return Optional.ofNullable(barn)
-            .map(b -> new Barn(Fødselsnummer.valueOf(b.getId()), fødselsdatoFra(b.getFødselsdato()),
+            .map(b -> new Barn(new Fødselsnummer(b.getId()), fødselsdatoFra(b.getFødselsdato()),
                 navnFra(b.getNavn()), kjønnFra(barn.getKjønn()),  annenPartFra(b.getAnnenPart())))
             .orElse(null);
     }
 
     static AnnenPart annenPartFra(PDLAnnenPart annen) {
         return Optional.ofNullable(annen)
-            .map(a -> new AnnenPart(Fødselsnummer.valueOf(annen.getId()), null, navnFra(annen.getNavn()),
+            .map(a -> new AnnenPart(new Fødselsnummer(annen.getId()), null, navnFra(annen.getNavn()),
                 fødselsdatoFra(annen.getFødselsdato())))
             .orElse(null);
     }

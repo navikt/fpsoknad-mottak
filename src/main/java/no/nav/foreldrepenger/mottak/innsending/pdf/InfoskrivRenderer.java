@@ -84,7 +84,7 @@ public class InfoskrivRenderer {
         y -= renderer.addLeftHeading(txt("infoskriv.opplysningerfrasøknad", navn), cos, y);
         y -= addTinyBlankLine();
         List<String> opplysninger = new ArrayList<>();
-        opplysninger.add(txt("infoskriv.arbeidstaker", søker.fnr().getFnr()));
+        opplysninger.add(txt("infoskriv.arbeidstaker", søker.fnr().value()));
         opplysninger.add(txt("infoskriv.ytelse"));
         opplysninger.add(txt("infoskriv.startdato", formattertDato(søknad.getFørsteUttaksdag())));
         y -= renderer.addLinesOfRegularText(opplysninger, cos, y);

@@ -92,13 +92,13 @@ public class InnsynTjeneste implements Innsyn {
                 var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) b;
                 var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
                 return søkerBarn.stream()
-                    .filter(sb -> sb.fnr().getFnr().equals(fødselsnummer.getFnr()))
+                    .filter(sb -> sb.fnr().equals(fødselsnummer))
                     .findFirst()
-                    .map(bb -> new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(bb.fnr().getFnr()),
+                    .map(bb -> new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(bb.fnr().value()),
                             bb.navn().fornavn(), bb.navn().mellomnavn(), bb.navn().etternavn(), Kjønn.U, bb.fødselsdato()))
                     .orElseGet(() -> {
                         LOG.warn("Barn med aktørId {} ikke i resultat fra pdl query basert på knytning til søker", aktørId.value());
-                        return new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
+                        return new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.value()),
                             "Barn", "", "Barnesen", Kjønn.U, LocalDate.now());
                     });
             })
@@ -111,8 +111,8 @@ public class InnsynTjeneste implements Innsyn {
         }
         var aktørId = (no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId) annenPart.personDetaljer();
         var fødselsnummer = oppslag.fnr(new AktørId(aktørId.value()));
-        var navn = oppslag.navn(fødselsnummer.getFnr());
-        var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.getFnr()),
+        var navn = oppslag.navn(fødselsnummer.value());
+        var person = new Person(new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer(fødselsnummer.value()),
             navn.fornavn(), navn.mellomnavn(), navn.etternavn(), null, null);
         return new no.nav.foreldrepenger.mottak.innsyn.fpinfov2.AnnenPart(person);
     }
@@ -186,7 +186,7 @@ public class InnsynTjeneste implements Innsyn {
             LOG.trace(CONFIDENTIAL, "Henter annen part fnr fra {}", aktørId);
             Fødselsnummer fnr = oppslag.fnr(aktørId);
             LOG.trace(CONFIDENTIAL, "Fikk {}", fnr);
-            return new AnnenPart(fnr, aktørId, oppslag.navn(fnr.getFnr()), null);
+            return new AnnenPart(fnr, aktørId, oppslag.navn(fnr.value()), null);
         }
         return null;
     }

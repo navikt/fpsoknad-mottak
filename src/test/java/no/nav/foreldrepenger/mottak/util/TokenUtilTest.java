@@ -51,8 +51,8 @@ class TokenUtilTest {
     void testOK() {
         when(claims.get(eq("exp")))
                 .thenReturn(toDate(LocalDateTime.now().minusHours(1)).toInstant().getEpochSecond());
-        when(claims.getSubject()).thenReturn(FNR.getFnr());
-        assertEquals(FNR.getFnr(), tokenHelper.autentisertBruker());
+        when(claims.getSubject()).thenReturn(FNR.value());
+        assertEquals(FNR.value(), tokenHelper.autentisertBruker());
         assertTrue(tokenHelper.erAutentisert());
     }
 

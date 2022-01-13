@@ -54,7 +54,7 @@ import no.nav.security.token.support.test.JwtTokenGenerator;
         "sak.securitytokenservice.username=myuser" })
 class StsAndSakClientTest {
 
-    private static final Fødselsnummer FNR = Fødselsnummer.valueOf("11111111111");
+    private static final Fødselsnummer FNR = new Fødselsnummer("11111111111");
     private static final String ID = "222222222";
     private static final AktørId AKTOR = new AktørId(ID);
     private static final String SIGNED_JWT = JwtTokenGenerator.createSignedJWT("22222222222").serialize();

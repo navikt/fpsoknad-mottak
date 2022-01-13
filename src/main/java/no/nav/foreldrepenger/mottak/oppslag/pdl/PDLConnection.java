@@ -93,7 +93,7 @@ public class PDLConnection implements PingEndpointAware {
         return Optional.ofNullable(aktørId)
                 .map(this::oppslagId)
                 .map(id -> mapIdent(id, FOLKEREGISTERIDENT))
-                .map(Fødselsnummer::valueOf)
+                .map(Fødselsnummer::new)
                 .orElse(null);
 
     }
@@ -116,7 +116,7 @@ public class PDLConnection implements PingEndpointAware {
     }
 
     private PDLIdenter oppslagId(Fødselsnummer id) {
-        return oppslagId(id.getFnr(), "fødselsnummer");
+        return oppslagId(id.value(), "fødselsnummer");
     }
 
     private PDLIdenter oppslagId(AktørId id) {
