@@ -39,7 +39,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     @Cacheable(cacheNames = "organisasjon")
     public String navn(String orgnr) {
         if (isFnr(orgnr)) {
-            return personNavn(Fødselsnummer.valueOf(orgnr));
+            return personNavn(new Fødselsnummer(orgnr));
         }
         if (isOrgnr(orgnr)) {
             return orgNavn(Orgnummer.valueOf(orgnr));
@@ -81,7 +81,7 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private String personNavn(Fødselsnummer fnr) {
         LOG.info("Henter personnavn for {}", fnr);
         try {
-            var n = oppslag.navnFor(fnr.getFnr());
+            var n = oppslag.navnFor(fnr.value());
             var navn = Optional.ofNullable(n)
                     .map(Navn::navn)
                     .orElse(PRIVAT_ARBEIDSGIVER);

@@ -132,7 +132,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
         List<FeltBlokk> info = new ArrayList<>();
         info.add(new FeltBlokk(txt("nasjonalitet"), txt("nasjonalitet.norsk")));
         info.add(new FeltBlokk(txt("navn"), norskForelder.getNavn()));
-        info.add(new FeltBlokk(txt("fødselsnummer"), norskForelder.getFnr().getFnr()));
+        info.add(new FeltBlokk(txt("fødselsnummer"), norskForelder.getFnr().value()));
         return info;
     }
 
@@ -249,7 +249,7 @@ public class EngangsstønadPdfGenerator implements MappablePdfGenerator {
     private DokumentPerson personFra(Person person) {
         var navn = textFormatter.sammensattNavn(
             new Navn(person.getFornavn(), person.getMellomnavn(), person.getEtternavn()));
-        return DokumentPerson.builder().navn(navn).id(person.fnr().getFnr()).build();
+        return DokumentPerson.builder().navn(navn).id(person.fnr().value()).build();
     }
 
     @Override

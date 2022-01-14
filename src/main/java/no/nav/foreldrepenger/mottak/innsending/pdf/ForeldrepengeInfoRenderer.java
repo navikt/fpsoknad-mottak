@@ -638,7 +638,7 @@ public class ForeldrepengeInfoRenderer {
     private List<String> søker(Person søker) {
         return asList(
                 textFormatter.navn(new Navn(søker.getFornavn(), søker.getMellomnavn(), søker.getEtternavn())),
-                textFormatter.fromMessageSource("fødselsnummerinline", søker.fnr().getFnr()));
+                textFormatter.fromMessageSource("fødselsnummerinline", søker.fnr().value()));
     }
 
     private List<String> utenlandskForelder(AnnenForelder annenForelder) {
@@ -659,7 +659,7 @@ public class ForeldrepengeInfoRenderer {
                 Optional.ofNullable(norskForelder.getNavn())
                         .map(n -> txt("navninline", n))
                         .orElse("Ukjent"),
-                txt("fnr", norskForelder.getFnr().getFnr()));
+                txt("fnr", norskForelder.getFnr().value()));
     }
 
     private List<String> arbeidsforhold(EnkeltArbeidsforhold arbeidsforhold) {

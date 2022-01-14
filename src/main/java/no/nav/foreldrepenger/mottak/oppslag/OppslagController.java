@@ -51,7 +51,7 @@ public class OppslagController {
 
     @GetMapping("/navnfnr")
     public Navn navnfnr(@RequestParam(name = "fnr") Fødselsnummer fnr) {
-        return oppslag.navn(fnr.getFnr());
+        return oppslag.navn(fnr.value());
     }
 
     @GetMapping("/person")
