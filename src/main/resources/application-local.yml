@@ -9,14 +9,6 @@ sts:
     username: vtp
     password: vtp
 
-sak:
-    securitytokenservice:
-        username: vtp
-        password : vtp
-        url: http://localhost:8060/soap/SecurityTokenServiceProvider/
-    saker:
-        url: http://localhost:8060/rest/sak/api/v1/saker
-
 securitytokenservice:
     username: vtp
     password : vtp
