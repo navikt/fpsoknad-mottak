@@ -64,6 +64,7 @@ public class MottakController {
 
     @GetMapping("/saker")
     public List<Sak> saker() {
+        LOG.info("saker i mottakcontroller kalt");
         return innsyn.saker(oppslag.aktørId());
     }
 

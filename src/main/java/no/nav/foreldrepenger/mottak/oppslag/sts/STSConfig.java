@@ -18,7 +18,6 @@ import no.nav.foreldrepenger.mottak.oppslag.AbstractConfig;
 @ConfigurationProperties(prefix = "sts")
 public class STSConfig extends AbstractConfig {
 
-    private static final String DEFAULT_BASE_URI = "http://must.be.set";
     private static final String GRANT_TYPE = "grant_type";
     private static final String DEFAULT_PATH = "/rest/v1/sts/token";
     private static final String DEFAULT_SLACK = "20s";
@@ -30,10 +29,13 @@ public class STSConfig extends AbstractConfig {
     private final String stsPath;
 
     @ConstructorBinding
-    public STSConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri,
-            @DefaultValue(DEFAULT_SLACK) Duration slack, String username, String password,
-            @DefaultValue(PING_PATH) String pingPath, @DefaultValue("true") boolean enabled,
-            @DefaultValue(DEFAULT_PATH) String stsPath) {
+    public STSConfig(URI baseUri,
+                     @DefaultValue(DEFAULT_SLACK) Duration slack,
+                     String username,
+                     String password,
+                     @DefaultValue(PING_PATH) String pingPath,
+                     @DefaultValue("true") boolean enabled,
+                     @DefaultValue(DEFAULT_PATH) String stsPath) {
         super(baseUri, pingPath, enabled);
         this.stsPath = stsPath;
         this.slack = slack;

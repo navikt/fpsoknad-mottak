@@ -61,10 +61,6 @@ organisasjon:
 sts:
   base-uri: https://security-token-service.nais.preprod.local
 
-sak:
-  saker:
-     url: http://sak-q1.teamdokumenthandtering/api/v1/saker
-
 securitytokenservice:
     url: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
 
