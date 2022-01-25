@@ -1,4 +1,7 @@
 {
-  "ingresses":  ["https://fpsoknad-mottak.dev.adeo.no","https://fpsoknad-mottak.dev.nav.no"]
-
+  "ingresses":  [
+      "https://fpsoknad-mottak.dev.adeo.no",
+      "https://fpsoknad-mottak.dev.nav.no",
+      "https://fpsoknad-mottak.dev-fss-pub.nais.io"
+  ]
 }
