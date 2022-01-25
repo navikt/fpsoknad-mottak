@@ -7,21 +7,18 @@ import java.util.List;
 import no.nav.foreldrepenger.common.domain.AktørId;
 import no.nav.foreldrepenger.common.domain.Fødselsnummer;
 import no.nav.foreldrepenger.common.innsending.SøknadType;
-import no.nav.foreldrepenger.common.util.StringUtil;
 
-public class InnsendingHendelse {
-
-    private final AktørId aktørId;
-    private final Fødselsnummer fnr;
-    private final String journalId;
-    private final String referanseId;
-    private final String dialogId;
-    private final String saksnummer;
-    private final SøknadType hendelse;
-    private final List<String> opplastedeVedlegg;
-    private final List<String> ikkeOpplastedeVedlegg;
-    private final LocalDateTime innsendt;
-    private final LocalDate førsteBehandlingsdato;
+record InnsendingHendelse(AktørId aktørId,
+                          Fødselsnummer fnr,
+                          String journalId,
+                          String referanseId,
+                          String dialogId,
+                          String saksnummer,
+                          SøknadType hendelse,
+                          List<String> opplastedeVedlegg,
+                          List<String> ikkeOpplastedeVedlegg,
+                          LocalDateTime innsendt,
+                          LocalDate førsteBehandlingsdato) {
 
     public InnsendingHendelse(AktørId aktørId,
                               Fødselsnummer fnr,
@@ -31,69 +28,9 @@ public class InnsendingHendelse {
                               String referanseId,
                               LocalDate førsteBehandlingsdato,
                               String saksnummer) {
-        this.aktørId = aktørId;
-        this.fnr = fnr;
-        this.journalId = journalId;
-        this.referanseId = referanseId;
-        this.dialogId = dialogId;
-        this.saksnummer = saksnummer;
-        this.hendelse = konvolutt.getType();
-        this.opplastedeVedlegg = konvolutt.getOpplastedeVedlegg();
-        this.ikkeOpplastedeVedlegg = konvolutt.getIkkeOpplastedeVedlegg();
-        this.førsteBehandlingsdato = førsteBehandlingsdato;
-        this.innsendt = konvolutt.getOpprettet();
+        this(aktørId, fnr, journalId, referanseId, dialogId, saksnummer, konvolutt.getType(), konvolutt.getOpplastedeVedlegg(),
+            konvolutt.getIkkeOpplastedeVedlegg(), konvolutt.getOpprettet(), førsteBehandlingsdato);
     }
 
-    public Fødselsnummer getFnr() {
-        return fnr;
-    }
-
-    public LocalDateTime getInnsendt() {
-        return innsendt;
-    }
-
-    public String getDialogId() {
-        return dialogId;
-    }
-
-    public LocalDate getFørsteBehandlingsdato() {
-        return førsteBehandlingsdato;
-    }
-
-    public AktørId getAktørId() {
-        return aktørId;
-    }
-
-    public String getJournalId() {
-        return journalId;
-    }
-
-    public String getReferanseId() {
-        return referanseId;
-    }
-
-    public String getSaksnummer() {
-        return saksnummer;
-    }
-
-    public SøknadType getHendelse() {
-        return hendelse;
-    }
-
-    public List<String> getOpplastedeVedlegg() {
-        return opplastedeVedlegg;
-    }
-
-    public List<String> getIkkeOpplastedeVedlegg() {
-        return ikkeOpplastedeVedlegg;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[aktørId=" + aktørId + ",fnr=" + StringUtil.partialMask(fnr.value())
-            + ", journalId=" + journalId + ", referanseId=" + referanseId + ", dialogId=" + dialogId + ", saksnummer="
-            + saksnummer + ", hendelse=" + hendelse + ", opplastedeVedlegg=" + opplastedeVedlegg
-            + ", ikkeOpplastedeVedlegg=" + ikkeOpplastedeVedlegg + ", innsendt=" + innsendt + ", førsteBehandlingsdato=" + førsteBehandlingsdato + "]";
-    }
 
 }
