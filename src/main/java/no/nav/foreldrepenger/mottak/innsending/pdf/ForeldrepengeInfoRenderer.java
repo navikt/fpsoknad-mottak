@@ -101,16 +101,16 @@ public class ForeldrepengeInfoRenderer {
         if (annenForelder instanceof NorskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, norskForelder(NorskForelder.class.cast(annenForelder)), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
+                    txt("aleneomsorg", jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
         } else if (annenForelder instanceof UtenlandskForelder) {
             y -= renderer.addLinesOfRegularText(INDENT, utenlandskForelder(annenForelder), cos, y);
             y -= renderer.addLineOfRegularText(INDENT,
-                    txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())), cos, y);
+                    txt("aleneomsorg", jaNei(rettigheter.harAleneOmsorgForBarnet())), cos, y);
         } else {
             y -= renderer.addLineOfRegularText(INDENT, "Jeg kan ikke oppgi navnet til den andre forelderen", cos, y);
         }
         if (!(annenForelder instanceof UkjentForelder)) {
-            y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.isHarAnnenForelderRett())), cos,
+            y -= renderer.addLineOfRegularText(INDENT, txt("harrett", jaNei(rettigheter.harAnnenForelderRett())), cos,
                     y);
             y -= renderer.addLineOfRegularText(INDENT, txt("informert", jaNei(erAnnenForlderInformert)), cos, y);
         }
@@ -120,10 +120,10 @@ public class ForeldrepengeInfoRenderer {
 
     public float rettigheter(Rettigheter rettigheter, FontAwareCos cos, float y) throws IOException {
         y -= renderer.addLeftHeading(txt("rettigheter"), cos, y);
-        y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.isHarAleneOmsorgForBarnet())),
+        y -= renderer.addLineOfRegularText(INDENT, txt("aleneomsorg", jaNei(rettigheter.harAleneOmsorgForBarnet())),
                 cos, y);
         y -= renderer.addLineOfRegularText(INDENT, txt("omsorgiperiodene") +
-                jaNei(rettigheter.isHarAleneOmsorgForBarnet()), cos, y);
+                jaNei(rettigheter.harAleneOmsorgForBarnet()), cos, y);
         return y;
     }
 

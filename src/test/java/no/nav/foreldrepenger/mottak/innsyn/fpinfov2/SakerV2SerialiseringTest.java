@@ -1,25 +1,28 @@
 package no.nav.foreldrepenger.mottak.innsyn.fpinfov2;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Kjønn;
-import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Person;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import javax.inject.Inject;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import no.nav.foreldrepenger.mottak.config.JacksonConfiguration;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.AktørId;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Fødselsnummer;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Kjønn;
+import no.nav.foreldrepenger.mottak.innsyn.fpinfov2.persondetaljer.Person;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = JacksonConfiguration.class)
@@ -62,7 +65,7 @@ public class SakerV2SerialiseringTest {
         var åpenBehandling = new FpÅpenBehandling(BehandlingTilstand.UNDER_BEHANDLING, Set.of(new Søknadsperiode(LocalDate.of(2021, 11, 1),
             LocalDate.of(2021, 11, 13), KontoType.FORELDREPENGER)));
         var fpVedtak = new FpVedtak(List.of(vedtakPerioder));
-        var fpSak = new FpSak(saksnummer, false, false, false, false,
+        var fpSak = new FpSak(saksnummer, false, false, false, false,false,
             RettighetType.ALENEOMSORG, annenPart, familieHendelse, fpVedtak, åpenBehandling, Set.of(barn),
             Dekningsgrad.ÅTTI);
         var saker = new Saker(Set.of(fpSak), Set.of(), Set.of());
