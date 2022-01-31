@@ -58,16 +58,14 @@ public class OrganisasjonConnection extends AbstractWebClientConnection {
     private String orgNavn(Orgnummer orgnr) {
         LOG.info("Henter organisasjonsnavn for {}", orgnr.maskert());
         try {
-            var navn = Optional.ofNullable(webClient
+            var navn = webClient
                     .get()
                     .uri(b -> cfg.getOrganisasjonURI(b, orgnr.value()))
                     .accept(APPLICATION_JSON)
                     .retrieve()
-                    .toEntity(Map.class)
-                    .block()
-                    .getBody())
+                    .bodyToMono(Map.class)
+                    .blockOptional()
                     .map(OrganisasjonMapper::tilOrganisasjonsnavn)
-                    .filter(Objects::nonNull)
                     .orElse(orgnr.value());
             LOG.info("Hentet organisasjonsnavn for {} OK", orgnr.maskert());
             LOG.trace("Organisasjonsnavn for {} er {}", orgnr, navn);
