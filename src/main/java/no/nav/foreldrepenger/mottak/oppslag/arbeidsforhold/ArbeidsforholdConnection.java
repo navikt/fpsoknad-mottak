@@ -44,7 +44,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
 
     List<EnkeltArbeidsforhold> hentArbeidsforhold() {
         if (cfg.isBrukTokenX() && tokenUtil.harTokenFor(TOKENX)) {
-            LOG.trace("Henter arbeidsforhold med TokenX");
+            LOG.info("Henter arbeidsforhold med TokenX");
             return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), webClientTokenX);
         }
         return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), webClient);

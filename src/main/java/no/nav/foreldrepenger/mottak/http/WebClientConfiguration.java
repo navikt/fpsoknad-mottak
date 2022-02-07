@@ -161,6 +161,7 @@ public class WebClientConfiguration {
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken());
             if (tokenUtil.erAutentisert()) {
                 if (tokenUtil.harTokenFor(TOKENX)) {
+                    LOG.info("Bruker er autentisert og TokenX-token er mottatt! Kaller aareg med et systembrukertoken");
                     // Kaller aareg på vegne av system uten bruker token
                     return next.exchange(builder
                         .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
