@@ -74,6 +74,12 @@ public class TokenUtil {
                 .orElse(null);
     }
 
+    public boolean harTokenFor(String issuer) {
+        return Optional.ofNullable(context())
+            .map(s -> s.hasTokenFor(issuer))
+            .orElse(false);
+    }
+
     public String autentisertBruker() {
         return Optional.ofNullable(getSubject())
                 .orElseThrow(unauthenticated("Fant ikke subject, antagelig ikke autentisert"));

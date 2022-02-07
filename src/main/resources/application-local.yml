@@ -45,6 +45,12 @@ no.nav:
                         authentication:
                             client-id: fpsoknad-mottak
                             client-jwk: src/test/resources/tokenx/jwk.json
+                    aareg-service:
+                        well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
+                        token-exchange:
+                            audience: local:teamforeldrepenger:aareg-services-nais
+                        authentication:
+                            client-id: fpsoknad-mottak
                     pdl-api:
                         well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                         token-exchange:

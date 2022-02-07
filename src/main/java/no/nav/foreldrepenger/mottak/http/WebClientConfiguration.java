@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -52,7 +53,8 @@ public class WebClientConfiguration {
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
-    public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
+    public static final String ARBEIDSFORHOLD_LOGINSERVICE = "ARBEIDSFORHOLD_LOGINSERVICE";
+    public static final String ARBEIDSFORHOLD_TOKENX = "ARBEIDSFORHOLD_TOKENX";
     public static final String ORGANISASJON = "ORGANISASJON";
     public static final String KONTONR = "KONTONR";
 
@@ -91,13 +93,23 @@ public class WebClientConfiguration {
                 .build();
     }
 
-    @Qualifier(ARBEIDSFORHOLD)
     @Bean
+    @Qualifier(ARBEIDSFORHOLD_LOGINSERVICE)
     public WebClient webClientArbeidsforhold(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(authenticatingFilterFunction(sts, tokenUtil))
+                .build();
+    }
+
+    @Bean
+    @Qualifier(ARBEIDSFORHOLD_TOKENX)
+    public WebClient webClientArbeidsforholdTokenX(Builder builder, ArbeidsforholdConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder
+                .baseUrl(cfg.getBaseUri().toString())
+                .filter(correlatingFilterFunction())
+                .filter(tokenXFilterFunction)
                 .build();
     }
 
@@ -148,6 +160,12 @@ public class WebClientConfiguration {
             var builder = ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken());
             if (tokenUtil.erAutentisert()) {
+                if (tokenUtil.harTokenFor(TOKENX)) {
+                    // Kaller aareg på vegne av system uten bruker token
+                    return next.exchange(builder
+                        .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
+                        .build());
+                }
                 return next.exchange(
                         builder.header(AUTHORIZATION, tokenUtil.bearerToken())
                                 .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())

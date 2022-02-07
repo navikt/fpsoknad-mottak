@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.http;
 
 import static java.util.function.Predicate.not;
-import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static org.springframework.retry.RetryContext.NAME;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.getField;
@@ -13,13 +12,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.Environment;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
@@ -29,21 +24,17 @@ import org.springframework.web.client.RestOperations;
 import com.google.common.base.Splitter;
 
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
-import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.validation.interceptor.BearerTokenClientHttpRequestInterceptor;
 
 @Configuration
-public class RestClientConfiguration implements EnvironmentAware {
+public class RestClientConfiguration {
     private static final Duration READ_TIMEOUT = Duration.ofSeconds(30);
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
     private static final Logger LOG = LoggerFactory.getLogger(RestClientConfiguration.class);
-    private Environment env;
 
     @Bean
-    @Primary
-    public RestOperations nonTokenXTemplate(RestTemplateBuilder b, ClientHttpRequestInterceptor... interceptors) {
-        return b
-                .requestFactory(NonRedirectingRequestFactory.class)
+    public RestOperations tokenXTemplate(RestTemplateBuilder b, ClientHttpRequestInterceptor... interceptors) {
+        return b.requestFactory(NonRedirectingRequestFactory.class)
                 .interceptors(interceptorsWithoutBearerToken(interceptors))
                 .setConnectTimeout(CONNECT_TIMEOUT)
                 .setReadTimeout(READ_TIMEOUT)
@@ -56,16 +47,6 @@ public class RestClientConfiguration implements EnvironmentAware {
                 .toList();
         LOG.trace("Filtered message interceptors er {}", filtered);
         return filtered;
-    }
-
-    @Bean
-    @Qualifier(TOKENX)
-    public RestOperations tokenXTemplate(RestTemplateBuilder b, TokenValidationContextHolder holder,
-            ClientHttpRequestInterceptor... interceptors) {
-        var filtered = interceptorsWithoutBearerToken(interceptors);
-        return b.requestFactory(NonRedirectingRequestFactory.class)
-                .interceptors(filtered)
-                .build();
     }
 
     @Bean
@@ -115,11 +96,6 @@ public class RestClientConfiguration implements EnvironmentAware {
                 return true;
             }
         });
-    }
-
-    @Override
-    public void setEnvironment(Environment env) {
-        this.env = env;
     }
 
 }
