@@ -69,9 +69,15 @@ public class TokenUtil {
     }
 
     public String getSubject() {
-        return Optional.ofNullable(claimSet())
-                .map(JwtTokenClaims::getSubject)
+        if (harTokenFor(TOKENX)) {
+            // TokenX lagrer fnr i "pid" og ikke i "sub"
+            return Optional.ofNullable(claimSet())
+                .map(jwtTokenClaims -> jwtTokenClaims.getStringClaim("pid"))
                 .orElse(null);
+        }
+        return Optional.ofNullable(claimSet())
+            .map(JwtTokenClaims::getSubject)
+            .orElse(null);
     }
 
     public boolean harTokenFor(String issuer) {
