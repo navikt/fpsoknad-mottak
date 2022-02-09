@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -32,10 +33,10 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     private final WebClient webClientTokenX;
     private final TokenUtil tokenUtil;
 
-    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD_LOGINSERVICE) WebClient client_loginservice,
+    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD_LOGINSERVICE) WebClient clientLoginservice,
                                     @Qualifier(ARBEIDSFORHOLD_TOKENX) WebClient webClientTokenX,
                                     TokenUtil tokenUtil, ArbeidsforholdConfig cfg, ArbeidsforholdMapper mapper) {
-        super(client_loginservice, cfg);
+        super(clientLoginservice, cfg);
         this.webClientTokenX = webClientTokenX;
         this.tokenUtil = tokenUtil;
         this.cfg = cfg;
@@ -43,11 +44,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     }
 
     List<EnkeltArbeidsforhold> hentArbeidsforhold() {
-        if (cfg.isBrukTokenX() && tokenUtil.harTokenFor(TOKENX)) {
-            LOG.info("Henter arbeidsforhold med TokenX");
-            return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), webClientTokenX);
-        }
-        return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), webClient);
+        return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), client());
     }
 
     private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom, WebClient client) {
@@ -68,6 +65,14 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
         LOG.info("Hentet {} arbeidsforhold for perioden fra {}", arbeidsforhold.size(), fom);
         LOG.trace("Arbeidsforhold: {}", arbeidsforhold);
         return arbeidsforhold;
+    }
+
+    private WebClient client() {
+        if (cfg.isBrukTokenX() && tokenUtil.harTokenFor(TOKENX)) {
+            LOG.info(EnvUtil.CONFIDENTIAL, "Mottak er kalt med TokenX og vi henter derfor arbeidsforhold fra aareg med systembruker");
+            return webClientTokenX;
+        }
+        return webClient;
     }
 
     @Override
