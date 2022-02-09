@@ -69,7 +69,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
 
     private WebClient client() {
         if (cfg.isBrukTokenX() && tokenUtil.harTokenFor(TOKENX)) {
-            LOG.info(EnvUtil.CONFIDENTIAL, "Mottak er kalt med TokenX og vi henter derfor arbeidsforhold fra aareg med systembruker");
+            LOG.info(EnvUtil.CONFIDENTIAL, "Mottak er kalt med TokenX og tokenx mot aareg er aktivert. Bruker Webclient med tokenx veksling.");
             return webClientTokenX;
         }
         return webClient;
