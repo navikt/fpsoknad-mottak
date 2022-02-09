@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.mottak.error;
 
 import static java.util.Arrays.asList;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -8,6 +9,8 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +85,11 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
         return logAndHandle(INTERNAL_SERVER_ERROR, e, req);
     }
 
+    @ExceptionHandler
+    protected ResponseEntity<Object> handleValidationException(ConstraintViolationException e, WebRequest req) {
+        return logAndHandle(BAD_REQUEST, e, req);
+    }
+
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, Object... messages) {
         return logAndHandle(status, e, req, new HttpHeaders(), messages);
     }
@@ -93,7 +101,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> logAndHandle(HttpStatus status, Exception e, WebRequest req, HttpHeaders headers,
             List<Object> messages) {
-        var apiError = apiErrorFra(status, req, e, messages);
+        var apiError = apiErrorFra(status, e, messages);
         if (tokenUtil.erAutentisert() && !tokenUtil.erUtløpt()) {
             LOG.warn("[{} ({})] {} {} ({})", req.getContextPath(), subject(), status, apiError.getMessages(),
                     status.value(), e);
@@ -111,7 +119,7 @@ public class MottakExceptionHandler extends ResponseEntityExceptionHandler {
                 .orElse("Uautentisert");
     }
 
-    private static ApiError apiErrorFra(HttpStatus status, WebRequest req, Exception e, List<Object> messages) {
+    private static ApiError apiErrorFra(HttpStatus status, Exception e, List<Object> messages) {
         return new ApiError(status, e, messages);
     }
 
