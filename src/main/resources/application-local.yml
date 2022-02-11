@@ -51,6 +51,7 @@ no.nav:
                             audience: local:teamforeldrepenger:aareg-services-nais
                         authentication:
                             client-id: fpsoknad-mottak
+                            client-jwk: src/test/resources/tokenx/jwk.json
                     pdl-api:
                         well-known-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
                         token-exchange:
@@ -70,9 +71,9 @@ no.nav:
             issuer:
                 tokenx:
                     discovery-url: http://localhost:8060/rest/tokenx/.well-known/oauth-authorization-server
-                    accepted-audience: fpsoknad-mottak
+                    accepted-audience: lokal
                 selvbetjening:
-                    discovery-url: http://localhost:8060/rest/AzureAd/aadb2c/v2.0/.well-known/openid-configuration
+                    discovery-url: http://localhost:8060/rest/AzureAd/loginservice/v2.0/.well-known/openid-configuration
                     accepted-audience: OIDC
 
 http.proxy:
