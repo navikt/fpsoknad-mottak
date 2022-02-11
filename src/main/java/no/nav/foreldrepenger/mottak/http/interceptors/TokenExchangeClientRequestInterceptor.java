@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 
+// TODO: Erstatt med OAuth2ClientRequestInterceptor fra token-support
 @Component
 @Order(HIGHEST_PRECEDENCE)
 public class TokenExchangeClientRequestInterceptor implements ClientHttpRequestInterceptor {

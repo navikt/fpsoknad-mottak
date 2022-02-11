@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.mottak.innsending.foreldrepenger;
 
-import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.common.util.CounterRegistry.FEILET_KVITTERINGER;
 import static no.nav.foreldrepenger.common.util.CounterRegistry.FORDELT_KVITTERING;
 import static no.nav.foreldrepenger.common.util.CounterRegistry.GITTOPP_KVITTERING;
@@ -13,7 +12,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +30,7 @@ public class ResponseHandler extends AbstractRestConnection {
     private static final Logger LOG = LoggerFactory.getLogger(ResponseHandler.class);
     private final int fpfordelMax;
 
-    public ResponseHandler(@Qualifier(TOKENX) RestOperations restOperations,
-                           @Value("${fpfordel.max:10}") int maxAntallForsøk) {
+    public ResponseHandler(RestOperations restOperations, @Value("${fpfordel.max:10}") int maxAntallForsøk) {
         super(restOperations);
         this.fpfordelMax = maxAntallForsøk;
     }

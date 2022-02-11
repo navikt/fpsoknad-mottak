@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
 import static java.util.Collections.emptyList;
-import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -11,7 +10,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 
@@ -28,7 +26,7 @@ public class InnsynConnection extends AbstractRestConnection implements PingEndp
     private static final Logger LOG = LoggerFactory.getLogger(InnsynConnection.class);
     private final InnsynConfig config;
 
-    public InnsynConnection(@Qualifier(TOKENX) RestOperations restOperations, InnsynConfig config) {
+    public InnsynConnection(RestOperations restOperations, InnsynConfig config) {
         super(restOperations);
         this.config = config;
     }

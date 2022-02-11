@@ -2,7 +2,9 @@ package no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold;
 
 import static java.time.LocalDate.now;
 import static java.util.Comparator.comparing;
-import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD_LOGINSERVICE;
+import static no.nav.foreldrepenger.mottak.http.WebClientConfiguration.ARBEIDSFORHOLD_TOKENX;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.util.StringUtils.capitalize;
 
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
+import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
 @Component
 public class ArbeidsforholdConnection extends AbstractWebClientConnection {
@@ -26,21 +30,26 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
     private static final Logger LOG = LoggerFactory.getLogger(ArbeidsforholdConnection.class);
     private final ArbeidsforholdConfig cfg;
     private final ArbeidsforholdMapper mapper;
+    private final WebClient webClientTokenX;
+    private final TokenUtil tokenUtil;
 
-    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD) WebClient client, ArbeidsforholdConfig cfg,
-            ArbeidsforholdMapper mapper) {
-        super(client, cfg);
+    public ArbeidsforholdConnection(@Qualifier(ARBEIDSFORHOLD_LOGINSERVICE) WebClient clientLoginservice,
+                                    @Qualifier(ARBEIDSFORHOLD_TOKENX) WebClient webClientTokenX,
+                                    TokenUtil tokenUtil, ArbeidsforholdConfig cfg, ArbeidsforholdMapper mapper) {
+        super(clientLoginservice, cfg);
+        this.webClientTokenX = webClientTokenX;
+        this.tokenUtil = tokenUtil;
         this.cfg = cfg;
         this.mapper = mapper;
     }
 
     List<EnkeltArbeidsforhold> hentArbeidsforhold() {
-        return hentArbeidsforhold(now().minus(cfg.getTidTilbake()));
+        return hentArbeidsforhold(now().minus(cfg.getTidTilbake()), client());
     }
 
-    private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom) {
+    private List<EnkeltArbeidsforhold> hentArbeidsforhold(LocalDate fom, WebClient client) {
         LOG.info("Henter arbeidsforhold for perioden fra {}", fom);
-        var arbeidsforhold = webClient
+        var arbeidsforhold = client
                 .get()
                 .uri(b -> cfg.getArbeidsforholdURI(b, fom))
                 .accept(APPLICATION_JSON)
@@ -58,9 +67,17 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
         return arbeidsforhold;
     }
 
+    private WebClient client() {
+        if (cfg.isBrukTokenX() && tokenUtil.harTokenFor(TOKENX)) {
+            LOG.info(EnvUtil.CONFIDENTIAL, "Mottak er kalt med TokenX og tokenx mot aareg er aktivert. Bruker Webclient med tokenx veksling.");
+            return webClientTokenX;
+        }
+        return webClient;
+    }
+
     @Override
     public String name() {
-        return capitalize(ARBEIDSFORHOLD.toLowerCase());
+        return capitalize(ARBEIDSFORHOLD_LOGINSERVICE.toLowerCase());
     }
 
     @Override

@@ -56,6 +56,9 @@ no.nav:
                     pdl-api:
                         token-exchange:
                             audience: lokal
+                    aareg-service:
+                        token-exchange:
+                            audience: lokal
                     fpinfo:
                         token-exchange:
                             audience: lokal

@@ -7,6 +7,7 @@ import static no.nav.foreldrepenger.common.util.Constants.NAV_CALL_ID2;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_ID;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_CONSUMER_TOKEN;
 import static no.nav.foreldrepenger.common.util.Constants.NAV_PERSON_IDENT;
+import static no.nav.foreldrepenger.common.util.Constants.TOKENX;
 import static no.nav.foreldrepenger.mottak.util.TokenUtil.BEARER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -29,6 +30,7 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
+import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.common.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
@@ -52,7 +54,8 @@ public class WebClientConfiguration {
     public static final String PDL_USER = "PDL";
     public static final String PDL_SYSTEM = "PDL-RELASJON";
     public static final String KRR = "KRR";
-    public static final String ARBEIDSFORHOLD = "ARBEIDSFORHOLD";
+    public static final String ARBEIDSFORHOLD_LOGINSERVICE = "ARBEIDSFORHOLD_LOGINSERVICE";
+    public static final String ARBEIDSFORHOLD_TOKENX = "ARBEIDSFORHOLD_TOKENX";
     public static final String ORGANISASJON = "ORGANISASJON";
     public static final String KONTONR = "KONTONR";
 
@@ -91,13 +94,23 @@ public class WebClientConfiguration {
                 .build();
     }
 
-    @Qualifier(ARBEIDSFORHOLD)
     @Bean
+    @Qualifier(ARBEIDSFORHOLD_LOGINSERVICE)
     public WebClient webClientArbeidsforhold(Builder builder, ArbeidsforholdConfig cfg, SystemTokenTjeneste sts, TokenUtil tokenUtil) {
         return builder
                 .baseUrl(cfg.getBaseUri().toString())
                 .filter(correlatingFilterFunction())
                 .filter(authenticatingFilterFunction(sts, tokenUtil))
+                .build();
+    }
+
+    @Bean
+    @Qualifier(ARBEIDSFORHOLD_TOKENX)
+    public WebClient webClientArbeidsforholdTokenX(Builder builder, ArbeidsforholdConfig cfg, TokenXExchangeFilterFunction tokenXFilterFunction) {
+        return builder
+                .baseUrl(cfg.getBaseUri().toString())
+                .filter(correlatingFilterFunction())
+                .filter(tokenXFilterFunction)
                 .build();
     }
 
@@ -148,6 +161,14 @@ public class WebClientConfiguration {
             var builder = ClientRequest.from(req)
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken());
             if (tokenUtil.erAutentisert()) {
+                if (tokenUtil.harTokenFor(TOKENX)) {
+                    LOG.info(EnvUtil.CONFIDENTIAL, "Bruker er autentisert og TokenX-token er mottatt! Kaller aareg med et systembrukertoken");
+                    return next.exchange(builder
+                        .header(AUTHORIZATION, sts.bearerToken())
+                        .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
+                        .build());
+                }
+                LOG.info(EnvUtil.CONFIDENTIAL, "Vi har mottatt loginservice token. Kaller aareg med dette tokenet.");
                 return next.exchange(
                         builder.header(AUTHORIZATION, tokenUtil.bearerToken())
                                 .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())

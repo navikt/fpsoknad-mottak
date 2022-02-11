@@ -12,6 +12,8 @@ spec:
      inbound:
        rules:
         - application: fpinfo-historikk
+        - application: foreldrepengesoknad-api
+          cluster: {{ cluster_api }}
   envFrom:
     - configmap: loginservice-idporten
   image: {{image}}

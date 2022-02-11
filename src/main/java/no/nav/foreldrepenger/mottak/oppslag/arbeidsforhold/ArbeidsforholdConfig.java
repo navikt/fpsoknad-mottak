@@ -29,15 +29,21 @@ public class ArbeidsforholdConfig extends AbstractConfig {
     private boolean historikk;
     private final boolean sporingsinformasjon;
     private final Period tidTilbake;
+    private final boolean brukTokenX;
 
     @ConstructorBinding
     public ArbeidsforholdConfig(@DefaultValue(DEFAULT_BASE_URI) URI baseUri, @DefaultValue(DEFAULT_PING) String pingPath,
             @DefaultValue(V1_ARBEIDSTAKER_ARBEIDSFORHOLD) String arbeidsforholdPath, @DefaultValue("true") boolean enabled,
-            @DefaultValue(TREÅR) Period tidTilbake, boolean sporingsinformasjon) {
+            @DefaultValue(TREÅR) Period tidTilbake, @DefaultValue("false") boolean brukTokenX, boolean sporingsinformasjon) {
         super(baseUri, pingPath, enabled);
         this.arbeidsforholdPath = arbeidsforholdPath;
         this.tidTilbake = tidTilbake;
+        this.brukTokenX = brukTokenX;
         this.sporingsinformasjon = sporingsinformasjon;
+    }
+
+    public boolean isBrukTokenX() {
+        return brukTokenX;
     }
 
     public String getArbeidsforholdPath() {
