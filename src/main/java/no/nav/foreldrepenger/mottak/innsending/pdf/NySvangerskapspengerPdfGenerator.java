@@ -196,15 +196,15 @@ public class NySvangerskapspengerPdfGenerator implements MappablePdfGenerator {
             return Optional.empty();
         }
         List<Blokk> rader = new ArrayList<>();
-        if (frilans.jobberFremdelesSomFrilans()) {
-            rader.add(new FritekstBlokk(txt("frilanspågår", textFormatter.dato(frilans.periode().fom()))));
+        if (frilans.isJobberFremdelesSomFrilans()) {
+            rader.add(new FritekstBlokk(txt("frilanspågår", textFormatter.dato(frilans.getPeriode().fom()))));
         } else {
-            rader.add(new FritekstBlokk(txt("frilansavsluttet", textFormatter.dato(frilans.periode().fom()))));
+            rader.add(new FritekstBlokk(txt("frilansavsluttet", textFormatter.dato(frilans.getPeriode().fom()))));
         }
-        rader.add(felt(txt("fosterhjem"), jaNei(frilans.harInntektFraFosterhjem())));
-        rader.add(felt(txt("nyoppstartet"), jaNei(frilans.nyOppstartet())));
-        if (!frilans.frilansOppdrag().isEmpty()) {
-            frilans.frilansOppdrag().stream()
+        rader.add(felt(txt("fosterhjem"), jaNei(frilans.isHarInntektFraFosterhjem())));
+        rader.add(felt(txt("nyoppstartet"), jaNei(frilans.isNyOppstartet())));
+        if (!frilans.getFrilansOppdrag().isEmpty()) {
+            frilans.getFrilansOppdrag().stream()
                     .map(o -> rad(o.oppdragsgiver(), textFormatter.enkelPeriode(o.periode())))
                     .forEach(rader::add);
         } else {
