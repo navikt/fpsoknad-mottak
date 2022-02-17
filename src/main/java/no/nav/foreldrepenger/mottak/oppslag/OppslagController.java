@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.mottak.oppslag;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,17 +42,17 @@ public class OppslagController {
     }
 
     @GetMapping("/fnr")
-    public Fødselsnummer fnr(@RequestParam(name = "aktorId") AktørId aktorId) {
+    public Fødselsnummer fnr(@Valid @RequestParam(name = "aktorId") AktørId aktorId) {
         return oppslag.fnr(aktorId);
     }
 
     @GetMapping("/navn")
-    public Navn navn(@RequestParam(name = "aktorId") AktørId aktorId) {
+    public Navn navn(@Valid @RequestParam(name = "aktorId") AktørId aktorId) {
         return oppslag.navn(aktorId.value());
     }
 
     @GetMapping("/navnfnr")
-    public Navn navnfnr(@RequestParam(name = "fnr") Fødselsnummer fnr) {
+    public Navn navnfnr(@Valid @RequestParam(name = "fnr") Fødselsnummer fnr) {
         return oppslag.navn(fnr.value());
     }
 

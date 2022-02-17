@@ -4,14 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import no.nav.foreldrepenger.common.domain.foreldrepenger.Dekningsgrad;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UttaksplanDTO {
 
     private final LocalDate termindato;
