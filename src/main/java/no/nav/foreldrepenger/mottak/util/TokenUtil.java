@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.nimbusds.jwt.util.DateUtils;
@@ -25,6 +27,7 @@ import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 
 @Component
 public class TokenUtil {
+    private static final Logger LOG = LoggerFactory.getLogger(TokenUtil.class);
 
     public static final String BEARER = "Bearer ";
 
@@ -69,10 +72,20 @@ public class TokenUtil {
     }
 
     public String getSubject() {
-        // TODO: Når vi bytter til ID-porten så må vi hente fnr fra pid og ikke sub!
         return Optional.ofNullable(claimSet())
-            .map(JwtTokenClaims::getSubject)
+            .map(this::getSubOrPid)
             .orElse(null);
+    }
+
+    private String getSubOrPid(JwtTokenClaims claims) {
+        if (claims.get("pid") != null) {
+            return claims.getStringClaim("pid");
+        } else if (claims.getSubject() != null) {
+            return claims.getSubject();
+        } else {
+            LOG.warn("Mottatt brukertoken uten sub eller pid satt. Noe er feil!");
+            return null;
+        }
     }
 
     public boolean harTokenFor(String issuer) {
