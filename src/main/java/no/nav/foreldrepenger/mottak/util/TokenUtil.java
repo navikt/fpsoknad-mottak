@@ -73,19 +73,13 @@ public class TokenUtil {
 
     public String getSubject() {
         return Optional.ofNullable(claimSet())
-            .map(this::getSubOrPid)
+            .map(this::getSubjectFromPidOrSub)
             .orElse(null);
     }
 
-    private String getSubOrPid(JwtTokenClaims claims) {
-        if (claims.get("pid") != null) {
-            return claims.getStringClaim("pid");
-        } else if (claims.getSubject() != null) {
-            return claims.getSubject();
-        } else {
-            LOG.warn("Mottatt brukertoken uten sub eller pid satt. Noe er feil!");
-            return null;
-        }
+    private String getSubjectFromPidOrSub(JwtTokenClaims claims) {
+        return Optional.ofNullable(claims.getStringClaim("pid"))
+            .orElseGet(claims::getSubject);
     }
 
     public boolean harTokenFor(String issuer) {
