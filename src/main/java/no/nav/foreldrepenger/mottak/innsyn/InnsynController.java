@@ -1,6 +1,11 @@
 package no.nav.foreldrepenger.mottak.innsyn;
 
+import static no.nav.foreldrepenger.common.domain.validation.InputValideringRegex.FRITEKST;
+
 import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,17 +44,17 @@ public class InnsynController {
     }
 
     @GetMapping("/orgnavn")
-    public String orgnavn(@RequestParam(name = "orgnr") String orgnr) {
+    public String orgnavn(@Pattern(regexp = FRITEKST) @RequestParam(name = "orgnr") String orgnr) {
         return arbeidsforhold.orgnavn(orgnr);
     }
 
     @GetMapping("/uttaksplan")
-    public Uttaksplan uttaksplan(@RequestParam(name = "saksnummer") String saksnummer) {
+    public Uttaksplan uttaksplan(@Pattern(regexp = FRITEKST) @RequestParam(name = "saksnummer") String saksnummer) {
         return innsyn.uttaksplan(saksnummer);
     }
 
     @GetMapping("/uttaksplanannen")
-    public Uttaksplan uttaksplan(@RequestParam(name = "annenPart") Fødselsnummer annenPart) {
+    public Uttaksplan uttaksplan(@Valid @RequestParam(name = "annenPart") Fødselsnummer annenPart) {
         return innsyn.uttaksplan(oppslag.aktørId(), oppslag.aktørId(annenPart));
     }
 
