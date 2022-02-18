@@ -31,6 +31,7 @@ import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 class TokenUtilTest {
 
     private static final Fødselsnummer FNR = new Fødselsnummer("42");
+    private static final String PID = "pid";
     @Mock
     private TokenValidationContextHolder holder;
     @Mock
@@ -39,6 +40,7 @@ class TokenUtilTest {
     private JwtTokenClaims claims;
 
     private TokenUtil tokenHelper;
+
 
     @BeforeEach
     void before() {
@@ -80,8 +82,25 @@ class TokenUtilTest {
     @Test
     void testNoSubject() {
         when(claims.getSubject()).thenReturn(null);
+        when(claims.getStringClaim(PID)).thenReturn(null);
         assertFalse(tokenHelper.erAutentisert());
         assertThrows(JwtTokenValidatorException.class, () -> tokenHelper.autentisertBruker());
+    }
+
+    @Test
+    void nårSubjectIkkeFinnesISubSåHentesDetFraPidTest() {
+        when(claims.getSubject()).thenReturn(null);
+        when(claims.getStringClaim(PID)).thenReturn(FNR.toString());
+        assertTrue(tokenHelper.erAutentisert());
+        assertEquals(tokenHelper.getSubject(), FNR.toString());
+    }
+
+    @Test
+    void nårSubjectIkkeFinnesIPidSåHentesDetFraSubTest() {
+        when(claims.getSubject()).thenReturn(FNR.toString());
+        when(claims.getStringClaim(PID)).thenReturn(null);
+        assertTrue(tokenHelper.erAutentisert());
+        assertEquals(tokenHelper.getSubject(), FNR.toString());
     }
 
     private static Date toDate(LocalDateTime date) {
