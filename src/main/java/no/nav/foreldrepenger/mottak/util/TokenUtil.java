@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.nimbusds.jwt.util.DateUtils;
@@ -27,7 +25,6 @@ import no.nav.security.token.support.core.jwt.JwtTokenClaims;
 
 @Component
 public class TokenUtil {
-    private static final Logger LOG = LoggerFactory.getLogger(TokenUtil.class);
 
     public static final String BEARER = "Bearer ";
 
