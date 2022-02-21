@@ -47,19 +47,19 @@ no.nav:
         jwt:
             client:
                 registration:
+                    fpsoknad-oppslag:
+                        token-exchange:
+                            audience: lokal
                     fpfordel:
                         token-exchange:
                             audience: lokal
-                    fpsoknad-oppslag:
+                    fpinfo:
                         token-exchange:
                             audience: lokal
                     pdl-api:
                         token-exchange:
                             audience: lokal
                     aareg-service:
-                        token-exchange:
-                            audience: lokal
-                    fpinfo:
                         token-exchange:
                             audience: lokal
 server:

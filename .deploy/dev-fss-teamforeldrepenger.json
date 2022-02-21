@@ -1,5 +1,5 @@
 {
-  "cluster_api": "dev-gcp",
+  "cluster_foreldrepengesoknad-api": "dev-gcp",
   "ingresses":  [
       "https://fpsoknad-mottak.dev.adeo.no",
       "https://fpsoknad-mottak.dev.nav.no",

@@ -13,7 +13,7 @@ spec:
        rules:
         - application: fpinfo-historikk
         - application: foreldrepengesoknad-api
-          cluster: {{ cluster_api }}
+          cluster: {{ cluster_foreldrepengesoknad-api }}
   envFrom:
     - configmap: loginservice-idporten
   image: {{image}}
