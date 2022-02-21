@@ -3,21 +3,21 @@ no.nav:
         jwt:
             client:
                 registration:
-                    fpfordel:
-                        token-exchange:
-                            audience: prod-fss:teamforeldrepenger:fpfordel
                     fpsoknad-oppslag:
                         token-exchange:
                             audience: prod-fss:teamforeldrepenger:fpsoknad-oppslag
-                    aareg-service:
-                        token-exchange:
-                            audience: prod-fss:teamforeldrepenger:aareg-services-nais # TODO verifiser at de bruker aareg-services-nais i metadata.name når de har støtte
-                    pdl-api:
-                        token-exchange:
-                            audience: prod-fss:pdl:pdl-api
                     fpinfo:
                         token-exchange:
                             audience: prod-fss:teamforeldrepenger:fpinfo
+                    fpfordel:
+                        token-exchange:
+                            audience: prod-fss:teamforeldrepenger:fpfordel
+                    pdl-api:
+                        token-exchange:
+                            audience: prod-fss:pdl:pdl-api
+                    aareg-service:
+                        token-exchange:
+                            audience: prod-fss:teamforeldrepenger:aareg-services-nais # TODO verifiser at de bruker aareg-services-nais i metadata.name når de har støtte
             issuer:
                selvbetjening:
                  proxy-url: http://webproxy.nais:8088
