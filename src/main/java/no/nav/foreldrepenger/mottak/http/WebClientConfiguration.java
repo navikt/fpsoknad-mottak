@@ -30,7 +30,6 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.kickstart.spring.webclient.boot.GraphQLWebClient;
-import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.common.util.MDCUtil;
 import no.nav.foreldrepenger.mottak.http.interceptors.TokenXConfigFinder;
 import no.nav.foreldrepenger.mottak.oppslag.arbeidsforhold.ArbeidsforholdConfig;
@@ -162,13 +161,13 @@ public class WebClientConfiguration {
                     .header(NAV_CONSUMER_TOKEN, sts.bearerToken());
             if (tokenUtil.erAutentisert()) {
                 if (tokenUtil.harTokenFor(TOKENX)) {
-                    LOG.info(EnvUtil.CONFIDENTIAL, "Bruker er autentisert og TokenX-token er mottatt! Kaller aareg med et systembrukertoken");
+                    LOG.info("Bruker er autentisert og TokenX-token er mottatt! Kaller aareg med et systembrukertoken");
                     return next.exchange(builder
                         .header(AUTHORIZATION, sts.bearerToken())
                         .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())
                         .build());
                 }
-                LOG.info(EnvUtil.CONFIDENTIAL, "Vi har mottatt loginservice token. Kaller aareg med dette tokenet.");
+                LOG.info("Vi har mottatt loginservice token. Kaller aareg med dette tokenet.");
                 return next.exchange(
                         builder.header(AUTHORIZATION, tokenUtil.bearerToken())
                                 .header(NAV_PERSON_IDENT, tokenUtil.autentisertBruker())

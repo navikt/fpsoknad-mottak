@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.foreldrepenger.boot.conditionals.EnvUtil;
 import no.nav.foreldrepenger.mottak.http.AbstractWebClientConnection;
 import no.nav.foreldrepenger.mottak.util.TokenUtil;
 
@@ -69,7 +68,7 @@ public class ArbeidsforholdConnection extends AbstractWebClientConnection {
 
     private WebClient client() {
         if (cfg.isBrukTokenX() && tokenUtil.harTokenFor(TOKENX)) {
-            LOG.info(EnvUtil.CONFIDENTIAL, "Mottak er kalt med TokenX og tokenx mot aareg er aktivert. Bruker Webclient med tokenx veksling.");
+            LOG.info("Mottak er kalt med TokenX og tokenx mot aareg er aktivert. Bruker Webclient med tokenx veksling.");
             return webClientTokenX;
         }
         return webClient;
