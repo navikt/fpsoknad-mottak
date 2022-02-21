@@ -27,7 +27,7 @@
         <sonar.organization>navit</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <mock-oauth2-server.version>0.4.3</mock-oauth2-server.version>
-        <token-validation-version>1.3.16</token-validation-version>
+        <token-validation-version>1.3.17</token-validation-version>
         <pdfbox.version>2.0.25</pdfbox.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
